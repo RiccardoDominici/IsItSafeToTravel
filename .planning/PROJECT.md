@@ -26,9 +26,9 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - [ ] Country-level safety view as default, with regional drill-down on zoom
 - [x] Search by city, country, or region with instant results — Validated in Phase 5: Search and Transparency
 - [ ] Multilingual support (English primary, Italian, expandable i18n)
-- [ ] SEO-optimized pages for every destination (meta, structured data, sitemap)
-- [ ] Mobile-responsive design with clear visual hierarchy
-- [ ] Fast load times (static generation where possible)
+- [x] SEO-optimized pages for every destination (meta, structured data, sitemap) — Validated in Phase 6: SEO, Performance, and Launch
+- [x] Mobile-responsive design with clear visual hierarchy — Validated in Phase 6: SEO, Performance, and Launch
+- [x] Fast load times (static generation where possible) — Validated in Phase 6: SEO, Performance, and Launch
 
 ### Out of Scope
 
@@ -67,4 +67,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
 ---
-*Last updated: 2026-03-19 — Phase 5 (Search and Transparency) complete: Fuse.js autocomplete search in header, methodology page auto-generated from weights.json, legal disclaimer page, footer link fix*
+*Last updated: 2026-03-19 — Phase 6 (SEO, Performance, and Launch) complete: JSON-LD structured data on all pages, OG/Twitter meta tags, sitemap i18n, robots.txt, mobile responsiveness fixes (dvh, 44px touch targets, 16px base font), Lighthouse optimization. All v1 phases complete.*
