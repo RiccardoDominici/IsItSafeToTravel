@@ -28,6 +28,1353 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
+        "base_path": "/foreign-travel-advice/democratic-republic-of-the-congo",
+        "content_id": "88122213-1a2f-420f-94f9-c622147d4300",
+        "details": {
+          "change_description": "Removal of information that the Kavimvira border crossing between DRC and Burundi remains closed ('Warnings and insurance' page).",
+          "country": {
+            "name": "Democratic Republic of the Congo",
+            "slug": "democratic-republic-of-the-congo",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T15:00:27Z",
+        "schema_name": "travel_advice",
+        "title": "Democratic Republic of the Congo travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/democratic-republic-of-the-congo",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/belarus",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/belarus",
+        "base_path": "/foreign-travel-advice/belarus",
+        "content_id": "a73a1811-a1a0-474c-ad2c-30dc0ab74495",
+        "details": {
+          "change_description": "Updated information for dual British-Belarus nationals intending to travel to Belarus ('Warnings and insurance' and 'Safety and security' pages).",
+          "country": {
+            "name": "Belarus",
+            "slug": "belarus",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:27:53Z",
+        "schema_name": "travel_advice",
+        "title": "Belarus travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/belarus",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/singapore",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/singapore",
+        "base_path": "/foreign-travel-advice/singapore",
+        "content_id": "06ffd544-1097-41b1-90b6-b9a74f78669e",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Singapore",
+            "slug": "singapore",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:08:04Z",
+        "schema_name": "travel_advice",
+        "title": "Singapore travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/singapore",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/vietnam",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/vietnam",
+        "base_path": "/foreign-travel-advice/vietnam",
+        "content_id": "8f6e7323-3d10-46da-a1a7-c50b5fc5a5ea",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Vietnam",
+            "slug": "vietnam",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:07:48Z",
+        "schema_name": "travel_advice",
+        "title": "Vietnam travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/vietnam",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/philippines",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/philippines",
+        "base_path": "/foreign-travel-advice/philippines",
+        "content_id": "9a7fcd1d-1be5-4342-89ff-a4bd8ecf93e3",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Philippines",
+            "slug": "philippines",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:07:43Z",
+        "schema_name": "travel_advice",
+        "title": "Philippines travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/philippines",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/federated-states-of-micronesia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/federated-states-of-micronesia",
+        "base_path": "/foreign-travel-advice/federated-states-of-micronesia",
+        "content_id": "d010fd00-bf63-42f0-ba7b-0982f49cb3d4",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "Federated States of Micronesia",
+            "slug": "federated-states-of-micronesia",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:07:21Z",
+        "schema_name": "travel_advice",
+        "title": "Federated States of Micronesia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/federated-states-of-micronesia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/tuvalu",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tuvalu",
+        "base_path": "/foreign-travel-advice/tuvalu",
+        "content_id": "b60c33a7-0d98-4d98-a79d-fe48735a2116",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "Tuvalu",
+            "slug": "tuvalu",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:07:18Z",
+        "schema_name": "travel_advice",
+        "title": "Tuvalu travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/tuvalu",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/laos",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/laos",
+        "base_path": "/foreign-travel-advice/laos",
+        "content_id": "602e34bf-8222-4391-96d9-548dbe1e1799",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "Laos",
+            "slug": "laos",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:45Z",
+        "schema_name": "travel_advice",
+        "title": "Laos travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/laos",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/thailand",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/thailand",
+        "base_path": "/foreign-travel-advice/thailand",
+        "content_id": "724a37c1-2f81-40b2-8640-d3d06e74d2bb",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Thailand",
+            "slug": "thailand",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:39Z",
+        "schema_name": "travel_advice",
+        "title": "Thailand travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/thailand",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/uzbekistan",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/uzbekistan",
+        "base_path": "/foreign-travel-advice/uzbekistan",
+        "content_id": "2f79a772-583b-4f01-adc1-5dc832eddcec",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Uzbekistan",
+            "slug": "uzbekistan",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:30Z",
+        "schema_name": "travel_advice",
+        "title": "Uzbekistan travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/uzbekistan",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/new-zealand",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/new-zealand",
+        "base_path": "/foreign-travel-advice/new-zealand",
+        "content_id": "9221e19e-95ea-4045-bafa-1b22671e227c",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "New Zealand",
+            "slug": "new-zealand",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:12Z",
+        "schema_name": "travel_advice",
+        "title": "New Zealand travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/new-zealand",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/bangladesh",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/bangladesh",
+        "base_path": "/foreign-travel-advice/bangladesh",
+        "content_id": "266ca3b6-752f-400b-91c0-8b9c3c433d2d",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).\r\n\r\n",
+          "country": {
+            "name": "Bangladesh",
+            "slug": "bangladesh",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:10Z",
+        "schema_name": "travel_advice",
+        "title": "Bangladesh travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/bangladesh",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/australia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/australia",
+        "base_path": "/foreign-travel-advice/australia",
+        "content_id": "48baf826-7d71-4fea-a9c4-9730fd30eb9e",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Australia",
+            "slug": "australia",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:09Z",
+        "schema_name": "travel_advice",
+        "title": "Australia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/australia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/brunei",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/brunei",
+        "base_path": "/foreign-travel-advice/brunei",
+        "content_id": "65a38090-2d1c-4e45-9ebd-8638085933f1",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Brunei",
+            "slug": "brunei",
+            "synonyms": [
+              "Borneo"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:05:48Z",
+        "schema_name": "travel_advice",
+        "title": "Brunei travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/brunei",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/indonesia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/indonesia",
+        "base_path": "/foreign-travel-advice/indonesia",
+        "content_id": "e2c44bf1-0b96-4034-9ac8-96f6e0181a80",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Indonesia",
+            "slug": "indonesia",
+            "synonyms": [
+              "Borneo",
+              "Bali",
+              "Java",
+              "Sumatra",
+              "Maluku",
+              "Suluwesi"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:05:44Z",
+        "schema_name": "travel_advice",
+        "title": "Indonesia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/indonesia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/japan",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/japan",
+        "base_path": "/foreign-travel-advice/japan",
+        "content_id": "8a8de3c7-0b94-4670-87a7-f110d789d3d3",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).\r\n\r\n",
+          "country": {
+            "name": "Japan",
+            "slug": "japan",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:05:40Z",
+        "schema_name": "travel_advice",
+        "title": "Japan travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/japan",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/georgia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/georgia",
+        "base_path": "/foreign-travel-advice/georgia",
+        "content_id": "05b21330-97be-45f0-9ddf-778c722bd116",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Georgia",
+            "slug": "georgia",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:05:01Z",
+        "schema_name": "travel_advice",
+        "title": "Georgia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/georgia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/tajikistan",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tajikistan",
+        "base_path": "/foreign-travel-advice/tajikistan",
+        "content_id": "1a06c5d2-9457-477a-a3ea-1ce3b8b44fc1",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Tajikistan",
+            "slug": "tajikistan",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:04:39Z",
+        "schema_name": "travel_advice",
+        "title": "Tajikistan travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/tajikistan",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/nepal",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/nepal",
+        "base_path": "/foreign-travel-advice/nepal",
+        "content_id": "d2ac8d41-054a-4a47-a8f5-9f9a5bb37ad9",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).\r\n\r\n",
+          "country": {
+            "name": "Nepal",
+            "slug": "nepal",
+            "synonyms": [
+              "Katmandu",
+              "Kathmandu",
+              "Pokara",
+              "Pokhara"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:04:20Z",
+        "schema_name": "travel_advice",
+        "title": "Nepal travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/nepal",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/maldives",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/maldives",
+        "base_path": "/foreign-travel-advice/maldives",
+        "content_id": "99e0a892-9daa-443c-b96c-97ba9e28a2c8",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Maldives",
+            "slug": "maldives",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:04:16Z",
+        "schema_name": "travel_advice",
+        "title": "Maldives travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/maldives",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/malaysia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malaysia",
+        "base_path": "/foreign-travel-advice/malaysia",
+        "content_id": "126d47f7-5fd2-41ff-af17-b23564355e03",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Malaysia",
+            "slug": "malaysia",
+            "synonyms": [
+              "Borneo"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:58Z",
+        "schema_name": "travel_advice",
+        "title": "Malaysia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/malaysia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/india",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/india",
+        "base_path": "/foreign-travel-advice/india",
+        "content_id": "ea7e300b-24dd-40af-afde-fd690a2df678",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).\r\n\r\n",
+          "country": {
+            "name": "India",
+            "slug": "india",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:38Z",
+        "schema_name": "travel_advice",
+        "title": "India travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/india",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/south-korea",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/south-korea",
+        "base_path": "/foreign-travel-advice/south-korea",
+        "content_id": "78f22c79-1f19-4ce2-ab69-2a221c770e52",
+        "details": {
+          "change_description": "New information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "South Korea",
+            "slug": "south-korea",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:28Z",
+        "schema_name": "travel_advice",
+        "title": "South Korea travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/south-korea",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/cambodia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/cambodia",
+        "base_path": "/foreign-travel-advice/cambodia",
+        "content_id": "8f98f704-65d6-44bc-8047-915066809df5",
+        "details": {
+          "change_description": "New information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Cambodia",
+            "slug": "cambodia",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:23Z",
+        "schema_name": "travel_advice",
+        "title": "Cambodia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/cambodia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/papua-new-guinea",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/papua-new-guinea",
+        "base_path": "/foreign-travel-advice/papua-new-guinea",
+        "content_id": "a55aacc4-9c01-4257-8a72-4cd5c972dceb",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Papua New Guinea",
+            "slug": "papua-new-guinea",
+            "synonyms": [
+              "PNG"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:18Z",
+        "schema_name": "travel_advice",
+        "title": "Papua New Guinea travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/papua-new-guinea",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/solomon-islands",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/solomon-islands",
+        "base_path": "/foreign-travel-advice/solomon-islands",
+        "content_id": "44e13401-96f0-4ac1-bfdd-9f0cc0111b40",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Solomon Islands",
+            "slug": "solomon-islands",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:12Z",
+        "schema_name": "travel_advice",
+        "title": "Solomon Islands travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/solomon-islands",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/nauru",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/nauru",
+        "base_path": "/foreign-travel-advice/nauru",
+        "content_id": "6f2af041-91cb-408a-8377-1b41c9d59f23",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Nauru",
+            "slug": "nauru",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:07Z",
+        "schema_name": "travel_advice",
+        "title": "Nauru travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/nauru",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/tonga",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tonga",
+        "base_path": "/foreign-travel-advice/tonga",
+        "content_id": "96f71287-395b-435b-94ef-855b0f14e2c6",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Tonga",
+            "slug": "tonga",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:58Z",
+        "schema_name": "travel_advice",
+        "title": "Tonga travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/tonga",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/samoa",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/samoa",
+        "base_path": "/foreign-travel-advice/samoa",
+        "content_id": "c3c1f5ef-9041-46ab-a8e2-400d183e8c59",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Samoa",
+            "slug": "samoa",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:53Z",
+        "schema_name": "travel_advice",
+        "title": "Samoa travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/samoa",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/vanuatu",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/vanuatu",
+        "base_path": "/foreign-travel-advice/vanuatu",
+        "content_id": "89ce38b7-40fa-46e6-9073-235ac6923425",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Vanuatu",
+            "slug": "vanuatu",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:48Z",
+        "schema_name": "travel_advice",
+        "title": "Vanuatu travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/vanuatu",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/fiji",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/fiji",
+        "base_path": "/foreign-travel-advice/fiji",
+        "content_id": "4b79ee8f-0217-486b-bcc9-5f0ef9c16b54",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Fiji",
+            "slug": "fiji",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:43Z",
+        "schema_name": "travel_advice",
+        "title": "Fiji travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/fiji",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/kiribati",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/kiribati",
+        "base_path": "/foreign-travel-advice/kiribati",
+        "content_id": "d68b6113-2270-41a2-85cc-97b494d65cb6",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Kiribati",
+            "slug": "kiribati",
+            "synonyms": [
+              "Christmas Island",
+              "Kiritimati"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:38Z",
+        "schema_name": "travel_advice",
+        "title": "Kiribati travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/kiribati",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/marshall-islands",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/marshall-islands",
+        "base_path": "/foreign-travel-advice/marshall-islands",
+        "content_id": "d8aaa1cd-85d2-4ba6-a825-b13319efa4d8",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Marshall Islands",
+            "slug": "marshall-islands",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:32Z",
+        "schema_name": "travel_advice",
+        "title": "Marshall Islands travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/marshall-islands",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/sri-lanka",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/sri-lanka",
+        "base_path": "/foreign-travel-advice/sri-lanka",
+        "content_id": "c90dd329-ea2a-413a-b927-a67bd3cbbb84",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Sri Lanka",
+            "slug": "sri-lanka",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:02:26Z",
+        "schema_name": "travel_advice",
+        "title": "Sri Lanka travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/sri-lanka",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/mali",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mali",
         "base_path": "/foreign-travel-advice/mali",
@@ -70,45 +1417,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
-        "base_path": "/foreign-travel-advice/democratic-republic-of-the-congo",
-        "content_id": "88122213-1a2f-420f-94f9-c622147d4300",
-        "details": {
-          "change_description": "FCDO now advises against all but essential travel to Bangoka International Airport in Kisangani. FDCO no longer advises against all but essential travel to the district of Kasa Vubu in Kinshasa city bordered by the N1 Triumphal Road (Stadium), Barumbu District, Lingwala district and south of the Botanical Garden ('Warnings and insurance' page). ",
-          "country": {
-            "name": "Democratic Republic of the Congo",
-            "slug": "democratic-republic-of-the-congo",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-02-25T17:08:17Z",
-        "schema_name": "travel_advice",
-        "title": "Democratic Republic of the Congo travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/democratic-republic-of-the-congo",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/turkmenistan",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/turkmenistan",
         "base_path": "/foreign-travel-advice/turkmenistan",
@@ -145,1275 +1453,6 @@
         "schema_name": "travel_advice",
         "title": "Turkmenistan travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/turkmenistan",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/federated-states-of-micronesia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/federated-states-of-micronesia",
-        "base_path": "/foreign-travel-advice/federated-states-of-micronesia",
-        "content_id": "d010fd00-bf63-42f0-ba7b-0982f49cb3d4",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Federated States of Micronesia",
-            "slug": "federated-states-of-micronesia",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:41:40Z",
-        "schema_name": "travel_advice",
-        "title": "Federated States of Micronesia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/federated-states-of-micronesia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/tuvalu",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tuvalu",
-        "base_path": "/foreign-travel-advice/tuvalu",
-        "content_id": "b60c33a7-0d98-4d98-a79d-fe48735a2116",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Tuvalu",
-            "slug": "tuvalu",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:41:17Z",
-        "schema_name": "travel_advice",
-        "title": "Tuvalu travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/tuvalu",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/south-korea",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/south-korea",
-        "base_path": "/foreign-travel-advice/south-korea",
-        "content_id": "78f22c79-1f19-4ce2-ab69-2a221c770e52",
-        "details": {
-          "change_description": "Addition of information about a large-scale public event ('Warnings and insurance’ page). ",
-          "country": {
-            "name": "South Korea",
-            "slug": "south-korea",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-18T10:56:00Z",
-        "schema_name": "travel_advice",
-        "title": "South Korea travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/south-korea",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/laos",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/laos",
-        "base_path": "/foreign-travel-advice/laos",
-        "content_id": "602e34bf-8222-4391-96d9-548dbe1e1799",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Laos",
-            "slug": "laos",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:29:54Z",
-        "schema_name": "travel_advice",
-        "title": "Laos travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/laos",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/cambodia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/cambodia",
-        "base_path": "/foreign-travel-advice/cambodia",
-        "content_id": "8f98f704-65d6-44bc-8047-915066809df5",
-        "details": {
-          "change_description": "FCDO now advises against all but essential travel to within 20km from the land border with Thailand. ",
-          "country": {
-            "name": "Cambodia",
-            "slug": "cambodia",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-02-02T14:49:28Z",
-        "schema_name": "travel_advice",
-        "title": "Cambodia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/cambodia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/thailand",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/thailand",
-        "base_path": "/foreign-travel-advice/thailand",
-        "content_id": "724a37c1-2f81-40b2-8640-d3d06e74d2bb",
-        "details": {
-          "change_description": "New information about smoking and e-cigarettes and updated information about cannabis ('Warnings and insurance' and 'Safety and security' pages).",
-          "country": {
-            "name": "Thailand",
-            "slug": "thailand",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-17T16:39:28Z",
-        "schema_name": "travel_advice",
-        "title": "Thailand travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/thailand",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/papua-new-guinea",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/papua-new-guinea",
-        "base_path": "/foreign-travel-advice/papua-new-guinea",
-        "content_id": "a55aacc4-9c01-4257-8a72-4cd5c972dceb",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Papua New Guinea",
-            "slug": "papua-new-guinea",
-            "synonyms": [
-              "PNG"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:40:48Z",
-        "schema_name": "travel_advice",
-        "title": "Papua New Guinea travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/papua-new-guinea",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/solomon-islands",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/solomon-islands",
-        "base_path": "/foreign-travel-advice/solomon-islands",
-        "content_id": "44e13401-96f0-4ac1-bfdd-9f0cc0111b40",
-        "details": {
-          "change_description": "Removal of information that you must have a certificate to prove you’ve had a measles vaccination if you’re travelling from Australia, New Zealand, American Samoa, Samoa, Fiji, Tonga, Kiribati, Papua New Guinea or the Philippines ('Entry requirements' page). ",
-          "country": {
-            "name": "Solomon Islands",
-            "slug": "solomon-islands",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-10T13:28:56Z",
-        "schema_name": "travel_advice",
-        "title": "Solomon Islands travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/solomon-islands",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/new-zealand",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/new-zealand",
-        "base_path": "/foreign-travel-advice/new-zealand",
-        "content_id": "9221e19e-95ea-4045-bafa-1b22671e227c",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).\r\n ",
-          "country": {
-            "name": "New Zealand",
-            "slug": "new-zealand",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T14:58:44Z",
-        "schema_name": "travel_advice",
-        "title": "New Zealand travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/new-zealand",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/nauru",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/nauru",
-        "base_path": "/foreign-travel-advice/nauru",
-        "content_id": "6f2af041-91cb-408a-8377-1b41c9d59f23",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Nauru",
-            "slug": "nauru",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:43:14Z",
-        "schema_name": "travel_advice",
-        "title": "Nauru travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/nauru",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/australia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/australia",
-        "base_path": "/foreign-travel-advice/australia",
-        "content_id": "48baf826-7d71-4fea-a9c4-9730fd30eb9e",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).\r\n ",
-          "country": {
-            "name": "Australia",
-            "slug": "australia",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T14:58:41Z",
-        "schema_name": "travel_advice",
-        "title": "Australia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/australia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/tonga",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tonga",
-        "base_path": "/foreign-travel-advice/tonga",
-        "content_id": "96f71287-395b-435b-94ef-855b0f14e2c6",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Tonga",
-            "slug": "tonga",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:43:26Z",
-        "schema_name": "travel_advice",
-        "title": "Tonga travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/tonga",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/samoa",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/samoa",
-        "base_path": "/foreign-travel-advice/samoa",
-        "content_id": "c3c1f5ef-9041-46ab-a8e2-400d183e8c59",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Samoa",
-            "slug": "samoa",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:43:38Z",
-        "schema_name": "travel_advice",
-        "title": "Samoa travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/samoa",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/brunei",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/brunei",
-        "base_path": "/foreign-travel-advice/brunei",
-        "content_id": "65a38090-2d1c-4e45-9ebd-8638085933f1",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).\r\n\r\n\r\n",
-          "country": {
-            "name": "Brunei",
-            "slug": "brunei",
-            "synonyms": [
-              "Borneo"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T14:42:42Z",
-        "schema_name": "travel_advice",
-        "title": "Brunei travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/brunei",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/vanuatu",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/vanuatu",
-        "base_path": "/foreign-travel-advice/vanuatu",
-        "content_id": "89ce38b7-40fa-46e6-9073-235ac6923425",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Vanuatu",
-            "slug": "vanuatu",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:41:04Z",
-        "schema_name": "travel_advice",
-        "title": "Vanuatu travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/vanuatu",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/indonesia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/indonesia",
-        "base_path": "/foreign-travel-advice/indonesia",
-        "content_id": "e2c44bf1-0b96-4034-9ac8-96f6e0181a80",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Indonesia",
-            "slug": "indonesia",
-            "synonyms": [
-              "Borneo",
-              "Bali",
-              "Java",
-              "Sumatra",
-              "Maluku",
-              "Suluwesi"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:12:05Z",
-        "schema_name": "travel_advice",
-        "title": "Indonesia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/indonesia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/fiji",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/fiji",
-        "base_path": "/foreign-travel-advice/fiji",
-        "content_id": "4b79ee8f-0217-486b-bcc9-5f0ef9c16b54",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Fiji",
-            "slug": "fiji",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:42:42Z",
-        "schema_name": "travel_advice",
-        "title": "Fiji travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/fiji",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/kiribati",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/kiribati",
-        "base_path": "/foreign-travel-advice/kiribati",
-        "content_id": "d68b6113-2270-41a2-85cc-97b494d65cb6",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Kiribati",
-            "slug": "kiribati",
-            "synonyms": [
-              "Christmas Island",
-              "Kiritimati"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:42:29Z",
-        "schema_name": "travel_advice",
-        "title": "Kiribati travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/kiribati",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/singapore",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/singapore",
-        "base_path": "/foreign-travel-advice/singapore",
-        "content_id": "06ffd544-1097-41b1-90b6-b9a74f78669e",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Singapore",
-            "slug": "singapore",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:30:00Z",
-        "schema_name": "travel_advice",
-        "title": "Singapore travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/singapore",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/vietnam",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/vietnam",
-        "base_path": "/foreign-travel-advice/vietnam",
-        "content_id": "8f6e7323-3d10-46da-a1a7-c50b5fc5a5ea",
-        "details": {
-          "change_description": "New information about travel disruption and updated information about visa requirements ('Warnings and insurance' and 'Entry requirements' pages).",
-          "country": {
-            "name": "Vietnam",
-            "slug": "vietnam",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T13:09:29Z",
-        "schema_name": "travel_advice",
-        "title": "Vietnam travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/vietnam",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/marshall-islands",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/marshall-islands",
-        "base_path": "/foreign-travel-advice/marshall-islands",
-        "content_id": "d8aaa1cd-85d2-4ba6-a825-b13319efa4d8",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Marshall Islands",
-            "slug": "marshall-islands",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T16:42:14Z",
-        "schema_name": "travel_advice",
-        "title": "Marshall Islands travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/marshall-islands",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/philippines",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/philippines",
-        "base_path": "/foreign-travel-advice/philippines",
-        "content_id": "9a7fcd1d-1be5-4342-89ff-a4bd8ecf93e3",
-        "details": {
-          "change_description": "Updated information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Philippines",
-            "slug": "philippines",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-17T09:30:24Z",
-        "schema_name": "travel_advice",
-        "title": "Philippines travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/philippines",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/uzbekistan",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/uzbekistan",
-        "base_path": "/foreign-travel-advice/uzbekistan",
-        "content_id": "2f79a772-583b-4f01-adc1-5dc832eddcec",
-        "details": {
-          "change_description": "New information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
-          "country": {
-            "name": "Uzbekistan",
-            "slug": "uzbekistan",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-05T15:16:58Z",
-        "schema_name": "travel_advice",
-        "title": "Uzbekistan travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/uzbekistan",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/bangladesh",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/bangladesh",
-        "base_path": "/foreign-travel-advice/bangladesh",
-        "content_id": "266ca3b6-752f-400b-91c0-8b9c3c433d2d",
-        "details": {
-          "change_description": "Addition of information about energy and fuel shortages ('Warnings and insurance' page).",
-          "country": {
-            "name": "Bangladesh",
-            "slug": "bangladesh",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-10T14:22:17Z",
-        "schema_name": "travel_advice",
-        "title": "Bangladesh travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/bangladesh",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/japan",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/japan",
-        "base_path": "/foreign-travel-advice/japan",
-        "content_id": "8a8de3c7-0b94-4670-87a7-f110d789d3d3",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Japan",
-            "slug": "japan",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-05T12:07:22Z",
-        "schema_name": "travel_advice",
-        "title": "Japan travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/japan",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/maldives",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/maldives",
-        "base_path": "/foreign-travel-advice/maldives",
-        "content_id": "99e0a892-9daa-443c-b96c-97ba9e28a2c8",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Maldives",
-            "slug": "maldives",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-05T10:49:34Z",
-        "schema_name": "travel_advice",
-        "title": "Maldives travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/maldives",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/georgia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/georgia",
-        "base_path": "/foreign-travel-advice/georgia",
-        "content_id": "05b21330-97be-45f0-9ddf-778c722bd116",
-        "details": {
-          "change_description": "New information about travel disruption and updated information about visa requirements ('Warnings and insurance' and 'Entry requirements' pages).",
-          "country": {
-            "name": "Georgia",
-            "slug": "georgia",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-04T14:33:17Z",
-        "schema_name": "travel_advice",
-        "title": "Georgia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/georgia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/tajikistan",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/tajikistan",
-        "base_path": "/foreign-travel-advice/tajikistan",
-        "content_id": "1a06c5d2-9457-477a-a3ea-1ce3b8b44fc1",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Tajikistan",
-            "slug": "tajikistan",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-04T13:27:55Z",
-        "schema_name": "travel_advice",
-        "title": "Tajikistan travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/tajikistan",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/nepal",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/nepal",
-        "base_path": "/foreign-travel-advice/nepal",
-        "content_id": "d2ac8d41-054a-4a47-a8f5-9f9a5bb37ad9",
-        "details": {
-          "change_description": "'Removal of information on restrictions and risks of disruption, following Nepal's election on 5 March ('Warnings and insurance' page).'",
-          "country": {
-            "name": "Nepal",
-            "slug": "nepal",
-            "synonyms": [
-              "Katmandu",
-              "Kathmandu",
-              "Pokara",
-              "Pokhara"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-12T14:45:11Z",
-        "schema_name": "travel_advice",
-        "title": "Nepal travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/nepal",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/malaysia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malaysia",
-        "base_path": "/foreign-travel-advice/malaysia",
-        "content_id": "126d47f7-5fd2-41ff-af17-b23564355e03",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Malaysia",
-            "slug": "malaysia",
-            "synonyms": [
-              "Borneo"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-04T14:26:47Z",
-        "schema_name": "travel_advice",
-        "title": "Malaysia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/malaysia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/india",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/india",
-        "base_path": "/foreign-travel-advice/india",
-        "content_id": "ea7e300b-24dd-40af-afde-fd690a2df678",
-        "details": {
-          "change_description": "New information about travel disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "India",
-            "slug": "india",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-02T17:45:53Z",
-        "schema_name": "travel_advice",
-        "title": "India travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/india",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/sri-lanka",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/sri-lanka",
-        "base_path": "/foreign-travel-advice/sri-lanka",
-        "content_id": "c90dd329-ea2a-413a-b927-a67bd3cbbb84",
-        "details": {
-          "change_description": "Additional information about fuel restrictions in Sri Lanka due to escalation in the Middle East ('Warnings and insurance' page).",
-          "country": {
-            "name": "Sri Lanka",
-            "slug": "sri-lanka",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-17T14:41:40Z",
-        "schema_name": "travel_advice",
-        "title": "Sri Lanka travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/sri-lanka",
         "withdrawn": false
       },
       {
@@ -4879,45 +4918,6 @@
         "schema_name": "travel_advice",
         "title": "Liberia travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/liberia",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/belarus",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/belarus",
-        "base_path": "/foreign-travel-advice/belarus",
-        "content_id": "a73a1811-a1a0-474c-ad2c-30dc0ab74495",
-        "details": {
-          "change_description": "Updated information on Belarus-Poland and Belarus-Lithuania borders ('Safety and security' page).",
-          "country": {
-            "name": "Belarus",
-            "slug": "belarus",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2025-12-15T12:16:53Z",
-        "schema_name": "travel_advice",
-        "title": "Belarus travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/belarus",
         "withdrawn": false
       },
       {
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-03-19T12:44:21+00:00",
+  "updated_at": "2026-03-19T15:00:29+00:00",
   "withdrawn_notice": {}
 }
