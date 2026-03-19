@@ -10,7 +10,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts"
+    "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
+    "pipeline": "tsx src/pipeline/run.ts",
+    "pipeline:date": "tsx src/pipeline/run.ts"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^13.1.2",
