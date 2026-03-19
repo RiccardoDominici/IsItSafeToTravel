@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Enable class-based dark mode for Tailwind CSS 4 */
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   /* Warm & inviting palette - travel magazine feel */
   --color-sand-50: oklch(0.97 0.01 85);

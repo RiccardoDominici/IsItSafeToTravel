@@ -80,7 +80,7 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
 
   totalCountries = new Set(allIndicators.map((i) => i.countryIso3)).size;
   console.log(
-    `[ADVISORIES] Successfully processed ${totalCountries} countries total (${allIndicators.length} indicators)`
+    `[ADVISORIES] Successfully processed ${totalCountries} countries total (${allIndicators.length} indicators)`,
   );
 
   return {
@@ -94,18 +94,19 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
 
 /**
  * Fetch US State Department travel advisories.
- * The State Dept page contains advisory levels (1-4) per country.
- * We scrape the HTML since no clean JSON API is consistently available.
+ * Parses HTML to extract country advisory levels (1-4).
+ * Stores RAW level values (1-4) — normalization is handled by the scoring engine.
  */
 async function fetchUsAdvisories(
   rawDir: string,
   fetchedAt: string,
-  currentYear: number
+  currentYear: number,
 ): Promise<RawIndicator[]> {
   const indicators: RawIndicator[] = [];
 
   const response = await fetch(US_ADVISORIES_URL, {
     signal: AbortSignal.timeout(30_000),
+    redirect: 'follow',
     headers: {
       'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
     },
@@ -123,31 +124,38 @@ async function fetchUsAdvisories(
     type: 'html',
   });
 
-  // Parse advisory levels from the HTML
-  // US State Dept format: "Country Name - Level N: Description"
-  // or table rows with country name and level
-  const levelPattern =
-    /(?:Level\s+(\d))|(?:level-(\d))|(?:advisory-level["\s:]+(\d))/gi;
-  const countryLevelPattern =
-    /([A-Z][a-z]+(?:\s+[A-Za-z]+)*)\s*[-–]\s*Level\s+(\d)/g;
+  // Strip HTML tags and normalize whitespace for plain text parsing
+  const plainText = html
+    .replace(/<br\s*\/?>/gi, '\n')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/\s+/g, ' ');
 
+  // Pattern: date DD/DD/YYYY followed by "Country Name Level N:"
+  // The page lists entries in a table with date then country then level
+  const countryLevelPattern =
+    /\d{2}\/\d{2}\/\d{4}\s+([A-Z][a-z]+(?:\s+(?:and\s+)?[A-Za-z'&\-]+)*?)\s+Level\s+(\d)/g;
+
+  const seen = new Set<string>();
   let match;
-  while ((match = countryLevelPattern.exec(html)) !== null) {
+  while ((match = countryLevelPattern.exec(plainText)) !== null) {
     const countryName = match[1].trim();
     const level = parseInt(match[2]);
 
     if (level < 1 || level > 4) continue;
+    if (countryName.length < 3) continue;
 
     const country = getCountryByName(countryName);
     if (!country) continue;
+    if (seen.has(country.iso3)) continue;
+    seen.add(country.iso3);
 
-    // Normalize level 1-4 to 0-1 where 1=safe(0), 4=dangerous(1)
-    const normalizedValue = (level - 1) / 3;
-
+    // Store RAW level (1-4). The normalizer handles the conversion.
     indicators.push({
       countryIso3: country.iso3,
       indicatorName: 'advisory_level_us',
-      value: normalizedValue,
+      value: level,
       year: currentYear,
       source: 'advisories_us',
     });
@@ -159,11 +167,12 @@ async function fetchUsAdvisories(
 /**
  * Fetch UK FCDO travel advisories.
  * The GOV.UK API provides structured JSON data for travel advice.
+ * Stores advisory levels as 1-4 integer scale matching US system.
  */
 async function fetchUkAdvisories(
   rawDir: string,
   fetchedAt: string,
-  currentYear: number
+  currentYear: number,
 ): Promise<RawIndicator[]> {
   const indicators: RawIndicator[] = [];
 
@@ -198,28 +207,32 @@ async function fetchUkAdvisories(
     const title = String(childObj.title || '').trim();
     if (!title) continue;
 
-    const country = getCountryByName(title);
+    // Strip " travel advice" suffix from title to get country name
+    const countryName = title.replace(/\s*travel advice\s*$/i, '').trim();
+    const country = getCountryByName(countryName);
     if (!country) continue;
 
-    // UK FCDO uses text-based advisory levels
-    // We need to check the individual country page for the actual level
-    // For now, assign a default neutral level and update when detailed pages are fetched
-    // The presence in the advisory list itself indicates some level of concern
+    // UK FCDO uses text-based advisory levels in the description
     const description = String(childObj.description || '').toLowerCase();
 
-    let level = 0.33; // Default: some caution needed (equivalent to US level 2)
+    // Map to 1-4 scale matching US system
+    let level = 2; // Default: some caution (Exercise Increased Caution)
     if (
       description.includes('advise against all travel') ||
       description.includes('do not travel')
     ) {
-      level = 1.0; // Equivalent to US level 4
+      level = 4; // Do Not Travel
     } else if (
       description.includes('advise against all but essential travel') ||
       description.includes('reconsider')
     ) {
-      level = 0.67; // Equivalent to US level 3
-    } else if (description.includes('no travel restrictions') || description.includes('normal')) {
-      level = 0.0; // Equivalent to US level 1
+      level = 3; // Reconsider Travel
+    } else if (
+      description.includes('no travel restrictions') ||
+      description.includes('is generally safe') ||
+      description.includes('normal precautions')
+    ) {
+      level = 1; // Normal Precautions
     }
 
     indicators.push({

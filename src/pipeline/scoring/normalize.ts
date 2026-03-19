@@ -20,20 +20,30 @@ export function normalizeInverse(value: number, min: number, max: number): numbe
 /**
  * Known min/max ranges and direction for each indicator.
  * inverse=true means lower raw value = safer (higher normalized score).
+ *
+ * World Bank WGI indicators: -2.5 to 2.5 (higher = better governance/stability)
+ * Advisory levels: 1 to 4 (lower = safer)
+ * ACLED: 0 to N (lower = fewer conflicts = safer)
+ * Health/environment: lower = better
  */
 const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: boolean }> = {
-  gpi_overall: { min: 1.0, max: 4.0, inverse: true },
-  gpi_safety_security: { min: 1.0, max: 5.0, inverse: true },
-  gpi_militarisation: { min: 1.0, max: 5.0, inverse: true },
+  // World Bank Worldwide Governance Indicators (higher = better)
+  wb_political_stability: { min: -2.5, max: 2.5, inverse: false },
+  wb_rule_of_law: { min: -2.5, max: 2.5, inverse: false },
+  wb_gov_effectiveness: { min: -2.5, max: 2.5, inverse: false },
+  wb_corruption_control: { min: -2.5, max: 2.5, inverse: false },
+
+  // World Bank health & environment (lower = better)
+  wb_child_mortality: { min: 0, max: 200, inverse: true },
+  wb_air_pollution: { min: 0, max: 100, inverse: true },
+
+  // ACLED conflict data (lower = safer)
   acled_fatalities: { min: 0, max: 10000, inverse: true },
   acled_events: { min: 0, max: 5000, inverse: true },
+
+  // Government travel advisories: raw levels 1-4 (lower = safer)
   advisory_level_us: { min: 1, max: 4, inverse: true },
-  advisory_level_uk: { min: 0, max: 4, inverse: true },
-  inform_health: { min: 0, max: 10, inverse: true },
-  inform_epidemic: { min: 0, max: 10, inverse: true },
-  inform_governance: { min: 0, max: 10, inverse: true },
-  inform_natural: { min: 0, max: 10, inverse: true },
-  inform_climate: { min: 0, max: 10, inverse: true },
+  advisory_level_uk: { min: 1, max: 4, inverse: true },
 };
 
 /**
