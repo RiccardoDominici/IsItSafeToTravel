@@ -1,0 +1,30 @@
+{
+  "version": "1.0.0",
+  "pillars": [
+    {
+      "name": "conflict",
+      "weight": 0.20,
+      "indicators": ["gpi_overall", "acled_fatalities", "acled_events"]
+    },
+    {
+      "name": "crime",
+      "weight": 0.20,
+      "indicators": ["gpi_safety_security", "advisory_level_us", "advisory_level_uk"]
+    },
+    {
+      "name": "health",
+      "weight": 0.20,
+      "indicators": ["inform_health", "inform_epidemic"]
+    },
+    {
+      "name": "governance",
+      "weight": 0.20,
+      "indicators": ["inform_governance", "gpi_militarisation"]
+    },
+    {
+      "name": "environment",
+      "weight": 0.20,
+      "indicators": ["inform_natural", "inform_climate"]
+    }
+  ]
+}

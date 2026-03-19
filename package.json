@@ -19,5 +19,11 @@
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.0.6",
     "tailwindcss": "^4.2.2"
+  },
+  "devDependencies": {
+    "@types/papaparse": "^5.5.2",
+    "papaparse": "^5.5.3",
+    "tsx": "^4.21.0",
+    "xlsx": "^0.18.5"
   }
 }
