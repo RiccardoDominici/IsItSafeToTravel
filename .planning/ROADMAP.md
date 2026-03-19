@@ -106,11 +106,11 @@ Plans:
   2. XML sitemap with hreflang annotations is generated and submitted
   3. Mobile-responsive layout works correctly across phone, tablet, and desktop breakpoints
   4. Lighthouse mobile performance score is 90+ on representative pages
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
+- [ ] 06-01-PLAN.md — SEO structured data, OG/Twitter meta tags, unique meta descriptions, sitemap i18n, and robots.txt
+- [ ] 06-02-PLAN.md — Mobile responsiveness fixes, font optimization, touch targets, and Lighthouse 90+ verification
 
 ## Progress
 
@@ -124,4 +124,4 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 3. Interactive Map | 0/2 | Planning complete | - |
 | 4. Country Detail Pages | 2/2 | Complete   | 2026-03-19 |
 | 5. Search and Transparency | 0/2 | Planning complete | - |
-| 6. SEO, Performance, and Launch | 0/TBD | Not started | - |
+| 6. SEO, Performance, and Launch | 0/2 | Planning complete | - |
