@@ -90,36 +90,36 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DATA-01 | — | Pending |
-| DATA-02 | — | Pending |
-| DATA-03 | — | Pending |
-| DATA-04 | — | Pending |
-| DATA-05 | — | Pending |
-| MAP-01 | — | Pending |
-| MAP-02 | — | Pending |
-| MAP-03 | — | Pending |
-| SRCH-01 | — | Pending |
-| SRCH-02 | — | Pending |
-| CTRY-01 | — | Pending |
-| CTRY-02 | — | Pending |
-| CTRY-03 | — | Pending |
-| CTRY-04 | — | Pending |
-| CTRY-05 | — | Pending |
-| CTRY-06 | — | Pending |
-| TRNS-01 | — | Pending |
-| TRNS-02 | — | Pending |
-| TRNS-03 | — | Pending |
-| TECH-01 | — | Pending |
-| TECH-02 | — | Pending |
-| TECH-03 | — | Pending |
-| TECH-04 | — | Pending |
-| TECH-05 | — | Pending |
+| DATA-01 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Pending |
+| MAP-01 | Phase 3 | Pending |
+| MAP-02 | Phase 3 | Pending |
+| MAP-03 | Phase 3 | Pending |
+| SRCH-01 | Phase 5 | Pending |
+| SRCH-02 | Phase 5 | Pending |
+| CTRY-01 | Phase 4 | Pending |
+| CTRY-02 | Phase 4 | Pending |
+| CTRY-03 | Phase 4 | Pending |
+| CTRY-04 | Phase 4 | Pending |
+| CTRY-05 | Phase 4 | Pending |
+| CTRY-06 | Phase 4 | Pending |
+| TRNS-01 | Phase 5 | Pending |
+| TRNS-02 | Phase 5 | Pending |
+| TRNS-03 | Phase 4 | Pending |
+| TECH-01 | Phase 6 | Pending |
+| TECH-02 | Phase 6 | Pending |
+| TECH-03 | Phase 1 | Pending |
+| TECH-04 | Phase 6 | Pending |
+| TECH-05 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 24 total
-- Mapped to phases: 0
-- Unmapped: 24 ⚠️
+- Mapped to phases: 24
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after initial definition*
+*Last updated: 2026-03-19 after roadmap creation*
