@@ -116,6 +116,8 @@ Deferred to future release. Tracked but not in current roadmap.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
+### v1 Traceability
+
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | DATA-01 | Phase 2 | Complete |
@@ -148,11 +150,29 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 24
 - Unmapped: 0
 
+### v1.1 Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| PIPE-01 | Phase 7 | Pending |
+| PIPE-02 | Phase 7 | Pending |
+| GLOB-01 | Phase 8 | Pending |
+| GLOB-02 | Phase 8 | Pending |
+| GLOB-03 | Phase 8 | Pending |
+| GLOB-04 | Phase 8 | Pending |
+| HIST-01 | Phase 9 | Pending |
+| HIST-02 | Phase 9 | Pending |
+| COMP-01 | Phase 10 | Pending |
+| COMP-02 | Phase 10 | Pending |
+| COMP-03 | Phase 10 | Pending |
+| COMP-04 | Phase 10 | Pending |
+| COMP-05 | Phase 10 | Pending |
+
 **Coverage (v1.1):**
 - v1.1 requirements: 13 total
-- Mapped to phases: 0 ⚠️
-- Unmapped: 13 ⚠️
+- Mapped to phases: 13
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after v1.1 requirements definition*
+*Last updated: 2026-03-19 after v1.1 roadmap creation*

@@ -1,127 +1,92 @@
 # Roadmap: IsItSafeToTravel.com
 
-## Overview
+## Milestones
 
-This roadmap delivers a travel safety information platform in six phases, following the natural dependency chain: foundation and hosting first, then the data pipeline that powers everything, then the interactive map and country pages that users see, then search/transparency features, and finally SEO optimization and launch readiness. Every phase delivers a coherent, verifiable capability. The data pipeline must exist before any frontend work produces meaningful output.
+- **v1.0 MVP** - Phases 1-6 (shipped 2026-03-19)
+- **v1.1 Comparison & Historical Trends** - Phases 7-10 (in progress)
 
 ## Phases
 
-**Phase Numbering:**
-- Integer phases (1, 2, 3): Planned milestone work
-- Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
+<details>
+<summary>v1.0 MVP (Phases 1-6) - SHIPPED 2026-03-19</summary>
 
-Decimal phases appear between their surrounding integers in numeric order.
+- [x] **Phase 1: Project Foundation** - Astro scaffold with i18n routing, Cloudflare deployment, and dev tooling
+- [x] **Phase 2: Data Pipeline and Scoring Engine** - Fetch public indices, compute composite safety scores for 200+ countries
+- [x] **Phase 3: Interactive Map** - Color-coded world map with zoom, pan, and click-to-navigate
+- [x] **Phase 4: Country Detail Pages** - Per-country pages with score breakdowns, trends, advisories, and sources
+- [x] **Phase 5: Search and Transparency** - Autocomplete search, methodology page, and legal disclaimers
+- [x] **Phase 6: SEO, Performance, and Launch** - Static generation, structured data, mobile polish, and Lighthouse 90+
 
-- [ ] **Phase 1: Project Foundation** - Astro scaffold with i18n routing, Cloudflare deployment, and dev tooling
-- [ ] **Phase 2: Data Pipeline and Scoring Engine** - Fetch public indices, compute composite safety scores for 200+ countries
-- [ ] **Phase 3: Interactive Map** - Color-coded world map with zoom, pan, and click-to-navigate
-- [x] **Phase 4: Country Detail Pages** - Per-country pages with score breakdowns, trends, advisories, and sources (completed 2026-03-19)
-- [ ] **Phase 5: Search and Transparency** - Autocomplete search, methodology page, and legal disclaimers
-- [ ] **Phase 6: SEO, Performance, and Launch** - Static generation, structured data, mobile polish, and Lighthouse 90+
+</details>
+
+### v1.1 Comparison & Historical Trends (In Progress)
+
+**Milestone Goal:** Enable travelers to compare safety across countries and track safety trends over time, with a global benchmark score.
+
+- [ ] **Phase 7: Pipeline Extensions** - Global score computation and consolidated history index for efficient build-time loading
+- [ ] **Phase 8: Global Safety Score UI** - Homepage banner and dedicated global safety page with trend chart
+- [ ] **Phase 9: Enhanced History Charts** - Full-size interactive trend charts on country detail pages
+- [ ] **Phase 10: Country Comparison** - Side-by-side country comparison with score cards, bar charts, and overlay trends
 
 ## Phase Details
 
-### Phase 1: Project Foundation
-**Goal**: A deployable Astro site with i18n routing and CI/CD, ready to receive content
-**Depends on**: Nothing (first phase)
-**Requirements**: TECH-03, TECH-05
+### Phase 7: Pipeline Extensions
+**Goal**: The data pipeline produces a global safety score and a consolidated history index that all v1.1 UI features depend on
+**Depends on**: Phase 6 (v1.0 complete)
+**Requirements**: PIPE-01, PIPE-02
 **Success Criteria** (what must be TRUE):
-  1. Astro project builds and deploys to Cloudflare Workers/Pages on push to main
-  2. Visiting /en/ and /it/ renders locale-appropriate placeholder pages
-  3. Path-based locale routing works with correct hreflang tags between languages
-**Plans**: 2 plans
+  1. Running the pipeline produces a global safety score (arithmetic mean of all country scores) in the output data
+  2. A single history-index.json file exists containing all historical daily snapshots consolidated for efficient loading
+  3. Both global score and history index update automatically on the daily pipeline run without manual intervention
+**Plans**: TBD
 
-Plans:
-- [ ] 01-01-PLAN.md — Astro scaffold with Tailwind design system, i18n routing, placeholder pages, and hreflang
-- [ ] 01-02-PLAN.md — Cloudflare Pages adapter and CI/CD deployment pipeline
-
-### Phase 2: Data Pipeline and Scoring Engine
-**Goal**: Automated daily pipeline that fetches public safety indices and produces composite 1-10 scores for 200+ countries
-**Depends on**: Phase 1
-**Requirements**: DATA-01, DATA-02, DATA-03, DATA-04, DATA-05
+### Phase 8: Global Safety Score UI
+**Goal**: Users can see and explore a global safety benchmark that contextualizes individual country scores
+**Depends on**: Phase 7
+**Requirements**: GLOB-01, GLOB-02, GLOB-03, GLOB-04
 **Success Criteria** (what must be TRUE):
-  1. GitHub Actions cron fetches data from 3+ public sources and stores raw JSON
-  2. Scoring engine produces a 1-10 composite score for every country with data available
-  3. Each country score breaks down into category sub-scores (conflict, crime, health, governance, environment)
-  4. Historical scores are stored so that previous days' scores are retrievable
-  5. Pipeline runs end-to-end without manual intervention on a 24h schedule
-**Plans**: 3 plans
+  1. User sees a global safety score banner on the homepage that displays the current world safety benchmark
+  2. User can click the global score banner to navigate to a dedicated global safety page
+  3. Global safety page displays a historical trend chart showing the global score over time
+  4. Global safety page includes a clear explanation of how the global score is calculated (methodology)
+**Plans**: TBD
 
-Plans:
-- [ ] 02-01-PLAN.md — Pipeline type contracts, scoring config, country mapping, and data source fetchers
-- [ ] 02-02-PLAN.md — Scoring engine with normalization, weighted aggregation, and daily snapshot storage
-- [ ] 02-03-PLAN.md — Pipeline orchestrator script and GitHub Actions cron workflow
-
-### Phase 3: Interactive Map
-**Goal**: Users land on a color-coded world map and can explore safety scores visually
-**Depends on**: Phase 2
-**Requirements**: MAP-01, MAP-02, MAP-03
+### Phase 9: Enhanced History Charts
+**Goal**: Users can explore detailed safety trends over time on each country's detail page with interactive charts
+**Depends on**: Phase 7
+**Requirements**: HIST-01, HIST-02
 **Success Criteria** (what must be TRUE):
-  1. Homepage displays a world map where every scored country is colored green-to-red by safety score
-  2. User can zoom and pan the map smoothly on both desktop and mobile (touch-friendly)
-  3. Clicking any country on the map navigates to that country's detail page
-**Plans**: 2 plans
+  1. Each country detail page displays a full-size trend chart showing safety score evolution over time (replacing or augmenting the existing sparkline)
+  2. User sees interactive tooltips on hover (desktop) or tap (mobile) showing the exact score and date for each data point
+**Plans**: TBD
 
-Plans:
-- [ ] 03-01-PLAN.md — D3/topojson map component with color scale, zoom/pan, tooltips, and dark mode
-- [ ] 03-02-PLAN.md — Homepage integration with score data loading and visual verification
-
-### Phase 4: Country Detail Pages
-**Goal**: Every country has a dedicated page that explains its safety score with full transparency and sourcing
-**Depends on**: Phase 2
-**Requirements**: CTRY-01, CTRY-02, CTRY-03, CTRY-04, CTRY-05, CTRY-06, TRNS-03
+### Phase 10: Country Comparison
+**Goal**: Users can compare safety scores and trends across multiple countries on a single page
+**Depends on**: Phase 8, Phase 9
+**Requirements**: COMP-01, COMP-02, COMP-03, COMP-04, COMP-05
 **Success Criteria** (what must be TRUE):
-  1. Each country has a unique URL (per locale) showing its composite safety score (1-10)
-  2. Score breakdown by category is displayed with visual indicators (bars, colors, or similar)
-  3. Historical trend is visible as a sparkline or chart showing score evolution over time
-  4. Government advisory levels (US, UK, EU) are shown alongside the composite score
-  5. All data sources are listed with links to originals at the bottom of each page
-**Plans**: 2 plans
-
-Plans:
-- [ ] 04-01-PLAN.md — Shared color scale, data loading utilities, i18n strings, and 7 country page components
-- [ ] 04-02-PLAN.md — EN and IT country page routes with getStaticPaths and visual verification
-
-### Phase 5: Search and Transparency
-**Goal**: Users can find any destination instantly and understand exactly how scores are computed
-**Depends on**: Phase 4
-**Requirements**: SRCH-01, SRCH-02, TRNS-01, TRNS-02
-**Success Criteria** (what must be TRUE):
-  1. User can type a country or city name and see autocomplete suggestions
-  2. Selecting a search result navigates directly to the destination detail page
-  3. A dedicated methodology page explains the scoring formula, all weights, and the rationale behind them
-  4. Every page displays a legal disclaimer clarifying the informational nature of the data
-**Plans**: 2 plans
-
-Plans:
-- [ ] 05-01-PLAN.md — Fuse.js fuzzy search component in header with autocomplete, keyboard nav, and score indicators
-- [ ] 05-02-PLAN.md — Methodology page, legal disclaimer page, and footer link fix
-
-### Phase 6: SEO, Performance, and Launch
-**Goal**: The site is discoverable by search engines, fast on mobile, and ready for public traffic
-**Depends on**: Phase 5
-**Requirements**: TECH-01, TECH-02, TECH-04
-**Success Criteria** (what must be TRUE):
-  1. All destination pages are statically generated with JSON-LD structured data and unique meta descriptions
-  2. XML sitemap with hreflang annotations is generated and submitted
-  3. Mobile-responsive layout works correctly across phone, tablet, and desktop breakpoints
-  4. Lighthouse mobile performance score is 90+ on representative pages
-**Plans**: 2 plans
-
-Plans:
-- [ ] 06-01-PLAN.md — SEO structured data, OG/Twitter meta tags, unique meta descriptions, sitemap i18n, and robots.txt
-- [ ] 06-02-PLAN.md — Mobile responsiveness fixes, font optimization, touch targets, and Lighthouse 90+ verification
+  1. User can select 2 or more countries via a searchable selector on the comparison page
+  2. User sees side-by-side score cards showing the composite score for each selected country
+  3. User sees grouped horizontal bars comparing pillar sub-scores across all selected countries
+  4. User sees an overlay trend chart with historical score lines for all selected countries
+  5. User can share a specific comparison via URL (e.g., /compare?c=IT,FR,DE) and the recipient sees the same comparison
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
+Phases execute in numeric order: 7 -> 8 -> 9 -> 10
+(Phases 8 and 9 can run in parallel after 7; Phase 10 depends on both)
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Project Foundation | 0/2 | Planning complete | - |
-| 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
-| 3. Interactive Map | 0/2 | Planning complete | - |
-| 4. Country Detail Pages | 2/2 | Complete   | 2026-03-19 |
-| 5. Search and Transparency | 0/2 | Planning complete | - |
-| 6. SEO, Performance, and Launch | 0/2 | Planning complete | - |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Project Foundation | v1.0 | 2/2 | Complete | 2026-03-19 |
+| 2. Data Pipeline and Scoring Engine | v1.0 | 3/3 | Complete | 2026-03-19 |
+| 3. Interactive Map | v1.0 | 2/2 | Complete | 2026-03-19 |
+| 4. Country Detail Pages | v1.0 | 2/2 | Complete | 2026-03-19 |
+| 5. Search and Transparency | v1.0 | 2/2 | Complete | 2026-03-19 |
+| 6. SEO, Performance, and Launch | v1.0 | 2/2 | Complete | 2026-03-19 |
+| 7. Pipeline Extensions | v1.1 | 0/0 | Not started | - |
+| 8. Global Safety Score UI | v1.1 | 0/0 | Not started | - |
+| 9. Enhanced History Charts | v1.1 | 0/0 | Not started | - |
+| 10. Country Comparison | v1.1 | 0/0 | Not started | - |
