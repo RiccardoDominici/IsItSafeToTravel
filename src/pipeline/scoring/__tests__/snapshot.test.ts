@@ -127,6 +127,61 @@ describe('snapshot: writeSnapshot and loadLatestSnapshot', () => {
   });
 });
 
+describe('snapshot: globalScore computation', () => {
+  let hadExistingLatest = false;
+  let existingLatestContent: string | null = null;
+
+  beforeEach(() => {
+    const latestPath = join(TEST_SCORES_DIR, 'latest.json');
+    if (existsSync(latestPath)) {
+      hadExistingLatest = true;
+      existingLatestContent = readFileSync(latestPath, 'utf-8');
+    }
+  });
+
+  afterEach(() => {
+    const testDate = join(TEST_SCORES_DIR, '2099-03-01.json');
+    if (existsSync(testDate)) rmSync(testDate);
+
+    const latestPath = join(TEST_SCORES_DIR, 'latest.json');
+    if (hadExistingLatest && existingLatestContent) {
+      writeFileSync(latestPath, existingLatestContent, 'utf-8');
+    } else if (!hadExistingLatest && existsSync(latestPath)) {
+      rmSync(latestPath);
+    }
+  });
+
+  it('computes globalScore as arithmetic mean of country scores rounded to 1 decimal', () => {
+    const countries = [
+      makeScoredCountry('USA', 7.5),
+      makeScoredCountry('AFG', 2.3),
+      makeScoredCountry('ITA', 8.1),
+    ];
+    const snapshot = writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
+    // (7.5 + 2.3 + 8.1) / 3 = 5.966... -> 6.0
+    assert.equal(snapshot.globalScore, 6.0);
+  });
+
+  it('returns globalScore 0 when there are no countries', () => {
+    const snapshot = writeSnapshot('2099-03-01', [], TEST_FETCH_RESULTS, '1.0.0');
+    assert.equal(snapshot.globalScore, 0);
+  });
+
+  it('persists globalScore in the date-stamped JSON file', () => {
+    const countries = [makeScoredCountry('USA', 7.5), makeScoredCountry('AFG', 2.3), makeScoredCountry('ITA', 8.1)];
+    writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
+    const raw = JSON.parse(readFileSync(join(TEST_SCORES_DIR, '2099-03-01.json'), 'utf-8'));
+    assert.equal(raw.globalScore, 6.0);
+  });
+
+  it('persists globalScore in latest.json', () => {
+    const countries = [makeScoredCountry('USA', 7.5), makeScoredCountry('AFG', 2.3), makeScoredCountry('ITA', 8.1)];
+    writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
+    const raw = JSON.parse(readFileSync(join(TEST_SCORES_DIR, 'latest.json'), 'utf-8'));
+    assert.equal(raw.globalScore, 6.0);
+  });
+});
+
 describe('snapshot: listSnapshotDates', () => {
   afterEach(() => {
     const testDate1 = join(TEST_SCORES_DIR, '2099-01-01.json');
