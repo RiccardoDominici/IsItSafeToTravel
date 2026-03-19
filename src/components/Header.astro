@@ -4,6 +4,7 @@ import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import DarkModeToggle from './DarkModeToggle.astro';
+import Search from './Search.astro';
 
 interface Props {
   lang: Lang;
@@ -49,6 +50,7 @@ const r = routes[lang];
 
     <!-- Actions -->
     <div class="flex items-center gap-2">
+      <Search lang={lang} />
       <LanguageSwitcher lang={lang} currentPath={currentPath} />
       <DarkModeToggle lang={lang} />
 
