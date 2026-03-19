@@ -45,11 +45,12 @@ Plans:
   3. Each country score breaks down into category sub-scores (conflict, crime, health, governance, environment)
   4. Historical scores are stored so that previous days' scores are retrievable
   5. Pipeline runs end-to-end without manual intervention on a 24h schedule
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
+- [ ] 02-01-PLAN.md — Pipeline type contracts, scoring config, country mapping, and data source fetchers
+- [ ] 02-02-PLAN.md — Scoring engine with normalization, weighted aggregation, and daily snapshot storage
+- [ ] 02-03-PLAN.md — Pipeline orchestrator script and GitHub Actions cron workflow
 
 ### Phase 3: Interactive Map
 **Goal**: Users land on a color-coded world map and can explore safety scores visually
@@ -117,7 +118,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Project Foundation | 0/2 | Planning complete | - |
-| 2. Data Pipeline and Scoring Engine | 0/TBD | Not started | - |
+| 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
 | 3. Interactive Map | 0/TBD | Not started | - |
 | 4. Country Detail Pages | 0/TBD | Not started | - |
 | 5. Search and Transparency | 0/TBD | Not started | - |
