@@ -1,10 +1,10 @@
 {
-  "version": "2.0.0",
+  "version": "3.0.0",
   "pillars": [
     {
       "name": "conflict",
-      "weight": 0.20,
-      "indicators": ["wb_political_stability", "acled_fatalities", "acled_events"]
+      "weight": 0.25,
+      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "acled_fatalities", "acled_events"]
     },
     {
       "name": "crime",
@@ -14,17 +14,17 @@
     {
       "name": "health",
       "weight": 0.20,
-      "indicators": ["wb_child_mortality"]
+      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"]
     },
     {
       "name": "governance",
       "weight": 0.20,
-      "indicators": ["wb_gov_effectiveness", "wb_corruption_control"]
+      "indicators": ["wb_gov_effectiveness", "wb_corruption_control", "inform_governance"]
     },
     {
       "name": "environment",
-      "weight": 0.20,
-      "indicators": ["wb_air_pollution"]
+      "weight": 0.15,
+      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate"]
     }
   ]
 }

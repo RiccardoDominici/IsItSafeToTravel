@@ -2,29 +2,24 @@ import type { FetchResult, RawSourceData, RawIndicator } from '../types.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByIso3 } from '../config/countries.js';
 import { join } from 'node:path';
+import { writeFileSync } from 'node:fs';
+import * as XLSX from 'xlsx';
 
-const INFORM_API_URL =
-  'https://drmkc.jrc.ec.europa.eu/inform-index/API/InformAPI/countries/Scores';
+const INFORM_EXCEL_URL =
+  'https://drmkc.jrc.ec.europa.eu/inform-index/Portals/0/InfoRM/2025/INFORM_Risk_Mid_2025_v071.xlsx';
 
 /**
- * Map INFORM indicator IDs to our pipeline indicator names.
- * INFORM uses hierarchical IDs like "HA.NAT", "HH.HEA", etc.
+ * Map INFORM column headers to our indicator names.
+ * INFORM Excel has columns like "INFORM Risk", "Hazard & Exposure", "Natural", "Human", etc.
  */
-const INDICATOR_MAP: Record<string, string> = {
-  'HA.NAT': 'inform_natural',
-  'HH.HEA': 'inform_health',
-  'HH.HEA.EPI': 'inform_epidemic',
-  'VU.SEV.GOV': 'inform_governance',
-  'HA.NAT.FL': 'inform_climate', // Flood risk as climate proxy
-  'CC.INF': 'inform_climate', // Alternative: coping capacity infrastructure
-};
-
-// Broader mapping to try if specific indicators are not found
-const FALLBACK_INDICATOR_MAP: Record<string, string> = {
-  'HA.NAT': 'inform_natural',
-  'HH': 'inform_health',
-  'VU': 'inform_governance',
-  'HA.NAT': 'inform_climate',
+const COLUMN_MAP: Record<string, string> = {
+  'natural': 'inform_natural',
+  'human': 'inform_health',
+  'epidemic': 'inform_epidemic',
+  'governance': 'inform_governance',
+  'institutional': 'inform_governance',
+  'flood': 'inform_climate',
+  'physical exposure to flood': 'inform_climate',
 };
 
 export async function fetchInform(date: string): Promise<FetchResult> {
@@ -32,20 +27,20 @@ export async function fetchInform(date: string): Promise<FetchResult> {
   const rawDir = getRawDir(date);
 
   try {
-    console.log('[INFORM] Fetching data from INFORM Risk Index API...');
-    const response = await fetch(INFORM_API_URL, {
-      headers: { Accept: 'application/json' },
-      signal: AbortSignal.timeout(30_000),
+    console.log('[INFORM] Fetching INFORM Risk Index Excel...');
+    const response = await fetch(INFORM_EXCEL_URL, {
+      signal: AbortSignal.timeout(60_000),
     });
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
 
-    const rawData = await response.json();
-    writeJson(join(rawDir, 'inform.json'), rawData);
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    writeFileSync(join(rawDir, 'inform.xlsx'), buffer);
 
-    const indicators = parseInformData(rawData, fetchedAt);
+    const indicators = parseInformExcel(buffer, fetchedAt);
     const sourceData: RawSourceData = {
       source: 'inform',
       fetchedAt,
@@ -55,7 +50,7 @@ export async function fetchInform(date: string): Promise<FetchResult> {
 
     const uniqueCountries = new Set(indicators.map((i) => i.countryIso3));
     console.log(
-      `[INFORM] Successfully fetched data for ${uniqueCountries.size} countries (${indicators.length} indicators)`
+      `[INFORM] Successfully parsed data for ${uniqueCountries.size} countries (${indicators.length} indicators)`
     );
 
     return {
@@ -96,40 +91,75 @@ export async function fetchInform(date: string): Promise<FetchResult> {
   }
 }
 
-function parseInformData(rawData: unknown, fetchedAt: string): RawIndicator[] {
+function parseInformExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
   const indicators: RawIndicator[] = [];
   const currentYear = new Date().getFullYear();
+  const workbook = XLSX.read(buffer, { type: 'buffer' });
 
-  // INFORM API returns an array of country score objects
-  // Each object has Iso3, IndicatorId, IndicatorScore, etc.
-  if (!Array.isArray(rawData)) {
-    console.warn('[INFORM] Unexpected data format: not an array');
+  console.log(`[INFORM] Found sheets: ${workbook.SheetNames.join(', ')}`);
+
+  // Find the main data sheet (contains "INFORM Risk" in name)
+  const mainSheetName = workbook.SheetNames.find(
+    (name) => name.toLowerCase().includes('inform risk')
+  ) || workbook.SheetNames[0];
+
+  const sheet = workbook.Sheets[mainSheetName];
+  if (!sheet) return indicators;
+
+  // Read as array of arrays (header: 1) to handle multi-row headers
+  const rawRows = XLSX.utils.sheet_to_json<unknown[]>(sheet, { defval: '', header: 1 });
+  if (rawRows.length < 4) return indicators;
+
+  // Row 1 (index 1) has the actual column headers
+  const headers = (rawRows[1] as string[]).map(h => String(h).trim());
+  console.log(`[INFORM] Headers: ${headers.slice(0, 20).join(', ')}...`);
+
+  // Find ISO3 column index
+  const iso3Idx = headers.findIndex(h => h.toUpperCase() === 'ISO3');
+  if (iso3Idx === -1) {
+    console.warn('[INFORM] Could not find ISO3 column');
     return indicators;
   }
 
-  for (const entry of rawData) {
-    if (!entry || typeof entry !== 'object') continue;
+  // Map specific columns to our indicators by header name
+  const HEADER_MAP: Record<string, string> = {
+    'Natural': 'inform_natural',
+    'Epidemic': 'inform_epidemic',
+    'Human': 'inform_health',
+    'Projected Conflict Probability': 'inform_governance',
+    'Current Conflict Intensity': 'inform_natural', // reuse for conflict signal
+    'River Flood': 'inform_climate',
+  };
 
-    const iso3 = entry.Iso3 || entry.iso3 || entry.ISO3;
-    const indicatorId = entry.IndicatorId || entry.indicatorId;
-    const score = parseFloat(entry.IndicatorScore || entry.indicatorScore || entry.Score || '0');
+  const mappedCols: Array<{ idx: number; indicator: string; header: string }> = [];
+  for (let i = 0; i < headers.length; i++) {
+    const mapped = HEADER_MAP[headers[i]];
+    if (mapped && !mappedCols.some(m => m.indicator === mapped)) {
+      mappedCols.push({ idx: i, indicator: mapped, header: headers[i] });
+    }
+  }
 
-    if (!iso3 || !indicatorId || isNaN(score)) continue;
+  console.log(`[INFORM] Mapped: ${mappedCols.map(m => `${m.header} -> ${m.indicator}`).join(', ')}`);
 
-    // Check if this is an indicator we care about
-    const mappedName = INDICATOR_MAP[indicatorId] || FALLBACK_INDICATOR_MAP[indicatorId];
-    if (!mappedName) continue;
-
-    // Verify we know this country
+  // Data starts at row 3 (index 3), skip header rows
+  for (let r = 3; r < rawRows.length; r++) {
+    const row = rawRows[r] as unknown[];
+    const iso3 = String(row[iso3Idx] || '').trim().toUpperCase();
+    if (!iso3 || iso3.length !== 3) continue;
     if (!getCountryByIso3(iso3)) continue;
 
-    indicators.push({
-      countryIso3: iso3.toUpperCase(),
-      indicatorName: mappedName,
-      value: score,
-      year: currentYear,
-      source: 'inform',
-    });
+    for (const { idx, indicator } of mappedCols) {
+      const value = parseFloat(String(row[idx]));
+      if (isNaN(value)) continue;
+
+      indicators.push({
+        countryIso3: iso3,
+        indicatorName: indicator,
+        value,
+        year: currentYear,
+        source: 'inform',
+      });
+    }
   }
 
   return indicators;

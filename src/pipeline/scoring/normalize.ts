@@ -41,6 +41,18 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   acled_fatalities: { min: 0, max: 10000, inverse: true },
   acled_events: { min: 0, max: 5000, inverse: true },
 
+  // Global Peace Index: 1 to 5 scale (lower = more peaceful = safer)
+  gpi_overall: { min: 1, max: 4, inverse: true },
+  gpi_safety_security: { min: 1, max: 5, inverse: true },
+  gpi_militarisation: { min: 1, max: 5, inverse: true },
+
+  // INFORM Risk Index: 0 to 10 (lower = lower risk = safer)
+  inform_natural: { min: 0, max: 10, inverse: true },
+  inform_health: { min: 0, max: 10, inverse: true },
+  inform_epidemic: { min: 0, max: 10, inverse: true },
+  inform_governance: { min: 0, max: 10, inverse: true },
+  inform_climate: { min: 0, max: 10, inverse: true },
+
   // Government travel advisories: raw levels 1-4 (lower = safer)
   advisory_level_us: { min: 1, max: 4, inverse: true },
   advisory_level_uk: { min: 1, max: 4, inverse: true },

@@ -2,10 +2,14 @@ import type { FetchResult } from '../types.js';
 import { fetchWorldBank } from './worldbank.js';
 import { fetchAcled } from './acled.js';
 import { fetchAdvisories } from './advisories.js';
+import { fetchGpi } from './gpi.js';
+import { fetchInform } from './inform.js';
 
 export { fetchWorldBank } from './worldbank.js';
 export { fetchAcled } from './acled.js';
 export { fetchAdvisories } from './advisories.js';
+export { fetchGpi } from './gpi.js';
+export { fetchInform } from './inform.js';
 
 /**
  * Fetch all data sources in parallel using Promise.allSettled.
@@ -13,6 +17,8 @@ export { fetchAdvisories } from './advisories.js';
  *
  * Sources:
  * - World Bank (governance, health, environment indicators) — free, no auth
+ * - GPI (Global Peace Index) — free, Excel download
+ * - INFORM (Risk Index) — free, JSON API
  * - ACLED (conflict events) — requires API key
  * - Advisories (US State Dept + UK FCDO) — free, no auth
  */
@@ -22,11 +28,13 @@ export async function fetchAllSources(date: string): Promise<FetchResult[]> {
 
   const results = await Promise.allSettled([
     fetchWorldBank(date),
+    fetchGpi(date),
+    fetchInform(date),
     fetchAcled(date),
     fetchAdvisories(date),
   ]);
 
-  const sourceNames = ['worldbank', 'acled', 'advisories'];
+  const sourceNames = ['worldbank', 'gpi', 'inform', 'acled', 'advisories'];
   const fetchResults: FetchResult[] = results.map((result, index) => {
     if (result.status === 'fulfilled') {
       return result.value;
