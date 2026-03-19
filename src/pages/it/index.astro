@@ -4,6 +4,7 @@ import SafetyMap from '../../components/SafetyMap.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import type { DailySnapshot } from '../../pipeline/types';
+import { buildHomepageJsonLd } from '../../lib/seo';
 
 const lang: Lang = 'it';
 const t = useTranslations(lang);
@@ -22,9 +23,11 @@ try {
 } catch {
   // Pipeline hasn't run yet, map will show all countries as unscored
 }
+
+const jsonLd = buildHomepageJsonLd('https://isitsafetotravel.com', lang);
 ---
 
-<Base lang={lang}>
+<Base lang={lang} jsonLd={jsonLd} ogImage="/og-homepage.png">
   <section class="flex flex-col" style="height: calc(100vh - 4rem);">
     <div class="text-center pt-4 pb-2 px-4">
       <h1 class="font-heading text-2xl md:text-3xl font-bold text-sand-800 dark:text-sand-100">
