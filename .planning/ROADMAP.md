@@ -51,7 +51,10 @@ Plans:
   2. User can click the global score banner to navigate to a dedicated global safety page
   3. Global safety page displays a historical trend chart showing the global score over time
   4. Global safety page includes a clear explanation of how the global score is calculated (methodology)
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 08-01-PLAN.md -- Homepage banner component, i18n keys, and route slugs
+- [ ] 08-02-PLAN.md -- Global safety page with trend chart, methodology, and SEO
 
 ### Phase 9: Enhanced History Charts
 **Goal**: Users can explore detailed safety trends over time on each country's detail page with interactive charts
@@ -89,6 +92,6 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 5. Search and Transparency | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 6. SEO, Performance, and Launch | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
-| 8. Global Safety Score UI | v1.1 | 0/0 | Not started | - |
+| 8. Global Safety Score UI | v1.1 | 0/2 | Not started | - |
 | 9. Enhanced History Charts | v1.1 | 0/0 | Not started | - |
 | 10. Country Comparison | v1.1 | 0/0 | Not started | - |
