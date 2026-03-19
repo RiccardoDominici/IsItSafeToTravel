@@ -175,3 +175,80 @@ if (showChart) {
     </p>
   )}
 </section>
+
+<script>
+  const container = document.getElementById('trend-chart-container');
+  if (container) {
+    const tooltip = document.getElementById('trend-tooltip');
+    const svg = container.querySelector('svg');
+    const points: Array<{date: string; score: number; cx: number; cy: number}> = JSON.parse(container.dataset.history || '[]');
+
+    if (svg && tooltip && points.length > 0) {
+      const svgRect = () => svg.getBoundingClientRect();
+      const viewBox = svg.viewBox.baseVal;
+
+      const showTooltip = (point: {date: string; score: number; cx: number; cy: number}) => {
+        const rect = svgRect();
+        const scaleX = rect.width / viewBox.width;
+        const scaleY = rect.height / viewBox.height;
+
+        // Format date with locale awareness
+        const d = new Date(point.date);
+        const dateStr = d.toLocaleDateString(
+          document.documentElement.lang === 'it' ? 'it-IT' : 'en-US',
+          { month: 'short', day: 'numeric', year: 'numeric' }
+        );
+
+        tooltip.textContent = `${dateStr}: ${point.score.toFixed(1)}`;
+        tooltip.classList.remove('hidden');
+
+        // Position tooltip above the point
+        const tooltipX = point.cx * scaleX - tooltip.offsetWidth / 2;
+        const tooltipY = point.cy * scaleY - tooltip.offsetHeight - 8;
+
+        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+        tooltip.style.top = `${Math.max(0, tooltipY)}px`;
+      };
+
+      const hideTooltip = () => {
+        tooltip.classList.add('hidden');
+      };
+
+      // Desktop: mousemove finds nearest point
+      svg.addEventListener('mousemove', (e: MouseEvent) => {
+        const rect = svgRect();
+        const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width;
+
+        let nearest = points[0];
+        let minDist = Infinity;
+        for (const p of points) {
+          const dist = Math.abs(p.cx - mouseX);
+          if (dist < minDist) { minDist = dist; nearest = p; }
+        }
+        showTooltip(nearest);
+      });
+
+      svg.addEventListener('mouseleave', hideTooltip);
+
+      // Mobile: tap to show, tap elsewhere to dismiss
+      svg.addEventListener('touchstart', (e: TouchEvent) => {
+        e.preventDefault();
+        const touch = e.touches[0];
+        const rect = svgRect();
+        const touchX = (touch.clientX - rect.left) / rect.width * viewBox.width;
+
+        let nearest = points[0];
+        let minDist = Infinity;
+        for (const p of points) {
+          const dist = Math.abs(p.cx - touchX);
+          if (dist < minDist) { minDist = dist; nearest = p; }
+        }
+        showTooltip(nearest);
+      }, { passive: false });
+
+      document.addEventListener('touchstart', (e: TouchEvent) => {
+        if (!container.contains(e.target as Node)) hideTooltip();
+      });
+    }
+  }
+</script>

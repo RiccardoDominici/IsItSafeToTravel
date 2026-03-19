@@ -8,7 +8,7 @@ import Base from '../../../layouts/Base.astro';
 import ScoreHero from '../../../components/country/ScoreHero.astro';
 import PillarBreakdown from '../../../components/country/PillarBreakdown.astro';
 import AdvisorySection from '../../../components/country/AdvisorySection.astro';
-import TrendSparkline from '../../../components/country/TrendSparkline.astro';
+import TrendChart from '../../../components/country/TrendChart.astro';
 import CountrySummary from '../../../components/country/CountrySummary.astro';
 import SourcesList from '../../../components/country/SourcesList.astro';
 import { loadLatestScores, loadHistoricalScores } from '../../../lib/scores';
@@ -51,7 +51,7 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
     <ScoreHero country={country} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
-    <TrendSparkline data={trend} lang={lang} />
+    <TrendChart data={trend} lang={lang} />
     <CountrySummary country={country} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
   </div>
