@@ -47,7 +47,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **TECH-02**: All destination pages are statically generated for SEO (JSON-LD, meta tags, sitemap)
 - [x] **TECH-03**: Multilingual support with English + Italian from launch
 - [ ] **TECH-04**: Lighthouse performance score 90+ on mobile
-- [ ] **TECH-05**: Site deploys on free-tier hosting (Cloudflare Workers/Pages)
+- [x] **TECH-05**: Site deploys on free-tier hosting (Cloudflare Workers/Pages)
 
 ## v2 Requirements
 
@@ -113,7 +113,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TECH-02 | Phase 6 | Pending |
 | TECH-03 | Phase 1 | Complete |
 | TECH-04 | Phase 6 | Pending |
-| TECH-05 | Phase 1 | Pending |
+| TECH-05 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 24 total
