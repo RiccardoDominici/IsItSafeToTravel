@@ -21,28 +21,28 @@ const r = routes[lang];
     <!-- Logo / Site name -->
     <a
       href={`/${lang}/`}
-      class="font-heading text-xl font-bold text-sand-800 dark:text-sand-100 tracking-tight hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      class="font-heading text-xl font-bold text-sand-800 dark:text-sand-100 tracking-tight hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors inline-flex items-center min-h-[44px]"
     >
       IsItSafeToTravel
     </a>
 
     <!-- Desktop nav -->
-    <nav class="hidden md:flex items-center gap-6" aria-label="Main navigation">
+    <nav class="hidden md:flex items-center gap-2" aria-label="Main navigation">
       <a
         href={`/${lang}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
       >
         {t('nav.home')}
       </a>
       <a
         href={`/${lang}/${r.about}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
       >
         {t('nav.about')}
       </a>
       <a
         href={`/${lang}/${r.methodology}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
       >
         {t('nav.methodology')}
       </a>
@@ -57,7 +57,7 @@ const r = routes[lang];
       <!-- Mobile menu (details/summary pattern - no JS) -->
       <details class="md:hidden relative">
         <summary
-          class="list-none cursor-pointer w-10 h-10 flex items-center justify-center rounded-lg text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 transition-colors"
+          class="list-none cursor-pointer min-w-[44px] min-h-[44px] w-11 h-11 flex items-center justify-center rounded-lg text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 transition-colors"
           aria-label="Menu"
         >
           <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">

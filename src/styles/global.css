@@ -42,6 +42,19 @@
   --spacing-card: 1.5rem;
 }
 
+/* Ensure minimum body text size for iOS (prevents auto-zoom on input focus) */
+html { font-size: 16px; }
+
+/* Touch target minimum for interactive elements */
+a, button, [role="button"], summary, input, select, textarea {
+  min-height: 44px;
+}
+
+/* Ensure links in flowing text don't get forced to 44px height */
+p a, li a, span a, td a {
+  min-height: auto;
+}
+
 /* Dark mode via class strategy (supports system + manual toggle) */
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {

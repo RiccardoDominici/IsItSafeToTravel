@@ -18,7 +18,7 @@ const t = useTranslations(lang);
     const href = getLocalizedPath(currentPath, code as Lang);
     return isActive ? (
       <span
-        class="px-2 py-1 text-sm font-semibold text-terracotta-500 dark:text-terracotta-400 border-b-2 border-terracotta-500 dark:border-terracotta-400"
+        class="px-2 py-1 min-h-[44px] inline-flex items-center text-sm font-semibold text-terracotta-500 dark:text-terracotta-400 border-b-2 border-terracotta-500 dark:border-terracotta-400"
         aria-current="page"
       >
         {code.toUpperCase()}
@@ -27,7 +27,7 @@ const t = useTranslations(lang);
       <a
         href={href}
         hreflang={code}
-        class="px-2 py-1 text-sm text-sand-500 dark:text-sand-400 hover:text-sand-700 dark:hover:text-sand-200 transition-colors"
+        class="px-2 py-1 min-h-[44px] inline-flex items-center text-sm text-sand-500 dark:text-sand-400 hover:text-sand-700 dark:hover:text-sand-200 transition-colors"
       >
         {code.toUpperCase()}
       </a>
