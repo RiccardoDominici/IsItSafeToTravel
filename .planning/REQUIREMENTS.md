@@ -43,10 +43,10 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Technical
 
-- [ ] **TECH-01**: Site is mobile-responsive with touch-friendly map interaction
+- [x] **TECH-01**: Site is mobile-responsive with touch-friendly map interaction
 - [x] **TECH-02**: All destination pages are statically generated for SEO (JSON-LD, meta tags, sitemap)
 - [x] **TECH-03**: Multilingual support with English + Italian from launch
-- [ ] **TECH-04**: Lighthouse performance score 90+ on mobile
+- [x] **TECH-04**: Lighthouse performance score 90+ on mobile
 - [x] **TECH-05**: Site deploys on free-tier hosting (Cloudflare Workers/Pages)
 
 ## v2 Requirements
@@ -109,10 +109,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRNS-01 | Phase 5 | Complete |
 | TRNS-02 | Phase 5 | Complete |
 | TRNS-03 | Phase 4 | Complete |
-| TECH-01 | Phase 6 | Pending |
+| TECH-01 | Phase 6 | Complete |
 | TECH-02 | Phase 6 | Complete |
 | TECH-03 | Phase 1 | Complete |
-| TECH-04 | Phase 6 | Pending |
+| TECH-04 | Phase 6 | Complete |
 | TECH-05 | Phase 1 | Complete |
 
 **Coverage:**
