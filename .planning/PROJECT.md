@@ -19,7 +19,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-- [ ] Interactive world map color-coded by safety score (green to red)
+- [x] Interactive world map color-coded by safety score (green to red) — Validated in Phase 3: Interactive Map
 - [ ] Country-level safety view as default, with regional drill-down on zoom
 - [ ] Search by city, country, or region with instant results
 - [ ] Detail page per destination explaining the score breakdown by criteria
@@ -67,4 +67,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
 ---
-*Last updated: 2026-03-19 — Phase 2 (Data Pipeline and Scoring Engine) complete: 4 data source fetchers, 5-pillar scoring engine, daily GitHub Actions cron pipeline*
+*Last updated: 2026-03-19 — Phase 3 (Interactive Map) complete: D3/topojson choropleth with zoom/pan/tooltips, colorblind-safe gradient, both locale homepages wired*
