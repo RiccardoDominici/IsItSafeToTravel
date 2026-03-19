@@ -49,6 +49,35 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **TECH-04**: Lighthouse performance score 90+ on mobile
 - [x] **TECH-05**: Site deploys on free-tier hosting (Cloudflare Workers/Pages)
 
+## v1.1 Requirements
+
+Requirements for milestone v1.1: Comparison & Historical Trends.
+
+### Data Pipeline
+
+- [ ] **PIPE-01**: Pipeline computes a global safety score (arithmetic mean of all country scores) daily
+- [ ] **PIPE-02**: Pipeline consolidates daily snapshots into a single history-index.json for efficient build-time loading
+
+### Global Safety Score
+
+- [ ] **GLOB-01**: User sees a global safety score banner on the homepage (clickable)
+- [ ] **GLOB-02**: User can click the global score banner to navigate to a dedicated global safety page
+- [ ] **GLOB-03**: Global safety page shows a historical trend chart of the global score over time
+- [ ] **GLOB-04**: Global safety page includes an explanation of how the global score is calculated
+
+### Historical Trends
+
+- [ ] **HIST-01**: User can view a full-size trend chart on each country's detail page showing safety score over time
+- [ ] **HIST-02**: User sees interactive tooltips on hover/tap showing exact score and date
+
+### Country Comparison
+
+- [ ] **COMP-01**: User can select 2 or more countries to compare via a searchable selector
+- [ ] **COMP-02**: User sees side-by-side score cards for selected countries
+- [ ] **COMP-03**: User sees grouped horizontal bars comparing pillar scores across selected countries
+- [ ] **COMP-04**: User sees an overlay trend chart with historical lines for all selected countries
+- [ ] **COMP-05**: User can share comparison via URL (e.g., /compare?c=IT,FR,DE)
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -65,7 +94,6 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Features
 
-- **FEAT-01**: Comparison tool for side-by-side country safety comparison
 - **FEAT-02**: Additional languages (Spanish, French, German)
 - **FEAT-03**: Interactive weight adjustment sliders for personalized scoring
 - **FEAT-04**: City-level safety pages for major cities
@@ -115,11 +143,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TECH-04 | Phase 6 | Complete |
 | TECH-05 | Phase 1 | Complete |
 
-**Coverage:**
+**Coverage (v1):**
 - v1 requirements: 24 total
 - Mapped to phases: 24
 - Unmapped: 0
 
+**Coverage (v1.1):**
+- v1.1 requirements: 13 total
+- Mapped to phases: 0 ⚠️
+- Unmapped: 13 ⚠️
+
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after roadmap creation*
+*Last updated: 2026-03-19 after v1.1 requirements definition*
