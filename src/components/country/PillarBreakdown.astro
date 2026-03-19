@@ -1,0 +1,59 @@
+---
+import type { PillarScore } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { pillarToColor } from '../../lib/colors';
+
+interface Props {
+  pillars: PillarScore[];
+  lang: Lang;
+}
+
+const { pillars, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Sort by score ascending (worst first) to draw attention to concerns
+const sorted = [...pillars].sort((a, b) => a.score - b.score);
+
+const pillarKeys: Record<string, string> = {
+  conflict: 'country.pillar.conflict',
+  crime: 'country.pillar.crime',
+  health: 'country.pillar.health',
+  governance: 'country.pillar.governance',
+  environment: 'country.pillar.environment',
+};
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.pillars_title')}
+  </h2>
+
+  <div class="space-y-3">
+    {sorted.map((pillar) => {
+      const label = t(pillarKeys[pillar.name] as any);
+      const displayScore = (pillar.score * 10).toFixed(1);
+      const barWidth = Math.max(pillar.score * 180, 2);
+      const color = pillarToColor(pillar.score);
+      const isPartial = pillar.dataCompleteness < 0.5;
+
+      return (
+        <div class="flex items-center gap-3">
+          <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right">
+            {label}
+            {isPartial && (
+              <span class="text-xs text-sand-400 dark:text-sand-500" title="Partial data">*</span>
+            )}
+          </span>
+          <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10`}>
+            <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+            <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
+          </svg>
+          <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
+            {displayScore}/10
+          </span>
+        </div>
+      );
+    })}
+  </div>
+</section>

@@ -1,0 +1,50 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { scoreToColor } from '../../lib/colors';
+
+interface Props {
+  country: ScoredCountry;
+  lang: Lang;
+}
+
+const { country, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const bgColor = scoreToColor(country.score);
+const formattedDate = new Intl.DateTimeFormat(lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(new Date(country.lastUpdated));
+const completenessPercent = Math.round(country.dataCompleteness * 100);
+---
+
+<section class="text-center py-8 md:py-12 px-4">
+  <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
+    {country.name[lang]}
+  </h1>
+
+  <div
+    class="inline-flex flex-col items-center justify-center rounded-2xl px-8 py-6 shadow-lg"
+    style={`background-color: ${bgColor}; color: #fff;`}
+  >
+    <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
+      {country.scoreDisplay}
+    </span>
+    <span class="text-lg md:text-xl font-medium mt-1 opacity-90">
+      {country.score.toFixed(1)} {t('country.out_of')}
+    </span>
+  </div>
+
+  <p class="mt-4 text-lg font-medium text-sand-600 dark:text-sand-400">
+    {t('country.score_label')}
+  </p>
+
+  <div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-sand-500 dark:text-sand-400">
+    <span>{t('country.last_updated').replace('{date}', formattedDate)}</span>
+    <span class="hidden sm:inline" aria-hidden="true">&middot;</span>
+    <span>{t('country.data_completeness').replace('{percent}', String(completenessPercent))}</span>
+  </div>
+</section>

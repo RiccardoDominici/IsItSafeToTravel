@@ -1,0 +1,50 @@
+---
+import type { SourceMeta } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  sources: SourceMeta[];
+  lang: Lang;
+}
+
+const { sources, lang } = Astro.props;
+const t = useTranslations(lang);
+---
+
+{sources.length > 0 && (
+  <section class="py-6 px-4 max-w-2xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+      {t('country.sources_title')}
+    </h2>
+
+    <ul class="space-y-3 divide-y divide-sand-200 dark:divide-sand-700">
+      {sources.map((source) => {
+        const fetchedDate = new Intl.DateTimeFormat(lang, {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        }).format(new Date(source.fetchedAt));
+
+        return (
+          <li class="pt-3 first:pt-0">
+            <a
+              href={source.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-terracotta-500 hover:text-terracotta-600 underline font-medium"
+            >
+              {source.name}
+            </a>
+            <p class="text-sm text-sand-600 dark:text-sand-400 mt-1">
+              {source.description}
+            </p>
+            <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
+              {t('country.source_fetched').replace('{date}', fetchedDate)}
+            </p>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+)}

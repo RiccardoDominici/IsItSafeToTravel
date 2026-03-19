@@ -1,0 +1,113 @@
+---
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { scoreToColor } from '../../lib/colors';
+import { scaleLinear, line } from 'd3';
+import type { HistoryPoint } from '../../lib/scores';
+
+interface Props {
+  data: HistoryPoint[];
+  lang: Lang;
+}
+
+const { data, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// SVG dimensions
+const width = 300;
+const height = 64;
+const padding = 8;
+
+// Build SVG path at build time using D3
+let pathD = '';
+let endpointCx = 0;
+let endpointCy = 0;
+let endpointColor = '#9ca3af';
+let showChart = data.length >= 2;
+
+if (showChart) {
+  const x = scaleLinear()
+    .domain([0, data.length - 1])
+    .range([padding, width - padding]);
+
+  const y = scaleLinear()
+    .domain([1, 10])
+    .range([height - padding, padding]);
+
+  const lineGen = line<HistoryPoint>()
+    .x((_, i) => x(i))
+    .y(d => y(d.score));
+
+  pathD = lineGen(data) ?? '';
+
+  const lastPoint = data[data.length - 1];
+  endpointCx = x(data.length - 1);
+  endpointCy = y(lastPoint.score);
+  endpointColor = scoreToColor(lastPoint.score);
+}
+
+// Gridline positions for scores 2, 4, 6, 8
+const gridY = scaleLinear().domain([1, 10]).range([height - padding, padding]);
+const gridLines = [2, 4, 6, 8].map(s => ({ score: s, y: gridY(s) }));
+
+const showAccumulating = data.length < 7;
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.trend_title')}
+  </h2>
+
+  {showChart ? (
+    <div>
+      <svg
+        viewBox={`0 0 ${width} ${height}`}
+        class="w-full max-w-md h-16 text-sand-700 dark:text-sand-300"
+        role="img"
+        aria-label={t('country.trend_title')}
+      >
+        {/* Gridlines */}
+        {gridLines.map(gl => (
+          <line
+            x1={padding}
+            y1={gl.y}
+            x2={width - padding}
+            y2={gl.y}
+            stroke="currentColor"
+            stroke-width="0.5"
+            stroke-dasharray="4 4"
+            opacity="0.3"
+          />
+        ))}
+
+        {/* Trend line */}
+        <path
+          d={pathD}
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+        />
+
+        {/* Endpoint dot */}
+        <circle
+          cx={endpointCx}
+          cy={endpointCy}
+          r="3"
+          fill={endpointColor}
+        />
+      </svg>
+
+      {showAccumulating && (
+        <p class="text-xs text-sand-500 dark:text-sand-400 mt-2 italic">
+          {t('country.trend_accumulating')}
+        </p>
+      )}
+    </div>
+  ) : (
+    <p class="text-sm text-sand-500 dark:text-sand-400 italic">
+      {t('country.trend_accumulating')}
+    </p>
+  )}
+</section>

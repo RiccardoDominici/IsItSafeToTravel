@@ -1,0 +1,74 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  country: ScoredCountry;
+  lang: Lang;
+}
+
+const { country, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Pillar name translations
+const pillarKeys: Record<string, string> = {
+  conflict: 'country.pillar.conflict',
+  crime: 'country.pillar.crime',
+  health: 'country.pillar.health',
+  governance: 'country.pillar.governance',
+  environment: 'country.pillar.environment',
+};
+
+// Find strongest and weakest pillars
+const sortedPillars = [...country.pillars].sort((a, b) => b.score - a.score);
+const strongest = sortedPillars[0];
+const weakest = sortedPillars[sortedPillars.length - 1];
+
+// Format date
+const formattedDate = new Intl.DateTimeFormat(lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+}).format(new Date(country.lastUpdated));
+
+// Build summary text from template parts
+let summary = t('country.summary')
+  .replace('{name}', country.name[lang])
+  .replace('{score}', country.score.toFixed(1));
+
+// Strongest pillar
+if (strongest) {
+  const pillarName = t(pillarKeys[strongest.name] as any);
+  summary += t('country.summary_strongest')
+    .replace('{pillar}', pillarName)
+    .replace('{score}', (strongest.score * 10).toFixed(1));
+}
+
+// Weakest pillar (only if different from strongest)
+if (weakest && weakest.name !== strongest?.name) {
+  const pillarName = t(pillarKeys[weakest.name] as any);
+  summary += t('country.summary_weakest')
+    .replace('{pillar}', pillarName)
+    .replace('{score}', (weakest.score * 10).toFixed(1));
+}
+
+// Advisory warning (first available)
+const firstAdvisory = country.advisories.us ?? country.advisories.uk;
+if (firstAdvisory) {
+  const sourceKey = country.advisories.us ? 'country.advisory.us' : 'country.advisory.uk';
+  summary += t('country.summary_advisory')
+    .replace('{source}', t(sourceKey as any))
+    .replace('{level}', String(firstAdvisory.level));
+}
+
+// Updated date
+summary += t('country.summary_updated')
+  .replace('{date}', formattedDate);
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">
+    {summary}
+  </p>
+</section>

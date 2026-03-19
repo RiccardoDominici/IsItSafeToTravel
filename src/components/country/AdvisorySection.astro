@@ -1,0 +1,47 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import AdvisoryCard from './AdvisoryCard.astro';
+
+interface Props {
+  advisories: ScoredCountry['advisories'];
+  lang: Lang;
+}
+
+const { advisories, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const hasUs = !!advisories.us;
+const hasUk = !!advisories.uk;
+const hasAny = hasUs || hasUk;
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.advisories_title')}
+  </h2>
+
+  {hasAny ? (
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      {hasUs && advisories.us && (
+        <AdvisoryCard
+          advisory={advisories.us}
+          sourceName={t('country.advisory.us')}
+          lang={lang}
+        />
+      )}
+      {hasUk && advisories.uk && (
+        <AdvisoryCard
+          advisory={advisories.uk}
+          sourceName={t('country.advisory.uk')}
+          lang={lang}
+        />
+      )}
+    </div>
+  ) : (
+    <p class="text-sm text-sand-500 dark:text-sand-400 italic">
+      {t('country.no_advisories')}
+    </p>
+  )}
+</section>
