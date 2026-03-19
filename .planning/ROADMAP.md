@@ -29,11 +29,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Astro project builds and deploys to Cloudflare Workers/Pages on push to main
   2. Visiting /en/ and /it/ renders locale-appropriate placeholder pages
   3. Path-based locale routing works with correct hreflang tags between languages
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
+- [ ] 01-01-PLAN.md — Astro scaffold with Tailwind design system, i18n routing, placeholder pages, and hreflang
+- [ ] 01-02-PLAN.md — Cloudflare Pages adapter and CI/CD deployment pipeline
 
 ### Phase 2: Data Pipeline and Scoring Engine
 **Goal**: Automated daily pipeline that fetches public safety indices and produces composite 1-10 scores for 200+ countries
@@ -116,7 +116,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Project Foundation | 0/TBD | Not started | - |
+| 1. Project Foundation | 0/2 | Planning complete | - |
 | 2. Data Pipeline and Scoring Engine | 0/TBD | Not started | - |
 | 3. Interactive Map | 0/TBD | Not started | - |
 | 4. Country Detail Pages | 0/TBD | Not started | - |
