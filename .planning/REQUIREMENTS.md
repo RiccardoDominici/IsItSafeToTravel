@@ -28,18 +28,18 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Country Detail
 
-- [ ] **CTRY-01**: Each country has a dedicated page showing its safety score (1-10)
-- [ ] **CTRY-02**: Detail page shows sub-score breakdown by category with visual indicators
-- [ ] **CTRY-03**: Detail page shows historical trend (score evolution over time as sparkline)
-- [ ] **CTRY-04**: Detail page shows government advisory levels (US, UK, EU) alongside composite score
-- [ ] **CTRY-05**: Detail page lists all data sources used with links to originals
-- [ ] **CTRY-06**: Each page has unique, auto-generated content explaining the safety assessment
+- [x] **CTRY-01**: Each country has a dedicated page showing its safety score (1-10)
+- [x] **CTRY-02**: Detail page shows sub-score breakdown by category with visual indicators
+- [x] **CTRY-03**: Detail page shows historical trend (score evolution over time as sparkline)
+- [x] **CTRY-04**: Detail page shows government advisory levels (US, UK, EU) alongside composite score
+- [x] **CTRY-05**: Detail page lists all data sources used with links to originals
+- [x] **CTRY-06**: Each page has unique, auto-generated content explaining the safety assessment
 
 ### Transparency
 
 - [ ] **TRNS-01**: Dedicated methodology page explains the scoring formula, weights, and rationale
 - [ ] **TRNS-02**: Legal disclaimer on every page clarifying informational nature of the data
-- [ ] **TRNS-03**: Sources section at bottom of detail pages with linked citations
+- [x] **TRNS-03**: Sources section at bottom of detail pages with linked citations
 
 ### Technical
 
@@ -100,15 +100,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAP-03 | Phase 3 | Complete |
 | SRCH-01 | Phase 5 | Pending |
 | SRCH-02 | Phase 5 | Pending |
-| CTRY-01 | Phase 4 | Pending |
-| CTRY-02 | Phase 4 | Pending |
-| CTRY-03 | Phase 4 | Pending |
-| CTRY-04 | Phase 4 | Pending |
-| CTRY-05 | Phase 4 | Pending |
-| CTRY-06 | Phase 4 | Pending |
+| CTRY-01 | Phase 4 | Complete |
+| CTRY-02 | Phase 4 | Complete |
+| CTRY-03 | Phase 4 | Complete |
+| CTRY-04 | Phase 4 | Complete |
+| CTRY-05 | Phase 4 | Complete |
+| CTRY-06 | Phase 4 | Complete |
 | TRNS-01 | Phase 5 | Pending |
 | TRNS-02 | Phase 5 | Pending |
-| TRNS-03 | Phase 4 | Pending |
+| TRNS-03 | Phase 4 | Complete |
 | TECH-01 | Phase 6 | Pending |
 | TECH-02 | Phase 6 | Pending |
 | TECH-03 | Phase 1 | Complete |
