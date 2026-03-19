@@ -19,7 +19,7 @@ Requirements for initial release. Each maps to roadmap phases.
 
 - [x] **MAP-01**: Homepage displays interactive world map color-coded green-to-red by safety score
 - [x] **MAP-02**: User can zoom and pan the map smoothly on desktop and mobile
-- [ ] **MAP-03**: User can click any country on the map to navigate to its detail page
+- [x] **MAP-03**: User can click any country on the map to navigate to its detail page
 
 ### Search
 
@@ -97,7 +97,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-05 | Phase 2 | Complete |
 | MAP-01 | Phase 3 | Complete |
 | MAP-02 | Phase 3 | Complete |
-| MAP-03 | Phase 3 | Pending |
+| MAP-03 | Phase 3 | Complete |
 | SRCH-01 | Phase 5 | Pending |
 | SRCH-02 | Phase 5 | Pending |
 | CTRY-01 | Phase 4 | Pending |
