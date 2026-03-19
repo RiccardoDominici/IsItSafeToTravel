@@ -2,7 +2,8 @@ name: Deploy to Cloudflare Pages
 
 on:
   push:
-    branches: [main]
+    branches: [master]
+  workflow_dispatch:
 
 jobs:
   deploy:
@@ -24,6 +25,15 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Copy scores to public
+        run: |
+          if [ -f "data/scores/latest.json" ]; then
+            cp data/scores/latest.json public/scores.json
+            echo "Copied latest.json to public/scores.json"
+          else
+            echo "::warning::No latest.json found, map will have no data"
+          fi
+
       - name: Build
         run: npm run build
 
@@ -32,4 +42,4 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=isitsafetotravel
+          command: pages deploy dist/client --project-name=isitsafetotravel

@@ -13,7 +13,7 @@ on:
         type: string
 
 permissions:
-  contents: write  # Needed to commit data files back to repo
+  contents: write
 
 jobs:
   pipeline:
@@ -54,11 +54,14 @@ jobs:
             exit 1
           fi
 
+      - name: Copy scores to public
+        run: cp data/scores/latest.json public/scores.json
+
       - name: Commit and push data
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw/ data/scores/
+          git add data/raw/ data/scores/ public/scores.json
           if git diff --cached --quiet; then
             echo "No data changes to commit"
           else
@@ -69,8 +72,3 @@ jobs:
           See data/scores/$DATE.json for details."
             git push
           fi
-
-      - name: Trigger site rebuild (optional)
-        if: success()
-        run: |
-          echo "Data committed. The push above will trigger the deploy.yml workflow automatically."
