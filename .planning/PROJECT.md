@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A multilingual web platform that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks) into a single 1-10 safety score, displayed on an interactive color-coded world map. Users can search any country, region, or city and get a clear, sourced explanation of why a place is rated the way it is.
+A multilingual web platform that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks) into a single 1-10 safety score, displayed on an interactive color-coded world map. Users can compare countries side by side, explore historical safety trends, and see a global safety benchmark — all with a minimal, data-driven design.
 
 ## Core Value
 
@@ -12,41 +12,44 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Validated
 
-- [x] Multilingual support (English primary, Italian, expandable i18n) — Validated in Phase 1: Project Foundation
-- [x] Fast load times (static generation where possible) — Validated in Phase 1: Project Foundation
-- [x] Safety score 1-10 per destination, computed from public indices — Validated in Phase 2: Data Pipeline and Scoring Engine
-- [x] Automatic daily data pipeline: fetch indices, news, recompute scores — Validated in Phase 2: Data Pipeline and Scoring Engine
+- ✓ Multilingual support (English primary, Italian, expandable i18n) — v1.0
+- ✓ Fast load times (static generation where possible) — v1.0
+- ✓ Safety score 1-10 per destination, computed from public indices — v1.0
+- ✓ Automatic daily data pipeline: fetch indices, news, recompute scores — v1.0
+- ✓ Interactive world map color-coded by safety score — v1.0
+- ✓ Detail page per destination explaining score breakdown — v1.0
+- ✓ Formula transparency: every factor and weight explained — v1.0
+- ✓ Sources section citing all indices and data origins — v1.0
+- ✓ Search by city, country, or region with instant results — v1.0
+- ✓ SEO-optimized pages for every destination — v1.0
+- ✓ Mobile-responsive design with clear visual hierarchy — v1.0
+- ✓ Global safety score as world benchmark — v1.1
+- ✓ Historical safety trend chart per country with interactive tooltips — v1.1
+- ✓ Country comparison page with side-by-side cards, pillar bars, overlay charts — v1.1
+- ✓ Historical data collection and consolidated history index — v1.1
+- ✓ Shareable comparison URLs — v1.1
 
 ### Active
 
-<!-- v1.1: Comparison & Historical Trends -->
-- [x] Comparison page to compare safety scores of 2+ countries side by side — Validated in Phase 10: Country Comparison
-- [x] Global safety score representing overall world safety as a benchmark value — Validated in Phase 8: Global Safety Score UI
-- [x] Historical safety trend chart per country (click country to view score over time) — Validated in Phase 9: Enhanced History Charts
-- [x] Multi-country overlay on historical trend charts for comparison — Validated in Phase 10: Country Comparison
-- [x] Historical data collection and storage for trend analysis — Validated in Phase 7: Pipeline Extensions
-- [x] All new features maintain minimal, clean, and intuitive design language — Validated in Phase 10: Country Comparison
-
-<!-- Carried from v1.0 (not yet validated) -->
 - [ ] Country-level safety view as default, with regional drill-down on zoom
-- [ ] Multilingual support (English primary, Italian, expandable i18n)
+- [ ] Additional languages (Spanish, French, German)
 
 ### Out of Scope
 
-- Monetization (ads, affiliations) — not in v1, revisit later
+- Monetization (ads, affiliations) — not yet, revisit later
 - User accounts / login — no personalization needed
 - Real-time alerts / push notifications — daily updates are sufficient
 - Mobile native app — web-first, responsive design covers mobile
 - User-generated content / reviews — data-driven only, no UGC
 - Hotel/flight booking integration — informational site only
+- Pre-built SEO comparison pages for country pairs — deferred, assess SEO demand first
+- Per-pillar historical trends in comparison — needs pipeline schema change
 
 ## Context
 
-The travel safety information space is dominated by government advisories (US State Dept, UK FCDO, Italian Farnesina) which are often political, slow to update, and hard to compare across countries. Existing indices like the Global Peace Index or Fragile States Index are academic and not traveler-friendly. There's a gap for a simple, visual, automatically-updated tool that synthesizes multiple sources into an actionable safety score.
+Shipped v1.0 MVP and v1.1 Comparison & Historical Trends. The platform covers 248 countries with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~8,200 LOC (TypeScript + Astro).
 
-Key data sources to research: Global Peace Index, ACLED conflict data, World Bank governance indicators, WHO health data, INFORM Risk Index, government travel advisories APIs. All must be free or open-access given the near-zero budget constraint.
-
-The site needs to handle ~200 countries and potentially thousands of sub-national regions. Static generation with incremental updates fits the daily refresh model and keeps hosting costs minimal.
+v1.1 introduced the first client-side JavaScript (comparison page selector, tooltip interactions) while keeping the majority of pages fully static. Historical data accumulates daily — trend charts will become more meaningful as snapshots accumulate over weeks/months.
 
 ## Constraints
 
@@ -61,22 +64,17 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Daily updates (not real-time) | Budget constraint + most indices update weekly/monthly anyway | — Pending |
-| Score 1-10 (not categories) | More granular, allows map color gradient, universally understood | — Pending |
-| Country + regional granularity | Countries alone miss important nuances (e.g., safe north vs unsafe south) | — Pending |
-| Multilingua from start | Domain is global, travelers speak many languages | — Pending |
-| No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
-
-## Current Milestone: v1.1 Comparison & Historical Trends
-
-**Goal:** Enable travelers to compare safety across countries and track safety trends over time, with a global benchmark score.
-
-**Target features:**
-- Comparison page for 2+ countries side by side
-- Global safety score (world benchmark)
-- Historical safety trend chart per country
-- Multi-country overlay on trend charts
-- Historical data collection pipeline
+| Daily updates (not real-time) | Budget constraint + most indices update weekly/monthly anyway | ✓ Good |
+| Score 1-10 (not categories) | More granular, allows map color gradient, universally understood | ✓ Good |
+| Country + regional granularity | Countries alone miss important nuances (e.g., safe north vs unsafe south) | — Pending (regional not yet built) |
+| Multilingual from start | Domain is global, travelers speak many languages | ✓ Good |
+| No user accounts | Reduces complexity, no PII to manage, faster to ship | ✓ Good |
+| Astro SSG + D3 + zero client JS (v1.0) | Static-first, zero JS on content pages, fast Lighthouse scores | ✓ Good |
+| Global score as simple arithmetic mean | Transparent, easy to explain; population-weighted is a future option | ✓ Good |
+| Comparison page client-side rendered | C(248,2)=30K pairs impossible to pre-generate; single page + query params | ✓ Good |
+| D3 sub-packages for client-side charts | Avoids ~250KB monolithic d3 bundle; tree-shaken imports | ✓ Good |
+| 5-country max for comparison | OECD/Google Trends show >5 series creates visual noise | ✓ Good |
+| Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-19 — Phase 10 (Country Comparison) complete: all v1.1 milestone phases shipped*
+*Last updated: 2026-03-19 after v1.1 milestone*
