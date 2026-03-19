@@ -60,10 +60,11 @@ Plans:
   1. Homepage displays a world map where every scored country is colored green-to-red by safety score
   2. User can zoom and pan the map smoothly on both desktop and mobile (touch-friendly)
   3. Clicking any country on the map navigates to that country's detail page
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 03-01: TBD
+- [ ] 03-01-PLAN.md — D3/topojson map component with color scale, zoom/pan, tooltips, and dark mode
+- [ ] 03-02-PLAN.md — Homepage integration with score data loading and visual verification
 
 ### Phase 4: Country Detail Pages
 **Goal**: Every country has a dedicated page that explains its safety score with full transparency and sourcing
@@ -119,7 +120,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 |-------|----------------|--------|-----------|
 | 1. Project Foundation | 0/2 | Planning complete | - |
 | 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
-| 3. Interactive Map | 0/TBD | Not started | - |
+| 3. Interactive Map | 0/2 | Planning complete | - |
 | 4. Country Detail Pages | 0/TBD | Not started | - |
 | 5. Search and Transparency | 0/TBD | Not started | - |
 | 6. SEO, Performance, and Launch | 0/TBD | Not started | - |
