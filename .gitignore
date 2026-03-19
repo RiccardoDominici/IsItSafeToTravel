@@ -22,6 +22,10 @@ Thumbs.db
 *.swp
 *.swo
 
+# Cloudflare
+.wrangler/
+.dev.vars
+
 # Logs
 *.log
 npm-debug.log*
