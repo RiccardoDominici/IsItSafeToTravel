@@ -1,0 +1,53 @@
+@import "tailwindcss";
+
+@theme {
+  /* Warm & inviting palette - travel magazine feel */
+  --color-sand-50: oklch(0.97 0.01 85);
+  --color-sand-100: oklch(0.94 0.02 85);
+  --color-sand-200: oklch(0.88 0.03 85);
+  --color-sand-300: oklch(0.80 0.04 80);
+  --color-sand-400: oklch(0.70 0.05 75);
+  --color-sand-500: oklch(0.58 0.05 70);
+  --color-sand-600: oklch(0.48 0.05 65);
+  --color-sand-700: oklch(0.38 0.04 60);
+  --color-sand-800: oklch(0.28 0.03 55);
+  --color-sand-900: oklch(0.18 0.02 50);
+
+  /* Earthy greens for safe indicators */
+  --color-sage-50: oklch(0.97 0.02 145);
+  --color-sage-100: oklch(0.93 0.04 145);
+  --color-sage-200: oklch(0.87 0.06 145);
+  --color-sage-300: oklch(0.78 0.08 145);
+  --color-sage-400: oklch(0.68 0.10 145);
+  --color-sage-500: oklch(0.58 0.10 145);
+  --color-sage-600: oklch(0.48 0.09 145);
+
+  /* Colorblind-safe map gradient: blue -> yellow -> red */
+  --color-safe: oklch(0.65 0.15 250);       /* Blue - safe */
+  --color-moderate: oklch(0.85 0.15 90);     /* Yellow - moderate */
+  --color-danger: oklch(0.55 0.20 25);       /* Red - danger */
+
+  /* Warm accent */
+  --color-terracotta-400: oklch(0.65 0.14 45);
+  --color-terracotta-500: oklch(0.55 0.15 40);
+  --color-terracotta-600: oklch(0.45 0.14 35);
+
+  /* Typography - humanist sans for warmth */
+  --font-sans: 'Inter', 'system-ui', sans-serif;
+  --font-heading: 'DM Sans', 'system-ui', sans-serif;
+
+  /* Spacing scale */
+  --spacing-header: 4rem;
+  --spacing-section: 3rem;
+  --spacing-card: 1.5rem;
+}
+
+/* Dark mode via class strategy (supports system + manual toggle) */
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+  }
+}
+.dark {
+  color-scheme: dark;
+}
