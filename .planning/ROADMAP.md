@@ -91,10 +91,11 @@ Plans:
   2. Selecting a search result navigates directly to the destination detail page
   3. A dedicated methodology page explains the scoring formula, all weights, and the rationale behind them
   4. Every page displays a legal disclaimer clarifying the informational nature of the data
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 05-01: TBD
+- [ ] 05-01-PLAN.md — Fuse.js fuzzy search component in header with autocomplete, keyboard nav, and score indicators
+- [ ] 05-02-PLAN.md — Methodology page, legal disclaimer page, and footer link fix
 
 ### Phase 6: SEO, Performance, and Launch
 **Goal**: The site is discoverable by search engines, fast on mobile, and ready for public traffic
@@ -122,5 +123,5 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
 | 3. Interactive Map | 0/2 | Planning complete | - |
 | 4. Country Detail Pages | 2/2 | Complete   | 2026-03-19 |
-| 5. Search and Transparency | 0/TBD | Not started | - |
+| 5. Search and Transparency | 0/2 | Planning complete | - |
 | 6. SEO, Performance, and Launch | 0/TBD | Not started | - |
