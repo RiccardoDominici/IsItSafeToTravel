@@ -55,6 +55,9 @@ export const ui = {
     'country.summary_updated': ' Data was last updated on {date}.',
     'country.back_to_map': 'Back to map',
     'country.no_advisories': 'No government advisories available for this country.',
+    'search.placeholder': 'Search countries...',
+    'search.no_results': 'No countries found',
+    'search.label': 'Search countries',
   },
   it: {
     'site.title': 'Si Puo Viaggiare in Sicurezza?',
@@ -104,6 +107,9 @@ export const ui = {
     'country.summary_updated': ' I dati sono stati aggiornati il {date}.',
     'country.back_to_map': 'Torna alla mappa',
     'country.no_advisories': 'Nessun avviso governativo disponibile per questo paese.',
+    'search.placeholder': 'Cerca paesi...',
+    'search.no_results': 'Nessun paese trovato',
+    'search.label': 'Cerca paesi',
   },
 } as const;
 

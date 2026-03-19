@@ -1,0 +1,197 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { routes } from '../i18n/ui';
+import { COUNTRIES } from '../pipeline/config/countries';
+import { loadLatestScores } from '../lib/scores';
+import { scoreToColor } from '../lib/colors';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const scores = loadLatestScores();
+const scoreMap = new Map(scores.map(s => [s.iso3, s]));
+
+const searchData = COUNTRIES.map(c => {
+  const scored = scoreMap.get(c.iso3);
+  return {
+    iso3: c.iso3,
+    name: c.name[lang],
+    score: scored?.scoreDisplay ?? null,
+    color: scored ? scoreToColor(scored.score) : null,
+  };
+});
+---
+
+<div class="relative" data-search={JSON.stringify(searchData)} data-lang={lang} data-route-segment={routes[lang].country} data-no-results={t('search.no_results')}>
+  <button
+    id="search-toggle"
+    aria-label={t('search.label')}
+    aria-expanded="false"
+    class="w-10 h-10 flex items-center justify-center rounded-lg text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 transition-colors"
+  >
+    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
+  </button>
+
+  <div
+    id="search-panel"
+    class="hidden absolute right-0 top-12 w-72 sm:w-80"
+    role="combobox"
+    aria-expanded="false"
+    aria-haspopup="listbox"
+  >
+    <input
+      type="text"
+      id="search-input"
+      role="searchbox"
+      aria-autocomplete="list"
+      aria-controls="search-listbox"
+      aria-activedescendant=""
+      placeholder={t('search.placeholder')}
+      class="w-full px-4 py-2 rounded-t-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400"
+    />
+    <ul
+      id="search-listbox"
+      role="listbox"
+      aria-label={t('search.label')}
+      class="max-h-[60vh] overflow-y-auto rounded-b-lg border border-t-0 border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg"
+    ></ul>
+  </div>
+</div>
+
+<script>
+  import Fuse from 'fuse.js';
+
+  interface SearchItem {
+    iso3: string;
+    name: string;
+    score: number | null;
+    color: string | null;
+  }
+
+  const container = document.querySelector('[data-search]') as HTMLElement;
+  if (container) {
+    const searchData: SearchItem[] = JSON.parse(container.dataset.search!);
+    const lang = container.dataset.lang!;
+    const routeSegment = container.dataset.routeSegment!;
+    const noResultsText = container.dataset.noResults!;
+
+    const fuse = new Fuse(searchData, {
+      keys: ['name'],
+      threshold: 0.3,
+      minMatchCharLength: 2,
+      includeScore: true,
+      limit: 10,
+    });
+
+    const toggle = document.getElementById('search-toggle')!;
+    const panel = document.getElementById('search-panel')!;
+    const input = document.getElementById('search-input') as HTMLInputElement;
+    const listbox = document.getElementById('search-listbox')!;
+    let activeIndex = -1;
+    let currentResults: SearchItem[] = [];
+
+    function open() {
+      panel.classList.remove('hidden');
+      toggle.setAttribute('aria-expanded', 'true');
+      panel.setAttribute('aria-expanded', 'true');
+      input.focus();
+    }
+
+    function close() {
+      panel.classList.add('hidden');
+      toggle.setAttribute('aria-expanded', 'false');
+      panel.setAttribute('aria-expanded', 'false');
+      input.value = '';
+      listbox.innerHTML = '';
+      activeIndex = -1;
+      currentResults = [];
+      toggle.focus();
+    }
+
+    function navigate(iso3: string) {
+      window.location.href = `/${lang}/${routeSegment}/${iso3.toLowerCase()}/`;
+    }
+
+    function renderResults(items: SearchItem[]) {
+      currentResults = items;
+      activeIndex = -1;
+      if (items.length === 0 && input.value.length >= 2) {
+        listbox.innerHTML = `<li class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${noResultsText}</li>`;
+        return;
+      }
+      listbox.innerHTML = items
+        .map(
+          (item, i) => `
+        <li role="option" id="result-${i}" aria-selected="false"
+            data-iso3="${item.iso3}"
+            class="px-4 py-2 cursor-pointer flex items-center justify-between hover:bg-sand-100 dark:hover:bg-sand-700 text-sm text-sand-800 dark:text-sand-100">
+          <span>${item.name}</span>
+          ${item.score !== null ? `<span class="inline-flex items-center gap-1 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full" style="background:${item.color}"></span>${item.score}/10</span>` : ''}
+        </li>
+      `,
+        )
+        .join('');
+      // Click handlers on results
+      listbox.querySelectorAll('[data-iso3]').forEach((el) => {
+        el.addEventListener('click', () => navigate(el.getAttribute('data-iso3')!));
+      });
+    }
+
+    function setActive(index: number) {
+      listbox.querySelectorAll('[role="option"]').forEach((el, i) => {
+        el.setAttribute('aria-selected', i === index ? 'true' : 'false');
+        el.classList.toggle('bg-sand-100', i === index);
+        el.classList.toggle('dark:bg-sand-700', i === index);
+      });
+      activeIndex = index;
+      input.setAttribute('aria-activedescendant', index >= 0 ? `result-${index}` : '');
+    }
+
+    toggle.addEventListener('click', () => {
+      panel.classList.contains('hidden') ? open() : close();
+    });
+
+    input.addEventListener('input', () => {
+      const query = input.value.trim();
+      if (query.length < 2) {
+        listbox.innerHTML = '';
+        currentResults = [];
+        return;
+      }
+      const results = fuse.search(query).map((r) => r.item);
+      renderResults(results);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        close();
+        return;
+      }
+      if (e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (currentResults.length > 0)
+          setActive(Math.min(activeIndex + 1, currentResults.length - 1));
+      }
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        if (currentResults.length > 0) setActive(Math.max(activeIndex - 1, 0));
+      }
+      if (e.key === 'Enter' && activeIndex >= 0 && currentResults[activeIndex]) {
+        navigate(currentResults[activeIndex].iso3);
+      }
+    });
+
+    // Close on click outside
+    document.addEventListener('click', (e) => {
+      if (!container.contains(e.target as Node)) close();
+    });
+  }
+</script>
