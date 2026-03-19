@@ -10,10 +10,10 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Data Pipeline
 
 - [x] **DATA-01**: System fetches safety indices from 3+ public sources daily (GPI, INFORM, ACLED, gov advisories)
-- [ ] **DATA-02**: System computes composite 1-10 safety score for 200+ countries
-- [ ] **DATA-03**: Score breaks down into category sub-scores (conflict, crime, health, governance, environment)
+- [x] **DATA-02**: System computes composite 1-10 safety score for 200+ countries
+- [x] **DATA-03**: Score breaks down into category sub-scores (conflict, crime, health, governance, environment)
 - [ ] **DATA-04**: Pipeline runs automatically via GitHub Actions cron every 24h
-- [ ] **DATA-05**: System stores historical scores to enable trend analysis
+- [x] **DATA-05**: System stores historical scores to enable trend analysis
 
 ### Map
 
@@ -91,10 +91,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | DATA-01 | Phase 2 | Complete |
-| DATA-02 | Phase 2 | Pending |
-| DATA-03 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Complete |
+| DATA-03 | Phase 2 | Complete |
 | DATA-04 | Phase 2 | Pending |
-| DATA-05 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Complete |
 | MAP-01 | Phase 3 | Pending |
 | MAP-02 | Phase 3 | Pending |
 | MAP-03 | Phase 3 | Pending |

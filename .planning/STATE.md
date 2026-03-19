@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-03-19T10:57:22.644Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-03-19T11:02:19.610Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-19)
 ## Current Position
 
 Phase: 02 (data-pipeline-and-scoring-engine) — EXECUTING
-Plan: 2 of 3
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: 2 of 3
 *Updated after each plan completion*
 | Phase 01 P02 | 2 | 2 tasks | 6 files |
 | Phase 02 P01 | 3 | 2 tasks | 13 files |
+| Phase 02 P02 | 3 | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,9 @@ Recent decisions affecting current work:
 - [Phase 02]: 248 countries in ISO mapping (full ISO 3166-1), exceeding minimum 163 from GPI
 - [Phase 02]: Each fetcher uses cached fallback on failure - pipeline never blocks on one source
 - [Phase 02]: ACLED fetcher gates on env vars (ACLED_API_KEY, ACLED_EMAIL) with descriptive error
+- [Phase 02]: Neutral 0.5 pillar score when no indicators available
+- [Phase 02]: Static INDICATOR_RANGES table with 12 known indicators and inverse flag
+- [Phase 02]: Historical snapshots as individual YYYY-MM-DD.json files alongside latest.json
 
 ### Pending Todos
 
@@ -79,6 +83,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T10:57:22.642Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-03-19T11:02:19.608Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None
