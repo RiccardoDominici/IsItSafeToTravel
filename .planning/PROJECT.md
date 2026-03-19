@@ -24,7 +24,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - [x] Formula transparency: every factor and weight explained on the detail page — Validated in Phase 4: Country Detail Pages
 - [x] Sources section citing all indices and data origins — Validated in Phase 4: Country Detail Pages
 - [ ] Country-level safety view as default, with regional drill-down on zoom
-- [ ] Search by city, country, or region with instant results
+- [x] Search by city, country, or region with instant results — Validated in Phase 5: Search and Transparency
 - [ ] Multilingual support (English primary, Italian, expandable i18n)
 - [ ] SEO-optimized pages for every destination (meta, structured data, sitemap)
 - [ ] Mobile-responsive design with clear visual hierarchy
@@ -67,4 +67,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
 ---
-*Last updated: 2026-03-19 — Phase 4 (Country Detail Pages) complete: per-country pages with score breakdown, trend sparklines, advisory cards, sources — zero client JS, build-time SVG charts*
+*Last updated: 2026-03-19 — Phase 5 (Search and Transparency) complete: Fuse.js autocomplete search in header, methodology page auto-generated from weights.json, legal disclaimer page, footer link fix*
