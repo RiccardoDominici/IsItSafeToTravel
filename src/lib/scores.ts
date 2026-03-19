@@ -3,10 +3,17 @@ import path from 'node:path';
 import type { DailySnapshot, ScoredCountry } from '../pipeline/types';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'scores');
+const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
 
 export interface HistoryPoint {
   date: string;
   score: number;
+}
+
+interface HistoryIndex {
+  generatedAt: string;
+  global: Array<{ date: string; score: number }>;
+  countries: Record<string, Array<{ date: string; score: number }>>;
 }
 
 /** Load the full latest snapshot (includes metadata + countries). */
@@ -23,10 +30,47 @@ export function loadLatestScores(): ScoredCountry[] {
 }
 
 /**
- * Load historical score data from dated snapshot files.
+ * Load historical score data.
+ * Prefers history-index.json (consolidated) when available.
+ * Falls back to reading individual dated snapshot files.
  * Returns a Map keyed by ISO3 code, with arrays of {date, score} points.
  */
 export function loadHistoricalScores(days: number = 90): Map<string, HistoryPoint[]> {
+  // Try consolidated history-index.json first
+  if (fs.existsSync(HISTORY_INDEX_PATH)) {
+    return loadFromHistoryIndex(days);
+  }
+
+  // Fallback: read individual snapshot files
+  return loadFromIndividualSnapshots(days);
+}
+
+/**
+ * Load global score history from history-index.json.
+ * Returns array of {date, score} points, or empty array if file missing.
+ */
+export function loadGlobalHistory(): Array<{ date: string; score: number }> {
+  if (!fs.existsSync(HISTORY_INDEX_PATH)) return [];
+  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
+  return index.global ?? [];
+}
+
+function loadFromHistoryIndex(days: number): Map<string, HistoryPoint[]> {
+  const history = new Map<string, HistoryPoint[]>();
+  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
+
+  for (const [iso3, points] of Object.entries(index.countries)) {
+    // Take only the last N days
+    const filtered = points.slice(-days);
+    if (filtered.length > 0) {
+      history.set(iso3, filtered);
+    }
+  }
+
+  return history;
+}
+
+function loadFromIndividualSnapshots(days: number): Map<string, HistoryPoint[]> {
   const history = new Map<string, HistoryPoint[]>();
 
   if (!fs.existsSync(DATA_DIR)) return history;

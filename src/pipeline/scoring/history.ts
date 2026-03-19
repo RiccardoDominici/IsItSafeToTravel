@@ -1,0 +1,51 @@
+import { writeJson, getScoresDir } from '../utils/fs.js';
+import { listSnapshotDates, loadSnapshot } from './snapshot.js';
+import { join } from 'node:path';
+
+export interface HistoryIndex {
+  generatedAt: string;
+  global: Array<{ date: string; score: number }>;
+  countries: Record<string, Array<{ date: string; score: number }>>;
+}
+
+/**
+ * Build and write history-index.json from all available daily snapshots.
+ *
+ * Consolidates per-country score arrays and global score history into a
+ * single file for efficient build-time loading.
+ */
+export function writeHistoryIndex(): HistoryIndex {
+  const dates = listSnapshotDates();
+  const global: Array<{ date: string; score: number }> = [];
+  const countries: Record<string, Array<{ date: string; score: number }>> = {};
+
+  for (const date of dates) {
+    const snapshot = loadSnapshot(date);
+    if (!snapshot) continue;
+
+    // Use globalScore field if present, else compute (handles pre-PIPE-01 snapshots)
+    const globalScore = (snapshot as any).globalScore ??
+      (snapshot.countries.length > 0
+        ? Math.round((snapshot.countries.reduce((s, c) => s + c.score, 0) / snapshot.countries.length) * 10) / 10
+        : 0);
+    global.push({ date, score: globalScore });
+
+    // Per-country scores
+    for (const country of snapshot.countries) {
+      if (!countries[country.iso3]) countries[country.iso3] = [];
+      countries[country.iso3].push({ date, score: country.score });
+    }
+  }
+
+  const index: HistoryIndex = {
+    generatedAt: new Date().toISOString(),
+    global,
+    countries,
+  };
+
+  const indexPath = join(getScoresDir(), 'history-index.json');
+  writeJson(indexPath, index);
+  console.log(`Wrote history-index.json with ${dates.length} snapshots, ${Object.keys(countries).length} countries`);
+
+  return index;
+}

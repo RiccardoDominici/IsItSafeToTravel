@@ -1,6 +1,7 @@
 import { fetchAllSources } from './fetchers/index.js';
 import { computeAllScores } from './scoring/engine.js';
 import { writeSnapshot } from './scoring/snapshot.js';
+import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
@@ -70,6 +71,10 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // Stage 4: Snapshot
   console.log('\n--- Stage 4: Snapshot ---');
   writeSnapshot(date, scoredCountries, fetchResults, weightsConfig.version);
+
+  // Stage 5: History Index
+  console.log('\n--- Stage 5: History Index ---');
+  writeHistoryIndex();
 
   console.log(
     `\n=== Pipeline complete: ${scoredCountries.length} countries scored, ${sourcesSucceeded}/${sourcesTotal} sources succeeded ===`,
