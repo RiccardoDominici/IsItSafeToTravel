@@ -21,7 +21,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 <!-- v1.1: Comparison & Historical Trends -->
 - [ ] Comparison page to compare safety scores of 2+ countries side by side
-- [ ] Global safety score representing overall world safety as a benchmark value
+- [x] Global safety score representing overall world safety as a benchmark value — Validated in Phase 8: Global Safety Score UI
 - [ ] Historical safety trend chart per country (click country to view score over time)
 - [ ] Multi-country overlay on historical trend charts for comparison
 - [x] Historical data collection and storage for trend analysis — Validated in Phase 7: Pipeline Extensions
@@ -79,4 +79,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 - Historical data collection pipeline
 
 ---
-*Last updated: 2026-03-19 — Phase 7 (Pipeline Extensions) complete: globalScore computation + history-index.json consolidation*
+*Last updated: 2026-03-19 — Phase 8 (Global Safety Score UI) complete: homepage banner + dedicated global safety page with trend chart*
