@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Phase 2 context gathered
-last_updated: "2026-03-19T10:32:49.860Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-19T10:57:22.644Z"
 progress:
   total_phases: 6
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 5
+  completed_plans: 3
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 01 — project-foundation
+**Current focus:** Phase 02 — data-pipeline-and-scoring-engine
 
 ## Current Position
 
-Phase: 01 (project-foundation) — COMPLETE
-Plan: 2 of 2 (all complete)
+Phase: 02 (data-pipeline-and-scoring-engine) — EXECUTING
+Plan: 2 of 3
 
 ## Performance Metrics
 
@@ -47,6 +47,7 @@ Plan: 2 of 2 (all complete)
 
 *Updated after each plan completion*
 | Phase 01 P02 | 2 | 2 tasks | 6 files |
+| Phase 02 P01 | 3 | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 - 01-01: Root redirect uses client-side language detection since SSG cannot read Accept-Language headers
 - [Phase 01]: Removed output: hybrid (deprecated in Astro 6); default static output works with Cloudflare adapter
 - [Phase 01]: Removed wrangler.toml [site] section (not applicable for Vite-based Astro builds)
+- [Phase 02]: 248 countries in ISO mapping (full ISO 3166-1), exceeding minimum 163 from GPI
+- [Phase 02]: Each fetcher uses cached fallback on failure - pipeline never blocks on one source
+- [Phase 02]: ACLED fetcher gates on env vars (ACLED_API_KEY, ACLED_EMAIL) with descriptive error
 
 ### Pending Todos
 
@@ -75,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T10:32:49.857Z
-Stopped at: Phase 2 context gathered
-Resume file: .planning/phases/02-data-pipeline-and-scoring-engine/02-CONTEXT.md
+Last session: 2026-03-19T10:57:22.642Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
