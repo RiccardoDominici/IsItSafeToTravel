@@ -12,7 +12,8 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] Multilingual support (English primary, Italian, expandable i18n) — Validated in Phase 1: Project Foundation
+- [x] Fast load times (static generation where possible) — Validated in Phase 1: Project Foundation
 
 ### Active
 
@@ -66,4 +67,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
 ---
-*Last updated: 2026-03-19 after initialization*
+*Last updated: 2026-03-19 — Phase 1 (Project Foundation) complete: Astro 6 + Tailwind CSS 4 + i18n EN/IT + Cloudflare Pages CI/CD*
