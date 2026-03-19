@@ -149,22 +149,22 @@ describe('Phase 1: hreflang tags link EN and IT correctly', () => {
 
   it('EN page hreflang links point to correct URLs', () => {
     assert.ok(
-      enHtml.includes('href="https://isitsafetotravel.com/en/"'),
+      enHtml.includes('href="https://isitsafetotravels.com/en/"'),
       'EN hreflang must point to /en/'
     );
     assert.ok(
-      enHtml.includes('href="https://isitsafetotravel.com/it/"'),
+      enHtml.includes('href="https://isitsafetotravels.com/it/"'),
       'EN hreflang must point to /it/'
     );
   });
 
   it('IT page hreflang links point to correct URLs', () => {
     assert.ok(
-      itHtml.includes('href="https://isitsafetotravel.com/en/"'),
+      itHtml.includes('href="https://isitsafetotravels.com/en/"'),
       'IT hreflang must point to /en/'
     );
     assert.ok(
-      itHtml.includes('href="https://isitsafetotravel.com/it/"'),
+      itHtml.includes('href="https://isitsafetotravels.com/it/"'),
       'IT hreflang must point to /it/'
     );
   });

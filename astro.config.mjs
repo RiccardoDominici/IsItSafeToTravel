@@ -10,7 +10,7 @@ const adapter = process.env.CF_PAGES
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://isitsafetotravel.com',
+  site: 'https://isitsafetotravels.com',
   ...(adapter && { adapter }),
 
   integrations: [
