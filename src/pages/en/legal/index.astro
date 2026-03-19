@@ -1,0 +1,45 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'en';
+const t = useTranslations(lang);
+---
+<Base lang={lang} title={t('legal.title')} description={t('legal.description')}>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('legal.heading')}</h1>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('legal.section1_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('legal.section1_text')}</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('legal.section2_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('legal.section2_text')}</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('legal.section3_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-3">{t('legal.section3_text')}</p>
+      <ul class="list-disc list-inside space-y-1 text-sand-700 dark:text-sand-300">
+        <li><a href="https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html/" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('legal.advisory_us')}</a></li>
+        <li><a href="https://www.gov.uk/foreign-travel-advice" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('legal.advisory_uk')}</a></li>
+        <li><a href="https://www.consilium.europa.eu/en/policies/travel-advice/" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('legal.advisory_eu')}</a></li>
+      </ul>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('legal.section4_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('legal.section4_text')}</p>
+    </section>
+
+    <section class="mb-8">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('legal.section5_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('legal.section5_text')}</p>
+    </section>
+
+    <p class="text-xs text-sand-400 dark:text-sand-500 mt-12">{t('legal.last_updated')}</p>
+  </div>
+</Base>

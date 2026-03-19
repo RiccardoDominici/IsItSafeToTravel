@@ -1,0 +1,106 @@
+---
+import Base from '../../../layouts/Base.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+import weightsConfig from '../../../pipeline/config/weights.json';
+
+const lang: Lang = 'en';
+const t = useTranslations(lang);
+
+// Data source metadata for the table
+const dataSources = [
+  { key: 'gpi', frequency: t('methodology.frequency.annual') },
+  { key: 'acled', frequency: t('methodology.frequency.weekly') },
+  { key: 'inform', frequency: t('methodology.frequency.quarterly') },
+  { key: 'us_advisory', frequency: t('methodology.frequency.varies') },
+  { key: 'uk_advisory', frequency: t('methodology.frequency.varies') },
+];
+
+// Pillar name to i18n key mapping
+const pillarI18n: Record<string, string> = {
+  conflict: 'country.pillar.conflict',
+  crime: 'country.pillar.crime',
+  health: 'country.pillar.health',
+  governance: 'country.pillar.governance',
+  environment: 'country.pillar.environment',
+};
+---
+<Base lang={lang} title={t('methodology.title')} description={t('methodology.description')}>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('methodology.title')}</h1>
+
+    <!-- Overview -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.overview_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.overview_text')}</p>
+    </section>
+
+    <!-- Data Sources Table -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.sources_title')}</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.source')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.measures')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.frequency')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.link')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {dataSources.map(src => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`methodology.source.${src.key}` as any)}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`methodology.source.${src.key}_desc` as any)}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.frequency}</td>
+                <td class="py-3"><a href={t(`methodology.source.${src.key}_url` as any)} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">Visit</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Scoring Formula -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.formula_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('methodology.formula_text')}</p>
+      <div class="bg-sand-100 dark:bg-sand-800 rounded-lg p-4 font-mono text-sm text-sand-800 dark:text-sand-200">
+        Score = (Conflict x 0.20 + Crime x 0.20 + Health x 0.20 + Governance x 0.20 + Environment x 0.20) x 9 + 1
+      </div>
+    </section>
+
+    <!-- Category Weights Table -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.weights_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('methodology.weights_text')}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.category')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.weight')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('methodology.table.indicators')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {weightsConfig.pillars.map(pillar => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(pillarI18n[pillar.name] as any)}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{(pillar.weight * 100).toFixed(0)}%</td>
+                <td class="py-3 text-sand-600 dark:text-sand-300">{pillar.indicators.map(ind => t(`methodology.indicator.${ind}` as any)).join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Limitations -->
+    <section>
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.limitations_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.limitations_text')}</p>
+    </section>
+  </div>
+</Base>
