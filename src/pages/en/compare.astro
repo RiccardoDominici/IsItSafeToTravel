@@ -12,7 +12,7 @@ const lang: Lang = 'en';
 const t = useTranslations(lang);
 
 const scores = loadLatestScores();
-const history = loadHistoricalScores(365);
+const history = loadHistoricalScores();
 
 const countryData = scores.map(country => ({
   iso3: country.iso3,

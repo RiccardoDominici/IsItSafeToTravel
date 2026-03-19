@@ -35,7 +35,7 @@ export function loadLatestScores(): ScoredCountry[] {
  * Falls back to reading individual dated snapshot files.
  * Returns a Map keyed by ISO3 code, with arrays of {date, score} points.
  */
-export function loadHistoricalScores(days: number = 90): Map<string, HistoryPoint[]> {
+export function loadHistoricalScores(days?: number): Map<string, HistoryPoint[]> {
   // Try consolidated history-index.json first
   if (fs.existsSync(HISTORY_INDEX_PATH)) {
     return loadFromHistoryIndex(days);
@@ -55,13 +55,12 @@ export function loadGlobalHistory(): Array<{ date: string; score: number }> {
   return index.global ?? [];
 }
 
-function loadFromHistoryIndex(days: number): Map<string, HistoryPoint[]> {
+function loadFromHistoryIndex(days?: number): Map<string, HistoryPoint[]> {
   const history = new Map<string, HistoryPoint[]>();
   const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
 
   for (const [iso3, points] of Object.entries(index.countries)) {
-    // Take only the last N days
-    const filtered = points.slice(-days);
+    const filtered = days ? points.slice(-days) : points;
     if (filtered.length > 0) {
       history.set(iso3, filtered);
     }
@@ -70,7 +69,7 @@ function loadFromHistoryIndex(days: number): Map<string, HistoryPoint[]> {
   return history;
 }
 
-function loadFromIndividualSnapshots(days: number): Map<string, HistoryPoint[]> {
+function loadFromIndividualSnapshots(days?: number): Map<string, HistoryPoint[]> {
   const history = new Map<string, HistoryPoint[]>();
 
   if (!fs.existsSync(DATA_DIR)) return history;
@@ -78,7 +77,7 @@ function loadFromIndividualSnapshots(days: number): Map<string, HistoryPoint[]> 
   const files = fs.readdirSync(DATA_DIR)
     .filter(f => /^\d{4}-\d{2}-\d{2}\.json$/.test(f))
     .sort()
-    .slice(-days);
+    .slice(days ? -days : undefined);
 
   for (const file of files) {
     const snapshot: DailySnapshot = JSON.parse(

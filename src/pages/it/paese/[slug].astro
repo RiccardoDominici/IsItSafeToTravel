@@ -21,7 +21,7 @@ const t = useTranslations(lang);
 
 export const getStaticPaths: GetStaticPaths = async () => {
   const countries = loadLatestScores();
-  const history = loadHistoricalScores(90);
+  const history = loadHistoricalScores();
 
   return countries.map((country) => ({
     params: { slug: country.iso3.toLowerCase() },
