@@ -2,6 +2,7 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
+import { fileURLToPath } from 'node:url';
 
 // Cloudflare adapter: only in production (breaks getStaticPaths dev mode)
 const adapter = process.env.CF_PAGES
@@ -27,6 +28,11 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    resolve: {
+      alias: {
+        '@data': fileURLToPath(new URL('./data', import.meta.url)),
+      },
+    },
   },
 
   i18n: {
