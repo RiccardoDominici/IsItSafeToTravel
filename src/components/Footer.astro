@@ -1,0 +1,50 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { routes } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const currentYear = new Date().getFullYear();
+---
+
+<footer class="bg-sand-100 dark:bg-sand-800 border-t border-sand-200 dark:border-sand-700 mt-auto">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <!-- Disclaimer -->
+    <p class="text-sm text-sand-500 dark:text-sand-400 mb-6 max-w-3xl">
+      {t('footer.disclaimer')}
+    </p>
+
+    <!-- Links -->
+    <div class="flex flex-wrap gap-6 mb-6">
+      <a
+        href={`/${lang}/${r.methodology}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('footer.methodology')}
+      </a>
+      <a
+        href={`/${lang}/${r.about}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('footer.sources')}
+      </a>
+      <a
+        href={`/${lang}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('footer.legal')}
+      </a>
+    </div>
+
+    <!-- Copyright -->
+    <p class="text-xs text-sand-400 dark:text-sand-500">
+      &copy; {currentYear} IsItSafeToTravel. All rights reserved.
+    </p>
+  </div>
+</footer>

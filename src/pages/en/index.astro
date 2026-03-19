@@ -1,0 +1,41 @@
+---
+import Base from '../../layouts/Base.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+const lang: Lang = 'en';
+const t = useTranslations(lang);
+---
+
+<Base lang={lang}>
+  <!-- Hero section -->
+  <section class="max-w-6xl mx-auto px-4 pt-16 pb-12 text-center">
+    <h1 class="font-heading text-4xl md:text-5xl lg:text-6xl font-bold text-sand-800 dark:text-sand-100 mb-4">
+      {t('hero.title')}
+    </h1>
+    <p class="text-lg md:text-xl text-sand-500 dark:text-sand-400 max-w-2xl mx-auto mb-12">
+      {t('hero.subtitle')}
+    </p>
+
+    <!-- Map placeholder -->
+    <div class="max-w-4xl mx-auto rounded-2xl border-2 border-dashed border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-800 p-12 mb-12">
+      <div class="flex flex-col items-center gap-4">
+        <svg class="w-16 h-16 text-sage-400 dark:text-sage-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path d="M9 6.75V15m6-6v8.25m.503 3.498l4.875-2.437c.381-.19.622-.58.622-1.006V4.82c0-.836-.88-1.38-1.628-1.006l-3.869 1.934c-.317.159-.69.159-1.006 0L9.503 3.252a1.125 1.125 0 00-1.006 0L3.622 5.689C3.24 5.88 3 6.27 3 6.695V19.18c0 .836.88 1.38 1.628 1.006l3.869-1.934c.317-.159.69-.159 1.006 0l4.994 2.497c.317.158.69.158 1.006 0z" />
+        </svg>
+        <p class="font-heading text-xl font-semibold text-sand-600 dark:text-sand-300">
+          {t('placeholder.coming_soon')}
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Description section -->
+  <section class="max-w-3xl mx-auto px-4 pb-16">
+    <div class="bg-sage-50 dark:bg-sage-600/10 rounded-xl p-8 border border-sage-200 dark:border-sage-500/20">
+      <p class="text-sand-700 dark:text-sand-200 leading-relaxed">
+        {t('placeholder.description')}
+      </p>
+    </div>
+  </section>
+</Base>

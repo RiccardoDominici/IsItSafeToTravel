@@ -1,0 +1,73 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations, getAlternateLinks, getLocalizedPath } from '../i18n/utils';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '@fontsource-variable/inter';
+import '@fontsource-variable/dm-sans';
+import '../styles/global.css';
+
+interface Props {
+  lang: Lang;
+  title?: string;
+  description?: string;
+}
+
+const { lang, title, description } = Astro.props;
+const t = useTranslations(lang);
+
+const pageTitle = title ? `${title} | ${t('site.title')}` : t('site.title');
+const pageDescription = description || t('site.description');
+const currentPath = Astro.url.pathname;
+const alternateLinks = getAlternateLinks(currentPath);
+const canonicalUrl = new URL(currentPath, Astro.site);
+const xDefaultHref = new URL(getLocalizedPath(currentPath, 'en'), Astro.site);
+---
+
+<!doctype html>
+<html lang={lang} class="">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href={canonicalUrl.href} />
+
+    <!-- hreflang tags for i18n SEO -->
+    {alternateLinks.map(({ lang: altLang, href }) => (
+      <link
+        rel="alternate"
+        hreflang={altLang}
+        href={new URL(href, Astro.site).href}
+      />
+    ))}
+    <link rel="alternate" hreflang="x-default" href={xDefaultHref.href} />
+
+    <!-- Dark mode detection (inline to prevent FOUC) -->
+    <script is:inline>
+      (function() {
+        const stored = localStorage.getItem('theme');
+        if (stored === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else if (stored === 'light') {
+          document.documentElement.classList.add('light');
+        } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
+  </head>
+  <body class="bg-sand-50 text-sand-900 dark:bg-sand-900 dark:text-sand-50 font-sans min-h-screen flex flex-col">
+    <Header lang={lang} currentPath={currentPath} />
+    <main class="flex-1">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+  </body>
+</html>

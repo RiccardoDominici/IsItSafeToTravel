@@ -1,0 +1,91 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { routes } from '../i18n/ui';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import DarkModeToggle from './DarkModeToggle.astro';
+
+interface Props {
+  lang: Lang;
+  currentPath: string;
+}
+
+const { lang, currentPath } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+---
+
+<header class="bg-sand-50/80 dark:bg-sand-900/80 backdrop-blur-sm border-b border-sand-200 dark:border-sand-700 sticky top-0 z-50">
+  <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
+    <!-- Logo / Site name -->
+    <a
+      href={`/${lang}/`}
+      class="font-heading text-xl font-bold text-sand-800 dark:text-sand-100 tracking-tight hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+    >
+      IsItSafeToTravel
+    </a>
+
+    <!-- Desktop nav -->
+    <nav class="hidden md:flex items-center gap-6" aria-label="Main navigation">
+      <a
+        href={`/${lang}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+      >
+        {t('nav.home')}
+      </a>
+      <a
+        href={`/${lang}/${r.about}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+      >
+        {t('nav.about')}
+      </a>
+      <a
+        href={`/${lang}/${r.methodology}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors"
+      >
+        {t('nav.methodology')}
+      </a>
+    </nav>
+
+    <!-- Actions -->
+    <div class="flex items-center gap-2">
+      <LanguageSwitcher lang={lang} currentPath={currentPath} />
+      <DarkModeToggle lang={lang} />
+
+      <!-- Mobile menu (details/summary pattern - no JS) -->
+      <details class="md:hidden relative">
+        <summary
+          class="list-none cursor-pointer w-10 h-10 flex items-center justify-center rounded-lg text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 transition-colors"
+          aria-label="Menu"
+        >
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path d="M4 6h16M4 12h16M4 18h16"></path>
+          </svg>
+        </summary>
+        <nav
+          class="absolute right-0 top-12 w-48 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-2"
+          aria-label="Mobile navigation"
+        >
+          <a
+            href={`/${lang}/`}
+            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
+          >
+            {t('nav.home')}
+          </a>
+          <a
+            href={`/${lang}/${r.about}/`}
+            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
+          >
+            {t('nav.about')}
+          </a>
+          <a
+            href={`/${lang}/${r.methodology}/`}
+            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
+          >
+            {t('nav.methodology')}
+          </a>
+        </nav>
+      </details>
+    </div>
+  </div>
+</header>

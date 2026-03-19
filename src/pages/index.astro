@@ -1,17 +1,33 @@
 ---
-
+// Root URL: redirect to /en/ or /it/ based on browser language
+// In static mode, we use client-side detection since Accept-Language
+// headers are not available at build time. Default redirect to /en/.
 ---
 
+<!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Default redirect to English (overridden by JS language detection) -->
+    <meta http-equiv="refresh" content="0;url=/en/" />
+    <link rel="alternate" hreflang="en" href="https://isitsafetotravel.com/en/" />
+    <link rel="alternate" hreflang="it" href="https://isitsafetotravel.com/it/" />
+    <link rel="alternate" hreflang="x-default" href="https://isitsafetotravel.com/en/" />
+    <title>Redirecting...</title>
+    <script is:inline>
+      // Detect browser language and redirect accordingly
+      (function() {
+        var lang = navigator.language || navigator.userLanguage || '';
+        if (lang.toLowerCase().indexOf('it') === 0) {
+          window.location.replace('/it/');
+        } else {
+          window.location.replace('/en/');
+        }
+      })();
+    </script>
+  </head>
+  <body>
+    <p>Redirecting to <a href="/en/">English</a>...</p>
+  </body>
 </html>
