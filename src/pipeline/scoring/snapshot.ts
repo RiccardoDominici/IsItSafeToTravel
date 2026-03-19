@@ -29,11 +29,16 @@ export function writeSnapshot(
   fetchResults: FetchResult[],
   weightsVersion: string,
 ): DailySnapshot {
+  const globalScore = countries.length > 0
+    ? Math.round((countries.reduce((sum, c) => sum + c.score, 0) / countries.length) * 10) / 10
+    : 0;
+
   const snapshot: DailySnapshot = {
     date,
     generatedAt: new Date().toISOString(),
     pipelineVersion: getPipelineVersion(),
     weightsVersion,
+    globalScore,
     countries,
     fetchResults,
   };

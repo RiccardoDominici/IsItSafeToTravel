@@ -95,6 +95,7 @@ export interface DailySnapshot {
   generatedAt: string; // ISO 8601
   pipelineVersion: string;
   weightsVersion: string;
+  globalScore: number; // arithmetic mean of all countries[].score, rounded to 1 decimal
   countries: ScoredCountry[];
   fetchResults: FetchResult[];
 }
