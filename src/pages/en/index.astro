@@ -4,26 +4,13 @@ import Base from '../../layouts/Base.astro';
 import SafetyMap from '../../components/SafetyMap.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
-import type { DailySnapshot } from '../../pipeline/types';
 import { buildHomepageJsonLd } from '../../lib/seo';
+import snapshot from '../../../data/scores/latest.json';
 
 const lang: Lang = 'en';
 const t = useTranslations(lang);
 
-// Load score data at build time
-// If latest.json doesn't exist yet (pipeline hasn't run), use empty array
-let scores = [];
-try {
-  const fs = await import('node:fs');
-  const path = await import('node:path');
-  const dataPath = path.join(process.cwd(), 'data', 'scores', 'latest.json');
-  if (fs.existsSync(dataPath)) {
-    const snapshot: DailySnapshot = JSON.parse(fs.readFileSync(dataPath, 'utf-8'));
-    scores = snapshot.countries;
-  }
-} catch {
-  // Pipeline hasn't run yet, map will show all countries as unscored
-}
+const scores = snapshot?.countries ?? [];
 
 const jsonLd = buildHomepageJsonLd('https://isitsafetotravels.com', lang);
 ---
