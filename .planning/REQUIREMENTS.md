@@ -74,8 +74,8 @@ Requirements for milestone v1.1: Comparison & Historical Trends.
 
 - [x] **COMP-01**: User can select 2 or more countries to compare via a searchable selector
 - [x] **COMP-02**: User sees side-by-side score cards for selected countries
-- [ ] **COMP-03**: User sees grouped horizontal bars comparing pillar scores across selected countries
-- [ ] **COMP-04**: User sees an overlay trend chart with historical lines for all selected countries
+- [x] **COMP-03**: User sees grouped horizontal bars comparing pillar scores across selected countries
+- [x] **COMP-04**: User sees an overlay trend chart with historical lines for all selected countries
 - [x] **COMP-05**: User can share comparison via URL (e.g., /compare?c=IT,FR,DE)
 
 ## v2 Requirements
@@ -164,8 +164,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HIST-02 | Phase 9 | Complete |
 | COMP-01 | Phase 10 | Complete |
 | COMP-02 | Phase 10 | Complete |
-| COMP-03 | Phase 10 | Pending |
-| COMP-04 | Phase 10 | Pending |
+| COMP-03 | Phase 10 | Complete |
+| COMP-04 | Phase 10 | Complete |
 | COMP-05 | Phase 10 | Complete |
 
 **Coverage (v1.1):**

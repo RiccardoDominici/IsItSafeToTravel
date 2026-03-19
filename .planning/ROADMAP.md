@@ -26,7 +26,7 @@
 - [ ] **Phase 7: Pipeline Extensions** - Global score computation and consolidated history index for efficient build-time loading
 - [ ] **Phase 8: Global Safety Score UI** - Homepage banner and dedicated global safety page with trend chart
 - [ ] **Phase 9: Enhanced History Charts** - Full-size interactive trend charts on country detail pages
-- [ ] **Phase 10: Country Comparison** - Side-by-side country comparison with score cards, bar charts, and overlay trends
+- [x] **Phase 10: Country Comparison** - Side-by-side country comparison with score cards, bar charts, and overlay trends (completed 2026-03-19)
 
 ## Phase Details
 
@@ -99,4 +99,4 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
 | 8. Global Safety Score UI | v1.1 | 0/2 | Not started | - |
 | 9. Enhanced History Charts | v1.1 | 0/1 | Not started | - |
-| 10. Country Comparison | 1/2 | In Progress|  | - |
+| 10. Country Comparison | 2/2 | Complete   | 2026-03-19 | - |
