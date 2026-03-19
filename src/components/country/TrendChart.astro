@@ -25,8 +25,11 @@ let areaD = '';
 let endpointCx = 0;
 let endpointCy = 0;
 let endpointColor = '#9ca3af';
-const showChart = data.length >= 2;
+const uniqueScores = new Set(data.map(d => d.score));
+const isFlat = uniqueScores.size <= 1;
+const showChart = data.length >= 2 && !isFlat;
 const showAccumulating = data.length < 7;
+const stableScore = isFlat && data.length >= 2 ? data[0].score : null;
 
 // Axis tick data
 let xTicks: Array<{ x: number; label: string }> = [];
@@ -168,6 +171,13 @@ if (showChart) {
           {t('country.trend_accumulating')}
         </p>
       )}
+    </div>
+  ) : stableScore !== null ? (
+    <div class="text-center py-8">
+      <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-sand-100 dark:bg-sand-800 border border-sand-200 dark:border-sand-700">
+        <span class="text-3xl font-heading font-bold" style={`color: ${scoreToColor(stableScore)}`}>{stableScore.toFixed(1)}</span>
+        <span class="text-sand-600 dark:text-sand-400 text-sm">{t('country.trend_stable')}</span>
+      </div>
     </div>
   ) : (
     <p class="text-sm text-sand-500 dark:text-sand-400 italic">

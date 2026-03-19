@@ -29,7 +29,9 @@ const innerHeight = chartHeight - margin.top - margin.bottom;
 let pathD = '';
 let endpointCx = 0;
 let endpointCy = 0;
-const showChart = globalHistory.length >= 2;
+const uniqueGlobalScores = new Set(globalHistory.map(d => d.score));
+const isGlobalFlat = uniqueGlobalScores.size <= 1;
+const showChart = globalHistory.length >= 2 && !isGlobalFlat;
 
 // Axis tick data
 let xTicks: Array<{ x: number; label: string }> = [];
@@ -157,6 +159,13 @@ if (showChart) {
             ))}
           </g>
         </svg>
+      ) : globalHistory.length >= 2 && isGlobalFlat ? (
+        <div class="text-center py-8">
+          <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-sand-100 dark:bg-sand-800 border border-sand-200 dark:border-sand-700">
+            <span class="text-3xl font-heading font-bold" style={`color: ${bgColor}`}>{globalScore.toFixed(1)}</span>
+            <span class="text-sand-600 dark:text-sand-400 text-sm">{t('global.trend_stable')}</span>
+          </div>
+        </div>
       ) : (
         <p class="text-sm text-sand-500 dark:text-sand-400 italic">
           {t('global.trend_accumulating')}
