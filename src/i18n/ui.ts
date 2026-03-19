@@ -23,6 +23,12 @@ export const ui = {
     'footer.legal': 'Legal',
     'language.switch': 'Switch language',
     'darkmode.toggle': 'Toggle dark mode',
+    'map.tooltip.nodata': 'No data available',
+    'map.zoom.in': 'Zoom in',
+    'map.zoom.out': 'Zoom out',
+    'map.tagline': 'Explore safety scores for 200+ countries worldwide',
+    'map.legend.safe': 'Safer',
+    'map.legend.danger': 'Less safe',
   },
   it: {
     'site.title': 'Si Puo Viaggiare in Sicurezza?',
@@ -40,6 +46,12 @@ export const ui = {
     'footer.legal': 'Note Legali',
     'language.switch': 'Cambia lingua',
     'darkmode.toggle': 'Cambia tema',
+    'map.tooltip.nodata': 'Dati non disponibili',
+    'map.zoom.in': 'Ingrandisci',
+    'map.zoom.out': 'Riduci',
+    'map.tagline': 'Esplora i punteggi di sicurezza per oltre 200 paesi nel mondo',
+    'map.legend.safe': 'Piu sicuro',
+    'map.legend.danger': 'Meno sicuro',
   },
 } as const;
 

@@ -1,0 +1,367 @@
+---
+import type { Lang } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { routes } from '../i18n/ui';
+import type { ScoredCountry } from '../pipeline/types';
+
+interface Props {
+  lang: Lang;
+  scores: ScoredCountry[];
+}
+
+const { lang, scores } = Astro.props;
+const t = useTranslations(lang);
+
+// Build minimal payload for client-side rendering
+const scoresData = scores.map((c) => ({
+  iso3: c.iso3,
+  name: c.name[lang],
+  score: c.score,
+}));
+
+const translations = {
+  nodata: t('map.tooltip.nodata'),
+  zoomIn: t('map.zoom.in'),
+  zoomOut: t('map.zoom.out'),
+};
+
+const zoomInLabel = t('map.zoom.in');
+const zoomOutLabel = t('map.zoom.out');
+const legendSafe = t('map.legend.safe');
+const legendDanger = t('map.legend.danger');
+const countryRoute = routes[lang].country;
+---
+
+<div
+  id="safety-map-container"
+  class="relative w-full"
+  style="height: calc(100vh - 8rem);"
+  data-lang={lang}
+  data-scores={JSON.stringify(scoresData)}
+  data-translations={JSON.stringify(translations)}
+  data-country-route={countryRoute}
+>
+  <!-- SVG injected by D3 -->
+
+  <!-- Tooltip -->
+  <div
+    id="map-tooltip"
+    class="absolute hidden pointer-events-none z-10
+      bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50
+      border border-sand-300 dark:border-sand-600
+      rounded-lg shadow-lg px-3 py-2 text-sm font-sans"
+    role="tooltip"
+  >
+  </div>
+
+  <!-- Zoom controls -->
+  <div class="absolute bottom-4 right-4 flex flex-col gap-1 z-10">
+    <button
+      id="zoom-in"
+      class="w-10 h-10 bg-sand-50 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg shadow text-xl font-bold text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700 flex items-center justify-center cursor-pointer"
+      aria-label={zoomInLabel}
+    >+</button>
+    <button
+      id="zoom-out"
+      class="w-10 h-10 bg-sand-50 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg shadow text-xl font-bold text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700 flex items-center justify-center cursor-pointer"
+      aria-label={zoomOutLabel}
+    >-</button>
+  </div>
+
+  <!-- Legend -->
+  <div class="absolute bottom-4 left-4 flex items-center gap-2 z-10 bg-sand-50/80 dark:bg-sand-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
+    <span>{legendDanger}</span>
+    <div class="w-24 h-3 rounded" style="background: linear-gradient(to right, #9e3a2a, #d4b83c, #4a7fbf);"></div>
+    <span>{legendSafe}</span>
+  </div>
+</div>
+
+<script>
+  import * as d3 from 'd3';
+  import * as topojson from 'topojson-client';
+  import {
+    safetyColorScale,
+    UNSCORED_COLOR,
+    UNSCORED_COLOR_DARK,
+    ISO_NUMERIC_TO_ALPHA3,
+  } from '../lib/map-utils';
+
+  interface ScoreEntry {
+    iso3: string;
+    name: string;
+    score: number;
+  }
+
+  interface Translations {
+    nodata: string;
+    zoomIn: string;
+    zoomOut: string;
+  }
+
+  function initMap() {
+    const container = document.getElementById('safety-map-container');
+    if (!container) return;
+
+    const lang = container.dataset.lang || 'en';
+    const scores: ScoreEntry[] = JSON.parse(container.dataset.scores || '[]');
+    const translations: Translations = JSON.parse(
+      container.dataset.translations || '{}'
+    );
+    const countryRoute = container.dataset.countryRoute || 'country';
+
+    // Build lookup maps
+    const scoreMap = new Map<string, number>();
+    const nameMap = new Map<string, string>();
+    for (const s of scores) {
+      scoreMap.set(s.iso3, s.score);
+      nameMap.set(s.iso3, s.name);
+    }
+
+    // Detect dark mode
+    const isDark = () => document.documentElement.classList.contains('dark');
+
+    // Stroke colors
+    const strokeColor = () => (isDark() ? '#374151' : '#e5e7eb');
+
+    // Container dimensions
+    const rect = container.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+
+    // Create SVG
+    const svg = d3
+      .select(container)
+      .insert('svg', ':first-child')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', `0 0 ${width} ${height}`)
+      .style('display', 'block');
+
+    const g = svg.append('g');
+
+    // Projection
+    const projection = d3
+      .geoNaturalEarth1()
+      .fitSize([width, height], { type: 'Sphere' } as d3.GeoPermissibleObjects);
+
+    const path = d3.geoPath().projection(projection);
+
+    // Zoom behavior
+    const zoom = d3
+      .zoom<SVGSVGElement, unknown>()
+      .scaleExtent([1, 8])
+      .translateExtent([
+        [0, 0],
+        [width, height],
+      ])
+      .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+        g.attr('transform', event.transform.toString());
+      });
+
+    svg.call(zoom);
+
+    // Zoom buttons
+    const zoomInBtn = document.getElementById('zoom-in');
+    const zoomOutBtn = document.getElementById('zoom-out');
+    if (zoomInBtn) {
+      zoomInBtn.addEventListener('click', () => {
+        svg.transition().duration(300).call(zoom.scaleBy, 1.5);
+      });
+    }
+    if (zoomOutBtn) {
+      zoomOutBtn.addEventListener('click', () => {
+        svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.5);
+      });
+    }
+
+    // Tooltip
+    const tooltip = document.getElementById('map-tooltip')!;
+
+    function showTooltip(
+      event: MouseEvent | TouchEvent,
+      iso3: string
+    ) {
+      const name = nameMap.get(iso3);
+      const score = scoreMap.get(iso3);
+      if (!name && score === undefined) {
+        tooltip.classList.add('hidden');
+        return;
+      }
+
+      const displayName = name || iso3;
+      const scoreText =
+        score !== undefined
+          ? `${displayName} \u2014 ${score.toFixed(1)}`
+          : `${displayName} \u2014 ${translations.nodata}`;
+
+      tooltip.textContent = scoreText;
+      tooltip.classList.remove('hidden');
+
+      // Position tooltip
+      const containerRect = container!.getBoundingClientRect();
+      let clientX: number, clientY: number;
+      if ('touches' in event && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+      } else if ('clientX' in event) {
+        clientX = event.clientX;
+        clientY = event.clientY;
+      } else {
+        return;
+      }
+
+      let left = clientX - containerRect.left + 10;
+      let top = clientY - containerRect.top + 10;
+
+      // Keep tooltip within container bounds
+      const ttRect = tooltip.getBoundingClientRect();
+      if (left + ttRect.width > containerRect.width) {
+        left = clientX - containerRect.left - ttRect.width - 10;
+      }
+      if (top + ttRect.height > containerRect.height) {
+        top = clientY - containerRect.top - ttRect.height - 10;
+      }
+
+      tooltip.style.left = `${left}px`;
+      tooltip.style.top = `${top}px`;
+    }
+
+    function hideTooltip() {
+      tooltip.classList.add('hidden');
+    }
+
+    // Touch tracking for mobile
+    let lastTappedIso3: string | null = null;
+
+    // Navigation helper
+    function navigateToCountry(iso3: string) {
+      if (!scoreMap.has(iso3)) return;
+      window.location.href = `/${lang}/${countryRoute}/${iso3.toLowerCase()}`;
+    }
+
+    // Load topojson and render
+    fetch('/world-topo.json')
+      .then((res) => res.json())
+      .then((topoData) => {
+        const countries = topojson.feature(
+          topoData as any,
+          (topoData as any).objects.countries
+        ) as any;
+
+        g.selectAll('path')
+          .data(countries.features)
+          .enter()
+          .append('path')
+          .attr('d', path as any)
+          .attr('class', 'country-path')
+          .attr('fill', (d: any) => {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            if (!iso3) return isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+            return scoreMap.has(iso3)
+              ? safetyColorScale(scoreMap.get(iso3)!)
+              : isDark()
+                ? UNSCORED_COLOR_DARK
+                : UNSCORED_COLOR;
+          })
+          .attr('stroke', strokeColor())
+          .attr('stroke-width', 0.5)
+          .style('cursor', (d: any) => {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            return iso3 && scoreMap.has(iso3) ? 'pointer' : 'default';
+          })
+          .on('mouseenter', function (event: MouseEvent, d: any) {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            if (!iso3) return;
+            d3.select(this).attr('stroke-width', 1.5);
+            showTooltip(event, iso3);
+          })
+          .on('mousemove', function (event: MouseEvent, d: any) {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            if (!iso3) return;
+            showTooltip(event, iso3);
+          })
+          .on('mouseleave', function () {
+            d3.select(this).attr('stroke-width', 0.5);
+            hideTooltip();
+          })
+          .on('click', function (_event: MouseEvent, d: any) {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            if (!iso3) return;
+            navigateToCountry(iso3);
+          })
+          .on('touchstart', function (event: TouchEvent, d: any) {
+            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+            if (!iso3) return;
+
+            if (iso3 === lastTappedIso3) {
+              // Second tap: navigate
+              navigateToCountry(iso3);
+            } else {
+              // First tap: show tooltip
+              lastTappedIso3 = iso3;
+              showTooltip(event, iso3);
+            }
+          });
+
+        // Tap on empty area dismisses tooltip
+        svg.on('click', (event: MouseEvent) => {
+          if ((event.target as Element).tagName === 'svg') {
+            lastTappedIso3 = null;
+            hideTooltip();
+          }
+        });
+
+        // Dark mode observer
+        const observer = new MutationObserver(() => {
+          const dark = isDark();
+          g.selectAll<SVGPathElement, any>('.country-path')
+            .attr('fill', (d: any) => {
+              const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+              if (!iso3) return dark ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+              return scoreMap.has(iso3)
+                ? safetyColorScale(scoreMap.get(iso3)!)
+                : dark
+                  ? UNSCORED_COLOR_DARK
+                  : UNSCORED_COLOR;
+            })
+            .attr('stroke', strokeColor());
+        });
+
+        observer.observe(document.documentElement, {
+          attributes: true,
+          attributeFilter: ['class'],
+        });
+
+        // Responsive resize
+        let resizeTimer: ReturnType<typeof setTimeout>;
+        window.addEventListener('resize', () => {
+          clearTimeout(resizeTimer);
+          resizeTimer = setTimeout(() => {
+            const newRect = container!.getBoundingClientRect();
+            const newWidth = newRect.width;
+            const newHeight = newRect.height;
+
+            svg.attr('viewBox', `0 0 ${newWidth} ${newHeight}`);
+            projection.fitSize([newWidth, newHeight], {
+              type: 'Sphere',
+            } as d3.GeoPermissibleObjects);
+
+            g.selectAll<SVGPathElement, any>('.country-path').attr(
+              'd',
+              path as any
+            );
+
+            // Reset zoom
+            svg.call(zoom.transform, d3.zoomIdentity);
+          }, 250);
+        });
+      })
+      .catch((err) => {
+        console.error('Failed to load map data:', err);
+      });
+  }
+
+  // Init on load and after Astro view transitions
+  initMap();
+  document.addEventListener('astro:after-swap', initMap);
+</script>
