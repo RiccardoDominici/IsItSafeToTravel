@@ -77,7 +77,10 @@ Plans:
   3. User sees grouped horizontal bars comparing pillar sub-scores across all selected countries
   4. User sees an overlay trend chart with historical score lines for all selected countries
   5. User can share a specific comparison via URL (e.g., /compare?c=IT,FR,DE) and the recipient sees the same comparison
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 10-01-PLAN.md -- Page scaffolding, i18n, country selector, score cards, and URL sharing
+- [ ] 10-02-PLAN.md -- Grouped pillar bars and overlay trend chart with D3
 
 ## Progress
 
@@ -96,4 +99,4 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
 | 8. Global Safety Score UI | v1.1 | 0/2 | Not started | - |
 | 9. Enhanced History Charts | v1.1 | 0/1 | Not started | - |
-| 10. Country Comparison | v1.1 | 0/0 | Not started | - |
+| 10. Country Comparison | v1.1 | 0/2 | Not started | - |
