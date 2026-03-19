@@ -19,16 +19,17 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-- [x] Interactive world map color-coded by safety score (green to red) — Validated in Phase 3: Interactive Map
-- [x] Detail page per destination explaining the score breakdown by criteria — Validated in Phase 4: Country Detail Pages
-- [x] Formula transparency: every factor and weight explained on the detail page — Validated in Phase 4: Country Detail Pages
-- [x] Sources section citing all indices and data origins — Validated in Phase 4: Country Detail Pages
+<!-- v1.1: Comparison & Historical Trends -->
+- [ ] Comparison page to compare safety scores of 2+ countries side by side
+- [ ] Global safety score representing overall world safety as a benchmark value
+- [ ] Historical safety trend chart per country (click country to view score over time)
+- [ ] Multi-country overlay on historical trend charts for comparison
+- [ ] Historical data collection and storage for trend analysis
+- [ ] All new features maintain minimal, clean, and intuitive design language
+
+<!-- Carried from v1.0 (not yet validated) -->
 - [ ] Country-level safety view as default, with regional drill-down on zoom
-- [x] Search by city, country, or region with instant results — Validated in Phase 5: Search and Transparency
 - [ ] Multilingual support (English primary, Italian, expandable i18n)
-- [x] SEO-optimized pages for every destination (meta, structured data, sitemap) — Validated in Phase 6: SEO, Performance, and Launch
-- [x] Mobile-responsive design with clear visual hierarchy — Validated in Phase 6: SEO, Performance, and Launch
-- [x] Fast load times (static generation where possible) — Validated in Phase 6: SEO, Performance, and Launch
 
 ### Out of Scope
 
@@ -66,5 +67,16 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | Multilingua from start | Domain is global, travelers speak many languages | — Pending |
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
+## Current Milestone: v1.1 Comparison & Historical Trends
+
+**Goal:** Enable travelers to compare safety across countries and track safety trends over time, with a global benchmark score.
+
+**Target features:**
+- Comparison page for 2+ countries side by side
+- Global safety score (world benchmark)
+- Historical safety trend chart per country
+- Multi-country overlay on trend charts
+- Historical data collection pipeline
+
 ---
-*Last updated: 2026-03-19 — Phase 6 (SEO, Performance, and Launch) complete: JSON-LD structured data on all pages, OG/Twitter meta tags, sitemap i18n, robots.txt, mobile responsiveness fixes (dvh, 44px touch targets, 16px base font), Lighthouse optimization. All v1 phases complete.*
+*Last updated: 2026-03-19 — Milestone v1.1 started: Comparison & Historical Trends*
