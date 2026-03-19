@@ -63,7 +63,9 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Each country detail page displays a full-size trend chart showing safety score evolution over time (replacing or augmenting the existing sparkline)
   2. User sees interactive tooltips on hover (desktop) or tap (mobile) showing the exact score and date for each data point
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 09-01-PLAN.md -- Full-size TrendChart component with interactive tooltips, replacing sparkline
 
 ### Phase 10: Country Comparison
 **Goal**: Users can compare safety scores and trends across multiple countries on a single page
@@ -93,5 +95,5 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 6. SEO, Performance, and Launch | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
 | 8. Global Safety Score UI | v1.1 | 0/2 | Not started | - |
-| 9. Enhanced History Charts | v1.1 | 0/0 | Not started | - |
+| 9. Enhanced History Charts | v1.1 | 0/1 | Not started | - |
 | 10. Country Comparison | v1.1 | 0/0 | Not started | - |
