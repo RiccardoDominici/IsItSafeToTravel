@@ -25,7 +25,7 @@ const currentPath = Astro.url.pathname;
 const alternateLinks = getAlternateLinks(currentPath);
 const canonicalUrl = new URL(currentPath, Astro.site);
 const xDefaultHref = new URL(getLocalizedPath(currentPath, 'en'), Astro.site);
-const resolvedOgImage = new URL(ogImage || '/og-default.png', Astro.site).href;
+const resolvedOgImage = ogImage ? new URL(ogImage, Astro.site).href : null;
 const resolvedOgType = ogType || 'website';
 ---
 
@@ -57,17 +57,17 @@ const resolvedOgType = ogType || 'website';
     <!-- Open Graph -->
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
-    <meta property="og:image" content={resolvedOgImage} />
+    {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:type" content={resolvedOgType} />
     <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_US'} />
     <meta property="og:site_name" content="IsItSafeToTravel" />
 
     <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={resolvedOgImage ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
-    <meta name="twitter:image" content={resolvedOgImage} />
+    {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
 
     <!-- JSON-LD Structured Data -->
     {jsonLd && (
