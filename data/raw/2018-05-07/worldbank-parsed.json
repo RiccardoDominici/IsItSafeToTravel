@@ -1,0 +1,4535 @@
+{
+  "source": "worldbank",
+  "fetchedAt": "2026-03-19T23:20:44.332Z",
+  "indicators": [
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_political_stability",
+      "value": -2.75344133377075,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.366779267787933,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.842107713222504,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_political_stability",
+      "value": 1.16629731655121,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_political_stability",
+      "value": 1.39124858379364,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.347208589315414,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.823102116584778,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.00690981233492494,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.451066911220551,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_political_stability",
+      "value": 1.33750987052917,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_political_stability",
+      "value": 0.971185445785522,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_political_stability",
+      "value": 0.884860396385193,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_political_stability",
+      "value": -0.711399376392365,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_political_stability",
+      "value": 0.847745537757874,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.846294164657593,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_political_stability",
+      "value": -0.985569059848785,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.900694906711578,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.353592693805695,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_political_stability",
+      "value": 0.393769443035126,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.00212321965955198,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.146990418434143,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.07766103744507,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_political_stability",
+      "value": -0.286620706319809,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_political_stability",
+      "value": -0.400853604078293,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.958469867706299,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.459598511457443,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.23603785037994,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.444411188364029,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_political_stability",
+      "value": -1.06026446819305,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_political_stability",
+      "value": -1.57027816772461,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_political_stability",
+      "value": 0.833261907100677,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.110921673476696,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_political_stability",
+      "value": -1.40180146694183,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.963971078395844,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_political_stability",
+      "value": 1.11083495616913,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_political_stability",
+      "value": -2.17220759391785,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_political_stability",
+      "value": -1.47801554203033,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_political_stability",
+      "value": 0.412769764661789,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.298572480678558,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_political_stability",
+      "value": -0.806941986083984,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.361612617969513,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_political_stability",
+      "value": -2.08051562309265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_political_stability",
+      "value": -0.34833887219429,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_political_stability",
+      "value": 0.453386008739471,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_political_stability",
+      "value": -0.89799964427948,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_political_stability",
+      "value": 0.793678283691406,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.640602827072144,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_political_stability",
+      "value": 0.48454225063324,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_political_stability",
+      "value": 1.0264128446579,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_political_stability",
+      "value": 0.931982338428497,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.133426666259766,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_political_stability",
+      "value": 1.06905841827393,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.012300387956202,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0947211682796478,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_political_stability",
+      "value": -1.18812155723572,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_political_stability",
+      "value": -0.389159649610519,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0901522859930992,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.609360635280609,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_political_stability",
+      "value": 0.580415546894073,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.377749621868134,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_political_stability",
+      "value": -1.27460920810699,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_political_stability",
+      "value": 0.832882523536682,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.891889691352844,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.013894104398787,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.257340848445892,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0874964967370033,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.447562873363495,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_political_stability",
+      "value": 0.577865242958069,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0366430282592773,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_political_stability",
+      "value": 0.153979063034058,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.93680357933044,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_political_stability",
+      "value": 0.968813717365265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.697404980659485,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.538147449493408,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.880597352981567,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.684820473194122,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_political_stability",
+      "value": -0.191837906837463,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.640141665935516,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_political_stability",
+      "value": -0.531820952892303,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.776628255844116,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.737591445446014,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.39481735229492,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_political_stability",
+      "value": -0.997706770896912,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.552034020423889,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.34218072891235,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_political_stability",
+      "value": -2.52111387252808,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.01136958599091,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.918100237846375,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.326271682977676,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.423993796110153,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.03756272792816,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.379854559898376,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0524022579193115,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.17971229553223,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.998790442943573,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_political_stability",
+      "value": -0.340687155723572,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.638123750686646,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_political_stability",
+      "value": -0.675371170043945,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_political_stability",
+      "value": 0.0906421020627022,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.529712080955505,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_political_stability",
+      "value": 0.407969743013382,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.395444005727768,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.62160050868988,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.188606411218643,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.204105362296104,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_political_stability",
+      "value": -2.43511581420898,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_political_stability",
+      "value": 1.45383167266846,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_political_stability",
+      "value": 0.729236841201782,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_political_stability",
+      "value": 1.34749054908752,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_political_stability",
+      "value": 1.22980165481567,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.68912386894226,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.414752036333084,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.806978523731232,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.29659616947174,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.53650796413422,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.00106203556061,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.376433491706848,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.219330430030823,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.197214365005493,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.25965404510498,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.67466557025909,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.85348308086395,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.619800806045532,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.0689744353294373,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.384083539247513,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.649216711521149,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.363294839859009,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.893020570278168,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.33859252929688,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.842516541481018,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.692261755466461,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.5483518242836,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.21190083026886,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.225580662488937,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.383804857730865,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.30234295129776,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.599303364753723,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.105849832296371,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.459257543087006,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.51381993293762,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.393062382936478,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.13500821590424,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.10305547714233,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.71514165401459,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.739683032035828,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.7171630859375,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.33122742176056,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.940260529518127,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.186479195952415,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.383742153644562,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.14288258552551,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.80356800556183,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.13406419754028,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.467835366725922,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.60271030664444,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.3015296459198,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.463792055845261,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.72105348110199,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.01980626583099,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.77322614192963,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.950413644313812,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.704450607299805,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.365240544080734,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.663264274597168,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.301445573568344,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.930314421653748,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.42317736148834,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.61951661109924,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.20345735549927,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.276305735111237,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.444717615842819,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.176708772778511,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 2.03439903259277,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.39622473716736,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.719786107540131,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.455757111310959,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.270510762929916,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.59137535095215,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.0510871484875679,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.113017320632935,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.70181095600128,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.249509677290916,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.29659616947174,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.0757360458374,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.2317943572998,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.26597440242767,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.38360184431076,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.06081771850586,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.05719459056854,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.72965824604034,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.5550696849823,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.67925131320953,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.00142208894249052,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.314401388168335,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.712859213352203,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.80134296417236,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.41250944137573,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.960164308547974,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.240623876452446,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.218186751008034,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.49385368824005,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.231425076723099,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.503466427326202,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.42828243970871,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.576457321643829,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.64292967319489,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.1995415687561,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.383978813886642,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.186258539557457,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.928701460361481,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.863126993179321,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.923180341720581,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.782591283321381,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_rule_of_law",
+      "value": -0.366341024637222,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.00164043903351,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_rule_of_law",
+      "value": -1.6911062002182,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.63467311859131,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.923098206520081,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_rule_of_law",
+      "value": 1.76795589923859,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_rule_of_law",
+      "value": 0.971355676651001,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.50175786018372,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0805245339870453,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.488536387681961,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.498675554990768,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.87921941280365,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.00525164604187,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0535420440137386,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0280606187880039,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.170582666993141,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.01341271400452,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.55598998069763,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.45611667633057,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.145130529999733,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.500043928623199,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.119608148932457,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.762283682823181,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.385260552167892,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.297942787408829,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.22463178634644,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.627418994903564,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.631518959999084,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.284297674894333,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.329585134983063,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.670872628688812,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.254543900489807,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.520569622516632,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.21311509609222,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.111848846077919,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.644067406654358,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.44979333877563,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.340908616781235,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.599801898002625,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.857635021209717,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.67513394355774,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.1579931974411,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.7354371547699,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.56226944923401,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.907178461551666,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.496678441762924,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.139370113611221,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.71606528759003,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.57248735427856,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.20024716854095,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.352706402540207,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.647450387477875,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.513932764530182,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.250103235244751,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.883620500564575,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.951154172420502,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.81060206890106,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.986045360565186,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.268966734409332,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.38873553276062,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.317793667316437,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.454036295413971,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.489993751049042,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.1962114572525,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.76837337017059,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.15055811405182,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.672340869903564,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.666894257068634,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.7747842669487,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 2.01387786865234,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.41971850395203,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.826597571372986,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.75137335062027,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.518133521080017,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.52356374263763,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.319947093725204,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.25846466422081,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.808081805706024,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.196969509124756,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.222566723823547,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.717763662338257,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.02549612522125,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.52193677425385,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.25484773516655,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.96603763103485,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.618258476257324,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.86079668998718,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.443152636289597,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.42581415176392,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.262917786836624,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.141379877924919,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.47861048579216,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.26693630218506,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.37824308872223,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.16925418376923,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.408853262662888,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.595467865467072,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.63458871841431,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0952311158180237,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0420836359262466,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.493653178215027,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0642903819680214,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.60623157024384,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.1352561712265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.444443076848984,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.121419370174408,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.646288573741913,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.723394215106964,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.00028502941132,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.67380428314209,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.922583103179932,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.32320761680603,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.68525779247284,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.68894004821777,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.0314474105835,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.73641335964203,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.1579931974411,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.50287592411041,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.546018898487091,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.658903956413269,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.78064966201782,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.17894005775452,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.19948387145996,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.236501798033714,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.0992739275097847,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.409369438886642,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.20740139484406,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.7674548625946,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.56858718395233,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.853233695030212,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.09605658054352,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.176260635256767,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.926822602748871,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.37170553207397,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.155491337180138,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.42957329750061,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.169633418321609,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.391633450984955,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.59020102024078,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.688641130924225,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.606174349784851,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.71906042098999,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.480954378843307,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.760663568973541,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.188220024108887,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.131607040762901,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.47827136516571,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.755423963069916,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.35710227489471,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.1630687713623,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.79020822048187,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.456048339605331,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.23330664634705,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.40442442893982,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.958202481269836,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.286848217248917,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.340439766645432,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.852027416229248,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.51785528659821,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.37805664539337,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.50113844871521,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.526206731796265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.0467699244618416,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.134250968694687,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.607749342918396,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.509728491306305,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_corruption_control",
+      "value": 2.15699577331543,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.74312162399292,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.535799264907837,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.830888628959656,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.629500389099121,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.514722347259521,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.586434960365295,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.54342126846313,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.32252204418182,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.46850371360779,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.231804639101028,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.50531792640686,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.69995129108429,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_corruption_control",
+      "value": 2.17175912857056,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.28155159950256,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.85915344953537,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.502051889896393,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.724816799163818,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.89839863777161,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.138363629579544,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.0562080480158329,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.14411771297455,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.37033399939537,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.17894005775452,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.821764290332794,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.06008899211884,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.55908715724945,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.250006973743439,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.28570652008057,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.656895399093628,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.63755881786346,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.0553392209112644,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.80560302734375,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.229758977890015,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.299604296684265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.984446704387665,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.45831036567688,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.5349406003952,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.753730356693268,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.215687438845634,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.23074534535408,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.38858759403229,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.124165490269661,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.492212444543839,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.863009214401245,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.348575413227081,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.58803951740265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.572804868221283,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.528270959854126,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.31661069393158,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.961097419261932,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.997348785400391,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.297239780426025,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.13296115398407,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.137125387787819,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_corruption_control",
+      "value": -0.87186872959137,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_corruption_control",
+      "value": -1.53027164936066,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_corruption_control",
+      "value": 1.95875442028046,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.466041952371597,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_corruption_control",
+      "value": 2.04803919792175,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_corruption_control",
+      "value": 0.674436092376709,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_child_mortality",
+      "value": 65.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_child_mortality",
+      "value": 23.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_child_mortality",
+      "value": 77.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_child_mortality",
+      "value": 10.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_child_mortality",
+      "value": 10.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_child_mortality",
+      "value": 23.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_child_mortality",
+      "value": 7.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_child_mortality",
+      "value": 33.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_child_mortality",
+      "value": 4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 90.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_child_mortality",
+      "value": 27.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_child_mortality",
+      "value": 27.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_child_mortality",
+      "value": 45.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "VGB",
+      "indicatorName": "wb_child_mortality",
+      "value": 14.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_child_mortality",
+      "value": 7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_child_mortality",
+      "value": 91.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_child_mortality",
+      "value": 59,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_child_mortality",
+      "value": 27.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_child_mortality",
+      "value": 79.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_child_mortality",
+      "value": 119.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_child_mortality",
+      "value": 118.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_child_mortality",
+      "value": 7.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_child_mortality",
+      "value": 14.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_child_mortality",
+      "value": 45.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_child_mortality",
+      "value": 86.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_child_mortality",
+      "value": 47.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_child_mortality",
+      "value": 78.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_child_mortality",
+      "value": 3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_child_mortality",
+      "value": 59.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_child_mortality",
+      "value": 32.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_child_mortality",
+      "value": 34.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_child_mortality",
+      "value": 14.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_child_mortality",
+      "value": 20.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_child_mortality",
+      "value": 84.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_child_mortality",
+      "value": 41.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 51,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_child_mortality",
+      "value": 56.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_child_mortality",
+      "value": 24.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_child_mortality",
+      "value": 39.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_child_mortality",
+      "value": 52.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_child_mortality",
+      "value": 46,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_child_mortality",
+      "value": 25.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_child_mortality",
+      "value": 108,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_child_mortality",
+      "value": 82.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_child_mortality",
+      "value": 30.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_child_mortality",
+      "value": 64.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_child_mortality",
+      "value": 36.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_child_mortality",
+      "value": 24.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_child_mortality",
+      "value": 26.6,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.7,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 10.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 44.3,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_child_mortality",
+      "value": 59.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.4,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 19.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_child_mortality",
+      "value": 46.8,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_child_mortality",
+      "value": 14,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_child_mortality",
+      "value": 69.1,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_child_mortality",
+      "value": 84,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.9,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.2,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.5,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_air_pollution",
+      "value": 67.2271774798558,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.0461862321065,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_air_pollution",
+      "value": 24.9335900639775,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.98174556652016,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.89580638748632,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_air_pollution",
+      "value": 24.2650153621146,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.9233007168875,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.1850800443346,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_air_pollution",
+      "value": 34.201366074335,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.74121920379958,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.5861934480679,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.2360923544978,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.5796799431178,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_air_pollution",
+      "value": 71.8872328410934,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_air_pollution",
+      "value": 59.513577848333,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.2651852221243,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.9825400264261,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.4925874999047,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.7474102969967,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 54.0562679352757,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_air_pollution",
+      "value": 34.0838819368766,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_air_pollution",
+      "value": 25.1667590386614,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_air_pollution",
+      "value": 32.4989922059154,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.9110410814922,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.2516401526844,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.49485587718805,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.7159830127087,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_air_pollution",
+      "value": 58.1036119011901,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_air_pollution",
+      "value": 28.3384994863636,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.7384229474609,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_air_pollution",
+      "value": 22.9919425508182,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_air_pollution",
+      "value": 40.8875596706757,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.09175111254794,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.9740977574518,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_air_pollution",
+      "value": 54.3808173498018,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.0512130318909,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_air_pollution",
+      "value": 40.2663875187565,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.0492875724803,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.6282907601438,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.7227743114458,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_air_pollution",
+      "value": 27.9644662335483,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.1307436338713,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_air_pollution",
+      "value": 50.8958061004876,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.0014497847215,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.9153664764928,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.24949999422,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_air_pollution",
+      "value": 17.3467438168398,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.3539340590391,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_air_pollution",
+      "value": 43.0573056895078,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.3127256712935,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.5892802619564,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.386683414634,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_air_pollution",
+      "value": 65.4631301601869,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.0853412269847,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.3913053457764,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_air_pollution",
+      "value": 41.5613821480188,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.7966811057876,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.4243293115739,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_air_pollution",
+      "value": 30.2623392192692,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.7353038744821,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.49695736300986,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.4599453286038,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_air_pollution",
+      "value": 27.0383051447292,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_air_pollution",
+      "value": 59.2734928704383,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.4542384404894,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.6526030992972,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_air_pollution",
+      "value": 56.0041825783104,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.5840100248101,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.75630549235812,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_air_pollution",
+      "value": 24.0969881609342,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.0065645243546,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.2233964899274,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_air_pollution",
+      "value": 48.4123967434209,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_air_pollution",
+      "value": 54.1409784310321,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_air_pollution",
+      "value": 25.7636448984049,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.5479155500506,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.5175969852982,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_air_pollution",
+      "value": 17.5018535227019,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.55924065638007,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_air_pollution",
+      "value": 68.1209525065052,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.4371895829409,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_air_pollution",
+      "value": 37.6762291896797,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_air_pollution",
+      "value": 41.7558636075287,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.2986369369357,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.5625974806507,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.3354361294692,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.8426821458431,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.0790330283313,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_air_pollution",
+      "value": 30.8911213683016,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.5938700993782,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.9875653334569,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.3366995948348,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_air_pollution",
+      "value": 34.1978293742031,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_air_pollution",
+      "value": 25.9343920098722,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_air_pollution",
+      "value": 63.4583554482098,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 27.4518144818682,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.9840690040935,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.2076039693657,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.9808899582131,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.0240026773582,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_air_pollution",
+      "value": 42.0381017982909,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_air_pollution",
+      "value": 41.4209740874326,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.0838572805935,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.29178826573985,
+      "year": 2018,
+      "source": "worldbank"
+    }
+  ]
+}
