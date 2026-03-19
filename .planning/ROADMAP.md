@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Project Foundation** - Astro scaffold with i18n routing, Cloudflare deployment, and dev tooling
 - [ ] **Phase 2: Data Pipeline and Scoring Engine** - Fetch public indices, compute composite safety scores for 200+ countries
 - [ ] **Phase 3: Interactive Map** - Color-coded world map with zoom, pan, and click-to-navigate
-- [ ] **Phase 4: Country Detail Pages** - Per-country pages with score breakdowns, trends, advisories, and sources
+- [x] **Phase 4: Country Detail Pages** - Per-country pages with score breakdowns, trends, advisories, and sources (completed 2026-03-19)
 - [ ] **Phase 5: Search and Transparency** - Autocomplete search, methodology page, and legal disclaimers
 - [ ] **Phase 6: SEO, Performance, and Launch** - Static generation, structured data, mobile polish, and Lighthouse 90+
 
@@ -121,6 +121,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Project Foundation | 0/2 | Planning complete | - |
 | 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
 | 3. Interactive Map | 0/2 | Planning complete | - |
-| 4. Country Detail Pages | 0/2 | Planning complete | - |
+| 4. Country Detail Pages | 2/2 | Complete   | 2026-03-19 |
 | 5. Search and Transparency | 0/TBD | Not started | - |
 | 6. SEO, Performance, and Launch | 0/TBD | Not started | - |
