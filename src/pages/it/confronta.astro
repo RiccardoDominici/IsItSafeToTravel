@@ -322,10 +322,64 @@ for (const [iso3, points] of history.entries()) {
     section.appendChild(grid);
   }
 
+  const pillarLabels: Record<string, string> = {
+    conflict: t.pillar_conflict,
+    crime: t.pillar_crime,
+    health: t.pillar_health,
+    governance: t.pillar_governance,
+    environment: t.pillar_environment,
+  };
+
+  const PILLAR_NAMES = ['conflict', 'crime', 'health', 'governance', 'environment'];
+
+  function renderPillarBars(): void {
+    const section = document.getElementById('pillar-bars')!;
+    section.innerHTML = '';
+    if (selectedCountries.length === 0) return;
+
+    const heading = document.createElement('h2');
+    heading.className = 'text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4';
+    heading.textContent = t.pillars_title;
+    section.appendChild(heading);
+
+    PILLAR_NAMES.forEach(pillarName => {
+      const group = document.createElement('div');
+      group.className = 'mb-5';
+
+      const label = document.createElement('h3');
+      label.className = 'text-sm font-medium text-sand-600 dark:text-sand-400 mb-2';
+      label.textContent = pillarLabels[pillarName] || pillarName;
+      group.appendChild(label);
+
+      const bars = document.createElement('div');
+      bars.className = 'space-y-1.5';
+
+      selectedCountries.forEach((country, i) => {
+        const pillar = country.pillars.find(p => p.name === pillarName);
+        const score = pillar ? pillar.score : 0;
+        const displayScore = (score * 10).toFixed(1);
+
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2';
+        row.innerHTML = `
+          <span class="w-20 shrink-0 text-xs text-sand-500 dark:text-sand-400 text-right truncate">${country.name}</span>
+          <div class="flex-1 h-5 bg-sand-200 dark:bg-sand-700 rounded">
+            <div class="h-5 rounded transition-all duration-300" style="width: ${score * 100}%; background-color: ${PALETTE[i % PALETTE.length]}; min-width: 2px;"></div>
+          </div>
+          <span class="w-12 shrink-0 text-xs font-medium text-sand-700 dark:text-sand-300 text-right">${displayScore}/10</span>
+        `;
+        bars.appendChild(row);
+      });
+
+      group.appendChild(bars);
+      section.appendChild(group);
+    });
+  }
+
   function render(): void {
     renderSelector();
     renderScoreCards();
-    // renderPillarBars() and renderTrendChart() will be added in Plan 02
+    renderPillarBars();
   }
 
   readFromUrl();
