@@ -29,3 +29,7 @@ Thumbs.db
 # Logs
 *.log
 npm-debug.log*
+
+# Pipeline raw data temp files
+data/raw/**/*.tmp
+data/raw/**/*.partial
