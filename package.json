@@ -3,11 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=18.0.0"
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "node -e \"const fs=require('fs');console.log('=== BUILD DEBUG ===');console.log('CWD:',process.cwd());console.log('Node:',process.version);console.log('data/scores exists:',fs.existsSync('data/scores'));console.log('latest.json exists:',fs.existsSync('data/scores/latest.json'));if(fs.existsSync('data/scores/latest.json')){const j=JSON.parse(fs.readFileSync('data/scores/latest.json','utf8'));console.log('countries count:',j.countries?.length);console.log('date:',j.date)}console.log('=== END DEBUG ===' )\" && astro build",
+    "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
