@@ -1,6 +1,6 @@
 {
   "date": "2026-03-19",
-  "generatedAt": "2026-03-19T21:38:28.830Z",
+  "generatedAt": "2026-03-19T21:52:08.647Z",
   "pipelineVersion": "0.0.1",
   "weightsVersion": "2.0.0",
   "globalScore": 6.6,
@@ -97,8 +97,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.467,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AFG",
@@ -201,8 +214,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.795Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.607Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AGO",
@@ -312,8 +338,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AIA",
@@ -370,8 +409,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "ALA",
@@ -420,7 +466,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
       "sources": []
     },
     {
@@ -531,8 +577,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.795Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AND",
@@ -642,8 +701,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ARE",
@@ -753,8 +825,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ARG",
@@ -864,8 +949,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ARM",
@@ -975,8 +1073,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ASM",
@@ -1064,8 +1175,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.533,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ATA",
@@ -1122,8 +1240,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "ATF",
@@ -1172,7 +1297,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
       "sources": []
     },
     {
@@ -1283,8 +1408,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AUS",
@@ -1394,8 +1532,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AUT",
@@ -1505,8 +1656,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "AZE",
@@ -1616,8 +1780,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BDI",
@@ -1727,8 +1904,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BEL",
@@ -1838,8 +2028,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BEN",
@@ -1949,8 +2152,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BES",
@@ -1999,7 +2215,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
       "sources": []
     },
     {
@@ -2110,8 +2326,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BGD",
@@ -2221,8 +2450,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BGR",
@@ -2332,8 +2574,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BHR",
@@ -2443,8 +2698,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BHS",
@@ -2554,8 +2822,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.609Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BIH",
@@ -2665,8 +2946,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BLM",
@@ -2715,7 +3009,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -2826,8 +3120,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BLZ",
@@ -2937,8 +3244,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BOL",
@@ -3048,8 +3368,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BRA",
@@ -3159,8 +3492,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BRB",
@@ -3270,8 +3616,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.797Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BRN",
@@ -3381,8 +3740,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BTN",
@@ -3492,8 +3864,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.610Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "BVT",
@@ -3542,7 +3927,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -3653,8 +4038,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CAF",
@@ -3764,8 +4162,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CAN",
@@ -3875,8 +4286,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CCK",
@@ -3925,7 +4349,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -4036,8 +4460,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CHL",
@@ -4147,8 +4584,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CHN",
@@ -4258,8 +4708,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CIV",
@@ -4355,8 +4818,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CMR",
@@ -4466,8 +4936,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "COD",
@@ -4570,8 +5053,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "COG",
@@ -4674,8 +5170,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "COK",
@@ -4724,7 +5233,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -4835,8 +5344,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "COM",
@@ -4946,8 +5468,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CPV",
@@ -5050,8 +5585,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.798Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.611Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CRI",
@@ -5161,8 +5709,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CUB",
@@ -5272,8 +5833,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CUW",
@@ -5322,7 +5896,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -5372,7 +5946,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -5460,8 +6034,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.4,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CYP",
@@ -5571,8 +6158,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "CZE",
@@ -5668,8 +6268,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DEU",
@@ -5779,8 +6386,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DJI",
@@ -5890,8 +6510,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DMA",
@@ -6001,8 +6634,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DNK",
@@ -6112,8 +6758,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DOM",
@@ -6223,8 +6882,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "DZA",
@@ -6334,8 +7006,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.796Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.608Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ECU",
@@ -6445,8 +7130,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "EGY",
@@ -6556,8 +7254,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ERI",
@@ -6667,8 +7378,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ESH",
@@ -6725,8 +7449,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.818Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.635Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "ESP",
@@ -6836,8 +7567,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "EST",
@@ -6947,8 +7691,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ETH",
@@ -7058,8 +7815,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "FIN",
@@ -7169,8 +7939,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "FJI",
@@ -7280,8 +8063,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "FLK",
@@ -7338,8 +8134,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "FRA",
@@ -7449,8 +8252,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "FRO",
@@ -7499,7 +8315,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
       "sources": []
     },
     {
@@ -7596,8 +8412,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GAB",
@@ -7707,8 +8530,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GBR",
@@ -7804,8 +8640,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GEO",
@@ -7915,8 +8758,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GGY",
@@ -7965,7 +8821,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
       "sources": []
     },
     {
@@ -8076,8 +8932,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GIB",
@@ -8134,8 +9003,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "GIN",
@@ -8245,8 +9121,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GLP",
@@ -8303,8 +9192,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "GMB",
@@ -8400,8 +9296,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.615Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GNB",
@@ -8504,8 +9407,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GNQ",
@@ -8615,8 +9531,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GRC",
@@ -8726,8 +9655,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GRD",
@@ -8837,8 +9779,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GRL",
@@ -8933,8 +9888,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.6,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GTM",
@@ -9044,8 +10012,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.802Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GUF",
@@ -9109,8 +10090,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "GUM",
@@ -9198,8 +10186,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.533,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "GUY",
@@ -9309,8 +10304,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "HKG",
@@ -9397,8 +10405,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.4,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "HND",
@@ -9508,8 +10529,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "HRV",
@@ -9619,8 +10653,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.800Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.613Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "HTI",
@@ -9730,8 +10777,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.616Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "HUN",
@@ -9841,8 +10901,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "IDN",
@@ -9952,8 +11025,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "IMN",
@@ -10010,8 +11096,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "IND",
@@ -10121,8 +11214,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "IOT",
@@ -10179,8 +11285,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.630Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "IRL",
@@ -10290,8 +11403,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "IRN",
@@ -10401,8 +11527,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "IRQ",
@@ -10512,8 +11651,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ISL",
@@ -10623,8 +11775,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.803Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ISR",
@@ -10727,8 +11892,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ITA",
@@ -10838,8 +12016,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "JAM",
@@ -10949,8 +12140,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.617Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "JEY",
@@ -10999,7 +12203,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
       "sources": []
     },
     {
@@ -11110,8 +12314,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "JPN",
@@ -11221,8 +12438,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.804Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KAZ",
@@ -11332,8 +12562,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KEN",
@@ -11443,8 +12686,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KGZ",
@@ -11554,8 +12810,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KHM",
@@ -11665,8 +12934,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KIR",
@@ -11776,8 +13058,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KNA",
@@ -11880,8 +13175,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KOR",
@@ -11991,8 +13299,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "KWT",
@@ -12102,8 +13423,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LAO",
@@ -12213,8 +13547,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LBN",
@@ -12324,8 +13671,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LBR",
@@ -12435,8 +13795,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LBY",
@@ -12546,8 +13919,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LCA",
@@ -12650,8 +14036,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LIE",
@@ -12745,8 +14144,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.467,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LKA",
@@ -12856,8 +14268,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LSO",
@@ -12967,8 +14392,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LTU",
@@ -13078,8 +14516,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LUX",
@@ -13189,8 +14640,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "LVA",
@@ -13300,8 +14764,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.619Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MAC",
@@ -13381,8 +14858,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.333,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MAF",
@@ -13431,7 +14915,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -13542,8 +15026,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MCO",
@@ -13653,8 +15150,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MDA",
@@ -13764,8 +15274,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MDG",
@@ -13875,8 +15398,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MDV",
@@ -13986,8 +15522,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MEX",
@@ -14097,8 +15646,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MHL",
@@ -14208,8 +15770,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MKD",
@@ -14312,8 +15887,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MLI",
@@ -14423,8 +16011,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MLT",
@@ -14534,8 +16135,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MMR",
@@ -14638,8 +16252,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MNE",
@@ -14749,8 +16376,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MNG",
@@ -14860,8 +16500,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MNP",
@@ -14918,8 +16571,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.2,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MOZ",
@@ -15029,8 +16689,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MRT",
@@ -15140,8 +16813,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MSR",
@@ -15205,8 +16891,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "MTQ",
@@ -15263,8 +16956,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "MUS",
@@ -15374,8 +17074,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.807Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.621Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MWI",
@@ -15485,8 +17198,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MYS",
@@ -15596,8 +17322,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.806Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.620Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "MYT",
@@ -15654,8 +17393,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "NAM",
@@ -15765,8 +17511,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NCL",
@@ -15830,8 +17589,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "NER",
@@ -15941,8 +17707,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NFK",
@@ -15991,7 +17770,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -16102,8 +17881,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NIC",
@@ -16213,8 +18005,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NIU",
@@ -16263,7 +18068,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
       "sources": []
     },
     {
@@ -16374,8 +18179,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NOR",
@@ -16485,8 +18303,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NPL",
@@ -16596,8 +18427,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NRU",
@@ -16707,8 +18551,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "NZL",
@@ -16818,8 +18675,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.622Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "OMN",
@@ -16929,8 +18799,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.808Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PAK",
@@ -17040,8 +18923,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PAN",
@@ -17151,8 +19047,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PCN",
@@ -17201,7 +19110,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -17312,8 +19221,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PHL",
@@ -17423,8 +19345,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PLW",
@@ -17534,8 +19469,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PNG",
@@ -17645,8 +19593,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "POL",
@@ -17756,8 +19717,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PRI",
@@ -17845,8 +19819,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.533,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PRK",
@@ -17942,8 +19923,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.805Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.618Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PRT",
@@ -18053,8 +20041,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PRY",
@@ -18164,8 +20165,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PSE",
@@ -18268,8 +20282,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.623Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "PYF",
@@ -18333,8 +20360,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-19T21:38:28.815Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.631Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "QAT",
@@ -18444,8 +20478,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "REU",
@@ -18494,7 +20541,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -18605,8 +20652,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.809Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "RUS",
@@ -18716,8 +20776,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "RWA",
@@ -18827,8 +20900,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SAU",
@@ -18938,8 +21024,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SDN",
@@ -19049,8 +21148,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SEN",
@@ -19160,8 +21272,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SGP",
@@ -19271,8 +21396,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SGS",
@@ -19321,7 +21459,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
       "sources": []
     },
     {
@@ -19371,7 +21509,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -19421,7 +21559,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
       "sources": []
     },
     {
@@ -19532,8 +21670,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SLE",
@@ -19643,8 +21794,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SLV",
@@ -19754,8 +21918,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SMR",
@@ -19865,8 +22042,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SOM",
@@ -19976,8 +22166,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SPM",
@@ -20026,7 +22229,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
       "sources": []
     },
     {
@@ -20137,8 +22340,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SSD",
@@ -20248,8 +22464,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "STP",
@@ -20352,8 +22581,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SUR",
@@ -20463,8 +22705,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SVK",
@@ -20574,8 +22829,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SVN",
@@ -20685,8 +22953,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SWE",
@@ -20796,8 +23077,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SWZ",
@@ -20900,8 +23194,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.801Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.614Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SXM",
@@ -20958,8 +23265,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.633Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "SYC",
@@ -21069,8 +23383,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.625Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "SYR",
@@ -21180,8 +23507,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TCA",
@@ -21246,8 +23586,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.267,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TCD",
@@ -21357,8 +23710,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.799Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.612Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TGO",
@@ -21468,8 +23834,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "THA",
@@ -21579,8 +23958,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TJK",
@@ -21690,8 +24082,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TKL",
@@ -21740,7 +24145,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
       "sources": []
     },
     {
@@ -21851,8 +24256,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TLS",
@@ -21948,8 +24366,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TON",
@@ -22059,8 +24484,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TTO",
@@ -22170,8 +24608,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TUN",
@@ -22281,8 +24732,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TUR",
@@ -22392,8 +24856,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TUV",
@@ -22503,8 +24980,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "TWN",
@@ -22568,8 +25058,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        }
+      ]
     },
     {
       "iso3": "TZA",
@@ -22679,8 +25176,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.812Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.627Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "UGA",
@@ -22790,8 +25300,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "UKR",
@@ -22901,8 +25424,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "UMI",
@@ -22951,7 +25487,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
       "sources": []
     },
     {
@@ -23062,8 +25598,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "USA",
@@ -23159,8 +25708,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.733,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "UZB",
@@ -23270,8 +25826,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VAT",
@@ -23320,7 +25889,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
       "sources": []
     },
     {
@@ -23424,8 +25993,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.8,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VEN",
@@ -23535,8 +26117,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VGB",
@@ -23601,8 +26196,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.267,
-      "lastUpdated": "2026-03-19T21:38:28.818Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VIR",
@@ -23690,8 +26298,15 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.533,
-      "lastUpdated": "2026-03-19T21:38:28.817Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.634Z",
+      "sources": [
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VNM",
@@ -23801,8 +26416,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "VUT",
@@ -23912,8 +26540,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.813Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.628Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "WLF",
@@ -23962,7 +26603,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-19T21:38:28.818Z",
+      "lastUpdated": "2026-03-19T21:52:08.635Z",
       "sources": []
     },
     {
@@ -24073,8 +26714,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.810Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.624Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "XKX",
@@ -24176,8 +26830,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.667,
-      "lastUpdated": "2026-03-19T21:38:28.816Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.632Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "YEM",
@@ -24287,8 +26954,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ZAF",
@@ -24398,8 +27078,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.811Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.626Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ZMB",
@@ -24509,8 +27202,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     },
     {
       "iso3": "ZWE",
@@ -24620,8 +27326,21 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.867,
-      "lastUpdated": "2026-03-19T21:38:28.814Z",
-      "sources": []
+      "lastUpdated": "2026-03-19T21:52:08.629Z",
+      "sources": [
+        {
+          "name": "advisories",
+          "url": "https://travel.state.gov/",
+          "fetchedAt": "2026-03-19T21:52:07.566Z",
+          "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "worldbank",
+          "url": "https://data.worldbank.org/",
+          "fetchedAt": "2026-03-19T21:52:07.519Z",
+          "description": "World Bank Development Indicators — governance, health, and environment data"
+        }
+      ]
     }
   ],
   "fetchResults": [
@@ -24629,20 +27348,20 @@
       "source": "worldbank",
       "success": true,
       "countriesFound": 207,
-      "fetchedAt": "2026-03-19T21:38:27.208Z"
+      "fetchedAt": "2026-03-19T21:52:07.519Z"
     },
     {
       "source": "acled",
       "success": false,
       "countriesFound": 0,
       "error": "ACLED credentials not configured. Set ACLED_API_KEY and ACLED_EMAIL environment variables.",
-      "fetchedAt": "2026-03-19T21:38:27.250Z"
+      "fetchedAt": "2026-03-19T21:52:07.565Z"
     },
     {
       "source": "advisories",
       "success": true,
       "countriesFound": 209,
-      "fetchedAt": "2026-03-19T21:38:27.251Z"
+      "fetchedAt": "2026-03-19T21:52:07.566Z"
     }
   ]
 }
