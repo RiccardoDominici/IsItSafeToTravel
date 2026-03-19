@@ -2,6 +2,7 @@
 export const prerender = true;
 import Base from '../../layouts/Base.astro';
 import SafetyMap from '../../components/SafetyMap.astro';
+import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { buildHomepageJsonLd } from '../../lib/seo';
@@ -22,6 +23,7 @@ const jsonLd = buildHomepageJsonLd('https://isitsafetotravels.com', lang);
         {t('map.tagline')}
       </p>
     </div>
+    <GlobalScoreBanner lang={lang} />
     <div class="flex-1 min-h-0">
       <SafetyMap lang={lang} />
     </div>
