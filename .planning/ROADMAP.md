@@ -99,4 +99,4 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
 | 8. Global Safety Score UI | v1.1 | 0/2 | Not started | - |
 | 9. Enhanced History Charts | v1.1 | 0/1 | Not started | - |
-| 10. Country Comparison | 2/2 | Complete   | 2026-03-19 | - |
+| 10. Country Comparison | 2/2 | Complete    | 2026-03-19 | - |
