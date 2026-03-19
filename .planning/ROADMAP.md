@@ -76,11 +76,11 @@ Plans:
   3. Historical trend is visible as a sparkline or chart showing score evolution over time
   4. Government advisory levels (US, UK, EU) are shown alongside the composite score
   5. All data sources are listed with links to originals at the bottom of each page
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md — Shared color scale, data loading utilities, i18n strings, and 7 country page components
+- [ ] 04-02-PLAN.md — EN and IT country page routes with getStaticPaths and visual verification
 
 ### Phase 5: Search and Transparency
 **Goal**: Users can find any destination instantly and understand exactly how scores are computed
@@ -121,6 +121,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5 -> 6
 | 1. Project Foundation | 0/2 | Planning complete | - |
 | 2. Data Pipeline and Scoring Engine | 0/3 | Planning complete | - |
 | 3. Interactive Map | 0/2 | Planning complete | - |
-| 4. Country Detail Pages | 0/TBD | Not started | - |
+| 4. Country Detail Pages | 0/2 | Planning complete | - |
 | 5. Search and Transparency | 0/TBD | Not started | - |
 | 6. SEO, Performance, and Launch | 0/TBD | Not started | - |
