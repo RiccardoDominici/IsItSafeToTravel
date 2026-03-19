@@ -2,22 +2,13 @@
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
-import type { ScoredCountry } from '../pipeline/types';
 
 interface Props {
   lang: Lang;
-  scores: ScoredCountry[];
 }
 
-const { lang, scores } = Astro.props;
+const { lang } = Astro.props;
 const t = useTranslations(lang);
-
-// Build minimal payload for client-side rendering
-const scoresData = scores.map((c) => ({
-  iso3: c.iso3,
-  name: c.name[lang],
-  score: c.score,
-}));
 
 const translations = {
   nodata: t('map.tooltip.nodata'),
@@ -37,7 +28,6 @@ const countryRoute = routes[lang].country;
   class="relative w-full"
   style="height: calc(100dvh - 8rem);"
   data-lang={lang}
-  data-scores={JSON.stringify(scoresData)}
   data-translations={JSON.stringify(translations)}
   data-country-route={countryRoute}
 >
@@ -98,16 +88,31 @@ const countryRoute = routes[lang].country;
     zoomOut: string;
   }
 
-  function initMap() {
+  async function initMap() {
     const container = document.getElementById('safety-map-container');
     if (!container) return;
 
     const lang = container.dataset.lang || 'en';
-    const scores: ScoreEntry[] = JSON.parse(container.dataset.scores || '[]');
     const translations: Translations = JSON.parse(
       container.dataset.translations || '{}'
     );
     const countryRoute = container.dataset.countryRoute || 'country';
+
+    // Fetch scores from static JSON file
+    let scores: ScoreEntry[] = [];
+    try {
+      const res = await fetch('/scores.json');
+      if (res.ok) {
+        const snapshot = await res.json();
+        scores = (snapshot.countries || []).map((c: any) => ({
+          iso3: c.iso3,
+          name: c.name?.[lang] || c.name?.en || c.iso3,
+          score: c.score,
+        }));
+      }
+    } catch (e) {
+      console.error('Failed to load scores:', e);
+    }
 
     // Build lookup maps
     const scoreMap = new Map<string, number>();

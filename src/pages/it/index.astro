@@ -5,12 +5,9 @@ import SafetyMap from '../../components/SafetyMap.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { buildHomepageJsonLd } from '../../lib/seo';
-import snapshot from '@data/scores/latest.json';
 
 const lang: Lang = 'it';
 const t = useTranslations(lang);
-
-const scores = snapshot?.countries ?? [];
 
 const jsonLd = buildHomepageJsonLd('https://isitsafetotravels.com', lang);
 ---
@@ -26,7 +23,7 @@ const jsonLd = buildHomepageJsonLd('https://isitsafetotravels.com', lang);
       </p>
     </div>
     <div class="flex-1 min-h-0">
-      <SafetyMap lang={lang} scores={scores} />
+      <SafetyMap lang={lang} />
     </div>
   </section>
 </Base>
