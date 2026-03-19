@@ -23,8 +23,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Search
 
-- [ ] **SRCH-01**: User can search for any country or city with autocomplete suggestions
-- [ ] **SRCH-02**: Search results link directly to the destination detail page
+- [x] **SRCH-01**: User can search for any country or city with autocomplete suggestions
+- [x] **SRCH-02**: Search results link directly to the destination detail page
 
 ### Country Detail
 
@@ -98,8 +98,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | MAP-01 | Phase 3 | Complete |
 | MAP-02 | Phase 3 | Complete |
 | MAP-03 | Phase 3 | Complete |
-| SRCH-01 | Phase 5 | Pending |
-| SRCH-02 | Phase 5 | Pending |
+| SRCH-01 | Phase 5 | Complete |
+| SRCH-02 | Phase 5 | Complete |
 | CTRY-01 | Phase 4 | Complete |
 | CTRY-02 | Phase 4 | Complete |
 | CTRY-03 | Phase 4 | Complete |
