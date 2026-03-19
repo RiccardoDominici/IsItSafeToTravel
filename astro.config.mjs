@@ -10,7 +10,15 @@ export default defineConfig({
   adapter: cloudflare({ platformProxy: { enabled: true } }),
 
   integrations: [
-    sitemap(),
+    sitemap({
+      i18n: {
+        defaultLocale: 'en',
+        locales: {
+          en: 'en',
+          it: 'it',
+        },
+      },
+    }),
   ],
 
   vite: {

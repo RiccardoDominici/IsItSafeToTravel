@@ -11,9 +11,12 @@ interface Props {
   lang: Lang;
   title?: string;
   description?: string;
+  jsonLd?: Record<string, unknown>;
+  ogImage?: string;
+  ogType?: string;
 }
 
-const { lang, title, description } = Astro.props;
+const { lang, title, description, jsonLd, ogImage, ogType } = Astro.props;
 const t = useTranslations(lang);
 
 const pageTitle = title ? `${title} | ${t('site.title')}` : t('site.title');
@@ -22,6 +25,8 @@ const currentPath = Astro.url.pathname;
 const alternateLinks = getAlternateLinks(currentPath);
 const canonicalUrl = new URL(currentPath, Astro.site);
 const xDefaultHref = new URL(getLocalizedPath(currentPath, 'en'), Astro.site);
+const resolvedOgImage = new URL(ogImage || '/og-default.png', Astro.site).href;
+const resolvedOgType = ogType || 'website';
 ---
 
 <!doctype html>
@@ -48,6 +53,26 @@ const xDefaultHref = new URL(getLocalizedPath(currentPath, 'en'), Astro.site);
       />
     ))}
     <link rel="alternate" hreflang="x-default" href={xDefaultHref.href} />
+
+    <!-- Open Graph -->
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:image" content={resolvedOgImage} />
+    <meta property="og:url" content={canonicalUrl.href} />
+    <meta property="og:type" content={resolvedOgType} />
+    <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_US'} />
+    <meta property="og:site_name" content="IsItSafeToTravel" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+    <meta name="twitter:image" content={resolvedOgImage} />
+
+    <!-- JSON-LD Structured Data -->
+    {jsonLd && (
+      <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    )}
 
     <!-- Dark mode detection (inline to prevent FOUC) -->
     <script is:inline>
