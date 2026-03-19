@@ -97,6 +97,43 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang): Record<string,
 }
 
 /**
+ * Build JSON-LD structured data for the global safety page.
+ * Uses WebPage schema with aggregateRating for the global score.
+ */
+export function buildGlobalSafetyJsonLd(
+  globalScore: number,
+  canonicalUrl: string,
+  lang: Lang,
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+        url: canonicalUrl,
+        name: lang === 'en' ? 'Global Safety Score' : 'Punteggio di Sicurezza Globale',
+        description: lang === 'en'
+          ? `Current global safety score: ${globalScore.toFixed(1)}/10. Track world safety trends over time.`
+          : `Punteggio di sicurezza globale attuale: ${globalScore.toFixed(1)}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
+        inLanguage: lang === 'it' ? 'it-IT' : 'en-US',
+      },
+      {
+        '@type': 'AggregateRating',
+        ratingValue: globalScore.toFixed(1),
+        bestRating: '10',
+        worstRating: '1',
+        ratingCount: 248,
+        itemReviewed: {
+          '@type': 'Place',
+          name: lang === 'en' ? 'World' : 'Mondo',
+        },
+      },
+    ],
+  };
+}
+
+/**
  * Build simple WebPage JSON-LD for static pages (methodology, legal).
  */
 export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang): Record<string, unknown> {
