@@ -55,8 +55,8 @@ Requirements for milestone v1.1: Comparison & Historical Trends.
 
 ### Data Pipeline
 
-- [ ] **PIPE-01**: Pipeline computes a global safety score (arithmetic mean of all country scores) daily
-- [ ] **PIPE-02**: Pipeline consolidates daily snapshots into a single history-index.json for efficient build-time loading
+- [x] **PIPE-01**: Pipeline computes a global safety score (arithmetic mean of all country scores) daily
+- [x] **PIPE-02**: Pipeline consolidates daily snapshots into a single history-index.json for efficient build-time loading
 
 ### Global Safety Score
 
@@ -154,8 +154,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| PIPE-01 | Phase 7 | Pending |
-| PIPE-02 | Phase 7 | Pending |
+| PIPE-01 | Phase 7 | Complete |
+| PIPE-02 | Phase 7 | Complete |
 | GLOB-01 | Phase 8 | Pending |
 | GLOB-02 | Phase 8 | Pending |
 | GLOB-03 | Phase 8 | Pending |

@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Comparison & Historical Trends
-status: active
-stopped_at: null
-last_updated: "2026-03-19"
+status: unknown
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-03-19T19:31:26.880Z"
 progress:
   total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Milestone v1.1 -- Comparison & Historical Trends
+**Current focus:** Phase 07 — pipeline-extensions
 
 ## Current Position
 
-Phase: 7 of 10 (Pipeline Extensions) -- first phase of v1.1
-Plan: Not yet planned
-Status: Ready to plan
-Last activity: 2026-03-19 -- Roadmap created for v1.1
-
-Progress (v1.1): [..........] 0%
+Phase: 07 (pipeline-extensions) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -50,6 +46,7 @@ Progress (v1.1): [..........] 0%
 | 06 SEO & Launch | 2 | 5 | ~20 |
 
 *Updated after each plan completion*
+| Phase 07-pipeline-extensions P01 | 3min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -64,6 +61,8 @@ Recent decisions affecting current work:
 - [v1.0]: Data passed to client via data-attributes on container div (Astro SSG pattern)
 - [Research]: Comparison page is ONLY feature needing client-side D3 (new pattern)
 - [Research]: Inline data embedding has ~6-month scalability ceiling before fetch-based switch needed
+- [Phase 07-pipeline-extensions]: Consolidated history-index.json pattern for efficient build-time data loading
+- [Phase 07-pipeline-extensions]: Fallback pattern: new code handles legacy snapshots missing globalScore field
 
 ### Pending Todos
 
@@ -76,6 +75,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19
-Stopped at: Roadmap created for v1.1 milestone
+Last session: 2026-03-19T19:31:26.878Z
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None
