@@ -67,8 +67,8 @@ Requirements for milestone v1.1: Comparison & Historical Trends.
 
 ### Historical Trends
 
-- [ ] **HIST-01**: User can view a full-size trend chart on each country's detail page showing safety score over time
-- [ ] **HIST-02**: User sees interactive tooltips on hover/tap showing exact score and date
+- [x] **HIST-01**: User can view a full-size trend chart on each country's detail page showing safety score over time
+- [x] **HIST-02**: User sees interactive tooltips on hover/tap showing exact score and date
 
 ### Country Comparison
 
@@ -160,8 +160,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | GLOB-02 | Phase 8 | Complete |
 | GLOB-03 | Phase 8 | Complete |
 | GLOB-04 | Phase 8 | Complete |
-| HIST-01 | Phase 9 | Pending |
-| HIST-02 | Phase 9 | Pending |
+| HIST-01 | Phase 9 | Complete |
+| HIST-02 | Phase 9 | Complete |
 | COMP-01 | Phase 10 | Pending |
 | COMP-02 | Phase 10 | Pending |
 | COMP-03 | Phase 10 | Pending |

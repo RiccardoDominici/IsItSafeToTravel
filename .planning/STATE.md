@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Comparison & Historical Trends
-status: unknown
-stopped_at: Completed 08-02-PLAN.md
-last_updated: "2026-03-19T20:07:40.898Z"
+status: phase-complete
+stopped_at: Completed 09-01-PLAN.md
+last_updated: "2026-03-19T20:22:26.562Z"
 progress:
   total_phases: 4
-  completed_phases: 2
-  total_plans: 3
-  completed_plans: 3
+  completed_phases: 3
+  total_plans: 4
+  completed_plans: 4
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-19)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 08 — global-safety-score-ui
+**Current focus:** Phase 09 — enhanced-history-charts
 
 ## Current Position
 
-Phase: 08 (global-safety-score-ui) — COMPLETE
-Plan: 2 of 2 (all complete)
+Phase: 09 (enhanced-history-charts) — COMPLETE
+Plan: 1 of 1 (DONE)
 
 ## Performance Metrics
 
@@ -49,6 +49,7 @@ Plan: 2 of 2 (all complete)
 | Phase 07-pipeline-extensions P01 | 3min | 2 tasks | 8 files |
 | Phase 08-global-safety-score-ui P01 | 2min | 2 tasks | 4 files |
 | Phase 08-global-safety-score-ui P02 | 2min | 2 tasks | 3 files |
+| Phase 09 P01 | 3min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - [Phase 07-pipeline-extensions]: Fallback pattern: new code handles legacy snapshots missing globalScore field
 - [Phase 08-global-safety-score-ui]: Banner renders conditionally only when snapshot exists and globalScore > 0
 - [Phase 08-global-safety-score-ui]: Full-size D3 trend chart uses scaleTime for date axis, AggregateRating JSON-LD for SEO
+- [Phase 09]: Used Astro processed script (not is:inline) for tooltip — bundled and deduped across pages
+- [Phase 09]: Kept TrendSparkline.astro intact for potential Phase 10 comparison page use
 
 ### Pending Todos
 
@@ -79,6 +82,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T20:04:00Z
-Stopped at: Completed 08-02-PLAN.md
+Last session: 2026-03-19T20:22:26.560Z
+Stopped at: Completed 09-01-PLAN.md
 Resume file: None
