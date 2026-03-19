@@ -90,6 +90,54 @@ export function computeCountryScore(
   };
 }
 
+/** Metadata for known data sources used in scoring. */
+const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
+  worldbank: {
+    url: 'https://data.worldbank.org/',
+    description: 'World Bank Development Indicators — governance, health, and environment data',
+  },
+  acled: {
+    url: 'https://acleddata.com/',
+    description: 'Armed Conflict Location & Event Data Project — conflict event counts',
+  },
+  advisories: {
+    url: 'https://travel.state.gov/',
+    description: 'Travel advisories from US State Department and UK FCDO',
+  },
+};
+
+/**
+ * Build SourceMeta[] for a given country from the raw data map.
+ * Only includes sources that actually have indicators for this country.
+ */
+function buildSourcesForCountry(
+  iso3: string,
+  rawDataBySource: Map<string, RawSourceData>,
+): SourceMeta[] {
+  const sources: SourceMeta[] = [];
+  const upperIso3 = iso3.toUpperCase();
+
+  for (const [, sourceData] of rawDataBySource) {
+    const hasDataForCountry = sourceData.indicators.some(
+      (ind) => ind.countryIso3.toUpperCase() === upperIso3,
+    );
+    if (hasDataForCountry) {
+      const catalog = SOURCE_CATALOG[sourceData.source] ?? {
+        url: '',
+        description: sourceData.source,
+      };
+      sources.push({
+        name: sourceData.source,
+        url: catalog.url,
+        fetchedAt: sourceData.fetchedAt,
+        description: catalog.description,
+      });
+    }
+  }
+
+  return sources;
+}
+
 /**
  * Compute scores for all countries.
  *
@@ -122,7 +170,8 @@ export function computeAllScores(
     const entry = getCountryByIso3(iso3);
     if (!entry) continue; // Skip unknown iso3 codes not in our country list
 
-    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, {}, []);
+    const sources = buildSourcesForCountry(iso3, rawDataBySource);
+    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, {}, sources);
     results.push(scored);
   }
 

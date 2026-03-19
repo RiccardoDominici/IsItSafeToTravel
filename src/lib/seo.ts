@@ -36,7 +36,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const weakestScore = (weakest.score * 10).toFixed(1);
   const strongestLabel = pillarLabels[lang][strongest.name];
   const weakestLabel = pillarLabels[lang][weakest.name];
-  const sourceCount = country.sources.length;
+  const sourceCount = country.sources.length || 3; // fallback: pipeline uses 3 public sources
   const name = country.name[lang];
 
   if (lang === 'en') {
