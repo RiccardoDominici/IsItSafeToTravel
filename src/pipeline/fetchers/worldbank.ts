@@ -26,11 +26,13 @@ async function fetchIndicator(
   indicatorName: string,
   year: number,
 ): Promise<RawIndicator[]> {
-  // mrnev=1 gets most recent non-empty value for each country
-  const url = `${WB_BASE_URL}/${wbCode}?format=json&per_page=300&mrnev=1`;
+  // Request data for a 3-year window ending at the target year
+  // This ensures we get data even if the exact year is missing (WB data has gaps)
+  const startYear = year - 2;
+  const url = `${WB_BASE_URL}/${wbCode}?format=json&per_page=500&date=${startYear}:${year}`;
 
   const response = await fetch(url, {
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(60_000),
     headers: { Accept: 'application/json' },
   });
 
@@ -47,11 +49,14 @@ async function fetchIndicator(
   }
 
   const entries = json[1] as Array<Record<string, unknown>>;
-  const indicators: RawIndicator[] = [];
+
+  // Group by country, keep only the most recent year with data
+  const byCountry = new Map<string, { value: number; year: number }>();
 
   for (const entry of entries) {
     const iso3 = String(entry.countryiso3code || '').toUpperCase();
     const value = entry.value;
+    const entryYear = Number(entry.date) || year;
 
     if (!iso3 || value === null || value === undefined) continue;
     if (!getCountryByIso3(iso3)) continue;
@@ -59,11 +64,19 @@ async function fetchIndicator(
     const numValue = Number(value);
     if (isNaN(numValue)) continue;
 
+    const existing = byCountry.get(iso3);
+    if (!existing || entryYear > existing.year) {
+      byCountry.set(iso3, { value: numValue, year: entryYear });
+    }
+  }
+
+  const indicators: RawIndicator[] = [];
+  for (const [iso3, data] of byCountry) {
     indicators.push({
       countryIso3: iso3,
       indicatorName,
-      value: numValue,
-      year: Number(entry.date) || year,
+      value: data.value,
+      year: data.year,
       source: 'worldbank',
     });
   }
@@ -74,16 +87,17 @@ async function fetchIndicator(
 export async function fetchWorldBank(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
-  const currentYear = new Date().getFullYear();
+  // Use the snapshot date's year to fetch historical data
+  const targetYear = parseInt(date.slice(0, 4), 10);
 
   try {
-    console.log('[WORLDBANK] Fetching World Bank indicators...');
+    console.log(`[WORLDBANK] Fetching World Bank indicators for year ${targetYear}...`);
     const allIndicators: RawIndicator[] = [];
     const errors: string[] = [];
 
     // Fetch all indicators in parallel
     const results = await Promise.allSettled(
-      INDICATORS.map((ind) => fetchIndicator(ind.wbCode, ind.name, currentYear)),
+      INDICATORS.map((ind) => fetchIndicator(ind.wbCode, ind.name, targetYear)),
     );
 
     for (let i = 0; i < results.length; i++) {
