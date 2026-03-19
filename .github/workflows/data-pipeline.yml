@@ -1,0 +1,76 @@
+name: Daily Data Pipeline
+
+on:
+  schedule:
+    # Run daily at 06:00 UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+    # Allow manual triggering from GitHub UI
+    inputs:
+      date:
+        description: 'Date override (YYYY-MM-DD, leave empty for today)'
+        required: false
+        type: string
+
+permissions:
+  contents: write  # Needed to commit data files back to repo
+
+jobs:
+  pipeline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run data pipeline
+        run: npx tsx src/pipeline/run.ts ${{ github.event.inputs.date || '' }}
+        env:
+          ACLED_API_KEY: ${{ secrets.ACLED_API_KEY }}
+          ACLED_EMAIL: ${{ secrets.ACLED_EMAIL }}
+        continue-on-error: true
+        id: pipeline
+
+      - name: Check pipeline output
+        run: |
+          if [ -f "data/scores/latest.json" ]; then
+            echo "Pipeline produced output"
+            COUNTRY_COUNT=$(node -e "const d=JSON.parse(require('fs').readFileSync('data/scores/latest.json','utf8')); console.log(d.countries.length)")
+            echo "Countries scored: $COUNTRY_COUNT"
+          else
+            echo "::warning::Pipeline did not produce output"
+            exit 1
+          fi
+
+      - name: Commit and push data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/raw/ data/scores/
+          if git diff --cached --quiet; then
+            echo "No data changes to commit"
+          else
+            DATE=$(date -u +%Y-%m-%d)
+            git commit -m "data: update safety scores for $DATE
+
+          Automated daily pipeline run.
+          See data/scores/$DATE.json for details."
+            git push
+          fi
+
+      - name: Trigger site rebuild (optional)
+        if: success()
+        run: |
+          echo "Data committed. The push above will trigger the deploy.yml workflow automatically."
