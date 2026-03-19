@@ -38,7 +38,9 @@
   1. Running the pipeline produces a global safety score (arithmetic mean of all country scores) in the output data
   2. A single history-index.json file exists containing all historical daily snapshots consolidated for efficient loading
   3. Both global score and history index update automatically on the daily pipeline run without manual intervention
-**Plans**: TBD
+**Plans**: 1 plan
+Plans:
+- [ ] 07-01-PLAN.md -- Global score computation and history index consolidation
 
 ### Phase 8: Global Safety Score UI
 **Goal**: Users can see and explore a global safety benchmark that contextualizes individual country scores
@@ -86,7 +88,7 @@ Phases execute in numeric order: 7 -> 8 -> 9 -> 10
 | 4. Country Detail Pages | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 5. Search and Transparency | v1.0 | 2/2 | Complete | 2026-03-19 |
 | 6. SEO, Performance, and Launch | v1.0 | 2/2 | Complete | 2026-03-19 |
-| 7. Pipeline Extensions | v1.1 | 0/0 | Not started | - |
+| 7. Pipeline Extensions | v1.1 | 0/1 | In progress | - |
 | 8. Global Safety Score UI | v1.1 | 0/0 | Not started | - |
 | 9. Enhanced History Charts | v1.1 | 0/0 | Not started | - |
 | 10. Country Comparison | v1.1 | 0/0 | Not started | - |
