@@ -60,8 +60,8 @@ Requirements for milestone v1.1: Comparison & Historical Trends.
 
 ### Global Safety Score
 
-- [ ] **GLOB-01**: User sees a global safety score banner on the homepage (clickable)
-- [ ] **GLOB-02**: User can click the global score banner to navigate to a dedicated global safety page
+- [x] **GLOB-01**: User sees a global safety score banner on the homepage (clickable)
+- [x] **GLOB-02**: User can click the global score banner to navigate to a dedicated global safety page
 - [ ] **GLOB-03**: Global safety page shows a historical trend chart of the global score over time
 - [ ] **GLOB-04**: Global safety page includes an explanation of how the global score is calculated
 
@@ -156,8 +156,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | PIPE-01 | Phase 7 | Complete |
 | PIPE-02 | Phase 7 | Complete |
-| GLOB-01 | Phase 8 | Pending |
-| GLOB-02 | Phase 8 | Pending |
+| GLOB-01 | Phase 8 | Complete |
+| GLOB-02 | Phase 8 | Complete |
 | GLOB-03 | Phase 8 | Pending |
 | GLOB-04 | Phase 8 | Pending |
 | HIST-01 | Phase 9 | Pending |
