@@ -1,222 +1,211 @@
-# Feature Research
+# Feature Landscape
 
-**Domain:** Travel safety information platform
+**Domain:** Travel safety comparison, historical trends, global benchmark scoring
 **Researched:** 2026-03-19
+**Focus:** v1.1 milestone -- new features only (comparison page, historical trend charts, global safety score, multi-country overlay)
 **Confidence:** HIGH
 
-## Feature Landscape
+## Existing Infrastructure (already built, relevant to new features)
 
-### Table Stakes (Users Expect These)
+These existing pieces directly support what v1.1 needs:
 
-Features users assume exist. Missing these = product feels incomplete.
+| Asset | Location | How v1.1 Uses It |
+|-------|----------|-------------------|
+| `loadHistoricalScores(days)` | `src/lib/scores.ts` | Returns `Map<iso3, HistoryPoint[]>` -- backbone for trend charts |
+| `loadLatestScores()` | `src/lib/scores.ts` | All country scores -- compute global average from this |
+| `TrendSparkline.astro` | `src/components/country/` | D3 build-time SVG pattern to expand into full trend chart |
+| `ScoreHero.astro` | `src/components/country/` | Score display card to adapt for comparison view |
+| `PillarBreakdown.astro` | `src/components/country/` | Pillar bars to reuse in side-by-side comparison |
+| `scoreToColor()` | `src/lib/colors.ts` | Color-coding for score displays |
+| D3 v7 | `package.json` | Already installed -- use for all charting |
+| Fuse.js | `package.json` | Already installed -- reuse for country selector search |
+| `Search.astro` | `src/components/` | Fuzzy search component to adapt for country picker |
+| `ScoredCountry` type | `src/pipeline/types.ts` | Has `score`, `pillars[]` (5 pillars with `name`, `score`, `weight`) |
+| Daily snapshot files | `data/scores/YYYY-MM-DD.json` | Historical data storage (1 day so far, accumulating) |
 
-| Feature | Why Expected | Complexity | Notes |
-|---------|--------------|------------|-------|
-| Interactive color-coded world map | Every competitor (Safeture, SafeTravy, Healix, GPI) has one. This IS the product. Users expect to see green/yellow/red countries at a glance. | HIGH | Core UI component. Needs performant rendering for 200+ countries with zoom. Use vector tiles or TopoJSON, not raster images. |
-| Country-level safety score (numeric) | TravelSafe-Abroad uses 0-100, GeoSure uses their own scale, HelloSafe uses 0-100. Users expect a clear number. The project's 1-10 scale is simpler and more intuitive than 0-100. | MEDIUM | Must be prominently displayed. Color-code to match map. 1-10 is a good differentiator vs 0-100 -- easier to grasp. |
-| Destination detail page with score breakdown | TravelSafe-Abroad shows 9 risk categories per country. Healix breaks into 8 sub-risk factors. Users want to understand WHY a score is what it is. | MEDIUM | Need category scores (crime, health, political stability, etc.) with individual ratings per category. This is the page that drives SEO traffic. |
-| Search functionality | Every travel site has search. Users arrive with a destination in mind. SafeTravy, TravelSafe-Abroad all have prominent search bars. | LOW | Autocomplete with country/city names. Must be fast and forgiving of typos. Place it prominently on homepage above/alongside the map. |
-| Mobile-responsive design | 60%+ of travel research happens on mobile. Baymard Institute identifies mobile UX as mandatory for travel sites. | MEDIUM | Map interaction on mobile is tricky. Consider list view as mobile default with map as secondary. Touch-friendly zoom and tap targets. |
-| Source attribution and transparency | HelloSafe shifted to 100% public-data model specifically for transparency. Users and media cite these scores -- they need to trust the methodology. | LOW | Every data source listed with links. Methodology page explaining weights and formula. This builds credibility. |
-| Government advisory integration | US State Dept, UK FCDO, and other government advisories are the baseline travelers check. TravelSafe-Abroad shows multiple government advisories per country. | MEDIUM | Aggregate advisories from 3-4 major governments. Show alongside the composite score for credibility cross-reference. |
-| SEO-optimized destination pages | TravelSafe-Abroad ranks for "Is [country] safe to travel" queries. This is the primary organic traffic driver. | MEDIUM | Structured data (JSON-LD), meta tags, clean URLs (/country/united-kingdom), sitemap for 200+ pages. Static generation is ideal here. |
-| Fast page load / performance | Travel info is often checked on the go, on slow connections. Google Core Web Vitals affect search ranking. | MEDIUM | Target Lighthouse 90+. Static generation helps. Lazy-load map tiles. Compress TopoJSON data. |
+## Table Stakes
 
-### Differentiators (Competitive Advantage)
+Features users expect on a comparison and trends page. Missing any of these makes the product feel incomplete.
 
-Features that set the product apart. Not required, but valuable.
+| Feature | Why Expected | Complexity | Depends On | Notes |
+|---------|--------------|------------|------------|-------|
+| **Country selector with search** | Every comparison tool (Numbeo, IndexMundi, OECD, Mappr, GlobalEDGE) uses searchable dropdowns. Users type country names to find them. | Low | Existing Fuse.js + Search.astro pattern | Show flag + name + current score in dropdown. Support 2-5 countries. |
+| **Side-by-side score cards** | Numbeo, TravelSafe-Abroad, Mappr all display country scores prominently next to each other. Users need the headline number. | Low | Existing ScoreHero.astro, scoreToColor() | Large score number with color fill. Adapt existing component into a compact card variant. |
+| **Pillar breakdown comparison** | Country detail already shows 5-pillar breakdown. Users comparing countries will expect per-pillar comparison, not just overall score. Standard on Healix, HelloSafe. | Medium | Existing PillarBreakdown.astro, PillarScore type | Grouped horizontal bars (not radar chart -- horizontal bars are more accessible per NN/g research and WCAG compliant). |
+| **Line chart for historical trends** | Line charts are THE universal representation for "score over time." Google Trends, Our World in Data, OECD all use them. Existing sparkline sets the expectation of a fuller version. | Medium | Existing loadHistoricalScores(), D3, HistoryPoint type | Expand sparkline into full-size chart with axes, labels, and tooltips. Build SVG at build time, add thin client JS island for tooltip interactivity. |
+| **Multi-country overlay on trend chart** | When users compare countries, they expect overlaid trend lines on the same chart. OECD "Compare Your Country" does this. Google Trends does this. Core value proposition of comparison + trends. | Medium | Trend chart component, color palette for distinct lines | Limit to 5 countries max (more = visual noise). Use both color AND dash patterns for colorblind accessibility. |
+| **Global average reference line on charts** | Users need context: "Is 6.2 good or bad?" A world-average dashed line answers this instantly. HelloSafe and GPI both contextualize scores against global benchmarks. | Low | loadLatestScores() -- compute mean at build time | Dashed horizontal line labeled "World Average." Computed as population-weighted mean (if pop data available) or simple mean. |
+| **Shareable comparison URLs** | Users expect to share comparisons. Every comparison tool encodes selection in the URL. Critical for SEO too -- search engines index comparison pages. | Low | Astro page routing, query params | Pattern: `/en/compare?c=ITA,FRA,DEU`. Parse on page load, update on selection change. |
+| **Responsive comparison layout** | 60%+ of travel research on mobile. Comparison must work on small screens. | Medium | Existing Tailwind 4 with container queries | Side-by-side at desktop, stacked vertically on mobile. Charts use SVG viewBox (already proven in sparkline). |
+| **"Best in category" highlighting** | When comparing 3+ countries, users need to quickly spot "which is safest for health?" Subtle visual emphasis on the winning score per pillar. | Low | Pillar comparison component | Bold or highlight the highest pillar score in each row. Simple conditional styling. |
+| **i18n for all new UI strings** | Site already supports EN/IT. New features must maintain parity. | Low | Existing next-intl/i18n setup | Add translation keys for comparison UI, chart labels, global score descriptions. |
 
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Sub-national / regional safety drill-down | Most competitors show country-level only. Healix mentions "risk zones where local conditions differ from national level" but doesn't offer deep regional data. A country-level score misses critical nuances (e.g., southern Thailand vs Bangkok, northern vs southern Italy). | HIGH | This is the project's stated goal and strongest differentiator. Requires sub-national data sources (ACLED has geocoded conflict events). Start with regions/provinces, not neighborhoods -- GeoSure's 65,000 neighborhoods is overkill and requires paid data. |
-| Formula transparency with adjustable weights | HelloSafe publishes methodology but scores are fixed. No competitor lets users see exactly how weights affect scores or understand the formula interactively. The project already plans full formula transparency. | MEDIUM | Show each factor (crime, conflict, health, governance, etc.) with its weight and how it contributes to the final score. Consider an interactive "what matters to you" slider as a v2 feature -- not MVP. |
-| Multilingual from day one | Most competitors are English-only. SafeTravy and government sites offer limited i18n. A truly multilingual safety platform has almost no competition in non-English markets. | MEDIUM | English + Italian as stated. Use i18n framework from the start (next-intl or similar). Content translation for destination names, categories, and UI strings. Defer long-form content translation to v2. |
-| Automated daily data pipeline | Most index sites update quarterly (Healix) or annually (GPI). TravelSafe-Abroad updates irregularly. Daily automated updates from public APIs create a freshness advantage. | HIGH | Core infrastructure differentiator. Fetch from ACLED, INFORM, GPI, WHO, government advisories. Cron job or scheduled function. Must handle API failures gracefully. |
-| Historical score trends | GPI's interactive map shows 6 years of historical data with timeline playback. Most safety sites show only current state. Showing "is this country getting safer or more dangerous?" adds analytical depth. | MEDIUM | Store daily scores. Show sparkline or trend chart on detail pages. "Up 0.3 from last month" type indicators. Valuable for media citations and SEO (trending content). |
-| Comparison tool | Healix offers side-by-side comparison. Most sites lack this. Travelers often compare 2-3 destinations before choosing. | LOW | Simple side-by-side table comparing scores across categories for 2-3 countries. Low effort, high user value. Good for "should I go to X or Y?" queries. |
-| Category-specific safety scores for demographics | GeoSure is the only competitor with scores specifically for women travelers. TravelSafe-Abroad has a "Women Travelers" risk category. LGBTQ+ safety data exists from Equaldex and Gay Travel Index. This is high-value, underserved. | MEDIUM | Add "Women travelers" and "LGBTQ+ travelers" as dedicated sub-scores using Equaldex (open data) and women's safety indices. Avoid being the arbiter of social values -- cite data sources neutrally. |
+## Differentiators
 
-### Anti-Features (Commonly Requested, Often Problematic)
+Features that set the product apart from competitors. Not expected, but genuinely valuable.
 
-Features that seem good but create problems.
+| Feature | Value Proposition | Complexity | Depends On | Notes |
+|---------|-------------------|------------|------------|-------|
+| **Global Safety Score as homepage hero** | No competitor shows a single "state of the world" number. A bold "World Safety: 5.8/10" with trend arrow creates a unique, shareable, headline-worthy metric. Media-friendly. | Low | loadLatestScores() -- weighted mean computation | Weight by population for meaningful average. Display prominently above the map. Trend arrow based on 7-day delta. |
+| **Pre-built comparison sets** | Curated one-click comparisons: "Mediterranean Countries," "Southeast Asia," "Schengen Zone." Reduces cognitive load. Each set = indexable page for SEO. No competitor does this. | Low | Static data, no pipeline changes needed | Pattern: `/en/compare/mediterranean`. Great for long-tail SEO queries like "safest Mediterranean country." |
+| **Score change badges** | On comparison page, highlight countries with significant recent score changes: "Score changed: +0.3 this week." Makes the page feel alive and current vs static competitor sites. | Low | Historical data (7-day diff at build time) | Simple arithmetic. High signal for users deciding "is it getting safer?" |
+| **Per-pillar historical trends** | Show not just overall score trend but per-pillar trends over time. "Crime improved but health worsened." No travel safety site does per-dimension historical tracking. | Medium | Requires storing per-pillar scores in daily snapshots (pipeline change) | HIGH value. Currently HistoryPoint only stores overall score. Pipeline needs update to include pillar scores. Defer to v1.1 stretch or v1.2 if pipeline change is too disruptive. |
+| **"Add from map" interaction** | Click countries on the existing world map to add them to comparison. Unique interaction -- no competitor does this. | High | SafetyMap.astro, client-side state between map and comparison | Requires bidirectional client state. Cool but complex. Defer unless time permits. |
+| **Comparison as shareable card image** | "Share this comparison" generates a social-media-ready image (OG image). | High | Server-side image generation (satori or similar) | Defer to v1.2+. Nice but not essential. |
 
-| Feature | Why Requested | Why Problematic | Alternative |
-|---------|---------------|-----------------|-------------|
-| User accounts and personalization | "Save favorite destinations", "get alerts for my trip" | Adds PII management, auth complexity, GDPR obligations, and maintenance burden. Zero budget means no room for user data infrastructure. Project explicitly scopes this out. | Browser localStorage for recent searches. No server-side user state. Bookmarkable URLs for sharing. |
-| User-generated content / reviews | TravelSafe-Abroad has 78+ user reviews per country. "Crowdsource safety reports" | Moderation nightmare. Subjective reports skew data. Spam, racism, political bias. Travel Off Path notes even their user-sourced data requires "Mandatory 24-Hour Editorial Audit." Project explicitly scopes this out. | Data-driven scores from authoritative indices only. Link to external review sites (TripAdvisor, Reddit) for subjective experiences. |
-| Real-time alerts / push notifications | SafeTravy sends "personalized alerts about armed conflicts, social tensions, adverse weather." Feels like a safety essential. | Requires notification infrastructure, real-time event processing, and creates liability risk ("why didn't you alert me?"). Daily updates are sufficient for a static information site. Project explicitly scopes this out. | Show "last updated" timestamp prominently. Include RSS feed for power users. Link to government alert subscription services. |
-| Hotel/flight booking integration | Monetization opportunity. "One-stop shop for safe travel planning." | Turns an information tool into a travel agency. Conflicts with impartiality (do you rank destinations higher that have more hotel inventory?). Massive scope expansion. Project explicitly scopes this out. | Affiliate links as future monetization (v2+). Keep the product purely informational. |
-| AI chatbot / assistant | SafeTravy has "Travy" AI assistant. GeoSure has AI Safety Assistant. Trendy feature. | Adds significant complexity, cost (LLM API calls), and hallucination risk for safety-critical information. A wrong AI answer about safety has real consequences. Near-zero budget cannot sustain API costs. | Well-structured destination pages with clear safety information answer 95% of user questions. Good search and navigation replace the need for a chatbot. |
-| Native mobile app | "An app for checking safety on the go" | Doubles development effort. App store approval/maintenance. PWA or responsive web covers the use case. No offline need -- safety info should always be current. Project explicitly scopes this out. | PWA with offline caching of recently viewed destinations. Add to home screen capability. Responsive design that feels native. |
-| Neighborhood-level granularity | GeoSure covers 65,000 neighborhoods. "Street-level safety data" | Requires paid/proprietary data sources. Free public indices operate at country or region level. Accuracy at neighborhood level is questionable without local data partnerships. | Start with country + major region/province level. This alone differentiates from most competitors. Add city-level for major cities where data exists (ACLED has city-level conflict data). |
-| Editorially written safety guides | TravelSafe-Abroad has long-form "safety tips" per country. "Add travel advice content" | Requires content creation at scale (200+ countries). Goes stale. Creates editorial bias the project wants to avoid. | Auto-generated text from score data: "Crime risk is moderate due to [X data point]." Template-based descriptions that update with the data. |
+## Anti-Features
+
+Features to explicitly NOT build. Tempting but wrong for this milestone.
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| **Real-time chart updates / live WebSocket data** | Budget is near-zero (Cloudflare static hosting). Safety scores change at most once daily. WebSocket/polling adds infrastructure cost for zero user value. | Build-time SVG charts rendered during daily pipeline run. Static is fast, free, SEO-friendly. |
+| **User-adjustable index weights** | Users don't know how to weight conflict vs health risk. Custom weighting creates a "spreadsheet" experience, not a "safety answer." Numbeo lets users sort but not re-weight -- and that works. | Show the 5-pillar breakdown so users can mentally prioritize. Keep the composite score opinionated and fixed. |
+| **More than 5 countries in comparison** | 5+ lines on a chart is visual noise. OECD comparison becomes unreadable at high counts. GlobalEDGE allows 20 but the result is useless. | Hard cap at 5 countries. Clear message when limit reached: "Remove a country to add another." |
+| **Historical data backfill / synthetic past data** | Pipeline started 2026-03-19 (1 day of data). Backfilling from GPI historical data mixes methodologies and undermines trust. "10-year trends" would be dishonest. | Show what exists honestly. Display "accumulating data" notice when <30 days (already in TrendSparkline). Charts fill up naturally over weeks. |
+| **City-level comparison** | Out of scope per PROJECT.md. Country-level is current granularity. Adding cities doubles data complexity. | Keep country-level. UI note: "Regional drill-down coming in a future update." |
+| **Fancy D3 animations / chart transitions** | Adds JS weight, breaks SSG model, doesn't help users understand safety data. Anti-performance. | Subtle CSS transitions on hover only. Keep charts as static build-time SVG. Thin client island for tooltips only. |
+| **Login / saved comparisons** | Explicitly out of scope per PROJECT.md. No user accounts. | URL-based state (query params) lets users bookmark and share without accounts. |
+| **Radar/spider charts for pillar comparison** | Look cool in mockups but are harder to read than bar charts. NN/g research shows bar charts are significantly easier for users to compare values accurately. Accessibility issues with radar charts. | Grouped horizontal bar chart. Each pillar as a row, countries as colored bars. Clear, scannable, accessible. |
 
 ## Feature Dependencies
 
 ```
-[Data Pipeline (fetch + compute scores)]
-    |
-    +--requires--> [Score Algorithm + Weights]
-    |                   |
-    |                   +--feeds--> [Country Detail Page (score breakdown)]
-    |                   |
-    |                   +--feeds--> [Interactive Map (color coding)]
-    |
-    +--feeds--> [Search Index (country/region names + scores)]
-                    |
-                    +--feeds--> [Search Autocomplete]
+loadLatestScores() [EXISTS]
+    --> Global Safety Score computation (weighted mean)
+        --> Homepage hero display
+        --> Global average reference line on trend charts
 
-[Interactive Map]
-    +--click/zoom--> [Country Detail Page]
-    +--zoom deeper--> [Regional Drill-down] --requires--> [Sub-national Data Sources]
+loadHistoricalScores() [EXISTS]
+    --> Full trend chart component (expand sparkline)
+        --> Multi-country overlay (add series selection)
+        --> Score change badges (7-day diff)
 
-[Multilingual Support (i18n framework)]
-    +--applies to--> [Map Labels]
-    +--applies to--> [Detail Page Content]
-    +--applies to--> [Search Autocomplete]
-    +--applies to--> [UI Strings]
+Fuse.js + Search.astro [EXISTS]
+    --> Country selector component (adapted dropdown)
+        --> Comparison page (uses selector)
+            --> Shareable URLs (encode selection)
+            --> Side-by-side score cards
+            --> Pillar breakdown comparison
 
-[SEO Optimization]
-    +--requires--> [Static Page Generation]
-    +--requires--> [Country Detail Pages]
-    +--requires--> [Sitemap Generation]
-
-[Historical Trends]
-    +--requires--> [Data Pipeline (running over time)]
-    +--requires--> [Score Storage (time-series)]
-
-[Comparison Tool]
-    +--requires--> [Country Detail Page (reusable score components)]
-
-[Demographic-Specific Scores]
-    +--requires--> [Score Algorithm] (additional data dimensions)
-    +--requires--> [Country Detail Page] (additional score sections)
+ScoreHero.astro + PillarBreakdown.astro [EXISTS]
+    --> Compact score card variant
+    --> Grouped pillar comparison bars
 ```
 
-### Dependency Notes
+**Critical path:** Country selector --> Comparison page --> Trend chart overlay. These three form the backbone and must be built in sequence.
 
-- **Everything requires the Data Pipeline first:** No map, no detail pages, no search without computed scores. The pipeline is the foundation.
-- **Interactive Map requires Score Algorithm:** Map colors derive from computed scores. Build scoring before visualization.
-- **Regional Drill-down requires Sub-national Data:** Country-level can launch first. Regional data (ACLED, sub-national indices) adds complexity and should be a separate phase.
-- **Historical Trends require time:** You need the pipeline running for weeks/months before trends become meaningful. Build the storage early, display later.
-- **i18n must be baked in from the start:** Retrofitting i18n is painful. Set up the framework in phase 1 even if only English ships first.
-- **Comparison Tool is cheap once Detail Pages exist:** It reuses score components, so build it after detail pages are solid.
+**Independent track:** Global Safety Score can be built in parallel -- depends only on existing `loadLatestScores()`.
 
-## MVP Definition
+**Independent track:** Full trend chart (single country) can be built in parallel -- extends existing sparkline pattern.
 
-### Launch With (v1)
+## MVP Recommendation
 
-Minimum viable product -- what's needed to validate the concept and start ranking in search.
+### Must Have for v1.1
 
-- [ ] **Data pipeline (country-level)** -- Fetch from 3-4 public indices (GPI, INFORM Risk Index, government advisories), compute composite 1-10 scores for 200+ countries
-- [ ] **Interactive world map** -- Color-coded by safety score, click to navigate to country detail
-- [ ] **Country detail pages (200+)** -- Score breakdown by category (crime, conflict, health, governance), source citations, methodology explanation
-- [ ] **Search with autocomplete** -- Find any country instantly
-- [ ] **SEO foundation** -- Static generation, structured data, sitemap, meta tags
-- [ ] **Mobile-responsive layout** -- Map + detail pages work on all screen sizes
-- [ ] **i18n framework** -- Set up with English; Italian ready to plug in
-- [ ] **Source attribution page** -- Full methodology and data source documentation
+Priority order based on dependencies:
 
-### Add After Validation (v1.x)
+1. **Global Safety Score** -- Population-weighted mean displayed on homepage. Independent of other features. Quick win, high differentiation value. Includes trend arrow if >7 days of data exist.
 
-Features to add once core is working and traffic starts flowing.
+2. **Country selector with search** -- Adapted from existing Search.astro. Searchable dropdown with flag + name + current score. Supports selecting 2-5 countries. Foundation for the comparison page.
 
-- [ ] **Italian language support** -- Translate UI strings and auto-generated content once i18n framework proven
-- [ ] **Regional drill-down** -- Sub-national scores for countries with significant regional variation, starting with ACLED conflict data overlay
-- [ ] **Historical trend indicators** -- "Getting safer/more dangerous" sparklines on detail pages (needs weeks of stored data)
-- [ ] **Comparison tool** -- Side-by-side country comparison (reuses detail page components)
-- [ ] **Government advisory aggregation** -- Show US, UK, EU advisories alongside composite score
-- [ ] **Demographic-specific scores** -- Women and LGBTQ+ safety sub-scores using Equaldex and similar open data
+3. **Comparison page at `/compare`** -- New Astro page. Side-by-side score cards (adapted ScoreHero), grouped horizontal bar chart for pillar comparison, shareable URL via query params.
 
-### Future Consideration (v2+)
+4. **Full historical trend chart** -- Expand TrendSparkline into a full-width D3 SVG chart. Fixed Y-axis (1-10). Date labels on X-axis. Global average reference line. Astro client island for tooltip interactivity.
 
-Features to defer until product-market fit is established.
+5. **Multi-country overlay** -- Extend trend chart to render multiple colored/dashed lines. Legend below chart with country names and current scores. Max 5 series.
 
-- [ ] **City-level pages** -- For major cities where data exists, significant data sourcing effort
-- [ ] **Interactive weight adjustment** -- "What matters to you?" sliders that recompute scores client-side
-- [ ] **Additional languages** -- Spanish, French, German, etc. based on traffic analytics
-- [ ] **RSS/API for score data** -- Let others consume scores programmatically
-- [ ] **Embeddable map widget** -- Let travel blogs embed the safety map
-- [ ] **Email digest** -- Weekly summary of score changes for subscribed destinations (no accounts needed -- email-only)
+6. **Pre-built comparison sets** -- 5-8 curated sets (Mediterranean, Southeast Asia, Nordic, etc.) as static pages. Low effort, high SEO value.
 
-## Feature Prioritization Matrix
+### Defer to v1.2+
 
-| Feature | User Value | Implementation Cost | Priority |
-|---------|------------|---------------------|----------|
-| Data pipeline + score computation | HIGH | HIGH | P1 |
-| Interactive world map | HIGH | HIGH | P1 |
-| Country detail pages | HIGH | MEDIUM | P1 |
-| Search with autocomplete | HIGH | LOW | P1 |
-| SEO (static gen, structured data) | HIGH | MEDIUM | P1 |
-| Mobile-responsive design | HIGH | MEDIUM | P1 |
-| Source attribution / methodology | MEDIUM | LOW | P1 |
-| i18n framework setup | MEDIUM | LOW | P1 |
-| Italian language | MEDIUM | MEDIUM | P2 |
-| Regional drill-down | HIGH | HIGH | P2 |
-| Historical trends | MEDIUM | LOW | P2 |
-| Comparison tool | MEDIUM | LOW | P2 |
-| Government advisory integration | MEDIUM | MEDIUM | P2 |
-| Demographic-specific scores | MEDIUM | MEDIUM | P2 |
-| City-level pages | MEDIUM | HIGH | P3 |
-| Interactive weight sliders | LOW | MEDIUM | P3 |
-| Additional languages | MEDIUM | MEDIUM | P3 |
-| Embeddable widget | LOW | LOW | P3 |
+- **"Add from map" click** -- High complexity, requires complex bidirectional client state
+- **Per-pillar historical trends** -- Requires pipeline data model change to store pillar scores in snapshots
+- **Export as shareable image** -- Needs server-side image generation infrastructure
+- **Score change badges** -- Easy but needs 7+ days of data to be meaningful (wait for data to accumulate)
 
-**Priority key:**
-- P1: Must have for launch
-- P2: Should have, add when possible
-- P3: Nice to have, future consideration
+## Complexity Estimates
 
-## Competitor Feature Analysis
+| Feature | Effort | Reason |
+|---------|--------|--------|
+| Global Safety Score | Small (1-2 days) | Arithmetic on existing data + new homepage section + i18n keys |
+| Country selector | Small (1-2 days) | Adapt existing Fuse.js search into dropdown with multi-select |
+| Comparison page layout | Medium (2-3 days) | New Astro page, CSS grid, responsive breakpoints, URL param handling |
+| Side-by-side score cards | Small (1 day) | Compact variant of existing ScoreHero component |
+| Pillar comparison bars | Medium (2-3 days) | New D3 grouped horizontal bar chart, accessible colors, responsive |
+| Full trend chart | Medium (3-4 days) | Expand sparkline: add axes, labels, reference line, responsive sizing |
+| Multi-country overlay | Medium (2-3 days) | Extend trend chart: multiple series, color/dash assignment, legend |
+| Tooltip interactivity | Small (1-2 days) | Astro client island, mouse events on SVG, crosshair + value display |
+| Pre-built comparison sets | Small (1-2 days) | Static data file + templated pages |
+| i18n for new features | Small (1 day) | Add keys to EN/IT translation files, established pattern |
+| **Total estimate** | **~15-22 days** | |
 
-| Feature | TravelSafe-Abroad | SafeTravy | GeoSure | Safeture | Healix/IntlSOS | Our Approach |
-|---------|-------------------|-----------|---------|----------|----------------|--------------|
-| Safety score | 0-100 index | Color categories | Proprietary scale | Risk levels | Risk ratings (5 levels) | 1-10 scale (simpler, more intuitive) |
-| Map | No interactive map | Color-coded world map | In-app map | Annual static risk map PDF + interactive | Interactive map | Interactive, zoomable, always-on |
-| Score breakdown | 9 risk categories | By risk type | 7 categories + demographics | Multi-domain | 8 sub-risk factors | Category breakdown with transparent weights |
-| Regional data | City-level scores (limited) | Country-level | Neighborhood (65k) | Country + city | Country + zones | Country + region drill-down (free data) |
-| Update frequency | Irregular | Monthly + real-time weather | Real-time | Quarterly map, ongoing alerts | Quarterly + ad-hoc | Daily automated |
-| Methodology transparency | Formula described on About page | Not detailed | Proprietary/"AI-enhanced" | Not public | "Tested methodology" but proprietary | Fully transparent: every weight, every source |
-| Multilingual | English only | Limited | English only | English (enterprise) | English (enterprise) | English + Italian, expandable |
-| Price | Free (ad-supported) | Free | Freemium (app) | Enterprise SaaS | Enterprise SaaS | Free, no ads (v1) |
-| User content | Reviews/comments | No | No | No | No | No (data-driven only) |
-| Demographic scores | Women travelers category | No | Women + at-risk demographics | No | No | Women + LGBTQ+ (v1.x using open data) |
-| Historical trends | No | No | No | Year-over-year in annual report | Year-over-year comparison | Daily trend data (v1.x) |
-| Government advisories | Shows US/CA/AU advisories | No | No | Integrates advisories | Integrates advisories | Aggregate multiple government advisories |
+## UX Patterns from Competitor Analysis
 
-### Competitive Positioning
+### Country Comparison Page
 
-The market has two tiers:
-1. **Enterprise (Safeture, International SOS, Healix):** Expensive, B2B, comprehensive but inaccessible to individual travelers
-2. **Consumer (TravelSafe-Abroad, SafeTravy, GeoSure):** Free or freemium, but each has significant gaps
+**Selection pattern (from IndexMundi, OECD, Mappr):**
+- Searchable dropdown, not raw text input
+- Show country flag + name + current score in options
+- Pre-populate from URL query params on page load
+- "Chip" pattern for selected countries: pill with flag + name + X to remove
+- "Add country" button that opens dropdown
+- Clear visual affordance for the 5-country limit
 
-**IsItSafeToTravel.com fills the gap** by being:
-- **More transparent** than anyone (full methodology disclosure vs proprietary "algorithms")
-- **More frequently updated** than free competitors (daily vs quarterly/irregular)
-- **More granular** than most free tools (regional drill-down vs country-only)
-- **Simpler** than enterprise tools (no account, no app download, just a URL)
-- **Multilingual** where competitors are English-only
+**Layout pattern (from Numbeo, Mappr):**
+- 2 countries: true side-by-side columns
+- 3-5 countries: responsive grid that wraps
+- Mobile: vertical stack with sticky header showing country names/flags
+- Overall score prominent at top, pillar breakdown below
 
-The closest competitor is TravelSafe-Abroad, which has strong SEO but lacks an interactive map, has irregular updates, and relies partly on user-generated reviews. The project can directly compete on "Is [country] safe?" search queries with better data freshness and visualization.
+**Comparison cues (from HelloSafe, Healix):**
+- Highlight "best" score per pillar with subtle emphasis (bold or background)
+- Use consistent left-to-right order (matches URL param order)
+- Color-code each country's scores using the safety color scale
+
+### Historical Trend Chart
+
+**Chart design (from Google Trends, Our World in Data, OECD):**
+- Line chart (not area chart) for multi-series
+- Fixed Y-axis: 1-10 (never auto-scale -- prevents misleading visual amplification)
+- X-axis: date labels, auto-thinned based on data density
+- Multiple lines: distinct colors AND dash patterns (colorblind accessibility)
+- Dashed reference line for global average, labeled
+
+**Interaction (from Google Trends, OECD):**
+- Vertical crosshair line follows mouse/touch position
+- Tooltip shows: date + all visible country scores at that point
+- Legend below chart: colored line swatch + country name + latest score
+- Legend items clickable to toggle series visibility
+
+**Empty/sparse state:**
+- <7 data points: show "accumulating data" message (already in TrendSparkline)
+- <2 data points: show placeholder with explanation, no chart
+- Progressive enhancement: chart gets more useful over time as daily data accumulates
+
+### Global Safety Score
+
+**Display (novel -- no direct competitor does this):**
+- Large hero number on homepage: "5.8 / 10"
+- Trend arrow: up/down/stable based on 7-day change
+- Color-coded background using existing safety color scale
+- Brief explainer: "Population-weighted average across 195 countries. Updated daily."
+- Position: above the map on homepage, framing the site's purpose
 
 ## Sources
 
-- [Safeture Features](https://safeture.com/features/) - Enterprise travel risk platform features
-- [Safeture Risk Map 2026](https://www.safeture.com/risk-maps-2026/) - Annual risk map methodology
-- [GeoSure](https://geosure.ai) - Neighborhood-level safety scores with demographic-specific ratings
-- [GeoSure Individuals](https://geosure.ai/individuals) - Consumer safety score features
-- [SafeTravy Maps](https://www.safetravy.com/maps/travel-and-maps) - Free travel safety map platform
-- [TravelSafe-Abroad](https://www.travelsafe-abroad.com/) - Country safety index with user reviews
-- [TravelSafe-Abroad Countries Index](https://www.travelsafe-abroad.com/countries/) - 0-100 safety ranking methodology
-- [Healix Risk Map 2026](https://healix.com/international/reports/risk-radar-26/risk-map-2026) - Interactive security risk map
-- [International SOS Risk Outlook](https://www.internationalsos.com/risk-outlook) - Enterprise risk assessment platform
-- [HelloSafe Safety Index](https://hellosafe.com/travel-insurance/safest-countries-in-the-world) - Public-data transparency model
-- [Vision of Humanity GPI Map](https://www.visionofhumanity.org/maps/) - Global Peace Index interactive visualization
-- [Equaldex](https://www.equaldex.com/) - LGBTQ+ rights open data by country
-- [Safety Index](https://safetyindex.net/travelsafetyindex.html) - Multi-pillar safety scoring methodology
-- [Travel Off Path Safety Index](https://www.traveloffpath.com/dashboard/safety-index) - Real-time user-sourced safety ratings
-- [Baymard Institute Travel UX](https://baymard.com/blog/travel-site-ux-best-practices) - Travel site UX best practices research
+- [Numbeo Safety Index 2026](https://www.numbeo.com/crime/rankings_by_country.jsp?displayColumn=1) -- Table ranking with historical year selector (2012-2026), geochart map
+- [TravelSafe-Abroad Country Index](https://www.travelsafe-abroad.com/countries/) -- Tiered risk categories (Low/Moderate/High/Extreme), 0-100 scale
+- [OECD Compare Your Country](https://www.compareyourcountry.org/) -- Multi-country selector, trend view, bubble map, multiple visualization modes, i18n
+- [Mappr Country Comparison](https://www.mappr.co/country-comparison/) -- Two-country side-by-side with 6 metrics
+- [IndexMundi Country Comparisons](https://www.indexmundi.com/factbook/compare) -- Dropdown-based two-country comparison across topics
+- [HelloSafe Safety Index 2026](https://hellosafe.com/travel-insurance/safest-countries-in-the-world) -- 5-pillar weighted scoring, 0-100 scale, public methodology
+- [GlobalEDGE Country Comparator](https://globaledge.msu.edu/comparator) -- Up to 20 countries, multiple indicators
+- [UX Collective: Data Visualization for Comparison](https://uxdesign.cc/a-guide-to-data-visualization-comparison-part-2-80b99b91e461) -- Chart selection guidance for comparisons
+- [NN/g: Choosing Chart Types](https://www.nngroup.com/articles/choosing-chart-types/) -- Bar charts easiest to comprehend for value comparison
+- [UX for AI: Line Chart Definitive Guide](https://uxforai.com/p/line-chart-definitive-guide-part-1) -- Multi-series line chart best practices, tooltip patterns
+- [Querio: Top React Chart Libraries 2026](https://querio.ai/articles/top-react-chart-libraries-data-visualization) -- Recharts vs Nivo vs D3 comparison (D3 already in use, no migration needed)
 
 ---
-*Feature research for: Travel safety information platform*
+*Feature research for: IsItSafeToTravel.com v1.1 -- Comparison and Historical Trends*
 *Researched: 2026-03-19*

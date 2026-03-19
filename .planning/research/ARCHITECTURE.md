@@ -1,403 +1,503 @@
 # Architecture Patterns
 
-**Domain:** Travel safety information platform
+**Domain:** Comparison pages, historical trend charts, and global safety score -- integration with existing Astro SSG + D3 + daily pipeline
 **Researched:** 2026-03-19
+**Scope:** v1.1 features ONLY -- not a full architecture document
 
-## Recommended Architecture
-
-The system is a **data pipeline feeding a static site generator**, with a single interactive component (the map). This is not a traditional web application -- it is closer to a publishing system that happens to have one rich widget.
-
-```
-                        +-------------------+
-                        |  External Sources  |
-                        |  (APIs / CSV / RSS)|
-                        +--------+----------+
-                                 |
-                          [1] INGEST (daily cron)
-                                 |
-                        +--------v----------+
-                        |  Raw Data Store   |
-                        |  (JSON files/git) |
-                        +--------+----------+
-                                 |
-                          [2] TRANSFORM & SCORE
-                                 |
-                        +--------v----------+
-                        |  Scored Data Store |
-                        |  (JSON per country)|
-                        +--------+----------+
-                                 |
-                     +-----------+-----------+
-                     |                       |
-              [3] GENERATE SITE        [4] GENERATE MAP DATA
-                     |                       |
-              +------v-------+       +-------v--------+
-              | Astro SSG    |       | GeoJSON +      |
-              | HTML pages   |       | score overlay  |
-              | per locale   |       +-------+--------+
-              +------+-------+               |
-                     |                       |
-                     +----------+------------+
-                                |
-                         [5] DEPLOY (CDN)
-                                |
-                        +-------v--------+
-                        |  Cloudflare    |
-                        |  Pages / CF    |
-                        +----------------+
-```
-
-### Component Boundaries
-
-| Component | Responsibility | Communicates With | Technology |
-|-----------|---------------|-------------------|------------|
-| **Data Ingester** | Fetches raw data from external APIs/CSV/RSS on a daily schedule | Raw Data Store | Node.js scripts, GitHub Actions cron |
-| **Raw Data Store** | Stores fetched data in version-controlled JSON files | Scoring Engine | JSON files in git repo |
-| **Scoring Engine** | Normalizes indicators, applies weights, computes 1-10 scores per destination | Scored Data Store | Node.js/TypeScript module |
-| **Scored Data Store** | Structured JSON per country/region with scores, breakdowns, metadata | Site Generator, Map Data Generator | JSON files in `data/scored/` |
-| **Site Generator** | Builds static HTML pages per destination per locale | CDN | Astro SSG with content collections |
-| **Map Data Generator** | Merges scored data into GeoJSON for choropleth rendering | CDN | Node.js script, Natural Earth GeoJSON |
-| **Map Widget** | Client-side interactive choropleth map with zoom, click, search | Site Generator (embedded as Astro island) | Leaflet or MapLibre GL JS |
-| **CDN / Host** | Serves static files globally with edge caching | End users | Cloudflare Pages (free tier) |
-
-### Data Flow
-
-**Daily pipeline (automated via GitHub Actions cron):**
-
-1. **Ingest** -- Cron triggers scripts that fetch data from each source (INFORM Risk Index CSV, Global Peace Index data, ACLED API, WHO health data, government advisory RSS feeds). Each source has its own fetcher module. Raw responses are saved as timestamped JSON/CSV in `data/raw/`.
-
-2. **Transform & Score** -- A single scoring script reads all raw data, normalizes each indicator to a 0-1 scale, applies weighted aggregation across five pillars (conflict, governance, crime, health, environment), and produces a composite 1-10 score per destination. Output: one JSON file per country in `data/scored/{iso3}.json` containing the score, pillar breakdown, source citations, and last-updated timestamp.
-
-3. **Generate Site** -- Astro reads scored JSON via content collections' `file()` loader. Using `getStaticPaths()`, it generates one detail page per destination per locale. Pages include: score display, pillar breakdown chart, source citations, and structured data (JSON-LD) for SEO.
-
-4. **Generate Map Data** -- A script merges scored data into Natural Earth GeoJSON boundaries, producing a single `world-scores.geojson` file with ISO codes, scores, and color values baked in. This file is optimized (simplified geometries, TopoJSON compression) to stay under 500KB.
-
-5. **Deploy** -- `astro build` output is deployed to Cloudflare Pages. The GeoJSON and map assets are part of the static output. Zero server-side runtime needed.
-
-**User request flow:**
-
-1. User hits homepage -- static HTML loads instantly from CDN edge.
-2. Map widget (Astro island) hydrates client-side, fetches `world-scores.geojson` (cached by CDN).
-3. User clicks a country -- client-side routing navigates to `/en/country/{slug}` (pre-built static page).
-4. Detail page shows score breakdown, all pre-rendered at build time.
-
-## Key Architecture Decisions
-
-### Why Astro (not Next.js)
-
-Astro is the right framework because this is a content-heavy, mostly-static site with one interactive widget:
-
-- **Zero JS by default** -- detail pages ship no JavaScript, maximizing Lighthouse scores.
-- **Islands architecture** -- the map is the only interactive component; it hydrates independently without bloating every page.
-- **Native i18n routing** -- built-in support for `/en/`, `/it/` locale prefixes with fallback configuration.
-- **Content collections from JSON** -- the `file()` loader reads scored JSON directly at build time with type safety.
-- **Build performance** -- generates thousands of static pages efficiently.
-
-Next.js would add unnecessary complexity (React runtime on every page, SSR infrastructure) for what is fundamentally a publishing problem.
-
-**Confidence:** HIGH (verified via Astro docs and multiple comparisons)
-
-### Why JSON Files in Git (not a database)
-
-For ~200 countries and ~1000 sub-regions, the total data volume is tiny (< 5MB). A database adds cost, complexity, and a runtime dependency. JSON files in git provide:
-
-- **Free storage** -- no database hosting costs.
-- **Version history** -- every data change is tracked via git commits.
-- **No runtime dependency** -- all data is consumed at build time.
-- **Easy debugging** -- scores are human-readable files you can inspect.
-- **Atomic updates** -- a pipeline run commits new data, triggers rebuild.
-
-**Confidence:** HIGH (this is a well-established pattern for data-driven static sites)
-
-### Why Leaflet (not MapLibre GL JS)
-
-For a choropleth world map with click-to-navigate behavior:
-
-- **Leaflet** is lighter (~40KB), simpler API, excellent choropleth tutorial/docs, SVG rendering sufficient for country-level polygons.
-- **MapLibre GL JS** is heavier (~200KB+), WebGL-based, better for vector tiles and smooth zooming but overkill for a country-level choropleth.
-
-Leaflet with GeoJSON overlay is the simplest path to a color-coded world map that responds to clicks. If sub-regional drill-down requires smooth vector tile zooming later, MapLibre can replace it.
-
-**Confidence:** MEDIUM (Leaflet is simpler for v1, but MapLibre may be needed for regional zoom -- revisit in later phase)
-
-### Why GitHub Actions for Pipeline (not a server)
-
-- **Free** -- GitHub Actions provides 2000 minutes/month on free tier.
-- **Scheduled** -- native cron syntax for daily triggers.
-- **No server** -- no VPS to maintain, no uptime concerns.
-- **Pipeline as code** -- the workflow YAML is versioned alongside the data scripts.
-
-A single daily Action: fetch data, run scoring, build site, deploy. Total runtime estimate: 3-5 minutes.
-
-**Confidence:** HIGH
-
-## Scoring Engine Architecture
-
-### Pillar Structure
-
-The safety score uses a hierarchical weighted aggregation model (consistent with how INFORM Risk Index and HelloSafe Safety Index work):
+## Existing Architecture (Reference)
 
 ```
-Overall Score (1-10)
-  |-- Conflict & Security (weight: 0.30)
-  |     |-- Armed conflict intensity (ACLED)
-  |     |-- Political stability (World Bank WGI)
-  |     |-- Terrorism risk (Global Terrorism Index)
-  |
-  |-- Crime & Personal Safety (weight: 0.25)
-  |     |-- Homicide rate (UNODC)
-  |     |-- Theft/robbery rates (where available)
-  |     |-- Government advisory level (US State Dept, UK FCDO)
-  |
-  |-- Health Risks (weight: 0.20)
-  |     |-- Disease outbreak risk (WHO)
-  |     |-- Healthcare quality (WHO UHC index)
-  |     |-- Required vaccinations count
-  |
-  |-- Governance & Rule of Law (weight: 0.15)
-  |     |-- Rule of law index (World Bank WGI)
-  |     |-- Corruption perception (Transparency International CPI)
-  |
-  |-- Natural Disaster & Environment (weight: 0.10)
-        |-- Natural hazard exposure (INFORM)
-        |-- Climate-related risk
+Pipeline (daily cron) -> data/scores/latest.json + YYYY-MM-DD.json snapshots
+     |
+     v
+Astro SSG build (on push to master)
+     |
+     +-- Homepage: SafetyMap.astro (client-side D3 choropleth, reads public/scores.json)
+     +-- Country pages: [slug].astro (build-time D3 SVG via TrendSparkline.astro)
+     |
+     v
+Cloudflare Pages (static deploy)
 ```
 
-### Normalization Algorithm
+Key existing patterns:
+- **Build-time D3:** `TrendSparkline.astro` uses D3's `scaleLinear` + `line` in Astro frontmatter to produce SVG paths at build time. Zero client JS.
+- **Data loading:** `src/lib/scores.ts` provides `loadLatestScores()` and `loadHistoricalScores(days)` -- both read JSON files from `data/scores/` at build time via `node:fs`.
+- **Client-side map:** `SafetyMap.astro` embeds a `<script>` that loads `public/scores.json` via fetch and renders D3 + TopoJSON.
+- **i18n:** File-based routing with `routes` object in `src/i18n/ui.ts`. Pages duplicated in `src/pages/{en,it}/` with translated slugs.
+- **Pipeline output:** `DailySnapshot` type with `date`, `countries: ScoredCountry[]`, `fetchResults`. Countries have `iso3`, `score`, `pillars[]`, `advisories`.
+
+---
+
+## Recommended Architecture for v1.1
+
+### Design Principle: Keep SSG, Minimize Client JS
+
+All three features integrate into the existing architecture without requiring SSR or API endpoints. The comparison page is the only feature that needs meaningful client-side JavaScript (because users pick countries interactively). Everything else remains build-time.
+
+---
+
+## New Data Artifacts
+
+### 1. Global Score in DailySnapshot (pipeline change)
+
+Add `globalScore` and `globalScoreDisplay` as top-level fields in `DailySnapshot`:
 
 ```typescript
-// Each raw indicator is normalized to 0-1 scale
-function normalize(value: number, min: number, max: number): number {
-  return Math.max(0, Math.min(1, (value - min) / (max - min)));
-}
-
-// Pillar score = weighted average of normalized indicators within pillar
-// Overall score = weighted average of pillar scores, mapped to 1-10
-function computeOverallScore(pillars: PillarScore[]): number {
-  const weightedSum = pillars.reduce(
-    (sum, p) => sum + p.score * p.weight, 0
-  );
-  return Math.round(weightedSum * 9 + 1); // Maps 0-1 to 1-10
+// Modified: src/pipeline/types.ts
+interface DailySnapshot {
+  date: string;
+  generatedAt: string;
+  pipelineVersion: string;
+  weightsVersion: string;
+  countries: ScoredCountry[];
+  fetchResults: FetchResult[];
+  globalScore: number;        // NEW: 1-10 weighted average
+  globalScoreDisplay: number; // NEW: integer for display
 }
 ```
 
-### Data File Structure
+Computation: population-weighted average of all country scores, or simple arithmetic mean (simpler, avoids needing population data). Recommend simple mean -- it is transparent and doesn't require a new data source. Computed after `computeAllScores()` in the pipeline.
 
-```
-data/
-  raw/                          # Fetched from APIs (gitignored or LFS)
-    acled/2026-03-19.json
-    inform/2026-03-19.csv
-    gpi/2026.json
-    who/2026-03-19.json
-    advisories/us-state-dept.json
-  scored/                       # Computed scores (committed to git)
-    AFG.json                    # Afghanistan
-    FRA.json                    # France
-    ...
-  geo/
-    world-scores.geojson        # Merged boundaries + scores
-    world-scores.topojson        # Compressed version
-  meta/
-    sources.json                # Source metadata, URLs, update dates
-    weights.json                # Current weight configuration
-```
+### 2. Consolidated History Index (pipeline change)
 
-Each scored file (`scored/FRA.json`):
+Currently `loadHistoricalScores()` reads every dated snapshot file. This works but scales linearly with accumulated days. After 365 days = 365 file reads per build.
 
-```json
-{
-  "iso3": "FRA",
-  "name": { "en": "France", "it": "Francia" },
-  "score": 8.2,
-  "pillars": {
-    "conflict": { "score": 0.85, "weight": 0.30, "indicators": [...] },
-    "crime": { "score": 0.78, "weight": 0.25, "indicators": [...] },
-    "health": { "score": 0.92, "weight": 0.20, "indicators": [...] },
-    "governance": { "score": 0.88, "weight": 0.15, "indicators": [...] },
-    "environment": { "score": 0.70, "weight": 0.10, "indicators": [...] }
-  },
-  "advisories": {
-    "us": { "level": 2, "text": "Exercise increased caution" },
-    "uk": { "level": "normal", "text": "..." }
-  },
-  "lastUpdated": "2026-03-19T06:00:00Z",
-  "sources": [
-    { "name": "ACLED", "url": "...", "fetchedAt": "..." }
-  ]
+Add a post-pipeline step that writes `data/scores/history-index.json`:
+
+```typescript
+interface HistoryIndex {
+  generatedAt: string;
+  dateRange: { from: string; to: string };
+  // Keyed by ISO3, array of {date, score} sorted chronologically
+  countries: Record<string, { date: string; score: number }[]>;
+  // Global score trend
+  global: { date: string; score: number }[];
 }
 ```
 
-## Astro Site Structure
+Size estimate: 200 countries x 365 days x ~25 bytes per entry = ~1.8MB after a year. Manageable. Limit to last 365 days to keep it bounded.
 
-```
-src/
-  pages/
-    index.astro                     # Homepage with map
-    [locale]/
-      index.astro                   # Localized homepage
-      country/
-        [slug].astro                # Detail page (getStaticPaths from scored JSON)
-      region/
-        [country]/[slug].astro      # Sub-region detail (phase 2+)
-      about.astro
-      methodology.astro
-  components/
-    Map.tsx                         # Leaflet map (React island, client:visible)
-    ScoreCard.astro                 # Score display component (static)
-    PillarBreakdown.astro           # Pillar chart (static, CSS-only or SVG)
-    SearchBar.tsx                   # Search widget (React island, client:idle)
-    LanguageSwitcher.astro          # Locale toggle (static with links)
-  content/
-    config.ts                       # Content collection definitions
-  layouts/
-    Base.astro                      # HTML shell, meta, structured data
-    Country.astro                   # Detail page layout
-  i18n/
-    en.json                         # UI string translations
-    it.json
-  styles/
-    global.css                      # Design tokens, base styles
+### 3. Comparison Data Blob (build-time, for client embedding)
+
+The comparison page needs all country scores + names client-side for the picker and chart. Prepare a compact JSON at build time:
+
+```typescript
+// ~10KB for 200 countries
+interface ComparisonBlob {
+  countries: { iso3: string; name: string; score: number; scoreDisplay: number }[];
+  // History for chart overlay -- embedded only when history exists
+  history: Record<string, { d: string; s: number }[]>; // compact keys
+}
 ```
 
-### Astro Islands Strategy
+The history portion is large (~1.8MB at a year). Two options:
+- **Embed inline** for sites with < 6 months of data (< 900KB). Acceptable.
+- **Load from `public/history.json`** via fetch when data exceeds threshold. Add loading state.
 
-Only two components need client-side JavaScript:
+Recommendation: Start with inline embedding. Switch to fetch-based loading when history exceeds 6 months (revisit at that point).
 
-| Component | Hydration Directive | Rationale |
-|-----------|-------------------|-----------|
-| `Map.tsx` | `client:visible` | Only hydrate when scrolled into view; heavyweight Leaflet bundle (~40KB) |
-| `SearchBar.tsx` | `client:idle` | Hydrate after page idle; needs JS for autocomplete/filtering |
+---
 
-Everything else (score cards, pillar breakdowns, navigation, language switcher) is **static HTML** with zero JavaScript.
+## Component Architecture
+
+### New Components
+
+| Component | File | Type | Purpose |
+|-----------|------|------|---------|
+| `GlobalScoreBanner` | `src/components/GlobalScoreBanner.astro` | Build-time | Displays current global score + mini sparkline on homepage |
+| `HistoryChart` | `src/components/country/HistoryChart.astro` | Build-time SVG | Full-size trend chart replacing TrendSparkline, with date axis and score axis |
+| `ComparisonShell` | `src/components/compare/ComparisonShell.astro` | Build-time layout | Page structure for comparison: picker area + chart area + table area |
+| `CountryPicker` | `src/components/compare/CountryPicker.astro` | Client island | Interactive country search + select (reuses Fuse.js) |
+| `ComparisonChart` | `src/components/compare/ComparisonChart.ts` | Client-side D3 | Multi-country overlay line chart |
+| `ComparisonTable` | `src/components/compare/ComparisonTable.ts` | Client-side | Side-by-side pillar breakdown table |
+
+### Modified Components
+
+| Component | Change |
+|-----------|--------|
+| `src/pages/en/index.astro` | Add GlobalScoreBanner below hero tagline |
+| `src/pages/it/index.astro` | Add GlobalScoreBanner below hero tagline |
+| `src/pages/en/country/[slug].astro` | Replace TrendSparkline with HistoryChart, add "Compare with..." link |
+| `src/pages/it/paese/[slug].astro` | Same changes as English country page |
+| `src/components/Header.astro` | Add "Compare" nav link |
+| `src/i18n/ui.ts` | Add routes (`compare`/`confronta`) and ~15 new translation keys |
+| `src/pipeline/types.ts` | Add globalScore fields to DailySnapshot |
+| `src/pipeline/run.ts` | Add global score computation + history index steps |
+| `src/lib/scores.ts` | Add `loadHistoryIndex()`, `loadGlobalScore()` functions |
+| `.github/workflows/deploy.yml` | Copy `history-index.json` to `public/history.json` |
+
+### Unchanged
+
+| Component | Why Unchanged |
+|-----------|--------------|
+| `SafetyMap.astro` | Map doesn't change for v1.1 |
+| `Search.astro` | Search behavior unchanged |
+| All pipeline fetchers | No new data sources |
+| `src/pipeline/scoring/engine.ts` | Scoring logic unchanged |
+| `.github/workflows/data-pipeline.yml` | `git add data/scores/` already covers new files |
+
+---
+
+## Page Architecture Details
+
+### Comparison Page: `/en/compare/` and `/it/confronta/`
+
+This is the architecturally complex feature. Comparison is user-driven (pick countries), but the site is SSG.
+
+**Approach: Static shell + client-side D3 rendering**
+
+```
+URL: /en/compare/?c=ITA,FRA,DEU
+     /en/compare/              (empty state with picker)
+```
+
+The page is one statically generated page per locale. Country data is embedded as inline JSON. Client-side JavaScript handles:
+1. Country picker (Fuse.js search, add/remove pills)
+2. Chart rendering (D3 multi-line overlay)
+3. Table rendering (pillar comparison)
+4. URL state sync (query params for shareability)
+
+**Why not SSR?** Adding SSR means Cloudflare Workers runtime, edge function cold starts, caching complexity, cost. The dataset is small enough to embed.
+
+**Why not pre-generate all combinations?** 200 countries = 19,900 pairs. Build time explosion with zero SEO value for most.
+
+**Why not generate popular pairs only?** Complexity for marginal SEO benefit. A single well-optimized comparison page with good meta tags serves better.
+
+**Page structure:**
+
+```astro
+---
+// src/pages/en/compare/index.astro
+export const prerender = true;
+import { loadLatestScores, loadHistoryIndex } from '../../../lib/scores';
+
+const countries = loadLatestScores();
+const history = loadHistoryIndex();
+
+// Prepare compact data for client
+const comparisonData = {
+  countries: countries.map(c => ({
+    iso3: c.iso3,
+    name: c.name.en,
+    score: c.score,
+    scoreDisplay: c.scoreDisplay,
+    pillars: c.pillars.map(p => ({ name: p.name, score: p.score })),
+  })),
+  history: Object.fromEntries(
+    Object.entries(history.countries).map(([iso3, points]) => [
+      iso3,
+      points.map(p => ({ d: p.date, s: p.score })),
+    ])
+  ),
+};
+---
+<Base ...>
+  <ComparisonShell>
+    <!-- Country data embedded for client JS -->
+    <script type="application/json" id="comparison-data">
+      {JSON.stringify(comparisonData)}
+    </script>
+
+    <!-- Country picker: client island -->
+    <div id="country-picker"></div>
+
+    <!-- Chart area: D3 renders here -->
+    <div id="comparison-chart"></div>
+
+    <!-- Table area: renders here -->
+    <div id="comparison-table"></div>
+  </ComparisonShell>
+
+  <script src="../../lib/comparison-client.ts"></script>
+</Base>
+```
+
+**Client-side script (`comparison-client.ts`):**
+- Reads embedded JSON from `#comparison-data`
+- Parses `?c=ITA,FRA` from URL
+- Initializes Fuse.js for country search
+- Renders D3 chart with selected countries' history
+- Renders comparison table with pillar breakdown
+- Updates URL via `history.replaceState()` on selection change
+
+### Historical Trend Chart (Enhanced)
+
+Replace the 300x64px `TrendSparkline` with a full-width `HistoryChart`:
+
+```
+src/components/country/HistoryChart.astro
+```
+
+**Build-time features:**
+- Full-width SVG (responsive viewBox)
+- Y-axis with score labels (1-10)
+- X-axis with date labels (monthly ticks)
+- Color-coded line using scoreToColor gradient
+- Area fill below line for visual weight
+- Endpoint dot with current score label
+
+**Differences from TrendSparkline:**
+- Larger: full-width instead of 300x64
+- Axes: labeled X and Y axes
+- Accessible: `<title>` and `<desc>` in SVG, data table for screen readers
+- Link: "Compare with other countries" link to comparison page with `?c=THIS_COUNTRY`
+
+**The existing `TrendSparkline` can be kept** as a small preview on the country page, with HistoryChart as an expanded view. Or replace entirely -- design decision, not architectural.
+
+### Global Safety Score
+
+Simple build-time component:
+
+```
+src/components/GlobalScoreBanner.astro
+```
+
+Reads `globalScore` from the latest snapshot. Displays:
+- Current global safety score (1-10)
+- Score change indicator (up/down arrow if history available)
+- Optional mini sparkline of global trend (reuse TrendSparkline pattern)
+
+Placement: Homepage, below the hero tagline, above the map.
+
+---
+
+## Data Flow Diagram (v1.1)
+
+```
+Pipeline (daily cron, src/pipeline/run.ts)
+  |
+  Stage 1: Fetch sources          -- unchanged
+  Stage 2: Load raw data          -- unchanged
+  Stage 3: Score countries         -- unchanged
+  Stage 4: Compute global score   -- NEW
+  Stage 5: Write snapshot          -- modified (includes globalScore)
+  Stage 6: Write history index     -- NEW (consolidates all snapshots)
+  |
+  Output:
+    data/scores/latest.json        (+ globalScore, globalScoreDisplay)
+    data/scores/YYYY-MM-DD.json    (+ globalScore, globalScoreDisplay)
+    data/scores/history-index.json (NEW - consolidated history)
+  |
+  Git commit + push -> triggers deploy workflow
+  |
+  v
+Deploy workflow (.github/workflows/deploy.yml)
+  |
+  Copy to public/:
+    public/scores.json             -- existing (for map)
+    public/history.json            -- NEW (for comparison page client)
+  |
+  Astro build:
+    Homepage        reads latest.json     -> GlobalScoreBanner
+    Country pages   reads history-index   -> HistoryChart (build-time SVG)
+    Comparison page reads latest.json     -> embeds inline JSON for client
+                    + history-index       -> embeds inline or refs public/history.json
+  |
+  v
+Cloudflare Pages deploy (static)
+```
+
+---
 
 ## Patterns to Follow
 
-### Pattern 1: Pipeline as Idempotent Script
-**What:** Each pipeline stage is a standalone script that reads input files and writes output files. Running it twice with the same input produces the same output.
-**When:** Always -- this is the core architecture.
-**Why:** Makes debugging trivial. You can re-run any stage independently. Failed runs leave no corrupt state.
+### Pattern 1: Build-Time D3 SVG (existing, extend)
 
-```typescript
-// scripts/ingest-acled.ts
-// Input: ACLED API credentials, date range
-// Output: data/raw/acled/{date}.json
-// Idempotent: same date always fetches same data
+Use for: HistoryChart, GlobalScoreBanner sparkline.
 
-// scripts/compute-scores.ts
-// Input: data/raw/*
-// Output: data/scored/*.json
-// Idempotent: same raw data always produces same scores
+D3 scales and line generators run in Astro frontmatter. Output is static SVG in HTML. Zero client JS. This is the proven pattern from TrendSparkline.
+
+### Pattern 2: Embedded Data + Client D3 (new pattern)
+
+Use for: Comparison page chart and table.
+
+```astro
+<!-- Build time: embed data -->
+<script type="application/json" id="data">{JSON.stringify(data)}</script>
+
+<!-- Client time: read and render -->
+<script>
+  const data = JSON.parse(document.getElementById('data').textContent);
+  // D3 rendering here
+</script>
 ```
 
-### Pattern 2: Scored Data as the Single Source of Truth
-**What:** The scored JSON files are the contract between the pipeline and the frontend. Nothing else feeds the site generator.
-**When:** Always.
-**Why:** Clear boundary. The pipeline team and the frontend team (even if it is one person) have a stable interface.
+This avoids runtime fetch calls while enabling interactive visualization.
 
-### Pattern 3: GeoJSON Pre-computation
-**What:** Merge scores into GeoJSON at build time, not at runtime. The map widget receives a single file with everything it needs.
-**When:** Always for the choropleth layer.
-**Why:** Eliminates client-side data joining. The GeoJSON file includes `score`, `color`, `name`, and `slug` per feature -- the map just renders and links.
+### Pattern 3: URL-Driven State
 
-### Pattern 4: SEO-First Page Generation
-**What:** Every destination page is a full static HTML page with meta tags, Open Graph, JSON-LD structured data, canonical URLs per locale, and a complete sitemap.
-**When:** Every build.
-**Why:** Search traffic is the primary acquisition channel for a zero-budget informational site.
+Use for: Comparison page country selection.
 
-```typescript
-// JSON-LD structured data for each country page
-{
-  "@context": "https://schema.org",
-  "@type": "Place",
-  "name": "France",
-  "description": "France safety score: 8.2/10...",
-  "additionalProperty": {
-    "@type": "PropertyValue",
-    "name": "Safety Score",
-    "value": "8.2"
-  }
-}
 ```
+/en/compare/?c=ITA,FRA,DEU
+```
+
+Client JS reads `URLSearchParams` on load, updates via `history.replaceState()` on change. URLs are shareable and bookmarkable. No framework state management needed.
+
+### Pattern 4: Progressive Enhancement
+
+Use for: Comparison page.
+
+The page should show a meaningful empty state without JS (instructions to select countries, maybe a static "most compared" table). Client JS enhances with the interactive picker and chart. This maintains accessibility and gives crawlers content.
+
+---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Client-Side Data Fetching for Scores
-**What:** Fetching score data via API calls from the browser.
-**Why bad:** Adds latency, requires a runtime API server (cost), breaks SEO (content not in HTML), creates a single point of failure.
-**Instead:** Pre-render all score data into static HTML at build time.
+### Anti-Pattern 1: Adding SSR for the Comparison Page
 
-### Anti-Pattern 2: Single Monolithic GeoJSON
-**What:** Shipping high-resolution (10m scale) Natural Earth data to every user.
-**Why bad:** Natural Earth 10m countries GeoJSON is ~24MB. Even simplified, it can be several MB. Mobile users on poor connections will suffer.
-**Instead:** Use 110m or 50m resolution for the world view (~500KB-1MB). Simplify geometries with mapshaper. Use TopoJSON compression. Lazy-load higher resolution only on zoom.
+**Why tempting:** Dynamic country selection feels like it needs server rendering.
+**Why wrong:** Data is ~10KB for scores, embeddable inline. SSR adds Cloudflare Workers runtime, cold starts, caching complexity, breaks the pure SSG deploy model.
+**Instead:** Static page + embedded data + client-side D3.
 
-### Anti-Pattern 3: Over-Engineering the Score Formula
-**What:** Building a complex ML model or dynamic weighting system before validating the product.
-**Why bad:** Users care about the output (clear safety signal), not the sophistication of the algorithm. A simple weighted average is transparent and debuggable.
-**Instead:** Start with fixed weights, document them on the methodology page. Allow weight tuning via a config file. Add complexity only if user feedback demands it.
+### Anti-Pattern 2: Pre-Generating All Country Pair Pages
 
-### Anti-Pattern 4: Database for 200 Records
-**What:** Setting up PostgreSQL or MongoDB for country-level data.
-**Why bad:** Adds hosting cost (~$0-15/month), operational complexity, and a runtime dependency -- all for a dataset that fits in a single JSON file.
-**Instead:** JSON files in git. If the dataset grows to tens of thousands of records (city-level), consider SQLite as a build-time-only query engine.
+**Why tempting:** SEO for "Italy vs France safety comparison" searches.
+**Why wrong:** 19,900 pairs, millions of triples. Build time explosion.
+**Instead:** One comparison page with good meta tags. Use structured data and dynamic title/description based on query params (client-side, for social sharing use a separate OG image strategy if needed).
 
-## Scalability Considerations
+### Anti-Pattern 3: Fetching History Data Client-Side on Country Pages
 
-| Concern | At 200 countries | At 2K sub-regions | At 20K cities |
-|---------|-----------------|-------------------|---------------|
-| Data storage | ~1MB JSON, trivial | ~10MB, still fine in git | ~100MB, consider git LFS or SQLite at build time |
-| Build time | ~30s Astro build | ~2-3min, acceptable for daily builds | ~10-15min, may need incremental builds |
-| GeoJSON size | ~500KB (50m res) | ~5MB, need tiling or lazy loading | Not feasible as single file, need vector tiles (MapLibre) |
-| Map rendering | Leaflet fine | Leaflet still OK with clustering | Must switch to MapLibre + vector tiles |
-| i18n pages | 200 x 2 locales = 400 pages | 2K x 2 = 4K pages, Astro handles this | 20K x 2 = 40K pages, may need on-demand rendering |
-| Pipeline runtime | ~2min fetch + score | ~3min | ~10min, may hit GitHub Actions limits |
+**Why tempting:** Keeps country page bundle small.
+**Why wrong:** Adds loading states, error handling, CORS config. History for a single country is tiny (~3KB for a year). Build-time SVG eliminates all this.
+**Instead:** Build-time D3 in HistoryChart.astro, same pattern as TrendSparkline.
 
-**Key threshold:** The architecture shifts at city-level granularity. The JSON-in-git + Leaflet + full-SSG approach works excellently for countries + sub-regions (up to ~2-5K destinations). Beyond that, introduce vector tiles (MapLibre), SQLite, and on-demand rendering.
+### Anti-Pattern 4: Separate History Database
 
-## Suggested Build Order (Dependencies)
+**Why tempting:** SQL queries for date ranges, aggregations.
+**Why wrong:** Adds infrastructure, cost. JSON files work at this scale.
+**Instead:** Consolidated history-index.json read at build time.
 
-```
-Phase 1: Foundation
-  [A] Data schema design (scored JSON format)      -- no dependencies
-  [B] Astro project scaffold + i18n setup           -- no dependencies
-  [C] Leaflet map component prototype               -- no dependencies
-  A, B, C can be built in parallel.
+### Anti-Pattern 5: React/Vue Islands for Comparison
 
-Phase 2: Pipeline
-  [D] Source fetchers (one per data source)          -- depends on A (schema)
-  [E] Scoring engine                                 -- depends on A (schema) + D (raw data)
-  [F] GeoJSON merger                                 -- depends on A (schema) + E (scored data)
+**Why tempting:** Framework components for interactive UI.
+**Why wrong:** Adds framework runtime (~30-50KB), build complexity, hydration overhead. The comparison UI is a search box + a chart + a table -- vanilla JS + D3 handles this.
+**Instead:** Vanilla TypeScript + D3 + Fuse.js (already a dependency).
 
-Phase 3: Frontend
-  [G] Homepage + map integration                     -- depends on B + C + F
-  [H] Country detail pages from content collections  -- depends on B + E
-  [I] Search functionality                           -- depends on H (needs page slugs)
+---
 
-Phase 4: Polish & SEO
-  [J] Structured data / JSON-LD                      -- depends on H
-  [K] Sitemap generation                             -- depends on H
-  [L] Methodology / about pages                      -- depends on B
+## New Pipeline Modules
 
-Phase 5: Automation
-  [M] GitHub Actions daily cron pipeline             -- depends on D + E + F
-  [N] Deploy to Cloudflare Pages                     -- depends on G + H
-  [O] Monitoring (build failure alerts)              -- depends on M + N
+### `src/pipeline/scoring/global.ts`
+
+```typescript
+export function computeGlobalScore(countries: ScoredCountry[]): {
+  globalScore: number;
+  globalScoreDisplay: number;
+} {
+  // Simple arithmetic mean of all country scores
+  const sum = countries.reduce((acc, c) => acc + c.score, 0);
+  const avg = sum / countries.length;
+  return {
+    globalScore: Math.round(avg * 10) / 10,  // one decimal
+    globalScoreDisplay: Math.round(avg),
+  };
+}
 ```
 
-**Critical path:** A -> D -> E -> F -> G (data schema through to working map). The detail pages (H) can proceed in parallel once the schema (A) and Astro scaffold (B) exist.
+### `src/pipeline/scoring/history-index.ts`
+
+```typescript
+export function writeHistoryIndex(scoresDir: string, maxDays: number = 365): void {
+  // Read all YYYY-MM-DD.json files
+  // Build consolidated index
+  // Write to data/scores/history-index.json
+}
+```
+
+---
+
+## i18n Integration
+
+Add to `src/i18n/ui.ts` routes:
+
+```typescript
+export const routes = {
+  en: {
+    // ...existing
+    compare: 'compare',
+  },
+  it: {
+    // ...existing
+    compare: 'confronta',
+  },
+};
+```
+
+New translation keys needed (~15):
+- `compare.title`, `compare.description`, `compare.select_countries`, `compare.add_country`, `compare.remove`, `compare.no_selection`, `compare.chart_title`, `compare.table_title`, `compare.vs`
+- `global.score_title`, `global.score_label`, `global.trend_label`
+- `country.full_history`, `country.compare_with`
+
+---
+
+## Suggested Build Order
+
+Order based on dependency analysis:
+
+### Phase A: Pipeline Extensions (foundation -- no UI)
+
+1. `computeGlobalScore()` in `src/pipeline/scoring/global.ts`
+2. Add `globalScore` fields to `DailySnapshot` type
+3. Wire global score into `run.ts` after `computeAllScores()`
+4. `writeHistoryIndex()` in `src/pipeline/scoring/history-index.ts`
+5. Wire history index into `run.ts` after `writeSnapshot()`
+6. Add `loadHistoryIndex()` and `loadGlobalScore()` to `src/lib/scores.ts`
+
+**Rationale:** All UI features depend on this data. Run pipeline a few times to accumulate test data.
+
+### Phase B: Global Safety Score UI (simplest feature)
+
+7. `GlobalScoreBanner.astro` component
+8. Add to both homepage pages (en + it)
+9. Add i18n keys for global score
+
+**Rationale:** Simplest new feature. Validates pipeline -> build -> display flow end-to-end.
+
+### Phase C: Enhanced History Chart (extends existing pattern)
+
+10. `HistoryChart.astro` -- larger chart with axes
+11. Integrate on country pages (replace or augment TrendSparkline)
+12. Add "Compare with..." link to country pages
+13. Add i18n keys for history chart
+
+**Rationale:** Purely build-time, same pattern as existing TrendSparkline. No new architectural concepts.
+
+### Phase D: Comparison Page (most complex -- new client-side pattern)
+
+14. `comparison-data.ts` -- build-time data preparation
+15. `ComparisonShell.astro` -- page layout
+16. Comparison page files (en/compare + it/confronta)
+17. `CountryPicker.astro` + client JS -- country selector with Fuse.js
+18. `ComparisonChart.ts` -- client-side D3 multi-line chart
+19. `ComparisonTable.ts` -- client-side pillar comparison
+20. URL state management (query params)
+21. Add "Compare" to navigation
+22. Add all comparison i18n keys
+23. Update deploy workflow to copy history.json to public/
+
+**Rationale:** Introduces the only new architectural pattern (client-side D3 from embedded data). Benefits from Phase C chart utilities.
+
+---
+
+## Scalability Notes
+
+| Concern | Now (day 1) | 90 days | 365 days | 3 years |
+|---------|-------------|---------|----------|---------|
+| history-index.json | ~2KB | ~180KB | ~1.8MB | ~5.4MB |
+| Inline embedding | Fine | Fine | Borderline | Switch to fetch |
+| Snapshot files in git | 1 | 90 (~18MB) | 365 (~73MB) | 1095 (~219MB) |
+| Build time (history) | Instant | Instant (1 file read) | Fast (1 file) | Fast (1 file) |
+| Comparison page JS | ~15KB | Same | Same | Same |
+
+**Action needed at 6 months:** Evaluate whether inline history embedding is still acceptable. If history-index.json exceeds ~1MB, switch comparison page to fetch `public/history.json` instead.
+
+**Action needed at 1+ years:** Consider pruning snapshot files older than 365 days from git (keep in history-index.json only). Or accept the git repo size growth.
 
 ## Sources
 
-- [Astro Content Collections docs](https://docs.astro.build/en/guides/content-collections/)
-- [Astro i18n Routing docs](https://docs.astro.build/en/guides/internationalization/)
-- [Leaflet Choropleth Tutorial](https://leafletjs.com/examples/choropleth/)
-- [Natural Earth Data - Country Boundaries](https://www.naturalearthdata.com/downloads/50m-cultural-vectors/)
-- [INFORM Risk Index on HDX](https://data.humdata.org/organization/inform)
-- [ACLED API Documentation](https://acleddata.com/acled-api-documentation)
-- [Global Peace Index](https://www.economicsandpeace.org/global-peace-index/)
-- [HelloSafe Safety Index Methodology](https://hellosafe.com/travel-insurance/safest-countries-in-the-world)
-- [Building Static Websites from JSON with Astro](https://dev.solita.fi/2024/12/02/building-static-websites-with-astro.html)
-- [Natural Earth GeoJSON on GitHub](https://github.com/martynafford/natural-earth-geojson)
-- [Astro Islands Architecture](https://strapi.io/blog/astro-islands-architecture-explained-complete-guide)
-- [Astro vs Next.js Comparison (2026)](https://pagepro.co/blog/astro-nextjs/)
+- Existing codebase analysis: `src/pipeline/run.ts`, `src/lib/scores.ts`, `src/components/country/TrendSparkline.astro`, `src/pages/en/country/[slug].astro` (HIGH confidence -- direct code inspection)
+- Astro SSG static page generation with `getStaticPaths` (HIGH confidence -- proven in existing codebase)
+- D3 v7 build-time SVG generation pattern (HIGH confidence -- proven in TrendSparkline)
+- Embedded JSON + client-side D3 pattern (MEDIUM confidence -- standard web pattern, not yet used in this codebase)
+- URL query param state management (HIGH confidence -- standard browser API)

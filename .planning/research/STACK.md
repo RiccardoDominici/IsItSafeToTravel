@@ -1,191 +1,221 @@
-# Technology Stack
+# Technology Stack: v1.1 Comparison & Historical Trends
 
 **Project:** IsItSafeToTravel.com
 **Researched:** 2026-03-19
+**Scope:** Incremental additions for comparison pages, historical trend charts, global safety score, multi-country chart overlays
 
-## Recommended Stack
+## Existing Stack (validated, DO NOT change)
 
-### Core Framework
+| Technology | Version | Role |
+|------------|---------|------|
+| Astro | ^6.0.6 | SSG framework |
+| Tailwind CSS | ^4.2.2 | Styling |
+| D3.js | ^7.9.0 | Map rendering, build-time SVG charts |
+| TypeScript | ^5.9.3 | Type safety |
+| Fuse.js | ^7.1.0 | Client-side search |
+| Cloudflare Pages | - | Hosting |
+| GitHub Actions | - | Daily data pipeline |
+| topojson-client | ^3.1.0 | Map topology |
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| Next.js | 16.2 | Full-stack React framework | Current stable. Turbopack default (5x faster builds). SSG + ISR for daily data refreshes. App Router with React Server Components for SEO. Partial Pre-rendering for map pages (static shell + dynamic map). next-intl has confirmed Next.js 16 support. | HIGH |
-| React | 19.2 | UI library | Ships with Next.js 16. React Compiler (stable) auto-memoizes components. View Transitions API for smooth page navigation. | HIGH |
-| TypeScript | 5.x | Type safety | Non-negotiable for data-heavy project. Catches score calculation bugs at compile time. Next.js 16 has first-class TS support. | HIGH |
+## What Each New Feature Needs
 
-### Styling
+### 1. Comparison Page (2+ countries side-by-side)
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| Tailwind CSS | 4.2 | Utility-first CSS | CSS-first config (no tailwind.config.js). 5x faster full builds. Container queries built-in (useful for responsive map panels). OKLCH color space ideal for safety score gradients (perceptually uniform green-to-red). | HIGH |
-| shadcn/ui | latest | Component library | Not a dependency -- copies components into your project. Full Tailwind v4 + React 19 support. Accessible (WCAG AA). Only add what you use = minimal bundle. | HIGH |
+**New libraries needed: NONE**
 
-### Interactive Map
+This is a static page that reads existing score data at build time. The pipeline already produces `latest.json` with all country scores including pillar breakdowns. A comparison page simply:
+- Accepts country selection (URL params or client-side state)
+- Renders side-by-side score cards using existing data
+- Uses existing D3 color utilities (`scoreToColor`, `pillarToColor`)
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| Leaflet | 1.9.x | Map rendering engine | 42KB, zero dependencies, 1.4M+ weekly npm downloads. Best documented map library. Handles choropleth (color-coded countries) natively with GeoJSON. Works with free OSM raster tiles -- no API key needed. | HIGH |
-| react-leaflet | 5.0 | React bindings for Leaflet | Peer dependency on React 19. Requires `dynamic(() => import(...), { ssr: false })` in Next.js -- Leaflet needs DOM. Well-documented SSR workaround pattern. | MEDIUM |
-| OpenStreetMap tiles | - | Base map tiles | Completely free, no API key, no account. Fair use policy (not rate-limited for reasonable traffic). For a travel info site with ~200 country polygons, raster tiles are sufficient. | HIGH |
+Country selection UI needs minimal client-side JS for the selector/search -- Fuse.js is already in the stack for this. A vanilla `<script>` tag in the Astro component handles the interactivity.
 
-**Why NOT MapLibre GL:** Vector tiles look nicer but require a tile server or paid provider. OpenFreeMap exists but is a single-maintainer project -- risky dependency for production. Leaflet + OSM raster tiles = zero cost, zero risk, proven at scale.
+**Integration point:** `loadLatestScores()` from `src/lib/scores.ts` provides all country data at build time. Embed the full scores array as a JSON `<script>` tag for client-side filtering.
 
-**Why NOT Google Maps / Mapbox:** Both require API keys and charge after free tier. Budget constraint eliminates them.
+### 2. Historical Trend Charts (interactive, per-country)
 
-### Internationalization
+**New libraries needed: NONE**
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| next-intl | 4.x | i18n framework | 931K weekly downloads. Built for App Router + Server Components. ~2KB bundle. Static rendering support via `setRequestLocale()` + `generateStaticParams()`. Locale-based routing (`/en/country/italy`, `/it/paese/italia`). TypeScript-safe message keys. | HIGH |
+The existing `TrendSparkline.astro` already uses D3 `scaleLinear` and `line` to generate SVG at build time. The full trend chart expands this pattern but adds client-side interactivity for:
+- Tooltips on hover (show date + score)
+- Axis labels
+- Zoom/pan on time axis (optional, can defer)
 
-**Why NOT next-i18next:** Not compatible with the App Router. Flat/declining adoption since 2024. next-intl is the clear community standard for modern Next.js.
+D3 v7.9 (already installed) handles all of this. The pattern: generate the static SVG at build time with D3 in the Astro frontmatter, then attach event listeners via a `<script>` tag for tooltips and hover effects.
 
-**Why NOT Intlayer:** Newer entrant, smaller community, less battle-tested. next-intl has 4x more downloads.
+**Why not a charting library (Chart.js, Recharts, etc.):** D3 is already installed and proven in this codebase. Adding Chart.js or similar would be redundant and add bundle size for no gain. D3 is more flexible for the exact visual style already established (the color scale, sparkline aesthetic).
 
-### Data Pipeline
+**Integration point:** `loadHistoricalScores(days)` from `src/lib/scores.ts` already returns `Map<string, HistoryPoint[]>`. Serialize per-country history into inline JSON for client-side tooltip rendering.
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| GitHub Actions | - | Cron-based automation | 2,000 free minutes/month on private repos. Unlimited on public repos. Cron schedule syntax (`0 6 * * *` for daily at 6am UTC). No server needed. Runs Node.js/Python scripts. | HIGH |
-| Node.js scripts | 22.x LTS | Data fetching + processing | Same language as the app. Fetch APIs, parse CSV/JSON, compute safety scores, write output to repo. Can use `fetch()` natively. | HIGH |
-| JSON files in repo | - | Data storage | No database needed. Daily pipeline writes computed scores to `/data/scores.json` and per-country files. Next.js reads at build time. Git provides version history of all score changes for free. | HIGH |
+### 3. Multi-Country Overlay on Trend Charts
 
-**Why NOT a database:** The data changes once per day, for ~200 countries. This is ~50KB of JSON. A database adds complexity, cost, and a runtime dependency. JSON files committed to the repo are simpler, free, version-controlled, and work perfectly with static generation.
+**New libraries needed: NONE**
 
-**Why NOT Cloudflare D1 / KV:** Would work, but adds platform lock-in and complexity. JSON-in-repo is the simplest possible solution for daily-updated reference data. Upgrade to D1 later only if sub-national regions push data size beyond what's practical in files.
+This is the most interactive feature -- users select multiple countries and see overlaid trend lines on one chart. This requires:
+- Client-side D3 rendering (not build-time) because the combination of countries is user-chosen
+- Country selector (reuse Fuse.js-powered search from comparison page)
+- Dynamic SVG updates as countries are added/removed
+- Color-coded lines with legend
+- Crosshair tooltip showing all country values at a given date
 
-### Hosting & Deployment
+D3 v7's `d3.line()`, `d3.scaleTime()`, `d3.axisBottom()`, `d3.bisector()` handle all of this natively. This is core D3 territory -- multi-line charts with interactive tooltips are one of D3's most documented patterns.
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| Cloudflare Workers | - | Hosting (primary recommendation) | **Unlimited free bandwidth.** No commercial use restriction. 100K requests/day free. Global edge network. Next.js 16 supported via OpenNext adapter (`@opennextjs/cloudflare`). ISR works on Workers (unlike static export). | HIGH |
-| GitHub | - | Source code + CI/CD | Free for public repos. GitHub Actions for data pipeline. | HIGH |
+**Architecture decision: Vanilla `<script>` with D3, NOT a framework island.**
 
-**Why NOT Vercel (free tier):** Vercel Hobby plan **prohibits commercial use**. Even an ad-free informational site that might later monetize would violate ToS. Pro plan is $20/month -- exceeds budget. Cloudflare Workers has no such restriction and offers unlimited bandwidth.
+Rationale:
+- The current codebase ships zero client-side framework JS (no `client:` directives anywhere)
+- Adding `@astrojs/react` or `@astrojs/preact` for one interactive chart is disproportionate overhead
+- D3's imperative DOM manipulation is actually a better fit than React for chart interactivity (no virtual DOM overhead for SVG updates)
+- Astro `<script>` tags are bundled and tree-shaken by Vite -- D3 modules used client-side will be properly code-split
 
-**Why NOT pure static export (`output: 'export'`):** Loses ISR capability. With daily data updates, you want ISR so pages revalidate without full rebuilds. Static export means every data update = full site rebuild of 200+ country pages x N locales. ISR on Cloudflare Workers handles this gracefully.
+**The tradeoff:** If the site later needs many interactive UI components beyond charts, consider adding Preact. For now, vanilla D3 scripts are the right call.
 
-**Why NOT Netlify:** Free tier limited to 100GB bandwidth. Cloudflare is unlimited. Netlify's Next.js support has historically lagged behind Vercel and Cloudflare.
+**Integration point:** The historical scores JSON for all countries (or a subset of popular ones) needs to be available client-side. Two approaches:
+- **Option A (recommended):** Generate a `data/history/summary.json` at build time containing `{iso3: [{date, score}...]}` for all countries. Fetch it client-side on the overlay page.
+- **Option B:** Embed all history inline. Rejected -- too large for 200+ countries x 90+ days.
 
-### SEO & Structured Data
+### 4. Global Safety Score (world benchmark)
 
-| Technology | Version | Purpose | Why | Confidence |
-|------------|---------|---------|-----|------------|
-| Next.js Metadata API | built-in | Meta tags, Open Graph | App Router `generateMetadata()` per page. Dynamic titles per country/locale. No extra library needed. | HIGH |
-| next-sitemap | 4.x | Sitemap generation | Generates sitemap.xml and robots.txt. Handles multilingual alternate URLs (`hreflang`). Works with ISR. | MEDIUM |
-| JSON-LD | built-in | Structured data | Embed `<script type="application/ld+json">` in country pages. Use `Place`, `Country`, `WebPage` schemas. No library needed -- just TypeScript objects serialized to JSON. | HIGH |
+**New libraries needed: NONE**
 
-### Data Sources (Free/Open Access)
+This is a pure pipeline computation. The global safety score is a weighted average of all country scores (weighted by population, or unweighted). Computed in the pipeline alongside per-country scores, added to the snapshot JSON.
 
-| Source | Access | Data Provided | Update Frequency | Confidence |
-|--------|--------|---------------|-------------------|------------|
-| INFORM Risk Index | Open download (CSV/API) | Composite risk scores, hazard/exposure/vulnerability for 191 countries | Annual (with mid-year updates) | HIGH |
-| Global Peace Index | Open download (PDF/datasets) | Peace scores for 163 countries across 23 indicators | Annual (June) | HIGH |
-| ACLED | Free API (requires registration) | Conflict event data, geo-located | Daily/weekly | MEDIUM |
-| World Bank WGI | Open API | Governance indicators (6 dimensions) for 200+ economies | Annual | HIGH |
-| WHO GHO | Open API | Health risk indicators per country | Varies by indicator | MEDIUM |
-| Government Travel Advisories | Scraping / RSS | US State Dept, UK FCDO, Italian Farnesina advisory levels | As issued | MEDIUM |
-| Natural Earth | Open download | GeoJSON country/region boundaries for the map | Static (geographic data) | HIGH |
+**Pipeline change:** Add a `globalScore` field to the `DailySnapshot` type and compute it in `scoring/engine.ts` after all countries are scored.
 
-### Supporting Libraries
+**No new dependencies.** This is arithmetic on existing data.
 
-| Library | Version | Purpose | When to Use |
-|---------|---------|---------|-------------|
-| zod | 3.x | Schema validation | Validate API responses from data sources. Validate computed score shapes. |
-| date-fns | 4.x | Date formatting | Format "last updated" dates per locale. Lightweight vs. moment/dayjs. |
-| papaparse | 5.x | CSV parsing | Parse CSV data from INFORM, GPI downloads in the pipeline. |
-| sharp | 0.33.x | Image optimization | Next.js image optimization. Auto-installed by Next.js. |
-| @vercel/og | latest | OG image generation | Dynamic social share images per country ("Italy: Safety Score 7.2"). |
+### 5. Historical Data Collection & Storage
 
-## Alternatives Considered
+**New libraries needed: NONE**
 
-| Category | Recommended | Alternative | Why Not |
-|----------|-------------|-------------|---------|
-| Framework | Next.js 16 | Astro 5 | Astro is great for static content but weaker for interactive features (map). Next.js handles the hybrid static + interactive pattern better. |
-| Framework | Next.js 16 | Nuxt 4 | Vue ecosystem. Smaller community for map/i18n integrations. No strong reason to pick over Next.js for this use case. |
-| Map | Leaflet | MapLibre GL | Requires tile server or paid provider for vector tiles. Overkill for country-level choropleth. |
-| Map | Leaflet | deck.gl | WebGL-based, heavy. Designed for massive datasets (millions of points). We have ~200 polygons. |
-| Styling | Tailwind CSS 4 | CSS Modules | More verbose. No design system. Tailwind's utility classes are faster for prototyping and responsive design. |
-| Hosting | Cloudflare Workers | AWS Amplify | More complex setup. Free tier has lower limits. Not worth the complexity. |
-| i18n | next-intl | Paraglide.js | Newer, less ecosystem support. next-intl is the proven choice. |
-| Data storage | JSON in repo | SQLite (Turso) | Unnecessary complexity. Upgrade path exists if needed later. |
+Already implemented. The pipeline writes daily snapshots to `data/scores/YYYY-MM-DD.json`. The `loadHistoricalScores()` function reads them. The `listSnapshotDates()` function enumerates them.
 
-## Architecture Decision: Build + Deploy Flow
+**What IS needed:** A build-time aggregation step that compiles individual daily snapshots into a compact summary file for client-side use. This avoids the client fetching dozens of individual snapshot files.
+
+**Pipeline addition:** A new script (pure Node.js/TypeScript, no new deps) that reads all `data/scores/*.json` files and writes `data/history/summary.json` with the shape:
+```typescript
+interface HistorySummary {
+  dates: string[];           // sorted date array
+  countries: {
+    [iso3: string]: number[] // scores array, aligned with dates array
+  };
+  globalScores: number[];    // global score per date, aligned with dates
+}
+```
+This columnar format is compact (no repeated date strings per country) and fast to parse client-side.
+
+## Recommended Stack Additions
+
+### New Dependencies: NONE
+
+No new npm packages are needed for v1.1. Every feature builds on:
+- **D3 v7.9** (already installed) -- charts, scales, axes, line generators, bisectors for tooltips
+- **Fuse.js v7.1** (already installed) -- country search/selection in comparison and overlay UIs
+- **Existing pipeline infrastructure** -- daily snapshots, score computation
+
+### New Dev Dependencies: NONE
+
+No new build tools, test utilities, or dev-time packages needed.
+
+## What NOT to Add
+
+| Temptation | Why Avoid |
+|------------|-----------|
+| Chart.js / Recharts / Nivo | D3 is already installed and more flexible. Adding a wrapper library adds bundle size and creates two charting paradigms in one codebase. |
+| @astrojs/react or @astrojs/preact | Overkill for chart interactivity. Would add framework runtime to a currently zero-JS-framework site. Vanilla `<script>` + D3 is sufficient. |
+| @astrojs/svelte | Same reasoning. Not worth the overhead for chart interactions. |
+| Observable Plot | Built on D3, but adds abstraction. Since we already use D3 directly and need fine control over multi-line overlays, Plot's opinions would constrain more than help. |
+| Lightweight charting (uPlot, Frappe Charts) | Smaller than D3, but D3 is already a dependency. Adding another charting lib fragments the approach. |
+| SQLite / Turso / any database | Historical data fits in JSON files. 200 countries x 365 days x 8 bytes = ~570KB. Well within file-based storage limits. |
+| Redis / caching layer | Data updates daily. Static generation handles caching. No runtime cache needed. |
+
+## Architecture: Client-Side JS Strategy
+
+The site currently ships zero client-side framework JavaScript. v1.1 introduces the first client-side JS for chart interactivity. Strategy:
 
 ```
-Daily Pipeline (GitHub Actions cron):
-  1. Fetch data from INFORM, ACLED, WB, WHO APIs
-  2. Parse, normalize, compute composite safety scores
-  3. Write JSON files to /data/ directory
-  4. Commit to repo
-  5. Push triggers Cloudflare Workers deployment
-  6. ISR revalidates country pages on next request
+Build-time (Astro frontmatter):
+  - Load data from JSON files
+  - Compute static SVG elements (axes, gridlines, static labels)
+  - Serialize data needed client-side into <script type="application/json">
 
-Development:
-  next dev (Turbopack) -> localhost:3000
-
-Production:
-  next build -> @opennextjs/cloudflare -> Cloudflare Workers
+Client-side (<script> tags):
+  - Import D3 modules (tree-shaken by Vite)
+  - Attach event listeners for tooltips, hover effects
+  - For overlay chart: full client-side D3 rendering
+  - For comparison page: Fuse.js country selector + DOM updates
 ```
+
+### D3 Client-Side Import Strategy
+
+Astro `<script>` tags are processed by Vite. Import only what you need:
+
+```typescript
+// In an Astro <script> tag -- Vite will tree-shake
+import { select, scaleLinear, scaleTime, line, axisBottom, axisLeft, bisector } from 'd3';
+```
+
+This avoids shipping the full D3 bundle (~200KB). Only the used modules ship (~30-40KB for line chart functionality).
+
+## Data Shape Changes
+
+### DailySnapshot (add globalScore)
+
+```typescript
+interface DailySnapshot {
+  date: string;
+  generatedAt: string;
+  pipelineVersion: string;
+  weightsVersion: string;
+  globalScore: number;        // NEW: weighted average of all country scores
+  globalScoreDisplay: number; // NEW: rounded integer
+  countries: ScoredCountry[];
+  fetchResults: FetchResult[];
+}
+```
+
+### New file: data/history/summary.json
+
+```typescript
+interface HistorySummary {
+  generatedAt: string;
+  dates: string[];
+  countries: Record<string, number[]>;  // iso3 -> scores aligned with dates
+  globalScores: number[];
+}
+```
+
+Estimated size for 1 year of daily data, 200 countries: ~400KB uncompressed, ~40KB gzipped. Acceptable for a single client-side fetch.
 
 ## Installation
 
 ```bash
-# Initialize project
-npx create-next-app@latest isitsafetotravel --typescript --tailwind --app --turbopack
-
-# Core dependencies
-npm install next-intl react-leaflet leaflet zod date-fns
-
-# Dev dependencies
-npm install -D @types/leaflet @opennextjs/cloudflare next-sitemap papaparse @types/papaparse
-
-# Data pipeline (can also be devDependencies)
-npm install -D tsx  # For running TypeScript pipeline scripts
+# No new packages needed for v1.1
+# Existing dependencies cover all requirements:
+#   d3@^7.9.0      -- charts, scales, axes
+#   fuse.js@^7.1.0 -- country search
+#   astro@^6.0.6   -- SSG + script bundling
 ```
 
 ## Version Verification Status
 
-| Technology | Stated Version | Verified Via | Verification Date |
-|------------|---------------|--------------|-------------------|
-| Next.js | 16.2 | WebSearch (nextjs.org/blog/next-16-2, March 18 2026) | 2026-03-19 |
-| Tailwind CSS | 4.2 | WebSearch (github.com/tailwindlabs releases) | 2026-03-19 |
-| react-leaflet | 5.0 | WebSearch (npm registry) | 2026-03-19 |
-| next-intl | 4.x | WebSearch (next-intl.dev, confirmed Next.js 16 support) | 2026-03-19 |
-| shadcn/ui | latest (copies, not versioned) | WebSearch (ui.shadcn.com Tailwind v4 docs) | 2026-03-19 |
-| Leaflet | 1.9.x | WebSearch (leafletjs.com/download) | 2026-03-19 |
+| Technology | Current Version | Verified | Notes |
+|------------|----------------|----------|-------|
+| D3.js | ^7.9.0 (installed) | Via package.json | v7 is current stable. No v8 released. |
+| Fuse.js | ^7.1.0 (installed) | Via package.json | v7 is current stable. |
+| Astro | ^6.0.6 (installed) | Via package.json | Astro 6 stable. `<script>` tags processed by Vite. |
+| Tailwind CSS | ^4.2.2 (installed) | Via package.json | v4 is current. |
 
-## Cost Analysis
+## Cost Impact
 
-| Service | Free Tier | Our Usage | Monthly Cost |
-|---------|-----------|-----------|--------------|
-| Cloudflare Workers | 100K requests/day, unlimited bandwidth | ~10K requests/day initially | $0 |
-| GitHub (public repo) | Unlimited repos, unlimited Actions minutes | 1 repo, ~30 min/day pipeline | $0 |
-| Domain (.com) | N/A | isitsafetotravel.com | ~$10/year (~0.83/month) |
-| OpenStreetMap tiles | Fair use (free) | Map tile requests | $0 |
-| ACLED API | Free registration | Daily fetch | $0 |
-| INFORM / WB / WHO | Open data | Daily/weekly fetch | $0 |
-| **Total** | | | **~0.83/month** |
-
-Well within the 10 EUR/month budget. Domain is the only cost.
+**Zero additional cost.** No new services, APIs, or paid dependencies. Historical data storage uses existing git repo (daily JSON files already committed). Client-side JS served from existing Cloudflare Pages.
 
 ## Sources
 
-- [Next.js 16.2 Release Blog](https://nextjs.org/blog/next-16-2)
-- [Next.js 16 Release Blog](https://nextjs.org/blog/next-16)
-- [Next.js ISR Guide](https://nextjs.org/docs/app/guides/incremental-static-regeneration)
-- [Tailwind CSS v4.0 Release](https://tailwindcss.com/blog/tailwindcss-v4)
-- [shadcn/ui Tailwind v4 Docs](https://ui.shadcn.com/docs/tailwind-v4)
-- [MapLibre vs Leaflet Comparison (jawg.io)](https://blog.jawg.io/maplibre-gl-vs-leaflet-choosing-the-right-tool-for-your-interactive-map/)
-- [Map Libraries Popularity (geoapify.com)](https://www.geoapify.com/map-libraries-comparison-leaflet-vs-maplibre-gl-vs-openlayers-trends-and-statistics/)
-- [next-intl Official Docs](https://next-intl.dev/docs/getting-started/app-router)
-- [next-intl vs next-i18next (i18nexus)](https://i18nexus.com/posts/i18next-vs-next-intl)
-- [GitHub Actions Billing](https://docs.github.com/en/actions/concepts/billing-and-usage)
-- [Cloudflare Workers Pricing](https://developers.cloudflare.com/workers/platform/pricing/)
-- [Cloudflare D1 Limits](https://developers.cloudflare.com/d1/platform/limits/)
-- [Vercel Hobby Plan (commercial use prohibited)](https://vercel.com/docs/plans/hobby)
-- [OpenNext for Cloudflare](https://opennext.js.org/cloudflare)
-- [Vercel vs Netlify vs Cloudflare Pages 2025](https://www.digitalapplied.com/blog/vercel-vs-netlify-vs-cloudflare-pages-comparison)
-- [react-leaflet npm](https://www.npmjs.com/package/react-leaflet)
-- [ACLED API Documentation](https://acleddata.com/acled-api-documentation)
-- [INFORM Risk Index](https://repository.gheli.harvard.edu/repository/12774/)
+- Project `package.json` -- current dependency versions
+- `src/components/country/TrendSparkline.astro` -- existing D3 build-time SVG pattern
+- `src/lib/scores.ts` -- existing historical data loading utilities
+- `src/lib/colors.ts` -- existing D3 color scale utilities
+- `src/pipeline/scoring/snapshot.ts` -- existing daily snapshot storage
+- [Astro Islands Architecture](https://docs.astro.build/en/concepts/islands/) -- confirms `<script>` tags are bundled by Vite
+- [D3 multi-line chart patterns](https://d3-graph-gallery.com/graph/interactivity_tooltip.html) -- established D3 patterns for tooltips and multi-series charts
