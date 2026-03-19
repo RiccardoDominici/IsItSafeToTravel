@@ -37,8 +37,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Transparency
 
-- [ ] **TRNS-01**: Dedicated methodology page explains the scoring formula, weights, and rationale
-- [ ] **TRNS-02**: Legal disclaimer on every page clarifying informational nature of the data
+- [x] **TRNS-01**: Dedicated methodology page explains the scoring formula, weights, and rationale
+- [x] **TRNS-02**: Legal disclaimer on every page clarifying informational nature of the data
 - [x] **TRNS-03**: Sources section at bottom of detail pages with linked citations
 
 ### Technical
@@ -106,8 +106,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CTRY-04 | Phase 4 | Complete |
 | CTRY-05 | Phase 4 | Complete |
 | CTRY-06 | Phase 4 | Complete |
-| TRNS-01 | Phase 5 | Pending |
-| TRNS-02 | Phase 5 | Pending |
+| TRNS-01 | Phase 5 | Complete |
+| TRNS-02 | Phase 5 | Complete |
 | TRNS-03 | Phase 4 | Complete |
 | TECH-01 | Phase 6 | Pending |
 | TECH-02 | Phase 6 | Pending |
