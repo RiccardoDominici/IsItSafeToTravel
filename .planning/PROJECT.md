@@ -14,15 +14,15 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 - [x] Multilingual support (English primary, Italian, expandable i18n) — Validated in Phase 1: Project Foundation
 - [x] Fast load times (static generation where possible) — Validated in Phase 1: Project Foundation
+- [x] Safety score 1-10 per destination, computed from public indices — Validated in Phase 2: Data Pipeline and Scoring Engine
+- [x] Automatic daily data pipeline: fetch indices, news, recompute scores — Validated in Phase 2: Data Pipeline and Scoring Engine
 
 ### Active
 
 - [ ] Interactive world map color-coded by safety score (green to red)
 - [ ] Country-level safety view as default, with regional drill-down on zoom
 - [ ] Search by city, country, or region with instant results
-- [ ] Safety score 1-10 per destination, computed from public indices
 - [ ] Detail page per destination explaining the score breakdown by criteria
-- [ ] Automatic daily data pipeline: fetch indices, news, recompute scores
 - [ ] Formula transparency: every factor and weight explained on the detail page
 - [ ] Sources section citing all indices and data origins
 - [ ] Multilingual support (English primary, Italian, expandable i18n)
@@ -67,4 +67,4 @@ The site needs to handle ~200 countries and potentially thousands of sub-nationa
 | No user accounts | Reduces complexity, no PII to manage, faster to ship | — Pending |
 
 ---
-*Last updated: 2026-03-19 — Phase 1 (Project Foundation) complete: Astro 6 + Tailwind CSS 4 + i18n EN/IT + Cloudflare Pages CI/CD*
+*Last updated: 2026-03-19 — Phase 2 (Data Pipeline and Scoring Engine) complete: 4 data source fetchers, 5-pillar scoring engine, daily GitHub Actions cron pipeline*
