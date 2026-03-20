@@ -377,6 +377,57 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       const svgRect = () => svg.getBoundingClientRect();
       const viewBox = svg.viewBox.baseVal;
 
+      // SVG crosshair elements (persistent, moved on hover)
+      function ensureCrosshairElements(): { vLine: SVGLineElement; dot: SVGCircleElement } {
+        let vLine = svg.querySelector('.crosshair-line') as SVGLineElement | null;
+        let dot = svg.querySelector('.crosshair-dot') as SVGCircleElement | null;
+        const mainGroup = svg.querySelector('.chart-main');
+        if (!mainGroup) return { vLine: vLine!, dot: dot! };
+        if (!vLine) {
+          vLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+          vLine.setAttribute('class', 'crosshair-line');
+          vLine.setAttribute('stroke', '#c47a5a');
+          vLine.setAttribute('stroke-width', '1');
+          vLine.setAttribute('stroke-dasharray', '3 3');
+          vLine.setAttribute('opacity', '0.6');
+          vLine.setAttribute('y1', '0');
+          vLine.setAttribute('y2', String(innerHeight));
+          vLine.style.display = 'none';
+          mainGroup.appendChild(vLine);
+        }
+        if (!dot) {
+          dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          dot.setAttribute('class', 'crosshair-dot');
+          dot.setAttribute('r', '5');
+          dot.setAttribute('stroke', '#fff');
+          dot.setAttribute('stroke-width', '2');
+          dot.style.display = 'none';
+          mainGroup.appendChild(dot);
+        }
+        return { vLine, dot };
+      }
+
+      function showCrosshair(point: HistoryPoint): void {
+        const { vLine, dot } = ensureCrosshairElements();
+        if (!vLine || !dot) return;
+        const cx = xScale(new Date(point.date + 'T00:00:00Z'));
+        const cy = yScale(point.score);
+        vLine.setAttribute('x1', String(cx));
+        vLine.setAttribute('x2', String(cx));
+        vLine.style.display = '';
+        dot.setAttribute('cx', String(cx));
+        dot.setAttribute('cy', String(cy));
+        dot.setAttribute('fill', scoreToColor(point.score));
+        dot.style.display = '';
+      }
+
+      function hideCrosshair(): void {
+        const vLine = svg.querySelector('.crosshair-line') as SVGElement | null;
+        const dot = svg.querySelector('.crosshair-dot') as SVGElement | null;
+        if (vLine) vLine.style.display = 'none';
+        if (dot) dot.style.display = 'none';
+      }
+
       function removePinnedCircle(): void {
         svg.querySelector('.pinned-circle')?.remove();
       }
@@ -398,82 +449,60 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         mainGroup.appendChild(circle);
       }
 
-      const showTooltip = (clientX: number, clientY: number) => {
-        if (pinnedPoint) return;
+      const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+      function formatPoint(point: HistoryPoint): string {
+        const d = new Date(point.date + 'T00:00:00Z');
+        const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        return `${dateStr}: ${point.score.toFixed(1)}`;
+      }
 
-        const rect = svgRect();
-        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
-
-        const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
-
-        // Format date
-        const d = new Date(nearest.date + 'T00:00:00Z');
-        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
-        const dateStr = d.toLocaleDateString(
-          localeMap[lang] || 'en-US',
-          { month: 'short', day: 'numeric', year: 'numeric' }
-        );
-
-        tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
-        tooltip.classList.remove('hidden');
-
-        // Position tooltip above the nearest point
+      function positionTooltip(point: HistoryPoint, rect: DOMRect): void {
         const scaleX = rect.width / viewBox.width;
         const scaleY = rect.height / viewBox.height;
-        const pointCx = xScale(new Date(nearest.date + 'T00:00:00Z')) + margin.left;
-        const pointCy = yScale(nearest.score) + margin.top;
+        const pointCx = xScale(new Date(point.date + 'T00:00:00Z')) + margin.left;
+        const pointCy = yScale(point.score) + margin.top;
         const tooltipX = pointCx * scaleX - tooltip.offsetWidth / 2;
         const tooltipY = pointCy * scaleY - tooltip.offsetHeight - 8;
-
         tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
         tooltip.style.top = `${Math.max(0, tooltipY)}px`;
+      }
+
+      const showTooltip = (clientX: number, _clientY: number) => {
+        if (pinnedPoint) return;
+        const rect = svgRect();
+        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+        const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
+        tooltip.textContent = formatPoint(nearest);
+        tooltip.classList.remove('hidden');
+        positionTooltip(nearest, rect);
+        showCrosshair(nearest);
       };
 
       const hideTooltip = () => {
         if (pinnedPoint) return;
         tooltip.classList.add('hidden');
+        hideCrosshair();
       };
 
-      svg.addEventListener('mousemove', (e: MouseEvent) => {
-        showTooltip(e.clientX, e.clientY);
-      });
-
+      svg.addEventListener('mousemove', (e: MouseEvent) => showTooltip(e.clientX, e.clientY));
       svg.addEventListener('mouseleave', hideTooltip);
 
-      // Click to pin tooltip
       svg.addEventListener('click', (e: MouseEvent) => {
         const rect = svgRect();
         const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width - margin.left;
-
         if (pinnedPoint) {
           pinnedPoint = null;
           removePinnedCircle();
           tooltip.classList.add('hidden');
+          hideCrosshair();
           return;
         }
-
         const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
         pinnedPoint = nearest;
-
-        const d = new Date(nearest.date + 'T00:00:00Z');
-        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
-        const dateStr = d.toLocaleDateString(
-          localeMap[lang] || 'en-US',
-          { month: 'short', day: 'numeric', year: 'numeric' }
-        );
-        tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
+        tooltip.textContent = formatPoint(nearest);
         tooltip.classList.remove('hidden');
-
-        const scaleX = rect.width / viewBox.width;
-        const scaleY = rect.height / viewBox.height;
-        const pointCx = xScale(new Date(nearest.date + 'T00:00:00Z')) + margin.left;
-        const pointCy = yScale(nearest.score) + margin.top;
-        const tooltipX = pointCx * scaleX - tooltip.offsetWidth / 2;
-        const tooltipY = pointCy * scaleY - tooltip.offsetHeight - 8;
-
-        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
-        tooltip.style.top = `${Math.max(0, tooltipY)}px`;
-
+        positionTooltip(nearest, rect);
+        showCrosshair(nearest);
         drawPinnedCircle(nearest);
       });
 

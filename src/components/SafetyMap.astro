@@ -32,30 +32,9 @@ const legendDanger = t('map.legend.danger');
 const countryRoute = routes[lang].country;
 ---
 
-<details id="pillar-filter-bar" class="mb-3 px-1">
-  <summary class="cursor-pointer text-sm font-medium text-sand-600 dark:text-sand-300 select-none flex items-center gap-1">
-    <svg class="w-4 h-4 transition-transform" viewBox="0 0 20 20" fill="currentColor">
-      <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
-    </svg>
-    {t('filter.overall')}
-  </summary>
-  <div class="flex flex-wrap gap-2 mt-2">
-    {pillarFilters.map(f => (
-      <button
-        class={`pillar-pill px-3 py-1.5 text-sm font-medium rounded-full border transition-colors cursor-pointer ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700'}`}
-        data-pillar={f.id}
-        data-weight={f.weight}
-      >
-        {f.weight !== null ? `${f.label} (${f.weight}%)` : f.label}
-      </button>
-    ))}
-  </div>
-</details>
-
 <div
   id="safety-map-container"
-  class="relative w-full overflow-hidden"
-  style="height: calc(100dvh - 8rem);"
+  class="relative w-full h-full overflow-hidden"
   data-lang={lang}
   data-translations={JSON.stringify(translations)}
   data-country-route={countryRoute}
@@ -87,8 +66,39 @@ const countryRoute = routes[lang].country;
     >-</button>
   </div>
 
+  <!-- Pillar Filter - floating top-left overlay -->
+  <div class="absolute top-3 left-3 z-10" id="pillar-filter-wrapper">
+    <button
+      id="pillar-filter-toggle"
+      class="flex items-center gap-1.5 px-3 py-2 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-md text-sm font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700 cursor-pointer transition-colors"
+      type="button"
+    >
+      <svg class="w-4 h-4" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M3 4h14M5 8h10M7 12h6M9 16h2" stroke-linecap="round" />
+      </svg>
+      <span id="pillar-filter-label">{t('filter.overall')}</span>
+      <svg class="w-3 h-3 opacity-50" viewBox="0 0 12 12" fill="currentColor">
+        <path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+    <div id="pillar-filter-dropdown" class="hidden absolute top-full left-0 mt-1 p-2 bg-sand-50/95 dark:bg-sand-800/95 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-lg min-w-[200px]">
+      <div class="flex flex-col gap-1" id="pillar-filter-bar">
+        {pillarFilters.map(f => (
+          <button
+            class={`pillar-pill px-3 py-2 text-sm font-medium rounded-lg border transition-colors cursor-pointer text-left ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-transparent text-sand-600 dark:text-sand-300 border-transparent hover:bg-sand-200 dark:hover:bg-sand-700'}`}
+            data-pillar={f.id}
+            data-weight={f.weight}
+            data-label={f.weight !== null ? f.label : t('filter.overall')}
+          >
+            {f.weight !== null ? `${f.label} (${f.weight}%)` : t('filter.overall')}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+
   <!-- Legend -->
-  <div class="absolute bottom-4 left-4 flex items-center gap-2 z-10 bg-sand-50/80 dark:bg-sand-800/80 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
+  <div class="absolute bottom-4 left-4 flex items-center gap-2 z-10 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
     <span>{legendDanger}</span>
     <div class="w-24 h-3 rounded" style="background: linear-gradient(to right, #9e3a2a, #d4b83c, #4a7fbf);"></div>
     <span>{legendSafe}</span>
@@ -408,21 +418,43 @@ const countryRoute = routes[lang].country;
             });
         }
 
+        // Filter dropdown toggle
+        const filterToggle = document.getElementById('pillar-filter-toggle');
+        const filterDropdown = document.getElementById('pillar-filter-dropdown');
+        const filterLabel = document.getElementById('pillar-filter-label');
+
+        filterToggle?.addEventListener('click', () => {
+          filterDropdown?.classList.toggle('hidden');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          const wrapper = document.getElementById('pillar-filter-wrapper');
+          if (wrapper && !wrapper.contains(e.target as Node)) {
+            filterDropdown?.classList.add('hidden');
+          }
+        });
+
         // Pill click handlers
         const activePillClasses = ['bg-terracotta-500', 'text-white', 'border-terracotta-500'];
-        const inactivePillClasses = ['bg-sand-100', 'dark:bg-sand-800', 'text-sand-600', 'dark:text-sand-300', 'border-sand-300', 'dark:border-sand-600'];
+        const inactivePillClasses = ['bg-transparent', 'text-sand-600', 'dark:text-sand-300', 'border-transparent'];
 
         document.querySelectorAll('.pillar-pill').forEach((btn) => {
           btn.addEventListener('click', () => {
-            const pillarId = (btn as HTMLButtonElement).dataset.pillar || 'overall';
+            const el = btn as HTMLButtonElement;
+            const pillarId = el.dataset.pillar || 'overall';
             currentPillar = pillarId === 'overall' ? null : pillarId;
+
+            // Update button label
+            if (filterLabel) {
+              filterLabel.textContent = el.dataset.label || el.textContent || '';
+            }
 
             // Update pill styling
             document.querySelectorAll('.pillar-pill').forEach((pill) => {
               const isActive = (pill as HTMLButtonElement).dataset.pillar === pillarId;
               activePillClasses.forEach(c => pill.classList.toggle(c, isActive));
               inactivePillClasses.forEach(c => pill.classList.toggle(c, !isActive));
-              // Remove hover classes from active pill
               if (isActive) {
                 pill.classList.remove('hover:bg-sand-200', 'dark:hover:bg-sand-700');
               } else {
@@ -431,6 +463,9 @@ const countryRoute = routes[lang].country;
             });
 
             recolorMap(currentPillar);
+
+            // Close dropdown after selection
+            filterDropdown?.classList.add('hidden');
           });
         });
 
