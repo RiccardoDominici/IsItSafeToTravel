@@ -78,6 +78,36 @@ Requirements for milestone v1.1: Comparison & Historical Trends.
 - [x] **COMP-04**: User sees an overlay trend chart with historical lines for all selected countries
 - [x] **COMP-05**: User can share comparison via URL (e.g., /compare?c=IT,FR,DE)
 
+## v1.2 Requirements
+
+Requirements for milestone v1.2: Improvements & Category Filtering.
+
+### Bug Fixes
+
+- [ ] **BUG-01**: User sees correct dates on historical trend chart axes
+- [ ] **BUG-02**: User can search and select countries correctly on the comparison page
+
+### Chart Interactivity
+
+- [ ] **CHART-01**: User can drag-to-zoom on historical trend charts to select a date range
+- [ ] **CHART-02**: User can reset zoom to see the full date range
+
+### Category Filtering
+
+- [ ] **FILT-01**: User can filter the world map by individual safety pillar (conflict, health, governance, etc.)
+- [ ] **FILT-02**: User can filter historical trend charts by individual pillar (requires pipeline extension to store per-pillar history)
+- [ ] **FILT-03**: Map and chart filters show clear labels for the active category
+
+### Parameter Explanations
+
+- [ ] **EXPL-01**: User can read detailed explanations of each safety pillar and its data sources in the methodology page
+
+### Spanish Language
+
+- [ ] **LANG-01**: User can browse the full site in Spanish
+- [ ] **LANG-02**: All 248 country names are available in Spanish
+- [ ] **LANG-03**: Language switcher includes Spanish option
+
 ## v2 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
@@ -94,7 +124,7 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Features
 
-- **FEAT-02**: Additional languages (Spanish, French, German)
+- **FEAT-02**: Additional languages (French, German)
 - **FEAT-03**: Interactive weight adjustment sliders for personalized scoring
 - **FEAT-04**: City-level safety pages for major cities
 - **FEAT-05**: Embeddable map widget for travel blogs
@@ -111,6 +141,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | Hotel/flight booking | Conflicts with impartiality, massive scope expansion |
 | AI chatbot | Hallucination risk for safety-critical info, API costs exceed budget |
 | Neighborhood-level granularity | Requires paid/proprietary data, free sources operate at country/region level |
+| Scope buttons (7d/30d/90d/All) for charts | User chose drag-to-zoom instead; buttons can be added later if needed |
+| Per-pillar historical trends in comparison page | Comparison page already groups bars by pillar; limited added value |
 
 ## Traceability
 
@@ -173,6 +205,27 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 13
 - Unmapped: 0
 
+### v1.2 Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| BUG-01 | — | Pending |
+| BUG-02 | — | Pending |
+| CHART-01 | — | Pending |
+| CHART-02 | — | Pending |
+| FILT-01 | — | Pending |
+| FILT-02 | — | Pending |
+| FILT-03 | — | Pending |
+| EXPL-01 | — | Pending |
+| LANG-01 | — | Pending |
+| LANG-02 | — | Pending |
+| LANG-03 | — | Pending |
+
+**Coverage (v1.2):**
+- v1.2 requirements: 11 total
+- Mapped to phases: 0
+- Unmapped: 11 ⚠️
+
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-19 after v1.1 roadmap creation*
+*Last updated: 2026-03-20 after v1.2 requirements definition*
