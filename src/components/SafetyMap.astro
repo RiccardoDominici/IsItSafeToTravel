@@ -16,12 +16,33 @@ const translations = {
   zoomOut: t('map.zoom.out'),
 };
 
+const pillarFilters = [
+  { id: 'overall', label: t('filter.overall'), weight: null as number | null },
+  { id: 'conflict', label: t('country.pillar.conflict'), weight: 25 },
+  { id: 'crime', label: t('country.pillar.crime'), weight: 20 },
+  { id: 'health', label: t('country.pillar.health'), weight: 20 },
+  { id: 'governance', label: t('country.pillar.governance'), weight: 20 },
+  { id: 'environment', label: t('country.pillar.environment'), weight: 15 },
+];
+
 const zoomInLabel = t('map.zoom.in');
 const zoomOutLabel = t('map.zoom.out');
 const legendSafe = t('map.legend.safe');
 const legendDanger = t('map.legend.danger');
 const countryRoute = routes[lang].country;
 ---
+
+<div id="pillar-filter-bar" class="flex flex-wrap gap-2 mb-3 px-1">
+  {pillarFilters.map(f => (
+    <button
+      class={`pillar-pill px-3 py-1.5 text-sm font-medium rounded-full border transition-colors cursor-pointer ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700'}`}
+      data-pillar={f.id}
+      data-weight={f.weight}
+    >
+      {f.weight !== null ? `${f.label} (${f.weight}%)` : f.label}
+    </button>
+  ))}
+</div>
 
 <div
   id="safety-map-container"
@@ -100,6 +121,8 @@ const countryRoute = routes[lang].country;
 
     // Fetch scores from static JSON file
     let scores: ScoreEntry[] = [];
+    const pillarScoreMap = new Map<string, Map<string, number>>();
+    const pillarLabelMap = new Map<string, string>();
     try {
       const res = await fetch('/scores.json');
       if (res.ok) {
@@ -109,10 +132,30 @@ const countryRoute = routes[lang].country;
           name: c.name?.[lang] || c.name?.en || c.iso3,
           score: c.score,
         }));
+        // Build per-pillar score lookup
+        for (const c of snapshot.countries || []) {
+          const pillarMap = new Map<string, number>();
+          for (const p of c.pillars || []) {
+            pillarMap.set(p.name, p.score);
+          }
+          pillarScoreMap.set(c.iso3, pillarMap);
+        }
       }
     } catch (e) {
       console.error('Failed to load scores:', e);
     }
+
+    // Build pillar label map from pill buttons
+    document.querySelectorAll('.pillar-pill').forEach((btn) => {
+      const el = btn as HTMLButtonElement;
+      const id = el.dataset.pillar;
+      if (id && id !== 'overall') {
+        pillarLabelMap.set(id, el.textContent?.replace(/\s*\(\d+%\)/, '').trim() || id);
+      }
+    });
+
+    // Track active pillar filter (null = overall/composite)
+    let currentPillar: string | null = null;
 
     // Build lookup maps
     const scoreMap = new Map<string, number>();
@@ -182,22 +225,36 @@ const countryRoute = routes[lang].country;
     // Tooltip
     const tooltip = document.getElementById('map-tooltip')!;
 
+    function getDisplayScore(iso3: string): { value: number; label: string } | null {
+      if (currentPillar) {
+        const pillarScore = pillarScoreMap.get(iso3)?.get(currentPillar);
+        if (pillarScore === undefined) return null;
+        const scaled = pillarScore * 9 + 1;
+        const label = pillarLabelMap.get(currentPillar) || currentPillar;
+        return { value: scaled, label };
+      }
+      const score = scoreMap.get(iso3);
+      if (score === undefined) return null;
+      return { value: score, label: '' };
+    }
+
     function showTooltip(
       event: MouseEvent | TouchEvent,
       iso3: string
     ) {
       const name = nameMap.get(iso3);
-      const score = scoreMap.get(iso3);
-      if (!name && score === undefined) {
+      const displayScore = getDisplayScore(iso3);
+      if (!name && !displayScore) {
         tooltip.classList.add('hidden');
         return;
       }
 
       const displayName = name || iso3;
-      const scoreText =
-        score !== undefined
-          ? `${displayName} \u2014 ${score.toFixed(1)}`
-          : `${displayName} \u2014 ${translations.nodata}`;
+      const scoreText = displayScore
+        ? displayScore.label
+          ? `${displayName} \u2014 ${displayScore.value.toFixed(1)} (${displayScore.label})`
+          : `${displayName} \u2014 ${displayScore.value.toFixed(1)}`
+        : `${displayName} \u2014 ${translations.nodata}`;
 
       tooltip.textContent = scoreText;
       tooltip.classList.remove('hidden');
@@ -316,19 +373,61 @@ const countryRoute = routes[lang].country;
           }
         });
 
-        // Dark mode observer
-        const observer = new MutationObserver(() => {
+        // Recolor map based on active pillar filter
+        function recolorMap(pillarName: string | null) {
           const dark = isDark();
           g.selectAll<SVGPathElement, any>('.country-path')
+            .transition()
+            .duration(200)
             .attr('fill', (d: any) => {
               const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
               if (!iso3) return dark ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+
+              if (pillarName) {
+                const pillarScore = pillarScoreMap.get(iso3)?.get(pillarName);
+                if (pillarScore === undefined) return dark ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+                // Convert 0-1 pillar score to 1-10 scale
+                return safetyColorScale(pillarScore * 9 + 1);
+              }
+
               return scoreMap.has(iso3)
                 ? safetyColorScale(scoreMap.get(iso3)!)
                 : dark
                   ? UNSCORED_COLOR_DARK
                   : UNSCORED_COLOR;
-            })
+            });
+        }
+
+        // Pill click handlers
+        const activePillClasses = ['bg-terracotta-500', 'text-white', 'border-terracotta-500'];
+        const inactivePillClasses = ['bg-sand-100', 'dark:bg-sand-800', 'text-sand-600', 'dark:text-sand-300', 'border-sand-300', 'dark:border-sand-600'];
+
+        document.querySelectorAll('.pillar-pill').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const pillarId = (btn as HTMLButtonElement).dataset.pillar || 'overall';
+            currentPillar = pillarId === 'overall' ? null : pillarId;
+
+            // Update pill styling
+            document.querySelectorAll('.pillar-pill').forEach((pill) => {
+              const isActive = (pill as HTMLButtonElement).dataset.pillar === pillarId;
+              activePillClasses.forEach(c => pill.classList.toggle(c, isActive));
+              inactivePillClasses.forEach(c => pill.classList.toggle(c, !isActive));
+              // Remove hover classes from active pill
+              if (isActive) {
+                pill.classList.remove('hover:bg-sand-200', 'dark:hover:bg-sand-700');
+              } else {
+                pill.classList.add('hover:bg-sand-200', 'dark:hover:bg-sand-700');
+              }
+            });
+
+            recolorMap(currentPillar);
+          });
+        });
+
+        // Dark mode observer
+        const observer = new MutationObserver(() => {
+          recolorMap(currentPillar);
+          g.selectAll<SVGPathElement, any>('.country-path')
             .attr('stroke', strokeColor());
         });
 
