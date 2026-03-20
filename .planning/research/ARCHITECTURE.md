@@ -1,503 +1,458 @@
 # Architecture Patterns
 
-**Domain:** Comparison pages, historical trend charts, and global safety score -- integration with existing Astro SSG + D3 + daily pipeline
-**Researched:** 2026-03-19
-**Scope:** v1.1 features ONLY -- not a full architecture document
+**Domain:** v1.2 feature integration into existing Astro SSG + D3 travel safety platform
+**Researched:** 2026-03-20
+**Confidence:** HIGH (based on direct codebase analysis)
 
-## Existing Architecture (Reference)
+## Current Architecture Summary
 
-```
-Pipeline (daily cron) -> data/scores/latest.json + YYYY-MM-DD.json snapshots
-     |
-     v
-Astro SSG build (on push to master)
-     |
-     +-- Homepage: SafetyMap.astro (client-side D3 choropleth, reads public/scores.json)
-     +-- Country pages: [slug].astro (build-time D3 SVG via TrendSparkline.astro)
-     |
-     v
-Cloudflare Pages (static deploy)
-```
+The platform is a **static-first Astro 6 SSG** site with two rendering strategies:
 
-Key existing patterns:
-- **Build-time D3:** `TrendSparkline.astro` uses D3's `scaleLinear` + `line` in Astro frontmatter to produce SVG paths at build time. Zero client JS.
-- **Data loading:** `src/lib/scores.ts` provides `loadLatestScores()` and `loadHistoricalScores(days)` -- both read JSON files from `data/scores/` at build time via `node:fs`.
-- **Client-side map:** `SafetyMap.astro` embeds a `<script>` that loads `public/scores.json` via fetch and renders D3 + TopoJSON.
-- **i18n:** File-based routing with `routes` object in `src/i18n/ui.ts`. Pages duplicated in `src/pages/{en,it}/` with translated slugs.
-- **Pipeline output:** `DailySnapshot` type with `date`, `countries: ScoredCountry[]`, `fetchResults`. Countries have `iso3`, `score`, `pillars[]`, `advisories`.
+1. **Build-time SVG** (country detail pages): D3 computes paths/scales in Astro frontmatter, outputs static SVG markup. A small `<script>` tag adds tooltip interactivity (mousemove nearest-point). No D3 imported at runtime on these pages.
+2. **Client-side rendered** (map + comparison page): Full D3 loaded via `<script>` tags. Map fetches `scores.json` + `world-topo.json` at runtime. Comparison page serializes all data into `data-*` attributes at build time, renders everything client-side with D3 + Fuse.js.
+
+**i18n system:** TypeScript string dictionary in `src/i18n/ui.ts` (~325 lines) with `languages` map (`en`, `it`), `useTranslations()` helper, and route slug translation. Pages duplicated per language under `src/pages/en/` and `src/pages/it/`.
+
+**Data pipeline:** Daily JSON snapshots in `data/scores/`. Consolidated `history-index.json` stores `{global: [{date, score}], countries: {ISO3: [{date, score}]}}`. Only total composite score stored in history -- no per-pillar history exists.
+
+**Key data structures:**
+- `ScoredCountry.pillars[]`: each has `name` (PillarName), `score` (0-1), `weight`, `indicators[]`, `dataCompleteness`
+- `ScoredCountry.name`: currently `{en: string, it: string}` -- needs `es` added
+- `scores.json` (public, for map): contains countries with `iso3`, `name`, `score` but currently lacks pillar data
 
 ---
 
-## Recommended Architecture for v1.1
+## Recommended Architecture for v1.2 Features
 
-### Design Principle: Keep SSG, Minimize Client JS
+### Feature 1: Interactive Chart Zoom/Scope Controls
 
-All three features integrate into the existing architecture without requiring SSR or API endpoints. The comparison page is the only feature that needs meaningful client-side JavaScript (because users pick countries interactively). Everything else remains build-time.
+**What changes:** The existing `TrendChart.astro` renders SVG at build time via D3 in frontmatter, with a thin client-side tooltip `<script>`. Adding zoom (time-range brush) and scope toggles (1M/3M/6M/1Y/All) requires shifting from build-time SVG to **client-side rendering**, since the chart must re-render when the user changes scope.
+
+**Integration approach:**
+
+```
+BEFORE (build-time):
+  [slug].astro → TrendChart.astro (D3 in frontmatter → static SVG) → <script> tooltip only
+
+AFTER (client-side):
+  [slug].astro → TrendChart.astro (serializes data to data-* attrs, renders scope buttons) → <script> full D3 render
+```
+
+**Component boundary:**
+
+| Component | Responsibility | Communicates With |
+|-----------|---------------|-------------------|
+| `TrendChart.astro` (modified) | Serialize trend data + i18n strings to `data-*` attributes, render container div + scope buttons as static HTML | `[slug].astro` (receives `data` and `lang` props) |
+| `<script>` in TrendChart (rewritten) | D3 client-side: parse data, render SVG, handle scope button clicks, tooltip, optional brush zoom | DOM `data-*` attributes, scope button events |
+
+**Key decisions:**
+- Move all D3 rendering from frontmatter to the `<script>` block. Frontmatter only prepares data and i18n strings.
+- Scope control buttons (1M/3M/6M/1Y/All) rendered in Astro markup (static HTML), wired to JS via event listeners. This keeps buttons static, accessible, and SEO-friendly.
+- D3 brush for zoom: use `d3.brushX()` on the x-axis. On brush end, update x-scale domain and re-render. Reset button clears brush. This is optional -- scope buttons alone may be sufficient for v1.2.
+- Data filtering by scope: simple date arithmetic in JS (`new Date() - months`), no data refetch needed since all history is serialized in the page.
+
+**Data flow:**
+```
+history-index.json (build) → loadHistoricalScores() → HistoryPoint[] → JSON.stringify → data-history attr
+User clicks "3M" → JS filters points by date range → D3 re-renders SVG with new x-domain
+User brush-selects → JS reads brush extent → D3 re-renders with custom x-domain
+```
+
+**Impact on existing code:**
+- **MODIFY** `src/components/country/TrendChart.astro` -- major rewrite: move D3 from frontmatter to `<script>`, add scope button markup, rewrite tooltip logic
+- **MODIFY** `src/i18n/ui.ts` -- add keys: `chart.scope.1m`, `chart.scope.3m`, `chart.scope.6m`, `chart.scope.1y`, `chart.scope.all`, `chart.scope.label`
+- **NO CHANGE** to `src/lib/scores.ts`, data pipeline, page routing, or other components
+
+**Also applies to:**
+- Global Safety page trend chart (same pattern)
+- Comparison page trend overlay (already client-side; add scope buttons to its render function)
 
 ---
 
-## New Data Artifacts
+### Feature 2: Category Filtering for Map and Charts
 
-### 1. Global Score in DailySnapshot (pipeline change)
+**What changes:** Map currently colors by total score only. Category filtering lets users select a pillar (conflict/crime/health/governance/environment) and re-color the map by that pillar's score.
 
-Add `globalScore` and `globalScoreDisplay` as top-level fields in `DailySnapshot`:
+**Critical constraint:** The `history-index.json` only stores total composite scores per date -- no per-pillar history exists. Per PROJECT.md: "Per-pillar historical trends in comparison -- needs pipeline schema change" is explicitly OUT OF SCOPE. Therefore, category filtering for trend charts is not possible in v1.2.
 
+**What IS feasible without pipeline changes:**
+- Map coloring by pillar (pillar scores are in `latest.json` / can be added to `scores.json`)
+- Comparison page bar chart highlighting to focus on one pillar
+- Tooltip updates to show pillar name and score
+
+**What is NOT feasible (out of scope):**
+- Historical trend lines per pillar (no data in history-index.json)
+
+**Integration approach for Map:**
+
+1. **Extend `scores.json`** (the public file fetched by the map at runtime): add `pillars` array to each country entry.
+2. **Add a pillar selector UI** above the map (segmented control / radio buttons).
+3. **On selection change**, re-color all country paths using the selected pillar's score (mapped from 0-1 to 1-10 for the color scale).
+
+**Component boundary:**
+
+| Component | Responsibility | Change |
+|-----------|---------------|--------|
+| `SafetyMap.astro` | Render map container + new pillar filter bar | Add filter radio buttons in Astro markup |
+| `<script>` in SafetyMap | Fetch scores, render D3 map, handle pillar filter | Add `pillarScoreMaps`, re-color on filter change |
+| `src/lib/map-utils.ts` | Color scale helpers | Add `pillarScoreToMapScore(score01)` helper |
+
+**Data flow for map:**
+```
+scores.json (with pillars) → parse → build scoreMap (total) + pillarScoreMaps (per pillar)
+User selects "Health" → activePillar = 'health' → recolorMap() → transition fill colors
+User selects "Total" → activePillar = 'total' → recolorMap() → back to default
+```
+
+**Implementation pattern:**
 ```typescript
-// Modified: src/pipeline/types.ts
-interface DailySnapshot {
-  date: string;
-  generatedAt: string;
-  pipelineVersion: string;
-  weightsVersion: string;
-  countries: ScoredCountry[];
-  fetchResults: FetchResult[];
-  globalScore: number;        // NEW: 1-10 weighted average
-  globalScoreDisplay: number; // NEW: integer for display
+// In SafetyMap <script>
+type PillarFilter = 'total' | 'conflict' | 'crime' | 'health' | 'governance' | 'environment';
+let activePillar: PillarFilter = 'total';
+
+function getScoreForCountry(iso3: string): number | undefined {
+  if (activePillar === 'total') return scoreMap.get(iso3);
+  const country = fullCountryData.get(iso3);
+  if (!country) return undefined;
+  const p = country.pillars.find(p => p.name === activePillar);
+  return p ? p.score * 9 + 1 : undefined; // normalize 0-1 → 1-10
+}
+
+function recolorMap() {
+  g.selectAll<SVGPathElement, any>('.country-path')
+    .transition().duration(300)
+    .attr('fill', (d: any) => {
+      const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+      if (!iso3) return isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+      const score = getScoreForCountry(iso3);
+      return score !== undefined ? safetyColorScale(score) : isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+    });
 }
 ```
 
-Computation: population-weighted average of all country scores, or simple arithmetic mean (simpler, avoids needing population data). Recommend simple mean -- it is transparent and doesn't require a new data source. Computed after `computeAllScores()` in the pipeline.
+**Tooltip update:** When a pillar filter is active, show pillar name + pillar score in tooltip instead of total score.
 
-### 2. Consolidated History Index (pipeline change)
+**Legend update:** Update legend label to show active pillar name (e.g., "Health - Safer / Less safe").
 
-Currently `loadHistoricalScores()` reads every dated snapshot file. This works but scales linearly with accumulated days. After 365 days = 365 file reads per build.
+**Impact on existing code:**
+- **MODIFY** `src/components/SafetyMap.astro` -- add filter UI markup + modify script for pillar-based coloring
+- **MODIFY** the build step that copies latest.json to `public/scores.json` -- include pillar data per country
+- **MODIFY** `src/i18n/ui.ts` -- add keys: `map.filter.total`, `map.filter.conflict`, `map.filter.crime`, `map.filter.health`, `map.filter.governance`, `map.filter.environment`, `map.filter.label`
+- **MODIFY** `src/lib/map-utils.ts` -- add pillar score normalization helper
+- **NO CHANGE** to data pipeline, page routing, or country detail pages
 
-Add a post-pipeline step that writes `data/scores/history-index.json`:
-
-```typescript
-interface HistoryIndex {
-  generatedAt: string;
-  dateRange: { from: string; to: string };
-  // Keyed by ISO3, array of {date, score} sorted chronologically
-  countries: Record<string, { date: string; score: number }[]>;
-  // Global score trend
-  global: { date: string; score: number }[];
-}
-```
-
-Size estimate: 200 countries x 365 days x ~25 bytes per entry = ~1.8MB after a year. Manageable. Limit to last 365 days to keep it bounded.
-
-### 3. Comparison Data Blob (build-time, for client embedding)
-
-The comparison page needs all country scores + names client-side for the picker and chart. Prepare a compact JSON at build time:
-
-```typescript
-// ~10KB for 200 countries
-interface ComparisonBlob {
-  countries: { iso3: string; name: string; score: number; scoreDisplay: number }[];
-  // History for chart overlay -- embedded only when history exists
-  history: Record<string, { d: string; s: number }[]>; // compact keys
-}
-```
-
-The history portion is large (~1.8MB at a year). Two options:
-- **Embed inline** for sites with < 6 months of data (< 900KB). Acceptable.
-- **Load from `public/history.json`** via fetch when data exceeds threshold. Add loading state.
-
-Recommendation: Start with inline embedding. Switch to fetch-based loading when history exceeds 6 months (revisit at that point).
+**scores.json size impact:** Currently ~50KB with just total scores. Adding 5 pillar scores per country adds ~30KB (248 countries x 5 pillars x ~25 bytes). New total ~80KB. Negligible.
 
 ---
 
-## Component Architecture
+### Feature 3: Spanish Language Support
 
-### New Components
+**What changes:** Add `es` as a third language alongside `en` and `it`.
 
-| Component | File | Type | Purpose |
-|-----------|------|------|---------|
-| `GlobalScoreBanner` | `src/components/GlobalScoreBanner.astro` | Build-time | Displays current global score + mini sparkline on homepage |
-| `HistoryChart` | `src/components/country/HistoryChart.astro` | Build-time SVG | Full-size trend chart replacing TrendSparkline, with date axis and score axis |
-| `ComparisonShell` | `src/components/compare/ComparisonShell.astro` | Build-time layout | Page structure for comparison: picker area + chart area + table area |
-| `CountryPicker` | `src/components/compare/CountryPicker.astro` | Client island | Interactive country search + select (reuses Fuse.js) |
-| `ComparisonChart` | `src/components/compare/ComparisonChart.ts` | Client-side D3 | Multi-country overlay line chart |
-| `ComparisonTable` | `src/components/compare/ComparisonTable.ts` | Client-side | Side-by-side pillar breakdown table |
+**Integration approach:**
 
-### Modified Components
+The i18n system is well-structured for expansion. The `useTranslations()` function and `getLocalizedPath()` are fully generic -- they iterate `languages` and `routes` dynamically.
 
-| Component | Change |
-|-----------|--------|
-| `src/pages/en/index.astro` | Add GlobalScoreBanner below hero tagline |
-| `src/pages/it/index.astro` | Add GlobalScoreBanner below hero tagline |
-| `src/pages/en/country/[slug].astro` | Replace TrendSparkline with HistoryChart, add "Compare with..." link |
-| `src/pages/it/paese/[slug].astro` | Same changes as English country page |
-| `src/components/Header.astro` | Add "Compare" nav link |
-| `src/i18n/ui.ts` | Add routes (`compare`/`confronta`) and ~15 new translation keys |
-| `src/pipeline/types.ts` | Add globalScore fields to DailySnapshot |
-| `src/pipeline/run.ts` | Add global score computation + history index steps |
-| `src/lib/scores.ts` | Add `loadHistoryIndex()`, `loadGlobalScore()` functions |
-| `.github/workflows/deploy.yml` | Copy `history-index.json` to `public/history.json` |
+**Step-by-step:**
 
-### Unchanged
+1. **`src/i18n/ui.ts`**: Add `es: 'Espanol'` to `languages`, add full `es: {...}` block to `ui` (~170 strings), add `es: {...}` route slugs to `routes`.
+2. **`src/pages/es/`**: Create directory mirroring `en/` structure with Spanish route slugs:
+   - `es/index.astro`
+   - `es/pais/[slug].astro` (country slug: "pais")
+   - `es/comparar.astro`
+   - `es/metodologia/index.astro`
+   - `es/aviso-legal/index.astro`
+   - `es/seguridad-global.astro`
+3. **`src/pipeline/types.ts`**: Extend `name` type from `{en: string; it: string}` to `{en: string; it: string; es: string}`.
+4. **Country name data**: Add Spanish country names to the pipeline's country mapping.
+5. **`astro.config.mjs`**: Add `'es'` to `locales` array and `sitemap.i18n.locales`.
 
-| Component | Why Unchanged |
-|-----------|--------------|
-| `SafetyMap.astro` | Map doesn't change for v1.1 |
-| `Search.astro` | Search behavior unchanged |
-| All pipeline fetchers | No new data sources |
-| `src/pipeline/scoring/engine.ts` | Scoring logic unchanged |
-| `.github/workflows/data-pipeline.yml` | `git add data/scores/` already covers new files |
+**Component boundary:**
+
+| Component | Responsibility | Change |
+|-----------|---------------|--------|
+| `src/i18n/ui.ts` | Language registry + all UI strings | Add `es` to `languages`, `ui`, `routes` |
+| `src/i18n/utils.ts` | URL parsing, locale detection | NO CHANGE (fully generic) |
+| `src/pages/es/` (new) | Spanish page routes | New directory, 8-10 files mirroring `en/` |
+| `LanguageSwitcher.astro` | Language toggle UI | Auto-picks up new language from `languages` map |
+| Pipeline country data | Country names | Add `es` field to name objects |
+| `astro.config.mjs` | Astro i18n config | Add `'es'` to locales |
+
+**Data flow:**
+```
+ui.ts languages → {en: 'English', it: 'Italiano', es: 'Espanol'}
+                → LanguageSwitcher renders 3 options
+ui.ts routes.es → getLocalizedPath() translates URL segments
+pages/es/*.astro → Astro generates static /es/ pages at build
+ScoredCountry.name.es → map tooltips, country page titles, comparison cards
+```
+
+**Key consideration:** The `ScoredCountry.name` type change propagates through:
+- Pipeline country mapping data file
+- `src/pipeline/types.ts` (TypeScript interface)
+- `scores.json` generation (include `name.es`)
+- Map tooltip code (already reads `name[lang]`, works automatically)
+- Comparison page (already reads `country.name[lang]`)
+
+**Impact:**
+- **MODIFY** `src/i18n/ui.ts` (major: ~170 new string translations + route slugs)
+- **MODIFY** `src/pipeline/types.ts` (add `es` to name type)
+- **MODIFY** `astro.config.mjs` (add `'es'` to locales)
+- **CREATE** `src/pages/es/` directory with all page files (8-10 files)
+- **MODIFY** pipeline country mapping to include Spanish names
+- **NO CHANGE** to `src/i18n/utils.ts`, any component logic, or `src/lib/` files
 
 ---
 
-## Page Architecture Details
+### Feature 4: Parameter/Pillar Explanations
 
-### Comparison Page: `/en/compare/` and `/it/confronta/`
+**What changes:** Each safety pillar (conflict, crime, health, governance, environment) gets a detailed explanation: what it measures, which indicators feed into it, their sources, and why it matters for travelers.
 
-This is the architecturally complex feature. Comparison is user-driven (pick countries), but the site is SSG.
+**Integration approach -- two options:**
 
-**Approach: Static shell + client-side D3 rendering**
+**Option A: Expandable sections in PillarBreakdown (RECOMMENDED)**
+Add `<details>/<summary>` blocks below each pillar bar. Clicking reveals the explanation. Zero JS required. Content from i18n strings.
 
-```
-URL: /en/compare/?c=ITA,FRA,DEU
-     /en/compare/              (empty state with picker)
-```
+**Option B: Separate explanation pages**
+New `/methodology/pillars/[name]` pages. More SEO-friendly but fragments the UX.
 
-The page is one statically generated page per locale. Country data is embedded as inline JSON. Client-side JavaScript handles:
-1. Country picker (Fuse.js search, add/remove pills)
-2. Chart rendering (D3 multi-line overlay)
-3. Table rendering (pillar comparison)
-4. URL state sync (query params for shareability)
+**Recommend Option A** because:
+- Users viewing a country's pillar breakdown are exactly the audience who wants context
+- Keeps users in flow (no navigation away)
+- `<details>/<summary>` is accessible, semantic, and requires no JavaScript
+- Explanation text is relatively short (~2-3 sentences per pillar + indicator list)
 
-**Why not SSR?** Adding SSR means Cloudflare Workers runtime, edge function cold starts, caching complexity, cost. The dataset is small enough to embed.
+**Component boundary:**
 
-**Why not pre-generate all combinations?** 200 countries = 19,900 pairs. Build time explosion with zero SEO value for most.
+| Component | Responsibility | Change |
+|-----------|---------------|--------|
+| `PillarBreakdown.astro` | Pillar bars + new expandable explanations | Add `<details>` below each pillar bar |
+| `src/i18n/ui.ts` | Explanation text per pillar per language | Add ~25 new keys per language |
 
-**Why not generate popular pairs only?** Complexity for marginal SEO benefit. A single well-optimized comparison page with good meta tags serves better.
+**Data available for explanations (already in `PillarScore`):**
+- `PillarScore.name` -- pillar identifier
+- `PillarScore.weight` -- e.g., 0.25 (25%)
+- `PillarScore.indicators[]` -- each has `name`, `rawValue`, `normalizedValue`, `source`, `year`
+- `PillarScore.dataCompleteness` -- coverage percentage
 
-**Page structure:**
-
+**Markup pattern:**
 ```astro
----
-// src/pages/en/compare/index.astro
-export const prerender = true;
-import { loadLatestScores, loadHistoryIndex } from '../../../lib/scores';
+{sorted.map((pillar) => {
+  const label = t(pillarKeys[pillar.name]);
+  return (
+    <div>
+      {/* Existing bar visualization */}
+      <div class="flex items-center gap-3">...</div>
 
-const countries = loadLatestScores();
-const history = loadHistoryIndex();
-
-// Prepare compact data for client
-const comparisonData = {
-  countries: countries.map(c => ({
-    iso3: c.iso3,
-    name: c.name.en,
-    score: c.score,
-    scoreDisplay: c.scoreDisplay,
-    pillars: c.pillars.map(p => ({ name: p.name, score: p.score })),
-  })),
-  history: Object.fromEntries(
-    Object.entries(history.countries).map(([iso3, points]) => [
-      iso3,
-      points.map(p => ({ d: p.date, s: p.score })),
-    ])
-  ),
-};
----
-<Base ...>
-  <ComparisonShell>
-    <!-- Country data embedded for client JS -->
-    <script type="application/json" id="comparison-data">
-      {JSON.stringify(comparisonData)}
-    </script>
-
-    <!-- Country picker: client island -->
-    <div id="country-picker"></div>
-
-    <!-- Chart area: D3 renders here -->
-    <div id="comparison-chart"></div>
-
-    <!-- Table area: renders here -->
-    <div id="comparison-table"></div>
-  </ComparisonShell>
-
-  <script src="../../lib/comparison-client.ts"></script>
-</Base>
+      {/* NEW: Expandable explanation */}
+      <details class="mt-1 ml-28">
+        <summary class="text-xs text-terracotta-500 cursor-pointer">
+          {t('pillar.explain.toggle')}
+        </summary>
+        <div class="mt-2 text-sm text-sand-600 dark:text-sand-400 space-y-2">
+          <p>{t(`pillar.explain.${pillar.name}`)}</p>
+          <p class="text-xs">{t('pillar.explain.weight')}: {(pillar.weight * 100).toFixed(0)}%</p>
+          <ul class="text-xs space-y-1">
+            {pillar.indicators.map(ind => (
+              <li>{t(`methodology.indicator.${ind.name}` as any)}: {(ind.normalizedValue * 10).toFixed(1)}/10</li>
+            ))}
+          </ul>
+        </div>
+      </details>
+    </div>
+  );
+})}
 ```
 
-**Client-side script (`comparison-client.ts`):**
-- Reads embedded JSON from `#comparison-data`
-- Parses `?c=ITA,FRA` from URL
-- Initializes Fuse.js for country search
-- Renders D3 chart with selected countries' history
-- Renders comparison table with pillar breakdown
-- Updates URL via `history.replaceState()` on selection change
-
-### Historical Trend Chart (Enhanced)
-
-Replace the 300x64px `TrendSparkline` with a full-width `HistoryChart`:
-
-```
-src/components/country/HistoryChart.astro
-```
-
-**Build-time features:**
-- Full-width SVG (responsive viewBox)
-- Y-axis with score labels (1-10)
-- X-axis with date labels (monthly ticks)
-- Color-coded line using scoreToColor gradient
-- Area fill below line for visual weight
-- Endpoint dot with current score label
-
-**Differences from TrendSparkline:**
-- Larger: full-width instead of 300x64
-- Axes: labeled X and Y axes
-- Accessible: `<title>` and `<desc>` in SVG, data table for screen readers
-- Link: "Compare with other countries" link to comparison page with `?c=THIS_COUNTRY`
-
-**The existing `TrendSparkline` can be kept** as a small preview on the country page, with HistoryChart as an expanded view. Or replace entirely -- design decision, not architectural.
-
-### Global Safety Score
-
-Simple build-time component:
-
-```
-src/components/GlobalScoreBanner.astro
-```
-
-Reads `globalScore` from the latest snapshot. Displays:
-- Current global safety score (1-10)
-- Score change indicator (up/down arrow if history available)
-- Optional mini sparkline of global trend (reuse TrendSparkline pattern)
-
-Placement: Homepage, below the hero tagline, above the map.
-
----
-
-## Data Flow Diagram (v1.1)
-
-```
-Pipeline (daily cron, src/pipeline/run.ts)
-  |
-  Stage 1: Fetch sources          -- unchanged
-  Stage 2: Load raw data          -- unchanged
-  Stage 3: Score countries         -- unchanged
-  Stage 4: Compute global score   -- NEW
-  Stage 5: Write snapshot          -- modified (includes globalScore)
-  Stage 6: Write history index     -- NEW (consolidates all snapshots)
-  |
-  Output:
-    data/scores/latest.json        (+ globalScore, globalScoreDisplay)
-    data/scores/YYYY-MM-DD.json    (+ globalScore, globalScoreDisplay)
-    data/scores/history-index.json (NEW - consolidated history)
-  |
-  Git commit + push -> triggers deploy workflow
-  |
-  v
-Deploy workflow (.github/workflows/deploy.yml)
-  |
-  Copy to public/:
-    public/scores.json             -- existing (for map)
-    public/history.json            -- NEW (for comparison page client)
-  |
-  Astro build:
-    Homepage        reads latest.json     -> GlobalScoreBanner
-    Country pages   reads history-index   -> HistoryChart (build-time SVG)
-    Comparison page reads latest.json     -> embeds inline JSON for client
-                    + history-index       -> embeds inline or refs public/history.json
-  |
-  v
-Cloudflare Pages deploy (static)
-```
+**Impact:**
+- **MODIFY** `src/components/country/PillarBreakdown.astro` -- add `<details>` sections
+- **MODIFY** `src/i18n/ui.ts` -- add ~25 keys per language (explanation text, toggle label, weight label)
+- **NO CHANGE** to data pipeline, scoring, page routing, or any other component
 
 ---
 
 ## Patterns to Follow
 
-### Pattern 1: Build-Time D3 SVG (existing, extend)
-
-Use for: HistoryChart, GlobalScoreBanner sparkline.
-
-D3 scales and line generators run in Astro frontmatter. Output is static SVG in HTML. Zero client JS. This is the proven pattern from TrendSparkline.
-
-### Pattern 2: Embedded Data + Client D3 (new pattern)
-
-Use for: Comparison page chart and table.
-
+### Pattern 1: Data Serialization via data-* Attributes
+**What:** Astro components serialize build-time data as JSON in `data-*` attributes. Client-side `<script>` tags parse and use this data.
+**When:** Any component that needs both SSG data and client-side interactivity.
+**Why:** Already established pattern (TrendChart, Compare page). Avoids runtime API calls. Keeps bundle sizes small since data is page-specific.
+**Example:**
 ```astro
-<!-- Build time: embed data -->
-<script type="application/json" id="data">{JSON.stringify(data)}</script>
-
-<!-- Client time: read and render -->
+<div id="chart" data-points={JSON.stringify(points)} data-translations={JSON.stringify(tStrings)}>
+  <!-- container for D3 -->
+</div>
 <script>
-  const data = JSON.parse(document.getElementById('data').textContent);
+  const el = document.getElementById('chart')!;
+  const points = JSON.parse(el.dataset.points!);
   // D3 rendering here
 </script>
 ```
 
-This avoids runtime fetch calls while enabling interactive visualization.
+### Pattern 2: Static HTML Controls + JS Event Wiring
+**What:** Render interactive controls (buttons, radio inputs) in Astro markup (build-time), wire behavior in `<script>`.
+**When:** Scope buttons, pillar filter radio buttons, toggle controls.
+**Why:** Controls are accessible, visible to crawlers, styled with Tailwind, and functional even if JS loads slowly.
+**Example:**
+```astro
+<!-- Astro markup (build-time) -->
+<div class="flex gap-2" role="radiogroup" aria-label={t('map.filter.label')}>
+  {['total', 'conflict', 'crime', 'health', 'governance', 'environment'].map(p => (
+    <button class="scope-btn px-3 py-1 rounded text-sm" data-pillar={p}>
+      {t(`map.filter.${p}`)}
+    </button>
+  ))}
+</div>
 
-### Pattern 3: URL-Driven State
-
-Use for: Comparison page country selection.
-
+<!-- Client script wires events -->
+<script>
+  document.querySelectorAll('.scope-btn').forEach(btn => {
+    btn.addEventListener('click', () => { /* update chart/map */ });
+  });
+</script>
 ```
-/en/compare/?c=ITA,FRA,DEU
+
+### Pattern 3: Native HTML for Zero-JS Interactivity
+**What:** Use `<details>/<summary>` for expand/collapse instead of custom JS toggles.
+**When:** Pillar explanations, FAQ-style content.
+**Why:** Zero JS, accessible by default, works with SSG, animatable with CSS.
+
+### Pattern 4: i18n Key Namespacing Convention
+**What:** New features add keys under clear namespace prefixes.
+**Existing convention:**
 ```
-
-Client JS reads `URLSearchParams` on load, updates via `history.replaceState()` on change. URLs are shareable and bookmarkable. No framework state management needed.
-
-### Pattern 4: Progressive Enhancement
-
-Use for: Comparison page.
-
-The page should show a meaningful empty state without JS (instructions to select countries, maybe a static "most compared" table). Client JS enhances with the interactive picker and chart. This maintains accessibility and gives crawlers content.
+country.pillar.conflict     → pillar names
+country.trend_title         → chart headings
+compare.title               → comparison page
+map.zoom.in                 → map controls
+```
+**New keys for v1.2:**
+```
+chart.scope.1m              → chart scope controls
+chart.scope.all
+map.filter.total            → map pillar filter
+map.filter.conflict
+pillar.explain.conflict     → pillar explanations
+pillar.explain.toggle       → "What does this measure?"
+```
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Adding SSR for the Comparison Page
+### Anti-Pattern 1: Importing Full D3 Bundle in Client Scripts
+**What:** Using `import * as d3 from 'd3'` in client-side `<script>` tags.
+**Why bad:** The full D3 bundle is ~250KB. The map already does this (`import * as d3 from 'd3'`), but new components should not follow this pattern.
+**Instead:** Import only needed sub-modules: `import { scaleLinear, scaleTime, line, brushX, timeFormat } from 'd3';`. Vite tree-shakes effectively when using named imports.
 
-**Why tempting:** Dynamic country selection feels like it needs server rendering.
-**Why wrong:** Data is ~10KB for scores, embeddable inline. SSR adds Cloudflare Workers runtime, cold starts, caching complexity, breaks the pure SSG deploy model.
-**Instead:** Static page + embedded data + client-side D3.
+### Anti-Pattern 2: Duplicating Filter State Across Components
+**What:** Each visualization maintaining its own pillar filter state independently.
+**Why bad:** If map shows "Health" but chart shows "Total", the UX is confusing. On the homepage, the map is the only visualization, so this is not an issue today. But if pillar filtering extends to other pages, coordinate state.
+**Instead:** On the homepage, filter state lives in the map script (single owner). On country pages, pillar filtering does not apply to trend charts (no per-pillar history). Keep it simple.
 
-### Anti-Pattern 2: Pre-Generating All Country Pair Pages
+### Anti-Pattern 3: Creating Separate Per-Language Translation Files
+**What:** Splitting translations into `en.json`, `it.json`, `es.json`.
+**Why bad:** The existing `ui.ts` co-locates all languages in one TypeScript file. This provides **compile-time key checking** -- TypeScript will error if a key exists in `en` but is missing in `it` or `es`. Splitting loses this type-safety.
+**Instead:** Add `es` block to the existing `ui.ts`. File grows from ~325 to ~500 lines. Still manageable. Consider splitting only if exceeding ~1000 lines (at 5+ languages).
 
-**Why tempting:** SEO for "Italy vs France safety comparison" searches.
-**Why wrong:** 19,900 pairs, millions of triples. Build time explosion.
-**Instead:** One comparison page with good meta tags. Use structured data and dynamic title/description based on query params (client-side, for social sharing use a separate OG image strategy if needed).
+### Anti-Pattern 4: Dynamic API Endpoints for Chart Data
+**What:** Creating Astro API routes to serve chart data dynamically.
+**Why bad:** Breaks the SSG model. The site deploys to Cloudflare Pages as purely static files. Adding API routes requires switching to SSR mode with Cloudflare Workers, adding cold starts, caching complexity, and cost.
+**Instead:** Continue serializing data into `data-*` attributes for country-specific data, or into `public/*.json` for shared data fetched at runtime.
 
-### Anti-Pattern 3: Fetching History Data Client-Side on Country Pages
-
-**Why tempting:** Keeps country page bundle small.
-**Why wrong:** Adds loading states, error handling, CORS config. History for a single country is tiny (~3KB for a year). Build-time SVG eliminates all this.
-**Instead:** Build-time D3 in HistoryChart.astro, same pattern as TrendSparkline.
-
-### Anti-Pattern 4: Separate History Database
-
-**Why tempting:** SQL queries for date ranges, aggregations.
-**Why wrong:** Adds infrastructure, cost. JSON files work at this scale.
-**Instead:** Consolidated history-index.json read at build time.
-
-### Anti-Pattern 5: React/Vue Islands for Comparison
-
-**Why tempting:** Framework components for interactive UI.
-**Why wrong:** Adds framework runtime (~30-50KB), build complexity, hydration overhead. The comparison UI is a search box + a chart + a table -- vanilla JS + D3 handles this.
-**Instead:** Vanilla TypeScript + D3 + Fuse.js (already a dependency).
+### Anti-Pattern 5: Over-Engineering Cross-Component Communication
+**What:** Adding a state management library (or custom event bus) for pillar filter coordination.
+**Why bad:** v1.2 features do not require cross-component state. The map is on the homepage alone. The trend chart is on country pages alone. The comparison page is self-contained.
+**Instead:** Each page's script manages its own state. If future features need cross-component coordination, revisit then.
 
 ---
 
-## New Pipeline Modules
+## Component Dependency Graph
 
-### `src/pipeline/scoring/global.ts`
-
-```typescript
-export function computeGlobalScore(countries: ScoredCountry[]): {
-  globalScore: number;
-  globalScoreDisplay: number;
-} {
-  // Simple arithmetic mean of all country scores
-  const sum = countries.reduce((acc, c) => acc + c.score, 0);
-  const avg = sum / countries.length;
-  return {
-    globalScore: Math.round(avg * 10) / 10,  // one decimal
-    globalScoreDisplay: Math.round(avg),
-  };
-}
 ```
+v1.2 Feature Dependencies:
 
-### `src/pipeline/scoring/history-index.ts`
+1. Spanish i18n (FOUNDATION - no deps on other v1.2 features)
+   └── Modifies: ui.ts, types.ts, astro.config
+   └── Creates: pages/es/
 
-```typescript
-export function writeHistoryIndex(scoresDir: string, maxDays: number = 365): void {
-  // Read all YYYY-MM-DD.json files
-  // Build consolidated index
-  // Write to data/scores/history-index.json
-}
+2. Parameter Explanations (INDEPENDENT - no deps on other v1.2 features)
+   └── Modifies: PillarBreakdown.astro, ui.ts
+   └── Uses: existing PillarScore.indicators[] data
+
+3. Chart Zoom/Scope (INDEPENDENT - no deps on other v1.2 features)
+   └── Modifies: TrendChart.astro (major rewrite), ui.ts
+   └── Also benefits: Global Safety page, Compare page
+
+4. Category Filtering (DEPENDS ON scores.json having pillar data)
+   └── Modifies: SafetyMap.astro, map-utils.ts, scores.json generation, ui.ts
+   └── Optional extension to: Compare page pillar bars
+   └── Cannot extend to: historical trend charts (no per-pillar history data)
 ```
-
----
-
-## i18n Integration
-
-Add to `src/i18n/ui.ts` routes:
-
-```typescript
-export const routes = {
-  en: {
-    // ...existing
-    compare: 'compare',
-  },
-  it: {
-    // ...existing
-    compare: 'confronta',
-  },
-};
-```
-
-New translation keys needed (~15):
-- `compare.title`, `compare.description`, `compare.select_countries`, `compare.add_country`, `compare.remove`, `compare.no_selection`, `compare.chart_title`, `compare.table_title`, `compare.vs`
-- `global.score_title`, `global.score_label`, `global.trend_label`
-- `country.full_history`, `country.compare_with`
 
 ---
 
 ## Suggested Build Order
 
-Order based on dependency analysis:
+```
+Phase 1: Spanish i18n + Parameter Explanations (PARALLEL, no conflicts)
+  Both touch ui.ts but in different key namespaces.
+  Spanish i18n is foundational: all subsequent features need 3-language strings.
+  Parameter explanations are self-contained and low-risk.
 
-### Phase A: Pipeline Extensions (foundation -- no UI)
+Phase 2: Chart Zoom/Scope Controls
+  Requires TrendChart.astro rewrite (build-time → client-side D3).
+  This is the most architecturally significant change.
+  Should be done before category filtering to validate client-side D3 pattern.
 
-1. `computeGlobalScore()` in `src/pipeline/scoring/global.ts`
-2. Add `globalScore` fields to `DailySnapshot` type
-3. Wire global score into `run.ts` after `computeAllScores()`
-4. `writeHistoryIndex()` in `src/pipeline/scoring/history-index.ts`
-5. Wire history index into `run.ts` after `writeSnapshot()`
-6. Add `loadHistoryIndex()` and `loadGlobalScore()` to `src/lib/scores.ts`
+Phase 3: Category Filtering (Map)
+  Requires scores.json expansion + map script modifications.
+  Map is the highest-traffic component; test thoroughly.
+  Can optionally extend to comparison page pillar bars.
 
-**Rationale:** All UI features depend on this data. Run pipeline a few times to accumulate test data.
+Phase 4: Bug Fixes (comparison page country search)
+  Can slot in anywhere but best after main features stabilize.
+  Likely a small fix in the Fuse.js search or dropdown positioning.
+```
 
-### Phase B: Global Safety Score UI (simplest feature)
-
-7. `GlobalScoreBanner.astro` component
-8. Add to both homepage pages (en + it)
-9. Add i18n keys for global score
-
-**Rationale:** Simplest new feature. Validates pipeline -> build -> display flow end-to-end.
-
-### Phase C: Enhanced History Chart (extends existing pattern)
-
-10. `HistoryChart.astro` -- larger chart with axes
-11. Integrate on country pages (replace or augment TrendSparkline)
-12. Add "Compare with..." link to country pages
-13. Add i18n keys for history chart
-
-**Rationale:** Purely build-time, same pattern as existing TrendSparkline. No new architectural concepts.
-
-### Phase D: Comparison Page (most complex -- new client-side pattern)
-
-14. `comparison-data.ts` -- build-time data preparation
-15. `ComparisonShell.astro` -- page layout
-16. Comparison page files (en/compare + it/confronta)
-17. `CountryPicker.astro` + client JS -- country selector with Fuse.js
-18. `ComparisonChart.ts` -- client-side D3 multi-line chart
-19. `ComparisonTable.ts` -- client-side pillar comparison
-20. URL state management (query params)
-21. Add "Compare" to navigation
-22. Add all comparison i18n keys
-23. Update deploy workflow to copy history.json to public/
-
-**Rationale:** Introduces the only new architectural pattern (client-side D3 from embedded data). Benefits from Phase C chart utilities.
+**Rationale for this order:**
+- Phase 1 items have zero dependencies and can be done in parallel
+- Phase 2 establishes the client-side D3 pattern needed for understanding Phase 3
+- Phase 3 depends on Phase 1 (needs Spanish filter labels) and benefits from Phase 2 experience
+- Phase 4 is a bug fix that benefits from feature stability
 
 ---
 
-## Scalability Notes
+## Files Changed Summary
 
-| Concern | Now (day 1) | 90 days | 365 days | 3 years |
-|---------|-------------|---------|----------|---------|
-| history-index.json | ~2KB | ~180KB | ~1.8MB | ~5.4MB |
-| Inline embedding | Fine | Fine | Borderline | Switch to fetch |
-| Snapshot files in git | 1 | 90 (~18MB) | 365 (~73MB) | 1095 (~219MB) |
-| Build time (history) | Instant | Instant (1 file read) | Fast (1 file) | Fast (1 file) |
-| Comparison page JS | ~15KB | Same | Same | Same |
+| File | Features Touching It | Type of Change |
+|------|---------------------|----------------|
+| `src/i18n/ui.ts` | ALL four features | Add: ~170 (es) + ~6 (scope) + ~7 (filter) + ~25 (explanations) strings |
+| `src/components/country/TrendChart.astro` | Chart zoom/scope | Major rewrite: build-time → client-side D3, add scope buttons |
+| `src/components/country/PillarBreakdown.astro` | Parameter explanations | Add `<details>/<summary>` expandable sections |
+| `src/components/SafetyMap.astro` | Category filtering | Add filter UI bar + modify script for pillar coloring |
+| `src/lib/map-utils.ts` | Category filtering | Add pillar score normalization helper |
+| `src/pipeline/types.ts` | Spanish i18n | Extend `name` type: `{en, it}` → `{en, it, es}` |
+| `astro.config.mjs` | Spanish i18n | Add `'es'` to `locales` array |
+| `src/pages/es/` (new) | Spanish i18n | Create 8-10 page files mirroring `en/` |
+| `public/scores.json` generation | Category filtering | Include pillar scores per country |
+| Pipeline country mapping | Spanish i18n | Add Spanish country names |
 
-**Action needed at 6 months:** Evaluate whether inline history embedding is still acceptable. If history-index.json exceeds ~1MB, switch comparison page to fetch `public/history.json` instead.
+---
 
-**Action needed at 1+ years:** Consider pruning snapshot files older than 365 days from git (keep in history-index.json only). Or accept the git repo size growth.
+## Scalability Considerations
+
+| Concern | Current (2 langs) | At 3 langs (v1.2) | At 5+ langs (future) |
+|---------|-------------------|--------------------|-----------------------|
+| `ui.ts` file size | ~325 lines | ~500 lines | ~800+ lines; consider splitting with shared type |
+| Page count (SSG) | ~500 pages | ~750 pages | ~1250 pages; build time grows linearly |
+| `scores.json` size | ~50KB (total only) | ~80KB (with pillars) | Fine up to ~200KB; code-split if needed |
+| History data in `data-*` | ~10-50KB/page | Same | If >100KB, lazy-load via fetch |
+| Astro build time | ~30s | ~45s (+50% pages) | Acceptable up to ~120s |
 
 ## Sources
 
-- Existing codebase analysis: `src/pipeline/run.ts`, `src/lib/scores.ts`, `src/components/country/TrendSparkline.astro`, `src/pages/en/country/[slug].astro` (HIGH confidence -- direct code inspection)
-- Astro SSG static page generation with `getStaticPaths` (HIGH confidence -- proven in existing codebase)
-- D3 v7 build-time SVG generation pattern (HIGH confidence -- proven in TrendSparkline)
-- Embedded JSON + client-side D3 pattern (MEDIUM confidence -- standard web pattern, not yet used in this codebase)
-- URL query param state management (HIGH confidence -- standard browser API)
+- Direct codebase analysis of all referenced files (HIGH confidence)
+- Astro 6 i18n routing documentation (HIGH confidence)
+- D3.js v7 brush module for zoom interaction pattern (HIGH confidence)
+- HTML `<details>/<summary>` specification for accessible expand/collapse (HIGH confidence)

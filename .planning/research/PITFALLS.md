@@ -1,310 +1,211 @@
-# Pitfalls Research
+# Domain Pitfalls
 
-**Domain:** Adding comparison, historical trends, and global safety score to existing Astro SSG travel safety site
-**Researched:** 2026-03-19
-**Confidence:** HIGH (based on direct codebase analysis of existing system + known Astro/D3/SSG constraints)
+**Domain:** Adding interactive chart controls, per-category filtering, Spanish i18n, parameter explanations, and bug fixes to existing Astro SSG + D3 travel safety platform
+**Researched:** 2026-03-20
+**Confidence:** HIGH (based on direct codebase analysis of all affected files)
 
 ## Critical Pitfalls
 
-### Pitfall 1: Build-Time Memory Explosion from Historical Data Loading
+Mistakes that cause rewrites or major issues.
 
-**What goes wrong:**
-`loadHistoricalScores(90)` in `src/lib/scores.ts` reads every dated JSON file sequentially, parsing 248 countries per file. Each daily snapshot is 656KB. At 90 days that is ~59MB of JSON parsed at build time. This function is already called in `getStaticPaths` for country pages (248 pages x 2 languages). Adding a comparison page, a global score page, or trend chart pages that also call `loadHistoricalScores` -- potentially with longer windows (180 or 365 days for meaningful trends) -- will multiply memory usage. The build process will hit Node's heap limit or Cloudflare Pages' 20-minute build timeout.
+### Pitfall 1: Spanish i18n Requires Type-Level Changes Across the Entire Data Pipeline
 
-**Why it happens:**
-The current `loadHistoricalScores` does a full filesystem scan and JSON parse for every call site. Astro's `getStaticPaths` runs per page collection, and each invocation re-reads all files from disk. No caching layer exists between calls. Developers adding new page types that need history will naturally call the same function, compounding the problem.
+**What goes wrong:** Adding Spanish is not just "add another translation object to `ui.ts`." The `name` field in `CountryEntry`, `ScoredCountry`, and `DailySnapshot` types is typed as `{ en: string; it: string }` -- a fixed two-language object literal. Every country in `countries.ts` (248 entries) has only `en` and `it` name fields. The pipeline generates `scores.json` and `latest.json` with this same shape. The map reads `c.name?.[lang]` from `scores.json`. If `es` is not in the data, Spanish users see English fallback for country names only (while UI text is Spanish), creating a jarring mixed-language experience.
 
-**How to avoid:**
-1. Pre-aggregate historical data during the daily pipeline run, not at build time. Have `src/pipeline/run.ts` maintain a single `history.json` that appends each day's scores in a compact format (`{date, iso3, score}` only -- no pillar data, no advisories). This reduces 90 snapshots (59MB) to one file (~500KB).
-2. Load the pre-aggregated file once using a module-level cache (top-level variable in `scores.ts`) so it is shared across all `getStaticPaths` calls.
-3. For comparison and trend pages, accept the history Map as a prop rather than re-loading.
+**Why it happens:** The initial i18n architecture hardcoded language support into the data layer (TypeScript interfaces, pipeline config) rather than keeping it purely in the presentation layer. This is a common pattern when starting with 2 languages -- it seems simpler to inline names than to maintain a separate translation file.
 
-**Warning signs:**
-- Build time exceeding 5 minutes locally
-- `JavaScript heap out of memory` errors during `astro build`
-- Cloudflare Pages builds timing out at 20 minutes
+**Consequences:**
+- `CountryEntry` type in `pipeline/types.ts` needs `es` added: currently `name: { en: string; it: string }` must become `{ en: string; it: string; es: string }` (or better, `Record<Lang, string>`)
+- All 248 entries in `pipeline/config/countries.ts` need a Spanish name field added
+- `ScoredCountry` inherits from `CountryEntry`, so pipeline output changes shape
+- `scores.json` (loaded client-side by the map) grows with the third language
+- Test fixtures in `snapshot.test.ts` and `history.test.ts` create mock countries with `name: { en: ..., it: ... }` and will fail
+- If you forget to update the type but add `es` data, TypeScript rejects it
+- If you update the type but forget the data, every `name.es` access returns `undefined`
 
-**Phase to address:**
-Phase 1 (Historical Data Pipeline) -- must be solved before any trend or comparison features consume historical data.
+**Prevention:**
+- Phase the work: (1) update `CountryEntry` type to `Record<Lang, string>` instead of hardcoded keys, (2) add Spanish names to all 248 countries in `countries.ts`, (3) add `es` to `languages` and `ui` objects in `ui.ts`, (4) create `src/pages/es/` directory with all page files, (5) add Spanish routes to `routes` object
+- Make the name type dynamic with `Record<Lang, string>` so future languages do not require type changes
+- Generate Spanish country names programmatically from a reference (most are identical or have well-known translations from English/Italian) rather than manually typing 248 entries
 
----
+**Detection:** TypeScript compilation errors after adding `'es'` to `Lang` type; runtime `undefined` for country names in Spanish locale; map tooltips showing ISO3 codes instead of names.
 
-### Pitfall 2: Comparison Page Route Explosion (N-Choose-K Problem)
+### Pitfall 2: Category Filtering on Map Requires Data the Client Does Not Currently Have
 
-**What goes wrong:**
-Generating static pages for every possible country comparison creates a combinatorial explosion. Even pairs only: C(248, 2) = 30,628 pages per language = 61,256 total static pages. The existing `[slug].astro` pattern (which generates 248 pages per locale) tempts developers into `[a]-vs-[b].astro` or `[...countries].astro`. Build times balloon, and Cloudflare Pages free tier hits the 20,000 file limit.
+**What goes wrong:** The map currently fetches `/scores.json` which contains only `iso3`, `name`, and `score` (the composite score). To color the map by individual pillars (conflict, crime, health, governance, environment), the client needs per-pillar scores for every country. This data exists in `latest.json` (full snapshot with pillar breakdowns, advisories, indicators) but is NOT in the lightweight `scores.json`.
 
-**Why it happens:**
-Developers pattern-match from the existing country pages and assume comparison pages follow the same SSG approach. They try to pre-generate all combinations because "this is a static site."
+**Why it happens:** The map's data contract was intentionally minimal to keep the JSON small and fast. Adding category filtering means either: (a) the map loads the full `latest.json` (~656KB, containing advisory text, indicator breakdowns, source metadata for 248 countries that the map does not need), or (b) `scores.json` is extended to include pillar scores, or (c) a new endpoint is created.
 
-**How to avoid:**
-Do NOT pre-render comparison combinations. Instead:
-1. Build a single static comparison page per locale (`/en/compare/` and `/it/confronta/`) as a shell with client-side interactivity.
-2. Use URL query parameters (`?countries=USA,ITA,FRA`) rather than path segments for country selection.
-3. Ship a pre-built compact JSON manifest to `public/` containing all country names, ISO3 codes, and current scores (~15KB). Load historical data lazily only when the comparison chart is requested.
-4. Total new static pages: 2 (one per locale).
+**Consequences:**
+- Loading full `latest.json` on the map page adds massive payload and kills mobile performance
+- The `safetyColorScale` in `map-utils.ts` maps scores on a 1-10 scale, but pillar scores are 0-1 normalized. Using the wrong scale produces wrong colors (everything appears dark red)
+- The map currently has no UI for selecting a category -- this is a new interactive element on an otherwise non-interactive static page
+- The color scale semantics change: "safe/danger" for composite score vs per-pillar meaning (e.g., "governance: 0.9" means good governance)
 
-**Warning signs:**
-- Route files named `[...countries].astro` or `[a]-vs-[b].astro`
-- `getStaticPaths` returning more than 500 entries for comparison pages
-- Build output exceeding 5,000 files total
+**Prevention:**
+- Extend `scores.json` to include pillar scores: `{ iso3, name, score, pillars: { conflict: 0.7, crime: 0.8, ... } }` -- adds ~2KB for 248 countries (5 floats each)
+- Reuse `pillarToColor()` from `colors.ts` for pillar-mode coloring (already converts 0-1 to the color scale) instead of `safetyColorScale`
+- Update legend text dynamically when a category filter is active (e.g., "Higher" / "Lower" instead of "Safer" / "Less safe")
+- Update the `scores.json` generation in the pipeline's snapshot step, not at build time
 
-**Phase to address:**
-Phase 2 (Comparison Page) -- this architecture decision must be locked before any comparison route code is written.
+**Detection:** Map shows uniform or incorrect colors when switching to a category filter; pillar scores render as very dark colors because 0-1 values are fed to a 1-10 scale.
 
----
+### Pitfall 3: Adding Interactive Chart Controls to Server-Rendered SVG Charts
 
-### Pitfall 3: Bundling Full D3 Library for Client-Side Charts
+**What goes wrong:** The current `TrendChart.astro` generates SVG entirely at build time using D3 in the Astro frontmatter (server-side). The only client-side code is tooltip interactivity (mousemove to find nearest point). Adding zoom, date range selection, or scope controls (7d/30d/90d/all) means the chart must be re-rendered with different data ranges, but the SVG paths, axes, and ticks are baked into static HTML at build time. You cannot re-scale axes or change data ranges without rebuilding the entire SVG DOM.
 
-**What goes wrong:**
-The project already uses D3 server-side (TrendSparkline.astro runs D3 at build time to generate static SVG paths -- zero client JS). But the comparison page and multi-country overlay charts need client-side interactivity (hover tooltips, country selection, axis rendering). Importing `d3` or even `import { scaleLinear, line } from 'd3'` in a client-side `<script>` ships ~250KB of JS to the browser because D3 v7's top-level package re-exports everything. This kills the Lighthouse 90+ target.
+**Why it happens:** The original SSG-first architecture correctly avoided client JS for static content. But interactive controls (zoom, pan, date range) require D3 to operate client-side, not just at build time. The `TrendChart.astro` component would need to shift from "server renders SVG, client adds tooltips" to "server provides data, client renders and re-renders SVG."
 
-**Why it happens:**
-D3 is already in `package.json` and used in `.astro` frontmatter. Developers assume importing it client-side is equally cheap. D3 v7's package structure means even named imports from `d3` pull in the full bundle when processed by Vite/Rollup.
+**Consequences:**
+- If you try to add controls without refactoring, you end up with two rendering paths: server-rendered initial SVG and client-side re-rendered SVG, which causes flash/jank on first interaction
+- The chart data is currently embedded as `data-history` JSON attribute -- but it only contains `{ date, score, cx, cy }` with pre-computed SVG coordinates. These coordinates are only valid for the current axis scales and cannot be reused after re-rendering
+- The comparison page trend chart (`compare.astro` line ~381) already renders charts fully client-side, creating an inconsistent rendering pattern between pages
+- Date range filtering requires access to ALL history points, not just the subset used for the initial render
 
-**How to avoid:**
-1. Import from D3 sub-packages directly: `import { scaleLinear } from 'd3-scale'`, `import { line } from 'd3-shape'`, `import { select } from 'd3-selection'` -- never from `d3`.
-2. Add sub-packages to `package.json` explicitly: `d3-scale`, `d3-shape`, `d3-selection`, `d3-axis`, `d3-transition`. Remove the monolithic `d3` dependency once all imports are migrated.
-3. Keep the current server-side D3 pattern for non-interactive charts. Only ship D3 modules client-side for features that genuinely need interactivity.
-4. Use Astro's `client:visible` directive so chart scripts only load when scrolled into view.
+**Prevention:**
+- Pick one pattern. Recommended: move country trend charts to client-side rendering, matching the comparison page's approach. The comparison page already demonstrates the correct pattern (lines 405-549 of `compare.astro`)
+- Extract chart rendering into a shared utility function used by both country trend charts and comparison trend charts to avoid duplicating D3 logic
+- Embed the FULL history data in `data-history` and filter client-side when scope controls are used, rather than trying to re-fetch from the server
+- For the date range controls, implement as simple buttons (7d/30d/90d/All) that filter the data array and call a `renderChart()` function
 
-**Warning signs:**
-- Client JS bundle exceeding 100KB total
-- `d3` (not `d3-scale` etc.) appearing in client bundle analysis
-- Lighthouse performance score dropping below 85
+**Detection:** Chart controls appear but clicking them does nothing (because SVG is static); chart flashes/jumps when toggling between server-rendered and client-rendered states.
 
-**Phase to address:**
-Phase 3 (Interactive Trend Charts) -- when moving from static sparklines to interactive multi-country overlays.
+## Moderate Pitfalls
 
----
+### Pitfall 4: Spanish Page Directory Requires 6+ New Files with Translated Route Slugs
 
-### Pitfall 4: Global Safety Score Without Clear Methodology = Credibility Loss
+**What goes wrong:** Astro's file-based routing means every page at `/en/` and `/it/` needs a corresponding file in `/es/`. Currently there are 6 page files per language: `index.astro`, `country/[slug].astro`, `compare.astro`, `global-safety.astro`, `methodology/index.astro`, `legal/index.astro`. Adding Spanish means creating 6 more files that differ only in the `lang` constant. Missing any one produces a 404 for that Spanish URL.
 
-**What goes wrong:**
-A "global safety score" (single number for world safety) is presented without explaining what it means. An unweighted average treats Liechtenstein equal to India. A population-weighted average makes China and India dominate. Neither is obviously correct, and the choice is editorial. Users see a number that changes slightly each day without understanding why, making it feel arbitrary.
+**Prevention:**
+- Create `src/pages/es/` with Spanish-translated route slugs (e.g., `es/pais/[slug].astro`, `es/comparar.astro`, `es/seguridad-global.astro`, `es/metodologia/index.astro`, `es/legal/index.astro`)
+- Add routes to the `routes` object in `ui.ts`: `es: { country: 'pais', methodology: 'metodologia', legal: 'legal', 'global-safety': 'seguridad-global', compare: 'comparar' }`
+- Copy page files from `en/` and change only `const lang: Lang = 'es'`
+- The `LanguageSwitcher.astro` component iterates `Object.keys(languages)`, so adding `es` to `languages` in `ui.ts` automatically shows the Spanish option
+- The `getAlternateLinks()` function automatically includes all languages for `<link rel="alternate">` SEO tags
 
-**Why it happens:**
-It seems simple: "average all 248 country scores." But the aggregation method is inherently an editorial choice. The existing site has a methodology page at `/en/methodology/` for individual country scores, but global aggregation introduces a different set of assumptions that need their own explanation.
+**Detection:** Missing pages return 404 for Spanish URLs; language switcher does not show Spanish option; SEO alternate links incomplete (verify with `getAlternateLinks()` returning 3 entries).
 
-**How to avoid:**
-1. Show the distribution, not just the mean. A histogram or box-whisker of all 248 scores tells a richer story.
-2. Display both the simple average and the median. The median is more robust to outliers.
-3. Show "movers" context: "12 countries improved, 5 worsened since last month" explains changes better than a single number shifting by 0.1.
-4. Link to the methodology page with a new section explaining the global aggregation.
-5. Handle missing data explicitly: when a country has incomplete scores for a day, document whether it is excluded or carries forward the previous score.
+### Pitfall 5: Comparison Page Search Bug Likely Caused by setTimeout Blur Race Condition
 
-**Warning signs:**
-- Global score presented as a lone number without distribution context
-- Score changes by more than 0.3 points between days (almost certainly a data issue, not a real-world safety change)
-- No methodology link adjacent to the global score display
+**What goes wrong:** The milestone mentions a bug in the comparison page country search "on web." The current search implementation in `compare.astro` (line 255) uses a `blur` handler with `setTimeout(() => dropdown.classList.add('hidden'), 200)` to allow time for dropdown item clicks to register before hiding the dropdown. This 200ms race condition is a classic source of cross-browser bugs -- touch events on mobile fire differently than mouse events, and some browsers process `blur` before the `click` handler can fire.
 
-**Phase to address:**
-Phase 1 (Global Safety Score computation) -- methodology must be defined before the UI is built.
+**Why it happens:** The pattern of "delay hiding the dropdown so clicks can register" is fragile. On slower devices, 200ms may not be enough. On faster devices, the user sees the dropdown flash closed and open. The `blur` event fires when focus leaves the input, which on mobile can happen from touch events, virtual keyboard changes, or scroll.
 
----
+**Consequences:** Users click/tap a dropdown result and nothing happens (selection does not register). Particularly likely on mobile browsers and when the device is under load.
 
-### Pitfall 5: Historical Data Storage Growing Unbounded in Git
+**Prevention:**
+- Replace the `setTimeout` blur hack with `mousedown` event prevention: on dropdown items, use `mousedown` with `e.preventDefault()` to prevent the input blur from firing, then handle selection on `click`
+- Alternatively, use `pointerdown` for unified mouse/touch handling
+- If adding a category filter dropdown (for map/charts), extract the dropdown pattern into a reusable utility or component rather than duplicating the fragile inline implementation
+- Test on actual mobile devices, not just desktop browser dev tools
 
-**What goes wrong:**
-Each daily snapshot is 656KB. After one year: 365 files totaling ~234MB in `data/scores/`. After two years: ~468MB. These are JSON files committed to the git repo (the build pipeline reads from `data/scores/`). The repository bloats, clone times increase, and Cloudflare Pages builds slow down since they do a full clone. Eventually the repo exceeds GitHub's recommended 1GB limit.
+**Detection:** Dropdown closes before selection registers; search works on desktop but not mobile; intermittent "click does nothing" reports.
 
-**Why it happens:**
-The current pipeline writes a full `YYYY-MM-DD.json` snapshot every day. This was fine when the site launched (1 day of history), but linear growth was never addressed because v1.0 did not depend heavily on historical data.
+### Pitfall 6: Chart Date Formatting Inconsistency Across Three Locales
 
-**How to avoid:**
-1. Have the pipeline maintain an append-only `history.json` (compact: date + iso3 + score only, ~5KB per day, ~1.8MB per year).
-2. Delete daily snapshot JSON files older than 7 days from the repo after they have been aggregated into `history.json`.
-3. Keep only `latest.json` + `history.json` in git for the build.
-4. Optionally archive full snapshots to Cloudflare R2 (free tier: 10GB, 1M reads/month) for audit purposes.
+**What goes wrong:** The current chart code uses two different date formatting approaches: (1) D3's `timeFormat('%b %d')` for axis labels in `TrendChart.astro` (server-side, produces English-only month abbreviations like "Mar 20"), and (2) `toLocaleDateString()` for tooltips (client-side, locale-aware). Adding Spanish means axis labels show English month names ("Mar", "Apr") while tooltips show Spanish ("mar", "abr"). On the comparison page, the same inconsistency exists (line 444 uses `timeFormat` for axes, line 529 uses `toLocaleDateString` for tooltips).
 
-**Warning signs:**
-- `data/scores/` directory exceeding 20MB
-- Git clone taking more than 30 seconds
-- Cloudflare build times increasing month over month
+**Why it happens:** D3's `timeFormat` uses a hardcoded English locale by default. The server-side Astro frontmatter runs in Node.js where the default locale is always English regardless of the page language. The client-side tooltip correctly uses the browser locale. Nobody notices the mismatch with English because both produce the same output.
 
-**Phase to address:**
-Phase 1 (Historical Data Pipeline) -- design the storage format correctly from the start of v1.1.
+**Prevention:**
+- For client-side rendered charts: use `toLocaleDateString()` consistently for both axes and tooltips, passing the correct locale (`es-ES`, `it-IT`, `en-US`)
+- For server-side rendered charts (if retained): use D3's `timeFormatLocale()` with locale definitions for Spanish and Italian
+- Define a shared date formatting utility that accepts `Lang` and returns consistently formatted dates across all chart components
+- Test charts in all 3 languages, specifically checking month name abbreviations on axes vs tooltips
 
----
+**Detection:** Italian/Spanish chart axes show "Mar", "Apr" (English) while tooltips show localized month names; inconsistent date formats on the same chart.
 
-### Pitfall 6: Multi-Country Overlay Charts Becoming Unreadable
+### Pitfall 7: Parameter Explanations Content Volume Overwhelms ui.ts
 
-**What goes wrong:**
-Users select 6+ countries for trend comparison. The chart becomes a tangle of overlapping lines with indistinguishable colors. Countries with similar scores (e.g., several Western European countries clustered at 7-8) produce overlapping lines that are impossible to differentiate. Colorblind users (8% of males) cannot distinguish lines at all. The feature ships looking good with 2 test countries and fails in real use.
+**What goes wrong:** Adding "detailed explanations for each safety pillar" means writing substantive content (likely multiple paragraphs per pillar) explaining what each score measures, how it is calculated, what data sources feed it, and what high/low scores mean. This content must exist in all 3 languages. With 5 pillars and ~200-300 words per explanation, that is 1,500+ words of translated content per language to add to `ui.ts`, which is already ~325 lines and 167 translation keys.
 
-**Why it happens:**
-Developers test with 2-3 visually distinct countries (e.g., Norway vs Afghanistan) and never test the realistic case: 5 similar-scoring countries overlaid on a 1-10 scale where the interesting range is often just 5-8.
+**Why it happens:** The current `ui.ts` pattern works well for short UI strings (button labels, headings, one-sentence descriptions). But multi-paragraph explanatory content in a flat key-value file becomes hard to review, maintain, and spot translation errors in. The file would grow to 500+ lines with interleaved English, Italian, and Spanish blocks.
 
-**How to avoid:**
-1. Cap maximum countries at 5. Display a clear message when the limit is reached.
-2. Use a colorblind-safe palette (D3's `schemeTableau10` or the Okabe-Ito palette).
-3. Add interactive highlighting: hovering/focusing a country name in the legend bolds that line and dims all others.
-4. Provide a data table below the chart as an accessible alternative.
-5. Handle missing data explicitly: show gaps in lines, do not interpolate across missing days.
-6. Consider auto-scaling the Y-axis to the range of selected countries (e.g., 5-9 instead of always 1-10) to spread overlapping lines.
+**Prevention:**
+- For short descriptions (1-2 sentences per pillar), keep them in `ui.ts` with keys like `pillar.conflict.short_desc`
+- For longer explanations, consider Astro content collections: a `src/content/pillars/` directory with `en/conflict.md`, `es/conflict.md`, `it/conflict.md` keeps long-form content manageable
+- If staying with `ui.ts`, use a consistent key naming pattern: `pillar.conflict.description`, `pillar.conflict.sources`, `pillar.conflict.interpretation`
+- Write English content first, validate with stakeholders, then translate -- do not attempt all 3 languages simultaneously
 
-**Warning signs:**
-- No maximum country limit in the comparison UI
-- Colors assigned from a non-accessible palette
-- No hover/focus interaction on the chart legend
-- No accessible alternative (table or ARIA descriptions)
+**Detection:** `ui.ts` exceeds 500 lines and becomes hard to maintain; translation keys have inconsistent naming; one language has explanations while another has placeholder text.
 
-**Phase to address:**
-Phase 3 (Multi-Country Overlay Charts) -- must be designed into the chart component from the start, not added later.
-
----
-
-### Pitfall 7: Client-Side Hydration Breaking Astro's SSG Performance Model
-
-**What goes wrong:**
-The comparison page and interactive trend charts require client-side JavaScript. Developers reach for Astro's `client:load` directive on large components or wrap the entire page in a React/Svelte island. This ships a framework runtime + component code to every visitor, even before they interact with anything. The page becomes a client-rendered SPA inside an SSG shell, negating Astro's core performance advantage.
+## Minor Pitfalls
 
-**Why it happens:**
-Astro's island architecture is designed for small interactive widgets. But a full interactive comparison page (country selector, chart rendering, URL sync) feels like "one big interactive thing," tempting developers to make the entire page a single island.
-
-**How to avoid:**
-1. Use multiple small islands: the country search/selector is one island (`client:visible`), the chart is another island (`client:visible`), the data table is static HTML.
-2. Pre-render as much as possible at build time. The page layout, headings, empty chart container, and static text are all plain Astro/HTML.
-3. Use `client:visible` (not `client:load`) for below-fold interactive components so they only hydrate when scrolled into view.
-4. Avoid framework islands entirely if possible: vanilla JS `<script>` tags with D3 sub-packages are lighter than React + D3. The existing codebase has zero framework dependencies (no React, no Svelte) -- keep it that way.
-5. Use `<script>` tags in `.astro` files for client interactivity. Astro bundles and deduplicates them automatically.
-
-**Warning signs:**
-- Adding React, Svelte, or Vue to `package.json` for the comparison page
-- A single `client:load` island containing the entire page content
-- Total Interaction to Next Paint (INP) exceeding 200ms
-
-**Phase to address:**
-Phase 2 (Comparison Page architecture) -- the island strategy must be decided before building interactive components.
-
----
-
-### Pitfall 8: URL State Not Synced with Comparison Selection
-
-**What goes wrong:**
-Users select 4 countries to compare, find interesting results, copy the URL to share or bookmark it -- and the URL is just `/en/compare/` with no state. On reload, the comparison is lost. Users cannot share specific comparisons on social media or link to them from other sites. This is a major usability failure for a feature whose entire purpose is showing specific country combinations.
-
-**Why it happens:**
-Client-side state management (which countries are selected) is implemented with JavaScript variables or component state but never synced to the URL. The comparison page is a single static route and developers forget that URL = state in a web app.
-
-**How to avoid:**
-1. Sync selected countries to URL query parameters on every selection change: `?c=USA,ITA,FRA`.
-2. On page load, parse query parameters and restore the selection.
-3. Use `history.replaceState` (not `pushState`) to avoid polluting browser history with every country toggle.
-4. Include the country names in the page `<title>` and `<meta>` description dynamically (client-side `document.title` update) so shared links show meaningful previews.
-5. Validate query params against known ISO3 codes; ignore invalid values silently.
-
-**Warning signs:**
-- Refreshing the comparison page resets the selection
-- Sharing the URL results in an empty comparison page for the recipient
-- No URL change when countries are added/removed
-
-**Phase to address:**
-Phase 2 (Comparison Page) -- URL sync must be built alongside the country selector, not retrofitted.
-
----
-
-## Technical Debt Patterns
-
-| Shortcut | Immediate Benefit | Long-term Cost | When Acceptable |
-|----------|-------------------|----------------|-----------------|
-| Inline all 248 country scores in comparison page HTML | No extra network request | ~100KB+ HTML payload; uncacheable (changes daily); bad for repeat visits | Never; use a separate cached JSON file |
-| Skip i18n for comparison page | Ship faster | Retrofitting i18n into client-side interactive components is painful; URL structure (`/compare/` vs `/confronta/`) is hard to change | Never; the existing site already has full i18n infrastructure |
-| Keep full daily snapshots in git indefinitely | No pipeline changes | Git bloat: 234MB/year; slower clones and builds (see Pitfall 5) | First 30 days only; then must add aggregation |
-| Use `<script is:inline>` for chart JS | Quick to get working | No tree-shaking, no TypeScript, scripts duplicated across pages | Never; use Astro's standard `<script>` bundling |
-| Hardcode country list in comparison search | No data loading logic | Falls out of sync when pipeline adds/removes countries | Never; derive from scores data |
-| Use monolithic `d3` import client-side | Fewer import statements | ~250KB client bundle (see Pitfall 3) | Never; always use sub-packages |
-
-## Integration Gotchas
-
-| Integration | Common Mistake | Correct Approach |
-|-------------|----------------|------------------|
-| Cloudflare Pages build | Assuming unlimited build time and memory; 20-min timeout, 512MB memory on free tier | Pre-aggregate data in pipeline; keep build-time data loading minimal |
-| Cloudflare Pages file limit | Generating too many static pages (comparison route explosion) | Use client-side rendering for comparison; total static pages should stay under 2,000 |
-| D3 in Astro SSG | Importing `d3` in client `<script>` the same as in frontmatter | Frontmatter D3 = build time (free); client D3 = shipped to browser (expensive). Use sub-packages client-side |
-| Astro `getStaticPaths` | Calling `loadHistoricalScores()` independently in every page collection | Cache at module level; pre-aggregate in pipeline; load once, share everywhere |
-| URL query params in SSG | Using `Astro.url.searchParams` in frontmatter (undefined at build time in SSG) | Query params are client-side only; parse them in `<script>` tags after page load |
-| Astro client islands | Wrapping the whole comparison page in a single React/Svelte island | Keep islands small and specific; use vanilla `<script>` + D3 sub-packages; avoid adding a framework dependency |
-
-## Performance Traps
-
-| Trap | Symptoms | Prevention | When It Breaks |
-|------|----------|------------|----------------|
-| Loading all 248 countries x 90 days of history client-side | 2-5 sec delay; 500KB+ JSON fetch | Pre-build compact scores JSON (~50KB); lazy-load only on comparison page | Immediately on 3G mobile |
-| Re-rendering entire D3 chart on every country toggle | Chart flickers, janky transitions | Use D3 enter/update/exit pattern; debounce rapid selections (300ms) | When users rapidly add/remove countries |
-| SVG DOM explosion with long time series | Browser stutters; scroll lag | Downsample to weekly for >90 days; use `<canvas>` for >200 data points per line | Past ~500 total SVG path points on mobile |
-| Building trend SVGs for 248 countries at build time when data grows | Build time scales linearly with history length | Pre-compute sparkline SVG paths during pipeline, cache as strings; build just inserts them | When history exceeds 90 days and build time doubles |
-| Loading D3 on every page via shared layout | Unused JS shipped to non-chart pages | Only import D3 in chart components; use `client:visible` to defer loading | Immediately noticeable in bundle analysis |
-
-## Security Mistakes
-
-| Mistake | Risk | Prevention |
-|---------|------|------------|
-| Rendering user-provided country codes from URL params directly into SVG/HTML | XSS via malicious query params (e.g., `?c=<script>alert(1)</script>`) | Validate all query params against a Set of known ISO3 codes; reject anything not in the set |
-| Exposing raw data source URLs in client-facing JSON | Reveals pipeline internals; could enable scraping of upstream APIs | Strip source URLs from any JSON shipped to the browser; keep them in build-time-only data |
-| No input sanitization on comparison country search | DOM injection through search input rendered as HTML | Use `textContent` (not `innerHTML`) when displaying search results; sanitize all user input |
-
-## UX Pitfalls
-
-| Pitfall | User Impact | Better Approach |
-|---------|-------------|-----------------|
-| Empty comparison page with no pre-selected countries | User sees blank chart, confused about what to do | Pre-select 2-3 popular countries or detect user's region; show clear "add country" call-to-action |
-| Trend chart with <7 data points showing "trends" | Misleading: 3 points cannot show a trend; noise looks like signal | Show "accumulating data" message (already exists in TrendSparkline); require minimum 14 days for trend display |
-| Global safety score as a lone number | "6.2 out of 10" is meaningless without context | Show alongside distribution histogram; include change arrow and "movers" context |
-| Country search returning 30+ results for single letter | Overwhelming dropdown, especially on mobile | Show max 8 results; sort by relevance/popularity; show flag icons for quick visual scanning |
-| No way to share a specific comparison | Users cannot bookmark or share via social media | Sync state to URL query params; ensure shared URL reproduces exact comparison |
-| Comparison table without sorting | Users cannot easily find which country ranks best on a specific pillar | Allow clicking column headers to sort; highlight the "best" and "worst" values |
-| Charts not responsive on mobile | Horizontal scroll or tiny unreadable labels on 375px screens | Design charts mobile-first; use responsive SVG viewBox; reduce axis label density on small screens |
-
-## "Looks Done But Isn't" Checklist
-
-- [ ] **Comparison URL sync:** Refreshing the page preserves country selection via query params
-- [ ] **Trend chart dates:** Date labels handle timezone correctly (pipeline writes UTC; display should match user locale or be date-only)
-- [ ] **Global score partial data:** Score handles days when not all 248 countries are scored (data source outage)
-- [ ] **Overlay chart keyboard nav:** Users can toggle countries via keyboard Tab + Enter, not just mouse click
-- [ ] **Historical data gaps:** Charts show gaps (not interpolated lines) when a country has no score for a given day
-- [ ] **i18n on comparison page:** Country search works with both English and Italian names; all UI strings translated
-- [ ] **Mobile comparison chart:** Usable on 375px screen width; touch targets at least 44x44px
-- [ ] **Comparison SEO:** Page has proper meta tags and generates a meaningful `<title>` reflecting selected countries
-- [ ] **Loading states:** Comparison page shows skeleton/spinner while fetching historical JSON, not a blank space
-- [ ] **Error states:** Graceful handling when history JSON fails to load (network error); show message, not broken chart
-
-## Recovery Strategies
-
-| Pitfall | Recovery Cost | Recovery Steps |
-|---------|---------------|----------------|
-| Build memory explosion | LOW | Add pre-aggregation step to pipeline; create `history.json`; update `loadHistoricalScores` to read it; achievable in a day |
-| Route explosion | MEDIUM | Rewrite comparison as single client-rendered page; change URL structure from paths to query params; redirect any bookmarked old URLs |
-| D3 bundle bloat | LOW | Switch imports to sub-packages; add `d3-scale`, `d3-shape`, etc. to package.json; update import statements; Vite handles the rest |
-| Git repo bloat from snapshots | MEDIUM | Run BFG Repo-Cleaner to remove old large files from history; add pipeline step to prune old snapshots; update .gitignore |
-| Unreadable overlay charts | LOW | Add country limit cap; switch to accessible color palette; add hover highlighting; design refinement, not architecture change |
-| Global score without methodology | LOW | Content and copy work; add methodology section and distribution visualization; no backend changes needed |
-| URL state not synced | LOW | Add query param sync in comparison page's `<script>`; parse on load, update on change; straightforward DOM scripting |
-| Client hydration bloat | MEDIUM | Refactor from framework island to vanilla `<script>` + D3 sub-packages; more work than getting it right initially |
-
-## Pitfall-to-Phase Mapping
-
-| Pitfall | Prevention Phase | Verification |
-|---------|------------------|--------------|
-| Build-time memory explosion | Phase 1: Historical Data Pipeline | Build completes under 5 minutes; peak memory under 512MB |
-| Comparison route explosion | Phase 2: Comparison Page | Total static pages under 2,000; single comparison route per locale |
-| D3 bundle bloat | Phase 3: Interactive Charts | Client JS bundle under 80KB total; Lighthouse performance 90+ |
-| Global score methodology | Phase 1: Global Safety Score | Methodology page updated; score shows distribution context |
-| Historical data storage growth | Phase 1: Historical Data Pipeline | `data/scores/` under 5MB in git; old snapshots pruned after aggregation |
-| Unreadable overlay charts | Phase 3: Multi-Country Overlay | Tested with 5 countries; passes WCAG color contrast; keyboard navigable |
-| Client hydration bloat | Phase 2: Comparison Page | No framework dependencies added; islands use vanilla `<script>` + D3 sub-packages |
-| URL state not synced | Phase 2: Comparison Page | Refreshing page preserves selection; shared URL reproduces comparison |
+### Pitfall 8: Color Scale Semantics Change with Category Filtering
+
+**What goes wrong:** The current color scale (red-yellow-blue) communicates "danger to safety" for the composite score. When showing individual pillars, the same colors may be confusing. "Blue governance" reads as "safe governance" which actually means "stable, well-functioning institutions." "Red environment" means "high environmental risk" not "dangerous environment to be in." The visual metaphor shifts from "travel safety" to "indicator performance."
+
+**Prevention:**
+- Add a contextual label below the legend when a category filter is active explaining what the colors mean for that pillar
+- Consider changing legend text per pillar: "Higher risk" / "Lower risk" for environment/health; "More stable" / "Less stable" for governance
+- Test with a non-technical user: does "blue conflict" intuitively mean "low conflict" (correct) or "conflict is safe" (confusing)?
+
+### Pitfall 9: Astro View Transitions and Client-Side Chart Re-initialization
+
+**What goes wrong:** The map already handles `astro:after-swap` for view transitions (line 371 of `SafetyMap.astro`), but `TrendChart.astro`'s client-side tooltip script does NOT register for view transitions. If Astro View Transitions are enabled and a user navigates between country pages via client-side routing, the tooltip code runs once (as a module script) and does not re-bind to the new page's chart elements.
+
+**Prevention:**
+- Check if the Astro Client Router is enabled in `Base.astro` layout
+- If yes, all chart initialization code needs the `document.addEventListener('astro:after-swap', initChart)` pattern
+- New interactive controls (zoom, date range, category filter) must also re-bind event listeners after view transitions
+- The comparison page's inline `<script>` may also need this treatment if users navigate to it via client-side routing
+
+**Detection:** Charts work on first page load but appear blank or non-interactive after navigating via client-side routing.
+
+### Pitfall 10: scores.json Size Growth with Category Data and Third Language
+
+**What goes wrong:** `scores.json` currently contains `{ iso3, name: { en, it }, score }` for 248 countries. Adding `es` names and pillar scores increases payload. If done carelessly (e.g., including full `PillarScore` objects with `indicators[]`, `dataCompleteness`, and `weight`), the file balloons unnecessarily.
+
+**Prevention:**
+- Add only what the map needs: `pillars: { conflict: 0.7, crime: 0.8, health: 0.6, governance: 0.9, environment: 0.75 }` -- five numbers per country
+- Keep the name object lean: just add `es` string alongside `en` and `it`
+- Estimated growth: ~15KB current -> ~25KB with pillars + Spanish names (acceptable)
+- Do NOT include `indicators[]`, `dataCompleteness`, or `advisories` in `scores.json`
+
+**Detection:** Lighthouse performance score drops; map takes noticeably longer to render on mobile; `scores.json` exceeds 50KB.
+
+### Pitfall 11: Historical Data Lacks Per-Pillar Trends (Out of Scope but Creates UX Gap)
+
+**What goes wrong:** The `history-index.json` stores only `{ date, score }` per country per day -- no pillar breakdown over time. If category filtering is added to the map and pillar bars, users will naturally expect the trend chart to also respond to the category filter (e.g., "show conflict score over time"). But this data simply does not exist. The PROJECT.md explicitly lists "Per-pillar historical trends in comparison" as out of scope.
+
+**Prevention:**
+- Accept the limitation: category filtering applies to the map (current snapshot) and pillar bars, but NOT to historical trend charts
+- Clearly communicate this in the UI: when a category filter is active, show the total score trend with a note like "Historical trends show overall safety score"
+- Do NOT try to retroactively compute per-pillar history from daily snapshots -- the full snapshot files may have been cleaned up after `history-index.json` consolidation
+- Consider adding per-pillar data to `history-index.json` in a future milestone for v1.3
+
+**Detection:** Users toggle to "Conflict" view and expect the trend chart to show conflict history, but it still shows total score with no explanation.
+
+## Phase-Specific Warnings
+
+| Phase Topic | Likely Pitfall | Mitigation |
+|-------------|---------------|------------|
+| Spanish i18n (types + data) | Type-level pipeline changes cascade through the system (Pitfall 1) | Update types to `Record<Lang, string>` and data BEFORE creating page files |
+| Spanish i18n (country names) | 248 country names need Spanish translations (Pitfall 1) | Script or programmatic generation from reference data |
+| Spanish i18n (pages + routes) | 6+ new page files, translated route slugs required (Pitfall 4) | Copy from `en/`, change only `lang` constant; add routes to `routes` object |
+| Spanish i18n (content) | Parameter explanations triple the translation volume (Pitfall 7) | Write English first, then translate; consider content collections for long-form |
+| Interactive charts | Server-rendered SVG cannot be re-rendered client-side (Pitfall 3) | Move to client-side rendering to match comparison page pattern |
+| Interactive charts | Date formatting inconsistent across 3 locales (Pitfall 6) | Use `toLocaleDateString()` consistently with correct locale parameter |
+| Interactive charts | View transitions break chart re-initialization (Pitfall 9) | Add `astro:after-swap` listener to all chart init code |
+| Category filtering (map) | Pillar data not available in `scores.json` (Pitfall 2) | Extend `scores.json` with pillar scores; use `pillarToColor()` for correct colors |
+| Category filtering (charts) | Historical pillar data does not exist (Pitfall 11) | Accept limitation; show total score trend with clear messaging |
+| Category filtering (UX) | Color semantics change per pillar (Pitfall 8) | Dynamic legend text; per-pillar contextual labels |
+| Comparison search bug fix | setTimeout blur race condition is the likely root cause (Pitfall 5) | Replace with mousedown preventDefault pattern |
+| Parameter explanations | Long-form content overwhelms `ui.ts` (Pitfall 7) | Consider content collections or at minimum consistent key naming |
 
 ## Sources
 
-- Direct analysis of existing codebase: `src/lib/scores.ts`, `src/components/country/TrendSparkline.astro`, `src/pages/en/country/[slug].astro`, `package.json`
-- Data measurement: `latest.json` = 656KB (248 countries with full pillar data); one day = one snapshot file
-- Astro SSG behavior: `getStaticPaths` evaluated at build time per page collection; `export const prerender = true` confirms SSG mode
-- Cloudflare Pages free tier: 20,000 files max, 20-minute build timeout, 512MB build memory
-- D3 v7 bundle analysis: monolithic `d3` package re-exports all sub-packages; sub-package imports enable tree-shaking
-- Existing architecture: zero framework dependencies (no React/Svelte/Vue); D3 used server-side only; Tailwind CSS v4; Astro 6
-- WCAG 2.1 color contrast requirements for data visualization accessibility
+- Direct analysis of `src/i18n/ui.ts` (325 lines, 167 keys per language, hardcoded `en`/`it` in `languages` object)
+- Direct analysis of `src/i18n/utils.ts` (`useTranslations`, `getLocalizedPath`, `getAlternateLinks` all iterate `languages`)
+- Direct analysis of `src/pipeline/types.ts` (`CountryEntry.name: { en: string; it: string }` hardcoded)
+- Direct analysis of `src/pipeline/config/countries.ts` (248 entries, each with `{ en, it }` name)
+- Direct analysis of `src/components/SafetyMap.astro` (fetches `/scores.json`, uses `c.name?.[lang]`, line 109)
+- Direct analysis of `src/components/country/TrendChart.astro` (server-rendered SVG, client-side tooltip only)
+- Direct analysis of `src/pages/en/compare.astro` (client-rendered charts, Fuse.js search, `setTimeout` blur handler at line 255)
+- Direct analysis of `src/lib/colors.ts` (`pillarToColor()` converts 0-1 to color scale; `scoreToColor()` uses 1-10 scale)
+- Direct analysis of `src/lib/scores.ts` (`HistoryPoint` contains only `{ date, score }`, no pillar data)
+- PROJECT.md out-of-scope: "Per-pillar historical trends in comparison -- needs pipeline schema change"
 
 ---
-*Pitfalls research for: v1.1 Comparison, Historical Trends, and Global Safety Score additions to IsItSafeToTravel*
-*Researched: 2026-03-19*
+*Pitfalls research for: v1.2 Improvements & Category Filtering additions to IsItSafeToTravel*
+*Researched: 2026-03-20*

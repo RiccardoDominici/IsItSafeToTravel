@@ -1,221 +1,219 @@
-# Technology Stack: v1.1 Comparison & Historical Trends
+# Technology Stack: v1.2 Improvements & Category Filtering
 
 **Project:** IsItSafeToTravel.com
-**Researched:** 2026-03-19
-**Scope:** Incremental additions for comparison pages, historical trend charts, global safety score, multi-country chart overlays
+**Researched:** 2026-03-20
+**Scope:** Incremental additions for interactive chart zoom/scope controls, per-category map/chart filtering, Spanish i18n, parameter explanation pages, bug fixes
+
+## TL;DR
+
+No new dependencies needed. All v1.2 features can be built with the existing stack. D3 ^7.9.0 already includes `d3-brush` for chart zoom/scope. The custom i18n system in `src/i18n/ui.ts` supports adding Spanish mechanically. Category filtering re-uses existing pillar data and D3 selections. Parameter explanation pages are static Astro content pages.
 
 ## Existing Stack (validated, DO NOT change)
 
 | Technology | Version | Role |
 |------------|---------|------|
-| Astro | ^6.0.6 | SSG framework |
+| Astro | ^6.0.6 | SSG framework, i18n routing |
+| D3.js | ^7.9.0 | Charts, map, scales, zoom (full bundle) |
 | Tailwind CSS | ^4.2.2 | Styling |
-| D3.js | ^7.9.0 | Map rendering, build-time SVG charts |
-| TypeScript | ^5.9.3 | Type safety |
-| Fuse.js | ^7.1.0 | Client-side search |
-| Cloudflare Pages | - | Hosting |
-| GitHub Actions | - | Daily data pipeline |
+| Fuse.js | ^7.1.0 | Client-side fuzzy search |
 | topojson-client | ^3.1.0 | Map topology |
+| TypeScript | ^5.9.3 | Type safety |
+| Cloudflare Pages | - | Hosting/deployment |
 
-## What Each New Feature Needs
+## Feature-by-Feature Stack Analysis
 
-### 1. Comparison Page (2+ countries side-by-side)
-
-**New libraries needed: NONE**
-
-This is a static page that reads existing score data at build time. The pipeline already produces `latest.json` with all country scores including pillar breakdowns. A comparison page simply:
-- Accepts country selection (URL params or client-side state)
-- Renders side-by-side score cards using existing data
-- Uses existing D3 color utilities (`scoreToColor`, `pillarToColor`)
-
-Country selection UI needs minimal client-side JS for the selector/search -- Fuse.js is already in the stack for this. A vanilla `<script>` tag in the Astro component handles the interactivity.
-
-**Integration point:** `loadLatestScores()` from `src/lib/scores.ts` provides all country data at build time. Embed the full scores array as a JSON `<script>` tag for client-side filtering.
-
-### 2. Historical Trend Charts (interactive, per-country)
+### 1. Interactive Chart Zoom/Scope Controls
 
 **New libraries needed: NONE**
 
-The existing `TrendSparkline.astro` already uses D3 `scaleLinear` and `line` to generate SVG at build time. The full trend chart expands this pattern but adds client-side interactivity for:
-- Tooltips on hover (show date + score)
-- Axis labels
-- Zoom/pan on time axis (optional, can defer)
+**What's needed:** Time-range scope buttons (e.g., 7d / 30d / 90d / All) and optional brush-to-zoom on the x-axis of trend charts.
 
-D3 v7.9 (already installed) handles all of this. The pattern: generate the static SVG at build time with D3 in the Astro frontmatter, then attach event listeners via a `<script>` tag for tooltips and hover effects.
+**Why existing D3 is sufficient:**
+- `d3-brush` (included in `d3` ^7.9.0) provides `brushX()` for click-drag date range selection. This is the standard D3 pattern for time-series chart zoom.
+- `d3-scale` (already used in TrendChart and compare page) provides `scaleTime().domain()` for re-scoping the x-axis to a selected date range.
+- `d3-transition` (included) provides smooth animated transitions when changing scope.
 
-**Why not a charting library (Chart.js, Recharts, etc.):** D3 is already installed and proven in this codebase. Adding Chart.js or similar would be redundant and add bundle size for no gain. D3 is more flexible for the exact visual style already established (the color scale, sparkline aesthetic).
+**Implementation approach:**
+- The `TrendChart.astro` currently generates SVG at build time (Astro frontmatter) with a thin client-side script for tooltips. For interactive zoom/scope, the chart rendering needs to move fully client-side, following the same pattern already established in `compare.astro`.
+- Add scope button bar above chart (HTML buttons styled with Tailwind). On click, filter the `data` array by date and re-render with updated `scaleTime` domain.
+- Optionally add `d3.brushX()` on the chart area for drag-to-zoom. Double-click resets to full range.
+- Data is already passed via the `data-history` JSON attribute -- no data pipeline changes required.
 
-**Integration point:** `loadHistoricalScores(days)` from `src/lib/scores.ts` already returns `Map<string, HistoryPoint[]>`. Serialize per-country history into inline JSON for client-side tooltip rendering.
+**Key D3 sub-packages used (all included in d3 ^7.9.0):**
 
-### 3. Multi-Country Overlay on Trend Charts
+| Sub-Package | Purpose | Already Used in Codebase? |
+|-------------|---------|--------------------------|
+| d3-brush | `brushX()` for drag-to-zoom on time axis | No -- new usage |
+| d3-scale | `scaleTime()`, `scaleLinear()` for re-scoping axes | Yes (TrendChart, compare) |
+| d3-shape | `line()`, `area()` generators | Yes (TrendChart, compare) |
+| d3-time-format | `timeFormat()` for axis labels | Yes (TrendChart, compare) |
+| d3-transition | Smooth animated axis/line transitions on scope change | Available, not yet used explicitly |
+| d3-selection | DOM manipulation for re-rendering | Yes (SafetyMap, compare) |
 
-**New libraries needed: NONE**
+**What NOT to add:**
+- Do NOT add Chart.js, Recharts, Plotly, or any charting wrapper library. D3 is already used throughout; a second charting library creates inconsistency and adds bundle weight.
+- Do NOT use `d3-zoom` for chart zoom. `d3-zoom` is for pan/zoom on a 2D canvas (already used on the map). For time-series, `d3-brush` on the x-axis is the correct UX pattern.
 
-This is the most interactive feature -- users select multiple countries and see overlaid trend lines on one chart. This requires:
-- Client-side D3 rendering (not build-time) because the combination of countries is user-chosen
-- Country selector (reuse Fuse.js-powered search from comparison page)
-- Dynamic SVG updates as countries are added/removed
-- Color-coded lines with legend
-- Crosshair tooltip showing all country values at a given date
-
-D3 v7's `d3.line()`, `d3.scaleTime()`, `d3.axisBottom()`, `d3.bisector()` handle all of this natively. This is core D3 territory -- multi-line charts with interactive tooltips are one of D3's most documented patterns.
-
-**Architecture decision: Vanilla `<script>` with D3, NOT a framework island.**
-
-Rationale:
-- The current codebase ships zero client-side framework JS (no `client:` directives anywhere)
-- Adding `@astrojs/react` or `@astrojs/preact` for one interactive chart is disproportionate overhead
-- D3's imperative DOM manipulation is actually a better fit than React for chart interactivity (no virtual DOM overhead for SVG updates)
-- Astro `<script>` tags are bundled and tree-shaken by Vite -- D3 modules used client-side will be properly code-split
-
-**The tradeoff:** If the site later needs many interactive UI components beyond charts, consider adding Preact. For now, vanilla D3 scripts are the right call.
-
-**Integration point:** The historical scores JSON for all countries (or a subset of popular ones) needs to be available client-side. Two approaches:
-- **Option A (recommended):** Generate a `data/history/summary.json` at build time containing `{iso3: [{date, score}...]}` for all countries. Fetch it client-side on the overlay page.
-- **Option B:** Embed all history inline. Rejected -- too large for 200+ countries x 90+ days.
-
-### 4. Global Safety Score (world benchmark)
+### 2. Category Filtering for Map and Charts
 
 **New libraries needed: NONE**
 
-This is a pure pipeline computation. The global safety score is a weighted average of all country scores (weighted by population, or unweighted). Computed in the pipeline alongside per-country scores, added to the snapshot JSON.
+**What's needed:** UI controls to select a specific pillar (conflict, crime, health, governance, environment) and re-render the map coloring and chart bars to show that pillar's score instead of the composite score.
 
-**Pipeline change:** Add a `globalScore` field to the `DailySnapshot` type and compute it in `scoring/engine.ts` after all countries are scored.
+**Why existing stack is sufficient:**
+- `/scores.json` (fetched client-side by SafetyMap) already contains pillar data per country. Each country entry has a `pillars` array with `{name, score}` objects.
+- `pillarToColor()` in `src/lib/colors.ts` already maps 0-1 pillar scores to the color scale.
+- The SafetyMap's D3 selections (`g.selectAll('.country-path')`) support `.attr('fill', ...)` updates -- re-coloring on filter change is a D3 transition, not a re-render.
 
-**No new dependencies.** This is arithmetic on existing data.
+**Implementation approach:**
+- Add a filter bar component (row of toggle buttons or segmented control) above the map and chart sections.
+- On filter change for the map: iterate existing D3 path selections and re-color using `pillars[selectedPillar].score` instead of `country.score`. Use `d3.transition()` for a smooth color change.
+- On filter change for comparison pillar bars: highlight/isolate the selected pillar.
+- Filter state persisted in URL query params (e.g., `?pillar=health`) for shareability.
 
-### 5. Historical Data Collection & Storage
+**Critical data limitation:** `history-index.json` stores only composite scores (`{date, score}`), not per-pillar history. Per-pillar historical trends are explicitly out of scope for v1.2 (PROJECT.md: "Per-pillar historical trends in comparison -- needs pipeline schema change"). Category filtering on trend charts is limited to current-snapshot displays (bar charts, map coloring), NOT historical trend lines by pillar.
+
+### 3. Spanish Language Support
 
 **New libraries needed: NONE**
 
-Already implemented. The pipeline writes daily snapshots to `data/scores/YYYY-MM-DD.json`. The `loadHistoricalScores()` function reads them. The `listSnapshotDates()` function enumerates them.
+**Why the custom i18n system is sufficient:**
+- The i18n system (`src/i18n/ui.ts`) is a flat key-value map per locale with type-safe keys. Adding Spanish = adding an `es` entry to three objects: `languages`, `ui`, and `routes`.
+- `useTranslations()` already falls back to `defaultLang` (English) for missing keys, enabling incremental rollout.
+- Astro's built-in i18n routing (`astro.config.mjs`) already supports a `locales` array -- append `'es'`.
 
-**What IS needed:** A build-time aggregation step that compiles individual daily snapshots into a compact summary file for client-side use. This avoids the client fetching dozens of individual snapshot files.
+**Changes required:**
 
-**Pipeline addition:** A new script (pure Node.js/TypeScript, no new deps) that reads all `data/scores/*.json` files and writes `data/history/summary.json` with the shape:
-```typescript
-interface HistorySummary {
-  dates: string[];           // sorted date array
-  countries: {
-    [iso3: string]: number[] // scores array, aligned with dates array
-  };
-  globalScores: number[];    // global score per date, aligned with dates
-}
-```
-This columnar format is compact (no repeated date strings per country) and fast to parse client-side.
+1. **`src/i18n/ui.ts`:**
+   - Add `es: 'Espanol'` to `languages` object.
+   - Add full `es` translation block to `ui` object (~165 keys, modeled on existing `it` block).
+   - Add `es` route slugs to `routes` object: `{ country: 'pais', about: 'acerca-de', methodology: 'metodologia', legal: 'aviso-legal', 'global-safety': 'seguridad-global', compare: 'comparar' }`.
+
+2. **`astro.config.mjs`:**
+   - Add `'es'` to `i18n.locales` array.
+   - Add `es: 'es'` to `sitemap.i18n.locales` object.
+
+3. **Page files:**
+   - Create `src/pages/es/` directory mirroring `src/pages/it/` structure.
+   - Each page is a copy with `lang` constant changed to `'es'`.
+   - Spanish route slugs for directories (e.g., `src/pages/es/pais/[slug].astro`).
+
+4. **Client-side locale detection:**
+   - The tooltip date formatting in TrendChart and compare uses `document.documentElement.lang`. Current code has a ternary (`lang === 'it' ? 'it-IT' : 'en-US'`). This needs updating to a locale map: `{ en: 'en-US', it: 'it-IT', es: 'es-ES' }`.
+   - Native `Date.toLocaleDateString('es-ES', ...)` handles Spanish date formatting -- no library needed.
+
+**What NOT to add:**
+- Do NOT add `i18next`, `astro-i18n-aut`, `@paraglide/astro`, or any i18n library. The custom system is simple, fully type-safe, and works well for ~165 keys across 3 locales. An external library would add complexity and runtime overhead for no benefit at this scale.
+- Do NOT add machine translation. Translations for a travel safety site must be human-reviewed for accuracy and tone.
+
+### 4. Parameter Explanation Pages
+
+**New libraries needed: NONE**
+
+**What's needed:** Static content pages explaining each safety pillar in depth -- what indicators feed into it, how they're weighted, what they mean for travelers.
+
+**Why pure Astro pages are sufficient:**
+- These are informational content pages, identical in nature to the existing methodology page (`src/pages/en/methodology/index.astro`).
+- No dynamic data beyond what's already in the scoring engine configuration.
+- No client-side interactivity needed.
+
+**Implementation approach:**
+- Create either `src/pages/en/methodology/[pillar].astro` (dynamic route) or individual pages per pillar (5 pages).
+- Add new i18n keys for pillar explanation content (titles, descriptions, indicator explanations).
+- Link from the country detail page's pillar breakdown section and from the methodology overview page.
+- Add route slugs for each pillar in all 3 locales.
+
+### 5. Fix Comparison Page Country Search on Web
+
+**New libraries needed: NONE**
+
+This is a bug fix in the existing Fuse.js-powered search in `compare.astro`. The search selector, dropdown, and event handling are all vanilla JS in the page's `<script>` block. The fix is code-level, not stack-level.
 
 ## Recommended Stack Additions
 
 ### New Dependencies: NONE
 
-No new npm packages are needed for v1.1. Every feature builds on:
-- **D3 v7.9** (already installed) -- charts, scales, axes, line generators, bisectors for tooltips
-- **Fuse.js v7.1** (already installed) -- country search/selection in comparison and overlay UIs
-- **Existing pipeline infrastructure** -- daily snapshots, score computation
-
 ### New Dev Dependencies: NONE
 
-No new build tools, test utilities, or dev-time packages needed.
+No new npm packages are needed for v1.2. Every feature builds on existing installed packages.
 
-## What NOT to Add
+## What NOT to Add (Anti-Dependencies)
 
 | Temptation | Why Avoid |
 |------------|-----------|
-| Chart.js / Recharts / Nivo | D3 is already installed and more flexible. Adding a wrapper library adds bundle size and creates two charting paradigms in one codebase. |
-| @astrojs/react or @astrojs/preact | Overkill for chart interactivity. Would add framework runtime to a currently zero-JS-framework site. Vanilla `<script>` + D3 is sufficient. |
-| @astrojs/svelte | Same reasoning. Not worth the overhead for chart interactions. |
-| Observable Plot | Built on D3, but adds abstraction. Since we already use D3 directly and need fine control over multi-line overlays, Plot's opinions would constrain more than help. |
-| Lightweight charting (uPlot, Frappe Charts) | Smaller than D3, but D3 is already a dependency. Adding another charting lib fragments the approach. |
-| SQLite / Turso / any database | Historical data fits in JSON files. 200 countries x 365 days x 8 bytes = ~570KB. Well within file-based storage limits. |
-| Redis / caching layer | Data updates daily. Static generation handles caching. No runtime cache needed. |
+| Chart.js / Recharts / Nivo / Plotly | D3 is already installed and handles all charting. Adding a wrapper creates two paradigms and adds bundle size. |
+| @astrojs/react or @astrojs/preact | Overkill for filter UI. Would add framework runtime to a currently zero-JS-framework site. |
+| i18next / astro-i18n-aut / paraglide | Overkill for 3 locales with ~165 keys. Custom system is type-safe and zero-overhead. |
+| date-fns / moment / luxon | D3's `timeFormat` + native `Intl.DateTimeFormat` + `Date.toLocaleDateString()` cover all date formatting. |
+| Zustand / Nanostores / any state management | Vanilla JS + data attributes + URL params handle filter/scope state. No SPA patterns needed. |
+| Observable Plot | Built on D3 but adds abstraction that constrains more than helps for this codebase's established patterns. |
 
-## Architecture: Client-Side JS Strategy
+## Configuration Changes Required
 
-The site currently ships zero client-side framework JavaScript. v1.1 introduces the first client-side JS for chart interactivity. Strategy:
+### astro.config.mjs
 
+```javascript
+i18n: {
+  defaultLocale: 'en',
+  locales: ['en', 'it', 'es'],  // ADD 'es'
+  routing: {
+    prefixDefaultLocale: true,
+  },
+},
+
+// Sitemap integration update:
+sitemap({
+  i18n: {
+    defaultLocale: 'en',
+    locales: {
+      en: 'en',
+      it: 'it',
+      es: 'es',  // ADD
+    },
+  },
+}),
 ```
-Build-time (Astro frontmatter):
-  - Load data from JSON files
-  - Compute static SVG elements (axes, gridlines, static labels)
-  - Serialize data needed client-side into <script type="application/json">
 
-Client-side (<script> tags):
-  - Import D3 modules (tree-shaken by Vite)
-  - Attach event listeners for tooltips, hover effects
-  - For overlay chart: full client-side D3 rendering
-  - For comparison page: Fuse.js country selector + DOM updates
-```
-
-### D3 Client-Side Import Strategy
-
-Astro `<script>` tags are processed by Vite. Import only what you need:
+### src/i18n/ui.ts (type-level changes)
 
 ```typescript
-// In an Astro <script> tag -- Vite will tree-shake
-import { select, scaleLinear, scaleTime, line, axisBottom, axisLeft, bisector } from 'd3';
+export const languages = {
+  en: 'English',
+  it: 'Italiano',
+  es: 'Espanol',  // ADD
+} as const;
 ```
 
-This avoids shipping the full D3 bundle (~200KB). Only the used modules ship (~30-40KB for line chart functionality).
+No structural changes to the `useTranslations()` function or `getLangFromUrl()` -- they already handle any key in the `languages` object.
 
-## Data Shape Changes
+## Bundle Size Impact
 
-### DailySnapshot (add globalScore)
+| Feature | Client JS Impact |
+|---------|-----------------|
+| Chart zoom/scope | ~0 KB additional (d3-brush already in d3 bundle, already shipped on interactive pages) |
+| Category filtering | ~0.5 KB (filter UI event handlers + state management) |
+| Spanish i18n | ~0 KB client-side (translations are in build-time Astro templates; only tooltip locale string changes) |
+| Parameter explanation pages | 0 KB (static HTML pages, no client JS) |
 
-```typescript
-interface DailySnapshot {
-  date: string;
-  generatedAt: string;
-  pipelineVersion: string;
-  weightsVersion: string;
-  globalScore: number;        // NEW: weighted average of all country scores
-  globalScoreDisplay: number; // NEW: rounded integer
-  countries: ScoredCountry[];
-  fetchResults: FetchResult[];
-}
-```
+Total additional client-side JavaScript: negligible. The D3 bundle is already the largest client-side asset and does not grow.
 
-### New file: data/history/summary.json
+## Confidence Assessment
 
-```typescript
-interface HistorySummary {
-  generatedAt: string;
-  dates: string[];
-  countries: Record<string, number[]>;  // iso3 -> scores aligned with dates
-  globalScores: number[];
-}
-```
-
-Estimated size for 1 year of daily data, 200 countries: ~400KB uncompressed, ~40KB gzipped. Acceptable for a single client-side fetch.
-
-## Installation
-
-```bash
-# No new packages needed for v1.1
-# Existing dependencies cover all requirements:
-#   d3@^7.9.0      -- charts, scales, axes
-#   fuse.js@^7.1.0 -- country search
-#   astro@^6.0.6   -- SSG + script bundling
-```
-
-## Version Verification Status
-
-| Technology | Current Version | Verified | Notes |
-|------------|----------------|----------|-------|
-| D3.js | ^7.9.0 (installed) | Via package.json | v7 is current stable. No v8 released. |
-| Fuse.js | ^7.1.0 (installed) | Via package.json | v7 is current stable. |
-| Astro | ^6.0.6 (installed) | Via package.json | Astro 6 stable. `<script>` tags processed by Vite. |
-| Tailwind CSS | ^4.2.2 (installed) | Via package.json | v4 is current. |
-
-## Cost Impact
-
-**Zero additional cost.** No new services, APIs, or paid dependencies. Historical data storage uses existing git repo (daily JSON files already committed). Client-side JS served from existing Cloudflare Pages.
+| Decision | Confidence | Basis |
+|----------|------------|-------|
+| No new charting library needed | HIGH | Verified d3 ^7.9.0 includes d3-brush; codebase already uses D3 client-side |
+| d3-brush for chart scope/zoom | HIGH | Standard D3 time-series pattern; d3-brush is part of d3 monorepo |
+| Category filter = re-color existing map selections | HIGH | Examined SafetyMap.astro; pillar data in scores.json confirmed |
+| No i18n library needed | HIGH | Examined ui.ts; adding locale is mechanical key-value addition |
+| history-index lacks per-pillar data | HIGH | Examined HistoryIndex type in scores.ts; only composite score stored |
+| TrendChart must move to client-side for zoom | HIGH | Current build-time SVG cannot respond to user interactions; compare.astro proves the client-side D3 pattern works |
+| Spanish page structure is mechanical | HIGH | Examined it/ directory; identical copy pattern with lang constant change |
 
 ## Sources
 
-- Project `package.json` -- current dependency versions
-- `src/components/country/TrendSparkline.astro` -- existing D3 build-time SVG pattern
-- `src/lib/scores.ts` -- existing historical data loading utilities
-- `src/lib/colors.ts` -- existing D3 color scale utilities
-- `src/pipeline/scoring/snapshot.ts` -- existing daily snapshot storage
-- [Astro Islands Architecture](https://docs.astro.build/en/concepts/islands/) -- confirms `<script>` tags are bundled by Vite
-- [D3 multi-line chart patterns](https://d3-graph-gallery.com/graph/interactivity_tooltip.html) -- established D3 patterns for tooltips and multi-series charts
+- Codebase analysis: `package.json`, `astro.config.mjs`, `src/i18n/ui.ts`, `src/i18n/utils.ts`
+- Chart components: `src/components/country/TrendChart.astro`, `src/pages/en/compare.astro`
+- Map component: `src/components/SafetyMap.astro`
+- Data utilities: `src/lib/scores.ts`, `src/lib/colors.ts`
+- D3 v7 brush module: included in `d3` ^7.9.0 full bundle (no separate install needed)
+- Astro i18n routing: built-in configuration in `astro.config.mjs`, verified in codebase
