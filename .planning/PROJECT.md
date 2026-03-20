@@ -31,6 +31,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - ✓ Correct UTC date parsing on trend chart axes — v1.2 Phase 11
 - ✓ Comparison page search dropdown works reliably — v1.2 Phase 11
 - ✓ Interactive drag-to-zoom on trend charts (country detail + comparison) — v1.2 Phase 12
+- ✓ Expandable pillar explanations on methodology page (EN + IT) — v1.2 Phase 13
 
 ### Active
 
@@ -88,4 +89,4 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after Phase 12 Interactive Charts complete*
+*Last updated: 2026-03-20 after Phase 13 Pillar Explanations complete*
