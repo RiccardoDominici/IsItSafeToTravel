@@ -113,6 +113,35 @@ const pillarI18n: Record<string, string> = {
       </div>
     </section>
 
+    <!-- Understanding Each Category -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.pillar_section_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('methodology.pillar_section_intro')}</p>
+      <div class="space-y-3">
+        {weightsConfig.pillars.map(pillar => (
+          <details class="border border-sand-200 dark:border-sand-700 rounded-lg">
+            <summary class="px-4 py-3 cursor-pointer font-medium text-sand-800 dark:text-sand-100 hover:bg-sand-50 dark:hover:bg-sand-800 rounded-lg select-none">
+              {t(`methodology.pillar.${pillar.name}.title` as any)}
+            </summary>
+            <div class="px-4 pb-4 pt-1 text-sm text-sand-700 dark:text-sand-300 space-y-2">
+              <p>{t(`methodology.pillar.${pillar.name}.description` as any)}</p>
+              <p><strong class="text-sand-800 dark:text-sand-100">{t('methodology.pillar.sources_label')}</strong> {t(`methodology.pillar.${pillar.name}.sources` as any)}</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
+                <div class="bg-red-50 dark:bg-red-900/20 rounded p-2">
+                  <span class="text-xs font-medium text-red-700 dark:text-red-400 uppercase">{t('methodology.pillar.low_label')}</span>
+                  <p class="text-xs mt-1">{t(`methodology.pillar.${pillar.name}.low_score` as any)}</p>
+                </div>
+                <div class="bg-green-50 dark:bg-green-900/20 rounded p-2">
+                  <span class="text-xs font-medium text-green-700 dark:text-green-400 uppercase">{t('methodology.pillar.high_label')}</span>
+                  <p class="text-xs mt-1">{t(`methodology.pillar.${pillar.name}.high_score` as any)}</p>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </section>
+
     <!-- Limitations -->
     <section>
       <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.limitations_title')}</h2>
