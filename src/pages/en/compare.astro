@@ -59,7 +59,21 @@ for (const [iso3, points] of history.entries()) {
     >
       <!-- Country Selector -->
       <div id="selector-section" class="mb-8">
-        <!-- Selected chips + search input rendered by JS -->
+        <div id="chips-container" class="flex flex-wrap items-center gap-2 mb-2">
+          <!-- Chips rendered by JS -->
+        </div>
+        <div id="search-wrapper" class="relative max-w-md">
+          <input
+            id="country-search-input"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder={t('compare.select_prompt')}
+            class="w-full px-3 py-2 border border-sand-300 dark:border-sand-600 rounded-lg bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400"
+          />
+          <div id="search-dropdown" class="hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg"></div>
+        </div>
+        <div id="empty-state"></div>
       </div>
 
       <!-- Score Cards -->
@@ -145,22 +159,12 @@ for (const [iso3, points] of history.entries()) {
     history.pushState(null, '', url.toString());
   }
 
-  // Persistent search input and dropdown (created once, not destroyed on re-render)
-  const persistentInputWrapper = document.createElement('div');
-  persistentInputWrapper.className = 'relative flex-1 min-w-[200px]';
-
-  const persistentInput = document.createElement('input');
-  persistentInput.type = 'text';
-  persistentInput.autocomplete = 'off';
-  persistentInput.autocapitalize = 'off';
-  persistentInput.placeholder = t.select_prompt;
-  persistentInput.className = 'w-full px-3 py-2 border border-sand-300 dark:border-sand-600 rounded-lg bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400';
-
-  const persistentDropdown = document.createElement('div');
-  persistentDropdown.className = 'hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg';
-
-  persistentInputWrapper.appendChild(persistentInput);
-  persistentInputWrapper.appendChild(persistentDropdown);
+  // Static HTML elements (never detached from DOM)
+  const searchInput = document.getElementById('country-search-input') as HTMLInputElement;
+  const searchDropdown = document.getElementById('search-dropdown')!;
+  const chipsContainer = document.getElementById('chips-container')!;
+  const searchWrapper = document.getElementById('search-wrapper')!;
+  const emptyState = document.getElementById('empty-state')!;
 
   let activeIndex = -1;
   let currentResults: CountryItem[] = [];
@@ -169,23 +173,23 @@ for (const [iso3, points] of history.entries()) {
   function showResults(items: CountryItem[]): void {
     currentResults = items;
     activeIndex = -1;
-    if (items.length === 0 && persistentInput.value.length >= 2) {
-      persistentDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
-      persistentDropdown.classList.remove('hidden');
+    if (items.length === 0 && searchInput.value.length >= 2) {
+      searchDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
+      searchDropdown.classList.remove('hidden');
       return;
     }
     if (items.length === 0) {
-      persistentDropdown.classList.add('hidden');
+      searchDropdown.classList.add('hidden');
       return;
     }
-    persistentDropdown.innerHTML = items.slice(0, 8).map((item, i) =>
+    searchDropdown.innerHTML = items.slice(0, 8).map((item, i) =>
       `<div class="px-4 py-3 min-h-[44px] cursor-pointer flex items-center justify-between hover:bg-sand-100 dark:hover:bg-sand-700 text-sm text-sand-800 dark:text-sand-100" data-index="${i}">
         <span>${item.name}</span>
         <span class="inline-flex items-center gap-1 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full" style="background:${item.color}"></span>${item.scoreDisplay}/10</span>
       </div>`
     ).join('');
-    persistentDropdown.classList.remove('hidden');
-    persistentDropdown.querySelectorAll('[data-index]').forEach(el => {
+    searchDropdown.classList.remove('hidden');
+    searchDropdown.querySelectorAll('[data-index]').forEach(el => {
       el.addEventListener('mousedown', (e) => {
         e.preventDefault();
         e.stopPropagation();
@@ -197,7 +201,7 @@ for (const [iso3, points] of history.entries()) {
   }
 
   function setActive(index: number): void {
-    const items = persistentDropdown.querySelectorAll('[data-index]');
+    const items = searchDropdown.querySelectorAll('[data-index]');
     items.forEach((el, i) => {
       el.classList.toggle('bg-sand-100', i === index);
       el.classList.toggle('dark:bg-sand-700', i === index);
@@ -209,17 +213,17 @@ for (const [iso3, points] of history.entries()) {
     if (selectedCountries.length >= 5) return;
     if (selectedCountries.some(c => c.iso3 === country.iso3)) return;
     selectedCountries.push(country);
-    persistentInput.value = '';
-    persistentDropdown.classList.add('hidden');
+    searchInput.value = '';
+    searchDropdown.classList.add('hidden');
     currentResults = [];
     updateUrl();
     render();
   }
 
-  persistentInput.addEventListener('input', () => {
-    const query = persistentInput.value.trim();
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim();
     if (query.length < 2) {
-      persistentDropdown.classList.add('hidden');
+      searchDropdown.classList.add('hidden');
       currentResults = [];
       return;
     }
@@ -230,10 +234,10 @@ for (const [iso3, points] of history.entries()) {
     showResults(results);
   });
 
-  persistentInput.addEventListener('keydown', (e) => {
+  searchInput.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
-      persistentDropdown.classList.add('hidden');
-      persistentInput.blur();
+      searchDropdown.classList.add('hidden');
+      searchInput.blur();
       return;
     }
     if (e.key === 'ArrowDown') {
@@ -252,30 +256,20 @@ for (const [iso3, points] of history.entries()) {
     }
   });
 
-  persistentInput.addEventListener('blur', () => {
+  searchInput.addEventListener('blur', () => {
     blurTimeout = setTimeout(() => {
-      persistentDropdown.classList.add('hidden');
+      searchDropdown.classList.add('hidden');
     }, 200);
   });
 
-  persistentInput.addEventListener('focus', () => {
+  searchInput.addEventListener('focus', () => {
     if (blurTimeout) { clearTimeout(blurTimeout); blurTimeout = null; }
   });
 
   function renderSelector(): void {
-    const section = document.getElementById('selector-section')!;
+    // Only update chips — input is always in the static HTML
+    chipsContainer.innerHTML = '';
 
-    // Preserve input focus state
-    const hadFocus = document.activeElement === persistentInput;
-
-    // Clear section but we'll re-append the persistent input
-    section.innerHTML = '';
-
-    // Chips container
-    const container = document.createElement('div');
-    container.className = 'flex flex-wrap items-center gap-2 mb-2';
-
-    // Render chips for selected countries
     selectedCountries.forEach((country, index) => {
       const chip = document.createElement('span');
       chip.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium text-white';
@@ -286,40 +280,30 @@ for (const [iso3, points] of history.entries()) {
         updateUrl();
         render();
       });
-      container.appendChild(chip);
+      chipsContainer.appendChild(chip);
     });
 
-    // Re-append persistent input (if under max)
-    if (selectedCountries.length < 5) {
-      persistentInput.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
-      container.appendChild(persistentInputWrapper);
+    // Show/hide input and max message
+    if (selectedCountries.length >= 5) {
+      searchWrapper.classList.add('hidden');
     } else {
-      const maxMsg = document.createElement('span');
-      maxMsg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
-      maxMsg.textContent = t.max_reached;
-      container.appendChild(maxMsg);
-    }
-
-    section.appendChild(container);
-
-    // Restore focus if input had it
-    if (hadFocus && selectedCountries.length < 5) {
-      persistentInput.focus();
+      searchWrapper.classList.remove('hidden');
+      searchInput.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
     }
 
     // Empty state with suggestions
     if (selectedCountries.length === 0) {
-      const empty = document.createElement('div');
-      empty.className = 'text-center py-12 text-sand-500 dark:text-sand-400';
-      empty.innerHTML = `
-        <p class="text-lg mb-3">${t.empty_title}</p>
-        <p class="text-sm mb-4">${t.empty_suggestion}</p>
-        <div class="flex justify-center gap-3">
-          <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">Italy vs France</button>
-          <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">Japan vs Australia</button>
+      emptyState.innerHTML = `
+        <div class="text-center py-12 text-sand-500 dark:text-sand-400">
+          <p class="text-lg mb-3">${t.empty_title}</p>
+          <p class="text-sm mb-4">${t.empty_suggestion}</p>
+          <div class="flex justify-center gap-3">
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">Italy vs France</button>
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">Japan vs Australia</button>
+          </div>
         </div>
       `;
-      empty.querySelectorAll('[data-suggest]').forEach(btn => {
+      emptyState.querySelectorAll('[data-suggest]').forEach(btn => {
         btn.addEventListener('click', () => {
           const codes = btn.getAttribute('data-suggest')!.split(',');
           selectedCountries = codes
@@ -329,7 +313,8 @@ for (const [iso3, points] of history.entries()) {
           render();
         });
       });
-      section.appendChild(empty);
+    } else {
+      emptyState.innerHTML = '';
     }
   }
 

@@ -13,6 +13,45 @@ const { country, lang } = Astro.props;
 const t = useTranslations(lang);
 
 const bgColor = scoreToColor(country.score);
+
+// Travel verdict based on score
+const verdicts: Record<string, { emoji: string; text: Record<Lang, string>; bg: string; border: string }> = {
+  excellent: {
+    emoji: '\u2705',
+    text: { en: 'Yes, safe to travel', it: 'S\u00ec, sicuro per viaggiare', es: 'S\u00ed, seguro para viajar' },
+    bg: 'bg-emerald-50 dark:bg-emerald-950/30',
+    border: 'border-emerald-300 dark:border-emerald-700',
+  },
+  good: {
+    emoji: '\u{1F7E2}',
+    text: { en: 'Generally safe', it: 'Generalmente sicuro', es: 'Generalmente seguro' },
+    bg: 'bg-lime-50 dark:bg-lime-950/30',
+    border: 'border-lime-300 dark:border-lime-700',
+  },
+  caution: {
+    emoji: '\u26A0\uFE0F',
+    text: { en: 'Exercise caution', it: 'Prestare attenzione', es: 'Tener precauci\u00f3n' },
+    bg: 'bg-amber-50 dark:bg-amber-950/30',
+    border: 'border-amber-300 dark:border-amber-700',
+  },
+  risky: {
+    emoji: '\u{1F7E0}',
+    text: { en: 'Only for experienced travelers', it: 'Solo per viaggiatori esperti', es: 'Solo para viajeros expertos' },
+    bg: 'bg-orange-50 dark:bg-orange-950/30',
+    border: 'border-orange-300 dark:border-orange-700',
+  },
+  danger: {
+    emoji: '\u274C',
+    text: { en: 'Not recommended', it: 'Non raccomandato', es: 'No recomendado' },
+    bg: 'bg-red-50 dark:bg-red-950/30',
+    border: 'border-red-300 dark:border-red-700',
+  },
+};
+
+const score = country.score;
+const verdictKey = score >= 8 ? 'excellent' : score >= 6 ? 'good' : score >= 4.5 ? 'caution' : score >= 3 ? 'risky' : 'danger';
+const verdict = verdicts[verdictKey];
+
 const formattedDate = new Intl.DateTimeFormat(lang, {
   year: 'numeric',
   month: 'long',
@@ -38,7 +77,12 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
     </span>
   </div>
 
-  <p class="mt-4 text-lg font-medium text-sand-600 dark:text-sand-400">
+  <div class={`mt-5 inline-flex items-center gap-2 px-4 py-2 rounded-full border ${verdict.bg} ${verdict.border}`}>
+    <span class="text-lg">{verdict.emoji}</span>
+    <span class="text-sm font-medium text-sand-800 dark:text-sand-100">{verdict.text[lang]}</span>
+  </div>
+
+  <p class="mt-3 text-lg font-medium text-sand-600 dark:text-sand-400">
     {t('country.score_label')}
   </p>
 
