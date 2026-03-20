@@ -122,7 +122,7 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 8. Global Safety Score UI | v1.1 | 2/2 | Complete | 2026-03-19 |
 | 9. Enhanced History Charts | v1.1 | 1/1 | Complete | 2026-03-19 |
 | 10. Country Comparison | v1.1 | 2/2 | Complete | 2026-03-19 |
-| 11. Bug Fixes | 1/1 | Complete   | 2026-03-20 | - |
+| 11. Bug Fixes | 1/1 | Complete    | 2026-03-20 | - |
 | 12. Interactive Charts | v1.2 | 0/? | Not started | - |
 | 13. Pillar Explanations | v1.2 | 0/? | Not started | - |
 | 14. Category Filtering | v1.2 | 0/? | Not started | - |
