@@ -125,6 +125,6 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 10. Country Comparison | v1.1 | 2/2 | Complete | 2026-03-19 |
 | 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
 | 12. Interactive Charts | v1.2 | 2/2 | Complete | 2026-03-20 |
-| 13. Pillar Explanations | 1/1 | Complete   | 2026-03-20 | - |
+| 13. Pillar Explanations | 1/1 | Complete    | 2026-03-20 | - |
 | 14. Category Filtering | v1.2 | 0/? | Not started | - |
 | 15. Spanish Language | v1.2 | 0/? | Not started | - |
