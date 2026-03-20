@@ -42,16 +42,33 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
   {showChartSection ? (
     <div>
       {hasPillarData && (
-        <div id="trend-pillar-filter" class="flex flex-wrap gap-2 mb-3">
-          {pillarFilters.map(f => (
-            <button
-              class={`trend-pillar-pill px-3 py-1.5 text-sm font-medium rounded-full border transition-colors cursor-pointer ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700'}`}
-              data-pillar={f.id}
-              data-weight={f.weight !== null ? f.weight : ''}
-            >
-              {f.weight !== null ? `${f.label} (${f.weight}%)` : f.label}
-            </button>
-          ))}
+        <div id="trend-filter-wrapper" class="relative inline-block mb-3">
+          <button
+            id="trend-filter-toggle"
+            class="flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg text-xs font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer transition-colors"
+            type="button"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 4h14M5 8h10M7 12h6M9 16h2" stroke-linecap="round" />
+            </svg>
+            <span>Filtri</span>
+            <svg class="w-2.5 h-2.5 opacity-50" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div id="trend-filter-dropdown" class="hidden absolute top-full left-0 mt-1 p-1.5 bg-sand-50/95 dark:bg-sand-800/95 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-lg min-w-[160px] z-20">
+            <div class="flex flex-col gap-0.5" id="trend-pillar-filter">
+              {pillarFilters.map(f => (
+                <button
+                  class={`trend-pillar-pill px-2.5 py-1.5 text-xs font-medium rounded-md border transition-colors cursor-pointer text-left ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-transparent text-sand-600 dark:text-sand-300 border-transparent hover:bg-sand-200 dark:hover:bg-sand-700'}`}
+                  data-pillar={f.id}
+                  data-weight={f.weight !== null ? f.weight : ''}
+                >
+                  {f.weight !== null ? f.label : f.label}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
       <button id="trend-reset-btn" class="hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1" type="button">Reset</button>
@@ -330,46 +347,53 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         animatePaths(oldLinePath, oldAreaPath);
       });
 
+      // Filter dropdown toggle
+      const trendFilterToggle = document.getElementById('trend-filter-toggle');
+      const trendFilterDropdown = document.getElementById('trend-filter-dropdown');
+
+      trendFilterToggle?.addEventListener('click', () => {
+        trendFilterDropdown?.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', (e) => {
+        const wrapper = document.getElementById('trend-filter-wrapper');
+        if (wrapper && !wrapper.contains(e.target as Node)) {
+          trendFilterDropdown?.classList.add('hidden');
+        }
+      });
+
       // Pillar filter pill click handlers
       const pillarPills = document.querySelectorAll('.trend-pillar-pill');
+      const activeClass = 'bg-terracotta-500 text-white border-terracotta-500';
+      const inactiveClass = 'bg-transparent text-sand-600 dark:text-sand-300 border-transparent hover:bg-sand-200 dark:hover:bg-sand-700';
+
       pillarPills.forEach(pill => {
         pill.addEventListener('click', () => {
           const pillarId = (pill as HTMLElement).dataset.pillar || 'overall';
           currentPillar = pillarId === 'overall' ? null : pillarId;
 
-          // Get new chart data
           const newData = getChartData(currentPillar);
           if (newData.length < 2) return;
 
-          // Store old paths for animation
           const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
           const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
 
-          // Re-render chart with new data
           renderChart(newData, newData);
-
-          // Animate transition
           animatePaths(oldLinePath, oldAreaPath);
-
-          // Hide reset button (zoom resets on pillar switch)
           resetBtn.classList.add('hidden');
-
-          // Update pill styling
-          const activeClass = 'bg-terracotta-500 text-white border-terracotta-500';
-          const inactiveClass = 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700';
 
           pillarPills.forEach(p => {
             const el = p as HTMLElement;
-            // Remove all variant classes first
             activeClass.split(' ').forEach(c => el.classList.remove(c));
             inactiveClass.split(' ').forEach(c => el.classList.remove(c));
-
             if (el.dataset.pillar === pillarId) {
               activeClass.split(' ').forEach(c => el.classList.add(c));
             } else {
               inactiveClass.split(' ').forEach(c => el.classList.add(c));
             }
           });
+
+          trendFilterDropdown?.classList.add('hidden');
         });
       });
 

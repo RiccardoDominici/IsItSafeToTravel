@@ -14,9 +14,10 @@ interface Props {
   jsonLd?: Record<string, unknown>;
   ogImage?: string;
   ogType?: string;
+  hideFooter?: boolean;
 }
 
-const { lang, title, description, jsonLd, ogImage, ogType } = Astro.props;
+const { lang, title, description, jsonLd, ogImage, ogType, hideFooter } = Astro.props;
 const t = useTranslations(lang);
 
 const pageTitle = title ? `${title} | ${t('site.title')}` : t('site.title');
@@ -93,6 +94,6 @@ const resolvedOgType = ogType || 'website';
     <main class="flex-1">
       <slot />
     </main>
-    <Footer lang={lang} />
+    {!hideFooter && <Footer lang={lang} />}
   </body>
 </html>
