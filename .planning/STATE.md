@@ -67,8 +67,15 @@ None yet.
 
 - Research: Inline data embedding for comparison page needs monitoring (~1MB threshold at ~6 months of daily data)
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 260320-ip2 | Fix 5 UI issues: language selector dropdown, health chart, back button, category summary, comparison search | 2026-03-20 | 6a94a4d | [260320-ip2-fix-5-ui-issues-language-selector-dropdo](./quick/260320-ip2-fix-5-ui-issues-language-selector-dropdo/) |
+
 ## Session Continuity
 
+Last activity: 2026-03-20 - Completed quick task 260320-ip2: Fix 5 UI issues
 Last session: 2026-03-20T12:40:23.010Z
 Stopped at: Completed 260320-ip2 quick task
 Resume file: None
