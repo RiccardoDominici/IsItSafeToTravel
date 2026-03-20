@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A multilingual web platform that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks) into a single 1-10 safety score, displayed on an interactive color-coded world map. Users can compare countries side by side, explore historical safety trends, and see a global safety benchmark — all with a minimal, data-driven design.
+A multilingual web platform (English, Italian, Spanish) that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks, environment) into a single 1-10 safety score, displayed on an interactive color-coded world map with per-pillar filtering. Users can compare countries side by side, explore historical safety trends with drag-to-zoom, filter by individual safety categories, and see a global safety benchmark — all with a minimal, data-driven design.
 
 ## Core Value
 
@@ -28,25 +28,16 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - ✓ Country comparison page with side-by-side cards, pillar bars, overlay charts — v1.1
 - ✓ Historical data collection and consolidated history index — v1.1
 - ✓ Shareable comparison URLs — v1.1
-- ✓ Correct UTC date parsing on trend chart axes — v1.2 Phase 11
-- ✓ Comparison page search dropdown works reliably — v1.2 Phase 11
-- ✓ Interactive drag-to-zoom on trend charts (country detail + comparison) — v1.2 Phase 12
-- ✓ Expandable pillar explanations on methodology page (EN + IT) — v1.2 Phase 13
-- ✓ Per-pillar category filtering on map and trend charts — v1.2 Phase 14
-- ✓ Full Spanish language support (187 keys, 248 country names, 6 pages) — v1.2 Phase 15
+- ✓ Correct UTC date parsing on trend chart axes — v1.2
+- ✓ Comparison page search dropdown works reliably — v1.2
+- ✓ Interactive drag-to-zoom on trend charts (country detail + comparison) — v1.2
+- ✓ Expandable pillar explanations on methodology page — v1.2
+- ✓ Per-pillar category filtering on map and trend charts — v1.2
+- ✓ Full Spanish language support (187 keys, 248 country names) — v1.2
 
 ### Active
 
-## Current Milestone: v1.2 Improvements & Category Filtering
-
-**Goal:** Enhance interactivity, fix bugs, add Spanish, and enable per-category exploration of safety data.
-
-**Target features:**
-- Interactive historical charts with zoom/scope control and date fixes
-- Fix comparison page country search on web
-- Spanish language support
-- Detailed explanations for each safety pillar (health, conflict, governance, etc.)
-- Category filtering for map and charts (view individual pillars instead of total score)
+(None — planning next milestone)
 
 ### Out of Scope
 
@@ -57,13 +48,13 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - User-generated content / reviews — data-driven only, no UGC
 - Hotel/flight booking integration — informational site only
 - Pre-built SEO comparison pages for country pairs — deferred, assess SEO demand first
-- Per-pillar historical trends in comparison page — already have pillar history, can add later if needed
+- Per-pillar historical trends in comparison page — pillar history exists, can add later
 
 ## Context
 
-Shipped v1.0 MVP and v1.1 Comparison & Historical Trends. The platform covers 248 countries with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~8,200 LOC (TypeScript + Astro).
+Shipped v1.0 MVP, v1.1 Comparison & Historical Trends, and v1.2 Improvements & Category Filtering. The platform covers 248 countries in 3 languages with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~10,400 LOC (TypeScript + Astro).
 
-v1.1 introduced the first client-side JavaScript (comparison page selector, tooltip interactions) while keeping the majority of pages fully static. Historical data accumulates daily — trend charts will become more meaningful as snapshots accumulate over weeks/months.
+v1.2 significantly expanded client-side interactivity: TrendChart converted to client-side D3 with brush zoom, map supports per-pillar filtering, and pipeline now stores per-pillar historical data. Spanish added as third language with full page coverage.
 
 ## Constraints
 
@@ -89,6 +80,10 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | D3 sub-packages for client-side charts | Avoids ~250KB monolithic d3 bundle; tree-shaken imports | ✓ Good |
 | 5-country max for comparison | OECD/Google Trends show >5 series creates visual noise | ✓ Good |
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
+| TrendChart client-side rendering (v1.2) | Required for brush zoom; matches comparison page pattern | ✓ Good |
+| Per-pillar history in history-index.json (v1.2) | Enables chart category filtering; retroactive from existing snapshots | ✓ Good |
+| Native HTML details/summary for explanations (v1.2) | No JS needed, accessible by default, progressive enhancement | ✓ Good |
+| CountryEntry.name extended with es field (v1.2) | Simple, type-safe; Record<Lang, string> considered but explicit fields clearer | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after Phase 15 Spanish Language complete — v1.2 milestone complete*
+*Last updated: 2026-03-20 after v1.2 milestone*
