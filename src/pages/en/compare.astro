@@ -192,7 +192,8 @@ for (const [iso3, points] of history.entries()) {
         ).join('');
         dropdown.classList.remove('hidden');
         dropdown.querySelectorAll('[data-index]').forEach(el => {
-          el.addEventListener('click', () => {
+          el.addEventListener('mousedown', (e) => {
+            e.preventDefault();
             const idx = parseInt(el.getAttribute('data-index')!);
             selectCountry(currentResults[idx]);
           });
@@ -252,9 +253,10 @@ for (const [iso3, points] of history.entries()) {
         }
       });
 
-      input.addEventListener('blur', () => {
-        // Delay to allow click on dropdown items
-        setTimeout(() => dropdown.classList.add('hidden'), 200);
+      input.addEventListener('blur', (e) => {
+        const related = (e as FocusEvent).relatedTarget as Node | null;
+        if (related && dropdown.contains(related)) return;
+        dropdown.classList.add('hidden');
       });
 
       inputWrapper.appendChild(input);
