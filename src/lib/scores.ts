@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import type { DailySnapshot, ScoredCountry } from '../pipeline/types';
+import type { DailySnapshot, PillarName, ScoredCountry } from '../pipeline/types';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'scores');
 const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
@@ -10,10 +10,13 @@ export interface HistoryPoint {
   score: number;
 }
 
+export type PillarHistoryData = Record<PillarName, HistoryPoint[]>;
+
 interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
   countries: Record<string, Array<{ date: string; score: number }>>;
+  pillarHistory?: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
 /** Load the full latest snapshot (includes metadata + countries). */
@@ -53,6 +56,17 @@ export function loadGlobalHistory(): Array<{ date: string; score: number }> {
   if (!fs.existsSync(HISTORY_INDEX_PATH)) return [];
   const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
   return index.global ?? [];
+}
+
+/**
+ * Load per-pillar historical scores for a specific country.
+ * Returns pillar-keyed object with date/score arrays, or null if not available.
+ */
+export function loadPillarHistory(iso3: string): PillarHistoryData | null {
+  if (!fs.existsSync(HISTORY_INDEX_PATH)) return null;
+  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
+  if (!index.pillarHistory || !index.pillarHistory[iso3]) return null;
+  return index.pillarHistory[iso3];
 }
 
 function loadFromHistoryIndex(days?: number): Map<string, HistoryPoint[]> {

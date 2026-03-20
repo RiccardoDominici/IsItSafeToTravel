@@ -1,11 +1,13 @@
 import { writeJson, getScoresDir } from '../utils/fs.js';
 import { listSnapshotDates, loadSnapshot } from './snapshot.js';
 import { join } from 'node:path';
+import type { PillarName } from '../types.js';
 
 export interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
   countries: Record<string, Array<{ date: string; score: number }>>;
+  pillarHistory: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
 /**
@@ -18,6 +20,7 @@ export function writeHistoryIndex(): HistoryIndex {
   const dates = listSnapshotDates();
   const global: Array<{ date: string; score: number }> = [];
   const countries: Record<string, Array<{ date: string; score: number }>> = {};
+  const pillarHistory: Record<string, Record<string, Array<{ date: string; score: number }>>> = {};
 
   for (const date of dates) {
     const snapshot = loadSnapshot(date);
@@ -30,10 +33,23 @@ export function writeHistoryIndex(): HistoryIndex {
         : 0);
     global.push({ date, score: globalScore });
 
-    // Per-country scores
+    // Per-country scores and per-pillar scores
     for (const country of snapshot.countries) {
       if (!countries[country.iso3]) countries[country.iso3] = [];
       countries[country.iso3].push({ date, score: country.score });
+
+      // Extract per-pillar scores
+      if (country.pillars) {
+        if (!pillarHistory[country.iso3]) {
+          pillarHistory[country.iso3] = {} as Record<string, Array<{ date: string; score: number }>>;
+        }
+        for (const pillar of country.pillars) {
+          if (!pillarHistory[country.iso3][pillar.name]) {
+            pillarHistory[country.iso3][pillar.name] = [];
+          }
+          pillarHistory[country.iso3][pillar.name].push({ date, score: pillar.score });
+        }
+      }
     }
   }
 
@@ -41,6 +57,7 @@ export function writeHistoryIndex(): HistoryIndex {
     generatedAt: new Date().toISOString(),
     global,
     countries,
+    pillarHistory: pillarHistory as Record<string, Record<PillarName, Array<{ date: string; score: number }>>>,
   };
 
   const indexPath = join(getScoresDir(), 'history-index.json');
