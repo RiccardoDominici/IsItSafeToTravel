@@ -104,9 +104,9 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 
 ### Spanish Language
 
-- [ ] **LANG-01**: User can browse the full site in Spanish
-- [ ] **LANG-02**: All 248 country names are available in Spanish
-- [ ] **LANG-03**: Language switcher includes Spanish option
+- [x] **LANG-01**: User can browse the full site in Spanish
+- [x] **LANG-02**: All 248 country names are available in Spanish
+- [x] **LANG-03**: Language switcher includes Spanish option
 
 ## v2 Requirements
 
@@ -217,9 +217,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-02 | Phase 14 | Complete |
 | FILT-03 | Phase 14 | Complete |
 | EXPL-01 | Phase 13 | Complete |
-| LANG-01 | Phase 15 | Pending |
-| LANG-02 | Phase 15 | Pending |
-| LANG-03 | Phase 15 | Pending |
+| LANG-01 | Phase 15 | Complete |
+| LANG-02 | Phase 15 | Complete |
+| LANG-03 | Phase 15 | Complete |
 
 **Coverage (v1.2):**
 - v1.2 requirements: 11 total

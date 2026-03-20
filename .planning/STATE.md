@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Improvements & Category Filtering
 status: unknown
-stopped_at: Completed 14-02-PLAN.md
-last_updated: "2026-03-20T11:02:38.552Z"
+stopped_at: Completed 15-01-PLAN.md
+last_updated: "2026-03-20T11:09:23.738Z"
 progress:
   total_phases: 5
   completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 14 — category-filtering
+**Current focus:** Phase 15 — spanish-language
 
 ## Current Position
 
-Phase: 14 (category-filtering) — COMPLETE
-Plan: 2 of 2 (all complete)
+Phase: 15 (spanish-language) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -56,6 +56,7 @@ Recent decisions affecting current work:
 - [Phase 14-01]: Pill filter pattern with data-pillar attrs and recolorMap() function
 - [Phase 14-02]: Reused pill filter visual pattern from map on trend chart for UI consistency
 - [Phase 14-02]: getChartData() abstraction for pillar/overall switching with score normalization
+- [Phase 15-01]: localeMap Record pattern for 3-way locale lookups replacing all 2-way ternaries
 
 ### Pending Todos
 
@@ -67,6 +68,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T10:59:59.026Z
-Stopped at: Completed 14-02-PLAN.md
+Last session: 2026-03-20T11:17:31Z
+Stopped at: Completed 15-01-PLAN.md
 Resume file: None
