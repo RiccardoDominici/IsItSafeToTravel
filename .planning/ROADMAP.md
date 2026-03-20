@@ -77,7 +77,7 @@ Plans:
   3. Explanations are available in all supported languages (English, Italian)
 **Plans**: 1 plan
 Plans:
-- [ ] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
+- [ ] 13-01-PLAN.md — Add pillar explanation sections with i18n to methodology pages (EN + IT)
 
 ### Phase 14: Category Filtering
 **Goal**: Users can view safety data through the lens of individual pillars instead of only the composite score
@@ -124,7 +124,7 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 9. Enhanced History Charts | v1.1 | 1/1 | Complete | 2026-03-19 |
 | 10. Country Comparison | v1.1 | 2/2 | Complete | 2026-03-19 |
 | 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
-| 12. Interactive Charts | 2/2 | Complete    | 2026-03-20 | - |
-| 13. Pillar Explanations | v1.2 | 0/? | Not started | - |
+| 12. Interactive Charts | v1.2 | 2/2 | Complete | 2026-03-20 |
+| 13. Pillar Explanations | v1.2 | 0/1 | Not started | - |
 | 14. Category Filtering | v1.2 | 0/? | Not started | - |
 | 15. Spanish Language | v1.2 | 0/? | Not started | - |
