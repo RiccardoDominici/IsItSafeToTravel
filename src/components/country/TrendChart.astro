@@ -18,6 +18,20 @@ const isFlat = uniqueScores.size <= 1;
 const showChart = data.length >= 2 && !isFlat;
 const showAccumulating = data.length < 7;
 const stableScore = isFlat && data.length >= 2 ? data[0].score : null;
+
+// Pillar filter pills for trend chart
+const pillarFilters = [
+  { id: 'overall', label: t('filter.overall'), weight: null as number | null },
+  { id: 'conflict', label: t('country.pillar.conflict'), weight: 25 },
+  { id: 'crime', label: t('country.pillar.crime'), weight: 20 },
+  { id: 'health', label: t('country.pillar.health'), weight: 20 },
+  { id: 'governance', label: t('country.pillar.governance'), weight: 20 },
+  { id: 'environment', label: t('country.pillar.environment'), weight: 15 },
+];
+
+// Show chart section if we have pillar data even if composite is flat
+const hasPillarData = pillarData && Object.keys(pillarData).length > 0;
+const showChartSection = showChart || (hasPillarData && data.length >= 2);
 ---
 
 <section class="py-6 px-4 max-w-2xl mx-auto">
@@ -25,8 +39,21 @@ const stableScore = isFlat && data.length >= 2 ? data[0].score : null;
     {t('country.trend_title')}
   </h2>
 
-  {showChart ? (
+  {showChartSection ? (
     <div>
+      {hasPillarData && (
+        <div id="trend-pillar-filter" class="flex flex-wrap gap-2 mb-3">
+          {pillarFilters.map(f => (
+            <button
+              class={`trend-pillar-pill px-3 py-1.5 text-sm font-medium rounded-full border transition-colors cursor-pointer ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700'}`}
+              data-pillar={f.id}
+              data-weight={f.weight !== null ? f.weight : ''}
+            >
+              {f.weight !== null ? `${f.label} (${f.weight}%)` : f.label}
+            </button>
+          ))}
+        </div>
+      )}
       <button id="trend-reset-btn" class="hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1" type="button">Reset</button>
       <div id="trend-chart-container" class="relative" data-history={JSON.stringify(data)} data-pillar-history={pillarData ? JSON.stringify(pillarData) : ''} data-lang={lang}>
         <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('country.trend_title')}></svg>
@@ -66,6 +93,24 @@ const stableScore = isFlat && data.length >= 2 ? data[0].score : null;
 
     interface HistoryPoint { date: string; score: number; }
     const fullData: HistoryPoint[] = JSON.parse(container.dataset.history || '[]');
+
+    // Parse pillar history data
+    const pillarHistoryRaw = container.dataset.pillarHistory;
+    const pillarHistory: Record<string, HistoryPoint[]> | null = pillarHistoryRaw ? JSON.parse(pillarHistoryRaw) : null;
+
+    // Track current pillar filter (null = overall/composite)
+    let currentPillar: string | null = null;
+
+    // Get chart data for a given pillar (or overall if null)
+    function getChartData(pillarName: string | null): HistoryPoint[] {
+      if (!pillarName || pillarName === 'overall') return fullData;
+      if (!pillarHistory || !pillarHistory[pillarName] || pillarHistory[pillarName].length === 0) return fullData;
+      // Convert 0-1 normalized scores to 1-10 scale
+      return pillarHistory[pillarName].map(p => ({
+        date: p.date,
+        score: p.score * 9 + 1,
+      }));
+    }
 
     if (fullData.length >= 2) {
       // Chart dimensions
@@ -212,15 +257,59 @@ const stableScore = isFlat && data.length >= 2 ? data[0].score : null;
         }
       }
 
-      // Reset button handler
+      // Reset button handler — reset to full date range of current pillar
       resetBtn.addEventListener('click', () => {
         const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
         const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
 
-        renderChart(fullData, fullData);
+        const currentFullData = getChartData(currentPillar);
+        renderChart(currentFullData, currentFullData);
         resetBtn.classList.add('hidden');
 
         animatePaths(oldLinePath, oldAreaPath);
+      });
+
+      // Pillar filter pill click handlers
+      const pillarPills = document.querySelectorAll('.trend-pillar-pill');
+      pillarPills.forEach(pill => {
+        pill.addEventListener('click', () => {
+          const pillarId = (pill as HTMLElement).dataset.pillar || 'overall';
+          currentPillar = pillarId === 'overall' ? null : pillarId;
+
+          // Get new chart data
+          const newData = getChartData(currentPillar);
+          if (newData.length < 2) return;
+
+          // Store old paths for animation
+          const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
+          const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
+
+          // Re-render chart with new data
+          renderChart(newData, newData);
+
+          // Animate transition
+          animatePaths(oldLinePath, oldAreaPath);
+
+          // Hide reset button (zoom resets on pillar switch)
+          resetBtn.classList.add('hidden');
+
+          // Update pill styling
+          const activeClass = 'bg-terracotta-500 text-white border-terracotta-500';
+          const inactiveClass = 'bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 border-sand-300 dark:border-sand-600 hover:bg-sand-200 dark:hover:bg-sand-700';
+
+          pillarPills.forEach(p => {
+            const el = p as HTMLElement;
+            // Remove all variant classes first
+            activeClass.split(' ').forEach(c => el.classList.remove(c));
+            inactiveClass.split(' ').forEach(c => el.classList.remove(c));
+
+            if (el.dataset.pillar === pillarId) {
+              activeClass.split(' ').forEach(c => el.classList.add(c));
+            } else {
+              inactiveClass.split(' ').forEach(c => el.classList.add(c));
+            }
+          });
+        });
       });
 
       // Tooltip
