@@ -4,7 +4,7 @@ milestone: v1.2
 milestone_name: Improvements & Category Filtering
 status: unknown
 stopped_at: Completed 12-02-PLAN.md
-last_updated: "2026-03-20T10:20:12.630Z"
+last_updated: "2026-03-20T10:24:52.187Z"
 progress:
   total_phases: 5
   completed_phases: 2
