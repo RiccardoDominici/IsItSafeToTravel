@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Improvements & Category Filtering
 status: unknown
-stopped_at: Completed 12-01-PLAN.md
-last_updated: "2026-03-20T10:14:04.004Z"
+stopped_at: Completed 12-02-PLAN.md
+last_updated: "2026-03-20T10:20:12.630Z"
 progress:
   total_phases: 5
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 3
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -50,6 +50,7 @@ Recent decisions affecting current work:
 - [Phase 11-bug-fixes]: UTC date parsing with T00:00:00Z suffix for all chart date strings
 - [Phase 11-bug-fixes]: mousedown+preventDefault for dropdown items, relatedTarget check in blur handler
 - [Phase 12-interactive-charts]: Used innerHTML string building for chart structure with d3.select only for brush and transitions
+- [Phase 12]: Refactored comparison chart renderTrendChart into outer/inner pattern for brush zoom/reset cycle
 
 ### Pending Todos
 
@@ -61,6 +62,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T10:14:04.001Z
-Stopped at: Completed 12-01-PLAN.md
+Last session: 2026-03-20T10:20:12.627Z
+Stopped at: Completed 12-02-PLAN.md
 Resume file: None
