@@ -89,8 +89,8 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 
 ### Chart Interactivity
 
-- [ ] **CHART-01**: User can drag-to-zoom on historical trend charts to select a date range
-- [ ] **CHART-02**: User can reset zoom to see the full date range
+- [x] **CHART-01**: User can drag-to-zoom on historical trend charts to select a date range
+- [x] **CHART-02**: User can reset zoom to see the full date range
 
 ### Category Filtering
 
@@ -211,8 +211,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 |-------------|-------|--------|
 | BUG-01 | Phase 11 | Complete |
 | BUG-02 | Phase 11 | Complete |
-| CHART-01 | Phase 12 | Pending |
-| CHART-02 | Phase 12 | Pending |
+| CHART-01 | Phase 12 | Complete |
+| CHART-02 | Phase 12 | Complete |
 | FILT-01 | Phase 14 | Pending |
 | FILT-02 | Phase 14 | Pending |
 | FILT-03 | Phase 14 | Pending |
