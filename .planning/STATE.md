@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Improvements & Category Filtering
 status: unknown
-stopped_at: Completed 14-01-PLAN.md
-last_updated: "2026-03-20T10:48:13.046Z"
+stopped_at: Completed 14-02-PLAN.md
+last_updated: "2026-03-20T10:59:59.029Z"
 progress:
   total_phases: 5
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -23,8 +23,8 @@ See: .planning/PROJECT.md (updated 2026-03-20)
 
 ## Current Position
 
-Phase: 14 (category-filtering) — EXECUTING
-Plan: 2 of 2
+Phase: 14 (category-filtering) — COMPLETE
+Plan: 2 of 2 (all complete)
 
 ## Performance Metrics
 
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [Phase 13]: Used native HTML details/summary for expandable pillar sections (zero JS)
 - [Phase 14-01]: Reused safetyColorScale with 0-1 to 1-10 conversion for pillar scores
 - [Phase 14-01]: Pill filter pattern with data-pillar attrs and recolorMap() function
+- [Phase 14-02]: Reused pill filter visual pattern from map on trend chart for UI consistency
+- [Phase 14-02]: getChartData() abstraction for pillar/overall switching with score normalization
 
 ### Pending Todos
 
@@ -65,6 +67,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T10:51:52Z
-Stopped at: Completed 14-01-PLAN.md
+Last session: 2026-03-20T10:59:59.026Z
+Stopped at: Completed 14-02-PLAN.md
 Resume file: None

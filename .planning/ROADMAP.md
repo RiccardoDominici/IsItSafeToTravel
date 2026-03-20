@@ -37,7 +37,7 @@
 - [x] **Phase 11: Bug Fixes** -- Fix comparison page search and trend chart date axis (completed 2026-03-20)
 - [x] **Phase 12: Interactive Charts** -- Client-side TrendChart refactor with drag-to-zoom (completed 2026-03-20)
 - [x] **Phase 13: Pillar Explanations** -- Detailed safety pillar descriptions on methodology page (completed 2026-03-20)
-- [ ] **Phase 14: Category Filtering** -- Filter map and charts by individual safety pillar
+- [x] **Phase 14: Category Filtering** -- Filter map and charts by individual safety pillar (completed 2026-03-20)
 - [ ] **Phase 15: Spanish Language** -- Full Spanish locale with translated UI and country names
 
 ## Phase Details
@@ -127,5 +127,5 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
 | 12. Interactive Charts | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 13. Pillar Explanations | v1.2 | 1/1 | Complete | 2026-03-20 |
-| 14. Category Filtering | 1/2 | In Progress|  | - |
+| 14. Category Filtering | 2/2 | Complete   | 2026-03-20 | - |
 | 15. Spanish Language | v1.2 | 0/? | Not started | - |

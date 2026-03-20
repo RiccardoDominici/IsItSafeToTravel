@@ -95,7 +95,7 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 ### Category Filtering
 
 - [x] **FILT-01**: User can filter the world map by individual safety pillar (conflict, health, governance, etc.)
-- [ ] **FILT-02**: User can filter historical trend charts by individual pillar (requires pipeline extension to store per-pillar history)
+- [x] **FILT-02**: User can filter historical trend charts by individual pillar (requires pipeline extension to store per-pillar history)
 - [x] **FILT-03**: Map and chart filters show clear labels for the active category
 
 ### Parameter Explanations
@@ -214,7 +214,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CHART-01 | Phase 12 | Complete |
 | CHART-02 | Phase 12 | Complete |
 | FILT-01 | Phase 14 | Complete |
-| FILT-02 | Phase 14 | Pending |
+| FILT-02 | Phase 14 | Complete |
 | FILT-03 | Phase 14 | Complete |
 | EXPL-01 | Phase 13 | Complete |
 | LANG-01 | Phase 15 | Pending |
