@@ -60,7 +60,7 @@ const resolvedOgType = ogType || 'website';
     {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:type" content={resolvedOgType} />
-    <meta property="og:locale" content={lang === 'it' ? 'it_IT' : 'en_US'} />
+    <meta property="og:locale" content={{ en: 'en_US', it: 'it_IT', es: 'es_ES' }[lang]} />
     <meta property="og:site_name" content="IsItSafeToTravel" />
 
     <!-- Twitter Card -->

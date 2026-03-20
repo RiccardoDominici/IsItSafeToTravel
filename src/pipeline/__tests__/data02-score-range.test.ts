@@ -14,7 +14,7 @@ const WEIGHTS: WeightsConfig = {
   ],
 };
 
-const COUNTRY: CountryEntry = { iso3: 'TST', iso2: 'TS', name: { en: 'Test', it: 'Test' } };
+const COUNTRY: CountryEntry = { iso3: 'TST', iso2: 'TS', name: { en: 'Test', it: 'Test', es: 'Test' } };
 
 function makeIndicator(name: string, value: number): RawIndicator {
   return { countryIso3: 'TST', indicatorName: name, value, year: 2025, source: 'test' };

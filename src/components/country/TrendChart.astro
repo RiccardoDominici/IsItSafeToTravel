@@ -331,8 +331,9 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
         // Format date
         const d = new Date(nearest.date + 'T00:00:00Z');
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
         const dateStr = d.toLocaleDateString(
-          lang === 'it' ? 'it-IT' : 'en-US',
+          localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }
         );
 

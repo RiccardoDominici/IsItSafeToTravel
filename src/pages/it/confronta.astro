@@ -585,8 +585,9 @@ for (const [iso3, points] of history.entries()) {
         }
 
         const d = nearest.date;
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
         const dateStr = d.toLocaleDateString(
-          lang === 'it' ? 'it-IT' : 'en-US',
+          localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric' }
         );
         const scoresStr = nearest.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');

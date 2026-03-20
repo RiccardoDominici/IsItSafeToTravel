@@ -62,7 +62,7 @@ export interface AdvisoryInfo {
 
 export interface ScoredCountry {
   iso3: string;
-  name: { en: string; it: string };
+  name: { en: string; it: string; es: string };
   score: number; // 1-10, one decimal
   scoreDisplay: number; // 1-10 integer
   pillars: PillarScore[];
@@ -86,7 +86,7 @@ export interface SourceMeta {
 export interface CountryEntry {
   iso3: string;
   iso2: string;
-  name: { en: string; it: string };
+  name: { en: string; it: string; es: string };
 }
 
 // --- Daily snapshot ---

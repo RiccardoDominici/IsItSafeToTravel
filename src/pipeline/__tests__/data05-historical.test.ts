@@ -10,7 +10,7 @@ const SCORES_DIR = join(process.cwd(), 'data', 'scores');
 function makeCountry(iso3: string, score: number): ScoredCountry {
   return {
     iso3,
-    name: { en: iso3, it: iso3 },
+    name: { en: iso3, it: iso3, es: iso3 },
     score,
     scoreDisplay: Math.round(score),
     pillars: [

@@ -12,7 +12,7 @@ const BACKUP_DIR = join(process.cwd(), 'data', 'scores-backup-test');
 function makeScoredCountry(iso3: string, score: number): ScoredCountry {
   return {
     iso3,
-    name: { en: `Country ${iso3}`, it: `Paese ${iso3}` },
+    name: { en: `Country ${iso3}`, it: `Paese ${iso3}`, es: `Pais ${iso3}` },
     score,
     scoreDisplay: Math.round(score),
     pillars: [
