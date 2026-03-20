@@ -102,9 +102,10 @@ Plans:
   2. All 248 country names display correctly in Spanish throughout the site (map tooltips, search, detail pages)
   3. Language switcher in the header includes a Spanish option and switches to the Spanish version of the current page
   4. Spanish pages have correct SEO metadata (hreflang tags, localized meta descriptions)
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
+- [ ] 15-01-PLAN.md — Add Spanish to i18n config, translations, country names, types, and SEO
+- [ ] 15-02-PLAN.md — Create all Spanish page files under /es/ and verify rendering
 
 ## Progress
 
@@ -127,5 +128,5 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
 | 12. Interactive Charts | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 13. Pillar Explanations | v1.2 | 1/1 | Complete | 2026-03-20 |
-| 14. Category Filtering | 2/2 | Complete    | 2026-03-20 | - |
-| 15. Spanish Language | v1.2 | 0/? | Not started | - |
+| 14. Category Filtering | v1.2 | 2/2 | Complete | 2026-03-20 |
+| 15. Spanish Language | v1.2 | 0/2 | Not started | - |
