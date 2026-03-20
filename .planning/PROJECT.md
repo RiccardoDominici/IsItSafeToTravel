@@ -12,7 +12,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Validated
 
-- ✓ Multilingual support (English primary, Italian, expandable i18n) — v1.0
+- ✓ Multilingual support (English, Italian, Spanish) — v1.0 + v1.2
 - ✓ Fast load times (static generation where possible) — v1.0
 - ✓ Safety score 1-10 per destination, computed from public indices — v1.0
 - ✓ Automatic daily data pipeline: fetch indices, news, recompute scores — v1.0
@@ -33,6 +33,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - ✓ Interactive drag-to-zoom on trend charts (country detail + comparison) — v1.2 Phase 12
 - ✓ Expandable pillar explanations on methodology page (EN + IT) — v1.2 Phase 13
 - ✓ Per-pillar category filtering on map and trend charts — v1.2 Phase 14
+- ✓ Full Spanish language support (187 keys, 248 country names, 6 pages) — v1.2 Phase 15
 
 ### Active
 
@@ -90,4 +91,4 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after Phase 14 Category Filtering complete*
+*Last updated: 2026-03-20 after Phase 15 Spanish Language complete — v1.2 milestone complete*
