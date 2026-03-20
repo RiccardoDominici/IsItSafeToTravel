@@ -183,7 +183,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
         // X axis ticks
         const tickCount = Math.min(6, dates.length);
-        const fmt = utcFormat('%b %d');
+        const fmt = utcFormat('%b %d, %Y');
         let xLabels = '';
         for (let i = 0; i < tickCount; i++) {
           const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));

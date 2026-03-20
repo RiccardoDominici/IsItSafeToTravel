@@ -515,7 +515,7 @@ for (const [iso3, points] of history.entries()) {
       const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));
       uniqueDates.sort((a, b) => a.getTime() - b.getTime());
       const tickCount = Math.min(6, uniqueDates.length);
-      const fmt = utcFormat('%b %d');
+      const fmt = utcFormat('%b %d, %Y');
       let xLabels = '';
       for (let i = 0; i < tickCount; i++) {
         const idx = Math.round((i / (tickCount - 1)) * (uniqueDates.length - 1));
