@@ -32,6 +32,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - ✓ Comparison page search dropdown works reliably — v1.2 Phase 11
 - ✓ Interactive drag-to-zoom on trend charts (country detail + comparison) — v1.2 Phase 12
 - ✓ Expandable pillar explanations on methodology page (EN + IT) — v1.2 Phase 13
+- ✓ Per-pillar category filtering on map and trend charts — v1.2 Phase 14
 
 ### Active
 
@@ -55,7 +56,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - User-generated content / reviews — data-driven only, no UGC
 - Hotel/flight booking integration — informational site only
 - Pre-built SEO comparison pages for country pairs — deferred, assess SEO demand first
-- Per-pillar historical trends in comparison — needs pipeline schema change
+- Per-pillar historical trends in comparison page — already have pillar history, can add later if needed
 
 ## Context
 
@@ -89,4 +90,4 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after Phase 13 Pillar Explanations complete*
+*Last updated: 2026-03-20 after Phase 14 Category Filtering complete*
