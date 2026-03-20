@@ -127,6 +127,18 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       let xScale: ReturnType<typeof scaleTime<number, number>>;
       let yScale: ReturnType<typeof scaleLinear<number, number>>;
 
+      function computeYDomain(data: HistoryPoint[]): [number, number] {
+        const scores = data.map(d => d.score);
+        const min = Math.min(...scores);
+        const max = Math.max(...scores);
+        const range = max - min;
+        const pad = Math.max(range * 0.2, 0.2);
+        return [
+          Math.max(1, Math.floor((min - pad) * 2) / 2),
+          Math.min(10, Math.ceil((max + pad) * 2) / 2),
+        ];
+      }
+
       function renderChart(filteredData: HistoryPoint[], allData: HistoryPoint[]): void {
         currentData = filteredData;
 
@@ -135,8 +147,9 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           .domain([dates[0], dates[dates.length - 1]])
           .range([0, innerWidth]);
 
+        const [yMin, yMax] = computeYDomain(filteredData);
         yScale = scaleLinear()
-          .domain([1, 10])
+          .domain([yMin, yMax])
           .range([innerHeight, 0]);
 
         const lineGen = line<HistoryPoint>()
@@ -156,15 +169,17 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         const endCy = yScale(lastPoint.score);
         const endColor = scoreToColor(lastPoint.score);
 
-        // Y gridlines and labels
-        const yTickValues = [2, 4, 6, 8, 10];
+        // Y gridlines and labels (dynamic based on data range)
+        const yTickCount = 5;
+        const yTickStep = (yMax - yMin) / (yTickCount - 1);
         let gridLines = '';
         let yLabels = '';
-        yTickValues.forEach(val => {
+        for (let i = 0; i < yTickCount; i++) {
+          const val = yMin + i * yTickStep;
           const yPos = yScale(val);
           gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-          yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val}</text>`;
-        });
+          yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+        }
 
         // X axis ticks
         const tickCount = Math.min(6, dates.length);

@@ -30,7 +30,7 @@ export function writeSnapshot(
   weightsVersion: string,
 ): DailySnapshot {
   const globalScore = countries.length > 0
-    ? Math.round((countries.reduce((sum, c) => sum + c.score, 0) / countries.length) * 10) / 10
+    ? Math.round((countries.reduce((sum, c) => sum + c.score, 0) / countries.length) * 100) / 100
     : 0;
 
   const snapshot: DailySnapshot = {

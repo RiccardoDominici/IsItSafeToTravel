@@ -35,9 +35,7 @@ const innerHeight = chartHeight - margin.top - margin.bottom;
 let pathD = '';
 let endpointCx = 0;
 let endpointCy = 0;
-const uniqueGlobalScores = new Set(recentHistory.map(d => d.score));
-const isGlobalFlat = uniqueGlobalScores.size <= 1;
-const showChart = recentHistory.length >= 2 && !isGlobalFlat;
+const showChart = recentHistory.length >= 2;
 
 // Axis tick data
 let xTicks: Array<{ x: number; label: string }> = [];
@@ -52,8 +50,16 @@ if (showChart) {
     .domain([dates[0], dates[dates.length - 1]])
     .range([0, innerWidth]);
 
+  const scores = recentHistory.map(d => d.score);
+  const minScore = Math.min(...scores);
+  const maxScore = Math.max(...scores);
+  const range = maxScore - minScore;
+  const padding = Math.max(range * 0.2, 0.2);
+  const yMin = Math.max(1, Math.floor((minScore - padding) * 2) / 2);
+  const yMax = Math.min(10, Math.ceil((maxScore + padding) * 2) / 2);
+
   const y = scaleLinear()
-    .domain([1, 10])
+    .domain([yMin, yMax])
     .range([innerHeight, 0]);
 
   const lineGen = line<{ date: string; score: number }>()
@@ -82,8 +88,13 @@ if (showChart) {
     xTicks.push({ x: x(dates[idx]), label: fmt(dates[idx]) });
   }
 
-  // Y axis ticks (scores 2, 4, 6, 8, 10)
-  yTicks = [2, 4, 6, 8, 10].map(s => ({ y: y(s), label: String(s) }));
+  // Y axis ticks (dynamic based on data range)
+  const yTickCount = 5;
+  const yTickStep = (yMax - yMin) / (yTickCount - 1);
+  yTicks = Array.from({ length: yTickCount }, (_, i) => {
+    const val = yMin + i * yTickStep;
+    return { y: y(val), label: val.toFixed(1) };
+  });
 }
 ---
 
@@ -174,13 +185,6 @@ if (showChart) {
             </g>
           </svg>
           <div class="global-chart-tooltip absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
-        </div>
-      ) : recentHistory.length >= 2 && isGlobalFlat ? (
-        <div class="text-center py-8">
-          <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-sand-100 dark:bg-sand-800 border border-sand-200 dark:border-sand-700">
-            <span class="text-3xl font-heading font-bold" style={`color: ${bgColor}`}>{globalScore.toFixed(1)}</span>
-            <span class="text-sand-600 dark:text-sand-400 text-sm">{t('global.trend_stable')}</span>
-          </div>
         </div>
       ) : (
         <p class="text-sm text-sand-500 dark:text-sand-400 italic">

@@ -134,11 +134,133 @@ for (const [iso3, points] of history.entries()) {
     history.pushState(null, '', url.toString());
   }
 
+  // Persistent search input and dropdown (created once, not destroyed on re-render)
+  const persistentInputWrapper = document.createElement('div');
+  persistentInputWrapper.className = 'relative flex-1 min-w-[200px]';
+
+  const persistentInput = document.createElement('input');
+  persistentInput.type = 'text';
+  persistentInput.autocomplete = 'off';
+  persistentInput.autocapitalize = 'off';
+  persistentInput.placeholder = t.select_prompt;
+  persistentInput.className = 'w-full px-3 py-2 border border-sand-300 dark:border-sand-600 rounded-lg bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400';
+
+  const persistentDropdown = document.createElement('div');
+  persistentDropdown.className = 'hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg';
+
+  persistentInputWrapper.appendChild(persistentInput);
+  persistentInputWrapper.appendChild(persistentDropdown);
+
+  let activeIndex = -1;
+  let currentResults: CountryItem[] = [];
+  let blurTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function showResults(items: CountryItem[]): void {
+    currentResults = items;
+    activeIndex = -1;
+    if (items.length === 0 && persistentInput.value.length >= 2) {
+      persistentDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
+      persistentDropdown.classList.remove('hidden');
+      return;
+    }
+    if (items.length === 0) {
+      persistentDropdown.classList.add('hidden');
+      return;
+    }
+    persistentDropdown.innerHTML = items.slice(0, 8).map((item, i) =>
+      `<div class="px-4 py-3 min-h-[44px] cursor-pointer flex items-center justify-between hover:bg-sand-100 dark:hover:bg-sand-700 text-sm text-sand-800 dark:text-sand-100" data-index="${i}">
+        <span>${item.name}</span>
+        <span class="inline-flex items-center gap-1 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full" style="background:${item.color}"></span>${item.scoreDisplay}/10</span>
+      </div>`
+    ).join('');
+    persistentDropdown.classList.remove('hidden');
+    persistentDropdown.querySelectorAll('[data-index]').forEach(el => {
+      el.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (blurTimeout) { clearTimeout(blurTimeout); blurTimeout = null; }
+        const idx = parseInt(el.getAttribute('data-index')!);
+        selectCountry(currentResults[idx]);
+      });
+    });
+  }
+
+  function setActive(index: number): void {
+    const items = persistentDropdown.querySelectorAll('[data-index]');
+    items.forEach((el, i) => {
+      el.classList.toggle('bg-sand-100', i === index);
+      el.classList.toggle('dark:bg-sand-700', i === index);
+    });
+    activeIndex = index;
+  }
+
+  function selectCountry(country: CountryItem): void {
+    if (selectedCountries.length >= 5) return;
+    if (selectedCountries.some(c => c.iso3 === country.iso3)) return;
+    selectedCountries.push(country);
+    persistentInput.value = '';
+    persistentDropdown.classList.add('hidden');
+    currentResults = [];
+    updateUrl();
+    render();
+  }
+
+  persistentInput.addEventListener('input', () => {
+    const query = persistentInput.value.trim();
+    if (query.length < 2) {
+      persistentDropdown.classList.add('hidden');
+      currentResults = [];
+      return;
+    }
+    const selectedIso3s = new Set(selectedCountries.map(c => c.iso3));
+    const results = fuse.search(query)
+      .map(r => r.item)
+      .filter(item => !selectedIso3s.has(item.iso3));
+    showResults(results);
+  });
+
+  persistentInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      persistentDropdown.classList.add('hidden');
+      persistentInput.blur();
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentResults.length > 0) {
+        const maxIdx = Math.min(currentResults.length, 8) - 1;
+        setActive(Math.min(activeIndex + 1, maxIdx));
+      }
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentResults.length > 0) setActive(Math.max(activeIndex - 1, 0));
+    }
+    if (e.key === 'Enter' && activeIndex >= 0 && currentResults[activeIndex]) {
+      selectCountry(currentResults[activeIndex]);
+    }
+  });
+
+  persistentInput.addEventListener('blur', () => {
+    blurTimeout = setTimeout(() => {
+      persistentDropdown.classList.add('hidden');
+    }, 200);
+  });
+
+  persistentInput.addEventListener('focus', () => {
+    if (blurTimeout) { clearTimeout(blurTimeout); blurTimeout = null; }
+  });
+
   function renderSelector(): void {
     const section = document.getElementById('selector-section')!;
+
+    // Preserve input focus state
+    const hadFocus = document.activeElement === persistentInput;
+
+    // Clear section but we'll re-append the persistent input
     section.innerHTML = '';
 
-    // Chips + input container
+    // Chips container
     const container = document.createElement('div');
     container.className = 'flex flex-wrap items-center gap-2 mb-2';
 
@@ -156,124 +278,10 @@ for (const [iso3, points] of history.entries()) {
       container.appendChild(chip);
     });
 
-    // Search input (if under max)
+    // Re-append persistent input (if under max)
     if (selectedCountries.length < 5) {
-      const inputWrapper = document.createElement('div');
-      inputWrapper.className = 'relative flex-1 min-w-[200px]';
-
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.inputMode = 'search';
-      input.autocomplete = 'off';
-      input.autocapitalize = 'off';
-      input.setAttribute('enterkeyhint', 'search');
-      input.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
-      input.className = 'w-full px-3 py-2 border border-sand-300 dark:border-sand-600 rounded-lg bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400';
-      input.style.touchAction = 'manipulation';
-
-      const dropdown = document.createElement('div');
-      dropdown.className = 'hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg';
-
-      let activeIndex = -1;
-      let currentResults: CountryItem[] = [];
-
-      function showResults(items: CountryItem[]): void {
-        currentResults = items;
-        activeIndex = -1;
-        if (items.length === 0 && input.value.length >= 2) {
-          dropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
-          dropdown.classList.remove('hidden');
-          return;
-        }
-        if (items.length === 0) {
-          dropdown.classList.add('hidden');
-          return;
-        }
-        dropdown.innerHTML = items.slice(0, 8).map((item, i) =>
-          `<div class="px-4 py-3 min-h-[44px] cursor-pointer flex items-center justify-between hover:bg-sand-100 dark:hover:bg-sand-700 text-sm text-sand-800 dark:text-sand-100" data-index="${i}">
-            <span>${item.name}</span>
-            <span class="inline-flex items-center gap-1 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full" style="background:${item.color}"></span>${item.scoreDisplay}/10</span>
-          </div>`
-        ).join('');
-        dropdown.classList.remove('hidden');
-        dropdown.querySelectorAll('[data-index]').forEach(el => {
-          el.addEventListener('mousedown', (e) => {
-            e.preventDefault();
-            const idx = parseInt(el.getAttribute('data-index')!);
-            selectCountry(currentResults[idx]);
-          });
-        });
-      }
-
-      function setActive(index: number): void {
-        const items = dropdown.querySelectorAll('[data-index]');
-        items.forEach((el, i) => {
-          el.classList.toggle('bg-sand-100', i === index);
-          el.classList.toggle('dark:bg-sand-700', i === index);
-        });
-        activeIndex = index;
-      }
-
-      function selectCountry(country: CountryItem): void {
-        if (selectedCountries.length >= 5) return;
-        if (selectedCountries.some(c => c.iso3 === country.iso3)) return;
-        selectedCountries.push(country);
-        updateUrl();
-        render();
-      }
-
-      input.addEventListener('input', () => {
-        const query = input.value.trim();
-        if (query.length < 2) {
-          dropdown.classList.add('hidden');
-          currentResults = [];
-          return;
-        }
-        const selectedIso3s = new Set(selectedCountries.map(c => c.iso3));
-        const results = fuse.search(query)
-          .map(r => r.item)
-          .filter(item => !selectedIso3s.has(item.iso3));
-        showResults(results);
-      });
-
-      input.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          dropdown.classList.add('hidden');
-          input.blur();
-          return;
-        }
-        if (e.key === 'ArrowDown') {
-          e.preventDefault();
-          if (currentResults.length > 0) {
-            const maxIdx = Math.min(currentResults.length, 8) - 1;
-            setActive(Math.min(activeIndex + 1, maxIdx));
-          }
-        }
-        if (e.key === 'ArrowUp') {
-          e.preventDefault();
-          if (currentResults.length > 0) setActive(Math.max(activeIndex - 1, 0));
-        }
-        if (e.key === 'Enter' && activeIndex >= 0 && currentResults[activeIndex]) {
-          selectCountry(currentResults[activeIndex]);
-        }
-      });
-
-      input.addEventListener('blur', (e) => {
-        const related = (e as FocusEvent).relatedTarget as Node | null;
-        if (related && dropdown.contains(related)) return;
-        dropdown.classList.add('hidden');
-      });
-
-      input.addEventListener('click', () => input.focus());
-
-      inputWrapper.appendChild(input);
-      inputWrapper.appendChild(dropdown);
-      container.appendChild(inputWrapper);
-
-      // Auto-focus on desktop (not mobile to avoid keyboard popup)
-      if (selectedCountries.length === 0 && !('ontouchstart' in window)) {
-        setTimeout(() => input.focus(), 0);
-      }
+      persistentInput.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
+      container.appendChild(persistentInputWrapper);
     } else {
       const maxMsg = document.createElement('span');
       maxMsg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
@@ -282,6 +290,11 @@ for (const [iso3, points] of history.entries()) {
     }
 
     section.appendChild(container);
+
+    // Restore focus if input had it
+    if (hadFocus && selectedCountries.length < 5) {
+      persistentInput.focus();
+    }
 
     // Empty state with suggestions
     if (selectedCountries.length === 0) {
@@ -468,23 +481,35 @@ for (const [iso3, points] of history.entries()) {
         .range([0, innerWidth]);
       currentX = x;
 
+      // Compute dynamic Y domain from all filtered scores
+      const allScores: number[] = [];
+      filteredHistories.forEach(hist => hist.forEach(p => allScores.push(p.score)));
+      const minScore = Math.min(...allScores);
+      const maxScore = Math.max(...allScores);
+      const scoreRange = maxScore - minScore;
+      const yPad = Math.max(scoreRange * 0.2, 0.2);
+      const yDomainMin = Math.max(1, Math.floor((minScore - yPad) * 2) / 2);
+      const yDomainMax = Math.min(10, Math.ceil((maxScore + yPad) * 2) / 2);
+
       const y = scaleLinear()
-        .domain([1, 10])
+        .domain([yDomainMin, yDomainMax])
         .range([innerHeight, 0]);
 
       const lineGen = d3Line<HistoryPoint>()
         .x(d => x(new Date(d.date + 'T00:00:00Z')))
         .y(d => y(d.score));
 
-      // Y gridlines and axis labels
-      const yTickValues = [2, 4, 6, 8, 10];
+      // Y gridlines and axis labels (dynamic)
+      const yTickCount = 5;
+      const yTickStep = (yDomainMax - yDomainMin) / (yTickCount - 1);
       let gridLines = '';
       let yLabels = '';
-      yTickValues.forEach(val => {
+      for (let i = 0; i < yTickCount; i++) {
+        const val = yDomainMin + i * yTickStep;
         const yPos = y(val);
         gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val}</text>`;
-      });
+        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+      }
 
       // X axis ticks
       const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));

@@ -26,11 +26,10 @@ export function writeHistoryIndex(): HistoryIndex {
     const snapshot = loadSnapshot(date);
     if (!snapshot) continue;
 
-    // Use globalScore field if present, else compute (handles pre-PIPE-01 snapshots)
-    const globalScore = (snapshot as any).globalScore ??
-      (snapshot.countries.length > 0
-        ? Math.round((snapshot.countries.reduce((s, c) => s + c.score, 0) / snapshot.countries.length) * 10) / 10
-        : 0);
+    // Always recalculate from country scores for 2-decimal precision
+    const globalScore = snapshot.countries.length > 0
+      ? Math.round((snapshot.countries.reduce((s, c) => s + c.score, 0) / snapshot.countries.length) * 100) / 100
+      : 0;
     global.push({ date, score: globalScore });
 
     // Per-country scores and per-pillar scores
