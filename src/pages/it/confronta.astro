@@ -78,7 +78,7 @@ for (const [iso3, points] of history.entries()) {
 
 <script>
   import Fuse from 'fuse.js';
-  import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat } from 'd3';
+  import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat, brushX, select, easeCubicOut } from 'd3';
 
   const PALETTE = ['#c47a5a', '#4a9e8f', '#d4a03c', '#5b6abf', '#7a9e6a'];
   const DASH_PATTERNS = ['', '8 4', '4 4', '12 4 4 4', '16 4'];
@@ -386,7 +386,7 @@ for (const [iso3, points] of history.entries()) {
     if (selectedCountries.length === 0) return;
 
     // Check if any selected country has history data
-    const countriesWithHistory = selectedCountries.filter(c => {
+    const fullCountriesWithHistory = selectedCountries.filter(c => {
       const hist = allHistory[c.iso3];
       return hist && hist.length >= 2;
     });
@@ -394,9 +394,9 @@ for (const [iso3, points] of history.entries()) {
     const heading = document.createElement('h2');
     heading.className = 'text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4';
     heading.textContent = t.trend_title;
-    section.appendChild(heading);
 
-    if (countriesWithHistory.length === 0) {
+    if (fullCountriesWithHistory.length === 0) {
+      section.appendChild(heading);
       const msg = document.createElement('p');
       msg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
       msg.textContent = 'I dati storici si stanno ancora accumulando. Ricontrolla presto.';
@@ -404,151 +404,251 @@ for (const [iso3, points] of history.entries()) {
       return;
     }
 
-    // Chart dimensions
-    const width = 800;
-    const height = 300;
-    const margin = { top: 20, right: 120, bottom: 40, left: 50 };
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    // Reset button (hidden initially)
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1';
+    resetBtn.type = 'button';
+    resetBtn.textContent = 'Reset';
 
-    // Collect all dates from all selected countries
-    const allDates: Date[] = [];
-    countriesWithHistory.forEach(c => {
-      const hist = allHistory[c.iso3];
-      if (hist) hist.forEach(p => allDates.push(new Date(p.date + 'T00:00:00Z')));
-    });
-    allDates.sort((a, b) => a.getTime() - b.getTime());
-
-    const x = scaleTime()
-      .domain([allDates[0], allDates[allDates.length - 1]])
-      .range([0, innerWidth]);
-
-    const y = scaleLinear()
-      .domain([1, 10])
-      .range([innerHeight, 0]);
-
-    const lineGen = d3Line<HistoryPoint>()
-      .x(d => x(new Date(d.date + 'T00:00:00Z')))
-      .y(d => y(d.score));
-
-    // Y gridlines and axis labels
-    const yTickValues = [2, 4, 6, 8, 10];
-    let gridLines = '';
-    let yLabels = '';
-    yTickValues.forEach(val => {
-      const yPos = y(val);
-      gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-      yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val}</text>`;
-    });
-
-    // X axis ticks (5-6 evenly spaced)
-    const tickCount = Math.min(6, allDates.length);
-    const fmt = utcFormat('%b %d');
-    let xLabels = '';
-    for (let i = 0; i < tickCount; i++) {
-      const idx = Math.round((i / (tickCount - 1)) * (allDates.length - 1));
-      const xPos = x(allDates[idx]);
-      xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(allDates[idx])}</text>`;
-    }
-
-    // Country paths
-    let paths = '';
-    selectedCountries.forEach((country, i) => {
-      const hist = allHistory[country.iso3];
-      if (!hist || hist.length < 2) return;
-      const pathData = lineGen(hist) ?? '';
-      paths += `<path d="${pathData}" fill="none" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" stroke-linejoin="round" stroke-linecap="round" />`;
-    });
-
-    // Legend
-    let legend = '';
-    selectedCountries.forEach((country, i) => {
-      const hist = allHistory[country.iso3];
-      if (!hist || hist.length < 2) return;
-      legend += `<g transform="translate(0, ${i * 24})">
-        <line x1="0" y1="0" x2="20" y2="0" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" />
-        <text x="26" y="4" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${country.name}</text>
-      </g>`;
-    });
-
-    // Build unified tooltip data: for each unique date, collect all countries' scores
-    const dateScoreMap = new Map<number, { date: Date; scores: Array<{ name: string; score: number; color: string }> }>();
-    selectedCountries.forEach((country, i) => {
-      const hist = allHistory[country.iso3];
-      if (!hist || hist.length < 2) return;
-      hist.forEach(p => {
-        const d = new Date(p.date + 'T00:00:00Z');
-        const key = d.getTime();
-        if (!dateScoreMap.has(key)) {
-          dateScoreMap.set(key, { date: d, scores: [] });
-        }
-        dateScoreMap.get(key)!.scores.push({
-          name: country.name,
-          score: p.score,
-          color: PALETTE[i % PALETTE.length],
-        });
-      });
-    });
-    const tooltipDates = Array.from(dateScoreMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
-
+    // Chart wrapper
     const chartWrapper = document.createElement('div');
     chartWrapper.className = 'relative';
-    chartWrapper.innerHTML = `
-      <svg viewBox="0 0 ${width} ${height}" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label="${t.trend_title}">
-        <g transform="translate(${margin.left}, ${margin.top})">
-          ${gridLines}
-          ${yLabels}
-          ${xLabels}
-          ${paths}
-        </g>
-        <g transform="translate(${margin.left + innerWidth + 15}, ${margin.top})">
-          ${legend}
-        </g>
-      </svg>
-      <div id="trend-compare-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
-    `;
+
+    section.appendChild(heading);
+    section.appendChild(resetBtn);
     section.appendChild(chartWrapper);
 
-    // Tooltip interactivity
-    const svg = chartWrapper.querySelector('svg')!;
-    const tooltip = document.getElementById('trend-compare-tooltip')!;
-    const viewBox = svg.viewBox.baseVal;
+    // Current scales and tooltip data (updated on each renderInner)
+    let currentX: ReturnType<typeof scaleTime<number, number>>;
+    let currentTooltipDates: Array<{ date: Date; scores: Array<{ name: string; score: number; color: string }> }> = [];
 
-    const showTooltipAtDate = (clientX: number) => {
-      const rect = svg.getBoundingClientRect();
-      const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+    function renderInner(dateRange: [Date, Date] | null): void {
+      const width = 800;
+      const height = 300;
+      const margin = { top: 20, right: 120, bottom: 40, left: 50 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
 
-      // Find nearest date
-      let nearest = tooltipDates[0];
-      let minDist = Infinity;
-      for (const entry of tooltipDates) {
-        const entryX = x(entry.date);
-        const dist = Math.abs(entryX - mouseX);
-        if (dist < minDist) { minDist = dist; nearest = entry; }
+      // Collect filtered histories for all countries
+      const allDates: Date[] = [];
+      const filteredHistories: Map<string, HistoryPoint[]> = new Map();
+
+      fullCountriesWithHistory.forEach(c => {
+        const hist = allHistory[c.iso3];
+        if (!hist) return;
+        let filtered = hist;
+        if (dateRange) {
+          filtered = hist.filter(p => {
+            const d = new Date(p.date + 'T00:00:00Z');
+            return d >= dateRange[0] && d <= dateRange[1];
+          });
+        }
+        if (filtered.length < 2) filtered = hist; // fallback if range too narrow
+        filteredHistories.set(c.iso3, filtered);
+        filtered.forEach(p => allDates.push(new Date(p.date + 'T00:00:00Z')));
+      });
+      allDates.sort((a, b) => a.getTime() - b.getTime());
+
+      if (allDates.length === 0) return;
+
+      const x = scaleTime()
+        .domain([allDates[0], allDates[allDates.length - 1]])
+        .range([0, innerWidth]);
+      currentX = x;
+
+      const y = scaleLinear()
+        .domain([1, 10])
+        .range([innerHeight, 0]);
+
+      const lineGen = d3Line<HistoryPoint>()
+        .x(d => x(new Date(d.date + 'T00:00:00Z')))
+        .y(d => y(d.score));
+
+      // Y gridlines and axis labels
+      const yTickValues = [2, 4, 6, 8, 10];
+      let gridLines = '';
+      let yLabels = '';
+      yTickValues.forEach(val => {
+        const yPos = y(val);
+        gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
+        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val}</text>`;
+      });
+
+      // X axis ticks
+      const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));
+      uniqueDates.sort((a, b) => a.getTime() - b.getTime());
+      const tickCount = Math.min(6, uniqueDates.length);
+      const fmt = utcFormat('%b %d');
+      let xLabels = '';
+      for (let i = 0; i < tickCount; i++) {
+        const idx = Math.round((i / (tickCount - 1)) * (uniqueDates.length - 1));
+        const xPos = x(uniqueDates[idx]);
+        xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(uniqueDates[idx])}</text>`;
       }
 
-      const d = nearest.date;
-      const dateStr = d.toLocaleDateString(
-        lang === 'it' ? 'it-IT' : 'en-US',
-        { month: 'short', day: 'numeric' }
-      );
-      const scoresStr = nearest.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
-      tooltip.textContent = `${dateStr}: ${scoresStr}`;
-      tooltip.classList.remove('hidden');
+      // Country paths (using filtered data)
+      let paths = '';
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        const pathData = lineGen(hist) ?? '';
+        paths += `<path class="country-path" d="${pathData}" fill="none" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" stroke-linejoin="round" stroke-linecap="round" />`;
+      });
 
-      // Position
-      const scaleX = rect.width / viewBox.width;
-      const tooltipX = (x(nearest.date) + margin.left) * scaleX - tooltip.offsetWidth / 2;
-      tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
-      tooltip.style.top = `${-tooltip.offsetHeight - 4}px`;
-    };
+      // Legend
+      let legend = '';
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        legend += `<g transform="translate(0, ${i * 24})">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" />
+          <text x="26" y="4" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${country.name}</text>
+        </g>`;
+      });
 
-    svg.addEventListener('mousemove', (e: MouseEvent) => showTooltipAtDate(e.clientX));
-    svg.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
-    svg.addEventListener('touchstart', (e: TouchEvent) => {
-      e.preventDefault();
-      showTooltipAtDate(e.touches[0].clientX);
-    }, { passive: false });
+      // Build tooltip data from filtered histories
+      const dateScoreMap = new Map<number, { date: Date; scores: Array<{ name: string; score: number; color: string }> }>();
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        hist.forEach(p => {
+          const d = new Date(p.date + 'T00:00:00Z');
+          const key = d.getTime();
+          if (!dateScoreMap.has(key)) {
+            dateScoreMap.set(key, { date: d, scores: [] });
+          }
+          dateScoreMap.get(key)!.scores.push({
+            name: country.name,
+            score: p.score,
+            color: PALETTE[i % PALETTE.length],
+          });
+        });
+      });
+      currentTooltipDates = Array.from(dateScoreMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+      // Store old paths for animation
+      const oldPaths: string[] = [];
+      chartWrapper.querySelectorAll('.country-path').forEach(el => {
+        oldPaths.push(el.getAttribute('d') || '');
+      });
+
+      chartWrapper.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label="${t.trend_title}">
+          <defs>
+            <clipPath id="compare-chart-clip">
+              <rect x="0" y="0" width="${innerWidth}" height="${innerHeight}"/>
+            </clipPath>
+          </defs>
+          <g transform="translate(${margin.left}, ${margin.top})">
+            ${gridLines}
+            ${yLabels}
+            ${xLabels}
+            <g clip-path="url(#compare-chart-clip)">
+              ${paths}
+            </g>
+          </g>
+          <g transform="translate(${margin.left + innerWidth + 15}, ${margin.top})">
+            ${legend}
+          </g>
+        </svg>
+        <div class="trend-compare-tooltip absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+      `;
+
+      // Animate path transitions if we have old paths
+      if (oldPaths.length > 0) {
+        const newPathEls = chartWrapper.querySelectorAll('.country-path');
+        newPathEls.forEach((el, i) => {
+          if (oldPaths[i]) {
+            const newD = el.getAttribute('d') || '';
+            select(el).attr('d', oldPaths[i])
+              .transition().duration(300).ease(easeCubicOut)
+              .attr('d', newD);
+          }
+        });
+      }
+
+      // Re-attach tooltip handlers
+      const svg = chartWrapper.querySelector('svg')!;
+      const tooltip = chartWrapper.querySelector('.trend-compare-tooltip') as HTMLElement;
+      const viewBox = svg.viewBox.baseVal;
+
+      const showTooltipAtDate = (clientX: number) => {
+        const rect = svg.getBoundingClientRect();
+        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+        let nearest = currentTooltipDates[0];
+        let minDist = Infinity;
+        for (const entry of currentTooltipDates) {
+          const entryX = currentX(entry.date);
+          const dist = Math.abs(entryX - mouseX);
+          if (dist < minDist) { minDist = dist; nearest = entry; }
+        }
+
+        const d = nearest.date;
+        const dateStr = d.toLocaleDateString(
+          lang === 'it' ? 'it-IT' : 'en-US',
+          { month: 'short', day: 'numeric' }
+        );
+        const scoresStr = nearest.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
+        tooltip.textContent = `${dateStr}: ${scoresStr}`;
+        tooltip.classList.remove('hidden');
+
+        const scaleXRatio = rect.width / viewBox.width;
+        const tooltipX = (currentX(nearest.date) + margin.left) * scaleXRatio - tooltip.offsetWidth / 2;
+        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+        tooltip.style.top = `${-tooltip.offsetHeight - 4}px`;
+      };
+
+      svg.addEventListener('mousemove', (e: MouseEvent) => showTooltipAtDate(e.clientX));
+      svg.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
+      svg.addEventListener('touchstart', (e: TouchEvent) => {
+        e.preventDefault();
+        showTooltipAtDate(e.touches[0].clientX);
+      }, { passive: false });
+
+      // Attach brush for zoom
+      const chartG = svg.querySelector('g')!;
+      const brush = brushX()
+        .extent([[0, 0], [innerWidth, innerHeight]])
+        .on('end', (event: any) => {
+          if (!event.selection) return;
+          const [x0, x1] = event.selection as [number, number];
+          const d0 = currentX.invert(x0);
+          const d1 = currentX.invert(x1);
+
+          let totalPoints = 0;
+          fullCountriesWithHistory.forEach(c => {
+            const hist = allHistory[c.iso3] || [];
+            totalPoints += hist.filter(p => {
+              const d = new Date(p.date + 'T00:00:00Z');
+              return d >= d0 && d <= d1;
+            }).length;
+          });
+          if (totalPoints < 2) return;
+
+          renderInner([d0, d1]);
+          resetBtn.classList.remove('hidden');
+        });
+
+      const brushG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      brushG.setAttribute('class', 'brush');
+      chartG.appendChild(brushG);
+      select(brushG).call(brush);
+
+      // Style brush selection
+      const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+      style.textContent = '.brush .selection { fill: #c47a5a; fill-opacity: 0.15; stroke: #c47a5a; stroke-opacity: 0.4; }';
+      svg.insertBefore(style, svg.firstChild);
+    }
+
+    // Reset handler
+    resetBtn.addEventListener('click', () => {
+      renderInner(null);
+      resetBtn.classList.add('hidden');
+    });
+
+    // Initial render
+    renderInner(null);
   }
 
   function render(): void {
