@@ -51,7 +51,7 @@
   2. User can type a country name in the comparison page search box and select it from dropdown results without the dropdown closing prematurely
 **Plans**: 1 plan
 Plans:
-- [ ] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
+- [x] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
 
 ### Phase 12: Interactive Charts
 **Goal**: Users can explore historical trends at any time scale using drag-to-zoom
@@ -62,9 +62,10 @@ Plans:
   2. User can see a visible reset button after zooming and click it to return to the full date range
   3. Chart transitions animate smoothly when zooming in or resetting
   4. Interactive charts work on both country detail pages and the comparison page
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
+- [ ] 12-01-PLAN.md — Convert TrendChart to client-side D3 with brush zoom and reset
+- [ ] 12-02-PLAN.md — Add brush zoom to comparison page trend charts (en + it)
 
 ### Phase 13: Pillar Explanations
 **Goal**: Users understand what each safety pillar measures and why it matters for travel decisions
@@ -122,8 +123,8 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 8. Global Safety Score UI | v1.1 | 2/2 | Complete | 2026-03-19 |
 | 9. Enhanced History Charts | v1.1 | 1/1 | Complete | 2026-03-19 |
 | 10. Country Comparison | v1.1 | 2/2 | Complete | 2026-03-19 |
-| 11. Bug Fixes | 1/1 | Complete    | 2026-03-20 | - |
-| 12. Interactive Charts | v1.2 | 0/? | Not started | - |
+| 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
+| 12. Interactive Charts | v1.2 | 0/2 | Not started | - |
 | 13. Pillar Explanations | v1.2 | 0/? | Not started | - |
 | 14. Category Filtering | v1.2 | 0/? | Not started | - |
 | 15. Spanish Language | v1.2 | 0/? | Not started | - |
