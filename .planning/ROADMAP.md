@@ -88,9 +88,10 @@ Plans:
   2. User can select a safety pillar on a trend chart and see historical data for that specific pillar
   3. Active filter label is clearly visible on both the map and chart, showing which pillar is currently displayed
   4. User can switch back to the composite "Overall" view from any pillar filter
-**Plans**: 1 plan
+**Plans**: 2 plans
 Plans:
-- [ ] 11-01-PLAN.md — Fix trend chart UTC dates and comparison dropdown race condition
+- [ ] 14-01-PLAN.md — Pipeline per-pillar history extension and map pillar filter with pills
+- [ ] 14-02-PLAN.md — Trend chart pillar filter with pills on country detail pages
 
 ### Phase 15: Spanish Language
 **Goal**: Spanish-speaking travelers can use the full site in their language
@@ -125,6 +126,6 @@ Note: Phases 13 and 15 are independent and could execute in parallel with other 
 | 10. Country Comparison | v1.1 | 2/2 | Complete | 2026-03-19 |
 | 11. Bug Fixes | v1.2 | 1/1 | Complete | 2026-03-20 |
 | 12. Interactive Charts | v1.2 | 2/2 | Complete | 2026-03-20 |
-| 13. Pillar Explanations | 1/1 | Complete    | 2026-03-20 | - |
-| 14. Category Filtering | v1.2 | 0/? | Not started | - |
+| 13. Pillar Explanations | v1.2 | 1/1 | Complete | 2026-03-20 |
+| 14. Category Filtering | v1.2 | 0/2 | Not started | - |
 | 15. Spanish Language | v1.2 | 0/? | Not started | - |
