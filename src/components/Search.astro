@@ -189,9 +189,9 @@ const searchData = COUNTRIES.map(c => {
       }
     });
 
-    // Close on click outside
+    // Close on click outside (only if panel is open)
     document.addEventListener('click', (e) => {
-      if (!container.contains(e.target as Node)) close();
+      if (!panel.classList.contains('hidden') && !container.contains(e.target as Node)) close();
     });
   }
 </script>
