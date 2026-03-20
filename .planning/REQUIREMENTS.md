@@ -100,7 +100,7 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 
 ### Parameter Explanations
 
-- [ ] **EXPL-01**: User can read detailed explanations of each safety pillar and its data sources in the methodology page
+- [x] **EXPL-01**: User can read detailed explanations of each safety pillar and its data sources in the methodology page
 
 ### Spanish Language
 
@@ -216,7 +216,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FILT-01 | Phase 14 | Pending |
 | FILT-02 | Phase 14 | Pending |
 | FILT-03 | Phase 14 | Pending |
-| EXPL-01 | Phase 13 | Pending |
+| EXPL-01 | Phase 13 | Complete |
 | LANG-01 | Phase 15 | Pending |
 | LANG-02 | Phase 15 | Pending |
 | LANG-03 | Phase 15 | Pending |
