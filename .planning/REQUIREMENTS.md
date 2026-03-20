@@ -84,8 +84,8 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 
 ### Bug Fixes
 
-- [ ] **BUG-01**: User sees correct dates on historical trend chart axes
-- [ ] **BUG-02**: User can search and select countries correctly on the comparison page
+- [x] **BUG-01**: User sees correct dates on historical trend chart axes
+- [x] **BUG-02**: User can search and select countries correctly on the comparison page
 
 ### Chart Interactivity
 
@@ -209,8 +209,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BUG-01 | Phase 11 | Pending |
-| BUG-02 | Phase 11 | Pending |
+| BUG-01 | Phase 11 | Complete |
+| BUG-02 | Phase 11 | Complete |
 | CHART-01 | Phase 12 | Pending |
 | CHART-02 | Phase 12 | Pending |
 | FILT-01 | Phase 14 | Pending |

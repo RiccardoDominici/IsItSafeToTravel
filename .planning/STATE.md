@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Improvements & Category Filtering
-status: ready_to_plan
-stopped_at: Roadmap created for v1.2
-last_updated: "2026-03-20"
+status: unknown
+stopped_at: Completed 11-01-PLAN.md
+last_updated: "2026-03-20T09:46:38.184Z"
 progress:
   total_phases: 5
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  completed_phases: 1
+  total_plans: 1
+  completed_plans: 1
 ---
 
 # Project State
@@ -19,16 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 11 - Bug Fixes
+**Current focus:** Phase 11 — bug-fixes
 
 ## Current Position
 
-Phase: 11 of 15 (Bug Fixes) -- first phase of v1.2
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-20 -- Roadmap created for v1.2 milestone
-
-Progress: [####################..........] 67% (10/15 phases complete)
+Phase: 11 (bug-fixes) — EXECUTING
+Plan: 1 of 1
 
 ## Performance Metrics
 
@@ -51,6 +47,8 @@ Recent decisions affecting current work:
 - [v1.0]: Astro SSG + D3 + Fuse.js stack (no new deps needed)
 - [v1.0]: Data passed to client via data-attributes on container div (Astro SSG pattern)
 - [Phase 10]: Client-side rendering for comparison page (first page with significant client JS)
+- [Phase 11-bug-fixes]: UTC date parsing with T00:00:00Z suffix for all chart date strings
+- [Phase 11-bug-fixes]: mousedown+preventDefault for dropdown items, relatedTarget check in blur handler
 
 ### Pending Todos
 
@@ -62,6 +60,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20
-Stopped at: Roadmap created for v1.2 milestone
+Last session: 2026-03-20T09:46:35.117Z
+Stopped at: Completed 11-01-PLAN.md
 Resume file: None
