@@ -1,57 +1,39 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Comparison & Historical Trends
-status: unknown
-stopped_at: Completed 10-02-PLAN.md
-last_updated: "2026-03-19T21:39:57.855Z"
+milestone: v1.2
+milestone_name: Improvements & Category Filtering
+status: defining_requirements
+stopped_at: Milestone v1.2 started
+last_updated: "2026-03-20"
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 6
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-19)
+See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 10 — country-comparison
+**Current focus:** Defining requirements for v1.2
 
 ## Current Position
 
-Phase: 10 (country-comparison) — COMPLETE
-Plan: 2 of 2 (all complete)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-20 — Milestone v1.2 started
 
 ## Performance Metrics
 
-**Velocity (from v1.0):**
+**Velocity (from v1.0 + v1.1):**
 
-- Total plans completed: 13
+- Total plans completed: 19
 - Average attempts per plan: ~2.2
-- Total execution time: ~2.5 hours
-
-**By Phase (v1.0):**
-
-| Phase | Plans | Attempts | Files |
-|-------|-------|----------|-------|
-| 01 Project Foundation | 2 | 3 | ~8 |
-| 02 Data Pipeline | 3 | 8 | ~23 |
-| 03 Interactive Map | 2 | 4 | ~7 |
-| 04 Country Detail | 2 | 4 | ~12 |
-| 05 Search & Transparency | 2 | 5 | ~10 |
-| 06 SEO & Launch | 2 | 5 | ~20 |
-
-*Updated after each plan completion*
-| Phase 07-pipeline-extensions P01 | 3min | 2 tasks | 8 files |
-| Phase 08-global-safety-score-ui P01 | 2min | 2 tasks | 4 files |
-| Phase 08-global-safety-score-ui P02 | 2min | 2 tasks | 3 files |
-| Phase 09 P01 | 3min | 2 tasks | 4 files |
-| Phase 10 P01 | 3min | 2 tasks | 4 files |
-| Phase 10 P02 | 2min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -67,11 +49,6 @@ Recent decisions affecting current work:
 - [Research]: Comparison page is ONLY feature needing client-side D3 (new pattern)
 - [Research]: Inline data embedding has ~6-month scalability ceiling before fetch-based switch needed
 - [Phase 07-pipeline-extensions]: Consolidated history-index.json pattern for efficient build-time data loading
-- [Phase 07-pipeline-extensions]: Fallback pattern: new code handles legacy snapshots missing globalScore field
-- [Phase 08-global-safety-score-ui]: Banner renders conditionally only when snapshot exists and globalScore > 0
-- [Phase 08-global-safety-score-ui]: Full-size D3 trend chart uses scaleTime for date axis, AggregateRating JSON-LD for SEO
-- [Phase 09]: Used Astro processed script (not is:inline) for tooltip — bundled and deduped across pages
-- [Phase 09]: Kept TrendSparkline.astro intact for potential Phase 10 comparison page use
 - [Phase 10]: Client-side rendering for comparison page (first page with significant client JS)
 - [Phase 10]: Used innerHTML SVG string building for client-side D3 charts; DASH_PATTERNS for colorblind accessibility
 
@@ -86,6 +63,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-19T21:30:03.540Z
-Stopped at: Completed 10-02-PLAN.md
+Last session: 2026-03-20
+Stopped at: Milestone v1.2 started
 Resume file: None

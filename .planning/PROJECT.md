@@ -31,8 +31,16 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-- [ ] Country-level safety view as default, with regional drill-down on zoom
-- [ ] Additional languages (Spanish, French, German)
+## Current Milestone: v1.2 Improvements & Category Filtering
+
+**Goal:** Enhance interactivity, fix bugs, add Spanish, and enable per-category exploration of safety data.
+
+**Target features:**
+- Interactive historical charts with zoom/scope control and date fixes
+- Fix comparison page country search on web
+- Spanish language support
+- Detailed explanations for each safety pillar (health, conflict, governance, etc.)
+- Category filtering for map and charts (view individual pillars instead of total score)
 
 ### Out of Scope
 
@@ -77,4 +85,4 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-19 after v1.1 milestone*
+*Last updated: 2026-03-20 after v1.2 milestone start*
