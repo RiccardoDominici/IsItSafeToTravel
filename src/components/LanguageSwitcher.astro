@@ -12,25 +12,35 @@ const { lang, currentPath } = Astro.props;
 const t = useTranslations(lang);
 ---
 
-<nav aria-label={t('language.switch')} class="flex items-center gap-1">
-  {Object.entries(languages).map(([code, name]) => {
-    const isActive = code === lang;
-    const href = getLocalizedPath(currentPath, code as Lang);
-    return isActive ? (
-      <span
-        class="px-2 py-1 min-h-[44px] inline-flex items-center text-sm font-semibold text-terracotta-500 dark:text-terracotta-400 border-b-2 border-terracotta-500 dark:border-terracotta-400"
-        aria-current="page"
-      >
-        {code.toUpperCase()}
-      </span>
-    ) : (
-      <a
-        href={href}
-        hreflang={code}
-        class="px-2 py-1 min-h-[44px] inline-flex items-center text-sm text-sand-500 dark:text-sand-400 hover:text-sand-700 dark:hover:text-sand-200 transition-colors"
-      >
-        {code.toUpperCase()}
-      </a>
-    );
-  })}
+<nav aria-label={t('language.switch')}>
+  <details class="relative">
+    <summary class="px-2 py-1 min-h-[44px] inline-flex items-center gap-1 text-sm font-semibold text-sand-700 dark:text-sand-200 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+      {lang.toUpperCase()}
+      <svg class="w-3 h-3" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M3 5l3 3 3-3" />
+      </svg>
+    </summary>
+    <div class="absolute right-0 top-full mt-1 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-1 min-w-[80px] z-50">
+      {Object.entries(languages).map(([code, name]) => {
+        const isActive = code === lang;
+        const href = getLocalizedPath(currentPath, code as Lang);
+        return isActive ? (
+          <span
+            class="block px-3 py-2 min-h-[44px] flex items-center text-sm font-semibold text-terracotta-500 dark:text-terracotta-400"
+            aria-current="page"
+          >
+            {code.toUpperCase()}
+          </span>
+        ) : (
+          <a
+            href={href}
+            hreflang={code}
+            class="block px-3 py-2 min-h-[44px] flex items-center text-sm text-sand-600 dark:text-sand-400 hover:text-sand-800 dark:hover:text-sand-100 hover:bg-sand-100 dark:hover:bg-sand-700 transition-colors"
+          >
+            {code.toUpperCase()}
+          </a>
+        );
+      })}
+    </div>
+  </details>
 </nav>
