@@ -1,0 +1,191 @@
+---
+export const prerender = true;
+import Base from '../../layouts/Base.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import { loadLatestSnapshot, loadGlobalHistory } from '../../lib/scores';
+import { buildGlobalSafetyJsonLd } from '../../lib/seo';
+import { scoreToColor } from '../../lib/colors';
+import { scaleLinear, scaleTime, line, timeFormat, utcFormat } from 'd3';
+
+const lang: Lang = 'es';
+const t = useTranslations(lang);
+
+const snapshot = loadLatestSnapshot();
+const globalScore = snapshot?.globalScore ?? 0;
+const bgColor = scoreToColor(globalScore);
+const globalHistory = loadGlobalHistory();
+
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = buildGlobalSafetyJsonLd(globalScore, canonicalUrl, lang);
+
+// Build full-size trend chart SVG at build time
+const chartWidth = 800;
+const chartHeight = 300;
+const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+const innerWidth = chartWidth - margin.left - margin.right;
+const innerHeight = chartHeight - margin.top - margin.bottom;
+
+let pathD = '';
+let endpointCx = 0;
+let endpointCy = 0;
+const uniqueGlobalScores = new Set(globalHistory.map(d => d.score));
+const isGlobalFlat = uniqueGlobalScores.size <= 1;
+const showChart = globalHistory.length >= 2 && !isGlobalFlat;
+
+// Axis tick data
+let xTicks: Array<{ x: number; label: string }> = [];
+let yTicks: Array<{ y: number; label: string }> = [];
+
+if (showChart) {
+  const dates = globalHistory.map(d => new Date(d.date + 'T00:00:00Z'));
+  const x = scaleTime()
+    .domain([dates[0], dates[dates.length - 1]])
+    .range([0, innerWidth]);
+
+  const y = scaleLinear()
+    .domain([1, 10])
+    .range([innerHeight, 0]);
+
+  const lineGen = line<{ date: string; score: number }>()
+    .x(d => x(new Date(d.date + 'T00:00:00Z')))
+    .y(d => y(d.score));
+
+  pathD = lineGen(globalHistory) ?? '';
+
+  const lastPoint = globalHistory[globalHistory.length - 1];
+  endpointCx = x(new Date(lastPoint.date + 'T00:00:00Z'));
+  endpointCy = y(lastPoint.score);
+
+  // X axis ticks (5-7 evenly spaced dates)
+  const tickCount = Math.min(6, dates.length);
+  const fmt = utcFormat('%b %d');
+  for (let i = 0; i < tickCount; i++) {
+    const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
+    xTicks.push({ x: x(dates[idx]), label: fmt(dates[idx]) });
+  }
+
+  // Y axis ticks (scores 2, 4, 6, 8, 10)
+  yTicks = [2, 4, 6, 8, 10].map(s => ({ y: y(s), label: String(s) }));
+}
+---
+
+<Base lang={lang} title={t('global.page_title')} description={t('global.page_description')} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <nav class="text-sm">
+      <a href={`/${lang}/`} class="text-terracotta-500 hover:text-terracotta-600 underline">{t('nav.home')}</a>
+    </nav>
+
+    <!-- Score Hero -->
+    <section class="text-center py-8">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
+        {t('global.page_title')}
+      </h1>
+      <div
+        class="inline-flex flex-col items-center justify-center rounded-2xl px-8 py-6 shadow-lg"
+        style={`background-color: ${bgColor}; color: #fff;`}
+      >
+        <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
+          {globalScore.toFixed(1)}
+        </span>
+        <span class="text-lg md:text-xl font-medium mt-1 opacity-90">
+          {t('global.out_of')}
+        </span>
+      </div>
+      <p class="mt-4 text-lg font-medium text-sand-600 dark:text-sand-400">
+        {t('global.current_score')}
+      </p>
+    </section>
+
+    <!-- Trend Chart -->
+    <section class="py-6">
+      <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+        {t('global.trend_title')}
+      </h2>
+
+      {showChart ? (
+        <svg
+          viewBox={`0 0 ${chartWidth} ${chartHeight}`}
+          class="w-full text-sand-700 dark:text-sand-300"
+          role="img"
+          aria-label={t('global.trend_title')}
+        >
+          <g transform={`translate(${margin.left}, ${margin.top})`}>
+            {/* Y gridlines */}
+            {yTicks.map(tick => (
+              <line
+                x1={0} y1={tick.y}
+                x2={innerWidth} y2={tick.y}
+                stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"
+              />
+            ))}
+
+            {/* Trend line */}
+            <path
+              d={pathD}
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linejoin="round"
+              stroke-linecap="round"
+            />
+
+            {/* Endpoint dot */}
+            <circle cx={endpointCx} cy={endpointCy} r="4" fill={bgColor} />
+
+            {/* Y axis labels */}
+            {yTicks.map(tick => (
+              <text
+                x={-10} y={tick.y}
+                text-anchor="end"
+                dominant-baseline="middle"
+                class="text-xs fill-sand-500 dark:fill-sand-400"
+                font-size="12"
+              >
+                {tick.label}
+              </text>
+            ))}
+
+            {/* X axis labels */}
+            {xTicks.map(tick => (
+              <text
+                x={tick.x} y={innerHeight + 25}
+                text-anchor="middle"
+                class="text-xs fill-sand-500 dark:fill-sand-400"
+                font-size="11"
+              >
+                {tick.label}
+              </text>
+            ))}
+          </g>
+        </svg>
+      ) : globalHistory.length >= 2 && isGlobalFlat ? (
+        <div class="text-center py-8">
+          <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-sand-100 dark:bg-sand-800 border border-sand-200 dark:border-sand-700">
+            <span class="text-3xl font-heading font-bold" style={`color: ${bgColor}`}>{globalScore.toFixed(1)}</span>
+            <span class="text-sand-600 dark:text-sand-400 text-sm">{t('global.trend_stable')}</span>
+          </div>
+        </div>
+      ) : (
+        <p class="text-sm text-sand-500 dark:text-sand-400 italic">
+          {t('global.trend_accumulating')}
+        </p>
+      )}
+    </section>
+
+    <!-- Methodology -->
+    <section class="py-6">
+      <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+        {t('global.methodology_title')}
+      </h2>
+      <p class="text-sand-600 dark:text-sand-400 leading-relaxed">
+        {t('global.methodology_text')}
+      </p>
+      <p class="mt-4">
+        <a href={`/${lang}/methodology/`} class="text-terracotta-500 hover:text-terracotta-600 underline">
+          {t('global.methodology_link')}
+        </a>
+      </p>
+    </section>
+  </div>
+</Base>

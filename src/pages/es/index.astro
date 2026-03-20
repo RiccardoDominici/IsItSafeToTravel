@@ -1,0 +1,31 @@
+---
+export const prerender = true;
+import Base from '../../layouts/Base.astro';
+import SafetyMap from '../../components/SafetyMap.astro';
+import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+import { buildHomepageJsonLd } from '../../lib/seo';
+
+const lang: Lang = 'es';
+const t = useTranslations(lang);
+
+const jsonLd = buildHomepageJsonLd('https://isitsafetotravels.com', lang);
+---
+
+<Base lang={lang} jsonLd={jsonLd}>
+  <section class="flex flex-col" style="height: calc(100dvh - 4rem);">
+    <div class="text-center pt-4 pb-2 px-4">
+      <h1 class="font-heading text-2xl md:text-3xl font-bold text-sand-800 dark:text-sand-100">
+        {t('hero.title')}
+      </h1>
+      <p class="text-sm md:text-base text-sand-500 dark:text-sand-400 mt-1">
+        {t('map.tagline')}
+      </p>
+    </div>
+    <GlobalScoreBanner lang={lang} />
+    <div class="flex-1 min-h-0">
+      <SafetyMap lang={lang} />
+    </div>
+  </section>
+</Base>
