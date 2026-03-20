@@ -80,6 +80,17 @@ for (const [iso3, points] of history.entries()) {
   import Fuse from 'fuse.js';
   import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat, brushX, select, easeCubicOut } from 'd3';
 
+  function smartDateFormat(dates: Date[]): (d: Date) => string {
+    const first = dates[0], last = dates[dates.length - 1];
+    if (first.getUTCFullYear() !== last.getUTCFullYear()) {
+      return utcFormat('%b %Y');
+    } else if (first.getUTCMonth() !== last.getUTCMonth()) {
+      return utcFormat('%b %d');
+    } else {
+      return utcFormat('%d');
+    }
+  }
+
   const PALETTE = ['#c47a5a', '#4a9e8f', '#d4a03c', '#5b6abf', '#7a9e6a'];
   const DASH_PATTERNS = ['', '8 4', '4 4', '12 4 4 4', '16 4'];
 
@@ -410,7 +421,6 @@ for (const [iso3, points] of history.entries()) {
     section.innerHTML = '';
     if (selectedCountries.length === 0) return;
 
-    // Check if any selected country has history data
     const fullCountriesWithHistory = selectedCountries.filter(c => {
       const hist = allHistory[c.iso3];
       return hist && hist.length >= 2;
@@ -429,13 +439,11 @@ for (const [iso3, points] of history.entries()) {
       return;
     }
 
-    // Reset button (hidden initially)
     const resetBtn = document.createElement('button');
     resetBtn.className = 'hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1';
     resetBtn.type = 'button';
     resetBtn.textContent = 'Reset';
 
-    // Chart wrapper
     const chartWrapper = document.createElement('div');
     chartWrapper.className = 'relative';
 
@@ -443,9 +451,42 @@ for (const [iso3, points] of history.entries()) {
     section.appendChild(resetBtn);
     section.appendChild(chartWrapper);
 
-    // Current scales and tooltip data (updated on each renderInner)
     let currentX: ReturnType<typeof scaleTime<number, number>>;
     let currentTooltipDates: Array<{ date: Date; scores: Array<{ name: string; score: number; color: string }> }> = [];
+    let pinnedEntry: typeof currentTooltipDates[0] | null = null;
+
+    function computeCompareSlopes(tooltipDates: typeof currentTooltipDates): number[] {
+      const slopes: number[] = [];
+      for (let i = 0; i < tooltipDates.length; i++) {
+        let maxSlope = 0;
+        const avgScore = tooltipDates[i].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i].scores.length;
+        if (i > 0) {
+          const prevAvg = tooltipDates[i - 1].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i - 1].scores.length;
+          maxSlope = Math.abs(avgScore - prevAvg);
+        }
+        if (i < tooltipDates.length - 1) {
+          const nextAvg = tooltipDates[i + 1].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i + 1].scores.length;
+          maxSlope = Math.max(maxSlope, Math.abs(avgScore - nextAvg));
+        }
+        slopes.push(maxSlope);
+      }
+      return slopes;
+    }
+
+    let currentCompareSlopes: number[] = [];
+    let avgCompareSlope = 0;
+
+    function findNearestEntry(mouseX: number): typeof currentTooltipDates[0] {
+      let nearest = currentTooltipDates[0];
+      let minDist = Infinity;
+      for (let i = 0; i < currentTooltipDates.length; i++) {
+        const entryX = currentX(currentTooltipDates[i].date);
+        const radius = currentCompareSlopes[i] > avgCompareSlope ? 2 : 1;
+        const dist = Math.abs(entryX - mouseX) / radius;
+        if (dist < minDist) { minDist = dist; nearest = currentTooltipDates[i]; }
+      }
+      return nearest;
+    }
 
     function renderInner(dateRange: [Date, Date] | null): void {
       const width = 800;
@@ -454,7 +495,8 @@ for (const [iso3, points] of history.entries()) {
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
 
-      // Collect filtered histories for all countries
+      pinnedEntry = null;
+
       const allDates: Date[] = [];
       const filteredHistories: Map<string, HistoryPoint[]> = new Map();
 
@@ -468,7 +510,7 @@ for (const [iso3, points] of history.entries()) {
             return d >= dateRange[0] && d <= dateRange[1];
           });
         }
-        if (filtered.length < 2) filtered = hist; // fallback if range too narrow
+        if (filtered.length < 2) filtered = hist;
         filteredHistories.set(c.iso3, filtered);
         filtered.forEach(p => allDates.push(new Date(p.date + 'T00:00:00Z')));
       });
@@ -481,7 +523,6 @@ for (const [iso3, points] of history.entries()) {
         .range([0, innerWidth]);
       currentX = x;
 
-      // Compute dynamic Y domain from all filtered scores
       const allScores: number[] = [];
       filteredHistories.forEach(hist => hist.forEach(p => allScores.push(p.score)));
       const minScore = Math.min(...allScores);
@@ -499,7 +540,6 @@ for (const [iso3, points] of history.entries()) {
         .x(d => x(new Date(d.date + 'T00:00:00Z')))
         .y(d => y(d.score));
 
-      // Y gridlines and axis labels (dynamic)
       const yTickCount = 5;
       const yTickStep = (yDomainMax - yDomainMin) / (yTickCount - 1);
       let gridLines = '';
@@ -511,11 +551,10 @@ for (const [iso3, points] of history.entries()) {
         yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
       }
 
-      // X axis ticks
       const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));
       uniqueDates.sort((a, b) => a.getTime() - b.getTime());
       const tickCount = Math.min(6, uniqueDates.length);
-      const fmt = utcFormat('%b %d, %Y');
+      const fmt = smartDateFormat(uniqueDates);
       let xLabels = '';
       for (let i = 0; i < tickCount; i++) {
         const idx = Math.round((i / (tickCount - 1)) * (uniqueDates.length - 1));
@@ -523,7 +562,6 @@ for (const [iso3, points] of history.entries()) {
         xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(uniqueDates[idx])}</text>`;
       }
 
-      // Country paths (using filtered data)
       let paths = '';
       selectedCountries.forEach((country, i) => {
         const hist = filteredHistories.get(country.iso3);
@@ -532,7 +570,6 @@ for (const [iso3, points] of history.entries()) {
         paths += `<path class="country-path" d="${pathData}" fill="none" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" stroke-linejoin="round" stroke-linecap="round" />`;
       });
 
-      // Legend
       let legend = '';
       selectedCountries.forEach((country, i) => {
         const hist = filteredHistories.get(country.iso3);
@@ -543,7 +580,6 @@ for (const [iso3, points] of history.entries()) {
         </g>`;
       });
 
-      // Build tooltip data from filtered histories
       const dateScoreMap = new Map<number, { date: Date; scores: Array<{ name: string; score: number; color: string }> }>();
       selectedCountries.forEach((country, i) => {
         const hist = filteredHistories.get(country.iso3);
@@ -563,7 +599,9 @@ for (const [iso3, points] of history.entries()) {
       });
       currentTooltipDates = Array.from(dateScoreMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
 
-      // Store old paths for animation
+      currentCompareSlopes = computeCompareSlopes(currentTooltipDates);
+      avgCompareSlope = currentCompareSlopes.length > 0 ? currentCompareSlopes.reduce((a, b) => a + b, 0) / currentCompareSlopes.length : 0;
+
       const oldPaths: string[] = [];
       chartWrapper.querySelectorAll('.country-path').forEach(el => {
         oldPaths.push(el.getAttribute('d') || '');
@@ -591,7 +629,6 @@ for (const [iso3, points] of history.entries()) {
         <div class="trend-compare-tooltip absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
       `;
 
-      // Animate path transitions if we have old paths
       if (oldPaths.length > 0) {
         const newPathEls = chartWrapper.querySelectorAll('.country-path');
         newPathEls.forEach((el, i) => {
@@ -604,47 +641,83 @@ for (const [iso3, points] of history.entries()) {
         });
       }
 
-      // Re-attach tooltip handlers
       const svg = chartWrapper.querySelector('svg')!;
       const tooltip = chartWrapper.querySelector('.trend-compare-tooltip') as HTMLElement;
       const viewBox = svg.viewBox.baseVal;
 
-      const showTooltipAtDate = (clientX: number) => {
-        const rect = svg.getBoundingClientRect();
-        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+      function removePinnedCircle(): void {
+        svg.querySelector('.pinned-circle')?.remove();
+      }
 
-        let nearest = currentTooltipDates[0];
-        let minDist = Infinity;
-        for (const entry of currentTooltipDates) {
-          const entryX = currentX(entry.date);
-          const dist = Math.abs(entryX - mouseX);
-          if (dist < minDist) { minDist = dist; nearest = entry; }
-        }
+      function drawPinnedCircle(entry: typeof currentTooltipDates[0]): void {
+        removePinnedCircle();
+        const chartG = svg.querySelector('g')!;
+        const cx = currentX(entry.date);
+        const avgScore = entry.scores.reduce((a, s) => a + s.score, 0) / entry.scores.length;
+        const cy = y(avgScore);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'pinned-circle');
+        circle.setAttribute('cx', String(cx));
+        circle.setAttribute('cy', String(cy));
+        circle.setAttribute('r', '6');
+        circle.setAttribute('fill', '#c47a5a');
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '2');
+        const clipG = chartG.querySelector('g[clip-path]');
+        if (clipG) clipG.appendChild(circle);
+        else chartG.appendChild(circle);
+      }
 
-        const d = nearest.date;
+      function positionTooltip(entry: typeof currentTooltipDates[0]): void {
+        const d = entry.date;
         const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
         const dateStr = d.toLocaleDateString(
           localeMap[lang] || 'en-US',
-          { month: 'short', day: 'numeric' }
+          { month: 'short', day: 'numeric', year: 'numeric' }
         );
-        const scoresStr = nearest.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
+        const scoresStr = entry.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
         tooltip.textContent = `${dateStr}: ${scoresStr}`;
         tooltip.classList.remove('hidden');
 
+        const rect = svg.getBoundingClientRect();
         const scaleXRatio = rect.width / viewBox.width;
-        const tooltipX = (currentX(nearest.date) + margin.left) * scaleXRatio - tooltip.offsetWidth / 2;
+        const tooltipX = (currentX(entry.date) + margin.left) * scaleXRatio - tooltip.offsetWidth / 2;
         tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
         tooltip.style.top = `${-tooltip.offsetHeight - 4}px`;
+      }
+
+      const showTooltipAtDate = (clientX: number) => {
+        if (pinnedEntry) return;
+        const rect = svg.getBoundingClientRect();
+        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+        const nearest = findNearestEntry(mouseX);
+        positionTooltip(nearest);
       };
 
       svg.addEventListener('mousemove', (e: MouseEvent) => showTooltipAtDate(e.clientX));
-      svg.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
+      svg.addEventListener('mouseleave', () => {
+        if (!pinnedEntry) tooltip.classList.add('hidden');
+      });
       svg.addEventListener('touchstart', (e: TouchEvent) => {
         e.preventDefault();
         showTooltipAtDate(e.touches[0].clientX);
       }, { passive: false });
 
-      // Attach brush for zoom
+      svg.addEventListener('click', (e: MouseEvent) => {
+        const rect = svg.getBoundingClientRect();
+        const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width - margin.left;
+        if (pinnedEntry) {
+          pinnedEntry = null;
+          removePinnedCircle();
+          tooltip.classList.add('hidden');
+          return;
+        }
+        const nearest = findNearestEntry(mouseX);
+        pinnedEntry = nearest;
+        positionTooltip(nearest);
+        drawPinnedCircle(nearest);
+      });
+
       const chartG = svg.querySelector('g')!;
       const brush = brushX()
         .extent([[0, 0], [innerWidth, innerHeight]])
@@ -653,7 +726,6 @@ for (const [iso3, points] of history.entries()) {
           const [x0, x1] = event.selection as [number, number];
           const d0 = currentX.invert(x0);
           const d1 = currentX.invert(x1);
-
           let totalPoints = 0;
           fullCountriesWithHistory.forEach(c => {
             const hist = allHistory[c.iso3] || [];
@@ -663,7 +735,6 @@ for (const [iso3, points] of history.entries()) {
             }).length;
           });
           if (totalPoints < 2) return;
-
           renderInner([d0, d1]);
           resetBtn.classList.remove('hidden');
         });
@@ -673,19 +744,16 @@ for (const [iso3, points] of history.entries()) {
       chartG.appendChild(brushG);
       select(brushG).call(brush);
 
-      // Style brush selection
       const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
       style.textContent = '.brush .selection { fill: #c47a5a; fill-opacity: 0.15; stroke: #c47a5a; stroke-opacity: 0.4; }';
       svg.insertBefore(style, svg.firstChild);
     }
 
-    // Reset handler
     resetBtn.addEventListener('click', () => {
       renderInner(null);
       resetBtn.classList.add('hidden');
     });
 
-    // Initial render
     renderInner(null);
   }
 

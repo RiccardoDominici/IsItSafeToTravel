@@ -6,7 +6,6 @@ import type { Lang } from '../../i18n/ui';
 import { loadLatestSnapshot, loadGlobalHistory } from '../../lib/scores';
 import { buildGlobalSafetyJsonLd } from '../../lib/seo';
 import { scoreToColor } from '../../lib/colors';
-import { scaleLinear, scaleTime, line, timeFormat, utcFormat } from 'd3';
 
 const lang: Lang = 'es';
 const t = useTranslations(lang);
@@ -25,77 +24,7 @@ const recentHistory = globalHistory.filter(d => {
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const jsonLd = buildGlobalSafetyJsonLd(globalScore, canonicalUrl, lang);
 
-// Build full-size trend chart SVG at build time
-const chartWidth = 800;
-const chartHeight = 300;
-const margin = { top: 20, right: 20, bottom: 40, left: 50 };
-const innerWidth = chartWidth - margin.left - margin.right;
-const innerHeight = chartHeight - margin.top - margin.bottom;
-
-let pathD = '';
-let endpointCx = 0;
-let endpointCy = 0;
 const showChart = recentHistory.length >= 2;
-
-// Axis tick data
-let xTicks: Array<{ x: number; label: string }> = [];
-let yTicks: Array<{ y: number; label: string }> = [];
-
-// Chart data points for tooltip interactivity
-let chartPoints: Array<{ date: string; score: number; x: number; y: number }> = [];
-
-if (showChart) {
-  const dates = recentHistory.map(d => new Date(d.date + 'T00:00:00Z'));
-  const x = scaleTime()
-    .domain([dates[0], dates[dates.length - 1]])
-    .range([0, innerWidth]);
-
-  const scores = recentHistory.map(d => d.score);
-  const minScore = Math.min(...scores);
-  const maxScore = Math.max(...scores);
-  const range = maxScore - minScore;
-  const padding = Math.max(range * 0.2, 0.2);
-  const yMin = Math.max(1, Math.floor((minScore - padding) * 2) / 2);
-  const yMax = Math.min(10, Math.ceil((maxScore + padding) * 2) / 2);
-
-  const y = scaleLinear()
-    .domain([yMin, yMax])
-    .range([innerHeight, 0]);
-
-  const lineGen = line<{ date: string; score: number }>()
-    .x(d => x(new Date(d.date + 'T00:00:00Z')))
-    .y(d => y(d.score));
-
-  pathD = lineGen(recentHistory) ?? '';
-
-  const lastPoint = recentHistory[recentHistory.length - 1];
-  endpointCx = x(new Date(lastPoint.date + 'T00:00:00Z'));
-  endpointCy = y(lastPoint.score);
-
-  // Build chart points for tooltip
-  chartPoints = recentHistory.map(d => ({
-    date: d.date,
-    score: d.score,
-    x: x(new Date(d.date + 'T00:00:00Z')),
-    y: y(d.score),
-  }));
-
-  // X axis ticks (5-7 evenly spaced dates)
-  const tickCount = Math.min(6, dates.length);
-  const fmt = utcFormat('%b %d, %Y');
-  for (let i = 0; i < tickCount; i++) {
-    const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
-    xTicks.push({ x: x(dates[idx]), label: fmt(dates[idx]) });
-  }
-
-  // Y axis ticks (dynamic based on data range)
-  const yTickCount = 5;
-  const yTickStep = (yMax - yMin) / (yTickCount - 1);
-  yTicks = Array.from({ length: yTickCount }, (_, i) => {
-    const val = yMin + i * yTickStep;
-    return { y: y(val), label: val.toFixed(1) };
-  });
-}
 ---
 
 <Base lang={lang} title={t('global.page_title')} description={t('global.page_description')} jsonLd={jsonLd}>
@@ -128,65 +57,12 @@ if (showChart) {
       </h2>
 
       {showChart ? (
-        <div class="global-chart-wrapper relative" data-points={JSON.stringify(chartPoints)} data-lang={lang} data-margin-left={margin.left} data-margin-top={margin.top} data-chart-width={chartWidth}>
-          <svg
-            viewBox={`0 0 ${chartWidth} ${chartHeight}`}
-            class="w-full text-sand-700 dark:text-sand-300"
-            role="img"
-            aria-label={t('global.trend_title')}
-          >
-            <g transform={`translate(${margin.left}, ${margin.top})`}>
-              {/* Transparent hit area for mouse events */}
-              <rect x={0} y={0} width={innerWidth} height={innerHeight} fill="transparent" style="pointer-events: all; cursor: crosshair;" />
-              {/* Y gridlines */}
-              {yTicks.map(tick => (
-                <line
-                  x1={0} y1={tick.y}
-                  x2={innerWidth} y2={tick.y}
-                  stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3"
-                />
-              ))}
-
-              {/* Trend line */}
-              <path
-                d={pathD}
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-              />
-
-              {/* Endpoint dot */}
-              <circle cx={endpointCx} cy={endpointCy} r="4" fill={bgColor} />
-
-              {/* Y axis labels */}
-              {yTicks.map(tick => (
-                <text
-                  x={-10} y={tick.y}
-                  text-anchor="end"
-                  dominant-baseline="middle"
-                  class="text-xs fill-sand-500 dark:fill-sand-400"
-                  font-size="12"
-                >
-                  {tick.label}
-                </text>
-              ))}
-
-              {/* X axis labels */}
-              {xTicks.map(tick => (
-                <text
-                  x={tick.x} y={innerHeight + 25}
-                  text-anchor="middle"
-                  class="text-xs fill-sand-500 dark:fill-sand-400"
-                  font-size="11"
-                >
-                  {tick.label}
-                </text>
-              ))}
-            </g>
-          </svg>
-          <div class="global-chart-tooltip absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+        <div>
+          <button id="global-reset-btn" class="hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1" type="button">Reset</button>
+          <div id="global-chart-container" class="relative" data-history={JSON.stringify(recentHistory)} data-lang={lang}>
+            <svg id="global-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('global.trend_title')}></svg>
+            <div id="global-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+          </div>
         </div>
       ) : (
         <p class="text-sm text-sand-500 dark:text-sand-400 italic">
@@ -212,44 +88,338 @@ if (showChart) {
   </div>
 
   <script>
-    const wrapper = document.querySelector('.global-chart-wrapper') as HTMLElement | null;
-    if (wrapper) {
-      const points: Array<{ date: string; score: number; x: number; y: number }> = JSON.parse(wrapper.dataset.points!);
-      const lang = wrapper.dataset.lang || 'en';
-      const marginLeft = parseFloat(wrapper.dataset.marginLeft || '50');
-      const chartWidth = parseFloat(wrapper.dataset.chartWidth || '800');
-      const svg = wrapper.querySelector('svg')!;
-      const tooltip = wrapper.querySelector('.global-chart-tooltip') as HTMLElement;
-      const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+    import { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } from 'd3';
+    import { scoreToColor } from '../../lib/colors';
 
-      function showTooltip(clientX: number): void {
-        const rect = svg.getBoundingClientRect();
-        const mouseX = (clientX - rect.left) / rect.width * chartWidth - marginLeft;
+    function smartDateFormat(dates: Date[]): (d: Date) => string {
+      const first = dates[0], last = dates[dates.length - 1];
+      if (first.getUTCFullYear() !== last.getUTCFullYear()) {
+        return utcFormat('%b %Y');
+      } else if (first.getUTCMonth() !== last.getUTCMonth()) {
+        return utcFormat('%b %d');
+      } else {
+        return utcFormat('%d');
+      }
+    }
 
-        let nearest = points[0];
-        let minDist = Infinity;
-        for (const p of points) {
-          const dist = Math.abs(p.x - mouseX);
-          if (dist < minDist) { minDist = dist; nearest = p; }
+    const container = document.getElementById('global-chart-container');
+    if (container) {
+      const svg = document.getElementById('global-chart-svg') as unknown as SVGSVGElement;
+      const tooltip = document.getElementById('global-tooltip')!;
+      const resetBtn = document.getElementById('global-reset-btn')!;
+      const lang = container.dataset.lang || 'en';
+
+      interface HistoryPoint { date: string; score: number; }
+      const fullData: HistoryPoint[] = JSON.parse(container.dataset.history || '[]');
+
+      if (fullData.length >= 2) {
+        const width = 800;
+        const height = 240;
+        const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
+
+        let currentData: HistoryPoint[] = fullData;
+        let xScale: ReturnType<typeof scaleTime<number, number>>;
+        let yScale: ReturnType<typeof scaleLinear<number, number>>;
+
+        let pinnedPoint: HistoryPoint | null = null;
+
+        function computeSlopes(data: HistoryPoint[]): number[] {
+          const slopes: number[] = [];
+          for (let i = 0; i < data.length; i++) {
+            let slope = 0;
+            if (i > 0) slope = Math.abs(data[i].score - data[i - 1].score);
+            if (i < data.length - 1) slope = Math.max(slope, Math.abs(data[i + 1].score - data[i].score));
+            slopes.push(slope);
+          }
+          return slopes;
         }
 
-        const d = new Date(nearest.date + 'T00:00:00Z');
-        const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric' });
-        tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
-        tooltip.classList.remove('hidden');
+        let currentSlopes: number[] = computeSlopes(fullData);
+        let avgSlope = currentSlopes.reduce((a, b) => a + b, 0) / currentSlopes.length;
 
-        const scaleXRatio = rect.width / chartWidth;
-        const tooltipX = (nearest.x + marginLeft) * scaleXRatio - tooltip.offsetWidth / 2;
-        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
-        tooltip.style.top = `${-tooltip.offsetHeight - 4}px`;
+        function computeYDomain(data: HistoryPoint[]): [number, number] {
+          const scores = data.map(d => d.score);
+          const min = Math.min(...scores);
+          const max = Math.max(...scores);
+          const range = max - min;
+          const pad = Math.max(range * 0.2, 0.2);
+          return [
+            Math.max(1, Math.floor((min - pad) * 2) / 2),
+            Math.min(10, Math.ceil((max + pad) * 2) / 2),
+          ];
+        }
+
+        function findNearestWithSnap(mouseX: number, data: HistoryPoint[], slopes: number[], avg: number): HistoryPoint {
+          let nearest = data[0];
+          let minDist = Infinity;
+          for (let i = 0; i < data.length; i++) {
+            const px = xScale(new Date(data[i].date + 'T00:00:00Z'));
+            const radius = slopes[i] > avg ? 2 : 1;
+            const dist = Math.abs(px - mouseX) / radius;
+            if (dist < minDist) { minDist = dist; nearest = data[i]; }
+          }
+          return nearest;
+        }
+
+        function renderChart(filteredData: HistoryPoint[], allData: HistoryPoint[]): void {
+          currentData = filteredData;
+          pinnedPoint = null;
+
+          currentSlopes = computeSlopes(filteredData);
+          avgSlope = currentSlopes.length > 0 ? currentSlopes.reduce((a, b) => a + b, 0) / currentSlopes.length : 0;
+
+          const dates = filteredData.map(d => new Date(d.date + 'T00:00:00Z'));
+          xScale = scaleTime()
+            .domain([dates[0], dates[dates.length - 1]])
+            .range([0, innerWidth]);
+
+          const [yMin, yMax] = computeYDomain(filteredData);
+          yScale = scaleLinear()
+            .domain([yMin, yMax])
+            .range([innerHeight, 0]);
+
+          const lineGen = line<HistoryPoint>()
+            .x(d => xScale(new Date(d.date + 'T00:00:00Z')))
+            .y(d => yScale(d.score));
+
+          const areaGen = area<HistoryPoint>()
+            .x(d => xScale(new Date(d.date + 'T00:00:00Z')))
+            .y0(innerHeight)
+            .y1(d => yScale(d.score));
+
+          const pathD = lineGen(filteredData) ?? '';
+          const areaD = areaGen(filteredData) ?? '';
+
+          const lastPoint = filteredData[filteredData.length - 1];
+          const endCx = xScale(new Date(lastPoint.date + 'T00:00:00Z'));
+          const endCy = yScale(lastPoint.score);
+          const endColor = scoreToColor(lastPoint.score);
+
+          const yTickCount = 5;
+          const yTickStep = (yMax - yMin) / (yTickCount - 1);
+          let gridLines = '';
+          let yLabels = '';
+          for (let i = 0; i < yTickCount; i++) {
+            const val = yMin + i * yTickStep;
+            const yPos = yScale(val);
+            gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
+            yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+          }
+
+          const tickCount = Math.min(6, dates.length);
+          const fmt = smartDateFormat(dates);
+          let xLabels = '';
+          for (let i = 0; i < tickCount; i++) {
+            const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
+            const xPos = xScale(dates[idx]);
+            xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(dates[idx])}</text>`;
+          }
+
+          svg.innerHTML = `
+            <defs>
+              <linearGradient id="globalGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#c47a5a" stop-opacity="0.3" />
+                <stop offset="100%" stop-color="#c47a5a" stop-opacity="0.05" />
+              </linearGradient>
+              <clipPath id="global-chart-clip"><rect x="0" y="0" width="${innerWidth}" height="${innerHeight}"/></clipPath>
+            </defs>
+            <g class="chart-main" transform="translate(${margin.left}, ${margin.top})">
+              ${gridLines}
+              <path class="area-path" d="${areaD}" fill="url(#globalGradient)" clip-path="url(#global-chart-clip)" />
+              <path class="line-path" d="${pathD}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#global-chart-clip)" />
+              <circle class="endpoint-circle" cx="${endCx}" cy="${endCy}" r="4" fill="${endColor}" />
+              ${yLabels}
+              ${xLabels}
+            </g>
+          `;
+
+          attachBrush(allData);
+        }
+
+        function attachBrush(allData: HistoryPoint[]): void {
+          const mainGroup = svg.querySelector('.chart-main');
+          if (!mainGroup) return;
+
+          const brush = brushX()
+            .extent([[0, 0], [innerWidth, innerHeight]])
+            .on('end', (event: any) => {
+              if (!event.selection) return;
+              const [x0, x1] = event.selection as [number, number];
+              const date0 = xScale.invert(x0);
+              const date1 = xScale.invert(x1);
+
+              const filtered = allData.filter(d => {
+                const dt = new Date(d.date + 'T00:00:00Z');
+                return dt >= date0 && dt <= date1;
+              });
+
+              if (filtered.length < 2) return;
+
+              const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
+              const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
+
+              renderChart(filtered, allData);
+              resetBtn.classList.remove('hidden');
+
+              animatePaths(oldLinePath, oldAreaPath);
+            });
+
+          const brushGroup = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          brushGroup.setAttribute('class', 'brush');
+          mainGroup.appendChild(brushGroup);
+
+          select(brushGroup).call(brush);
+
+          const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+          style.textContent = `.brush .selection { fill: #c47a5a; fill-opacity: 0.15; stroke: #c47a5a; stroke-opacity: 0.4; }`;
+          svg.insertBefore(style, svg.firstChild);
+        }
+
+        function animatePaths(oldLineD: string, oldAreaD: string): void {
+          const linePath = svg.querySelector('.line-path');
+          const areaPath = svg.querySelector('.area-path');
+          if (linePath && oldLineD) {
+            const newLineD = linePath.getAttribute('d') || '';
+            select(linePath).attr('d', oldLineD)
+              .transition().duration(300).ease(easeCubicOut)
+              .attr('d', newLineD);
+          }
+          if (areaPath && oldAreaD) {
+            const newAreaD = areaPath.getAttribute('d') || '';
+            select(areaPath).attr('d', oldAreaD)
+              .transition().duration(300).ease(easeCubicOut)
+              .attr('d', newAreaD);
+          }
+        }
+
+        resetBtn.addEventListener('click', () => {
+          const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
+          const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
+
+          renderChart(fullData, fullData);
+          resetBtn.classList.add('hidden');
+
+          animatePaths(oldLinePath, oldAreaPath);
+        });
+
+        const svgRect = () => svg.getBoundingClientRect();
+        const viewBox = svg.viewBox.baseVal;
+
+        function removePinnedCircle(): void {
+          svg.querySelector('.pinned-circle')?.remove();
+        }
+
+        function drawPinnedCircle(point: HistoryPoint): void {
+          removePinnedCircle();
+          const mainGroup = svg.querySelector('.chart-main');
+          if (!mainGroup) return;
+          const cx = xScale(new Date(point.date + 'T00:00:00Z'));
+          const cy = yScale(point.score);
+          const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+          circle.setAttribute('class', 'pinned-circle');
+          circle.setAttribute('cx', String(cx));
+          circle.setAttribute('cy', String(cy));
+          circle.setAttribute('r', '6');
+          circle.setAttribute('fill', scoreToColor(point.score));
+          circle.setAttribute('stroke', '#fff');
+          circle.setAttribute('stroke-width', '2');
+          mainGroup.appendChild(circle);
+        }
+
+        const showTooltip = (clientX: number, clientY: number) => {
+          if (pinnedPoint) return;
+
+          const rect = svgRect();
+          const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+          const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
+
+          const d = new Date(nearest.date + 'T00:00:00Z');
+          const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+          const dateStr = d.toLocaleDateString(
+            localeMap[lang] || 'en-US',
+            { month: 'short', day: 'numeric', year: 'numeric' }
+          );
+
+          tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
+          tooltip.classList.remove('hidden');
+
+          const scaleX = rect.width / viewBox.width;
+          const scaleY = rect.height / viewBox.height;
+          const pointCx = xScale(new Date(nearest.date + 'T00:00:00Z')) + margin.left;
+          const pointCy = yScale(nearest.score) + margin.top;
+          const tooltipX = pointCx * scaleX - tooltip.offsetWidth / 2;
+          const tooltipY = pointCy * scaleY - tooltip.offsetHeight - 8;
+
+          tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+          tooltip.style.top = `${Math.max(0, tooltipY)}px`;
+        };
+
+        const hideTooltip = () => {
+          if (pinnedPoint) return;
+          tooltip.classList.add('hidden');
+        };
+
+        svg.addEventListener('mousemove', (e: MouseEvent) => {
+          showTooltip(e.clientX, e.clientY);
+        });
+
+        svg.addEventListener('mouseleave', hideTooltip);
+
+        svg.addEventListener('click', (e: MouseEvent) => {
+          const rect = svgRect();
+          const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+          if (pinnedPoint) {
+            pinnedPoint = null;
+            removePinnedCircle();
+            tooltip.classList.add('hidden');
+            return;
+          }
+
+          const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
+          pinnedPoint = nearest;
+
+          const d = new Date(nearest.date + 'T00:00:00Z');
+          const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+          const dateStr = d.toLocaleDateString(
+            localeMap[lang] || 'en-US',
+            { month: 'short', day: 'numeric', year: 'numeric' }
+          );
+          tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
+          tooltip.classList.remove('hidden');
+
+          const scaleX = rect.width / viewBox.width;
+          const scaleY = rect.height / viewBox.height;
+          const pointCx = xScale(new Date(nearest.date + 'T00:00:00Z')) + margin.left;
+          const pointCy = yScale(nearest.score) + margin.top;
+          const tooltipX = pointCx * scaleX - tooltip.offsetWidth / 2;
+          const tooltipY = pointCy * scaleY - tooltip.offsetHeight - 8;
+
+          tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+          tooltip.style.top = `${Math.max(0, tooltipY)}px`;
+
+          drawPinnedCircle(nearest);
+        });
+
+        svg.addEventListener('touchstart', (e: TouchEvent) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          showTooltip(touch.clientX, touch.clientY);
+        }, { passive: false });
+
+        document.addEventListener('touchstart', (e: TouchEvent) => {
+          if (!container.contains(e.target as Node)) {
+            pinnedPoint = null;
+            removePinnedCircle();
+            hideTooltip();
+          }
+        });
+
+        renderChart(fullData, fullData);
       }
-
-      svg.addEventListener('mousemove', (e: MouseEvent) => showTooltip(e.clientX));
-      svg.addEventListener('mouseleave', () => tooltip.classList.add('hidden'));
-      svg.addEventListener('touchstart', (e: TouchEvent) => {
-        e.preventDefault();
-        showTooltip(e.touches[0].clientX);
-      }, { passive: false });
     }
   </script>
 </Base>

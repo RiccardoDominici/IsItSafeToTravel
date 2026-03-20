@@ -84,6 +84,17 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
   import { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } from 'd3';
   import { scoreToColor } from '../../lib/colors';
 
+  function smartDateFormat(dates: Date[]): (d: Date) => string {
+    const first = dates[0], last = dates[dates.length - 1];
+    if (first.getUTCFullYear() !== last.getUTCFullYear()) {
+      return utcFormat('%b %Y');
+    } else if (first.getUTCMonth() !== last.getUTCMonth()) {
+      return utcFormat('%b %d');
+    } else {
+      return utcFormat('%d');
+    }
+  }
+
   const container = document.getElementById('trend-chart-container');
   if (container) {
     const svg = document.getElementById('trend-chart-svg') as unknown as SVGSVGElement;
@@ -127,6 +138,36 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       let xScale: ReturnType<typeof scaleTime<number, number>>;
       let yScale: ReturnType<typeof scaleLinear<number, number>>;
 
+      // Pinned tooltip state
+      let pinnedPoint: HistoryPoint | null = null;
+
+      // Slope computation for magnet snap
+      function computeSlopes(data: HistoryPoint[]): number[] {
+        const slopes: number[] = [];
+        for (let i = 0; i < data.length; i++) {
+          let slope = 0;
+          if (i > 0) slope = Math.abs(data[i].score - data[i - 1].score);
+          if (i < data.length - 1) slope = Math.max(slope, Math.abs(data[i + 1].score - data[i].score));
+          slopes.push(slope);
+        }
+        return slopes;
+      }
+
+      let currentSlopes: number[] = computeSlopes(fullData);
+      let avgSlope = currentSlopes.reduce((a, b) => a + b, 0) / currentSlopes.length;
+
+      function findNearestWithSnap(mouseX: number, data: HistoryPoint[], slopes: number[], avg: number): HistoryPoint {
+        let nearest = data[0];
+        let minDist = Infinity;
+        for (let i = 0; i < data.length; i++) {
+          const px = xScale(new Date(data[i].date + 'T00:00:00Z'));
+          const radius = slopes[i] > avg ? 2 : 1;
+          const dist = Math.abs(px - mouseX) / radius;
+          if (dist < minDist) { minDist = dist; nearest = data[i]; }
+        }
+        return nearest;
+      }
+
       function computeYDomain(data: HistoryPoint[]): [number, number] {
         const scores = data.map(d => d.score);
         const min = Math.min(...scores);
@@ -141,6 +182,11 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
       function renderChart(filteredData: HistoryPoint[], allData: HistoryPoint[]): void {
         currentData = filteredData;
+        pinnedPoint = null;
+
+        // Recompute slopes
+        currentSlopes = computeSlopes(filteredData);
+        avgSlope = currentSlopes.length > 0 ? currentSlopes.reduce((a, b) => a + b, 0) / currentSlopes.length : 0;
 
         const dates = filteredData.map(d => new Date(d.date + 'T00:00:00Z'));
         xScale = scaleTime()
@@ -181,9 +227,9 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
         }
 
-        // X axis ticks
+        // X axis ticks - smart format
         const tickCount = Math.min(6, dates.length);
-        const fmt = utcFormat('%b %d, %Y');
+        const fmt = smartDateFormat(dates);
         let xLabels = '';
         for (let i = 0; i < tickCount; i++) {
           const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
@@ -331,18 +377,34 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       const svgRect = () => svg.getBoundingClientRect();
       const viewBox = svg.viewBox.baseVal;
 
+      function removePinnedCircle(): void {
+        svg.querySelector('.pinned-circle')?.remove();
+      }
+
+      function drawPinnedCircle(point: HistoryPoint): void {
+        removePinnedCircle();
+        const mainGroup = svg.querySelector('.chart-main');
+        if (!mainGroup) return;
+        const cx = xScale(new Date(point.date + 'T00:00:00Z'));
+        const cy = yScale(point.score);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'pinned-circle');
+        circle.setAttribute('cx', String(cx));
+        circle.setAttribute('cy', String(cy));
+        circle.setAttribute('r', '6');
+        circle.setAttribute('fill', scoreToColor(point.score));
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '2');
+        mainGroup.appendChild(circle);
+      }
+
       const showTooltip = (clientX: number, clientY: number) => {
+        if (pinnedPoint) return;
+
         const rect = svgRect();
         const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
 
-        // Find nearest data point by x position using current (possibly zoomed) data
-        let nearest = currentData[0];
-        let minDist = Infinity;
-        for (const p of currentData) {
-          const px = xScale(new Date(p.date + 'T00:00:00Z'));
-          const dist = Math.abs(px - mouseX);
-          if (dist < minDist) { minDist = dist; nearest = p; }
-        }
+        const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
 
         // Format date
         const d = new Date(nearest.date + 'T00:00:00Z');
@@ -368,6 +430,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       };
 
       const hideTooltip = () => {
+        if (pinnedPoint) return;
         tooltip.classList.add('hidden');
       };
 
@@ -377,6 +440,43 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
       svg.addEventListener('mouseleave', hideTooltip);
 
+      // Click to pin tooltip
+      svg.addEventListener('click', (e: MouseEvent) => {
+        const rect = svgRect();
+        const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+        if (pinnedPoint) {
+          pinnedPoint = null;
+          removePinnedCircle();
+          tooltip.classList.add('hidden');
+          return;
+        }
+
+        const nearest = findNearestWithSnap(mouseX, currentData, currentSlopes, avgSlope);
+        pinnedPoint = nearest;
+
+        const d = new Date(nearest.date + 'T00:00:00Z');
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+        const dateStr = d.toLocaleDateString(
+          localeMap[lang] || 'en-US',
+          { month: 'short', day: 'numeric', year: 'numeric' }
+        );
+        tooltip.textContent = `${dateStr}: ${nearest.score.toFixed(1)}`;
+        tooltip.classList.remove('hidden');
+
+        const scaleX = rect.width / viewBox.width;
+        const scaleY = rect.height / viewBox.height;
+        const pointCx = xScale(new Date(nearest.date + 'T00:00:00Z')) + margin.left;
+        const pointCy = yScale(nearest.score) + margin.top;
+        const tooltipX = pointCx * scaleX - tooltip.offsetWidth / 2;
+        const tooltipY = pointCy * scaleY - tooltip.offsetHeight - 8;
+
+        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+        tooltip.style.top = `${Math.max(0, tooltipY)}px`;
+
+        drawPinnedCircle(nearest);
+      });
+
       svg.addEventListener('touchstart', (e: TouchEvent) => {
         e.preventDefault();
         const touch = e.touches[0];
@@ -384,7 +484,11 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       }, { passive: false });
 
       document.addEventListener('touchstart', (e: TouchEvent) => {
-        if (!container.contains(e.target as Node)) hideTooltip();
+        if (!container.contains(e.target as Node)) {
+          pinnedPoint = null;
+          removePinnedCircle();
+          hideTooltip();
+        }
       });
 
       // Initial render
