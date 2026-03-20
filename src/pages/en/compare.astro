@@ -78,7 +78,7 @@ for (const [iso3, points] of history.entries()) {
 
 <script>
   import Fuse from 'fuse.js';
-  import { scaleLinear, scaleTime, line as d3Line, timeFormat } from 'd3';
+  import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat } from 'd3';
 
   const PALETTE = ['#c47a5a', '#4a9e8f', '#d4a03c', '#5b6abf', '#7a9e6a'];
   const DASH_PATTERNS = ['', '8 4', '4 4', '12 4 4 4', '16 4'];
@@ -413,7 +413,7 @@ for (const [iso3, points] of history.entries()) {
     const allDates: Date[] = [];
     countriesWithHistory.forEach(c => {
       const hist = allHistory[c.iso3];
-      if (hist) hist.forEach(p => allDates.push(new Date(p.date)));
+      if (hist) hist.forEach(p => allDates.push(new Date(p.date + 'T00:00:00Z')));
     });
     allDates.sort((a, b) => a.getTime() - b.getTime());
 
@@ -426,7 +426,7 @@ for (const [iso3, points] of history.entries()) {
       .range([innerHeight, 0]);
 
     const lineGen = d3Line<HistoryPoint>()
-      .x(d => x(new Date(d.date)))
+      .x(d => x(new Date(d.date + 'T00:00:00Z')))
       .y(d => y(d.score));
 
     // Y gridlines and axis labels
@@ -441,7 +441,7 @@ for (const [iso3, points] of history.entries()) {
 
     // X axis ticks (5-6 evenly spaced)
     const tickCount = Math.min(6, allDates.length);
-    const fmt = timeFormat('%b %d');
+    const fmt = utcFormat('%b %d');
     let xLabels = '';
     for (let i = 0; i < tickCount; i++) {
       const idx = Math.round((i / (tickCount - 1)) * (allDates.length - 1));
@@ -475,7 +475,7 @@ for (const [iso3, points] of history.entries()) {
       const hist = allHistory[country.iso3];
       if (!hist || hist.length < 2) return;
       hist.forEach(p => {
-        const d = new Date(p.date);
+        const d = new Date(p.date + 'T00:00:00Z');
         const key = d.getTime();
         if (!dateScoreMap.has(key)) {
           dateScoreMap.set(key, { date: d, scores: [] });

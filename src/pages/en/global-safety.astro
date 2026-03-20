@@ -6,7 +6,7 @@ import type { Lang } from '../../i18n/ui';
 import { loadLatestSnapshot, loadGlobalHistory } from '../../lib/scores';
 import { buildGlobalSafetyJsonLd } from '../../lib/seo';
 import { scoreToColor } from '../../lib/colors';
-import { scaleLinear, scaleTime, line, timeFormat } from 'd3';
+import { scaleLinear, scaleTime, line, timeFormat, utcFormat } from 'd3';
 
 const lang: Lang = 'en';
 const t = useTranslations(lang);
@@ -38,7 +38,7 @@ let xTicks: Array<{ x: number; label: string }> = [];
 let yTicks: Array<{ y: number; label: string }> = [];
 
 if (showChart) {
-  const dates = globalHistory.map(d => new Date(d.date));
+  const dates = globalHistory.map(d => new Date(d.date + 'T00:00:00Z'));
   const x = scaleTime()
     .domain([dates[0], dates[dates.length - 1]])
     .range([0, innerWidth]);
@@ -48,18 +48,18 @@ if (showChart) {
     .range([innerHeight, 0]);
 
   const lineGen = line<{ date: string; score: number }>()
-    .x(d => x(new Date(d.date)))
+    .x(d => x(new Date(d.date + 'T00:00:00Z')))
     .y(d => y(d.score));
 
   pathD = lineGen(globalHistory) ?? '';
 
   const lastPoint = globalHistory[globalHistory.length - 1];
-  endpointCx = x(new Date(lastPoint.date));
+  endpointCx = x(new Date(lastPoint.date + 'T00:00:00Z'));
   endpointCy = y(lastPoint.score);
 
   // X axis ticks (5-7 evenly spaced dates)
   const tickCount = Math.min(6, dates.length);
-  const fmt = timeFormat('%b %d');
+  const fmt = utcFormat('%b %d');
   for (let i = 0; i < tickCount; i++) {
     const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
     xTicks.push({ x: x(dates[idx]), label: fmt(dates[idx]) });

@@ -2,7 +2,7 @@
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
-import { scaleLinear, scaleTime, line, area, timeFormat } from 'd3';
+import { scaleLinear, scaleTime, line, area, timeFormat, utcFormat } from 'd3';
 import type { HistoryPoint } from '../../lib/scores';
 
 interface Props {
@@ -39,7 +39,7 @@ let yTicks: Array<{ y: number; label: string }> = [];
 let chartPoints: Array<{ date: string; score: number; cx: number; cy: number }> = [];
 
 if (showChart) {
-  const dates = data.map(d => new Date(d.date));
+  const dates = data.map(d => new Date(d.date + 'T00:00:00Z'));
   const x = scaleTime()
     .domain([dates[0], dates[dates.length - 1]])
     .range([0, innerWidth]);
@@ -49,11 +49,11 @@ if (showChart) {
     .range([innerHeight, 0]);
 
   const lineGen = line<HistoryPoint>()
-    .x(d => x(new Date(d.date)))
+    .x(d => x(new Date(d.date + 'T00:00:00Z')))
     .y(d => y(d.score));
 
   const areaGen = area<HistoryPoint>()
-    .x(d => x(new Date(d.date)))
+    .x(d => x(new Date(d.date + 'T00:00:00Z')))
     .y0(innerHeight)
     .y1(d => y(d.score));
 
@@ -61,13 +61,13 @@ if (showChart) {
   areaD = areaGen(data) ?? '';
 
   const lastPoint = data[data.length - 1];
-  endpointCx = x(new Date(lastPoint.date));
+  endpointCx = x(new Date(lastPoint.date + 'T00:00:00Z'));
   endpointCy = y(lastPoint.score);
   endpointColor = scoreToColor(lastPoint.score);
 
   // X axis ticks (5-7 evenly spaced dates)
   const tickCount = Math.min(6, dates.length);
-  const fmt = timeFormat('%b %d');
+  const fmt = utcFormat('%b %d');
   for (let i = 0; i < tickCount; i++) {
     const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
     xTicks.push({ x: x(dates[idx]), label: fmt(dates[idx]) });
@@ -80,7 +80,7 @@ if (showChart) {
   chartPoints = data.map(d => ({
     date: d.date,
     score: d.score,
-    cx: x(new Date(d.date)) + margin.left,
+    cx: x(new Date(d.date + 'T00:00:00Z')) + margin.left,
     cy: y(d.score) + margin.top,
   }));
 }
@@ -203,7 +203,7 @@ if (showChart) {
         const scaleY = rect.height / viewBox.height;
 
         // Format date with locale awareness
-        const d = new Date(point.date);
+        const d = new Date(point.date + 'T00:00:00Z');
         const dateStr = d.toLocaleDateString(
           document.documentElement.lang === 'it' ? 'it-IT' : 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }
