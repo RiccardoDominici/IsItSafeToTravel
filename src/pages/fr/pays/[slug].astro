@@ -1,0 +1,55 @@
+---
+export const prerender = true;
+
+import type { GetStaticPaths } from 'astro';
+import type { ScoredCountry } from '../../../pipeline/types';
+import type { HistoryPoint, PillarHistoryData } from '../../../lib/scores';
+import Base from '../../../layouts/Base.astro';
+import ScoreHero from '../../../components/country/ScoreHero.astro';
+import PillarBreakdown from '../../../components/country/PillarBreakdown.astro';
+import AdvisorySection from '../../../components/country/AdvisorySection.astro';
+import TrendChart from '../../../components/country/TrendChart.astro';
+
+import SourcesList from '../../../components/country/SourcesList.astro';
+import { loadLatestScores, loadHistoricalScores, loadPillarHistory } from '../../../lib/scores';
+import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'fr';
+const t = useTranslations(lang);
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const countries = loadLatestScores();
+  const history = loadHistoricalScores();
+
+  return countries.map((country) => ({
+    params: { slug: country.iso3.toLowerCase() },
+    props: {
+      country,
+      trend: history.get(country.iso3) ?? [],
+      pillarTrend: loadPillarHistory(country.iso3),
+    },
+  }));
+};
+
+interface Props {
+  country: ScoredCountry;
+  trend: HistoryPoint[];
+  pillarTrend: PillarHistoryData | null;
+}
+
+const { country, trend, pillarTrend } = Astro.props;
+const description = buildCountryMetaDescription(country, lang);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
+---
+<Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} >
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <ScoreHero country={country} lang={lang} />
+    <PillarBreakdown pillars={country.pillars} lang={lang} />
+    <AdvisorySection advisories={country.advisories} lang={lang} />
+    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <SourcesList sources={country.sources} lang={lang} />
+  </div>
+</Base>

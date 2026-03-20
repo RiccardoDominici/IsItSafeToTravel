@@ -31,8 +31,18 @@ describe('getLangFromUrl', () => {
     assert.equal(getLangFromUrl(url), 'it');
   });
 
-  it('returns default en for unknown locale prefix', () => {
+  it('returns fr for /fr/ path', () => {
     const url = new URL('https://example.com/fr/something');
+    assert.equal(getLangFromUrl(url), 'fr');
+  });
+
+  it('returns pt for /pt/ path', () => {
+    const url = new URL('https://example.com/pt/something');
+    assert.equal(getLangFromUrl(url), 'pt');
+  });
+
+  it('returns default en for unknown locale prefix', () => {
+    const url = new URL('https://example.com/de/something');
     assert.equal(getLangFromUrl(url), 'en');
   });
 
@@ -121,17 +131,23 @@ describe('getLocalizedPath', () => {
 // --- getAlternateLinks ---
 
 describe('getAlternateLinks', () => {
-  it('returns links for both en and it locales', () => {
+  it('returns links for all locales', () => {
     const links = getAlternateLinks('/en/');
-    assert.equal(links.length, 2);
+    assert.equal(links.length, 5);
 
     const enLink = links.find((l) => l.lang === 'en');
     const itLink = links.find((l) => l.lang === 'it');
+    const frLink = links.find((l) => l.lang === 'fr');
+    const ptLink = links.find((l) => l.lang === 'pt');
 
     assert.ok(enLink, 'should have en link');
     assert.ok(itLink, 'should have it link');
+    assert.ok(frLink, 'should have fr link');
+    assert.ok(ptLink, 'should have pt link');
     assert.equal(enLink.href, '/en/');
     assert.equal(itLink.href, '/it/');
+    assert.equal(frLink.href, '/fr/');
+    assert.equal(ptLink.href, '/pt/');
   });
 
   it('translates route slugs in alternate links', () => {

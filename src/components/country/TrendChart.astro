@@ -473,7 +473,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         mainGroup.appendChild(circle);
       }
 
-      const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+      const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
       function formatPoint(point: HistoryPoint): string {
         const d = new Date(point.date + 'T00:00:00Z');
         const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });

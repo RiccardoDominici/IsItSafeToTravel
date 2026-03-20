@@ -13,7 +13,7 @@ const HISTORY_INDEX_PATH = join(TEST_SCORES_DIR, 'history-index.json');
 function makeScoredCountry(iso3: string, score: number): ScoredCountry {
   return {
     iso3,
-    name: { en: `Country ${iso3}`, it: `Paese ${iso3}`, es: `Pais ${iso3}` },
+    name: { en: `Country ${iso3}`, it: `Paese ${iso3}`, es: `Pais ${iso3}`, fr: `Pays ${iso3}`, pt: `Pais ${iso3}` },
     score,
     scoreDisplay: Math.round(score),
     pillars: [

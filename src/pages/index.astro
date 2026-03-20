@@ -14,14 +14,23 @@ export const prerender = true;
     <meta http-equiv="refresh" content="0;url=/en/" />
     <link rel="alternate" hreflang="en" href="https://isitsafetotravels.com/en/" />
     <link rel="alternate" hreflang="it" href="https://isitsafetotravels.com/it/" />
+    <link rel="alternate" hreflang="es" href="https://isitsafetotravels.com/es/" />
+    <link rel="alternate" hreflang="fr" href="https://isitsafetotravels.com/fr/" />
+    <link rel="alternate" hreflang="pt" href="https://isitsafetotravels.com/pt/" />
     <link rel="alternate" hreflang="x-default" href="https://isitsafetotravels.com/en/" />
     <title>Redirecting...</title>
     <script is:inline>
       // Detect browser language and redirect accordingly
       (function() {
-        var lang = navigator.language || navigator.userLanguage || '';
-        if (lang.toLowerCase().indexOf('it') === 0) {
+        var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
+        if (lang.indexOf('it') === 0) {
           window.location.replace('/it/');
+        } else if (lang.indexOf('es') === 0) {
+          window.location.replace('/es/');
+        } else if (lang.indexOf('fr') === 0) {
+          window.location.replace('/fr/');
+        } else if (lang.indexOf('pt') === 0) {
+          window.location.replace('/pt/');
         } else {
           window.location.replace('/en/');
         }

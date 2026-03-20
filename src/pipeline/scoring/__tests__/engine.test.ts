@@ -92,7 +92,7 @@ const TEST_WEIGHTS: WeightsConfig = {
 const TEST_COUNTRY: CountryEntry = {
   iso3: 'TST',
   iso2: 'TS',
-  name: { en: 'Testland', it: 'Testlandia', es: 'Testlandia' },
+  name: { en: 'Testland', it: 'Testlandia', es: 'Testlandia', fr: 'Testlande', pt: 'Testlandia' },
 };
 
 const TEST_SOURCES: SourceMeta[] = [];

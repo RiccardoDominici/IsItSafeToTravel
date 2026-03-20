@@ -674,7 +674,7 @@ for (const [iso3, points] of history.entries()) {
 
       function positionTooltip(entry: typeof currentTooltipDates[0]): void {
         const d = entry.date;
-        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
         const dateStr = d.toLocaleDateString(
           localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }

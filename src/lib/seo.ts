@@ -2,13 +2,15 @@ import type { ScoredCountry, PillarName } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 
 // Locale maps for consistent 3-language handling
-const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES' };
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
 
 // Pillar name translations for meta descriptions
 const pillarLabels: Record<Lang, Record<PillarName, string>> = {
   en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
   it: { conflict: 'conflitto', crime: 'criminalita', health: 'salute', governance: 'governance', environment: 'ambiente' },
   es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
+  fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
+  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
 };
 
 /**

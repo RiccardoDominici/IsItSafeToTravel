@@ -1,0 +1,789 @@
+---
+export const prerender = true;
+
+import Base from '../../layouts/Base.astro';
+import { loadLatestScores, loadHistoricalScores } from '../../lib/scores';
+import type { HistoryPoint } from '../../lib/scores';
+import { scoreToColor } from '../../lib/colors';
+import { useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../i18n/ui';
+
+const lang: Lang = 'fr';
+const t = useTranslations(lang);
+
+const scores = loadLatestScores();
+const history = loadHistoricalScores();
+
+const countryData = scores.map(country => ({
+  iso3: country.iso3,
+  name: country.name[lang],
+  score: country.score,
+  scoreDisplay: country.scoreDisplay,
+  pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),
+  color: scoreToColor(country.score),
+}));
+
+const historyData: Record<string, HistoryPoint[]> = {};
+for (const [iso3, points] of history.entries()) {
+  historyData[iso3] = points;
+}
+---
+
+<Base lang={lang} title={t('compare.title')} description={t('compare.description')}>
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
+      {t('compare.title')}
+    </h1>
+
+    <div id="compare-app"
+      data-countries={JSON.stringify(countryData)}
+      data-history={JSON.stringify(historyData)}
+      data-lang={lang}
+      data-t={JSON.stringify({
+        select_prompt: t('compare.select_prompt'),
+        empty_title: t('compare.empty_title'),
+        empty_suggestion: t('compare.empty_suggestion'),
+        max_reached: t('compare.max_reached'),
+        remove: t('compare.remove'),
+        score_card_label: t('compare.score_card_label'),
+        pillars_title: t('compare.pillars_title'),
+        trend_title: t('compare.trend_title'),
+        no_results: t('compare.no_results'),
+        add_country: t('compare.add_country'),
+        pillar_conflict: t('country.pillar.conflict'),
+        pillar_crime: t('country.pillar.crime'),
+        pillar_health: t('country.pillar.health'),
+        pillar_governance: t('country.pillar.governance'),
+        pillar_environment: t('country.pillar.environment'),
+      })}
+    >
+      <!-- Country Selector -->
+      <div id="selector-section" class="mb-8">
+        <div id="chips-container" class="flex flex-wrap items-center gap-2 mb-2">
+          <!-- Chips rendered by JS -->
+        </div>
+        <div id="search-wrapper" class="relative max-w-md">
+          <input
+            id="country-search-input"
+            type="text"
+            autocomplete="off"
+            autocapitalize="off"
+            placeholder={t('compare.select_prompt')}
+            class="w-full px-3 py-2 border border-sand-300 dark:border-sand-600 rounded-lg bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-400"
+          />
+          <div id="search-dropdown" class="hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg"></div>
+        </div>
+        <div id="empty-state"></div>
+      </div>
+
+      <!-- Score Cards -->
+      <div id="score-cards" class="mb-8">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Pillar Bars placeholder for Plan 02 -->
+      <div id="pillar-bars" class="mb-8"></div>
+
+      <!-- Trend Chart placeholder for Plan 02 -->
+      <div id="trend-overlay" class="mb-8"></div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  import Fuse from 'fuse.js';
+  import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat, brushX, select, easeCubicOut } from 'd3';
+
+  function smartDateFormat(dates: Date[]): (d: Date) => string {
+    const first = dates[0], last = dates[dates.length - 1];
+    if (first.getUTCFullYear() !== last.getUTCFullYear()) {
+      return utcFormat('%b %Y');
+    } else if (first.getUTCMonth() !== last.getUTCMonth()) {
+      return utcFormat('%b %d');
+    } else {
+      return utcFormat('%d');
+    }
+  }
+
+  const PALETTE = ['#c47a5a', '#4a9e8f', '#d4a03c', '#5b6abf', '#7a9e6a'];
+  const DASH_PATTERNS = ['', '8 4', '4 4', '12 4 4 4', '16 4'];
+
+  interface CountryItem {
+    iso3: string;
+    name: string;
+    score: number;
+    scoreDisplay: number;
+    pillars: Array<{ name: string; score: number }>;
+    color: string;
+  }
+
+  interface HistoryPoint {
+    date: string;
+    score: number;
+  }
+
+  let selectedCountries: CountryItem[] = [];
+  const app = document.getElementById('compare-app')!;
+  const allCountries: CountryItem[] = JSON.parse(app.dataset.countries!);
+  const allHistory: Record<string, HistoryPoint[]> = JSON.parse(app.dataset.history!);
+  const t = JSON.parse(app.dataset.t!);
+  const lang = app.dataset.lang!;
+
+  const fuse = new Fuse(allCountries, {
+    keys: ['name'],
+    threshold: 0.3,
+    minMatchCharLength: 2,
+    includeScore: true,
+  });
+
+  function readFromUrl(): void {
+    const params = new URLSearchParams(window.location.search);
+    const codes = params.get('c');
+    if (!codes) {
+      selectedCountries = [];
+      return;
+    }
+    const iso3List = codes.split(',').filter(Boolean).slice(0, 5);
+    selectedCountries = iso3List
+      .map(code => allCountries.find(c => c.iso3 === code.toUpperCase()))
+      .filter((c): c is CountryItem => c !== undefined);
+  }
+
+  function updateUrl(): void {
+    const url = new URL(window.location.href);
+    if (selectedCountries.length > 0) {
+      url.searchParams.set('c', selectedCountries.map(c => c.iso3).join(','));
+    } else {
+      url.searchParams.delete('c');
+    }
+    history.pushState(null, '', url.toString());
+  }
+
+  // Static HTML elements (never detached from DOM)
+  const searchInput = document.getElementById('country-search-input') as HTMLInputElement;
+  const searchDropdown = document.getElementById('search-dropdown')!;
+  const chipsContainer = document.getElementById('chips-container')!;
+  const searchWrapper = document.getElementById('search-wrapper')!;
+  const emptyState = document.getElementById('empty-state')!;
+
+  let activeIndex = -1;
+  let currentResults: CountryItem[] = [];
+  let blurTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  function showResults(items: CountryItem[]): void {
+    currentResults = items;
+    activeIndex = -1;
+    if (items.length === 0 && searchInput.value.length >= 2) {
+      searchDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
+      searchDropdown.classList.remove('hidden');
+      return;
+    }
+    if (items.length === 0) {
+      searchDropdown.classList.add('hidden');
+      return;
+    }
+    searchDropdown.innerHTML = items.slice(0, 8).map((item, i) =>
+      `<div class="px-4 py-3 min-h-[44px] cursor-pointer flex items-center justify-between hover:bg-sand-100 dark:hover:bg-sand-700 text-sm text-sand-800 dark:text-sand-100" data-index="${i}">
+        <span>${item.name}</span>
+        <span class="inline-flex items-center gap-1 text-xs font-medium"><span class="w-2.5 h-2.5 rounded-full" style="background:${item.color}"></span>${item.scoreDisplay}/10</span>
+      </div>`
+    ).join('');
+    searchDropdown.classList.remove('hidden');
+    searchDropdown.querySelectorAll('[data-index]').forEach(el => {
+      el.addEventListener('mousedown', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        if (blurTimeout) { clearTimeout(blurTimeout); blurTimeout = null; }
+        const idx = parseInt(el.getAttribute('data-index')!);
+        selectCountry(currentResults[idx]);
+      });
+    });
+  }
+
+  function setActive(index: number): void {
+    const items = searchDropdown.querySelectorAll('[data-index]');
+    items.forEach((el, i) => {
+      el.classList.toggle('bg-sand-100', i === index);
+      el.classList.toggle('dark:bg-sand-700', i === index);
+    });
+    activeIndex = index;
+  }
+
+  function selectCountry(country: CountryItem): void {
+    if (selectedCountries.length >= 5) return;
+    if (selectedCountries.some(c => c.iso3 === country.iso3)) return;
+    selectedCountries.push(country);
+    searchInput.value = '';
+    searchDropdown.classList.add('hidden');
+    currentResults = [];
+    updateUrl();
+    render();
+  }
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.trim();
+    if (query.length < 2) {
+      searchDropdown.classList.add('hidden');
+      currentResults = [];
+      return;
+    }
+    const selectedIso3s = new Set(selectedCountries.map(c => c.iso3));
+    const results = fuse.search(query)
+      .map(r => r.item)
+      .filter(item => !selectedIso3s.has(item.iso3));
+    showResults(results);
+  });
+
+  searchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      searchDropdown.classList.add('hidden');
+      searchInput.blur();
+      return;
+    }
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (currentResults.length > 0) {
+        const maxIdx = Math.min(currentResults.length, 8) - 1;
+        setActive(Math.min(activeIndex + 1, maxIdx));
+      }
+    }
+    if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (currentResults.length > 0) setActive(Math.max(activeIndex - 1, 0));
+    }
+    if (e.key === 'Enter' && activeIndex >= 0 && currentResults[activeIndex]) {
+      selectCountry(currentResults[activeIndex]);
+    }
+  });
+
+  searchInput.addEventListener('blur', () => {
+    blurTimeout = setTimeout(() => {
+      searchDropdown.classList.add('hidden');
+    }, 200);
+  });
+
+  searchInput.addEventListener('focus', () => {
+    if (blurTimeout) { clearTimeout(blurTimeout); blurTimeout = null; }
+  });
+
+  function renderSelector(): void {
+    // Only update chips — input is always in the static HTML
+    chipsContainer.innerHTML = '';
+
+    selectedCountries.forEach((country, index) => {
+      const chip = document.createElement('span');
+      chip.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium text-white';
+      chip.style.backgroundColor = PALETTE[index % PALETTE.length];
+      chip.innerHTML = `${country.name} <button class="ml-1 hover:opacity-70 text-lg leading-none" aria-label="${t.remove.replace('{name}', country.name)}">&times;</button>`;
+      chip.querySelector('button')!.addEventListener('click', () => {
+        selectedCountries = selectedCountries.filter(c => c.iso3 !== country.iso3);
+        updateUrl();
+        render();
+      });
+      chipsContainer.appendChild(chip);
+    });
+
+    // Show/hide input and max message
+    if (selectedCountries.length >= 5) {
+      searchWrapper.classList.add('hidden');
+    } else {
+      searchWrapper.classList.remove('hidden');
+      searchInput.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
+    }
+
+    // Empty state with suggestions
+    if (selectedCountries.length === 0) {
+      emptyState.innerHTML = `
+        <div class="text-center py-12 text-sand-500 dark:text-sand-400">
+          <p class="text-lg mb-3">${t.empty_title}</p>
+          <p class="text-sm mb-4">${t.empty_suggestion}</p>
+          <div class="flex justify-center gap-3">
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">Italy vs France</button>
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">Japan vs Australia</button>
+          </div>
+        </div>
+      `;
+      emptyState.querySelectorAll('[data-suggest]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const codes = btn.getAttribute('data-suggest')!.split(',');
+          selectedCountries = codes
+            .map(code => allCountries.find(c => c.iso3 === code))
+            .filter((c): c is CountryItem => c !== undefined);
+          updateUrl();
+          render();
+        });
+      });
+    } else {
+      emptyState.innerHTML = '';
+    }
+  }
+
+  function renderScoreCards(): void {
+    const section = document.getElementById('score-cards')!;
+    section.innerHTML = '';
+    if (selectedCountries.length === 0) return;
+
+    const heading = document.createElement('h2');
+    heading.className = 'text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4';
+    heading.textContent = t.score_card_label;
+    section.appendChild(heading);
+
+    const grid = document.createElement('div');
+    grid.className = 'grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4';
+
+    selectedCountries.forEach((country) => {
+      const card = document.createElement('div');
+      card.className = 'text-center p-4 rounded-xl shadow-md bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700';
+      card.innerHTML = `
+        <h3 class="text-sm font-medium text-sand-600 dark:text-sand-400 mb-2 truncate">${country.name}</h3>
+        <div class="inline-flex flex-col items-center justify-center rounded-xl px-4 py-3" style="background-color: ${country.color}; color: #fff;">
+          <span class="text-3xl font-heading font-bold">${country.scoreDisplay}</span>
+          <span class="text-xs opacity-90">${country.score.toFixed(1)}/10</span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+
+    section.appendChild(grid);
+  }
+
+  const pillarLabels: Record<string, string> = {
+    conflict: t.pillar_conflict,
+    crime: t.pillar_crime,
+    health: t.pillar_health,
+    governance: t.pillar_governance,
+    environment: t.pillar_environment,
+  };
+
+  const PILLAR_NAMES = ['conflict', 'crime', 'health', 'governance', 'environment'];
+
+  function renderPillarBars(): void {
+    const section = document.getElementById('pillar-bars')!;
+    section.innerHTML = '';
+    if (selectedCountries.length === 0) return;
+
+    const heading = document.createElement('h2');
+    heading.className = 'text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4';
+    heading.textContent = t.pillars_title;
+    section.appendChild(heading);
+
+    PILLAR_NAMES.forEach(pillarName => {
+      const group = document.createElement('div');
+      group.className = 'mb-5';
+
+      const label = document.createElement('h3');
+      label.className = 'text-sm font-medium text-sand-600 dark:text-sand-400 mb-2';
+      label.textContent = pillarLabels[pillarName] || pillarName;
+      group.appendChild(label);
+
+      const bars = document.createElement('div');
+      bars.className = 'space-y-1.5';
+
+      selectedCountries.forEach((country, i) => {
+        const pillar = country.pillars.find(p => p.name === pillarName);
+        const score = pillar ? pillar.score : 0;
+        const displayScore = (score * 10).toFixed(1);
+
+        const row = document.createElement('div');
+        row.className = 'flex items-center gap-2';
+        row.innerHTML = `
+          <span class="w-20 shrink-0 text-xs text-sand-500 dark:text-sand-400 text-right truncate">${country.name}</span>
+          <div class="flex-1 h-5 bg-sand-200 dark:bg-sand-700 rounded">
+            <div class="h-5 rounded transition-all duration-300" style="width: ${score * 100}%; background-color: ${PALETTE[i % PALETTE.length]}; min-width: 2px;"></div>
+          </div>
+          <span class="w-12 shrink-0 text-xs font-medium text-sand-700 dark:text-sand-300 text-right">${displayScore}/10</span>
+        `;
+        bars.appendChild(row);
+      });
+
+      group.appendChild(bars);
+      section.appendChild(group);
+    });
+  }
+
+  function renderTrendChart(): void {
+    const section = document.getElementById('trend-overlay')!;
+    section.innerHTML = '';
+    if (selectedCountries.length === 0) return;
+
+    // Check if any selected country has history data
+    const fullCountriesWithHistory = selectedCountries.filter(c => {
+      const hist = allHistory[c.iso3];
+      return hist && hist.length >= 2;
+    });
+
+    const heading = document.createElement('h2');
+    heading.className = 'text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4';
+    heading.textContent = t.trend_title;
+
+    if (fullCountriesWithHistory.length === 0) {
+      section.appendChild(heading);
+      const msg = document.createElement('p');
+      msg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
+      msg.textContent = 'Historical data is still accumulating. Check back soon.';
+      section.appendChild(msg);
+      return;
+    }
+
+    // Reset button (hidden initially)
+    const resetBtn = document.createElement('button');
+    resetBtn.className = 'hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1';
+    resetBtn.type = 'button';
+    resetBtn.textContent = 'Reset';
+
+    // Chart wrapper
+    const chartWrapper = document.createElement('div');
+    chartWrapper.className = 'relative';
+
+    section.appendChild(heading);
+    section.appendChild(resetBtn);
+    section.appendChild(chartWrapper);
+
+    // Current scales and tooltip data (updated on each renderInner)
+    let currentX: ReturnType<typeof scaleTime<number, number>>;
+    let currentTooltipDates: Array<{ date: Date; scores: Array<{ name: string; score: number; color: string }> }> = [];
+
+    // Pinned tooltip state
+    let pinnedEntry: typeof currentTooltipDates[0] | null = null;
+
+    // Slope computation for magnet snap on compare tooltips
+    function computeCompareSlopes(tooltipDates: typeof currentTooltipDates): number[] {
+      const slopes: number[] = [];
+      for (let i = 0; i < tooltipDates.length; i++) {
+        let maxSlope = 0;
+        const avgScore = tooltipDates[i].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i].scores.length;
+        if (i > 0) {
+          const prevAvg = tooltipDates[i - 1].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i - 1].scores.length;
+          maxSlope = Math.abs(avgScore - prevAvg);
+        }
+        if (i < tooltipDates.length - 1) {
+          const nextAvg = tooltipDates[i + 1].scores.reduce((a, s) => a + s.score, 0) / tooltipDates[i + 1].scores.length;
+          maxSlope = Math.max(maxSlope, Math.abs(avgScore - nextAvg));
+        }
+        slopes.push(maxSlope);
+      }
+      return slopes;
+    }
+
+    let currentCompareSlopes: number[] = [];
+    let avgCompareSlope = 0;
+
+    function findNearestEntry(mouseX: number): typeof currentTooltipDates[0] {
+      let nearest = currentTooltipDates[0];
+      let minDist = Infinity;
+      for (let i = 0; i < currentTooltipDates.length; i++) {
+        const entryX = currentX(currentTooltipDates[i].date);
+        const radius = currentCompareSlopes[i] > avgCompareSlope ? 2 : 1;
+        const dist = Math.abs(entryX - mouseX) / radius;
+        if (dist < minDist) { minDist = dist; nearest = currentTooltipDates[i]; }
+      }
+      return nearest;
+    }
+
+    function renderInner(dateRange: [Date, Date] | null): void {
+      const width = 800;
+      const height = 300;
+      const margin = { top: 20, right: 120, bottom: 40, left: 50 };
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      pinnedEntry = null;
+
+      // Collect filtered histories for all countries
+      const allDates: Date[] = [];
+      const filteredHistories: Map<string, HistoryPoint[]> = new Map();
+
+      fullCountriesWithHistory.forEach(c => {
+        const hist = allHistory[c.iso3];
+        if (!hist) return;
+        let filtered = hist;
+        if (dateRange) {
+          filtered = hist.filter(p => {
+            const d = new Date(p.date + 'T00:00:00Z');
+            return d >= dateRange[0] && d <= dateRange[1];
+          });
+        }
+        if (filtered.length < 2) filtered = hist; // fallback if range too narrow
+        filteredHistories.set(c.iso3, filtered);
+        filtered.forEach(p => allDates.push(new Date(p.date + 'T00:00:00Z')));
+      });
+      allDates.sort((a, b) => a.getTime() - b.getTime());
+
+      if (allDates.length === 0) return;
+
+      const x = scaleTime()
+        .domain([allDates[0], allDates[allDates.length - 1]])
+        .range([0, innerWidth]);
+      currentX = x;
+
+      // Compute dynamic Y domain from all filtered scores
+      const allScores: number[] = [];
+      filteredHistories.forEach(hist => hist.forEach(p => allScores.push(p.score)));
+      const minScore = Math.min(...allScores);
+      const maxScore = Math.max(...allScores);
+      const scoreRange = maxScore - minScore;
+      const yPad = Math.max(scoreRange * 0.2, 0.2);
+      const yDomainMin = Math.max(1, Math.floor((minScore - yPad) * 2) / 2);
+      const yDomainMax = Math.min(10, Math.ceil((maxScore + yPad) * 2) / 2);
+
+      const y = scaleLinear()
+        .domain([yDomainMin, yDomainMax])
+        .range([innerHeight, 0]);
+
+      const lineGen = d3Line<HistoryPoint>()
+        .x(d => x(new Date(d.date + 'T00:00:00Z')))
+        .y(d => y(d.score));
+
+      // Y gridlines and axis labels (dynamic)
+      const yTickCount = 5;
+      const yTickStep = (yDomainMax - yDomainMin) / (yTickCount - 1);
+      let gridLines = '';
+      let yLabels = '';
+      for (let i = 0; i < yTickCount; i++) {
+        const val = yDomainMin + i * yTickStep;
+        const yPos = y(val);
+        gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
+        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+      }
+
+      // X axis ticks - smart format
+      const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));
+      uniqueDates.sort((a, b) => a.getTime() - b.getTime());
+      const tickCount = Math.min(6, uniqueDates.length);
+      const fmt = smartDateFormat(uniqueDates);
+      let xLabels = '';
+      for (let i = 0; i < tickCount; i++) {
+        const idx = Math.round((i / (tickCount - 1)) * (uniqueDates.length - 1));
+        const xPos = x(uniqueDates[idx]);
+        xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(uniqueDates[idx])}</text>`;
+      }
+
+      // Country paths (using filtered data)
+      let paths = '';
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        const pathData = lineGen(hist) ?? '';
+        paths += `<path class="country-path" d="${pathData}" fill="none" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" stroke-linejoin="round" stroke-linecap="round" />`;
+      });
+
+      // Legend
+      let legend = '';
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        legend += `<g transform="translate(0, ${i * 24})">
+          <line x1="0" y1="0" x2="20" y2="0" stroke="${PALETTE[i % PALETTE.length]}" stroke-width="2.5" stroke-dasharray="${DASH_PATTERNS[i % DASH_PATTERNS.length]}" />
+          <text x="26" y="4" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${country.name}</text>
+        </g>`;
+      });
+
+      // Build tooltip data from filtered histories
+      const dateScoreMap = new Map<number, { date: Date; scores: Array<{ name: string; score: number; color: string }> }>();
+      selectedCountries.forEach((country, i) => {
+        const hist = filteredHistories.get(country.iso3);
+        if (!hist || hist.length < 2) return;
+        hist.forEach(p => {
+          const d = new Date(p.date + 'T00:00:00Z');
+          const key = d.getTime();
+          if (!dateScoreMap.has(key)) {
+            dateScoreMap.set(key, { date: d, scores: [] });
+          }
+          dateScoreMap.get(key)!.scores.push({
+            name: country.name,
+            score: p.score,
+            color: PALETTE[i % PALETTE.length],
+          });
+        });
+      });
+      currentTooltipDates = Array.from(dateScoreMap.values()).sort((a, b) => a.date.getTime() - b.date.getTime());
+
+      // Compute slopes for magnet snap
+      currentCompareSlopes = computeCompareSlopes(currentTooltipDates);
+      avgCompareSlope = currentCompareSlopes.length > 0 ? currentCompareSlopes.reduce((a, b) => a + b, 0) / currentCompareSlopes.length : 0;
+
+      // Store old paths for animation
+      const oldPaths: string[] = [];
+      chartWrapper.querySelectorAll('.country-path').forEach(el => {
+        oldPaths.push(el.getAttribute('d') || '');
+      });
+
+      chartWrapper.innerHTML = `
+        <svg viewBox="0 0 ${width} ${height}" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label="${t.trend_title}">
+          <defs>
+            <clipPath id="compare-chart-clip">
+              <rect x="0" y="0" width="${innerWidth}" height="${innerHeight}"/>
+            </clipPath>
+          </defs>
+          <g transform="translate(${margin.left}, ${margin.top})">
+            ${gridLines}
+            ${yLabels}
+            ${xLabels}
+            <g clip-path="url(#compare-chart-clip)">
+              ${paths}
+            </g>
+          </g>
+          <g transform="translate(${margin.left + innerWidth + 15}, ${margin.top})">
+            ${legend}
+          </g>
+        </svg>
+        <div class="trend-compare-tooltip absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+      `;
+
+      // Animate path transitions if we have old paths
+      if (oldPaths.length > 0) {
+        const newPathEls = chartWrapper.querySelectorAll('.country-path');
+        newPathEls.forEach((el, i) => {
+          if (oldPaths[i]) {
+            const newD = el.getAttribute('d') || '';
+            select(el).attr('d', oldPaths[i])
+              .transition().duration(300).ease(easeCubicOut)
+              .attr('d', newD);
+          }
+        });
+      }
+
+      // Re-attach tooltip handlers
+      const svg = chartWrapper.querySelector('svg')!;
+      const tooltip = chartWrapper.querySelector('.trend-compare-tooltip') as HTMLElement;
+      const viewBox = svg.viewBox.baseVal;
+
+      function removePinnedCircle(): void {
+        svg.querySelector('.pinned-circle')?.remove();
+      }
+
+      function drawPinnedCircle(entry: typeof currentTooltipDates[0]): void {
+        removePinnedCircle();
+        const chartG = svg.querySelector('g')!;
+        const cx = currentX(entry.date) ;
+        const avgScore = entry.scores.reduce((a, s) => a + s.score, 0) / entry.scores.length;
+        const cy = y(avgScore);
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('class', 'pinned-circle');
+        circle.setAttribute('cx', String(cx));
+        circle.setAttribute('cy', String(cy));
+        circle.setAttribute('r', '6');
+        circle.setAttribute('fill', '#c47a5a');
+        circle.setAttribute('stroke', '#fff');
+        circle.setAttribute('stroke-width', '2');
+        // Add to the first g (chart area)
+        const clipG = chartG.querySelector('g[clip-path]');
+        if (clipG) clipG.appendChild(circle);
+        else chartG.appendChild(circle);
+      }
+
+      function positionTooltip(entry: typeof currentTooltipDates[0]): void {
+        const d = entry.date;
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
+        const dateStr = d.toLocaleDateString(
+          localeMap[lang] || 'en-US',
+          { month: 'short', day: 'numeric', year: 'numeric' }
+        );
+        const scoresStr = entry.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
+        tooltip.textContent = `${dateStr}: ${scoresStr}`;
+        tooltip.classList.remove('hidden');
+
+        const rect = svg.getBoundingClientRect();
+        const scaleXRatio = rect.width / viewBox.width;
+        const tooltipX = (currentX(entry.date) + margin.left) * scaleXRatio - tooltip.offsetWidth / 2;
+        tooltip.style.left = `${Math.max(0, Math.min(tooltipX, rect.width - tooltip.offsetWidth))}px`;
+        tooltip.style.top = `${-tooltip.offsetHeight - 4}px`;
+      }
+
+      const showTooltipAtDate = (clientX: number) => {
+        if (pinnedEntry) return;
+
+        const rect = svg.getBoundingClientRect();
+        const mouseX = (clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+        const nearest = findNearestEntry(mouseX);
+        positionTooltip(nearest);
+      };
+
+      svg.addEventListener('mousemove', (e: MouseEvent) => showTooltipAtDate(e.clientX));
+      svg.addEventListener('mouseleave', () => {
+        if (!pinnedEntry) tooltip.classList.add('hidden');
+      });
+      svg.addEventListener('touchstart', (e: TouchEvent) => {
+        e.preventDefault();
+        showTooltipAtDate(e.touches[0].clientX);
+      }, { passive: false });
+
+      // Click to pin tooltip
+      svg.addEventListener('click', (e: MouseEvent) => {
+        const rect = svg.getBoundingClientRect();
+        const mouseX = (e.clientX - rect.left) / rect.width * viewBox.width - margin.left;
+
+        if (pinnedEntry) {
+          pinnedEntry = null;
+          removePinnedCircle();
+          tooltip.classList.add('hidden');
+          return;
+        }
+
+        const nearest = findNearestEntry(mouseX);
+        pinnedEntry = nearest;
+        positionTooltip(nearest);
+        drawPinnedCircle(nearest);
+      });
+
+      // Attach brush for zoom
+      const chartG = svg.querySelector('g')!;
+      const brush = brushX()
+        .extent([[0, 0], [innerWidth, innerHeight]])
+        .on('end', (event: any) => {
+          if (!event.selection) return;
+          const [x0, x1] = event.selection as [number, number];
+          const d0 = currentX.invert(x0);
+          const d1 = currentX.invert(x1);
+
+          let totalPoints = 0;
+          fullCountriesWithHistory.forEach(c => {
+            const hist = allHistory[c.iso3] || [];
+            totalPoints += hist.filter(p => {
+              const d = new Date(p.date + 'T00:00:00Z');
+              return d >= d0 && d <= d1;
+            }).length;
+          });
+          if (totalPoints < 2) return;
+
+          renderInner([d0, d1]);
+          resetBtn.classList.remove('hidden');
+        });
+
+      const brushG = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      brushG.setAttribute('class', 'brush');
+      chartG.appendChild(brushG);
+      select(brushG).call(brush);
+
+      // Style brush selection
+      const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
+      style.textContent = '.brush .selection { fill: #c47a5a; fill-opacity: 0.15; stroke: #c47a5a; stroke-opacity: 0.4; }';
+      svg.insertBefore(style, svg.firstChild);
+    }
+
+    // Reset handler
+    resetBtn.addEventListener('click', () => {
+      renderInner(null);
+      resetBtn.classList.add('hidden');
+    });
+
+    // Initial render
+    renderInner(null);
+  }
+
+  function render(): void {
+    renderSelector();
+    renderScoreCards();
+    renderPillarBars();
+    renderTrendChart();
+  }
+
+  readFromUrl();
+  render();
+
+  window.addEventListener('popstate', () => {
+    readFromUrl();
+    render();
+  });
+</script>
