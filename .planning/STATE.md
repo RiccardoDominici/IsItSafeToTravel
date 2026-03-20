@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Improvements & Category Filtering
 status: unknown
-stopped_at: Completed 13-01-PLAN.md
-last_updated: "2026-03-20T10:36:36.250Z"
+stopped_at: Completed 14-01-PLAN.md
+last_updated: "2026-03-20T10:48:13.046Z"
 progress:
   total_phases: 5
   completed_phases: 3
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -19,12 +19,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-20)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 13 — pillar-explanations
+**Current focus:** Phase 14 — category-filtering
 
 ## Current Position
 
-Phase: 13 (pillar-explanations) — COMPLETE
-Plan: 1 of 1 (done)
+Phase: 14 (category-filtering) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -52,6 +52,8 @@ Recent decisions affecting current work:
 - [Phase 12-interactive-charts]: Used innerHTML string building for chart structure with d3.select only for brush and transitions
 - [Phase 12]: Refactored comparison chart renderTrendChart into outer/inner pattern for brush zoom/reset cycle
 - [Phase 13]: Used native HTML details/summary for expandable pillar sections (zero JS)
+- [Phase 14-01]: Reused safetyColorScale with 0-1 to 1-10 conversion for pillar scores
+- [Phase 14-01]: Pill filter pattern with data-pillar attrs and recolorMap() function
 
 ### Pending Todos
 
@@ -63,6 +65,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-20T10:34:14.165Z
-Stopped at: Completed 13-01-PLAN.md
+Last session: 2026-03-20T10:51:52Z
+Stopped at: Completed 14-01-PLAN.md
 Resume file: None
