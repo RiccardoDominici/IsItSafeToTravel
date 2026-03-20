@@ -28,6 +28,8 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 - ✓ Country comparison page with side-by-side cards, pillar bars, overlay charts — v1.1
 - ✓ Historical data collection and consolidated history index — v1.1
 - ✓ Shareable comparison URLs — v1.1
+- ✓ Correct UTC date parsing on trend chart axes — v1.2 Phase 11
+- ✓ Comparison page search dropdown works reliably — v1.2 Phase 11
 
 ### Active
 
@@ -85,4 +87,4 @@ v1.1 introduced the first client-side JavaScript (comparison page selector, tool
 | Colorblind-accessible dash patterns | Color + dash pattern for trend lines ensures accessibility | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after v1.2 milestone start*
+*Last updated: 2026-03-20 after Phase 11 Bug Fixes complete*
