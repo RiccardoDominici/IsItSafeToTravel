@@ -108,7 +108,67 @@ Requirements for milestone v1.2: Improvements & Category Filtering.
 - [x] **LANG-02**: All 248 country names are available in Spanish
 - [x] **LANG-03**: Language switcher includes Spanish option
 
-## v2 Requirements
+## v2.0 Requirements
+
+Requirements for milestone v2.0: Production Ready.
+
+### Production Foundation
+
+- [ ] **PROD-01**: Site serves correct security headers (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy) via _headers file
+- [ ] **PROD-02**: robots.txt has correct sitemap URL (fix domain typo) and AI crawler directives
+- [ ] **PROD-03**: Site has /llms.txt file following llmstxt.org specification for LLM discoverability
+- [ ] **PROD-04**: Cloudflare Web Analytics is verified active (free, cookie-free)
+- [ ] **PROD-05**: Repository has FUNDING.yml for GitHub Sponsors visibility
+- [ ] **PROD-06**: Cache-Control headers are set appropriately (long-lived for assets, short for HTML)
+
+### Legal Compliance
+
+- [ ] **LEGL-01**: User can read a comprehensive privacy policy in all 5 languages documenting data practices, analytics, and zero-cookie architecture
+- [ ] **LEGL-02**: Legal/imprint page includes site operator identification and contact (GDPR Article 13)
+- [ ] **LEGL-03**: Privacy policy accurately describes Cloudflare Web Analytics usage and data processing
+- [ ] **LEGL-04**: Comprehensive legal research document created locally (not pushed to GitHub) covering GDPR, ePrivacy, Italian Garante requirements
+
+### SEO Enhancement
+
+- [ ] **SEO-01**: All pages display breadcrumb navigation UI component with locale-aware translated paths
+- [ ] **SEO-02**: BreadcrumbList JSON-LD schema is present on all country detail, comparison, and methodology pages
+- [ ] **SEO-03**: Organization JSON-LD schema is present on the homepage
+- [ ] **SEO-04**: FAQPage JSON-LD schema is present on the methodology page (leveraging expandable Q&A)
+- [ ] **SEO-05**: Root URL (/) redirects server-side via _redirects file instead of client-side JS
+
+### LLM Readability
+
+- [ ] **LLM-01**: /llms.txt exists with curated page list (homepage, methodology, sample countries)
+- [ ] **LLM-02**: AI crawlers (GPTBot, ClaudeBot, PerplexityBot, etc.) are explicitly allowed in robots.txt
+- [ ] **LLM-03**: Semantic HTML audit ensures proper heading hierarchy, landmarks (<main>, <nav>, <article>)
+
+### Donations
+
+- [ ] **DONA-01**: User can access a donations page in all 5 languages explaining what donations fund
+- [ ] **DONA-02**: Donations page links to GitHub Sponsors (primary, 0% fee) and Ko-fi (secondary, 0% fee)
+- [ ] **DONA-03**: Footer includes a donation link visible on all pages
+- [ ] **DONA-04**: Donations page shows funding transparency (hosting costs, domain costs)
+
+### Error Pages
+
+- [ ] **ERR-01**: User sees a custom, branded 404 page with search suggestion and home link
+- [ ] **ERR-02**: 404 page detects language from URL path and displays in the correct language
+
+### Accessibility
+
+- [ ] **A11Y-01**: Site has a skip navigation link visible on keyboard focus
+- [ ] **A11Y-02**: All interactive elements have visible focus indicators
+- [ ] **A11Y-03**: D3 charts and map have appropriate ARIA labels and role="img"
+- [ ] **A11Y-04**: Color contrast meets WCAG 2.1 AA (4.5:1 normal text, 3:1 large text) in both light and dark mode
+- [ ] **A11Y-05**: Search and comparison inputs have proper labels (label or aria-label)
+- [ ] **A11Y-06**: Heading hierarchy is correct (one H1 per page, no skipped levels)
+
+### CSP Hardening
+
+- [ ] **CSP-01**: Content-Security-Policy header is deployed (report-only first, then enforced)
+- [ ] **CSP-02**: CSP does not break D3 charts, map, or dark mode toggle
+
+## v3 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
 
@@ -124,11 +184,14 @@ Deferred to future release. Tracked but not in current roadmap.
 
 ### Features
 
-- **FEAT-02**: Additional languages (French, German)
 - **FEAT-03**: Interactive weight adjustment sliders for personalized scoring
 - **FEAT-04**: City-level safety pages for major cities
 - **FEAT-05**: Embeddable map widget for travel blogs
 - **FEAT-06**: RSS feed for score change notifications
+- **FEAT-07**: D3 map full keyboard navigation (highest effort a11y item)
+- **FEAT-08**: Dataset schema markup (schema.org/Dataset)
+- **FEAT-09**: Static JSON data endpoint (/api/scores.json) for developers
+- **FEAT-10**: /llms-full.txt auto-generated at build time
 
 ## Out of Scope
 
@@ -143,6 +206,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | Neighborhood-level granularity | Requires paid/proprietary data, free sources operate at country/region level |
 | Scope buttons (7d/30d/90d/All) for charts | User chose drag-to-zoom instead; buttons can be added later if needed |
 | Per-pillar historical trends in comparison page | Comparison page already groups bars by pillar; limited added value |
+| Cookie consent banner | Site sets zero cookies; banner legally unnecessary and UX-damaging |
+| Google Analytics | Italian Garante ruled non-compliant (June 2022); use CF Web Analytics instead |
+| Custom 5xx error pages | Requires Cloudflare Business plan; accept CF default |
+| Self-hosted analytics | Unnecessary given CF Web Analytics; exceeds budget |
 
 ## Traceability
 
@@ -228,4 +295,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-20 after v1.2 roadmap creation*
+*Last updated: 2026-03-21 after v2.0 requirements definition*
