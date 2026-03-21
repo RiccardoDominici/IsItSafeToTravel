@@ -5,12 +5,19 @@ import SafetyMap from '../../components/SafetyMap.astro';
 import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
-import { buildHomepageJsonLd } from '../../lib/seo';
+import { buildHomepageJsonLd, buildOrganizationJsonLd } from '../../lib/seo';
 
 const lang: Lang = 'fr';
 const t = useTranslations(lang);
 
-const jsonLd = buildHomepageJsonLd('https://isitsafetotravel.com', lang);
+const siteUrl = 'https://isitsafetotravel.com';
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { ...buildHomepageJsonLd(siteUrl, lang), '@context': undefined },
+    { ...buildOrganizationJsonLd(siteUrl), '@context': undefined },
+  ],
+};
 ---
 
 <Base lang={lang} jsonLd={jsonLd} hideFooter>
