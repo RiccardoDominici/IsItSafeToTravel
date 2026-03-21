@@ -11,12 +11,15 @@ import AdvisorySection from '../../../components/country/AdvisorySection.astro';
 import TrendChart from '../../../components/country/TrendChart.astro';
 
 import SourcesList from '../../../components/country/SourcesList.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
 
 const lang: Lang = 'fr';
+const r = routes[lang];
 const t = useTranslations(lang);
 
 export const getStaticPaths: GetStaticPaths = async () => {
@@ -46,6 +49,11 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
 ---
 <Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: t('nav.countries'), href: `/${lang}/` },
+      { label: country.name[lang], href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
+    ]} />
     <ScoreHero country={country} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
