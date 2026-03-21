@@ -2,4 +2,26 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://isitsafetotravels.com/sitemap-index.xml
+# AI Crawlers - explicitly allowed
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Amazonbot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+# LLM-readable site description
+# See: /llms.txt
+
+Sitemap: https://isitsafetotravel.com/sitemap-index.xml

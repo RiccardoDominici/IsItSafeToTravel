@@ -4,7 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://isitsafetotravels.com',
+  site: 'https://isitsafetotravel.com',
   outDir: './dist/client',
 
   integrations: [
