@@ -42,7 +42,7 @@
 
 </details>
 
-### 🚧 v2.0 Production Ready (In Progress)
+### v2.0 Production Ready (In Progress)
 
 **Milestone Goal:** Transform the site into a production-ready platform with legal compliance, SEO perfection, LLM readability, monitoring, and donation support.
 
@@ -64,11 +64,11 @@
   3. /llms.txt is accessible and contains a curated page list following the llmstxt.org specification
   4. Cloudflare Web Analytics dashboard shows active data collection for the site
   5. Static assets (JS, CSS, images) return long-lived Cache-Control headers; HTML pages return short-lived cache headers
-**Plans**: TBD
+**Plans**: 2 plans
 
 Plans:
-- [ ] 16-01: TBD
-- [ ] 16-02: TBD
+- [ ] 16-01-PLAN.md — Security headers, cache-control, robots.txt fix, AI crawler directives, domain URL fix
+- [ ] 16-02-PLAN.md — llms.txt for LLM discoverability, FUNDING.yml, analytics verification
 
 ### Phase 17: Legal Compliance
 **Goal**: Users in any language can read an accurate, complete privacy policy and identify the site operator, satisfying GDPR requirements
@@ -155,7 +155,7 @@ Phases execute in numeric order: 16 → 17 → 18 → 19 → 20
 | 13. Pillar Explanations | v1.2 | 1/1 | Complete | 2026-03-20 |
 | 14. Category Filtering | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 15. Spanish Language | v1.2 | 2/2 | Complete | 2026-03-20 |
-| 16. Production Foundation | v2.0 | 0/? | Not started | - |
+| 16. Production Foundation | v2.0 | 0/2 | Not started | - |
 | 17. Legal Compliance | v2.0 | 0/? | Not started | - |
 | 18. SEO Enhancement | v2.0 | 0/? | Not started | - |
 | 19. Donations and Error Pages | v2.0 | 0/? | Not started | - |
