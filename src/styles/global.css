@@ -67,3 +67,15 @@ p a, li a, span a, td a {
 .dark {
   color-scheme: dark;
 }
+
+/* Focus indicators for accessibility (WCAG 2.1 AA) */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #c2410c; /* terracotta-700 */
+  outline-offset: 2px;
+  border-radius: 2px;
+}
