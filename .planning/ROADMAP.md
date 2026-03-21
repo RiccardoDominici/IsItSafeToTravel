@@ -155,7 +155,7 @@ Phases execute in numeric order: 16 → 17 → 18 → 19 → 20
 | 14. Category Filtering | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 15. Spanish Language | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 16. Production Foundation | v2.0 | 2/2 | Complete    | 2026-03-21 |
-| 17. Legal Compliance | v2.0 | 1/1 | Complete | 2026-03-21 |
+| 17. Legal Compliance | v2.0 | 1/1 | Complete    | 2026-03-21 |
 | 18. SEO Enhancement | v2.0 | 0/? | Not started | - |
 | 19. Donations and Error Pages | v2.0 | 0/? | Not started | - |
 | 20. Accessibility and CSP Hardening | v2.0 | 0/? | Not started | - |
