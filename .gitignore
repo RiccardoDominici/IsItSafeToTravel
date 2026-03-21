@@ -33,3 +33,6 @@ npm-debug.log*
 # Pipeline raw data temp files
 data/raw/**/*.tmp
 data/raw/**/*.partial
+
+# Legal research (local only, not published)
+.legal-research/
