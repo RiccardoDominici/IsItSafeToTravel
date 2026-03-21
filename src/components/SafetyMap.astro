@@ -35,6 +35,8 @@ const countryRoute = routes[lang].country;
 <div
   id="safety-map-container"
   class="relative w-full h-full overflow-hidden"
+  role="img"
+  aria-label="Interactive world map showing safety scores by country"
   data-lang={lang}
   data-translations={JSON.stringify(translations)}
   data-country-route={countryRoute}
