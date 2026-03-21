@@ -1,12 +1,15 @@
 ---
 export const prerender = true;
 import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
 import weightsConfig from '../../../pipeline/config/weights.json';
 
 const lang: Lang = 'fr';
+const r = routes[lang];
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const jsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang);
@@ -31,6 +34,10 @@ const pillarI18n: Record<string, string> = {
 ---
 <Base lang={lang} title={t('methodology.title')} description={t('methodology.description')} jsonLd={jsonLd}>
   <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: t('nav.methodology'), href: `/${lang}/${r.methodology}/` },
+    ]} />
     <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('methodology.title')}</h1>
 
     <!-- Overview -->

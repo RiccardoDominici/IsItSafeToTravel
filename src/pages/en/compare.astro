@@ -2,6 +2,7 @@
 export const prerender = true;
 
 import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
 import { loadLatestScores, loadHistoricalScores } from '../../lib/scores';
 import type { HistoryPoint } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
@@ -31,6 +32,10 @@ for (const [iso3, points] of history.entries()) {
 
 <Base lang={lang} title={t('compare.title')} description={t('compare.description')}>
   <div class="max-w-6xl mx-auto px-4 py-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: t('nav.compare'), href: `/${lang}/compare/` },
+    ]} />
     <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
       {t('compare.title')}
     </h1>
