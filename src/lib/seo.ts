@@ -176,3 +176,52 @@ export function buildWebPageJsonLd(title: string, description: string, canonical
     inLanguage: localeMap[lang],
   };
 }
+
+/**
+ * Build BreadcrumbList JSON-LD structured data.
+ * Each item becomes a ListItem with position, name, and @id (url).
+ */
+export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+/**
+ * Build Organization JSON-LD structured data for the homepage.
+ */
+export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'IsItSafeToTravel',
+    url: siteUrl,
+    description: 'Free travel safety platform providing transparent, data-driven safety scores for 200+ countries worldwide.',
+  };
+}
+
+/**
+ * Build FAQPage JSON-LD structured data.
+ * Each question/answer pair becomes a Question with acceptedAnswer.
+ */
+export function buildFaqPageJsonLd(questions: { question: string; answer: string }[]): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: questions.map((qa) => ({
+      '@type': 'Question',
+      name: qa.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: qa.answer,
+      },
+    })),
+  };
+}
