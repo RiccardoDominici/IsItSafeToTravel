@@ -293,6 +293,48 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 11
 - Unmapped: 0
 
+### v2.0 Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| PROD-01 | Phase 16 | Pending |
+| PROD-02 | Phase 16 | Pending |
+| PROD-03 | Phase 16 | Pending |
+| PROD-04 | Phase 16 | Pending |
+| PROD-05 | Phase 16 | Pending |
+| PROD-06 | Phase 16 | Pending |
+| LLM-01 | Phase 16 | Pending |
+| LLM-02 | Phase 16 | Pending |
+| LEGL-01 | Phase 17 | Pending |
+| LEGL-02 | Phase 17 | Pending |
+| LEGL-03 | Phase 17 | Pending |
+| LEGL-04 | Phase 17 | Pending |
+| SEO-01 | Phase 18 | Pending |
+| SEO-02 | Phase 18 | Pending |
+| SEO-03 | Phase 18 | Pending |
+| SEO-04 | Phase 18 | Pending |
+| SEO-05 | Phase 18 | Pending |
+| LLM-03 | Phase 18 | Pending |
+| DONA-01 | Phase 19 | Pending |
+| DONA-02 | Phase 19 | Pending |
+| DONA-03 | Phase 19 | Pending |
+| DONA-04 | Phase 19 | Pending |
+| ERR-01 | Phase 19 | Pending |
+| ERR-02 | Phase 19 | Pending |
+| A11Y-01 | Phase 20 | Pending |
+| A11Y-02 | Phase 20 | Pending |
+| A11Y-03 | Phase 20 | Pending |
+| A11Y-04 | Phase 20 | Pending |
+| A11Y-05 | Phase 20 | Pending |
+| A11Y-06 | Phase 20 | Pending |
+| CSP-01 | Phase 20 | Pending |
+| CSP-02 | Phase 20 | Pending |
+
+**Coverage (v2.0):**
+- v2.0 requirements: 32 total
+- Mapped to phases: 32
+- Unmapped: 0
+
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-21 after v2.0 requirements definition*
+*Last updated: 2026-03-21 after v2.0 roadmap creation*

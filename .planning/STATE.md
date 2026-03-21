@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Production Ready
-status: defining_requirements
-stopped_at: Milestone v2.0 started
+status: ready_to_plan
+stopped_at: v2.0 roadmap created, ready to plan Phase 16
 last_updated: "2026-03-21T00:00:00.000Z"
 progress:
-  total_phases: 0
+  total_phases: 5
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -19,14 +19,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Defining v2.0 requirements
+**Current focus:** Phase 16 — Production Foundation
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-03-21 — Milestone v2.0 started
+Phase: 16 of 20 (Production Foundation)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-03-21 — v2.0 roadmap created
+
+Progress: [░░░░░░░░░░] 0% (0/5 v2.0 phases)
 
 ## Performance Metrics
 
@@ -42,10 +44,10 @@ Last activity: 2026-03-21 — Milestone v2.0 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- [v1.2 Roadmap]: Bug fixes first to establish clean baseline before new features
-- [v1.2 Roadmap]: TrendChart must migrate from build-time SVG to client-side D3 (prerequisite for CHART-01/02)
-- [v1.2 Roadmap]: FILT-02 requires pipeline extension to store per-pillar history in history-index.json
-- [v1.2 Roadmap]: Spanish i18n requires CountryEntry.name type change from {en, it} to Record<Lang, string>
+- [v2.0 Research]: Zero new npm dependencies — all features via config files and existing Astro patterns
+- [v2.0 Research]: No cookie consent banner — site sets zero cookies; banner legally unnecessary
+- [v2.0 Research]: Cloudflare Web Analytics only — Google Analytics prohibited under Italian Garante ruling
+- [v2.0 Research]: Ko-fi external link only — no embedded iframes or payment SDKs
 
 ### Pending Todos
 
@@ -53,7 +55,9 @@ None yet.
 
 ### Blockers/Concerns
 
-- Research: Inline data embedding for comparison page needs monitoring (~1MB threshold at ~6 months of daily data)
+- [CRITICAL] Domain typo in robots.txt and astro.config.mjs ("isitsafetotravels.com" vs "isitsafetotravel.com") — must verify against DNS before Phase 18 SEO work
+- [Phase 20] Astro 6 experimental CSP for SSG has known limitations with is:inline scripts — needs prototype in feature branch
+- [Carry-over] Inline data embedding for comparison page needs monitoring (~1MB threshold at ~6 months of daily data)
 
 ### Quick Tasks Completed
 
@@ -63,7 +67,7 @@ None yet.
 
 ## Session Continuity
 
-Last activity: 2026-03-21 - Started milestone v2.0 Production Ready
+Last activity: 2026-03-21 — v2.0 roadmap created
 Last session: 2026-03-21T00:00:00.000Z
-Stopped at: Milestone v2.0 started
+Stopped at: v2.0 roadmap created, ready to plan Phase 16
 Resume file: None
