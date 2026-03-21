@@ -1,0 +1,66 @@
+---
+export const prerender = true;
+import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+import { buildWebPageJsonLd } from '../../../lib/seo';
+
+const lang: Lang = 'es';
+const t = useTranslations(lang);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const jsonLd = buildWebPageJsonLd(t('donate.title'), t('donate.description'), canonicalUrl, lang);
+
+const breadcrumbItems = [
+  { label: t('nav.home'), href: `/${lang}/` },
+  { label: t('nav.donate'), href: `/${lang}/donar/` },
+];
+---
+<Base lang={lang} title={t('donate.title')} description={t('donate.description')} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumb lang={lang} items={breadcrumbItems} />
+
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-6">{t('donate.heading')}</h1>
+    <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-10 text-lg">{t('donate.intro')}</p>
+
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-4">{t('donate.costs_title')}</h2>
+      <ul class="list-disc list-inside space-y-2 text-sand-700 dark:text-sand-300">
+        <li>{t('donate.costs_domain')}</li>
+        <li>{t('donate.costs_hosting')}</li>
+        <li>{t('donate.costs_data')}</li>
+        <li>{t('donate.costs_dev')}</li>
+      </ul>
+    </section>
+
+    <div class="grid md:grid-cols-2 gap-6 mb-10">
+      <div class="border border-sand-200 dark:border-sand-700 rounded-xl p-6 bg-sand-50 dark:bg-sand-800">
+        <h3 class="text-lg font-heading font-semibold text-sand-900 dark:text-sand-50 mb-2">{t('donate.github_title')}</h3>
+        <p class="text-sand-600 dark:text-sand-400 mb-4">{t('donate.github_desc')}</p>
+        <a
+          href="https://github.com/sponsors/RiccardoDominici"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+        >
+          {t('donate.github_btn')}
+        </a>
+      </div>
+
+      <div class="border border-sand-200 dark:border-sand-700 rounded-xl p-6 bg-sand-50 dark:bg-sand-800">
+        <h3 class="text-lg font-heading font-semibold text-sand-900 dark:text-sand-50 mb-2">{t('donate.kofi_title')}</h3>
+        <p class="text-sand-600 dark:text-sand-400 mb-4">{t('donate.kofi_desc')}</p>
+        <a
+          href="https://ko-fi.com/isitsafetotravel"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-block bg-terracotta-500 hover:bg-terracotta-600 text-white font-semibold px-6 py-3 rounded-lg transition-colors"
+        >
+          {t('donate.kofi_btn')}
+        </a>
+      </div>
+    </div>
+
+    <p class="text-sand-600 dark:text-sand-400 text-center italic">{t('donate.thanks')}</p>
+  </div>
+</Base>
