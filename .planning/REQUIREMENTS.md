@@ -123,10 +123,10 @@ Requirements for milestone v2.0: Production Ready.
 
 ### Legal Compliance
 
-- [ ] **LEGL-01**: User can read a comprehensive privacy policy in all 5 languages documenting data practices, analytics, and zero-cookie architecture
-- [ ] **LEGL-02**: Legal/imprint page includes site operator identification and contact (GDPR Article 13)
-- [ ] **LEGL-03**: Privacy policy accurately describes Cloudflare Web Analytics usage and data processing
-- [ ] **LEGL-04**: Comprehensive legal research document created locally (not pushed to GitHub) covering GDPR, ePrivacy, Italian Garante requirements
+- [x] **LEGL-01**: User can read a comprehensive privacy policy in all 5 languages documenting data practices, analytics, and zero-cookie architecture
+- [x] **LEGL-02**: Legal/imprint page includes site operator identification and contact (GDPR Article 13)
+- [x] **LEGL-03**: Privacy policy accurately describes Cloudflare Web Analytics usage and data processing
+- [x] **LEGL-04**: Comprehensive legal research document created locally (not pushed to GitHub) covering GDPR, ePrivacy, Italian Garante requirements
 
 ### SEO Enhancement
 
@@ -305,10 +305,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | PROD-06 | Phase 16 | Pending |
 | LLM-01 | Phase 16 | Pending |
 | LLM-02 | Phase 16 | Pending |
-| LEGL-01 | Phase 17 | Pending |
-| LEGL-02 | Phase 17 | Pending |
-| LEGL-03 | Phase 17 | Pending |
-| LEGL-04 | Phase 17 | Pending |
+| LEGL-01 | Phase 17 | Complete |
+| LEGL-02 | Phase 17 | Complete |
+| LEGL-03 | Phase 17 | Complete |
+| LEGL-04 | Phase 17 | Complete |
 | SEO-01 | Phase 18 | Pending |
 | SEO-02 | Phase 18 | Pending |
 | SEO-03 | Phase 18 | Pending |

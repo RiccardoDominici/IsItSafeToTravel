@@ -47,7 +47,7 @@
 **Milestone Goal:** Transform the site into a production-ready platform with legal compliance, SEO perfection, LLM readability, monitoring, and donation support.
 
 - [x] **Phase 16: Production Foundation** — Security headers, robots.txt fix, llms.txt, analytics verification, FUNDING.yml, cache headers (completed 2026-03-21)
-- [ ] **Phase 17: Legal Compliance** — Privacy policy in 5 languages, imprint page, legal research document
+- [x] **Phase 17: Legal Compliance** — Privacy policy in 5 languages, imprint page, legal research document (completed 2026-03-21)
 - [ ] **Phase 18: SEO Enhancement** — Breadcrumb UI and schema, Organization schema, FAQ schema, root redirect, semantic HTML audit
 - [ ] **Phase 19: Donations and Error Pages** — Multilingual donations page, custom 404 pages, footer donation link
 - [ ] **Phase 20: Accessibility and CSP Hardening** — Skip nav, focus indicators, ARIA labels, color contrast, heading hierarchy, Content-Security-Policy
@@ -82,8 +82,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 17-01: TBD
-- [ ] 17-02: TBD
+- [x] 17-01-PLAN.md — Privacy policy, imprint sections, and legal research document
 
 ### Phase 18: SEO Enhancement
 **Goal**: All pages have breadcrumb navigation and structured data schemas that maximize rich snippet eligibility in search results
@@ -156,7 +155,7 @@ Phases execute in numeric order: 16 → 17 → 18 → 19 → 20
 | 14. Category Filtering | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 15. Spanish Language | v1.2 | 2/2 | Complete | 2026-03-20 |
 | 16. Production Foundation | v2.0 | 2/2 | Complete    | 2026-03-21 |
-| 17. Legal Compliance | v2.0 | 0/? | Not started | - |
+| 17. Legal Compliance | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 18. SEO Enhancement | v2.0 | 0/? | Not started | - |
 | 19. Donations and Error Pages | v2.0 | 0/? | Not started | - |
 | 20. Accessibility and CSP Hardening | v2.0 | 0/? | Not started | - |
