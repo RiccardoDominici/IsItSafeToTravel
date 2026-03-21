@@ -5,14 +5,26 @@ import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
-import { buildWebPageJsonLd } from '../../../lib/seo';
+import { buildWebPageJsonLd, buildFaqPageJsonLd } from '../../../lib/seo';
 import weightsConfig from '../../../pipeline/config/weights.json';
 
 const lang: Lang = 'fr';
 const r = routes[lang];
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const jsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang);
+const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang);
+const faqQuestions = weightsConfig.pillars.map(pillar => ({
+  question: t(`methodology.pillar.${pillar.name}.title` as any),
+  answer: t(`methodology.pillar.${pillar.name}.description` as any),
+}));
+const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { ...webPageJsonLd, '@context': undefined },
+    { ...faqJsonLd, '@context': undefined },
+  ],
+};
 
 // Data source metadata for the table
 const dataSources = [
