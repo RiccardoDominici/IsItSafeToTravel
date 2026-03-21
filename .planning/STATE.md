@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Production Ready
-status: unknown
-stopped_at: Completed 18-01 (SEO Enhancement)
-last_updated: "2026-03-21T12:52:43.658Z"
+status: in-progress
+stopped_at: Completed 19-01 (Donations and Error Pages)
+last_updated: "2026-03-21T14:17:00Z"
 last_activity: 2026-03-21
 progress:
   total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 4
+  completed_phases: 4
+  total_plans: 6
+  completed_plans: 5
 ---
 
 # Project State
@@ -20,11 +20,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 19 — Donations and Error Pages
+**Current focus:** Phase 20 — Accessibility and CSP Hardening
 
 ## Current Position
 
-Phase: 19
+Phase: 20
 Plan: Not started
 
 ## Performance Metrics
@@ -50,6 +50,8 @@ Recent decisions affecting current work:
 - [Phase 17]: Imprint has placeholder operator info - user must update with real name/email
 - [Phase 18]: @graph JSON-LD merge pattern for pages with multiple schemas
 - [Phase 18]: Cloudflare _redirects file for server-side root redirect
+- [Phase 19]: Single 404.astro with client-side language detection for Cloudflare Pages static hosting
+- [Phase 19]: Donation link uses terracotta color in footer to visually differentiate
 
 ### Pending Todos
 
@@ -70,6 +72,6 @@ None yet.
 ## Session Continuity
 
 Last activity: 2026-03-21
-Last session: 2026-03-21T13:50:00Z
-Stopped at: Completed 18-01 (SEO Enhancement)
+Last session: 2026-03-21T14:17:00Z
+Stopped at: Completed 19-01 (Donations and Error Pages)
 Resume file: None
