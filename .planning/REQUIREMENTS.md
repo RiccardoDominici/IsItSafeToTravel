@@ -156,17 +156,17 @@ Requirements for milestone v2.0: Production Ready.
 
 ### Accessibility
 
-- [ ] **A11Y-01**: Site has a skip navigation link visible on keyboard focus
-- [ ] **A11Y-02**: All interactive elements have visible focus indicators
-- [ ] **A11Y-03**: D3 charts and map have appropriate ARIA labels and role="img"
-- [ ] **A11Y-04**: Color contrast meets WCAG 2.1 AA (4.5:1 normal text, 3:1 large text) in both light and dark mode
-- [ ] **A11Y-05**: Search and comparison inputs have proper labels (label or aria-label)
-- [ ] **A11Y-06**: Heading hierarchy is correct (one H1 per page, no skipped levels)
+- [x] **A11Y-01**: Site has a skip navigation link visible on keyboard focus
+- [x] **A11Y-02**: All interactive elements have visible focus indicators
+- [x] **A11Y-03**: D3 charts and map have appropriate ARIA labels and role="img"
+- [x] **A11Y-04**: Color contrast meets WCAG 2.1 AA (4.5:1 normal text, 3:1 large text) in both light and dark mode
+- [x] **A11Y-05**: Search and comparison inputs have proper labels (label or aria-label)
+- [x] **A11Y-06**: Heading hierarchy is correct (one H1 per page, no skipped levels)
 
 ### CSP Hardening
 
-- [ ] **CSP-01**: Content-Security-Policy header is deployed (report-only first, then enforced)
-- [ ] **CSP-02**: CSP does not break D3 charts, map, or dark mode toggle
+- [x] **CSP-01**: Content-Security-Policy header is deployed (report-only first, then enforced)
+- [x] **CSP-02**: CSP does not break D3 charts, map, or dark mode toggle
 
 ## v3 Requirements
 
@@ -321,14 +321,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DONA-04 | Phase 19 | Pending |
 | ERR-01 | Phase 19 | Pending |
 | ERR-02 | Phase 19 | Pending |
-| A11Y-01 | Phase 20 | Pending |
-| A11Y-02 | Phase 20 | Pending |
-| A11Y-03 | Phase 20 | Pending |
-| A11Y-04 | Phase 20 | Pending |
-| A11Y-05 | Phase 20 | Pending |
-| A11Y-06 | Phase 20 | Pending |
-| CSP-01 | Phase 20 | Pending |
-| CSP-02 | Phase 20 | Pending |
+| A11Y-01 | Phase 20 | Complete |
+| A11Y-02 | Phase 20 | Complete |
+| A11Y-03 | Phase 20 | Complete |
+| A11Y-04 | Phase 20 | Complete |
+| A11Y-05 | Phase 20 | Complete |
+| A11Y-06 | Phase 20 | Complete |
+| CSP-01 | Phase 20 | Complete |
+| CSP-02 | Phase 20 | Complete |
 
 **Coverage (v2.0):**
 - v2.0 requirements: 32 total

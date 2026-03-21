@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Production Ready
 status: unknown
-stopped_at: Completed 19-01 (Donations and Error Pages)
-last_updated: "2026-03-21T13:18:35.608Z"
+stopped_at: Completed 20-01 (Accessibility and CSP Hardening)
+last_updated: "2026-03-21T13:28:29.396Z"
 last_activity: 2026-03-21
 progress:
   total_phases: 5
   completed_phases: 1
   total_plans: 2
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-21)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 20 — Accessibility and CSP Hardening
+**Current focus:** v2.0 Production Ready milestone complete
 
 ## Current Position
 
-Phase: 20
-Plan: Not started
+Phase: 20 (complete)
+Plan: 01 of 01 (complete)
 
 ## Performance Metrics
 
@@ -52,6 +52,7 @@ Recent decisions affecting current work:
 - [Phase 18]: Cloudflare _redirects file for server-side root redirect
 - [Phase 19]: Single 404.astro with client-side language detection for Cloudflare Pages static hosting
 - [Phase 19]: Donation link uses terracotta color in footer to visually differentiate
+- [Phase 20]: unsafe-inline CSP for SSG site — acceptable for read-only static site with no user input
 
 ### Pending Todos
 
@@ -72,6 +73,6 @@ None yet.
 ## Session Continuity
 
 Last activity: 2026-03-21
-Last session: 2026-03-21T14:17:00Z
-Stopped at: Completed 19-01 (Donations and Error Pages)
+Last session: 2026-03-21T13:28:25.749Z
+Stopped at: Completed 20-01 (Accessibility and CSP Hardening)
 Resume file: None

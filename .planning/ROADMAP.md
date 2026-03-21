@@ -5,7 +5,7 @@
 - ✅ **v1.0 MVP** — Phases 1-6 (shipped 2026-03-19)
 - ✅ **v1.1 Comparison & Historical Trends** — Phases 7-10 (shipped 2026-03-19)
 - ✅ **v1.2 Improvements & Category Filtering** — Phases 11-15 (shipped 2026-03-20)
-- 🚧 **v2.0 Production Ready** — Phases 16-20 (in progress)
+- ✅ **v2.0 Production Ready** — Phases 16-20 (shipped 2026-03-21)
 
 ## Phases
 
@@ -50,7 +50,7 @@
 - [x] **Phase 17: Legal Compliance** — Privacy policy in 5 languages, imprint page, legal research document (completed 2026-03-21)
 - [x] **Phase 18: SEO Enhancement** — Breadcrumb UI and schema, Organization schema, FAQ schema, root redirect, semantic HTML audit (completed 2026-03-21)
 - [x] **Phase 19: Donations and Error Pages** — Multilingual donations page, custom 404 pages, footer donation link (completed 2026-03-21)
-- [ ] **Phase 20: Accessibility and CSP Hardening** — Skip nav, focus indicators, ARIA labels, color contrast, heading hierarchy, Content-Security-Policy
+- [x] **Phase 20: Accessibility and CSP Hardening** — Skip nav, focus indicators, ARIA labels, color contrast, heading hierarchy, Content-Security-Policy (completed 2026-03-21)
 
 ## Phase Details
 
@@ -127,8 +127,7 @@ Plans:
 **Plans**: TBD
 
 Plans:
-- [ ] 20-01: TBD
-- [ ] 20-02: TBD
+- [x] 20-01-PLAN.md — Skip nav, focus indicators, ARIA labels, form labels, heading hierarchy, CSP report-only
 
 ## Progress
 
@@ -156,4 +155,4 @@ Phases execute in numeric order: 16 → 17 → 18 → 19 → 20
 | 17. Legal Compliance | v2.0 | 1/1 | Complete    | 2026-03-21 |
 | 18. SEO Enhancement | v2.0 | 1/1 | Complete    | 2026-03-21 |
 | 19. Donations and Error Pages | v2.0 | 1/1 | Complete    | 2026-03-21 |
-| 20. Accessibility and CSP Hardening | v2.0 | 0/? | Not started | - |
+| 20. Accessibility and CSP Hardening | v2.0 | 1/1 | Complete    | 2026-03-21 |
