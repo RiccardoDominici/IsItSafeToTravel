@@ -1,458 +1,389 @@
 # Architecture Patterns
 
-**Domain:** v1.2 feature integration into existing Astro SSG + D3 travel safety platform
-**Researched:** 2026-03-20
-**Confidence:** HIGH (based on direct codebase analysis)
+**Domain:** Production hardening for Astro 6 SSG + Cloudflare Pages travel safety platform (v2.0)
+**Researched:** 2026-03-21
+**Confidence:** HIGH (based on direct codebase analysis + official docs verification)
 
-## Current Architecture Summary
+## Existing Architecture (Baseline)
 
-The platform is a **static-first Astro 6 SSG** site with two rendering strategies:
+```
+src/
+  layouts/Base.astro      -- Global HTML shell (head, body, header, footer)
+  pages/
+    index.astro           -- Root redirect (language detection via is:inline script)
+    [lang]/               -- en/, it/, es/, fr/, pt/
+      index.astro         -- Home (map)
+      compare.astro       -- Country comparison
+      global-safety.astro -- Global benchmark
+      country/[slug].astro-- Country detail
+      legal/index.astro   -- Legal page
+      methodology/        -- Methodology pages
+  components/             -- Astro components (Header, Footer, SafetyMap, Search, etc.)
+  lib/                    -- Utilities (seo.ts, scores.ts, colors.ts)
+  i18n/                   -- ui.ts (translations ~200 keys), utils.ts
+public/                   -- Static assets (robots.txt, favicon, scores.json, topojson)
+dist/client/              -- Build output deployed to Cloudflare Pages
+wrangler.toml             -- Minimal (name, compat_date, nodejs_compat only)
+```
 
-1. **Build-time SVG** (country detail pages): D3 computes paths/scales in Astro frontmatter, outputs static SVG markup. A small `<script>` tag adds tooltip interactivity (mousemove nearest-point). No D3 imported at runtime on these pages.
-2. **Client-side rendered** (map + comparison page): Full D3 loaded via `<script>` tags. Map fetches `scores.json` + `world-topo.json` at runtime. Comparison page serializes all data into `data-*` attributes at build time, renders everything client-side with D3 + Fuse.js.
-
-**i18n system:** TypeScript string dictionary in `src/i18n/ui.ts` (~325 lines) with `languages` map (`en`, `it`), `useTranslations()` helper, and route slug translation. Pages duplicated per language under `src/pages/en/` and `src/pages/it/`.
-
-**Data pipeline:** Daily JSON snapshots in `data/scores/`. Consolidated `history-index.json` stores `{global: [{date, score}], countries: {ISO3: [{date, score}]}}`. Only total composite score stored in history -- no per-pillar history exists.
-
-**Key data structures:**
-- `ScoredCountry.pillars[]`: each has `name` (PillarName), `score` (0-1), `weight`, `indicators[]`, `dataCompleteness`
-- `ScoredCountry.name`: currently `{en: string, it: string}` -- needs `es` added
-- `scores.json` (public, for map): contains countries with `iso3`, `name`, `score` but currently lacks pillar data
+**Key constraints for v2.0 integration:**
+- Pure SSG output to `dist/client/` -- no SSR, no Cloudflare Functions, no edge runtime
+- Inline scripts exist: dark mode detection (`Base.astro`), language redirect (`index.astro`), JSON-LD
+- External JS: D3 chart scripts bundled by Vite into `_astro/` directory
+- Deploy via `wrangler pages deploy dist/client`
+- Astro version: 6.0.6 (CSP stable, but only for SSR mode)
 
 ---
 
-## Recommended Architecture for v1.2 Features
+## Integration Map: Where Each v2.0 Feature Goes
 
-### Feature 1: Interactive Chart Zoom/Scope Controls
+### Feature Classification
 
-**What changes:** The existing `TrendChart.astro` renders SVG at build time via D3 in frontmatter, with a thin client-side tooltip `<script>`. Adding zoom (time-range brush) and scope toggles (1M/3M/6M/1Y/All) requires shifting from build-time SVG to **client-side rendering**, since the chart must re-render when the user changes scope.
-
-**Integration approach:**
-
-```
-BEFORE (build-time):
-  [slug].astro → TrendChart.astro (D3 in frontmatter → static SVG) → <script> tooltip only
-
-AFTER (client-side):
-  [slug].astro → TrendChart.astro (serializes data to data-* attrs, renders scope buttons) → <script> full D3 render
-```
-
-**Component boundary:**
-
-| Component | Responsibility | Communicates With |
-|-----------|---------------|-------------------|
-| `TrendChart.astro` (modified) | Serialize trend data + i18n strings to `data-*` attributes, render container div + scope buttons as static HTML | `[slug].astro` (receives `data` and `lang` props) |
-| `<script>` in TrendChart (rewritten) | D3 client-side: parse data, render SVG, handle scope button clicks, tooltip, optional brush zoom | DOM `data-*` attributes, scope button events |
-
-**Key decisions:**
-- Move all D3 rendering from frontmatter to the `<script>` block. Frontmatter only prepares data and i18n strings.
-- Scope control buttons (1M/3M/6M/1Y/All) rendered in Astro markup (static HTML), wired to JS via event listeners. This keeps buttons static, accessible, and SEO-friendly.
-- D3 brush for zoom: use `d3.brushX()` on the x-axis. On brush end, update x-scale domain and re-render. Reset button clears brush. This is optional -- scope buttons alone may be sufficient for v1.2.
-- Data filtering by scope: simple date arithmetic in JS (`new Date() - months`), no data refetch needed since all history is serialized in the page.
-
-**Data flow:**
-```
-history-index.json (build) → loadHistoricalScores() → HistoryPoint[] → JSON.stringify → data-history attr
-User clicks "3M" → JS filters points by date range → D3 re-renders SVG with new x-domain
-User brush-selects → JS reads brush extent → D3 re-renders with custom x-domain
-```
-
-**Impact on existing code:**
-- **MODIFY** `src/components/country/TrendChart.astro` -- major rewrite: move D3 from frontmatter to `<script>`, add scope button markup, rewrite tooltip logic
-- **MODIFY** `src/i18n/ui.ts` -- add keys: `chart.scope.1m`, `chart.scope.3m`, `chart.scope.6m`, `chart.scope.1y`, `chart.scope.all`, `chart.scope.label`
-- **NO CHANGE** to `src/lib/scores.ts`, data pipeline, page routing, or other components
-
-**Also applies to:**
-- Global Safety page trend chart (same pattern)
-- Comparison page trend overlay (already client-side; add scope buttons to its render function)
+| Feature | Type | Touch Points | New i18n Keys | New Files |
+|---------|------|-------------|---------------|-----------|
+| Security headers | Config only | `public/_headers` | None | 1 |
+| Cookie consent | Conditional | Possibly `Base.astro` + component | ~5-10 | 0-2 |
+| Analytics script | Layout change | `Base.astro`, `public/_headers` | None | 0 |
+| Donations page | New pages + footer | `[lang]/donate.astro` x5, `Footer.astro`, `ui.ts` | ~15-20 | 5 |
+| llms.txt | Static file | `public/llms.txt` | None | 1 |
+| Error pages (404) | New pages | `[lang]/404.astro` x5, `404.astro` | ~5-8 | 6 |
+| CSP configuration | Config (in _headers) | `public/_headers` | None | 0 |
 
 ---
 
-### Feature 2: Category Filtering for Map and Charts
+## Detailed Integration: Each Feature
 
-**What changes:** Map currently colors by total score only. Category filtering lets users select a pillar (conflict/crime/health/governance/environment) and re-color the map by that pillar's score.
+### 1. Security Headers -- `public/_headers` File
 
-**Critical constraint:** The `history-index.json` only stores total composite scores per date -- no per-pillar history exists. Per PROJECT.md: "Per-pillar historical trends in comparison -- needs pipeline schema change" is explicitly OUT OF SCOPE. Therefore, category filtering for trend charts is not possible in v1.2.
+**Where:** Create `public/_headers` (no extension). Astro copies all `public/` files to `dist/client/` at build time. Cloudflare Pages reads `_headers` automatically from the deploy directory.
 
-**What IS feasible without pipeline changes:**
-- Map coloring by pillar (pillar scores are in `latest.json` / can be added to `scores.json`)
-- Comparison page bar chart highlighting to focus on one pillar
-- Tooltip updates to show pillar name and score
+**Why `_headers` and not `wrangler.toml`:** The current `wrangler.toml` has no headers configuration capability for Pages projects. Cloudflare Pages' `_headers` file is the documented, standard approach for static sites. It is version-controlled, path-aware, and requires zero code changes.
 
-**What is NOT feasible (out of scope):**
-- Historical trend lines per pillar (no data in history-index.json)
-
-**Integration approach for Map:**
-
-1. **Extend `scores.json`** (the public file fetched by the map at runtime): add `pillars` array to each country entry.
-2. **Add a pillar selector UI** above the map (segmented control / radio buttons).
-3. **On selection change**, re-color all country paths using the selected pillar's score (mapped from 0-1 to 1-10 for the color scale).
-
-**Component boundary:**
-
-| Component | Responsibility | Change |
-|-----------|---------------|--------|
-| `SafetyMap.astro` | Render map container + new pillar filter bar | Add filter radio buttons in Astro markup |
-| `<script>` in SafetyMap | Fetch scores, render D3 map, handle pillar filter | Add `pillarScoreMaps`, re-color on filter change |
-| `src/lib/map-utils.ts` | Color scale helpers | Add `pillarScoreToMapScore(score01)` helper |
-
-**Data flow for map:**
+**Recommended content:**
 ```
-scores.json (with pillars) → parse → build scoreMap (total) + pillarScoreMaps (per pillar)
-User selects "Health" → activePillar = 'health' → recolorMap() → transition fill colors
-User selects "Total" → activePillar = 'total' → recolorMap() → back to default
+/*
+  X-Content-Type-Options: nosniff
+  X-Frame-Options: DENY
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
+  X-XSS-Protection: 0
 ```
 
-**Implementation pattern:**
+**Limits:** Max 100 header rules per file, 2000 chars per line. More than sufficient for this project.
+
+**Confidence:** HIGH -- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) confirm this approach.
+
+---
+
+### 2. Cookie Consent -- Likely NOT Needed
+
+**Assessment:** The site currently sets zero cookies. If the analytics choice is cookieless (Cloudflare Web Analytics or Plausible), no cookie consent banner is legally required.
+
+**The dark mode `localStorage` usage is NOT a cookie.** The ePrivacy Directive covers cookies and "similar technologies," but localStorage for strictly functional purposes (theme preference) is generally covered under legitimate interest, not requiring consent.
+
+**If future changes introduce cookies (unlikely):**
+- Create `src/components/CookieConsent.astro` -- banner at bottom of viewport
+- Include in `Base.astro` before closing `</body>`
+- Use `localStorage` to track consent state (no server needed for SSG)
+- Block non-essential scripts until consent granted via conditional `is:inline` loader
+- i18n keys: `consent.message`, `consent.accept`, `consent.reject`, `consent.settings`
+
+**Recommendation:** Choose cookieless analytics. No cookies = no consent banner = no UX friction = no legal complexity. This is the simplest, cheapest, most privacy-respecting option.
+
+**Confidence:** MEDIUM on legal assessment (jurisdiction-specific nuances exist). HIGH on technical approach.
+
+---
+
+### 3. Analytics Script -- `Base.astro` Layout Change
+
+**Where:** In `src/layouts/Base.astro`, the single layout file used by all pages.
+
+**Option A: Cloudflare Web Analytics (RECOMMENDED -- free, zero config)**
+Add before `</body>` in `Base.astro`:
+```html
+<script defer src='https://static.cloudflareinsights.com/beacon.min.js'
+  data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
+```
+- Free on all Cloudflare plans
+- No cookies, GDPR-compliant by design
+- Already on CF infrastructure (no external dependency)
+- Privacy-preserving: no PII, no cross-site tracking
+
+**Option B: Plausible Analytics ($9/mo cloud, or self-hosted free)**
+Add in `<head>` of `Base.astro`:
+```html
+<script defer data-domain="isitsafetotravels.com" src="https://plausible.io/js/script.js"></script>
+```
+
+**CSP impact:** The analytics script domain must be added to `script-src` in `_headers`. For Cloudflare Web Analytics: `https://static.cloudflareinsights.com`. For Plausible: `https://plausible.io`.
+
+**Recommendation:** Cloudflare Web Analytics. Zero cost, already on the same infrastructure, cookieless, and the budget constraint is "near-zero (~10EUR/month max)."
+
+**Confidence:** HIGH -- both options well-documented and cookieless.
+
+---
+
+### 4. Donations Page -- New Page + Footer Link
+
+**Where:** New Astro page per language, following the existing routing pattern.
+
+**New files:**
+```
+src/pages/en/donate.astro
+src/pages/it/dona.astro
+src/pages/es/donar.astro
+src/pages/fr/faire-un-don.astro
+src/pages/pt/doar.astro
+```
+
+**Route registration in `ui.ts`:**
 ```typescript
-// In SafetyMap <script>
-type PillarFilter = 'total' | 'conflict' | 'crime' | 'health' | 'governance' | 'environment';
-let activePillar: PillarFilter = 'total';
-
-function getScoreForCountry(iso3: string): number | undefined {
-  if (activePillar === 'total') return scoreMap.get(iso3);
-  const country = fullCountryData.get(iso3);
-  if (!country) return undefined;
-  const p = country.pillars.find(p => p.name === activePillar);
-  return p ? p.score * 9 + 1 : undefined; // normalize 0-1 → 1-10
-}
-
-function recolorMap() {
-  g.selectAll<SVGPathElement, any>('.country-path')
-    .transition().duration(300)
-    .attr('fill', (d: any) => {
-      const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
-      if (!iso3) return isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
-      const score = getScoreForCountry(iso3);
-      return score !== undefined ? safetyColorScale(score) : isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
-    });
-}
+export const routes = {
+  en: { /* existing... */ donate: 'donate' },
+  it: { /* existing... */ donate: 'dona' },
+  es: { /* existing... */ donate: 'donar' },
+  fr: { /* existing... */ donate: 'faire-un-don' },
+  pt: { /* existing... */ donate: 'doar' },
+};
 ```
 
-**Tooltip update:** When a pillar filter is active, show pillar name + pillar score in tooltip instead of total score.
+**Page structure:** Uses `Base.astro` layout. Content is static text explaining the project mission + external link/button to donation platform. No embedded payment forms.
 
-**Legend update:** Update legend label to show active pillar name (e.g., "Health - Safer / Less safe").
+**Footer modification in `Footer.astro`:**
+```astro
+<a href={`/${lang}/${r.donate}/`}
+   class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 ...">
+  {t('footer.donate')}
+</a>
+```
 
-**Impact on existing code:**
-- **MODIFY** `src/components/SafetyMap.astro` -- add filter UI markup + modify script for pillar-based coloring
-- **MODIFY** the build step that copies latest.json to `public/scores.json` -- include pillar data per country
-- **MODIFY** `src/i18n/ui.ts` -- add keys: `map.filter.total`, `map.filter.conflict`, `map.filter.crime`, `map.filter.health`, `map.filter.governance`, `map.filter.environment`, `map.filter.label`
-- **MODIFY** `src/lib/map-utils.ts` -- add pillar score normalization helper
-- **NO CHANGE** to data pipeline, page routing, or country detail pages
+**External platform: Ko-fi** -- zero fees on donations, simple link integration, no account required for donors. Just a styled `<a>` link to `https://ko-fi.com/isitsafetotravel`. No external scripts needed (avoid the widget JS for simplicity and CSP cleanliness).
 
-**scores.json size impact:** Currently ~50KB with just total scores. Adding 5 pillar scores per country adds ~30KB (248 countries x 5 pillars x ~25 bytes). New total ~80KB. Negligible.
+**New i18n keys:** `donate.title`, `donate.meta_description`, `donate.heading`, `donate.intro`, `donate.why`, `donate.how`, `donate.cta_text`, `donate.cta_label`, `donate.thankyou`, `footer.donate` (~10 keys x 5 languages).
+
+**Confidence:** HIGH -- follows existing page creation patterns exactly.
 
 ---
 
-### Feature 3: Spanish Language Support
+### 5. llms.txt -- Static File in `public/`
 
-**What changes:** Add `es` as a third language alongside `en` and `it`.
+**Where:** `public/llms.txt` -- copied to `dist/client/llms.txt` at build, served at `https://isitsafetotravels.com/llms.txt`.
 
-**Integration approach:**
+**Content (following [llmstxt.org spec](https://llmstxt.org/)):**
+```markdown
+# IsItSafeToTravel
 
-The i18n system is well-structured for expansion. The `useTranslations()` function and `getLocalizedPath()` are fully generic -- they iterate `languages` and `routes` dynamically.
+> Travel safety scores for 248 countries in 5 languages, powered by transparent open data. Combines conflict, crime, health, governance, and environment indices into a 1-10 safety rating, updated daily.
 
-**Step-by-step:**
+## Documentation
+- [Methodology](https://isitsafetotravels.com/en/methodology/): How safety scores are calculated, data sources, and weights
+- [Legal](https://isitsafetotravels.com/en/legal/): Terms of service and privacy policy
 
-1. **`src/i18n/ui.ts`**: Add `es: 'Espanol'` to `languages`, add full `es: {...}` block to `ui` (~170 strings), add `es: {...}` route slugs to `routes`.
-2. **`src/pages/es/`**: Create directory mirroring `en/` structure with Spanish route slugs:
-   - `es/index.astro`
-   - `es/pais/[slug].astro` (country slug: "pais")
-   - `es/comparar.astro`
-   - `es/metodologia/index.astro`
-   - `es/aviso-legal/index.astro`
-   - `es/seguridad-global.astro`
-3. **`src/pipeline/types.ts`**: Extend `name` type from `{en: string; it: string}` to `{en: string; it: string; es: string}`.
-4. **Country name data**: Add Spanish country names to the pipeline's country mapping.
-5. **`astro.config.mjs`**: Add `'es'` to `locales` array and `sitemap.i18n.locales`.
+## Data
+- [Safety Scores JSON](https://isitsafetotravels.com/scores.json): Machine-readable safety data for all 248 countries
 
-**Component boundary:**
+## Pages
+- [Home / World Map](https://isitsafetotravels.com/en/): Interactive safety map with per-pillar filtering
+- [Country Comparison](https://isitsafetotravels.com/en/compare/): Side-by-side safety comparison (up to 5 countries)
+- [Global Safety Index](https://isitsafetotravels.com/en/global-safety/): World average benchmark and trends
 
-| Component | Responsibility | Change |
-|-----------|---------------|--------|
-| `src/i18n/ui.ts` | Language registry + all UI strings | Add `es` to `languages`, `ui`, `routes` |
-| `src/i18n/utils.ts` | URL parsing, locale detection | NO CHANGE (fully generic) |
-| `src/pages/es/` (new) | Spanish page routes | New directory, 8-10 files mirroring `en/` |
-| `LanguageSwitcher.astro` | Language toggle UI | Auto-picks up new language from `languages` map |
-| Pipeline country data | Country names | Add `es` field to name objects |
-| `astro.config.mjs` | Astro i18n config | Add `'es'` to locales |
-
-**Data flow:**
-```
-ui.ts languages → {en: 'English', it: 'Italiano', es: 'Espanol'}
-                → LanguageSwitcher renders 3 options
-ui.ts routes.es → getLocalizedPath() translates URL segments
-pages/es/*.astro → Astro generates static /es/ pages at build
-ScoredCountry.name.es → map tooltips, country page titles, comparison cards
+## Optional
+- [Sitemap](https://isitsafetotravels.com/sitemap-index.xml): Full page index
 ```
 
-**Key consideration:** The `ScoredCountry.name` type change propagates through:
-- Pipeline country mapping data file
-- `src/pipeline/types.ts` (TypeScript interface)
-- `scores.json` generation (include `name.es`)
-- Map tooltip code (already reads `name[lang]`, works automatically)
-- Comparison page (already reads `country.name[lang]`)
+**robots.txt update:** Add `llms.txt` reference (emerging convention, not standardized):
+```
+# robots.txt for isitsafetotravel.com
+User-agent: *
+Allow: /
 
-**Impact:**
-- **MODIFY** `src/i18n/ui.ts` (major: ~170 new string translations + route slugs)
-- **MODIFY** `src/pipeline/types.ts` (add `es` to name type)
-- **MODIFY** `astro.config.mjs` (add `'es'` to locales)
-- **CREATE** `src/pages/es/` directory with all page files (8-10 files)
-- **MODIFY** pipeline country mapping to include Spanish names
-- **NO CHANGE** to `src/i18n/utils.ts`, any component logic, or `src/lib/` files
+Sitemap: https://isitsafetotravels.com/sitemap-index.xml
+
+# LLM-readable site summary
+# https://llmstxt.org/
+# See: https://isitsafetotravels.com/llms.txt
+```
+
+**Confidence:** HIGH -- static file, spec is simple and well-documented.
 
 ---
 
-### Feature 4: Parameter/Pillar Explanations
+### 6. Custom Error Pages (404)
 
-**What changes:** Each safety pillar (conflict, crime, health, governance, environment) gets a detailed explanation: what it measures, which indicators feed into it, their sources, and why it matters for travelers.
+**How Cloudflare Pages handles 404s:** Looks for `404.html` in the same directory as the request path, then walks up the directory tree until it finds one, ending at root `/404.html`.
 
-**Integration approach -- two options:**
-
-**Option A: Expandable sections in PillarBreakdown (RECOMMENDED)**
-Add `<details>/<summary>` blocks below each pillar bar. Clicking reveals the explanation. Zero JS required. Content from i18n strings.
-
-**Option B: Separate explanation pages**
-New `/methodology/pillars/[name]` pages. More SEO-friendly but fragments the UX.
-
-**Recommend Option A** because:
-- Users viewing a country's pillar breakdown are exactly the audience who wants context
-- Keeps users in flow (no navigation away)
-- `<details>/<summary>` is accessible, semantic, and requires no JavaScript
-- Explanation text is relatively short (~2-3 sentences per pillar + indicator list)
-
-**Component boundary:**
-
-| Component | Responsibility | Change |
-|-----------|---------------|--------|
-| `PillarBreakdown.astro` | Pillar bars + new expandable explanations | Add `<details>` below each pillar bar |
-| `src/i18n/ui.ts` | Explanation text per pillar per language | Add ~25 new keys per language |
-
-**Data available for explanations (already in `PillarScore`):**
-- `PillarScore.name` -- pillar identifier
-- `PillarScore.weight` -- e.g., 0.25 (25%)
-- `PillarScore.indicators[]` -- each has `name`, `rawValue`, `normalizedValue`, `source`, `year`
-- `PillarScore.dataCompleteness` -- coverage percentage
-
-**Markup pattern:**
-```astro
-{sorted.map((pillar) => {
-  const label = t(pillarKeys[pillar.name]);
-  return (
-    <div>
-      {/* Existing bar visualization */}
-      <div class="flex items-center gap-3">...</div>
-
-      {/* NEW: Expandable explanation */}
-      <details class="mt-1 ml-28">
-        <summary class="text-xs text-terracotta-500 cursor-pointer">
-          {t('pillar.explain.toggle')}
-        </summary>
-        <div class="mt-2 text-sm text-sand-600 dark:text-sand-400 space-y-2">
-          <p>{t(`pillar.explain.${pillar.name}`)}</p>
-          <p class="text-xs">{t('pillar.explain.weight')}: {(pillar.weight * 100).toFixed(0)}%</p>
-          <ul class="text-xs space-y-1">
-            {pillar.indicators.map(ind => (
-              <li>{t(`methodology.indicator.${ind.name}` as any)}: {(ind.normalizedValue * 10).toFixed(1)}/10</li>
-            ))}
-          </ul>
-        </div>
-      </details>
-    </div>
-  );
-})}
+**Strategy -- per-language 404 pages:**
+```
+src/pages/en/404.astro  --> dist/client/en/404.html   (English 404)
+src/pages/it/404.astro  --> dist/client/it/404.html   (Italian 404)
+src/pages/es/404.astro  --> dist/client/es/404.html   (Spanish 404)
+src/pages/fr/404.astro  --> dist/client/fr/404.html   (French 404)
+src/pages/pt/404.astro  --> dist/client/pt/404.html   (Portuguese 404)
+src/pages/404.astro     --> dist/client/404.html       (Root fallback, English)
 ```
 
-**Impact:**
-- **MODIFY** `src/components/country/PillarBreakdown.astro` -- add `<details>` sections
-- **MODIFY** `src/i18n/ui.ts` -- add ~25 keys per language (explanation text, toggle label, weight label)
-- **NO CHANGE** to data pipeline, scoring, page routing, or any other component
+**How routing works:**
+- Request to `/en/nonexistent-page` --> CF looks for `/en/404.html` --> found, serves English 404
+- Request to `/it/pagina-inesistente` --> CF looks for `/it/404.html` --> found, serves Italian 404
+- Request to `/random-path` --> CF walks up to `/404.html` --> serves root fallback (English)
+
+**Page content:** Use `Base.astro` layout for consistent header/footer/styling. Show friendly message with link back to home page. Include the search component so users can find what they were looking for.
+
+**500 pages:** Not applicable. Pure static sites have no server to produce 500 errors. Cloudflare serves its own error page for infrastructure issues. No action needed.
+
+**New i18n keys:** `error.404.title`, `error.404.heading`, `error.404.message`, `error.404.back_home`, `error.404.search_suggestion` (~5 keys x 5 languages).
+
+**Confidence:** HIGH -- [Cloudflare Pages Serving docs](https://developers.cloudflare.com/pages/configuration/serving-pages/) confirm hierarchical `404.html` lookup.
 
 ---
 
-## Patterns to Follow
+### 7. CSP Configuration -- `_headers` File (NOT Astro's Built-in CSP)
 
-### Pattern 1: Data Serialization via data-* Attributes
-**What:** Astro components serialize build-time data as JSON in `data-*` attributes. Client-side `<script>` tags parse and use this data.
-**When:** Any component that needs both SSG data and client-side interactivity.
-**Why:** Already established pattern (TrendChart, Compare page). Avoids runtime API calls. Keeps bundle sizes small since data is page-specific.
-**Example:**
-```astro
-<div id="chart" data-points={JSON.stringify(points)} data-translations={JSON.stringify(tStrings)}>
-  <!-- container for D3 -->
-</div>
-<script>
-  const el = document.getElementById('chart')!;
-  const points = JSON.parse(el.dataset.points!);
-  // D3 rendering here
-</script>
+**Critical finding:** Astro 6's `security.csp` feature (stable since 6.0) generates CSP via `<meta>` tags but **only works for SSR/on-demand rendered pages**. It is explicitly incompatible with SSG/prerendered pages. Since this project is 100% SSG, Astro's built-in CSP cannot be used.
+
+Source: [Astro CSP docs](https://docs.astro.build/en/reference/experimental-flags/csp/) -- "These features only exist for pages rendered on demand (SSR)."
+
+**Approach: CSP via `_headers` file with `unsafe-inline` (pragmatic) or hashes (strict)**
+
+**Inline scripts that need CSP allowance:**
+1. Dark mode detection in `Base.astro` (`is:inline`, ~8 lines)
+2. Language redirect in `index.astro` (`is:inline`, ~12 lines)
+3. JSON-LD (`type="application/ld+json"`) -- exempt from `script-src`, not executable
+
+**Bundled scripts (D3, Fuse.js):** Vite outputs these as external `.js` files in `_astro/` with hashed filenames. They load from the same origin, so `script-src 'self'` covers them.
+
+**Option A: Pragmatic CSP with `unsafe-inline` (RECOMMENDED to start)**
 ```
-
-### Pattern 2: Static HTML Controls + JS Event Wiring
-**What:** Render interactive controls (buttons, radio inputs) in Astro markup (build-time), wire behavior in `<script>`.
-**When:** Scope buttons, pillar filter radio buttons, toggle controls.
-**Why:** Controls are accessible, visible to crawlers, styled with Tailwind, and functional even if JS loads slowly.
-**Example:**
-```astro
-<!-- Astro markup (build-time) -->
-<div class="flex gap-2" role="radiogroup" aria-label={t('map.filter.label')}>
-  {['total', 'conflict', 'crime', 'health', 'governance', 'environment'].map(p => (
-    <button class="scope-btn px-3 py-1 rounded text-sm" data-pillar={p}>
-      {t(`map.filter.${p}`)}
-    </button>
-  ))}
-</div>
-
-<!-- Client script wires events -->
-<script>
-  document.querySelectorAll('.scope-btn').forEach(btn => {
-    btn.addEventListener('click', () => { /* update chart/map */ });
-  });
-</script>
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
 ```
 
-### Pattern 3: Native HTML for Zero-JS Interactivity
-**What:** Use `<details>/<summary>` for expand/collapse instead of custom JS toggles.
-**When:** Pillar explanations, FAQ-style content.
-**Why:** Zero JS, accessible by default, works with SSG, animatable with CSS.
+**Why `unsafe-inline` is acceptable here:**
+- The site has no user-generated content, no form inputs that render to HTML, no dynamic content injection
+- All inline scripts are author-controlled and static
+- The primary XSS vector (`unsafe-inline` blocks) does not exist on a read-only SSG site
+- The security benefit of hash-based CSP over `unsafe-inline` on a static site with no user input is marginal
 
-### Pattern 4: i18n Key Namespacing Convention
-**What:** New features add keys under clear namespace prefixes.
-**Existing convention:**
+**Option B: Strict hash-based CSP (follow-up hardening)**
+1. Build the site
+2. Run a script to extract inline `<script>` content from built HTML
+3. Compute SHA-256 hashes: `echo -n "content" | openssl dgst -sha256 -binary | base64`
+4. Replace `'unsafe-inline'` with `'sha256-XXXXX' 'sha256-YYYYY'` in `_headers`
+
+**Problem with hashes:** Every time an inline script changes, hashes break. Requires a build-time script (`scripts/generate-csp-hashes.js`) and CI integration. Worth doing later, not for initial v2.0.
+
+**Analytics domain in CSP:** Must allowlist the analytics script source:
+- Cloudflare Web Analytics: `https://static.cloudflareinsights.com`
+- Plausible: `https://plausible.io`
+
+Also add `connect-src` for the analytics beacon endpoint if needed.
+
+**Confidence:** HIGH -- Astro SSG + CSP limitation confirmed in official docs. `_headers` approach confirmed by Cloudflare docs.
+
+---
+
+## Component Boundaries (v2.0 Updated)
+
+| Component | Responsibility | Status | Communicates With |
+|-----------|---------------|--------|-------------------|
+| `public/_headers` | Security headers + CSP | **NEW** | Cloudflare Pages (auto-read at deploy) |
+| `public/llms.txt` | LLM discoverability | **NEW** | External AI crawlers |
+| `public/robots.txt` | Crawler directives | **MODIFIED** (add llms.txt ref) | Search engines, AI crawlers |
+| `src/layouts/Base.astro` | Global HTML shell | **MODIFIED** (analytics script) | All pages |
+| `src/components/Footer.astro` | Site footer links | **MODIFIED** (donate link) | i18n/ui.ts for routes |
+| `src/i18n/ui.ts` | Translations + routes | **MODIFIED** (~30 new keys, donate route) | All pages + components |
+| `src/pages/[lang]/donate.astro` | Donations page | **NEW** (x5 languages) | Base.astro, i18n, Ko-fi (external link) |
+| `src/pages/[lang]/404.astro` | Per-language error page | **NEW** (x5 languages) | Base.astro, i18n, Search component |
+| `src/pages/404.astro` | Root fallback error | **NEW** | Language detection (same as index.astro) |
+
+## Data Flow Changes
+
+**None.** All v2.0 production-readiness features are either:
+- Static configuration files (`_headers`, `llms.txt`)
+- New static pages following existing patterns (donations, 404)
+- Layout additions (analytics snippet)
+
+The data pipeline (`src/pipeline/`), scoring system (`src/lib/scores.ts`), and build process remain completely unchanged. The only build process addition is Astro's automatic copying of new `public/` files to `dist/client/`.
+
+---
+
+## Recommended Build Order
+
+Dependencies dictate this order:
+
 ```
-country.pillar.conflict     → pillar names
-country.trend_title         → chart headings
-compare.title               → comparison page
-map.zoom.in                 → map controls
+Phase 1: Zero-dependency config files (all parallel, zero risk)
+  |-- Create public/_headers (security headers + initial CSP with unsafe-inline)
+  |-- Create public/llms.txt
+  |-- Update public/robots.txt (add llms.txt reference)
+  Deploy and verify headers with curl -I or securityheaders.com
+
+Phase 2: Analytics (single layout change, affects all pages)
+  |-- Set up Cloudflare Web Analytics in CF dashboard (get beacon token)
+  |-- Add analytics script to Base.astro before </body>
+  |-- Update _headers CSP script-src to allow analytics domain
+  Deploy and verify analytics collecting data
+
+Phase 3: New pages (parallel after i18n keys added)
+  |-- Add all new i18n keys to ui.ts (404 + donate, all 5 languages)
+  |-- Add donate route to ui.ts routes object
+  |-- Create src/pages/[lang]/404.astro (x5) + root src/pages/404.astro
+  |-- Create src/pages/[lang]/donate.astro (x5)
+  |-- Add donate link to Footer.astro
+  Deploy and verify 404 pages work, donate pages render correctly
+
+Phase 4: Cookie consent assessment (decision gate)
+  |-- Verify: does Cloudflare Web Analytics set any cookies? (Answer: No)
+  |-- If no cookies anywhere: SKIP cookie consent entirely
+  |-- If cookies found: implement CookieConsent.astro + Base.astro integration
 ```
-**New keys for v1.2:**
-```
-chart.scope.1m              → chart scope controls
-chart.scope.all
-map.filter.total            → map pillar filter
-map.filter.conflict
-pillar.explain.conflict     → pillar explanations
-pillar.explain.toggle       → "What does this measure?"
-```
+
+**Rationale:**
+- Phase 1 is pure additive (new files only), zero risk of breaking existing functionality
+- Phase 2 changes the global layout -- validate before adding new pages that use it
+- Phase 3 follows established page patterns but needs i18n keys committed first
+- Phase 4 is a decision gate that depends on Phase 2's analytics choice -- likely results in "skip"
 
 ---
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Importing Full D3 Bundle in Client Scripts
-**What:** Using `import * as d3 from 'd3'` in client-side `<script>` tags.
-**Why bad:** The full D3 bundle is ~250KB. The map already does this (`import * as d3 from 'd3'`), but new components should not follow this pattern.
-**Instead:** Import only needed sub-modules: `import { scaleLinear, scaleTime, line, brushX, timeFormat } from 'd3';`. Vite tree-shakes effectively when using named imports.
+### Anti-Pattern 1: Using Astro's `security.csp` for SSG
+**What:** Enabling `security: { csp: true }` in `astro.config.mjs`
+**Why bad:** Only works for SSR pages. SSG pages silently ignore it -- no error, no CSP meta tag generated. Creates a false sense of security.
+**Instead:** Use Cloudflare Pages `_headers` file for CSP on static sites.
 
-### Anti-Pattern 2: Duplicating Filter State Across Components
-**What:** Each visualization maintaining its own pillar filter state independently.
-**Why bad:** If map shows "Health" but chart shows "Total", the UX is confusing. On the homepage, the map is the only visualization, so this is not an issue today. But if pillar filtering extends to other pages, coordinate state.
-**Instead:** On the homepage, filter state lives in the map script (single owner). On country pages, pillar filtering does not apply to trend charts (no per-pillar history). Keep it simple.
+### Anti-Pattern 2: Embedding Payment Processing
+**What:** Building a custom donation form or embedding Ko-fi's JavaScript widget
+**Why bad:** PCI compliance burden, CSP complications (external scripts), maintenance cost -- all for a "nice to have" feature on a zero-budget project.
+**Instead:** Simple `<a>` link to external Ko-fi page. Zero scripts, zero CSP additions, zero liability.
 
-### Anti-Pattern 3: Creating Separate Per-Language Translation Files
-**What:** Splitting translations into `en.json`, `it.json`, `es.json`.
-**Why bad:** The existing `ui.ts` co-locates all languages in one TypeScript file. This provides **compile-time key checking** -- TypeScript will error if a key exists in `en` but is missing in `it` or `es`. Splitting loses this type-safety.
-**Instead:** Add `es` block to the existing `ui.ts`. File grows from ~325 to ~500 lines. Still manageable. Consider splitting only if exceeding ~1000 lines (at 5+ languages).
+### Anti-Pattern 3: Full CMP for a Cookieless Site
+**What:** Adding CookieYes, OneTrust, or similar Consent Management Platform
+**Why bad:** Adds 30-100KB JS, UX friction (banner), legal complexity, ongoing maintenance -- when the site sets literally zero cookies.
+**Instead:** Choose cookieless analytics (Cloudflare Web Analytics). No cookies = no consent needed = no banner.
 
-### Anti-Pattern 4: Dynamic API Endpoints for Chart Data
-**What:** Creating Astro API routes to serve chart data dynamically.
-**Why bad:** Breaks the SSG model. The site deploys to Cloudflare Pages as purely static files. Adding API routes requires switching to SSR mode with Cloudflare Workers, adding cold starts, caching complexity, and cost.
-**Instead:** Continue serializing data into `data-*` attributes for country-specific data, or into `public/*.json` for shared data fetched at runtime.
+### Anti-Pattern 4: Server-Side 404 Routing
+**What:** Adding Cloudflare Functions/Workers for language-aware 404 routing
+**Why bad:** Breaks the pure SSG model. Introduces SSR dependency, cold starts, complexity.
+**Instead:** Use Cloudflare Pages' built-in hierarchical `404.html` lookup with per-directory files.
 
-### Anti-Pattern 5: Over-Engineering Cross-Component Communication
-**What:** Adding a state management library (or custom event bus) for pillar filter coordination.
-**Why bad:** v1.2 features do not require cross-component state. The map is on the homepage alone. The trend chart is on country pages alone. The comparison page is self-contained.
-**Instead:** Each page's script manages its own state. If future features need cross-component coordination, revisit then.
-
----
-
-## Component Dependency Graph
-
-```
-v1.2 Feature Dependencies:
-
-1. Spanish i18n (FOUNDATION - no deps on other v1.2 features)
-   └── Modifies: ui.ts, types.ts, astro.config
-   └── Creates: pages/es/
-
-2. Parameter Explanations (INDEPENDENT - no deps on other v1.2 features)
-   └── Modifies: PillarBreakdown.astro, ui.ts
-   └── Uses: existing PillarScore.indicators[] data
-
-3. Chart Zoom/Scope (INDEPENDENT - no deps on other v1.2 features)
-   └── Modifies: TrendChart.astro (major rewrite), ui.ts
-   └── Also benefits: Global Safety page, Compare page
-
-4. Category Filtering (DEPENDS ON scores.json having pillar data)
-   └── Modifies: SafetyMap.astro, map-utils.ts, scores.json generation, ui.ts
-   └── Optional extension to: Compare page pillar bars
-   └── Cannot extend to: historical trend charts (no per-pillar history data)
-```
+### Anti-Pattern 5: Nonce-Based CSP for Static Sites
+**What:** Trying to use CSP nonces (`'nonce-XXXX'`) with SSG output
+**Why bad:** Nonces require a server to generate a unique value per request and inject it into both the header and each `<script>` tag. Impossible with pre-built static HTML.
+**Instead:** Use hash-based CSP (or `unsafe-inline` as pragmatic starting point).
 
 ---
-
-## Suggested Build Order
-
-```
-Phase 1: Spanish i18n + Parameter Explanations (PARALLEL, no conflicts)
-  Both touch ui.ts but in different key namespaces.
-  Spanish i18n is foundational: all subsequent features need 3-language strings.
-  Parameter explanations are self-contained and low-risk.
-
-Phase 2: Chart Zoom/Scope Controls
-  Requires TrendChart.astro rewrite (build-time → client-side D3).
-  This is the most architecturally significant change.
-  Should be done before category filtering to validate client-side D3 pattern.
-
-Phase 3: Category Filtering (Map)
-  Requires scores.json expansion + map script modifications.
-  Map is the highest-traffic component; test thoroughly.
-  Can optionally extend to comparison page pillar bars.
-
-Phase 4: Bug Fixes (comparison page country search)
-  Can slot in anywhere but best after main features stabilize.
-  Likely a small fix in the Fuse.js search or dropdown positioning.
-```
-
-**Rationale for this order:**
-- Phase 1 items have zero dependencies and can be done in parallel
-- Phase 2 establishes the client-side D3 pattern needed for understanding Phase 3
-- Phase 3 depends on Phase 1 (needs Spanish filter labels) and benefits from Phase 2 experience
-- Phase 4 is a bug fix that benefits from feature stability
-
----
-
-## Files Changed Summary
-
-| File | Features Touching It | Type of Change |
-|------|---------------------|----------------|
-| `src/i18n/ui.ts` | ALL four features | Add: ~170 (es) + ~6 (scope) + ~7 (filter) + ~25 (explanations) strings |
-| `src/components/country/TrendChart.astro` | Chart zoom/scope | Major rewrite: build-time → client-side D3, add scope buttons |
-| `src/components/country/PillarBreakdown.astro` | Parameter explanations | Add `<details>/<summary>` expandable sections |
-| `src/components/SafetyMap.astro` | Category filtering | Add filter UI bar + modify script for pillar coloring |
-| `src/lib/map-utils.ts` | Category filtering | Add pillar score normalization helper |
-| `src/pipeline/types.ts` | Spanish i18n | Extend `name` type: `{en, it}` → `{en, it, es}` |
-| `astro.config.mjs` | Spanish i18n | Add `'es'` to `locales` array |
-| `src/pages/es/` (new) | Spanish i18n | Create 8-10 page files mirroring `en/` |
-| `public/scores.json` generation | Category filtering | Include pillar scores per country |
-| Pipeline country mapping | Spanish i18n | Add Spanish country names |
-
----
-
-## Scalability Considerations
-
-| Concern | Current (2 langs) | At 3 langs (v1.2) | At 5+ langs (future) |
-|---------|-------------------|--------------------|-----------------------|
-| `ui.ts` file size | ~325 lines | ~500 lines | ~800+ lines; consider splitting with shared type |
-| Page count (SSG) | ~500 pages | ~750 pages | ~1250 pages; build time grows linearly |
-| `scores.json` size | ~50KB (total only) | ~80KB (with pillars) | Fine up to ~200KB; code-split if needed |
-| History data in `data-*` | ~10-50KB/page | Same | If >100KB, lazy-load via fetch |
-| Astro build time | ~30s | ~45s (+50% pages) | Acceptable up to ~120s |
 
 ## Sources
 
-- Direct codebase analysis of all referenced files (HIGH confidence)
-- Astro 6 i18n routing documentation (HIGH confidence)
-- D3.js v7 brush module for zoom interaction pattern (HIGH confidence)
-- HTML `<details>/<summary>` specification for accessible expand/collapse (HIGH confidence)
+- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) -- `_headers` file format and limits
+- [Cloudflare Pages Serving Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/) -- 404.html hierarchical lookup
+- [Astro CSP docs](https://docs.astro.build/en/reference/experimental-flags/csp/) -- confirms SSR-only limitation
+- [llms.txt specification](https://llmstxt.org/) -- format and required sections
+- [Cloudflare Web Analytics](https://developers.cloudflare.com/analytics/web-analytics/) -- free, cookieless analytics
+- [Ko-fi donation widget](https://help.ko-fi.com/hc/en-us/articles/360018381678-Ko-fi-tip-widget) -- integration options
+- [Plausible privacy-focused analytics](https://plausible.io/privacy-focused-web-analytics) -- cookieless alternative
+- [GDPR cookie consent requirements 2025](https://secureprivacy.ai/blog/gdpr-cookie-consent-requirements-2025) -- when consent is/isn't required
+- Direct codebase analysis: `Base.astro`, `Footer.astro`, `astro.config.mjs`, `wrangler.toml`, `deploy.yml`, `ui.ts`, `index.astro`

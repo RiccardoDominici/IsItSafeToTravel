@@ -1,169 +1,196 @@
 # Project Research Summary
 
-**Project:** IsItSafeToTravel.com v1.2
-**Domain:** Travel safety data visualization platform — incremental enhancement milestone
-**Researched:** 2026-03-20
+**Project:** IsItSafeToTravel.com — v2.0 Production Ready
+**Domain:** Production-readiness hardening for Astro SSG travel safety platform (Cloudflare Pages)
+**Researched:** 2026-03-21
 **Confidence:** HIGH
 
 ## Executive Summary
 
-IsItSafeToTravel.com v1.2 is an incremental enhancement milestone on top of a well-structured Astro 6 SSG + D3.js platform already deployed to Cloudflare Pages. The research confirms that every planned feature — interactive chart zoom/scope controls, per-category map filtering, Spanish i18n, parameter explanations, and bug fixes — can be delivered without adding any new npm dependencies. The existing stack (D3 ^7.9.0 including d3-brush, Astro's built-in i18n routing, native Intl APIs, and Fuse.js) is fully sufficient. The key recommendation is to treat this as careful incremental engineering rather than greenfield work: all five features extend existing components and patterns rather than introducing new architectural paradigms.
+IsItSafeToTravel.com v2.0 is a production-hardening milestone, not a feature expansion. The site is already a fully functional, 5-language, 248-country travel safety platform built on Astro 6 + Cloudflare Pages. The v2.0 scope is entirely additive: legal compliance pages, security headers, privacy-respecting analytics, SEO schema extensions, LLM discoverability, a donations page, and accessibility improvements. The research confirms that the most important architectural decision is already made correctly — the site sets zero cookies and collects no personal data. Every v2.0 feature recommendation preserves and reinforces this zero-cookie foundation.
 
-The central architectural decision in v1.2 is moving `TrendChart.astro` from build-time SVG rendering to client-side D3 rendering. This is required to support interactive scope controls and is the most significant refactor in the milestone. The comparison page already demonstrates the correct client-side D3 pattern, so this is a matter of migrating to a proven approach, not pioneering new ground. The second significant change is extending `scores.json` to include per-pillar scores — a lightweight addition (~30KB) that unlocks category filtering on the map without touching the broader data pipeline.
+The recommended approach is maximum leverage with minimal additions: no new npm dependencies, no new runtime infrastructure, and no server-side code. Security headers are a single `public/_headers` file. Analytics is Cloudflare Web Analytics (free, auto-injected at the edge, zero code changes needed). Donations is an external Ko-fi link (~0% platform fee). JSON-LD schema extensions build on the existing `seo.ts` infrastructure already in place. The total new client-side JavaScript added across all v2.0 features is approximately 1 KB. This is the correct approach for a solo-operated, near-zero-budget project.
 
-The primary risk is the Spanish i18n feature, which is architecturally trivial at the presentation layer but cascades through the data layer: `CountryEntry.name` is currently typed as `{ en: string; it: string }`, and adding `es` requires updating `pipeline/types.ts`, all 248 entries in `countries.ts`, test fixtures, and `scores.json` generation. The mitigation is to execute this in strict type-first order (update the type to `Record<Lang, string>` before touching any data), and to generate Spanish country names programmatically from reference data rather than entering 248 entries manually.
+The primary risks are legal (Italian Garante jurisdiction means Google Analytics is a hard no; privacy policy must accurately document actual data practices in all 5 languages), technical (CSP configuration can silently break D3 charts and the dark mode toggle — the Astro built-in `security.csp` does not work for SSG pages, requiring either a pragmatic `unsafe-inline` approach in `_headers` or hash-based Astro experimental CSP meta tags), and SEO (a probable domain typo in `robots.txt` and `astro.config.mjs` pointing to "isitsafetotravels.com" instead of "isitsafetotravel.com" may be invalidating all canonical URLs, hreflang tags, and sitemap entries across 1,240+ pages — this must be verified before any SEO schema work begins).
 
 ## Key Findings
 
 ### Recommended Stack
 
-The existing stack is locked and no additions are needed. D3 ^7.9.0 already includes `d3-brush` for drag-to-zoom and `d3-transition` for animated state changes. Astro's built-in i18n routing already supports adding `'es'` to the locales array. The custom TypeScript dictionary in `src/i18n/ui.ts` scales cleanly to a third language without any external i18n library.
+The existing stack requires zero additions for v2.0. See [STACK.md](STACK.md) for complete analysis.
 
-**Core technologies:**
-- **Astro 6 (SSG):** Framework and i18n routing — already handles multi-language static generation; adding `es` is a config-level change
-- **D3 ^7.9.0:** All charting and map rendering — full bundle already installed; `d3-brush` available for zoom at zero additional cost
-- **Tailwind CSS ^4.2.2:** Styling — filter/scope control UI uses standard Tailwind classes
-- **Fuse.js ^7.1.0:** Client-side fuzzy search on comparison page — bug fix target, no upgrade needed
-- **TypeScript ^5.9.3:** Type safety — i18n key checking across all languages enforced at compile time
-- **Cloudflare Pages:** Hosting — purely static deployment; no SSR mode needed for any v1.2 feature
+**Core technologies (existing, validated):**
+- Astro 6.0.6: SSG framework — all v2.0 features work within the existing SSG model without SSR
+- Cloudflare Pages: hosting + `_headers` file for security headers, hierarchical `404.html` lookup for error pages, edge-injected analytics
+- TypeScript + existing `src/lib/seo.ts`: extend with BreadcrumbList, Organization, FAQPage schema builders — zero new libraries
 
-**Do not add:** Chart.js/Recharts/Plotly, React/Preact, i18next/paraglide, date-fns/moment, Zustand/Nanostores, or Observable Plot. Each would add bundle weight, runtime overhead, or architectural inconsistency for zero benefit.
+**New external services (zero npm additions):**
+- Cloudflare Web Analytics: free, cookie-free analytics — one toggle in CF dashboard, auto-injected at edge since October 2025
+- Ko-fi: 0% platform fee donations — external link only, no SDK, no iframe
+
+**Key "do not add" decisions:**
+- No cookie consent library — site sets zero cookies; a banner is legally unnecessary and UX-damaging
+- No Google Analytics — Italian Garante ruling (June 2022) makes this a hard no for an EU/IT-operated site
+- No payment processing SDK — Ko-fi handles payments externally
+- No `astro-breadcrumbs` package — 5-language translated slugs (`/es/pais/`, `/it/paese/`) require a custom ~50-line component
 
 ### Expected Features
 
-**Must have (table stakes):**
-- **Comparison page search fix** — core functionality is currently broken on web; blocks user ability to compare countries
-- **Chart date axis fix** — incorrect axis dates undermine data trust; non-negotiable for a data accuracy platform
-- **Chart time-range controls (7d/30d/90d/All)** — 60+ data points compress into an unreadable default view; universal expectation for time-series dashboards
-- **Parameter/pillar explanations** — "Governance: 3.2/10" is meaningless without context; users cannot act on scores they do not understand
-- **Spanish language support** — third most-spoken language globally; massive traveler demographic; i18n architecture already supports it
+See [FEATURES.md](FEATURES.md) for complete feature landscape with legal classifications.
 
-**Should have (differentiators):**
-- **Category filtering on map** — view world colored by single pillar (Health, Conflict, etc.); unique analytical lens not offered by competitors at this granularity
-- **Animated D3 transitions** — smooth color/axis transitions when switching scope or category; polish that signals quality
+**Must have (legal requirements or critical production gaps):**
+- Security headers via `_headers` file (HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy) — production standard
+- Privacy policy expansion in all 5 languages — GDPR Article 12/13; must document Cloudflare infrastructure, analytics, Ko-fi, and localStorage usage accurately
+- robots.txt sitemap URL typo fix — current URL points to wrong domain, actively harming SEO indexing
+- Skip navigation link + focus indicators — WCAG 2.1 AA required; EU European Accessibility Act entered force June 2025
+- Custom 404 pages per language — Cloudflare Pages hierarchical `404.html` lookup enables clean multilingual error handling
 
-**Defer to v1.3:**
-- Per-pillar historical trends — `history-index.json` stores only composite scores; requires pipeline schema migration to store 5 pillar scores per country per day
-- Category filtering on historical trend charts — blocked by same data limitation as above
-- User-adjustable pillar weights — creates spreadsheet experience; undermines the platform's opinionated safety answer
+**Should have (high value, low-medium complexity):**
+- BreadcrumbList schema + Breadcrumb UI component — ~3% CTR improvement in SERPs; ~50 lines of locale-aware custom code
+- Organization schema on homepage — establishes site identity in Google Knowledge Graph
+- `/llms.txt` static file — 30-minute investment, growing AI search adoption, Anthropic and Cursor already use this standard
+- AI crawler directives in robots.txt — site is open data; visibility serves the mission
+- Donations page in 5 languages + FUNDING.yml — GitHub Sponsors (primary, 0% fee) + Ko-fi (secondary, 0% fee)
+- Cloudflare Web Analytics verification — may already be auto-enabled since October 2025; confirm in dashboard
+- ARIA labels on D3 charts and SVG map — accessibility compliance + LLM content extraction
+
+**Defer to post-v2.0:**
+- `/llms-full.txt` auto-generation — build pipeline complexity for uncertain LLM crawling return
+- Dataset schema (schema.org/Dataset) — differentiator, not blocking
+- Full D3 map keyboard navigation — highest effort accessibility item (~8-12h in isolation); do after all other a11y work
+- Static JSON data endpoint (`/api/scores.json`) — valuable for developers, not blocking v2.0
+- Cookie consent banner — do not add unless cookies are actually introduced (they should not be)
+- Custom 5xx error pages — requires Cloudflare Business plan on free tier
 
 ### Architecture Approach
 
-The platform uses two established rendering strategies: build-time SVG with thin client-side tooltip scripts (country detail pages), and full client-side D3 rendering using data serialized into `data-*` attributes (map, comparison page). The v1.2 migration aligns the country trend chart with the second strategy, and introduces two new interaction patterns: static HTML controls wired to JS event listeners (scope buttons, category filter buttons), and native `<details>/<summary>` for zero-JS expand/collapse (pillar explanations). All state is managed in page-scoped vanilla JS using URL query params for shareability; no state management library is needed.
+V2.0 requires zero changes to the data pipeline, scoring system, or existing build process. All features are either static configuration files or new Astro pages following the existing `[lang]/` routing pattern. See [ARCHITECTURE.md](ARCHITECTURE.md) for the complete integration map with file-level touch points.
 
-**Major components changed in v1.2:**
-1. **`TrendChart.astro`** — major rewrite: D3 rendering moves from Astro frontmatter to client-side `<script>`; scope buttons added as static HTML
-2. **`SafetyMap.astro`** — add pillar filter bar and recolor logic; tooltip and legend updated dynamically
-3. **`PillarBreakdown.astro`** — add `<details>/<summary>` expandable explanations per pillar
-4. **`src/i18n/ui.ts`** — add ~208 new strings total: ~170 for Spanish + ~38 for new feature keys (chart scope, map filter, pillar explanations)
-5. **`public/scores.json` generation** — extend with pillar scores and Spanish country names
-6. **`src/pipeline/types.ts`** — extend `name` type from `{ en, it }` to `Record<Lang, string>`
-7. **`src/pages/es/`** — create 8-10 page files mirroring `en/` directory structure
+**Major components added or modified:**
+
+1. `public/_headers` (NEW) — all security headers site-wide; does not include CSP (use Astro experimental meta-tag CSP or `unsafe-inline` fallback instead, due to 2,000-char line limit and hash complexity)
+2. `public/llms.txt` (NEW) — static LLM discoverability file following llmstxt.org spec
+3. `public/robots.txt` (MODIFIED) — domain typo fix, AI crawler allow rules, llms.txt reference
+4. `src/layouts/Base.astro` (MODIFIED) — skip-nav link, analytics script tag before `</body>`
+5. `src/i18n/ui.ts` (MODIFIED) — ~30 new translation keys across 5 languages (donate routes + strings, 404 strings)
+6. `src/lib/seo.ts` (MODIFIED) — extend with `buildBreadcrumbJsonLd()`, `buildOrganizationJsonLd()`, `buildFaqJsonLd()` functions
+7. `src/components/Breadcrumb.astro` (NEW) — locale-aware breadcrumb nav with JSON-LD output
+8. `src/pages/[lang]/donate.astro` x5 (NEW) — Ko-fi external link pages per language
+9. `src/pages/[lang]/404.astro` x5 + root `src/pages/404.astro` (NEW) — per-language error pages
+
+**Data flow:** Completely unchanged. The build pipeline, scoring system, and Cloudflare deployment process are untouched.
 
 ### Critical Pitfalls
 
-1. **Spanish i18n cascades through the data pipeline** — `CountryEntry.name` is typed as `{ en: string; it: string }` not `Record<Lang, string>`. Every one of the 248 country entries in `countries.ts` has only `en` and `it` fields. Test fixtures will also fail. Prevention: update the type first, generate 248 Spanish country names programmatically from CLDR data, then add data, then create page files.
+See [PITFALLS.md](PITFALLS.md) for the complete 13-pitfall analysis including moderate and minor items.
 
-2. **Category filter requires pillar data the map client does not have** — `scores.json` currently has only composite score; loading full `latest.json` (~656KB) would destroy mobile performance. Prevention: extend `scores.json` generation to include 5 pillar floats per country (~30KB addition). Use `pillarToColor()` from `colors.ts` (0-1 scale) not `safetyColorScale()` (1-10 scale) for pillar mode — the wrong scale produces uniform dark red for all countries.
+1. **Domain typo may be invalidating all SEO** — `robots.txt` and `astro.config.mjs` both reference "isitsafetotravels.com" (extra 's'). If the actual domain is "isitsafetotravel.com", every canonical URL, hreflang tag, OG URL, and sitemap entry across 1,240+ pages is wrong. Verify domain spelling against DNS records before any SEO schema work.
 
-3. **TrendChart.astro cannot support interactive controls in its current form** — SVG is generated at build time; adding scope controls while leaving server-rendered SVG creates dual rendering paths causing flash/jank. Prevention: move all D3 rendering to the `<script>` block following the established pattern in `compare.astro`. Embed full history data in `data-history` attribute and filter client-side.
+2. **CSP silently breaks D3 charts and dark mode** — A naive `_headers` CSP that excludes `unsafe-inline` blocks the 2 `is:inline` scripts (dark mode detection, language redirect) and potentially D3 rendering. The `_headers` 2,000-char line limit makes full hash-based CSP impractical there. Recommended approach: use Astro experimental `security.csp` for bundled script hashing; manually add SHA-256 hashes for the 2 `is:inline` scripts; deploy in `Content-Security-Policy-Report-Only` mode first. Acceptable fallback: `unsafe-inline` in `_headers` (sufficient for a read-only SSG site with no user-generated content).
 
-4. **View transitions break chart re-initialization** — map already handles `astro:after-swap`; `TrendChart.astro` tooltip script does not. After the client-side refactor, all chart init code must register `document.addEventListener('astro:after-swap', initChart)`.
+3. **Google Analytics is legally prohibited for this operator** — The Italian Garante ruled GA non-compliant for Italian-operated sites in June 2022. Cloudflare Web Analytics is the only viable free option and is likely already auto-enabled on this Cloudflare Pages domain since October 2025.
 
-5. **Comparison page search bug is a setTimeout blur race condition** — `compare.astro` uses `setTimeout(() => dropdown.classList.add('hidden'), 200)` to allow click registration before hiding; fragile on mobile and slow devices. Prevention: replace with `mousedown` + `e.preventDefault()` to prevent input blur before selection registers.
+4. **GDPR over-compliance trap** — Adding a cookie consent banner when the site sets zero cookies is legally unnecessary, harms UX, and can create new obligations (if the banner sets a "consent recorded" cookie). Zero-cookie architecture must be maintained and documented.
+
+5. **HSTS preload is effectively permanent** — Once submitted to the HSTS preload list, removal takes months. Start with `max-age=86400`; do not add `preload` until HTTPS has been demonstrably stable for months.
 
 ## Implications for Roadmap
 
-Based on combined research, the features fall into a natural dependency order. Bug fixes have no dependencies. Pillar explanations and Spanish i18n are independent of each other and of the interactivity features. Chart zoom requires the TrendChart refactor. Category filtering depends on `scores.json` expansion but not on chart zoom. Spanish i18n is the highest-effort feature and is independent of all others, making it a candidate for parallel work.
+Based on research, the phase structure is driven by two hard dependencies: (1) domain verification must happen before any SEO schema work (all schema URLs would be wrong otherwise), and (2) analytics must be confirmed before writing the privacy policy (the policy must accurately state what analytics tool is used). Beyond those gates, most features are independent within their phase.
 
-### Phase 1: Bug Fixes
-**Rationale:** No dependencies; these are regressions that block existing functionality. Fix first to establish a clean baseline before adding new complexity.
-**Delivers:** Functional comparison page search on web; correct date axis labels on trend charts
-**Addresses:** Comparison search fix (table stakes), chart date axis fix (table stakes)
-**Avoids:** Pitfall 5 (blur race condition) — use `mousedown` preventDefault pattern; Pitfall 6 (locale date inconsistency) — standardize on `toLocaleDateString()` with explicit locale parameter
+### Phase 1: Foundation — Config Files and Critical Fixes
+**Rationale:** These are either active production risks (domain typo, missing security headers) or pure-additive zero-risk configuration changes. No existing code is touched. Safe to ship immediately.
+**Delivers:** Correct security headers in production, fixed robots.txt, LLM discoverability, confirmed analytics status
+**Addresses:** `public/_headers` (all headers except CSP), robots.txt typo fix + AI crawler directives, `/llms.txt`, Cloudflare Web Analytics dashboard verification, FUNDING.yml
+**Avoids:** Domain typo SEO catastrophe (Pitfall 4), HSTS preload too early (Pitfall 7), missing headers in production
 
-### Phase 2: Chart Interactivity
-**Rationale:** The TrendChart refactor from build-time to client-side rendering is the most architecturally significant change in v1.2 and should be completed before touching the map, which has higher traffic and more interdependencies. The comparison page chart is already client-side and only needs a date filter layer added.
-**Delivers:** Interactive time-range scope controls (7d/30d/90d/All) on country trend charts and comparison charts; smooth D3 transitions between states
-**Addresses:** Chart zoom/scope controls (table stakes + differentiator)
-**Avoids:** Pitfall 3 (server-rendered SVG cannot re-render client-side); Pitfall 9 (view transitions — add `astro:after-swap` listeners to all init code)
-**Research flag:** Standard D3 pattern; no deeper research needed. `compare.astro` lines 405-549 provide the reference implementation.
+### Phase 2: Legal Compliance Pages
+**Rationale:** Privacy policy content depends on which analytics tool is confirmed in Phase 1. Once that is locked, the policy can be written accurately for all 5 languages. Builds on existing legal page infrastructure.
+**Delivers:** GDPR-compliant privacy policy (5 languages), expanded terms/imprint, cookie-free documentation statement
+**Addresses:** Privacy policy expansion, imprint/legal notice (required in DE/AT; best practice elsewhere in EU), data controller contact information (GDPR Article 13)
+**Avoids:** Legal content not matching actual practices (Pitfall 8), policy written only in English (GDPR Article 12 requires clear language for users)
 
-### Phase 3: Parameter Explanations
-**Rationale:** Independent of all other features; uses existing `PillarScore.indicators[]` data already available in the page at build time; low risk; fills the critical user comprehension gap that limits the value of every other feature on the platform.
-**Delivers:** Expandable `<details>/<summary>` sections on each pillar bar explaining what it measures, which indicators feed into it, and what a low/high score means for travelers
-**Addresses:** Parameter/pillar explanations (table stakes)
-**Avoids:** Pitfall 7 (content volume overwhelming `ui.ts`) — limit to 1-2 sentences per pillar; write English first, then translate; consider Astro content collections only if content grows beyond manageable i18n key size
+### Phase 3: SEO Schema Extensions
+**Rationale:** Domain must be verified (Phase 1) before implementing any schema containing absolute URLs. BreadcrumbList has the highest SEO ROI and is the anchor feature. Builds on existing `seo.ts` schema infrastructure.
+**Delivers:** BreadcrumbList schema + Breadcrumb UI component, Organization schema on homepage, FAQ schema on methodology page, server-side `_redirects` for root `/`, comparison page noindex meta tag
+**Addresses:** Missing BreadcrumbList, missing Organization schema, client-side-only root redirect (SEO risk), comparison pages wasting crawl budget
+**Avoids:** Breadcrumb URLs wrong for non-English pages (Pitfall 9) — requires locale-aware URL generation throughout
 
-### Phase 4: Category Filtering on Map
-**Rationale:** Requires a `scores.json` schema change that touches the build pipeline. Doing this after chart work reduces concurrent complexity and benefits from validated client-side interaction patterns. The map is the highest-traffic component and warrants focused, isolated testing.
-**Delivers:** Segmented control above the map to view world colored by a single pillar; tooltip and legend update dynamically; URL query param persistence for shareability
-**Addresses:** Category filtering on map (differentiator)
-**Avoids:** Pitfall 2 (wrong data source — extend `scores.json`, not load `latest.json`); Pitfall 2 (wrong color scale — use `pillarToColor()` not `safetyColorScale()`); Pitfall 8 (color semantics shift per pillar — add dynamic legend text); Pitfall 11 (per-pillar trend charts are not feasible — accept limitation and show clear UI messaging)
+### Phase 4: New User-Facing Pages
+**Rationale:** Donations page and 404 pages follow established Astro `[lang]/` patterns but require i18n keys added to `ui.ts` first. Logically follows legal foundation (Phase 2) since donation pages link to the privacy policy.
+**Delivers:** Multilingual donations page with Ko-fi + GitHub Sponsors links, custom 404 pages for all 5 languages + root fallback, footer donation link
+**Addresses:** Donations page (5 languages), custom 404 pages with search suggestion and home link
+**Avoids:** Ko-fi widget iframe embedding cookies (Pitfall 6/1 interaction) — external `<a>` link only; embedded payment processing (Pitfall architecture anti-pattern)
 
-### Phase 5: Spanish Language Support
-**Rationale:** Highest-effort feature; completely independent of all other v1.2 features. Can be parallelized against Phases 2-4 if team capacity allows, or sequenced last. The type-first execution order is critical: updating `CountryEntry.name` to `Record<Lang, string>` must happen before any data additions or page file creation.
-**Delivers:** Full Spanish locale at `/es/` with translated UI strings (~170 keys), Spanish country names for all 248 countries, Spanish URL slugs (`/es/pais/`, `/es/comparar/`, etc.), and Spanish map tooltips
-**Addresses:** Spanish language support (table stakes)
-**Avoids:** Pitfall 1 (type cascade — update `pipeline/types.ts` type first, generate names programmatically from CLDR); Pitfall 4 (page directory completeness — create all 8-10 page files under `src/pages/es/`, verify language switcher shows ES option, verify `getAlternateLinks()` returns 3 entries)
+### Phase 5: Accessibility and CSP Hardening
+**Rationale:** Accessibility audit is most useful after the complete page set is stable. CSP finalization is deferred until all inline scripts are known and stable, since hash recalculation is required after any inline script change.
+**Delivers:** WCAG 2.1 AA baseline (skip nav, focus indicators, ARIA labels on D3 charts/map, color contrast), CSP in report-only mode then enforcement
+**Addresses:** Skip navigation, focus indicators, ARIA on SVG components, color contrast audit (light + dark mode), CSP implementation
+**Avoids:** CSP breaking D3 charts in production (Pitfall 2) — report-only mode first; accessibility regression from new UI elements (Pitfall 12)
 
 ### Phase Ordering Rationale
 
-- Bug fixes come first because they unblock existing functionality and establish a clean baseline
-- Chart interactivity comes second because the TrendChart refactor is the highest architectural risk and should be isolated from other changes
-- Pillar explanations come third because they are independent, low-risk, and improve comprehension of data the platform already shows
-- Category filtering comes fourth because it requires a pipeline data change and benefits from experience with the client-side patterns established in Phase 2
-- Spanish comes last in sequence (or in parallel) because it is the highest effort, is independent of all other features, and its execution order within itself is the only real risk
+- Phase 1 before all others: domain typo is the single highest-risk item; config files have zero regression risk
+- Phase 2 after Phase 1: privacy policy depends on confirmed analytics tool
+- Phase 3 after Phase 1: all schema absolute URLs depend on verified domain
+- Phase 4 after Phase 2: donation pages link to privacy policy; legal foundation should precede
+- Phase 5 last: covers the complete page set; CSP finalized after all inline scripts are stable
 
 ### Research Flags
 
-All phases use standard, well-documented patterns. No phase requires a `/gsd:research-phase` deep dive.
+Phases likely needing deeper research during planning:
+- **Phase 5 (CSP):** Astro experimental CSP for SSG has known limitations with `is:inline` scripts. Verify Astro 6.0.6 exact behavior and whether a build-time hash extraction script is needed for the `unsafe-inline` fallback versus the experimental approach.
+- **Phase 3 (comparison page indexing):** Confirm Google's current treatment of query-parameter comparison URLs before settling on noindex versus canonical strategy.
 
-Phases with well-established patterns (skip research-phase):
-- **Phase 1 (Bug Fixes):** Root cause identified in source code; `mousedown` preventDefault is a known pattern
-- **Phase 2 (Chart Interactivity):** `compare.astro` provides the reference implementation; D3 brushX is standard time-series zoom
-- **Phase 3 (Parameter Explanations):** Native HTML `<details>/<summary>`; content authoring work, not engineering research
-- **Phase 4 (Category Filtering):** D3 `.selectAll().attr()` recolor with transition is textbook D3; data schema change is additive
-- **Phase 5 (Spanish i18n):** Architecture was designed for this; execution is mechanical given type-first order
+Phases with standard patterns (skip dedicated research-phase):
+- **Phase 1:** All features are documented Cloudflare Pages patterns
+- **Phase 2:** Legal page structure follows existing Astro i18n pattern; content authoring does not require technical research
+- **Phase 4:** Donations and 404 pages follow Cloudflare Pages and Astro documentation exactly
 
 ## Confidence Assessment
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All decisions based on direct `package.json` and source file analysis; no inference or speculation |
-| Features | HIGH | Scoped against PROJECT.md; all features examined in actual component source files |
-| Architecture | HIGH | All patterns derived from direct codebase analysis with line numbers cited in ARCHITECTURE.md |
-| Pitfalls | HIGH | Root causes identified in actual source files (line-level); not speculative |
+| Stack | HIGH | Zero new dependencies confirmed via exhaustive feature-by-feature analysis against official Astro 6 and Cloudflare Pages docs |
+| Features | HIGH | Legal requirements verified via multiple EU law sources; technical features verified against official Cloudflare/Astro documentation |
+| Architecture | HIGH | Based on direct codebase analysis combined with official docs; Astro SSG CSP limitation confirmed in primary source; Cloudflare 404 hierarchical lookup confirmed |
+| Pitfalls | HIGH | Most pitfalls verified via official docs (CF limits, Astro CSP SSR-only constraint) or established EU law (Italian Garante, GDPR Article 5(3)) |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **Spanish country name sourcing:** Research confirms CLDR as the correct source for 248 Spanish country names, but the actual generation approach is not yet decided. During Phase 5 planning, determine whether to write a one-off conversion script or use a small reference package like `i18n-iso-countries` for the initial import.
-- **`scores.json` generation location:** Research identifies that pillar scores should be added at the pipeline snapshot step, but the exact script and function that currently generates `scores.json` needs confirmation during Phase 4 planning before making changes.
-- **Astro View Transitions status:** Research flags that TrendChart needs `astro:after-swap` handling, but whether the Astro Client Router is currently enabled in `Base.astro` was not confirmed in the research files. Verify at the start of Phase 2.
+- **Domain verification (CRITICAL — gate for Phase 3):** Confirm whether the live domain is "isitsafetotravel.com" or "isitsafetotravels.com". Check `astro.config.mjs` `site` value against DNS records and the registered domain. If there is a mismatch, a redirect strategy is needed before any SEO schema work.
+
+- **Cloudflare Web Analytics auto-enable status:** Research indicates CF Web Analytics auto-enables for Cloudflare Pages free domains since October 2025. Verify in the CF dashboard before adding any manual script tags — it may already be collecting data.
+
+- **Italian jurisdiction legal nuance:** The privacy policy must be written for Italian legal context (data controller in Italy, subject to Garante oversight). Research covers EU law broadly; actual policy drafting should reference Garante-specific guidance, particularly on Cloudflare infrastructure as a data processor.
+
+- **Astro 6 experimental CSP reliability:** The experimental flag carries uncertainty. Phase 5 should prototype the CSP approach in a feature branch before committing to it across the full build.
 
 ## Sources
 
-### Primary (HIGH confidence — direct source file analysis)
-- `src/components/country/TrendChart.astro` — chart rendering pattern, data-history attribute, tooltip script structure
-- `src/components/SafetyMap.astro` — map fetch pattern, D3 selection recolor pattern, `astro:after-swap` handling
-- `src/pages/en/compare.astro` — client-side chart reference implementation (lines 405-549), Fuse.js search, blur handler at line 255
-- `src/i18n/ui.ts` — 325-line translation dictionary; `languages` map with `en`/`it`; key structure and `useTranslations()` pattern
-- `src/i18n/utils.ts` — `getLocalizedPath()`, `getAlternateLinks()`, `getLangFromUrl()` confirmed fully generic
-- `src/pipeline/types.ts` — `CountryEntry.name: { en: string; it: string }` hardcoded type confirmed
-- `src/pipeline/config/countries.ts` — 248 country entries, each with `{ en, it }` name shape confirmed
-- `src/lib/scores.ts` — `HistoryPoint` type confirming absence of per-pillar history
-- `src/lib/colors.ts` — `pillarToColor()` (0-1 input) vs `safetyColorScale()` (1-10 input) distinction confirmed
-- `package.json` — d3 ^7.9.0 confirmed (includes d3-brush); no second charting library present
-- `astro.config.mjs` — i18n locales config confirmed; sitemap integration structure confirmed
+### Primary (HIGH confidence)
+- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) — `_headers` file format, 100-rule and 2,000-char limits
+- [Cloudflare Pages Serving Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/) — 404.html hierarchical directory lookup
+- [Cloudflare Web Analytics](https://developers.cloudflare.com/web-analytics/about/) — cookie-free, free tier, auto-inject behavior
+- [Astro CSP experimental docs](https://docs.astro.build/en/reference/experimental-flags/csp/) — SSR-only limitation confirmed explicitly
+- [llms.txt specification](https://llmstxt.org/) — format, required sections, adoption list
+- [Google Structured Data docs](https://developers.google.com/search/docs/appearance/structured-data) — supported rich result types
+- [GDPR.eu Cookies Guide](https://gdpr.eu/cookies/) — ePrivacy Directive Article 5(3) strictly necessary exemption
+- Direct codebase analysis: `Base.astro`, `seo.ts`, `ui.ts`, `astro.config.mjs`, `wrangler.toml`, `robots.txt`, `index.astro`, `Footer.astro`
 
-### Secondary (HIGH confidence — well-established patterns)
-- D3 v7 `d3-brush` module: standard time-series brush-to-zoom pattern; confirmed in d3 monorepo as part of full `d3` bundle
-- Astro 6 i18n routing: built-in locales config; adding `'es'` is additive and non-breaking per Astro documentation
-- HTML `<details>/<summary>`: W3C specification; zero-JS accessible expand/collapse
-- Time-range preset patterns (7d/30d/90d/All): established UX convention on Google Finance, Our World in Data, and similar platforms
+### Secondary (MEDIUM confidence)
+- [Cloudflare Web Analytics auto-enabled Oct 2025](https://x.com/Cloudflare/status/1968395474420871174) — default for Cloudflare Pages free domains
+- [GDPR cookie consent requirements 2025](https://secureprivacy.ai/blog/gdpr-cookie-consent-requirements-2025) — ePrivacy Directive withdrawal, current enforcement
+- [BreadcrumbList SEO impact](https://searchengineland.com/guide/seo-breadcrumbs) — ~3% CTR improvement data
+- [Ko-fi vs Buy Me a Coffee](https://talks.co/p/kofi-vs-buy-me-a-coffee/) — 0% vs 5% platform fee comparison
+- [Astro 5.9 release blog](https://astro.build/blog/astro-590/) — CSP experimental feature announcement
+
+### Tertiary (LOW confidence)
+- [llms.txt adoption analysis (Semrush)](https://www.semrush.com/blog/llms-txt/) — growing adoption but no confirmed active LLM crawling
+- [EU Digital Omnibus proposal](https://www.taylorwessing.com/en/global-data-hub/2026/the-digital-omnibus-proposal/gdh---the-digital-omnibus---cookies) — proposed cookie consent exemptions; not yet law; signals regulatory direction
 
 ---
-*Research completed: 2026-03-20*
+*Research completed: 2026-03-21*
 *Ready for roadmap: yes*

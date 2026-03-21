@@ -1,211 +1,382 @@
-# Domain Pitfalls
+# Domain Pitfalls: v2.0 Production Ready
 
-**Domain:** Adding interactive chart controls, per-category filtering, Spanish i18n, parameter explanations, and bug fixes to existing Astro SSG + D3 travel safety platform
-**Researched:** 2026-03-20
-**Confidence:** HIGH (based on direct codebase analysis of all affected files)
+**Domain:** Production-readiness features for Astro SSG travel safety platform on Cloudflare Pages
+**Researched:** 2026-03-21
+**Confidence:** HIGH (verified against official docs, codebase analysis, and EU legal framework)
 
 ## Critical Pitfalls
 
-Mistakes that cause rewrites or major issues.
+Mistakes that cause legal exposure, broken production deployments, or require rewrites.
 
-### Pitfall 1: Spanish i18n Requires Type-Level Changes Across the Entire Data Pipeline
+### Pitfall 1: GDPR Over-Compliance -- Adding a Cookie Banner When None Is Required
 
-**What goes wrong:** Adding Spanish is not just "add another translation object to `ui.ts`." The `name` field in `CountryEntry`, `ScoredCountry`, and `DailySnapshot` types is typed as `{ en: string; it: string }` -- a fixed two-language object literal. Every country in `countries.ts` (248 entries) has only `en` and `it` name fields. The pipeline generates `scores.json` and `latest.json` with this same shape. The map reads `c.name?.[lang]` from `scores.json`. If `es` is not in the data, Spanish users see English fallback for country names only (while UI text is Spanish), creating a jarring mixed-language experience.
+**What goes wrong:** Developers reflexively add cookie consent banners to every site, even when the site sets zero cookies and collects no personal data. This creates unnecessary UX friction, increases bundle size, adds GDPR-related legal obligations that did not previously exist (because the banner itself often sets a "consent" cookie), and signals to users that tracking occurs when it does not.
 
-**Why it happens:** The initial i18n architecture hardcoded language support into the data layer (TypeScript interfaces, pipeline config) rather than keeping it purely in the presentation layer. This is a common pattern when starting with 2 languages -- it seems simpler to inline names than to maintain a separate translation file.
-
-**Consequences:**
-- `CountryEntry` type in `pipeline/types.ts` needs `es` added: currently `name: { en: string; it: string }` must become `{ en: string; it: string; es: string }` (or better, `Record<Lang, string>`)
-- All 248 entries in `pipeline/config/countries.ts` need a Spanish name field added
-- `ScoredCountry` inherits from `CountryEntry`, so pipeline output changes shape
-- `scores.json` (loaded client-side by the map) grows with the third language
-- Test fixtures in `snapshot.test.ts` and `history.test.ts` create mock countries with `name: { en: ..., it: ... }` and will fail
-- If you forget to update the type but add `es` data, TypeScript rejects it
-- If you update the type but forget the data, every `name.es` access returns `undefined`
-
-**Prevention:**
-- Phase the work: (1) update `CountryEntry` type to `Record<Lang, string>` instead of hardcoded keys, (2) add Spanish names to all 248 countries in `countries.ts`, (3) add `es` to `languages` and `ui` objects in `ui.ts`, (4) create `src/pages/es/` directory with all page files, (5) add Spanish routes to `routes` object
-- Make the name type dynamic with `Record<Lang, string>` so future languages do not require type changes
-- Generate Spanish country names programmatically from a reference (most are identical or have well-known translations from English/Italian) rather than manually typing 248 entries
-
-**Detection:** TypeScript compilation errors after adding `'es'` to `Lang` type; runtime `undefined` for country names in Spanish locale; map tooltips showing ISO3 codes instead of names.
-
-### Pitfall 2: Category Filtering on Map Requires Data the Client Does Not Currently Have
-
-**What goes wrong:** The map currently fetches `/scores.json` which contains only `iso3`, `name`, and `score` (the composite score). To color the map by individual pillars (conflict, crime, health, governance, environment), the client needs per-pillar scores for every country. This data exists in `latest.json` (full snapshot with pillar breakdowns, advisories, indicators) but is NOT in the lightweight `scores.json`.
-
-**Why it happens:** The map's data contract was intentionally minimal to keep the JSON small and fast. Adding category filtering means either: (a) the map loads the full `latest.json` (~656KB, containing advisory text, indicator breakdowns, source metadata for 248 countries that the map does not need), or (b) `scores.json` is extended to include pillar scores, or (c) a new endpoint is created.
+**Why it happens:** Confusion between the ePrivacy Directive (which governs cookies/device storage) and GDPR (which governs personal data processing). Most "do I need a cookie banner?" guides are written by consent-management-platform vendors who profit from selling cookie tools.
 
 **Consequences:**
-- Loading full `latest.json` on the map page adds massive payload and kills mobile performance
-- The `safetyColorScale` in `map-utils.ts` maps scores on a 1-10 scale, but pillar scores are 0-1 normalized. Using the wrong scale produces wrong colors (everything appears dark red)
-- The map currently has no UI for selecting a category -- this is a new interactive element on an otherwise non-interactive static page
-- The color scale semantics change: "safe/danger" for composite score vs per-pillar meaning (e.g., "governance: 0.9" means good governance)
+- A cookie consent banner that sets its own "consent_given=true" cookie now requires consent for that cookie (circular dependency)
+- Users distrust the site ("why is a travel safety site tracking me?")
+- Added JavaScript, layout shifts, accessibility issues from banner overlays
+- Legal exposure from a poorly-implemented banner is worse than no banner on a cookie-free site
 
 **Prevention:**
-- Extend `scores.json` to include pillar scores: `{ iso3, name, score, pillars: { conflict: 0.7, crime: 0.8, ... } }` -- adds ~2KB for 248 countries (5 floats each)
-- Reuse `pillarToColor()` from `colors.ts` for pillar-mode coloring (already converts 0-1 to the color scale) instead of `safetyColorScale`
-- Update legend text dynamically when a category filter is active (e.g., "Higher" / "Lower" instead of "Safer" / "Less safe")
-- Update the `scores.json` generation in the pipeline's snapshot step, not at build time
+- **Audit first:** The current site uses `localStorage` for theme preference only (dark mode toggle in `Base.astro` line 79). localStorage is covered by ePrivacy but the "strictly necessary" exemption applies to user-interface preferences like theme selection. No consent needed.
+- **If analytics are added:** Use a cookie-less, no-personal-data solution (see Pitfall 3). If it truly sets no cookies and collects no PII, no banner is required under ePrivacy Directive Article 5(3).
+- **If donations are added:** The donation happens on an external platform (Ko-fi, etc.), so their cookies are on their domain, not yours. An external link does not set cookies on your domain.
+- **Rule of thumb:** Only add a cookie banner if you add a feature that actually sets non-essential cookies or processes personal data on your domain. Document the audit decision in a `COOKIE_AUDIT.md`.
+- **EU Digital Omnibus (November 2025 proposal):** Would further exempt aggregated audience measurement cookies from consent requirements. Not yet law, but shows regulatory direction.
 
-**Detection:** Map shows uniform or incorrect colors when switching to a category filter; pillar scores render as very dark colors because 0-1 values are fed to a 1-10 scale.
+**Detection:** Run `document.cookie` and inspect `Application > Cookies` and `Application > Local Storage` in DevTools on the live site. If only `theme` key exists in localStorage and cookies are empty, no banner is needed.
 
-### Pitfall 3: Adding Interactive Chart Controls to Server-Rendered SVG Charts
+**Confidence:** HIGH -- ePrivacy Directive Article 5(3) exemption for "strictly necessary" storage is well-established EU law.
 
-**What goes wrong:** The current `TrendChart.astro` generates SVG entirely at build time using D3 in the Astro frontmatter (server-side). The only client-side code is tooltip interactivity (mousemove to find nearest point). Adding zoom, date range selection, or scope controls (7d/30d/90d/all) means the chart must be re-rendered with different data ranges, but the SVG paths, axes, and ticks are baked into static HTML at build time. You cannot re-scale axes or change data ranges without rebuilding the entire SVG DOM.
+**Sources:**
+- [Usercentrics: GDPR and cookies 2025](https://usercentrics.com/knowledge-hub/gdpr-cookies/)
+- [CookieInformation: ePrivacy Directive](https://cookieinformation.com/what-is-the-eprivacy-directive/)
+- [EU Digital Omnibus proposal on cookies](https://www.taylorwessing.com/en/global-data-hub/2026/the-digital-omnibus-proposal/gdh---the-digital-omnibus---cookies)
 
-**Why it happens:** The original SSG-first architecture correctly avoided client JS for static content. But interactive controls (zoom, pan, date range) require D3 to operate client-side, not just at build time. The `TrendChart.astro` component would need to shift from "server renders SVG, client adds tooltips" to "server provides data, client renders and re-renders SVG."
+---
+
+### Pitfall 2: CSP Breaking Inline D3.js Scripts and Dark Mode Toggle
+
+**What goes wrong:** Adding a Content-Security-Policy that blocks `unsafe-inline` breaks all D3.js chart rendering, the dark mode toggle, and the JSON-LD structured data injection. The site looks fine during development (CSP not enforced in dev mode) but charts vanish in production.
+
+**Why it happens:** The site has three categories of inline scripts:
+1. **`is:inline` scripts** (dark mode in `Base.astro` line 79, redirect in `index.astro` line 22) -- Astro's experimental CSP does NOT auto-hash `is:inline` scripts. These are passed through verbatim without being processed by the bundler.
+2. **Bundled `<script>` tags** (D3 chart code in `SafetyMap.astro`, `TrendChart.astro`, comparison pages, global-safety pages -- 13 files total import from `d3`) -- Astro's experimental CSP DOES auto-hash these because they go through Vite's bundler.
+3. **`set:html` for JSON-LD** (in `Base.astro` line 75: `<script type="application/ld+json" set:html={...}>`) -- content scripts that may need handling depending on CSP configuration.
+
+The naive approach of adding `script-src 'self' 'unsafe-inline'` in `_headers` works but defeats the purpose of CSP entirely. The proper approach requires understanding which scripts need hashing.
 
 **Consequences:**
-- If you try to add controls without refactoring, you end up with two rendering paths: server-rendered initial SVG and client-side re-rendered SVG, which causes flash/jank on first interaction
-- The chart data is currently embedded as `data-history` JSON attribute -- but it only contains `{ date, score, cx, cy }` with pre-computed SVG coordinates. These coordinates are only valid for the current axis scales and cannot be reused after re-rendering
-- The comparison page trend chart (`compare.astro` line ~381) already renders charts fully client-side, creating an inconsistent rendering pattern between pages
-- Date range filtering requires access to ALL history points, not just the subset used for the initial render
+- D3 charts (the core product feature) stop rendering with no visible error to users
+- Dark mode flashes (FOUC) or fails entirely on every page
+- JSON-LD structured data may be blocked, destroying rich search results across all 1,240+ pages (248 countries x 5 languages)
+- Developers waste hours debugging because CSP violations only appear in browser console, not in the page UI
 
 **Prevention:**
-- Pick one pattern. Recommended: move country trend charts to client-side rendering, matching the comparison page's approach. The comparison page already demonstrates the correct pattern (lines 405-549 of `compare.astro`)
-- Extract chart rendering into a shared utility function used by both country trend charts and comparison trend charts to avoid duplicating D3 logic
-- Embed the FULL history data in `data-history` and filter client-side when scope controls are used, rather than trying to re-fetch from the server
-- For the date range controls, implement as simple buttons (7d/30d/90d/All) that filter the data array and call a `renderChart()` function
+- **Use Astro's experimental CSP (available since Astro 5.9).** Enable `experimental: { csp: true }` in `astro.config.mjs`. This generates `<meta http-equiv="Content-Security-Policy">` tags with auto-computed SHA hashes for all bundled scripts -- per-page, at build time. This is the correct approach for SSG (nonces require SSR).
+- **For `is:inline` scripts:** Manually compute SHA-256 hashes and add them to `security.csp.scriptDirective.hashes` in the Astro config. There are exactly 2 `is:inline` scripts in the codebase.
+- **Do NOT use `_headers` file for CSP:** The Astro meta-tag approach is superior for SSG because (a) hashes are per-page and computed at build time, (b) the `_headers` file has a 2,000 character per-line limit which a CSP with many hashes will exceed, and (c) a `_headers` CSP rule would need to contain hashes for ALL scripts on ALL pages.
+- **Deploy with `Content-Security-Policy-Report-Only` first:** Run report-only mode for at least a week before enforcing, to catch violations without breaking the site.
+- **Test in preview, not dev:** `astro preview` applies CSP. `astro dev` does not. Never skip preview testing.
+- **Known Astro CSP limitation:** Incompatible with View Transitions (`<ClientRouter />`). The site does not currently use View Transitions, so this is not a blocker.
+- **Acceptable fallback:** If Astro experimental CSP proves too complex, `script-src 'self' 'unsafe-inline'` in `_headers` is a pragmatic choice for an SSG site with no user-generated content. It blocks external script injection while allowing inline scripts. This is what most static sites do.
 
-**Detection:** Chart controls appear but clicking them does nothing (because SVG is static); chart flashes/jumps when toggling between server-rendered and client-rendered states.
+**Detection:** Open browser DevTools Console on any country page with a chart. CSP violations appear as: "Refused to execute inline script because it violates the following Content Security Policy directive."
+
+**Confidence:** HIGH -- Verified against Astro CSP docs and codebase grep showing exactly 2 `is:inline` scripts and 13 bundled D3 script tags.
+
+**Sources:**
+- [Astro Experimental CSP docs](https://docs.astro.build/en/reference/experimental-flags/csp/)
+- [Astro 5.9 release blog](https://astro.build/blog/astro-590/)
+- [Astro roadmap discussion #377](https://github.com/withastro/roadmap/discussions/377)
+- [CSP MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+
+---
+
+### Pitfall 3: Analytics Choice Breaking Privacy Compliance for Italian/EU Operator
+
+**What goes wrong:** Adding Google Analytics, or even seemingly "privacy-friendly" analytics, creates GDPR compliance obligations that did not previously exist, potentially requiring a cookie banner, privacy policy updates, DPA, and risk of enforcement by the Italian Garante.
+
+**Why it happens:** Three common traps:
+1. **Google Analytics** sets cookies, requires consent banner, requires DPA, and the Italian Garante (data protection authority) specifically ruled it non-compliant in June 2022. As an Italian-operated site, using GA is an unacceptable legal risk.
+2. **Cloudflare Web Analytics** is cookie-free but processes data through US-based Cloudflare infrastructure. There is ongoing debate about Schrems II compliance. Data is based on a 10% sample of page loads, making it statistically unreliable for low-traffic pages.
+3. **Self-hosted Plausible/Umami** are genuinely cookie-free and GDPR-compliant when self-hosted in the EU, but require a server (~5-10 EUR/month VPS), breaking the near-zero budget constraint.
+
+**Consequences:**
+- Google Analytics: Requires cookie banner + DPA + risks Italian Garante enforcement
+- Cloudflare Web Analytics: Legal grey area; inaccurate sampled data
+- Self-hosted analytics: Requires server budget and maintenance
+
+**Prevention:**
+- **Best option: Cloudflare Web Analytics.** Free, cookie-free, auto-enabled for Cloudflare Pages since October 2025 (no code changes needed), and the practical enforcement risk for a non-commercial informational site is negligible. The EU-US Data Privacy Framework (2023) provides additional legal cover.
+- **Alternative: Umami Cloud free tier** (100K events/month, cookie-free, more accurate than Cloudflare's sampled data).
+- **Never use Google Analytics.** The Italian Garante ruling makes this a hard no.
+- **Privacy policy must document:** Which analytics tool is used, what it collects (aggregated pageviews), what it does not collect (PII, cookies), and who processes the data.
+
+**Detection:** Check for `_ga`, `_gid` cookies. Check network requests to `google-analytics.com`.
+
+**Confidence:** MEDIUM -- Legal landscape evolving. EU-US Data Privacy Framework partially addresses Schrems II but durability untested.
+
+**Sources:**
+- [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/)
+- [SimpleAnalytics: Is Cloudflare GDPR compliant?](https://www.simpleanalytics.com/is-gdpr-compliant/cloudflare)
+- [Ethical Data Hub: Cloudflare analytics and cookie banners](https://ethicaldatahub.com/cloudflare-analytics-cookie-banner/)
+
+---
+
+### Pitfall 4: SEO Catastrophe From Domain/Canonical/Hreflang Misconfiguration
+
+**What goes wrong:** Google indexes 5 language versions of each page as duplicate content, or worse, all canonical/hreflang/OG URLs point to the wrong domain, making the entire SEO foundation invalid.
+
+**Why it happens:** The current codebase has solid hreflang and canonical infrastructure in `Base.astro` (lines 46-56). However, there are specific compounding risks:
+
+1. **Potential domain issue:** Both `public/robots.txt` and `astro.config.mjs` reference `isitsafetotravels.com` (with trailing 's'). If the registered domain is `isitsafetotravel.com` (no 's'), then EVERY canonical URL, hreflang URL, Open Graph URL, and sitemap URL across all 1,240+ pages is wrong. This would be a site-wide SEO catastrophe that silently invalidates all SEO signals.
+2. **Comparison page infinite indexing.** `/en/compare?countries=IT,FR` generates unique URLs per combination. C(248,2) = 30,628 combinations per language x 5 languages = 153,140 thin indexable URLs that dilute crawl budget.
+3. **Root redirect is client-side JS.** The `index.astro` page uses an `is:inline` script to redirect `/` to `/en/`. Google may not execute this JS redirect, leaving the root as an orphan page competing with `/en/` for canonical status.
+
+**Consequences:**
+- Wrong domain = all SEO signals go to a non-existent or wrong domain
+- Comparison pages indexed as thin content, wasting crawl budget
+- Root `/` and `/en/` competing as canonical = confused Google indexing
+
+**Prevention:**
+- **Verify the domain FIRST.** This is the absolute first action before any SEO work. Check `astro.config.mjs` `site` value against the actual registered domain.
+- **Add `noindex` to comparison pages:** `<meta name="robots" content="noindex, follow">` on comparison pages prevents indexing infinite query-param combinations.
+- **Add `_redirects` file entry:** `/ /en/ 301` as a server-side redirect (Cloudflare handles this before HTML is served). This is more reliable than the client-side JS redirect for SEO crawlers.
+- **Verify hreflang reciprocity:** Audit `getAlternateLinks()` to confirm it returns all 5 languages for every page. Each language version must reference all others including itself.
+- **Submit sitemap to Google Search Console** and monitor indexing status weekly for the first month.
+
+**Detection:** Google Search Console > Pages > "Why pages aren't indexed" > "Duplicate, submitted URL not selected as canonical."
+
+**Confidence:** HIGH -- The domain question is directly observable in the codebase. Hreflang/canonical best practices are well-documented.
+
+**Sources:**
+- [Google: Consolidate duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)
+- [Hreflang and canonicals explained](https://ewm.swiss/en/blog/seo-multilingual-hreflang-and-canonicals-explained)
+- [Hreflang canonical conflicts](https://www.seologist.com/knowledge-sharing/canonical-hreflang/)
+
+---
 
 ## Moderate Pitfalls
 
-### Pitfall 4: Spanish Page Directory Requires 6+ New Files with Translated Route Slugs
+### Pitfall 5: Cloudflare Pages `_headers` File Limitations
 
-**What goes wrong:** Astro's file-based routing means every page at `/en/` and `/it/` needs a corresponding file in `/es/`. Currently there are 6 page files per language: `index.astro`, `country/[slug].astro`, `compare.astro`, `global-safety.astro`, `methodology/index.astro`, `legal/index.astro`. Adding Spanish means creating 6 more files that differ only in the `lang` constant. Missing any one produces a 404 for that Spanish URL.
+**What goes wrong:** Security headers configuration hits Cloudflare Pages hard limits, or headers silently fail to apply.
 
-**Prevention:**
-- Create `src/pages/es/` with Spanish-translated route slugs (e.g., `es/pais/[slug].astro`, `es/comparar.astro`, `es/seguridad-global.astro`, `es/metodologia/index.astro`, `es/legal/index.astro`)
-- Add routes to the `routes` object in `ui.ts`: `es: { country: 'pais', methodology: 'metodologia', legal: 'legal', 'global-safety': 'seguridad-global', compare: 'comparar' }`
-- Copy page files from `en/` and change only `const lang: Lang = 'es'`
-- The `LanguageSwitcher.astro` component iterates `Object.keys(languages)`, so adding `es` to `languages` in `ui.ts` automatically shows the Spanish option
-- The `getAlternateLinks()` function automatically includes all languages for `<link rel="alternate">` SEO tags
-
-**Detection:** Missing pages return 404 for Spanish URLs; language switcher does not show Spanish option; SEO alternate links incomplete (verify with `getAlternateLinks()` returning 3 entries).
-
-### Pitfall 5: Comparison Page Search Bug Likely Caused by setTimeout Blur Race Condition
-
-**What goes wrong:** The milestone mentions a bug in the comparison page country search "on web." The current search implementation in `compare.astro` (line 255) uses a `blur` handler with `setTimeout(() => dropdown.classList.add('hidden'), 200)` to allow time for dropdown item clicks to register before hiding the dropdown. This 200ms race condition is a classic source of cross-browser bugs -- touch events on mobile fire differently than mouse events, and some browsers process `blur` before the `click` handler can fire.
-
-**Why it happens:** The pattern of "delay hiding the dropdown so clicks can register" is fragile. On slower devices, 200ms may not be enough. On faster devices, the user sees the dropdown flash closed and open. The `blur` event fires when focus leaves the input, which on mobile can happen from touch events, virtual keyboard changes, or scroll.
-
-**Consequences:** Users click/tap a dropdown result and nothing happens (selection does not register). Particularly likely on mobile browsers and when the device is under load.
+**Key constraints:**
+- **100 rule maximum** for the entire `_headers` file
+- **2,000 character per-line limit** (header name + value + spacing)
+- **Headers do NOT apply to Pages Functions responses** (only static assets)
+- **Redirects take precedence** when both `_headers` and `_redirects` match
+- **Duplicate headers are comma-joined** (not overwritten), which can create invalid values
 
 **Prevention:**
-- Replace the `setTimeout` blur hack with `mousedown` event prevention: on dropdown items, use `mousedown` with `e.preventDefault()` to prevent the input blur from firing, then handle selection on `click`
-- Alternatively, use `pointerdown` for unified mouse/touch handling
-- If adding a category filter dropdown (for map/charts), extract the dropdown pattern into a reusable utility or component rather than duplicating the fragile inline implementation
-- Test on actual mobile devices, not just desktop browser dev tools
+- **Use `/*` wildcard for global security headers.** One rule covers all paths:
+  ```
+  /*
+    X-Frame-Options: DENY
+    X-Content-Type-Options: nosniff
+    Referrer-Policy: strict-origin-when-cross-origin
+    Permissions-Policy: camera=(), microphone=(), geolocation=()
+    Strict-Transport-Security: max-age=86400; includeSubDomains
+  ```
+- **Do NOT put CSP in `_headers`.** A CSP with script hashes for D3, dark mode, and JSON-LD will easily exceed 2,000 characters. Use Astro's meta-tag CSP instead.
+- **Keep the file minimal.** Only headers that MUST be HTTP response headers (HSTS, X-Frame-Options, X-Content-Type-Options) go here. CSP and other metadata can use `<meta>` tags.
+- **Verify deployment:** `curl -I https://yourdomain.com/en/` to confirm headers are present.
 
-**Detection:** Dropdown closes before selection registers; search works on desktop but not mobile; intermittent "click does nothing" reports.
+**Detection:** `curl -I` shows missing headers; silent truncation of long header values.
 
-### Pitfall 6: Chart Date Formatting Inconsistency Across Three Locales
+**Confidence:** HIGH -- Verified against official Cloudflare Pages documentation.
 
-**What goes wrong:** The current chart code uses two different date formatting approaches: (1) D3's `timeFormat('%b %d')` for axis labels in `TrendChart.astro` (server-side, produces English-only month abbreviations like "Mar 20"), and (2) `toLocaleDateString()` for tooltips (client-side, locale-aware). Adding Spanish means axis labels show English month names ("Mar", "Apr") while tooltips show Spanish ("mar", "abr"). On the comparison page, the same inconsistency exists (line 444 uses `timeFormat` for axes, line 529 uses `toLocaleDateString` for tooltips).
+**Sources:**
+- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/)
+- [Cloudflare Pages Limits](https://developers.cloudflare.com/pages/platform/limits/)
 
-**Why it happens:** D3's `timeFormat` uses a hardcoded English locale by default. The server-side Astro frontmatter runs in Node.js where the default locale is always English regardless of the page language. The client-side tooltip correctly uses the browser locale. Nobody notices the mismatch with English because both produce the same output.
+---
+
+### Pitfall 6: Donation Platform Fees Eating Micro-Donations
+
+**What goes wrong:** A 3 EUR "buy me a coffee" donation loses 1 EUR to platform + processing fees.
+
+**Fee comparison for a 3 EUR donation:**
+- **Ko-fi:** 0% platform fee. Stripe takes ~2.9% + 0.30 EUR = 0.39 EUR. You receive ~2.61 EUR.
+- **Buy Me a Coffee:** 5% platform fee (0.15 EUR) + Stripe (~0.39 EUR) = 0.54 EUR total. You receive ~2.46 EUR.
+- **PayPal Donate:** 2.89% + fixed fee + 1.5% cross-border. Also has legal restrictions for non-registered-nonprofits in some EU countries.
 
 **Prevention:**
-- For client-side rendered charts: use `toLocaleDateString()` consistently for both axes and tooltips, passing the correct locale (`es-ES`, `it-IT`, `en-US`)
-- For server-side rendered charts (if retained): use D3's `timeFormatLocale()` with locale definitions for Spanish and Italian
-- Define a shared date formatting utility that accepts `Lang` and returns consistently formatted dates across all chart components
-- Test charts in all 3 languages, specifically checking month name abbreviations on axes vs tooltips
+- **Use Ko-fi with an external link, not an embed.** A simple `<a href="https://ko-fi.com/yourname">` avoids third-party cookies, iframes, and JavaScript.
+- **Set Ko-fi default currency to EUR** to avoid conversion fees.
+- **Do NOT embed Ko-fi widgets.** The widget loads an iframe that may set third-party cookies, undermining the cookie-free stance (Pitfall 1 interaction).
+- **Create a multilingual donations page on-site** that explains why donations help and links to Ko-fi. The actual payment happens on Ko-fi's domain.
+- **Ko-fi page language:** Ko-fi itself is English-only. Set expectations on the on-site donation page before the handoff.
 
-**Detection:** Italian/Spanish chart axes show "Mar", "Apr" (English) while tooltips show localized month names; inconsistent date formats on the same chart.
+**Confidence:** MEDIUM -- Platform fees change. Verify current Ko-fi/Stripe terms before implementation.
 
-### Pitfall 7: Parameter Explanations Content Volume Overwhelms ui.ts
+**Sources:**
+- [Ko-fi vs Buy Me a Coffee comparison](https://talks.co/p/kofi-vs-buy-me-a-coffee/)
+- [Buy Me a Coffee pricing](https://www.schoolmaker.com/blog/buy-me-a-coffee-pricing)
 
-**What goes wrong:** Adding "detailed explanations for each safety pillar" means writing substantive content (likely multiple paragraphs per pillar) explaining what each score measures, how it is calculated, what data sources feed it, and what high/low scores mean. This content must exist in all 3 languages. With 5 pillars and ~200-300 words per explanation, that is 1,500+ words of translated content per language to add to `ui.ts`, which is already ~325 lines and 167 translation keys.
+---
 
-**Why it happens:** The current `ui.ts` pattern works well for short UI strings (button labels, headings, one-sentence descriptions). But multi-paragraph explanatory content in a flat key-value file becomes hard to review, maintain, and spot translation errors in. The file would grow to 500+ lines with interleaved English, Italian, and Spanish blocks.
+### Pitfall 7: Security Headers Misconfiguration
+
+**What goes wrong:** Overly aggressive or incorrectly configured security headers break site functionality or create irreversible situations.
+
+**Specific risks:**
+
+1. **HSTS `preload` is effectively permanent.** Submitting to the HSTS preload list means browsers will ONLY accept HTTPS for your domain. Removal from the preload list takes months. If HTTPS ever breaks, the site is completely inaccessible to users with preloaded browsers.
+2. **`Referrer-Policy: no-referrer`** (too strict) breaks analytics referrer tracking. Use `strict-origin-when-cross-origin` instead.
+3. **`Permissions-Policy` syntax errors.** The old `Feature-Policy` header name is deprecated. Use `Permissions-Policy` with the `=()` syntax: `camera=()` not `camera 'none'`.
 
 **Prevention:**
-- For short descriptions (1-2 sentences per pillar), keep them in `ui.ts` with keys like `pillar.conflict.short_desc`
-- For longer explanations, consider Astro content collections: a `src/content/pillars/` directory with `en/conflict.md`, `es/conflict.md`, `it/conflict.md` keeps long-form content manageable
-- If staying with `ui.ts`, use a consistent key naming pattern: `pillar.conflict.description`, `pillar.conflict.sources`, `pillar.conflict.interpretation`
-- Write English content first, validate with stakeholders, then translate -- do not attempt all 3 languages simultaneously
+- **HSTS:** Start with `max-age=86400` (1 day). After 2+ weeks of stable HTTPS, increase to `max-age=31536000` (1 year). Do NOT add `preload` until fully committed and tested for months.
+- **Referrer-Policy:** `strict-origin-when-cross-origin` balances privacy with analytics.
+- **Permissions-Policy:** Deny everything not needed: `camera=(), microphone=(), geolocation=(), payment=()`.
+- **Test all 5 language versions and page types** after deploying headers.
 
-**Detection:** `ui.ts` exceeds 500 lines and becomes hard to maintain; translation keys have inconsistent naming; one language has explanations while another has placeholder text.
+**Confidence:** HIGH -- Standard web security hardening.
+
+---
+
+### Pitfall 8: Legal Content Not Matching Actual Data Practices
+
+**What goes wrong:** Privacy policy says "we collect no data" but Cloudflare (as infrastructure provider) processes IP addresses for CDN delivery. Or policy omits mention of analytics. Or policy includes sections about "account data" that do not apply.
+
+**Prevention:**
+- Privacy policy must specifically mention:
+  - Cloudflare as infrastructure provider (processes IP addresses transiently for CDN/security)
+  - Cloudflare Web Analytics if used (anonymized, sampled pageview data, no cookies, no PII)
+  - Ko-fi as external payment processor (when users click donation link, they leave the site)
+  - localStorage for theme preference (strictly necessary, no consent required)
+  - No cookies set by the site itself
+  - Data controller contact information (required under GDPR Article 13 even for minimal-data sites)
+- **Must exist in all 5 languages.** GDPR Article 12 requires "clear and plain language." Italian law and good practice require the user's language.
+- **Do NOT use a generic privacy policy generator** designed for e-commerce or SaaS. They add irrelevant sections about "account data" and "data sharing with partners."
+- **Terms of Service:** Simple disclaimer suffices: "Safety scores are for informational purposes only. Travel decisions are your responsibility."
+
+**Detection:** Privacy policy contains sections about user accounts, payment data, or data sharing that do not apply to this site.
+
+**Confidence:** HIGH -- Straightforward GDPR Article 12/13 requirements.
+
+---
+
+### Pitfall 9: Structured Data (JSON-LD) Errors Silently Failing
+
+**What goes wrong:** JSON-LD is syntactically valid but semantically incorrect for Google's rich results. Google silently ignores it without showing rich results, and the site owner never realizes.
+
+**Specific risks:**
+1. **Breadcrumb URLs wrong for non-English pages.** Schema generator must use locale-aware translated slugs (e.g., `/es/pais/francia` not `/en/country/france`).
+2. **FAQ schema requires visible page content.** Google rejects FAQ rich results if the Q&A is not visible on the page.
+3. **Country/Place schema has no rich result support.** Google does not generate rich results for `Country` or `Place` types. Implementing them sets false expectations.
+4. **The `set:html={JSON.stringify(jsonLd)}` pattern** in Base.astro must ensure country names with special characters (apostrophes, accents) do not break JSON structure.
+
+**Prevention:**
+- **Start with BreadcrumbList** -- highest ROI, most reliably supported by Google.
+- **Add FAQ schema to methodology page** only, with substantive visible Q&A content.
+- **Validate with Google Rich Results Test** (https://search.google.com/test/rich-results) on sample pages after implementation.
+- **Use locale-aware URL generation** in all schema builders. Pass the current `lang` and use translated route slugs.
+
+**Detection:** Rich Results Test shows errors; structured data present in HTML but no rich results in SERPs after 4+ weeks.
+
+**Confidence:** HIGH -- Google's structured data docs are clear about supported types.
+
+---
+
+### Pitfall 10: LLM Readability Over-Investment for Uncertain Return
+
+**What goes wrong:** Significant effort spent on `llms.txt`, `llms-full.txt`, multilingual variants, and maintenance processes for a convention that no major LLM verifiably reads.
+
+**Prevention:**
+- **Prioritize JSON-LD and semantic HTML** -- these benefit both LLMs and SEO measurably.
+- **Add a basic `llms.txt`** (single English file, 30 minutes of effort) as forward-looking investment.
+- **Do NOT create `llms-full.txt` or multilingual variants** unless evidence emerges that LLMs actually use them.
+- **The real LLM readability win** is clean, semantic HTML with proper heading hierarchy, descriptive alt text, and structured data. The site's Astro component model already supports this.
+
+**Confidence:** LOW for llms.txt effectiveness. HIGH for JSON-LD and semantic HTML value.
+
+---
 
 ## Minor Pitfalls
 
-### Pitfall 8: Color Scale Semantics Change with Category Filtering
+### Pitfall 11: Cache-Control Conflicts With Cloudflare
 
-**What goes wrong:** The current color scale (red-yellow-blue) communicates "danger to safety" for the composite score. When showing individual pillars, the same colors may be confusing. "Blue governance" reads as "safe governance" which actually means "stable, well-functioning institutions." "Red environment" means "high environmental risk" not "dangerous environment to be in." The visual metaphor shifts from "travel safety" to "indicator performance."
+**What goes wrong:** Custom `Cache-Control` headers conflict with Cloudflare dashboard settings or default behavior.
 
-**Prevention:**
-- Add a contextual label below the legend when a category filter is active explaining what the colors mean for that pillar
-- Consider changing legend text per pillar: "Higher risk" / "Lower risk" for environment/health; "More stable" / "Less stable" for governance
-- Test with a non-technical user: does "blue conflict" intuitively mean "low conflict" (correct) or "conflict is safe" (confusing)?
+**Prevention:** Use both browser and edge cache directives: `Cache-Control: public, max-age=3600, s-maxage=86400`. The `s-maxage` controls Cloudflare edge cache (shared), `max-age` controls browser cache. For daily-updating data like `scores.json`, use shorter `max-age` (3600 = 1 hour) with longer `s-maxage`.
 
-### Pitfall 9: Astro View Transitions and Client-Side Chart Re-initialization
+---
 
-**What goes wrong:** The map already handles `astro:after-swap` for view transitions (line 371 of `SafetyMap.astro`), but `TrendChart.astro`'s client-side tooltip script does NOT register for view transitions. If Astro View Transitions are enabled and a user navigates between country pages via client-side routing, the tooltip code runs once (as a module script) and does not re-bind to the new page's chart elements.
+### Pitfall 12: Accessibility Regression From New UI Elements
 
-**Prevention:**
-- Check if the Astro Client Router is enabled in `Base.astro` layout
-- If yes, all chart initialization code needs the `document.addEventListener('astro:after-swap', initChart)` pattern
-- New interactive controls (zoom, date range, category filter) must also re-bind event listeners after view transitions
-- The comparison page's inline `<script>` may also need this treatment if users navigate to it via client-side routing
+**What goes wrong:** New footer links, donation buttons, or legal page navigation break keyboard navigation or screen reader flow.
 
-**Detection:** Charts work on first page load but appear blank or non-interactive after navigating via client-side routing.
+**Prevention:** Use semantic HTML for all new elements. Donation link = standard `<a>` tag. Legal nav = `<nav aria-label="Legal">`. No JavaScript widgets. Test with keyboard Tab navigation and VoiceOver.
 
-### Pitfall 10: scores.json Size Growth with Category Data and Third Language
+---
 
-**What goes wrong:** `scores.json` currently contains `{ iso3, name: { en, it }, score }` for 248 countries. Adding `es` names and pillar scores increases payload. If done carelessly (e.g., including full `PillarScore` objects with `indicators[]`, `dataCompleteness`, and `weight`), the file balloons unnecessarily.
+### Pitfall 13: Build Size Regression From Production Dependencies
 
-**Prevention:**
-- Add only what the map needs: `pillars: { conflict: 0.7, crime: 0.8, health: 0.6, governance: 0.9, environment: 0.75 }` -- five numbers per country
-- Keep the name object lean: just add `es` string alongside `en` and `it`
-- Estimated growth: ~15KB current -> ~25KB with pillars + Spanish names (acceptable)
-- Do NOT include `indicators[]`, `dataCompleteness`, or `advisories` in `scores.json`
+**What goes wrong:** Adding cookie consent libraries, analytics SDKs, or donation widgets bloats client JS, degrading Core Web Vitals that the SEO phase is trying to improve.
 
-**Detection:** Lighthouse performance score drops; map takes noticeably longer to render on mobile; `scores.json` exceeds 50KB.
+**Prevention:** Every production-readiness feature recommended in this research adds ZERO client JavaScript:
+- No cookie banner needed (Pitfall 1)
+- Cloudflare Web Analytics: zero client code (edge-injected)
+- Ko-fi: external link, no widget
+- JSON-LD: build-time generation
+- `llms.txt`: static text file
+- Security headers: HTTP response headers
+- Monitor: compare `astro build` output sizes before/after each phase
 
-### Pitfall 11: Historical Data Lacks Per-Pillar Trends (Out of Scope but Creates UX Gap)
+**Detection:** Lighthouse Performance drops below 90; new third-party requests in Network tab.
 
-**What goes wrong:** The `history-index.json` stores only `{ date, score }` per country per day -- no pillar breakdown over time. If category filtering is added to the map and pillar bars, users will naturally expect the trend chart to also respond to the category filter (e.g., "show conflict score over time"). But this data simply does not exist. The PROJECT.md explicitly lists "Per-pillar historical trends in comparison" as out of scope.
-
-**Prevention:**
-- Accept the limitation: category filtering applies to the map (current snapshot) and pillar bars, but NOT to historical trend charts
-- Clearly communicate this in the UI: when a category filter is active, show the total score trend with a note like "Historical trends show overall safety score"
-- Do NOT try to retroactively compute per-pillar history from daily snapshots -- the full snapshot files may have been cleaned up after `history-index.json` consolidation
-- Consider adding per-pillar data to `history-index.json` in a future milestone for v1.3
-
-**Detection:** Users toggle to "Conflict" view and expect the trend chart to show conflict history, but it still shows total score with no explanation.
+---
 
 ## Phase-Specific Warnings
 
 | Phase Topic | Likely Pitfall | Mitigation |
 |-------------|---------------|------------|
-| Spanish i18n (types + data) | Type-level pipeline changes cascade through the system (Pitfall 1) | Update types to `Record<Lang, string>` and data BEFORE creating page files |
-| Spanish i18n (country names) | 248 country names need Spanish translations (Pitfall 1) | Script or programmatic generation from reference data |
-| Spanish i18n (pages + routes) | 6+ new page files, translated route slugs required (Pitfall 4) | Copy from `en/`, change only `lang` constant; add routes to `routes` object |
-| Spanish i18n (content) | Parameter explanations triple the translation volume (Pitfall 7) | Write English first, then translate; consider content collections for long-form |
-| Interactive charts | Server-rendered SVG cannot be re-rendered client-side (Pitfall 3) | Move to client-side rendering to match comparison page pattern |
-| Interactive charts | Date formatting inconsistent across 3 locales (Pitfall 6) | Use `toLocaleDateString()` consistently with correct locale parameter |
-| Interactive charts | View transitions break chart re-initialization (Pitfall 9) | Add `astro:after-swap` listener to all chart init code |
-| Category filtering (map) | Pillar data not available in `scores.json` (Pitfall 2) | Extend `scores.json` with pillar scores; use `pillarToColor()` for correct colors |
-| Category filtering (charts) | Historical pillar data does not exist (Pitfall 11) | Accept limitation; show total score trend with clear messaging |
-| Category filtering (UX) | Color semantics change per pillar (Pitfall 8) | Dynamic legend text; per-pillar contextual labels |
-| Comparison search bug fix | setTimeout blur race condition is the likely root cause (Pitfall 5) | Replace with mousedown preventDefault pattern |
-| Parameter explanations | Long-form content overwhelms `ui.ts` (Pitfall 7) | Consider content collections or at minimum consistent key naming |
+| Legal compliance (first) | Cookie banner over-compliance (#1) | Audit cookies/localStorage; document that no banner needed |
+| Legal compliance | Privacy policy not matching practices (#8) | Write around actual behavior; list every external service |
+| Legal compliance | Policy in English only (#8) | All 5 languages required |
+| SEO (before other SEO work) | Domain verification (#4) | Verify `isitsafetotravels.com` is correct FIRST |
+| SEO | Comparison pages indexed as thin content (#4) | Add noindex meta tag |
+| SEO | Root redirect is client-side JS (#4) | Add `_redirects` file: `/ /en/ 301` |
+| SEO schemas | Breadcrumb URLs wrong for non-English (#9) | Locale-aware URL generation in schema builders |
+| SEO schemas | FAQ content too thin (#9) | Substantive visible Q&A, not auto-generated |
+| Security headers (CSP) | CSP breaking D3 charts and dark mode (#2) | Use Astro experimental CSP (meta tags); deploy report-only first |
+| Security headers | `_headers` line limit for CSP (#5) | Astro meta-tag CSP; `_headers` for non-CSP headers only |
+| Security headers | HSTS preload too early (#7) | Start max-age=86400; no preload for months |
+| Analytics | Using Google Analytics (#3) | Italian Garante ruling = hard no; use Cloudflare Web Analytics |
+| Analytics + CSP | Analytics script blocked by CSP | Cloudflare WA avoids this (edge-injected) |
+| Donations | Platform fees (#6) | Ko-fi (0% fee) with external link |
+| Donations + privacy | Embedded widget sets cookies (#6 + #1) | External link, not iframe embed |
+| LLM readability | Over-investing (#10) | Basic llms.txt only; focus on JSON-LD |
+| All production features | Bundle size regression (#13) | Zero client JS increase target; monitor build output |
+
+## Integration Pitfalls (Cross-Feature Risks)
+
+### CSP + Analytics Script
+If using Umami or any script-tag-based analytics, the `<script>` tag must be included in CSP hashes. Cloudflare Web Analytics avoids this entirely -- it is injected at the Cloudflare edge layer, outside the HTML document.
+
+### Cookie Audit + Donation Widget
+If Ko-fi is embedded as an iframe (not recommended), it loads content from ko-fi.com which may set cookies. This undermines the cookie-free argument from Pitfall 1. Solution: external link only.
+
+### Security Headers + Referrer Policy + Analytics
+`Referrer-Policy` affects what information Cloudflare Web Analytics receives about page paths. `strict-origin-when-cross-origin` sends the origin (domain) to external sites and full URL for same-origin, which is appropriate. `no-referrer` would not impact Cloudflare WA (server-side) but would affect any client-side analytics.
+
+### i18n + Legal Pages + Sitemap
+Privacy policy and ToS pages need hreflang tags (handled by Base.astro's `getAlternateLinks`), canonical URLs, and inclusion in sitemap. The `@astrojs/sitemap` integration should automatically include them. Verify after build.
+
+### SEO + Comparison Page + noindex
+Adding `noindex` to comparison pages means they will not appear in search results. This is correct -- the value of comparison pages is for direct user access (shared URLs), not search discovery. Country detail pages remain the SEO targets.
+
+## Existing Codebase Issues Found During Research
+
+1. **Domain verification needed:** `public/robots.txt` and `astro.config.mjs` both use `isitsafetotravels.com` (with trailing 's'). Must verify this matches the registered domain before any SEO work.
+
+2. **Root redirect is client-side only:** `src/pages/index.astro` uses `is:inline` JavaScript to redirect `/` to `/en/`. A `_redirects` file with `/ /en/ 301` would be more reliable for search engine crawlers.
 
 ## Sources
 
-- Direct analysis of `src/i18n/ui.ts` (325 lines, 167 keys per language, hardcoded `en`/`it` in `languages` object)
-- Direct analysis of `src/i18n/utils.ts` (`useTranslations`, `getLocalizedPath`, `getAlternateLinks` all iterate `languages`)
-- Direct analysis of `src/pipeline/types.ts` (`CountryEntry.name: { en: string; it: string }` hardcoded)
-- Direct analysis of `src/pipeline/config/countries.ts` (248 entries, each with `{ en, it }` name)
-- Direct analysis of `src/components/SafetyMap.astro` (fetches `/scores.json`, uses `c.name?.[lang]`, line 109)
-- Direct analysis of `src/components/country/TrendChart.astro` (server-rendered SVG, client-side tooltip only)
-- Direct analysis of `src/pages/en/compare.astro` (client-rendered charts, Fuse.js search, `setTimeout` blur handler at line 255)
-- Direct analysis of `src/lib/colors.ts` (`pillarToColor()` converts 0-1 to color scale; `scoreToColor()` uses 1-10 scale)
-- Direct analysis of `src/lib/scores.ts` (`HistoryPoint` contains only `{ date, score }`, no pillar data)
-- PROJECT.md out-of-scope: "Per-pillar historical trends in comparison -- needs pipeline schema change"
+- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/)
+- [Cloudflare Pages Limits](https://developers.cloudflare.com/pages/platform/limits/)
+- [Astro Experimental CSP](https://docs.astro.build/en/reference/experimental-flags/csp/)
+- [Astro 5.9 release](https://astro.build/blog/astro-590/)
+- [Astro roadmap discussion #377](https://github.com/withastro/roadmap/discussions/377)
+- [CSP MDN reference](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/CSP)
+- [Usercentrics: GDPR and cookies](https://usercentrics.com/knowledge-hub/gdpr-cookies/)
+- [ePrivacy Directive](https://cookieinformation.com/what-is-the-eprivacy-directive/)
+- [EU Digital Omnibus proposal](https://www.taylorwessing.com/en/global-data-hub/2026/the-digital-omnibus-proposal/gdh---the-digital-omnibus---cookies)
+- [Google: Consolidate duplicate URLs](https://developers.google.com/search/docs/crawling-indexing/consolidate-duplicate-urls)
+- [Hreflang and canonicals](https://ewm.swiss/en/blog/seo-multilingual-hreflang-and-canonicals-explained)
+- [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/)
+- [SimpleAnalytics: Cloudflare GDPR](https://www.simpleanalytics.com/is-gdpr-compliant/cloudflare)
+- [Ko-fi vs Buy Me a Coffee](https://talks.co/p/kofi-vs-buy-me-a-coffee/)
+- [HSTS preload requirements](https://hstspreload.org/)
 
 ---
-*Pitfalls research for: v1.2 Improvements & Category Filtering additions to IsItSafeToTravel*
-*Researched: 2026-03-20*
+*Pitfalls research for: v2.0 Production Ready milestone of IsItSafeToTravel*
+*Researched: 2026-03-21*

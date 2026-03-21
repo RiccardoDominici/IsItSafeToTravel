@@ -1,264 +1,489 @@
-# Feature Landscape
+# Feature Landscape: v2.0 Production Ready
 
-**Domain:** Travel safety data visualization platform (v1.2 enhancement milestone)
-**Researched:** 2026-03-20
-**Focus:** v1.2 milestone -- interactive chart controls, category filtering, Spanish i18n, parameter explanations, bug fixes
-**Confidence:** HIGH
+**Domain:** Production-readiness features for a free, open-source, data-driven informational website (EU-based, no user accounts, no cookies currently)
+**Researched:** 2026-03-21
+**Milestone:** v2.0 Production Ready
+**Confidence:** HIGH (legal requirements verified via multiple sources; technical features verified against Cloudflare/Astro documentation)
 
-## Existing Infrastructure (relevant to v1.2 features)
+## Legal Classification Key
 
-| Asset | Location | How v1.2 Uses It |
+Throughout this document, features are tagged:
+
+- **[REQUIRED]** -- Legally mandated for an EU-based informational website
+- **[CONDITIONAL]** -- Required only if certain conditions are met (noted)
+- **[BEST PRACTICE]** -- Not legally required, but expected by users/search engines/industry standards
+- **[DIFFERENTIATOR]** -- Competitive advantage, not expected
+
+---
+
+## Existing Infrastructure (relevant to v2.0 features)
+
+| Asset | Location | How v2.0 Uses It |
 |-------|----------|-------------------|
-| `TrendChart.astro` | `src/components/country/` | Build-time D3 SVG with client-side tooltip; needs zoom/scope controls added |
-| `SafetyMap.astro` | `src/components/` | Client-side D3 map colored by composite score; needs pillar filter overlay |
-| `compare.astro` (en/it) | `src/pages/en/`, `src/pages/it/` | Client-side Fuse.js search + D3 charts; search bug to fix |
-| `PillarBreakdown.astro` | `src/components/country/` | Static bar chart of 5 pillars; needs expandable explanations |
-| `i18n/ui.ts` | `src/i18n/` | EN + IT with ~170 keys each, `routes` for URL slugs; add ES language |
-| `scores.json` | Built at deploy | Currently has `iso3`, `name`, `score` per country; needs pillar scores for map filter |
-| `history-index.json` | `data/scores/` | Composite score per country per day; does NOT store per-pillar history |
-| `ScoredCountry.pillars` | `src/pipeline/types.ts` | Full pillar data (name, score, weight, indicators, dataCompleteness) available at build time |
-| `safetyColorScale()` | `src/lib/map-utils.ts` | Color mapping function; reusable for pillar-specific map coloring |
+| `seo.ts` | `src/lib/` | JSON-LD builders for WebPage, Place, AggregateRating, WebSite+SearchAction. Extend with BreadcrumbList, Organization, FAQPage, Dataset schemas. |
+| Legal page | `src/pages/{lang}/legal/` | Basic disclaimer in 5 languages. Expand into proper privacy policy + terms structure. |
+| `robots.txt` | `public/` | Exists but has typo in sitemap URL ("isitsafetotravels" vs "isitsafetotravel"). Extend with AI crawler directives. |
+| `Base.astro` | `src/layouts/` | Main layout. Add skip-nav link, security meta tags, analytics snippet slot. |
+| i18n system | `src/i18n/` | 5 languages (EN, IT, ES, FR, PT). Donations page and expanded legal pages need translation keys. |
+| D3 map + charts | `src/components/` | Client-side SVG. Need ARIA labels, keyboard navigation, color contrast audit. |
+| Cloudflare Pages | Deployment | Supports `_headers` file for security headers, `404.html` for custom error pages. |
 
-## Table Stakes
+---
 
-Features users expect given the existing v1.1 platform. Missing = feels unfinished or broken.
+## 1. GDPR / ePrivacy Legal Compliance
 
-| Feature | Why Expected | Complexity | Dependencies | Notes |
-|---------|--------------|------------|--------------|-------|
-| **Comparison search fix on web** | Core comparison page functionality is broken; users cannot add countries | Low | `compare.astro` client-side Fuse.js selector | Bug fix, not a feature. Likely event handler or DOM query issue in the selector script. |
-| **Date axis fix for trend charts** | Incorrect dates on chart axes undermine data trust; temporal accuracy is non-negotiable | Low | `TrendChart.astro` x-axis tick generation, D3 timeFormat | Likely build-time D3 date formatting or timezone handling issue |
-| **Chart time-range controls** | Any multi-month trend chart needs date scoping; 60+ data points compress into an unreadable default view | Medium | TrendChart.astro (refactor to client-side rendering), comparison chart | Standard pattern: button bar with 7d/30d/90d/All presets |
-| **Parameter/pillar explanations** | "Governance: 3.2/10" is meaningless without context; users need to know what each pillar measures and what a low score means for travelers | Medium | PillarBreakdown.astro, i18n strings (~15 new keys), client-side expand/collapse JS | Expandable rows preferred over tooltips (mobile-friendly, no hover dependency) |
-| **Spanish language support** | Third most-spoken language globally; massive traveler demographic; i18n architecture already supports expansion cleanly | Medium-High | i18n/ui.ts, route pages under /es/, pipeline country names, scores.json name field | ~170 translation keys + page duplication + country name data |
+### Context
 
-## Differentiators
+The site is EU-based, informational-only, no user accounts, no login, no cookies, no forms, no personal data collection. The ePrivacy Regulation was withdrawn by the European Commission in February 2025; the existing ePrivacy Directive remains in force. GDPR applies only when personal data is processed.
 
-Features that elevate beyond the current safety dashboard. Not expected, but valued by engaged users.
+### Table Stakes
 
-| Feature | Value Proposition | Complexity | Dependencies | Notes |
-|---------|-------------------|------------|--------------|-------|
-| **Category filtering on map** | View the world colored by a single pillar (Health, Conflict, etc.) instead of total score; unique lens no competitor offers at this granularity | Medium-High | scores.json expansion (add pillar scores), SafetyMap.astro (add selector + recolor logic) | Requires ~5 extra numbers per country in scores.json (~1.2KB increase for 248 countries); UI is a segmented control or dropdown |
-| **Chart time-range presets (7d/30d/90d/All)** | Quick-scope buttons are universal UX for time-series dashboards; reduces cognitive load | Low | Already-loaded chart data array, client-side date filter | Pure client-side filter; no data fetching needed |
-| **Animated transitions between chart states** | Smooth D3 transitions when switching time range or category | Low | D3 transition API (already available) | Polish feature; 2-3 lines of code per transition |
-| **Category filter on comparison pillar bars** | Highlight or isolate a single pillar across all compared countries; enhances the comparison page's analytical depth | Low | Existing comparison pillar bars component | Client-side CSS toggle; pillar data already present |
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| Privacy Policy page | **[CONDITIONAL]** -- required if ANY personal data is processed | Even Cloudflare Web Analytics (no personal data) warrants a transparency page explaining what IS and IS NOT collected. Multiple EU member states expect transparency regardless. | Low | Expand existing legal page or create separate privacy policy page. State clearly: "This site does not use cookies, does not collect personal data, and does not track users." |
+| Terms of Service / Disclaimer | **[BEST PRACTICE]** | Protects against liability for safety score accuracy. Partially exists in current legal page. | Low | Review and formalize existing legal page content. |
+| Imprint / Legal Notice | **[REQUIRED]** in DE/AT/CH; **[BEST PRACTICE]** elsewhere in EU | Several EU member states mandate website operator identification (Telemediengesetz in Germany, E-Commerce-Gesetz in Austria). | Low | Include: operator name/contact, responsible person. Costs nothing, builds trust. Add to existing legal page structure. |
+| Data source attribution | **[BEST PRACTICE]** | Transparency about where safety data originates. Already exists. | None | Already implemented via sources section. No changes needed. |
 
-## Anti-Features
-
-Features to explicitly NOT build in v1.2.
+### Anti-Features
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| **Per-pillar historical trends** | PROJECT.md explicitly marks this out of scope; `history-index.json` only stores composite scores; needs pipeline schema migration to store 5 pillar scores per country per day | Defer to v1.3+; document as pipeline prerequisite in PITFALLS.md |
-| **Category filtering on historical trend charts** | Same blocker as above -- no per-pillar history data exists | Limit category filter to: (1) map coloring, (2) current-day pillar bars, (3) comparison view |
-| **Heavy chart library (Recharts, Chart.js, Highcharts)** | Project uses D3 sub-packages with build-time SVG; adding a chart framework increases bundle by 50-250KB, creates two charting paradigms, and breaks SSG pattern | Continue with D3 sub-packages; add interactivity via client-side scripts on existing SVG |
-| **Pinch-to-zoom on mobile charts** | SVG charts in viewBox already scale responsively; pinch-to-zoom on embedded SVG conflicts with page scroll and creates confusing UX | Use tap-to-scope and button controls instead |
-| **Full CLDR locale system** | Over-engineering for 3 languages; `toLocaleDateString()` with locale codes already covers date/number formatting | Use browser Intl APIs as already done; manual translation for UI strings |
-| **Pre-built SEO pages per category** | 248 countries x 5 pillars = 1,240 extra pages for marginal SEO value | Keep category views as client-side filter on existing pages |
-| **User-adjustable pillar weights** | Creates spreadsheet experience instead of safety answer; users don't know how to weight conflict vs health | Show pillar breakdown for transparency; keep composite score opinionated |
-| **Drag-to-zoom on chart** | High implementation complexity with D3 brush on SVG viewBox; button presets cover 95% of use cases | Use preset buttons (7d/30d/90d/All) with optional keyboard arrows for fine control |
+| Cookie consent banner (no cookies to consent to) | Legally unnecessary; hurts UX; signals tracking where none exists; adds JS weight | Maintain zero-cookie architecture. Document this in privacy policy. |
+| Full consent management platform (OneTrust, Cookiebot) | Overkill for a site with no personal data collection. Adds 50-200KB JS. Costs money. | Not needed unless cookies are introduced. |
+| Email newsletter / contact forms | Introduces GDPR obligations (consent records, right to erasure, data portability, DPO considerations) | Keep site anonymous. Use donation platforms for community engagement. |
+| Google reCAPTCHA | Sets cookies, transfers data to Google, requires consent banner | No forms exist; no CAPTCHA needed. |
 
-## Feature Dependencies
+### Dependencies
+- Legal pages already exist in 5 languages -- expand, do not rebuild
+- Zero-cookie architecture is the baseline -- every feature decision must preserve it
+
+---
+
+## 2. Advanced SEO (2025-2026)
+
+### Context
+
+Already implemented: JSON-LD (WebPage, Place, AggregateRating, WebSite+SearchAction), unique meta descriptions per country, XML sitemap, hreflang tags, robots.txt. Less than 30% of websites implement schema properly -- the site is already ahead.
+
+### Table Stakes
+
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| BreadcrumbList schema markup | **[BEST PRACTICE]** | Google displays breadcrumb trails in SERPs. Case studies show ~3% CTR improvement. Currently missing. | Low | Path: Home > Countries > [Country]. Add `buildBreadcrumbJsonLd()` to `seo.ts`. |
+| Organization schema | **[BEST PRACTICE]** | Establishes site identity in Google Knowledge Graph. Missing from homepage JSON-LD. | Low | Add Organization node with name, url, logo to homepage `@graph`. |
+| robots.txt sitemap URL fix | **[REQUIRED]** for correct SEO | Current robots.txt points to "isitsafetotravels.com" (extra 's'). Google may not be discovering the sitemap. | Trivial | Fix the typo immediately. |
+| Image/SVG alt text and ARIA | **[BEST PRACTICE]** | D3 map and charts lack descriptive text alternatives. Google uses alt text for image indexing. | Medium | SVG charts need `role="img"` and `aria-label`. Map needs descriptive fallback text. |
+| Breadcrumb navigation UI component | **[BEST PRACTICE]** | Visual breadcrumbs help users orient on multi-level site. Pairs with BreadcrumbList schema. | Low | Simple component: Home > [Section] > [Page]. ~50 lines. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Dataset schema (schema.org/Dataset) | Signals to Google Dataset Search that safety data is a structured dataset. Very few travel safety sites do this. | Medium | Dataset schema with distribution (JSON), temporal coverage (daily), spatial coverage (global). |
+| FAQPage schema on methodology | Methodology page has expandable Q&A content -- natural FAQPage candidate. Google restricted FAQ rich results to authoritative sites Aug 2023, but schema still helps LLMs. | Low | Low effort addition to methodology JSON-LD. |
+| SpeakableSpecification schema | Marks content for voice assistants (Google Assistant). Future-proofing. | Low | Apply to country summary paragraphs. |
+| Internal cross-linking | Link country pages to comparison, methodology, global score. Improves crawl depth and page authority. | Medium | Template changes across country detail pages. |
+| Core Web Vitals audit | Only 54.6% of sites pass CWV. SSG should score well but D3 client-side rendering may affect LCP/INP. | Medium | Profile with Lighthouse; optimize D3 bundle if needed. |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Pre-generated comparison pages | C(248,2) = 30K+ pages; bloats build; Google may see as thin content | Keep client-side comparison. Assess organic demand later. |
+| Keyword-stuffed meta descriptions | Google penalizes over-optimization | Current data-driven descriptions are already excellent. |
+| AMP pages | Google no longer prioritizes AMP. Astro SSG is already fast. | Focus on Core Web Vitals. |
+
+### Dependencies
+- `seo.ts` has existing JSON-LD builders -- extend with new functions
+- robots.txt needs immediate typo fix
+
+---
+
+## 3. LLM Readability / Discoverability
+
+### Context
+
+LLMs increasingly surface website content in AI search (ChatGPT, Perplexity, Google AI Overviews). The llms.txt standard was proposed in 2024 by Jeremy Howard (Answer.AI). No major LLM company has officially committed to reading these files, but adoption is growing among documentation sites. For a data-driven site, machine-readable data is a natural fit.
+
+### Table Stakes
+
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| /llms.txt file | **[BEST PRACTICE]** | Emerging standard. Markdown file listing key pages. Low cost, high potential. | Low | Curated list: homepage, methodology, global safety, sample country pages. Follow spec: H1, blockquote summary, H2 sections. Static file in `public/`. |
+| Semantic HTML audit | **[BEST PRACTICE]** | Proper heading hierarchy and landmarks improve LLM content extraction. | Low | Audit Astro templates for `<main>`, `<nav>`, `<article>`, `<section>`. Likely mostly correct. |
+| AI crawler directives in robots.txt | **[BEST PRACTICE]** | Explicitly allow AI crawlers (GPTBot, ClaudeBot, etc.). Site is open data -- visibility is the goal. | Low | Add User-agent rules. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| /llms-full.txt auto-generated at build | Complete site content in single Markdown. Enables RAG pipelines to ingest all data in one request. | Medium | Build step: concatenate methodology + all 248 country summaries. ~50-100KB. |
+| Static JSON data endpoint (/api/scores.json) | Machine-readable safety scores. Enables LLMs, researchers, developers to consume data. | Low-Medium | Pipeline already produces data. Expose subset as static file. |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Blocking AI crawlers | Site is open data; visibility serves the mission | Explicitly allow all AI crawlers |
+| Over-optimizing for single LLM | llms.txt is LLM-agnostic | Follow the standard spec |
+
+### Dependencies
+- robots.txt exists -- extend (and fix typo)
+- Build pipeline produces JSON data -- expose subset
+- All content rendered as static HTML (SSG)
+
+---
+
+## 4. Cookie Consent System
+
+### Context
+
+**This is the most critical architecture decision.** The site currently sets ZERO cookies. The ePrivacy Directive requires consent only for non-essential cookies. No cookies = no consent needed.
+
+### Decision: Maintain Zero-Cookie Architecture
+
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| NO cookie consent banner | **[REQUIRED approach]** -- banner NOT needed when no cookies set | ePrivacy Directive exempts sites with no non-essential cookies. Adding an unnecessary banner hurts UX and falsely signals tracking. | None | **Correct and recommended.** Every technology choice must preserve zero-cookie status. |
+| Cookie audit documentation | **[BEST PRACTICE]** | Proof that no cookies are set. Useful if regulators inquire. | Low | Verify with browser DevTools. Document in privacy policy. |
+| Privacy policy cookie statement | **[BEST PRACTICE]** | Proactive transparency: "This site does not use cookies." | Low | Single paragraph in privacy policy. |
+
+### Conditional Features (only if architecture changes)
+
+| Feature | Trigger Condition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Cookie consent banner | ONLY if future feature introduces non-essential cookies | Medium | If ever needed: lightweight (~3KB JS), equal-prominence accept/reject per 2025 EU guidance. **Strongly recommend never triggering this.** |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Preemptive cookie consent banner | Legally unnecessary; UX damage; false tracking signal; JS bloat | Maintain zero-cookie architecture |
+| Google Analytics | Sets 5+ cookies; requires consent; sends data to US (Schrems II) | Cloudflare Web Analytics (free, zero cookies) |
+| YouTube/Vimeo embeds | Set tracking cookies; require consent | Self-host video or use privacy-enhanced embed modes |
+| Social media widget buttons | Set third-party cookies; significant JS weight | Simple `<a href>` share links with pre-filled URLs |
+| Google Fonts CDN | Transfers IP data (ruled personal data by German courts Jan 2022) | Self-host fonts or use system font stack |
+
+### Dependencies
+- **CRITICAL:** Analytics choice determines cookie status. CF Web Analytics = zero cookies.
+- Every third-party integration must be audited for cookie behavior before inclusion.
+
+---
+
+## 5. Donation Platform
+
+### Context
+
+Free, open-source, ~10 EUR/month budget. No user accounts. Donations handled by external platforms -- no payment processing on-site.
+
+### Table Stakes
+
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| Dedicated donations page | **[BEST PRACTICE]** | Central place explaining what donations fund. | Medium | Multilingual (5 languages), ~20 new i18n keys. |
+| Platform links (external) | **[BEST PRACTICE]** | Users need a way to donate. External links only. | Low | Buttons to GitHub Sponsors + Ko-fi. No server-side code. |
+| Funding transparency | **[BEST PRACTICE]** | Open-source community expects transparency. | Low | "Donations cover: hosting (~X EUR/mo), domain (~Y EUR/yr)." |
+| Footer donation link | **[BEST PRACTICE]** | Discoverable from any page. | Low | Small i18n addition to footer. |
+| FUNDING.yml in repo | **[BEST PRACTICE]** | GitHub displays "Sponsor" button on repository. | Trivial | Single YAML file. |
+
+### Platform Recommendation
+
+| Platform | Fees | Recurring | One-time | Recommendation |
+|----------|------|-----------|----------|----------------|
+| **GitHub Sponsors** | 0% | Yes | Yes | **Primary.** Zero fees. Best for developer audience. |
+| **Ko-fi** | 0% on donations | Yes | Yes | **Secondary.** Zero fees. No account needed to donate. Good for general audience. |
+| Open Collective | ~10% | Yes | Yes | **Skip.** High fees. Overkill for small project. |
+| Buy Me a Coffee | 5% | Yes | Yes | **Skip.** Ko-fi does same with zero fees. |
+
+### Differentiators
+
+| Feature | Value Proposition | Complexity | Notes |
+|---------|-------------------|------------|-------|
+| Sponsor acknowledgment section | Public "thank you" list. Encourages contributions. | Low | Manual or build-time generated. |
+| Funding goal progress | Shows progress toward monthly costs. Visual motivator. | Low | Simple text/bar on donations page. |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Paywalled content | Contradicts open-source mission; destroys SEO | All data free; donations voluntary |
+| Ads / affiliate links | PROJECT.md out of scope; introduces cookies/consent | Revisit only if donations insufficient |
+| Embedded payment forms | Could introduce cookies from payment providers; server-side complexity | External links only |
+| Stripe/PayPal direct integration | PCI compliance, server code, maintenance | Use platforms that handle payments |
+
+### Dependencies
+- i18n system ready for new page
+- Legal page structure exists
+- No server-side code required
+
+---
+
+## 6. Privacy-Respecting Analytics
+
+### Context
+
+Need basic traffic insights without cookies and without compromising zero-consent architecture.
+
+### Recommendation: Cloudflare Web Analytics
+
+| Criterion | CF Web Analytics | Plausible Cloud | Umami Self-Host |
+|-----------|-----------------|-----------------|-----------------|
+| **Cost** | Free (CF Pages included) | $9+/month | Free (VPS ~$5/mo) |
+| **Cookies** | None | None | None |
+| **Personal data** | None | None | None |
+| **Consent needed** | No | No | No |
+| **Setup** | Auto-enabled Oct 2025 for CF free domains | Script tag | Deploy server |
+| **Features** | Pageviews, paths, referrers, countries | Goals, funnels, UTM, events | Events, custom data |
+| **Maintenance** | Zero | Zero (managed) | Ongoing |
+
+**Use Cloudflare Web Analytics.** Zero cost, zero cookies, zero maintenance, zero consent requirements. Auto-enabled for free CF domains since October 2025 -- may already be active. Features (pageviews, top pages, referrers, geographic breakdown) are sufficient for an informational site.
+
+**Upgrade path:** Plausible Cloud ($9/mo) if richer analytics needed later. Still cookie-free, EU-hosted.
+
+### Table Stakes
+
+| Feature | Legal Status | Why Expected | Complexity | Notes |
+|---------|-------------|--------------|------------|-------|
+| Basic pageview analytics | **[BEST PRACTICE]** | Understand traffic patterns, popular pages | Low | CF Web Analytics |
+| Cookie-free implementation | **[REQUIRED to preserve no-consent]** | Must not introduce cookies | None | CF Web Analytics: no cookies, no localStorage, no fingerprinting |
+| Privacy policy disclosure | **[BEST PRACTICE]** | Disclose CF Web Analytics usage | Low | Paragraph in privacy policy |
+
+### Anti-Features
+
+| Anti-Feature | Why Avoid | What to Do Instead |
+|--------------|-----------|-------------------|
+| Google Analytics (GA4) | Cookies; consent banner; data to US | CF Web Analytics |
+| Session recording (Hotjar, FullStory) | Personal data; consent; massive JS | Not needed for static content |
+| Self-hosted analytics | VPS maintenance; exceeds budget | CF Web Analytics at zero cost |
+| Multiple analytics tools | Diminishing returns; JS weight | Single tool sufficient |
+
+### Dependencies
+- Deployed on Cloudflare Pages -- CF Web Analytics is native
+- May already be auto-enabled -- verify in dashboard
+- Privacy policy should disclose
+
+---
+
+## 7. Production Hardening
+
+### 7a. Security Headers
+
+All via single `public/_headers` file for Cloudflare Pages.
+
+| Feature | Legal Status | Complexity | Notes |
+|---------|-------------|------------|-------|
+| Content-Security-Policy (CSP) | **[BEST PRACTICE]** | Medium | D3 inline scripts/styles require CSP hashing. Use `astro-cloudflare-pages-headers` for auto-hashing. Most complex header. |
+| Strict-Transport-Security (HSTS) | **[BEST PRACTICE]** | Low | `max-age=31536000; includeSubDomains; preload` |
+| X-Content-Type-Options | **[BEST PRACTICE]** | Low | `nosniff` |
+| X-Frame-Options | **[BEST PRACTICE]** | Low | `DENY` |
+| Referrer-Policy | **[BEST PRACTICE]** | Low | `strict-origin-when-cross-origin` |
+| Permissions-Policy | **[BEST PRACTICE]** | Low | `camera=(), microphone=(), geolocation=(), interest-cohort=()` |
+
+### 7b. Error Pages
+
+| Feature | Legal Status | Complexity | Notes |
+|---------|-------------|------------|-------|
+| Custom 404 page | **[BEST PRACTICE]** | Medium | Multilingual: detect language from URL prefix. Search suggestion + homepage link. Astro `src/pages/404.astro`. |
+| Custom 5xx page | **[BEST PRACTICE]** | N/A | Requires CF Business plan or Workers on free tier. Accept CF default 5xx pages. |
+
+### 7c. Accessibility (WCAG 2.1 AA)
+
+EU European Accessibility Act (EAA) entered force June 2025. While a non-commercial informational site may not fall directly under EAA, WCAG 2.1 AA is the project's stated constraint.
+
+| Feature | Legal Status | Complexity | Notes |
+|---------|-------------|------------|-------|
+| Skip navigation link | **[REQUIRED]** WCAG 2.4.1 | Low | Hidden `<a>` in Base.astro, visible on `:focus`. |
+| Focus indicators | **[REQUIRED]** WCAG 2.4.7 | Low | Tailwind `focus-visible:ring-2` on all interactive elements. |
+| Color contrast audit | **[REQUIRED]** WCAG 1.4.3 | Medium | 4.5:1 normal text, 3:1 large text. Check light + dark mode. |
+| ARIA labels for charts/map | **[REQUIRED]** WCAG 1.1.1 | Medium | `role="img"` + `aria-label` on SVG. Data table alternative for screen readers. |
+| Keyboard navigation | **[REQUIRED]** WCAG 2.1.1 | High | D3 map keyboard support is hardest item. Comparison dropdown needs keyboard. |
+| Form labels | **[REQUIRED]** WCAG 1.3.1 | Low | Verify search/comparison inputs have `<label>` or `aria-label`. |
+| Heading hierarchy | **[BEST PRACTICE]** | Low | One H1 per page, no skipped levels. |
+
+### 7d. Caching and Performance
+
+| Feature | Legal Status | Complexity | Notes |
+|---------|-------------|------------|-------|
+| Cache-Control headers | **[BEST PRACTICE]** | Low | Static assets: `max-age=31536000, immutable`. HTML: `max-age=3600`. In `_headers` file. |
+| Asset fingerprinting | **[BEST PRACTICE]** | None | Astro already handles with hashed filenames. |
+| Font loading optimization | **[BEST PRACTICE]** | Low | `font-display: swap` + preload if custom fonts used. |
+
+---
+
+## Feature Dependencies (Complete Map)
 
 ```
-Bug fixes (no dependencies, do first):
-    Comparison search fix on web
-    Chart date axis fix
-
-Chart zoom/scope controls
+Zero-Cookie Architecture (PRESERVE -- foundation of legal compliance)
     |
-    +--> TrendChart.astro: refactor from build-time-only SVG to
-    |    client-side re-renderable (pass full data via data attribute,
-    |    JS regenerates SVG paths when time range changes)
-    +--> Comparison trend chart: already client-side rendered,
-    |    just add filter before lineGen()
-    +--> Time range preset buttons (7d/30d/90d/All)
-
-Category filtering on map
+    +--> Cloudflare Web Analytics (no cookies, free, auto-enabled)
+    |       +--> Privacy policy disclosure
     |
-    +--> scores.json: extend build step to include pillar scores per country
-    |    (data exists in ScoredCountry.pillars, just not serialized to client)
-    +--> SafetyMap.astro: add segmented control UI
-    +--> SafetyMap.astro: recolor paths using selected pillar's 0-1 score
-    +--> Tooltip + legend: update to show selected pillar name/score
-
-Parameter/pillar explanations
+    +--> No consent banner needed
     |
-    +--> i18n: add explanation strings per pillar (~5 keys x 3 languages)
-    +--> PillarBreakdown.astro: add expandable/tooltip UI with client-side toggle
-    +--> Cross-link to methodology page for deeper detail
+    +--> External-only donation links (no payment forms)
 
-Spanish language support
+Security Headers (public/_headers -- single file)
     |
-    +--> i18n/ui.ts: add 'es' to languages, ~170 translation keys, route slugs
-    +--> Pipeline: add 'es' to CountryEntry.name type + country name data
-    +--> Pages: duplicate en/ page tree as es/ (8-10 page files)
-    +--> scores.json: include name.es for map tooltips
-    +--> LanguageSwitcher.astro: automatically picks up new language (generic)
-    +--> ScoredCountry type: extend name from {en, it} to {en, it, es}
+    +--> HSTS, X-Content-Type-Options, X-Frame-Options,
+    |    Referrer-Policy, Permissions-Policy: all independent
+    |
+    +--> CSP: depends on D3 inline script/style audit
+    |       +--> Consider astro-cloudflare-pages-headers integration
+    |
+    +--> Cache-Control: same _headers file
+
+SEO Schema Extensions (extend seo.ts)
+    |
+    +--> BreadcrumbList: independent
+    +--> Organization: independent
+    +--> FAQPage: depends on methodology structure
+    +--> Dataset: depends on public data format decision
+
+LLM Readability
+    |
+    +--> /llms.txt: independent (static file)
+    +--> /llms-full.txt: depends on build pipeline
+    +--> robots.txt AI directives: independent
+    +--> /api/scores.json: depends on data pipeline
+
+Legal Pages
+    |
+    +--> Privacy policy: depends on analytics choice
+    +--> Imprint: independent
+    +--> Donation terms: depends on platform choice
+
+Donations Page
+    |
+    +--> ~20 i18n keys x 5 languages
+    +--> FUNDING.yml: independent
+
+Custom 404 Page
+    |
+    +--> Language detection from URL path
+    +--> Uses Base.astro layout
+
+Accessibility
+    |
+    +--> Skip nav, focus indicators: Base.astro + CSS (do first)
+    +--> ARIA labels: D3 component modifications
+    +--> Color contrast: design token audit
+    +--> Keyboard navigation: D3 refactoring (HIGHEST EFFORT, do last)
 ```
 
-## Detailed Feature Analysis
+---
 
-### 1. Chart Zoom/Scope Controls
+## MVP Recommendation
 
-**What users expect:** Time-series dashboards universally provide date range controls. The standard pattern is a button bar with presets (7d, 30d, 90d, All). Google Finance, Our World in Data, and similar platforms all use this. As the platform accumulates daily data (currently ~1 day since v1.0 launch), charts with 90+ points will become unreadable without scoping.
+### Priority 1: Immediate Wins (trivial-to-low, high impact)
 
-**Current state:** `TrendChart.astro` generates SVG at build time via D3 in the Astro frontmatter, then adds tooltip interactivity via a `<script>` tag. The chart data is already passed to the client via `data-history` as JSON.
+1. **robots.txt fix** -- sitemap URL typo actively hurting SEO
+2. **Security headers** (`_headers` file) -- all except CSP, single file
+3. **CF Web Analytics verification** -- likely auto-enabled; verify
+4. **Skip navigation link** -- WCAG, ~10 lines in Base.astro
+5. **Focus indicators audit** -- Tailwind `focus-visible` check
+6. **FUNDING.yml** -- GitHub Sponsors + Ko-fi, 5 lines
 
-**Implementation approach:**
-- The data is already client-side accessible via `data-history` attribute
-- Add a button bar above the chart: "7d | 30d | 90d | All"
-- On button click, filter the `chartPoints` array by date, then regenerate the SVG paths (pathD, areaD), axis ticks, and endpoint
-- This means the `<script>` section needs to take over full chart rendering (not just tooltips), reading data from the data attribute and building SVG elements
-- The comparison page chart is already fully client-side, so scope controls there are a straightforward data filter before `lineGen()`
-- Both charts should share the same time-range preset component
+### Priority 2: High-Value, Low-Medium Complexity
 
-**Complexity:** Medium. The country detail TrendChart needs refactoring from build-time SVG to client-side rendered SVG. The comparison chart only needs a filter layer.
+7. **Privacy policy page** -- expand legal page; disclose analytics; no-cookie statement
+8. **BreadcrumbList schema + UI component** -- immediate SEO benefit
+9. **Organization schema** -- add to homepage JSON-LD
+10. **/llms.txt** -- static Markdown file
+11. **Custom 404 page** -- multilingual, helpful navigation
+12. **AI crawler directives in robots.txt**
 
-### 2. Category Filtering on Map
+### Priority 3: Medium Complexity, High Value
 
-**What users expect:** The "lens" pattern -- switching a visualization's data dimension while keeping the same geographic layout. Used by INFORM Risk Index (switch between hazard, vulnerability, coping capacity), Numbeo (different indices on same map), and similar platforms.
+13. **Donations page** (5 languages) with GitHub Sponsors + Ko-fi
+14. **CSP header with D3 inline hashing** -- most complex header
+15. **ARIA labels for D3 charts and map** -- accessibility
+16. **Color contrast audit** (light + dark mode)
+17. **Form labels audit**
+18. **/llms-full.txt auto-generation**
 
-**Current state:** `SafetyMap.astro` loads `scores.json` at runtime, builds a `scoreMap` (iso3 -> composite score), and colors countries via `safetyColorScale()`. The JSON currently contains only composite score per country.
+### Priority 4: Differentiators (defer if time-constrained)
 
-**Implementation approach:**
-1. Extend `scores.json` generation to include pillar scores: `{ iso3, name, score, pillars: { conflict: 0.72, crime: 0.45, ... } }`
-2. Add a segmented control or dropdown above/below the map: "Total | Conflict | Crime | Health | Governance | Environment"
-3. On selection change, update the `scoreMap` to use the selected pillar's score instead of composite
-4. Re-color all paths: `g.selectAll('.country-path').attr('fill', d => safetyColorScale(newScoreMap.get(iso3)))`
-5. Update tooltip to show selected pillar name and score
-6. Update legend label
+19. **Dataset schema markup**
+20. **FAQPage schema on methodology**
+21. **Internal cross-linking strategy**
+22. **Static JSON endpoint** (/api/scores.json)
+23. **SpeakableSpecification schema**
 
-**Data size impact:** Adding 5 pillar floats per country = ~1.2KB extra (248 countries x 5 x ~1 byte compressed). Negligible.
+### Defer Entirely
 
-**Note:** Pillar scores are 0-1 internally but displayed as x10 (0-10). The `safetyColorScale` expects 1-10 range, so map the pillar 0-1 score to 1-10 for consistent coloring.
+- **Cookie consent banner** -- not needed; preserve zero-cookie architecture
+- **D3 map full keyboard navigation** -- highest effort a11y item; do after others
+- **Google Analytics / session recording** -- contradicts privacy architecture
+- **Self-hosted analytics** -- unnecessary given CF Web Analytics
+- **Custom 5xx pages** -- requires CF Business plan
 
-**Complexity:** Medium-High. The UI is simple, but touches multiple systems: data serialization, map coloring, tooltip, legend, and i18n for pillar names.
-
-### 3. Parameter/Pillar Explanations
-
-**What users expect:** When a score breakdown shows "Governance: 3.2/10," users need to know what it actually measures. Standard patterns:
-- **Expandable rows** (recommended): tap/click pillar bar to expand description. Mobile-friendly, no hover dependency.
-- Info tooltips with (i) icon: hover/tap for popover. Problematic on mobile.
-- Inline descriptions: always visible, clutters the view.
-
-**Content per pillar (already documented in methodology page, reuse/condense):**
-- **Conflict (25%):** Measures armed conflict activity, peacefulness, and political violence. Sources: ACLED events/fatalities, GPI peace scores. Low score = active conflict or high political violence risk.
-- **Crime (20%):** Measures personal safety and security risk. Sources: GPI safety & security, US/UK government advisory levels. Low score = elevated crime or safety concerns.
-- **Health (20%):** Measures health infrastructure and epidemic preparedness. Sources: INFORM health/epidemic risk, child mortality data. Low score = limited health systems or disease risk.
-- **Governance (20%):** Measures institutional stability, rule of law, and corruption. Sources: World Bank governance indicators, INFORM governance index. Low score = weak institutions or high corruption.
-- **Environment (15%):** Measures natural hazard and climate risk. Sources: INFORM natural/climate risk, air pollution (PM2.5). Low score = elevated disaster or environmental health risk.
-
-**Implementation:** Add `country.pillar.explain.conflict` through `country.pillar.explain.environment` to i18n (5 keys x 3 languages = 15 keys). In PillarBreakdown.astro, wrap each bar row in a clickable container; add a hidden `<div>` with explanation text that toggles on click via a small client-side script (8-10 lines).
-
-**Complexity:** Medium. Mostly content and i18n work. Small client-side toggle script.
-
-### 4. Spanish Language Support
-
-**What exists:** The i18n system is clean and generic. `languages` in ui.ts defines available languages, `ui` maps keys per language, `routes` defines URL slugs per language, and `useTranslations()` returns a lookup function. The `Lang` type is derived from `languages` keys -- adding `es` automatically types everything.
-
-**Required changes:**
-1. `i18n/ui.ts`: Add `es: 'Espanol'` to `languages`
-2. `i18n/ui.ts`: Add `es: { ... }` block with ~170 translated keys
-3. `i18n/ui.ts`: Add `es: { country: 'pais', methodology: 'metodologia', ... }` to `routes`
-4. Page files: Create `src/pages/es/` directory with:
-   - `index.astro` (home)
-   - `pais/[slug].astro` (country detail)
-   - `comparar.astro` (compare)
-   - `seguridad-global.astro` (global safety)
-   - `metodologia/index.astro` (methodology)
-   - `aviso-legal/index.astro` (legal)
-5. Pipeline: Extend `CountryEntry.name` from `{en: string; it: string}` to include `es`
-6. Country names data: Add Spanish names for 248 countries (available from CLDR/Unicode common locale data)
-7. `ScoredCountry.name` type: Add `es` field
-8. `scores.json`: Include `name.es` for map tooltip rendering
-
-**Key Spanish terminology:**
-- Safety Score = "Puntaje de Seguridad"
-- Is it safe to travel? = "Es seguro viajar?"
-- Conflict/Crime/Health/Governance/Environment = "Conflicto/Crimen/Salud/Gobernanza/Medio Ambiente"
-
-**Complexity:** Medium-High. Architecturally trivial (system designed for this), but labor-intensive: ~170 keys to translate accurately, 6-8 page files to create, and country name data to source.
-
-### 5. Comparison Search Fix
-
-**Current state:** The comparison page at `/en/compare` uses client-side Fuse.js search in a custom dropdown. The bug manifests as the search not working "on web" (presumably works in dev but not in production build).
-
-**Likely causes (in probability order):**
-1. Event listener not re-attached after Astro view transitions (`astro:after-swap` event)
-2. DOM element query failing due to timing (script runs before DOM is ready)
-3. Fuse.js import not bundling correctly in production build
-4. `data-countries` JSON attribute too large or malformed in production
-
-**Fix approach:** Check the comparison page's `<script>` tag for view transition handling (the map already has `document.addEventListener('astro:after-swap', initMap)` but compare.astro does not have an equivalent). Add similar re-initialization.
-
-**Complexity:** Low. Bug diagnosis + small fix.
-
-## Feature Dependencies (Build Order)
-
-```
-Phase 1: Bug Fixes (no dependencies, unblock everything)
-    1. Comparison search fix
-    2. Chart date axis fix
-
-Phase 2: Chart Interactivity (medium effort, high user value)
-    3. Chart zoom/scope controls (refactor TrendChart to client-side)
-    4. Time range presets (7d/30d/90d/All)
-
-Phase 3: Content Depth (medium effort, fills knowledge gaps)
-    5. Parameter/pillar explanations (expandable rows)
-
-Phase 4: Map Enhancement (medium-high effort, differentiator)
-    6. Category filtering on map (requires scores.json expansion)
-
-Phase 5: Language Expansion (highest effort, broadens audience)
-    7. Spanish language support
-```
-
-**Rationale for ordering:**
-- Bug fixes first: unblock existing features
-- Chart controls second: immediate value for all users, no data schema changes
-- Pillar explanations third: independent of other features, fills content gap
-- Map filtering fourth: requires data pipeline change (scores.json), higher risk
-- Spanish last: highest effort, does not block other features, can be parallelized
-
-## MVP Recommendation for v1.2
-
-**Must have:**
-1. Comparison search fix -- Bug, blocking core functionality
-2. Chart date axis fix -- Bug, data accuracy
-3. Chart zoom/scope controls with time presets -- Core UX improvement
-4. Parameter explanations -- Fills the "what does this mean?" gap
-5. Category filtering on map -- Key differentiator
-
-**Should have:**
-6. Spanish language -- Broadens audience significantly
-
-**Defer to v1.3:**
-- Per-pillar historical trends (pipeline schema change required)
-- Category filtering on historical charts (same data blocker)
-- Animated chart transitions (polish, not essential)
+---
 
 ## Complexity Estimates
 
-| Feature | Effort | Key Risk |
-|---------|--------|----------|
-| Comparison search fix | Small (0.5 day) | Diagnosis time if issue is subtle |
-| Chart date axis fix | Small (0.5 day) | May be timezone-related edge case |
-| Chart zoom/scope controls | Medium (2-3 days) | TrendChart refactor from build-time to client-side SVG |
-| Parameter explanations | Medium (1-2 days) | Content quality + translation for 3 languages |
-| Category filtering on map | Medium-High (2-3 days) | scores.json schema change + map recolor logic |
-| Spanish language | Medium-High (3-4 days) | ~170 keys translation + page duplication + country names |
-| **Total estimate** | **~10-14 days** | |
+| Feature Group | Effort | Key Risk |
+|---------------|--------|----------|
+| robots.txt fix + AI directives | Trivial (0.5h) | None |
+| Security headers (non-CSP) | Low (2h) | None |
+| CSP with D3 hashing | Medium (4-8h) | D3 inline scripts may need refactoring |
+| CF Web Analytics verification | Trivial (0.5h) | May need JS snippet if not auto-enabled |
+| Privacy policy expansion | Low (2-4h) | Wording accuracy across 5 languages |
+| BreadcrumbList + Org schema + UI | Low (3-4h) | None |
+| /llms.txt + /llms-full.txt | Medium (3-5h) | Build pipeline integration for full txt |
+| Custom 404 page | Medium (3-4h) | Language detection |
+| Donations page (5 langs) | Medium (4-6h) | ~20 keys x 5 languages |
+| Accessibility audit + fixes | Medium-High (8-12h) | D3 ARIA + keyboard is the long pole |
+| Color contrast audit | Medium (3-4h) | May need design token adjustments |
+| Dataset/FAQ schema | Low (2-3h) | None |
+| **Total estimate** | **~35-55 hours** | CSP + accessibility are main risks |
+
+---
 
 ## Sources
 
-- Codebase analysis: TrendChart.astro (265 lines), SafetyMap.astro (373 lines), compare.astro (566 lines), i18n/ui.ts (346 lines), pipeline/types.ts (101 lines), lib/scores.ts (93 lines)
-- PROJECT.md v1.2 scope and out-of-scope declarations
-- D3.js scaleTime and zoom patterns (confirmed against existing codebase usage -- HIGH confidence)
-- INFORM Risk Index category filter UI pattern (training data, MEDIUM confidence)
-- Google Finance / Our World in Data time-range preset patterns (training data, HIGH confidence -- well-established UX pattern)
+### Legal / GDPR / ePrivacy
+- [GDPR Cookie Consent Requirements 2025](https://secureprivacy.ai/blog/gdpr-cookie-consent-requirements-2025) -- ePrivacy Directive withdrawal, current enforcement
+- [Cloudflare ePrivacy Directive explainer](https://www.cloudflare.com/learning/privacy/what-is-eprivacy-directive/) -- cookie consent scope
+- [GDPR.eu Cookies Guide](https://gdpr.eu/cookies/) -- when consent is / is not required
+- [iubenda Cookies and GDPR](https://www.iubenda.com/en/help/5525-cookies-gdpr-requirements/) -- strictly necessary cookie exception
+- [EU Cookie Compliance 2025](https://usercentrics.com/knowledge-hub/eu-cookie-compliance/) -- member state implementation
+- [ICO Privacy Information Guide](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/the-right-to-be-informed/what-privacy-information-should-we-provide/) -- privacy disclosure requirements
+
+### Analytics
+- [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/) -- free, no cookies, no personal data
+- [CF Web Analytics auto-enabled Oct 2025](https://x.com/Cloudflare/status/1968395474420871174) -- default for free domains
+- [CF Web Analytics GDPR discussion](https://community.cloudflare.com/t/web-analytics-without-cookie-banner-gdpr-conform/238770) -- conformity without consent
+- [Plausible vs Umami](https://vemetric.com/blog/plausible-vs-umami) -- upgrade path comparison
+
+### SEO
+- [Schema markup for travel websites](https://blackbearmedia.io/11-powerful-schema-markup-strategies-for-travel-websites/) -- BreadcrumbList, Dataset
+- [FAQ Schema 2025-2026](https://searchengineland.com/faq-schema-rise-fall-seo-today-463993) -- Google restrictions
+- [BreadcrumbList SEO impact](https://searchengineland.com/guide/seo-breadcrumbs) -- CTR data
+- [Schema markup 2026](https://almcorp.com/blog/schema-markup-detailed-guide-2026-serp-visibility/) -- current practices
+- [Google Structured Data docs](https://developers.google.com/search/docs/appearance/structured-data) -- official reference
+
+### LLM Readability
+- [llms.txt specification](https://llmstxt.org/) -- official standard
+- [Semrush llms.txt analysis](https://www.semrush.com/blog/llms-txt/) -- adoption status
+- [Yoast SEO llms.txt spec](https://developer.yoast.com/features/llms-txt/functional-specification/) -- format details
+- [GitBook llms.txt guide](https://www.gitbook.com/blog/what-is-llms-txt) -- implementation
+
+### Security Headers
+- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) -- `_headers` file format
+- [Astro CSP for CF Pages](https://jacob.earth/post/2024/astro-csp-headers-for-sri-with-cloudflare-pages/) -- CSP auto-hashing
+- [astro-cloudflare-pages-headers](https://github.com/martinsilha/astro-cloudflare-pages-headers) -- integration
+- [Cloudflare HSTS docs](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/http-strict-transport-security/) -- configuration
+
+### Accessibility
+- [WCAG 2.1 AA Checklist](https://accessible.org/wcag/) -- comprehensive checklist
+- [WCAG 2.2 Compliance 2026](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/) -- current landscape
+- [WebAIM WCAG 2 Checklist](https://webaim.org/standards/wcag/checklist) -- practical implementation
+
+### Donations
+- [GitHub Sponsors via OSC](https://docs.oscollective.org/campaigns-programs-and-partnerships/github-sponsors) -- zero-fee donations
+- [Open Source Funding Guide](https://sealos.io/blog/funding-open-source/) -- platform comparison
 
 ---
-*Feature research for: IsItSafeToTravel.com v1.2 -- Interactive Charts, Category Filtering, Spanish i18n, Parameter Explanations*
-*Researched: 2026-03-20*
+*Feature research for: IsItSafeToTravel.com v2.0 -- Production Ready*
+*Researched: 2026-03-21*
