@@ -2,7 +2,7 @@
 
 ## What This Is
 
-A multilingual web platform (English, Italian, Spanish) that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks, environment) into a single 1-10 safety score, displayed on an interactive color-coded world map with per-pillar filtering. Users can compare countries side by side, explore historical safety trends with drag-to-zoom, filter by individual safety categories, and see a global safety benchmark — all with a minimal, data-driven design.
+A multilingual web platform (English, Italian, Spanish, French, Portuguese) that tells travelers whether a destination is safe to visit. It combines multiple public safety indices (conflicts, governance, crime, health risks, environment) into a single 1-10 safety score, displayed on an interactive color-coded world map with per-pillar filtering. Users can compare countries side by side, explore historical safety trends with drag-to-zoom, filter by individual safety categories, and see a global safety benchmark — all with a minimal, data-driven design.
 
 ## Core Value
 
@@ -37,7 +37,18 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-(None — planning next milestone)
+#### Current Milestone: v2.0 Production Ready
+
+**Goal:** Transform the site into a production-ready platform with legal compliance, SEO perfection, LLM readability, monitoring, and donation support.
+
+**Target features:**
+- Legal compliance research (GDPR, ePrivacy, cookies, privacy policy, ToS) — stored locally, not on GitHub
+- SEO optimization for Google (Core Web Vitals, rich snippets, breadcrumbs, FAQ schema)
+- LLM readability (llms.txt, semantic HTML, machine-readable data)
+- Cookie consent system (if legally required)
+- Multilingual donations page
+- Privacy-respecting analytics and monitoring
+- Production hardening (security headers, CSP, HSTS, error pages, accessibility, caching)
 
 ### Out of Scope
 
@@ -52,7 +63,7 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ## Context
 
-Shipped v1.0 MVP, v1.1 Comparison & Historical Trends, and v1.2 Improvements & Category Filtering. The platform covers 248 countries in 3 languages with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~10,400 LOC (TypeScript + Astro).
+Shipped v1.0 MVP, v1.1 Comparison & Historical Trends, and v1.2 Improvements & Category Filtering. The platform covers 248 countries in 5 languages (EN, IT, ES, FR, PT) with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~15,200 LOC (TypeScript + Astro).
 
 v1.2 significantly expanded client-side interactivity: TrendChart converted to client-side D3 with brush zoom, map supports per-pillar filtering, and pipeline now stores per-pillar historical data. Spanish added as third language with full page coverage.
 
@@ -86,4 +97,22 @@ v1.2 significantly expanded client-side interactivity: TrendChart converted to c
 | CountryEntry.name extended with es field (v1.2) | Simple, type-safe; Record<Lang, string> considered but explicit fields clearer | ✓ Good |
 
 ---
-*Last updated: 2026-03-20 after v1.2 milestone*
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+*Last updated: 2026-03-21 after v2.0 milestone start*
