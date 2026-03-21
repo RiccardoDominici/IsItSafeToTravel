@@ -1,0 +1,33 @@
+# IsItSafeToTravel.com
+
+> Free, open-source travel safety platform providing composite safety scores for 248 countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 5 languages (English, Italian, Spanish, French, Portuguese).
+
+## Main Pages
+
+- [Homepage (EN)](https://isitsafetotravel.com/en/): Interactive world map color-coded by safety score with country search
+- [Global Safety Score](https://isitsafetotravel.com/en/global-safety/): Worldwide average safety score with historical trend chart
+- [Country Comparison](https://isitsafetotravel.com/en/compare/): Side-by-side safety comparison of multiple countries
+- [Methodology](https://isitsafetotravel.com/en/methodology/): Scoring formula, data sources, weights, and pillar explanations
+
+## Sample Country Pages
+
+- [Italy](https://isitsafetotravel.com/en/country/italy/): Safety score, pillar breakdown, historical trends, government advisories
+- [United States](https://isitsafetotravel.com/en/country/united-states/): Safety score, pillar breakdown, historical trends, government advisories
+- [Japan](https://isitsafetotravel.com/en/country/japan/): Safety score, pillar breakdown, historical trends, government advisories
+- [Brazil](https://isitsafetotravel.com/en/country/brazil/): Safety score, pillar breakdown, historical trends, government advisories
+- [South Africa](https://isitsafetotravel.com/en/country/south-africa/): Safety score, pillar breakdown, historical trends, government advisories
+
+## Data
+
+- Scores updated daily via automated GitHub Actions pipeline
+- Sources: Global Peace Index (GPI), INFORM Risk Index, ACLED conflict data, US/UK/EU government travel advisories
+- Composite scoring uses weighted average across 5 safety pillars
+- All data is from publicly available sources
+
+## Languages
+
+Available in: [English](/en/), [Italian](/it/), [Spanish](/es/), [French](/fr/), [Portuguese](/pt/)
+
+## Open Source
+
+- Source code: https://github.com/RiccardoDominici/IsItSafeToTravel
