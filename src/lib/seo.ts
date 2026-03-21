@@ -22,14 +22,15 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const score = country.score;
 
   // Determine risk level
-  let riskLevel: string;
-  if (lang === 'en') {
-    riskLevel = score >= 7 ? 'Low risk' : score >= 4 ? 'Moderate risk' : 'High risk';
-  } else if (lang === 'it') {
-    riskLevel = score >= 7 ? 'rischio basso' : score >= 4 ? 'rischio moderato' : 'rischio alto';
-  } else {
-    riskLevel = score >= 7 ? 'riesgo bajo' : score >= 4 ? 'riesgo moderado' : 'riesgo alto';
-  }
+  const riskLevels: Record<Lang, [string, string, string]> = {
+    en: ['Low risk', 'Moderate risk', 'High risk'],
+    it: ['rischio basso', 'rischio moderato', 'rischio alto'],
+    es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
+    fr: ['risque faible', 'risque modere', 'risque eleve'],
+    pt: ['risco baixo', 'risco moderado', 'risco alto'],
+  };
+  const [low, moderate, high] = riskLevels[lang];
+  const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
 
   // Find strongest and weakest pillars (score is 0-1, display as x10 for /10 scale)
   const pillars = country.pillars;
@@ -47,13 +48,14 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const sourceCount = country.sources.length || 3; // fallback: pipeline uses 3 public sources
   const name = country.name[lang];
 
-  if (lang === 'en') {
-    return `${name} safety score: ${score}/10. ${riskLevel} destination. Strongest: ${strongestLabel} (${strongestScore}). Top concern: ${weakestLabel} (${weakestScore}). Updated daily from ${sourceCount}+ public sources.`;
-  } else if (lang === 'it') {
-    return `Punteggio di sicurezza ${name}: ${score}/10. Destinazione a ${riskLevel}. Punto forte: ${strongestLabel} (${strongestScore}). Principale preoccupazione: ${weakestLabel} (${weakestScore}). Aggiornato quotidianamente da ${sourceCount}+ fonti pubbliche.`;
-  } else {
-    return `Puntuacion de seguridad de ${name}: ${score}/10. Destino de ${riskLevel}. Punto fuerte: ${strongestLabel} (${strongestScore}). Principal preocupacion: ${weakestLabel} (${weakestScore}). Actualizado diariamente de ${sourceCount}+ fuentes publicas.`;
-  }
+  const templates: Record<Lang, string> = {
+    en: `${name} safety score: ${score}/10. ${riskLevel} destination. Strongest: ${strongestLabel} (${strongestScore}). Top concern: ${weakestLabel} (${weakestScore}). Updated daily from ${sourceCount}+ public sources.`,
+    it: `Punteggio di sicurezza ${name}: ${score}/10. Destinazione a ${riskLevel}. Punto forte: ${strongestLabel} (${strongestScore}). Principale preoccupazione: ${weakestLabel} (${weakestScore}). Aggiornato quotidianamente da ${sourceCount}+ fonti pubbliche.`,
+    es: `Puntuacion de seguridad de ${name}: ${score}/10. Destino de ${riskLevel}. Punto fuerte: ${strongestLabel} (${strongestScore}). Principal preocupacion: ${weakestLabel} (${weakestScore}). Actualizado diariamente de ${sourceCount}+ fuentes publicas.`,
+    fr: `Score de securite de ${name} : ${score}/10. Destination a ${riskLevel}. Point fort : ${strongestLabel} (${strongestScore}). Principale preoccupation : ${weakestLabel} (${weakestScore}). Mis a jour quotidiennement a partir de ${sourceCount}+ sources publiques.`,
+    pt: `Pontuacao de seguranca de ${name}: ${score}/10. Destino de ${riskLevel}. Ponto forte: ${strongestLabel} (${strongestScore}). Principal preocupacao: ${weakestLabel} (${weakestScore}). Atualizado diariamente de ${sourceCount}+ fontes publicas.`,
+  };
+  return templates[lang];
 }
 
 /**
@@ -90,6 +92,8 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang): Record<string,
     en: 'Find out how safe your travel destination is',
     it: 'Scopri quanto e sicura la tua destinazione di viaggio',
     es: 'Descubre que tan seguro es tu destino de viaje',
+    fr: 'Decouvrez si votre destination de voyage est sure',
+    pt: 'Descubra se seu destino de viagem e seguro',
   };
 
   return {
@@ -123,18 +127,24 @@ export function buildGlobalSafetyJsonLd(
     en: 'Global Safety Score',
     it: 'Punteggio di Sicurezza Globale',
     es: 'Puntuacion de Seguridad Global',
+    fr: 'Score de Securite Mondial',
+    pt: 'Pontuacao de Seguranca Global',
   };
 
   const descriptions: Record<Lang, string> = {
     en: `Current global safety score: ${globalScore.toFixed(1)}/10. Track world safety trends over time.`,
     it: `Punteggio di sicurezza globale attuale: ${globalScore.toFixed(1)}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
     es: `Puntuacion de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
+    fr: `Score de securite mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de securite mondiale.`,
+    pt: `Pontuacao de seguranca global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de seguranca mundial.`,
   };
 
   const placeNames: Record<Lang, string> = {
     en: 'World',
     it: 'Mondo',
     es: 'Mundo',
+    fr: 'Monde',
+    pt: 'Mundo',
   };
 
   return {
