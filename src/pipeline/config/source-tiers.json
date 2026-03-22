@@ -1,0 +1,15 @@
+{
+  "maxSignalInfluence": 0.30,
+  "maxDailyScoreChange": 0.3,
+  "sources": {
+    "worldbank": { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
+    "gpi":       { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
+    "inform":    { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
+    "acled":     { "tier": "signal",   "maxAgeDays": 60,  "decayHalfLifeDays": 14 },
+    "advisories":{ "tier": "signal",   "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "gdelt":     { "tier": "signal",   "maxAgeDays": 14,  "decayHalfLifeDays": 3 },
+    "reliefweb": { "tier": "signal",   "maxAgeDays": 60,  "decayHalfLifeDays": 14 },
+    "gdacs":     { "tier": "signal",   "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "who-dons":  { "tier": "signal",   "maxAgeDays": 90,  "decayHalfLifeDays": 30 }
+  }
+}

@@ -1,3 +1,18 @@
+// --- Source tier types ---
+export type SourceTier = 'baseline' | 'signal';
+
+export interface SourceConfig {
+  tier: SourceTier;
+  maxAgeDays: number;
+  decayHalfLifeDays: number;
+}
+
+export interface SourcesConfig {
+  maxSignalInfluence: number;
+  maxDailyScoreChange: number;
+  sources: Record<string, SourceConfig>;
+}
+
 // --- Raw data types ---
 export interface FetchResult {
   source: string;
@@ -13,6 +28,8 @@ export interface RawIndicator {
   value: number;
   year: number;
   source: string;
+  fetchedAt?: string;  // ISO 8601 when data was fetched
+  dataDate?: string;   // ISO 8601 when underlying data was published
 }
 
 export interface RawSourceData {
@@ -28,6 +45,7 @@ export interface PillarWeight {
   name: PillarName;
   weight: number;
   indicators: string[];
+  indicatorWeights?: Record<string, number>;  // Per-indicator sub-weight (must sum to 1.0 within pillar)
 }
 
 export interface WeightsConfig {
