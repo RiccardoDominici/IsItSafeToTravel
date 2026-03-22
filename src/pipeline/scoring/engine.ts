@@ -1,5 +1,8 @@
 import { normalizeIndicators } from './normalize.js';
+import { freshnessWeight } from './freshness.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
+import { readJson } from '../utils/fs.js';
+import { join } from 'node:path';
 import type {
   RawIndicator,
   WeightsConfig,
@@ -7,19 +10,28 @@ import type {
   AdvisoryInfo,
   SourceMeta,
   PillarScore,
+  PillarWeight,
   ScoredCountry,
   RawSourceData,
   PillarName,
+  SourcesConfig,
+  IndicatorScore,
 } from '../types.js';
 
 /**
  * Compute safety score for a single country.
  *
- * Logic:
- * - Filter indicators for this country
- * - For each pillar: normalize indicators, average them, track data completeness
+ * When sourcesConfig is provided, uses tiered baseline+signal blending
+ * with freshness decay and per-indicator sub-weights.
+ * When sourcesConfig is omitted, falls back to legacy equal-averaging behavior.
+ *
+ * Logic (tiered mode):
+ * - Filter & normalize indicators for this country
+ * - For each pillar: separate indicators into baseline and signal tiers
+ * - Apply freshness decay weights and per-indicator sub-weights
+ * - Blend tiers: pillarScore = baseline * (1 - effectiveSignalInfluence) + signal * effectiveSignalInfluence
+ * - effectiveSignalInfluence = maxSignalInfluence * signalCompleteness
  * - Composite = weighted sum of pillar scores, mapped to 1-10 scale
- * - Missing data reduces dataCompleteness but does not block scoring
  */
 export function computeCountryScore(
   iso3: string,
@@ -28,6 +40,7 @@ export function computeCountryScore(
   countryEntry: CountryEntry,
   advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo },
   sources: SourceMeta[],
+  sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
   const countryIndicators = allIndicators.filter(
     (ind) => ind.countryIso3.toUpperCase() === iso3.toUpperCase(),
@@ -35,6 +48,12 @@ export function computeCountryScore(
 
   // Normalize all indicators for this country at once
   const normalizedAll = normalizeIndicators(countryIndicators);
+
+  // Build a lookup from indicator name -> raw indicator (for freshness data)
+  const rawByName = new Map<string, RawIndicator>();
+  for (const ind of countryIndicators) {
+    rawByName.set(ind.indicatorName, ind);
+  }
 
   // Build pillar scores
   const pillars: PillarScore[] = weightsConfig.pillars.map((pillarDef) => {
@@ -48,11 +67,16 @@ export function computeCountryScore(
     const dataCompleteness = expectedCount > 0 ? foundCount / expectedCount : 0;
 
     let score: number;
+
     if (foundCount === 0) {
       score = 0.5; // neutral default when no data
-    } else {
+    } else if (!sourcesConfig) {
+      // Legacy path: simple equal-weight averaging (backward compatible)
       const sum = pillarIndicators.reduce((acc, ind) => acc + ind.normalizedValue, 0);
       score = sum / foundCount;
+    } else {
+      // Tiered path: baseline+signal blending with freshness and sub-weights
+      score = computeTieredPillarScore(pillarDef, pillarIndicators, rawByName, sourcesConfig);
     }
 
     return {
@@ -90,19 +114,134 @@ export function computeCountryScore(
   };
 }
 
+/**
+ * Compute a tiered pillar score using baseline+signal blending.
+ *
+ * For each indicator:
+ * 1. Determine tier (baseline/signal) from sourcesConfig
+ * 2. Compute freshness weight from data age
+ * 3. Apply per-indicator sub-weight (from indicatorWeights or equal fallback)
+ * 4. Weighted average within each tier
+ * 5. Blend tiers based on signal completeness
+ */
+function computeTieredPillarScore(
+  pillarDef: PillarWeight,
+  pillarIndicators: IndicatorScore[],
+  rawByName: Map<string, RawIndicator>,
+  sourcesConfig: SourcesConfig,
+): number {
+  const now = Date.now();
+
+  // Count expected signal indicators for this pillar
+  const expectedSignalCount = pillarDef.indicators.filter((indName) => {
+    // Look up the source for this indicator in the raw data
+    // If not in raw data, check via indicator naming convention
+    const raw = rawByName.get(indName);
+    const sourceName = raw?.source;
+    if (!sourceName) return false;
+    const sourceConf = sourcesConfig.sources[sourceName];
+    return sourceConf?.tier === 'signal';
+  }).length;
+
+  // Separate into baseline and signal with weighted values
+  let baselineWeightedSum = 0;
+  let baselineWeightTotal = 0;
+  let signalWeightedSum = 0;
+  let signalWeightTotal = 0;
+  let signalFoundCount = 0;
+
+  for (const ind of pillarIndicators) {
+    const raw = rawByName.get(ind.name);
+    const sourceName = raw?.source ?? ind.source;
+
+    // Determine tier (default to baseline for unknown sources)
+    const sourceConf = sourcesConfig.sources[sourceName];
+    const tier = sourceConf?.tier ?? 'baseline';
+
+    // Compute freshness weight
+    let fw = 1.0; // default: no timestamp = treat as fresh (backward compat)
+    if (sourceConf && raw) {
+      const dateStr = raw.dataDate ?? raw.fetchedAt;
+      if (dateStr) {
+        const ageMs = now - new Date(dateStr).getTime();
+        fw = freshnessWeight(ageMs, sourceConf.decayHalfLifeDays, sourceConf.maxAgeDays);
+      }
+    }
+
+    // Per-indicator sub-weight (fall back to equal weights)
+    const subWeight = pillarDef.indicatorWeights?.[ind.name]
+      ?? (1.0 / pillarDef.indicators.length);
+
+    const effectiveWeight = subWeight * fw;
+
+    if (tier === 'signal') {
+      signalWeightedSum += ind.normalizedValue * effectiveWeight;
+      signalWeightTotal += effectiveWeight;
+      signalFoundCount++;
+    } else {
+      baselineWeightedSum += ind.normalizedValue * effectiveWeight;
+      baselineWeightTotal += effectiveWeight;
+    }
+  }
+
+  // Compute tier scores (weighted averages)
+  const baselineScore = baselineWeightTotal > 0
+    ? baselineWeightedSum / baselineWeightTotal
+    : 0.5; // neutral if no baseline data
+
+  const signalScore = signalWeightTotal > 0
+    ? signalWeightedSum / signalWeightTotal
+    : 0.5; // neutral if no signal data (won't matter due to completeness=0)
+
+  // Signal completeness: how many of the expected signal indicators are present
+  const signalCompleteness = expectedSignalCount > 0
+    ? Math.min(1, signalFoundCount / expectedSignalCount)
+    : 0;
+
+  // Effective signal influence: capped by maxSignalInfluence, scaled by completeness
+  const effectiveSignalInfluence = sourcesConfig.maxSignalInfluence * signalCompleteness;
+
+  // Blend: when no signal data, effectiveSignalInfluence=0 => pure baseline
+  return baselineScore * (1 - effectiveSignalInfluence) + signalScore * effectiveSignalInfluence;
+}
+
 /** Metadata for known data sources used in scoring. */
 const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   worldbank: {
     url: 'https://data.worldbank.org/',
-    description: 'World Bank Development Indicators — governance, health, and environment data',
+    description: 'World Bank Development Indicators -- governance, health, and environment data',
   },
   acled: {
     url: 'https://acleddata.com/',
-    description: 'Armed Conflict Location & Event Data Project — conflict event counts',
+    description: 'Armed Conflict Location & Event Data Project -- conflict event counts',
   },
   advisories: {
     url: 'https://travel.state.gov/',
     description: 'Travel advisories from US State Department and UK FCDO',
+  },
+  gpi: {
+    url: 'https://www.visionofhumanity.org/maps/',
+    description: 'Global Peace Index -- annual peacefulness ranking by IEP',
+  },
+  inform: {
+    url: 'https://drmkc.jrc.ec.europa.eu/inform-index',
+    description: 'INFORM Risk Index -- hazard, exposure, vulnerability, and coping capacity',
+  },
+  gdelt: {
+    url: 'https://www.gdeltproject.org/',
+    description: 'Global Database of Events, Language, and Tone -- media-derived event monitoring',
+  },
+  reliefweb: {
+    url: 'https://reliefweb.int/',
+    description: 'ReliefWeb -- humanitarian situation reports and disaster alerts',
+  },
+  gdacs: {
+    url: 'https://www.gdacs.org/',
+    description: 'Global Disaster Alerting Coordination System -- natural disaster alerts',
+  },
+  'who-dons': {
+    url: 'https://www.who.int/emergencies/disease-outbreak-news',
+    description: 'WHO Disease Outbreak News -- disease outbreak alerts and updates',
   },
 };
 
@@ -144,11 +283,25 @@ function buildSourcesForCountry(
  * Merges indicators from all sources, scores each country from the
  * COUNTRIES list plus any additional iso3 codes found in the data.
  * Results are sorted by iso3.
+ *
+ * Automatically loads source-tiers.json for tiered scoring.
+ * If the config file is missing, falls back to legacy equal-averaging.
  */
 export function computeAllScores(
   rawDataBySource: Map<string, RawSourceData>,
   weightsConfig: WeightsConfig,
 ): ScoredCountry[] {
+  // Load sources tier config (optional -- graceful fallback to legacy mode)
+  const sourceTiersPath = join(process.cwd(), 'src/pipeline/config/source-tiers.json');
+  const sourcesConfig = readJson<SourcesConfig>(sourceTiersPath) ?? undefined;
+
+  if (sourcesConfig) {
+    console.log('  Tiered scoring: loaded source-tiers.json (maxSignalInfluence=%d%%)',
+      Math.round(sourcesConfig.maxSignalInfluence * 100));
+  } else {
+    console.log('  Legacy scoring: source-tiers.json not found, using equal-weight averaging');
+  }
+
   // Merge all indicators
   const allIndicators: RawIndicator[] = [];
   for (const sourceData of rawDataBySource.values()) {
@@ -171,8 +324,28 @@ export function computeAllScores(
     if (!entry) continue; // Skip unknown iso3 codes not in our country list
 
     const sources = buildSourcesForCountry(iso3, rawDataBySource);
-    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, {}, sources);
+    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, {}, sources, sourcesConfig);
     results.push(scored);
+  }
+
+  // Log tier contribution summary
+  if (sourcesConfig) {
+    let baselineContribCount = 0;
+    let signalContribCount = 0;
+    for (const ind of allIndicators) {
+      const sourceConf = sourcesConfig.sources[ind.source];
+      if (sourceConf?.tier === 'signal') {
+        signalContribCount++;
+      } else {
+        baselineContribCount++;
+      }
+    }
+    const total = baselineContribCount + signalContribCount;
+    if (total > 0) {
+      const baselinePct = Math.round((baselineContribCount / total) * 100);
+      const signalPct = Math.round((signalContribCount / total) * 100);
+      console.log(`  Baseline contribution: ${baselinePct}%, Signal contribution: ${signalPct}%`);
+    }
   }
 
   // Sort by iso3

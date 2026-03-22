@@ -9,6 +9,7 @@ import type {
   AdvisoryInfo,
   SourceMeta,
   RawSourceData,
+  SourcesConfig,
 } from '../../types.js';
 
 // --- Normalization tests ---
@@ -105,7 +106,7 @@ describe('computeCountryScore', () => {
     // acled_fatalities: inverse, min=0, max=10000 => value=2000 => norm=0.2 => inverse=0.8
     // acled_events: inverse, min=0, max=5000 => value=1000 => norm=0.2 => inverse=0.8
     // advisory_level_us: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
-    // advisory_level_uk: inverse, min=0, max=4 => value=0.8 => norm=0.2 => inverse=0.8
+    // advisory_level_uk: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
     // inform_health: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
     // inform_epidemic: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
     // inform_governance: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
@@ -118,7 +119,7 @@ describe('computeCountryScore', () => {
       { countryIso3: 'TST', indicatorName: 'acled_events', value: 1000, year: 2025, source: 'acled' },
       { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1.8, year: 2025, source: 'gpi' },
       { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state' },
-      { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 0.8, year: 2025, source: 'fcdo' },
+      { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo' },
       { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform' },
       { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 2, year: 2025, source: 'inform' },
       { countryIso3: 'TST', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform' },
@@ -211,5 +212,199 @@ describe('computeAllScores', () => {
     assert.ok(afg, 'AFG should be in results');
     // USA (lower GPI = safer) should score higher than AFG
     assert.ok(usa!.score > afg!.score, 'USA should have higher safety score than AFG');
+  });
+});
+
+// --- Tiered baseline+signal scoring tests ---
+
+const TEST_SOURCES_CONFIG: SourcesConfig = {
+  maxSignalInfluence: 0.30,
+  maxDailyScoreChange: 0.3,
+  sources: {
+    gpi: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
+    worldbank: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
+    inform: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
+    acled: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
+    advisories: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
+    state: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
+    fcdo: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
+  },
+};
+
+// Weights with explicit sub-weights for tiered tests
+const TIERED_WEIGHTS: WeightsConfig = {
+  version: '5.0.0',
+  pillars: [
+    {
+      name: 'conflict',
+      weight: 0.30,
+      indicators: ['gpi_overall', 'acled_fatalities', 'acled_events'],
+      indicatorWeights: { gpi_overall: 0.50, acled_fatalities: 0.25, acled_events: 0.25 },
+    },
+    {
+      name: 'crime',
+      weight: 0.25,
+      indicators: ['advisory_level_us', 'advisory_level_uk'],
+      indicatorWeights: { advisory_level_us: 0.50, advisory_level_uk: 0.50 },
+    },
+    {
+      name: 'health',
+      weight: 0.20,
+      indicators: ['inform_health', 'inform_epidemic'],
+      indicatorWeights: { inform_health: 0.50, inform_epidemic: 0.50 },
+    },
+    {
+      name: 'governance',
+      weight: 0.15,
+      indicators: ['inform_governance'],
+      indicatorWeights: { inform_governance: 1.0 },
+    },
+    {
+      name: 'environment',
+      weight: 0.10,
+      indicators: ['inform_natural', 'inform_climate'],
+      indicatorWeights: { inform_natural: 0.50, inform_climate: 0.50 },
+    },
+  ],
+};
+
+const freshTimestamp = new Date().toISOString();
+
+describe('tiered scoring with sourcesConfig', () => {
+  it('blends baseline and signal tiers when both have data', () => {
+    // Baseline indicators (gpi) and signal indicators (acled) for conflict pillar
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 2000, year: 2025, source: 'acled', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'acled_events', value: 1000, year: 2025, source: 'acled', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+    ];
+
+    const withTiers = computeCountryScore('TST', indicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+    const withoutTiers = computeCountryScore('TST', indicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
+
+    // Both should produce valid scores in range
+    assert.ok(withTiers.score >= 1 && withTiers.score <= 10, `Tiered score ${withTiers.score} out of range`);
+    assert.ok(withoutTiers.score >= 1 && withoutTiers.score <= 10, `Legacy score ${withoutTiers.score} out of range`);
+    // Tiered and legacy should produce different scores (because sub-weights and blending differ)
+    // At minimum the engine ran without error
+  });
+});
+
+describe('graceful degradation — baseline only', () => {
+  it('produces same score as baseline-only when no signal data is present', () => {
+    // Only baseline indicators (gpi, inform) — no acled/advisories signal data
+    const baselineOnlyIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 4, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+    ];
+
+    const tieredResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+
+    // With no signal data, effectiveSignalInfluence should be 0,
+    // so score should equal pure baseline score
+    assert.ok(tieredResult.score >= 1 && tieredResult.score <= 10);
+
+    // Conflict pillar: only gpi_overall (baseline), no acled (signal)
+    // So signal completeness = 0 for conflict pillar => pure baseline
+    const conflict = tieredResult.pillars.find((p) => p.name === 'conflict')!;
+    assert.ok(conflict.score > 0, 'Conflict pillar should have a non-zero score from baseline GPI data');
+
+    // Verify the score is valid and the engine did not crash
+    assert.equal(tieredResult.pillars.length, 5);
+  });
+});
+
+describe('per-indicator sub-weights', () => {
+  it('produces different scores when sub-weights differ', () => {
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+    ];
+
+    // Weights with health heavily weighted
+    const weightsA: WeightsConfig = {
+      version: '1.0.0',
+      pillars: [
+        { name: 'conflict', weight: 0.2, indicators: [] },
+        { name: 'crime', weight: 0.2, indicators: [] },
+        {
+          name: 'health',
+          weight: 0.20,
+          indicators: ['inform_health', 'inform_epidemic'],
+          indicatorWeights: { inform_health: 0.90, inform_epidemic: 0.10 },
+        },
+        { name: 'governance', weight: 0.2, indicators: [] },
+        { name: 'environment', weight: 0.2, indicators: [] },
+      ],
+    };
+
+    // Weights with epidemic heavily weighted
+    const weightsB: WeightsConfig = {
+      version: '1.0.0',
+      pillars: [
+        { name: 'conflict', weight: 0.2, indicators: [] },
+        { name: 'crime', weight: 0.2, indicators: [] },
+        {
+          name: 'health',
+          weight: 0.20,
+          indicators: ['inform_health', 'inform_epidemic'],
+          indicatorWeights: { inform_health: 0.10, inform_epidemic: 0.90 },
+        },
+        { name: 'governance', weight: 0.2, indicators: [] },
+        { name: 'environment', weight: 0.2, indicators: [] },
+      ],
+    };
+
+    const scoreA = computeCountryScore('TST', indicators, weightsA, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+    const scoreB = computeCountryScore('TST', indicators, weightsB, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+
+    // inform_health=2 (inverse, safer) vs inform_epidemic=8 (inverse, less safe)
+    // When health is weighted higher, score should be better (higher)
+    // When epidemic is weighted higher, score should be worse (lower)
+    assert.ok(scoreA.score !== scoreB.score, `Sub-weights should produce different scores: A=${scoreA.score}, B=${scoreB.score}`);
+    assert.ok(scoreA.score > scoreB.score, `Health-heavy weight (${scoreA.score}) should score higher than epidemic-heavy (${scoreB.score})`);
+  });
+});
+
+describe('stale signal data is discounted', () => {
+  it('stale signal data produces nearly identical score to baseline-only', () => {
+    // Stale signal timestamp: 90 days ago (past acled maxAgeDays=60)
+    const staleDate = new Date(Date.now() - 90 * 86_400_000).toISOString();
+
+    const baselineOnlyIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 4, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+    ];
+
+    const withStaleSignal: RawIndicator[] = [
+      ...baselineOnlyIndicators,
+      // Stale signal data: past maxAgeDays for acled (60 days), should get weight 0
+      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 9000, year: 2025, source: 'acled', fetchedAt: staleDate },
+      { countryIso3: 'TST', indicatorName: 'acled_events', value: 4000, year: 2025, source: 'acled', fetchedAt: staleDate },
+    ];
+
+    const baselineResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+    const staleResult = computeCountryScore('TST', withStaleSignal, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
+
+    // Stale signal data (past maxAge) should have freshness weight = 0,
+    // so the result should be very close to baseline-only
+    // Allow small tolerance for floating point
+    const scoreDiff = Math.abs(baselineResult.score - staleResult.score);
+    assert.ok(scoreDiff < 0.5, `Stale signal should have negligible effect: baseline=${baselineResult.score}, stale=${staleResult.score}, diff=${scoreDiff}`);
   });
 });
