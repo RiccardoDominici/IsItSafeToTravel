@@ -377,6 +377,65 @@ describe('per-indicator sub-weights', () => {
   });
 });
 
+describe('tiered scoring integration', () => {
+  it('produces valid scores for all countries with real data structure', () => {
+    // Create a realistic rawDataBySource map mimicking real pipeline data
+    const rawData = new Map<string, RawSourceData>();
+
+    // Baseline source: worldbank (fresh)
+    rawData.set('gpi', {
+      source: 'gpi',
+      fetchedAt: freshTimestamp,
+      indicators: [
+        { countryIso3: 'USA', indicatorName: 'gpi_overall', value: 1.3, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'gpi_overall', value: 3.5, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
+      ],
+    });
+
+    // Baseline source: inform
+    rawData.set('inform', {
+      source: 'inform',
+      fetchedAt: freshTimestamp,
+      indicators: [
+        { countryIso3: 'USA', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'USA', indicatorName: 'inform_epidemic', value: 1.5, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'USA', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'USA', indicatorName: 'inform_natural', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'USA', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'inform_health', value: 7, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'inform_epidemic', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'inform_governance', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'inform_natural', value: 7, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+        { countryIso3: 'AFG', indicatorName: 'inform_climate', value: 6, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
+      ],
+    });
+
+    // Signal source: acled (recent, 2 days old)
+    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString();
+    rawData.set('acled', {
+      source: 'acled',
+      fetchedAt: twoDaysAgo,
+      indicators: [
+        { countryIso3: 'USA', indicatorName: 'acled_fatalities', value: 100, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
+        { countryIso3: 'USA', indicatorName: 'acled_events', value: 500, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
+        { countryIso3: 'AFG', indicatorName: 'acled_fatalities', value: 5000, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
+        { countryIso3: 'AFG', indicatorName: 'acled_events', value: 3000, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
+      ],
+    });
+
+    const results = computeAllScores(rawData, TIERED_WEIGHTS);
+
+    const usa = results.find(r => r.iso3 === 'USA');
+    const afg = results.find(r => r.iso3 === 'AFG');
+
+    assert.ok(usa, 'USA should be scored');
+    assert.ok(afg, 'AFG should be scored');
+    assert.ok(usa!.score >= 1 && usa!.score <= 10, `USA score ${usa!.score} in valid range`);
+    assert.ok(afg!.score >= 1 && afg!.score <= 10, `AFG score ${afg!.score} in valid range`);
+    assert.ok(usa!.score > afg!.score, `USA (${usa!.score}) should score higher than AFG (${afg!.score})`);
+  });
+});
+
 describe('stale signal data is discounted', () => {
   it('stale signal data produces nearly identical score to baseline-only', () => {
     // Stale signal timestamp: 90 days ago (past acled maxAgeDays=60)
