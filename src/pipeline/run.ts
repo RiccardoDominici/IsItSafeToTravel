@@ -68,6 +68,15 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   const scoredCountries = computeAllScores(rawDataMap, weightsConfig);
   console.log(`Scored ${scoredCountries.length} countries`);
 
+  // Log tier contribution summary
+  const avgScore = scoredCountries.reduce((sum, c) => sum + c.score, 0) / scoredCountries.length;
+  console.log(`  Average score: ${avgScore.toFixed(1)}`);
+  console.log(`  Countries scored: ${scoredCountries.length}`);
+
+  // Log data completeness summary
+  const avgCompleteness = scoredCountries.reduce((sum, c) => sum + c.dataCompleteness, 0) / scoredCountries.length;
+  console.log(`  Average data completeness: ${(avgCompleteness * 100).toFixed(1)}%`);
+
   // Stage 4: Snapshot
   console.log('\n--- Stage 4: Snapshot ---');
   writeSnapshot(date, scoredCountries, fetchResults, weightsConfig.version);
