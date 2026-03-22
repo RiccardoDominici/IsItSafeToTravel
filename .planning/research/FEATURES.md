@@ -1,489 +1,242 @@
-# Feature Landscape: v2.0 Production Ready
-
-**Domain:** Production-readiness features for a free, open-source, data-driven informational website (EU-based, no user accounts, no cookies currently)
-**Researched:** 2026-03-21
-**Milestone:** v2.0 Production Ready
-**Confidence:** HIGH (legal requirements verified via multiple sources; technical features verified against Cloudflare/Astro documentation)
-
-## Legal Classification Key
-
-Throughout this document, features are tagged:
-
-- **[REQUIRED]** -- Legally mandated for an EU-based informational website
-- **[CONDITIONAL]** -- Required only if certain conditions are met (noted)
-- **[BEST PRACTICE]** -- Not legally required, but expected by users/search engines/industry standards
-- **[DIFFERENTIATOR]** -- Competitive advantage, not expected
-
----
-
-## Existing Infrastructure (relevant to v2.0 features)
-
-| Asset | Location | How v2.0 Uses It |
-|-------|----------|-------------------|
-| `seo.ts` | `src/lib/` | JSON-LD builders for WebPage, Place, AggregateRating, WebSite+SearchAction. Extend with BreadcrumbList, Organization, FAQPage, Dataset schemas. |
-| Legal page | `src/pages/{lang}/legal/` | Basic disclaimer in 5 languages. Expand into proper privacy policy + terms structure. |
-| `robots.txt` | `public/` | Exists but has typo in sitemap URL ("isitsafetotravels" vs "isitsafetotravel"). Extend with AI crawler directives. |
-| `Base.astro` | `src/layouts/` | Main layout. Add skip-nav link, security meta tags, analytics snippet slot. |
-| i18n system | `src/i18n/` | 5 languages (EN, IT, ES, FR, PT). Donations page and expanded legal pages need translation keys. |
-| D3 map + charts | `src/components/` | Client-side SVG. Need ARIA labels, keyboard navigation, color contrast audit. |
-| Cloudflare Pages | Deployment | Supports `_headers` file for security headers, `404.html` for custom error pages. |
-
----
-
-## 1. GDPR / ePrivacy Legal Compliance
-
-### Context
-
-The site is EU-based, informational-only, no user accounts, no login, no cookies, no forms, no personal data collection. The ePrivacy Regulation was withdrawn by the European Commission in February 2025; the existing ePrivacy Directive remains in force. GDPR applies only when personal data is processed.
-
-### Table Stakes
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| Privacy Policy page | **[CONDITIONAL]** -- required if ANY personal data is processed | Even Cloudflare Web Analytics (no personal data) warrants a transparency page explaining what IS and IS NOT collected. Multiple EU member states expect transparency regardless. | Low | Expand existing legal page or create separate privacy policy page. State clearly: "This site does not use cookies, does not collect personal data, and does not track users." |
-| Terms of Service / Disclaimer | **[BEST PRACTICE]** | Protects against liability for safety score accuracy. Partially exists in current legal page. | Low | Review and formalize existing legal page content. |
-| Imprint / Legal Notice | **[REQUIRED]** in DE/AT/CH; **[BEST PRACTICE]** elsewhere in EU | Several EU member states mandate website operator identification (Telemediengesetz in Germany, E-Commerce-Gesetz in Austria). | Low | Include: operator name/contact, responsible person. Costs nothing, builds trust. Add to existing legal page structure. |
-| Data source attribution | **[BEST PRACTICE]** | Transparency about where safety data originates. Already exists. | None | Already implemented via sources section. No changes needed. |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Cookie consent banner (no cookies to consent to) | Legally unnecessary; hurts UX; signals tracking where none exists; adds JS weight | Maintain zero-cookie architecture. Document this in privacy policy. |
-| Full consent management platform (OneTrust, Cookiebot) | Overkill for a site with no personal data collection. Adds 50-200KB JS. Costs money. | Not needed unless cookies are introduced. |
-| Email newsletter / contact forms | Introduces GDPR obligations (consent records, right to erasure, data portability, DPO considerations) | Keep site anonymous. Use donation platforms for community engagement. |
-| Google reCAPTCHA | Sets cookies, transfers data to Google, requires consent banner | No forms exist; no CAPTCHA needed. |
-
-### Dependencies
-- Legal pages already exist in 5 languages -- expand, do not rebuild
-- Zero-cookie architecture is the baseline -- every feature decision must preserve it
-
----
-
-## 2. Advanced SEO (2025-2026)
-
-### Context
-
-Already implemented: JSON-LD (WebPage, Place, AggregateRating, WebSite+SearchAction), unique meta descriptions per country, XML sitemap, hreflang tags, robots.txt. Less than 30% of websites implement schema properly -- the site is already ahead.
-
-### Table Stakes
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| BreadcrumbList schema markup | **[BEST PRACTICE]** | Google displays breadcrumb trails in SERPs. Case studies show ~3% CTR improvement. Currently missing. | Low | Path: Home > Countries > [Country]. Add `buildBreadcrumbJsonLd()` to `seo.ts`. |
-| Organization schema | **[BEST PRACTICE]** | Establishes site identity in Google Knowledge Graph. Missing from homepage JSON-LD. | Low | Add Organization node with name, url, logo to homepage `@graph`. |
-| robots.txt sitemap URL fix | **[REQUIRED]** for correct SEO | Current robots.txt points to "isitsafetotravels.com" (extra 's'). Google may not be discovering the sitemap. | Trivial | Fix the typo immediately. |
-| Image/SVG alt text and ARIA | **[BEST PRACTICE]** | D3 map and charts lack descriptive text alternatives. Google uses alt text for image indexing. | Medium | SVG charts need `role="img"` and `aria-label`. Map needs descriptive fallback text. |
-| Breadcrumb navigation UI component | **[BEST PRACTICE]** | Visual breadcrumbs help users orient on multi-level site. Pairs with BreadcrumbList schema. | Low | Simple component: Home > [Section] > [Page]. ~50 lines. |
-
-### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Dataset schema (schema.org/Dataset) | Signals to Google Dataset Search that safety data is a structured dataset. Very few travel safety sites do this. | Medium | Dataset schema with distribution (JSON), temporal coverage (daily), spatial coverage (global). |
-| FAQPage schema on methodology | Methodology page has expandable Q&A content -- natural FAQPage candidate. Google restricted FAQ rich results to authoritative sites Aug 2023, but schema still helps LLMs. | Low | Low effort addition to methodology JSON-LD. |
-| SpeakableSpecification schema | Marks content for voice assistants (Google Assistant). Future-proofing. | Low | Apply to country summary paragraphs. |
-| Internal cross-linking | Link country pages to comparison, methodology, global score. Improves crawl depth and page authority. | Medium | Template changes across country detail pages. |
-| Core Web Vitals audit | Only 54.6% of sites pass CWV. SSG should score well but D3 client-side rendering may affect LCP/INP. | Medium | Profile with Lighthouse; optimize D3 bundle if needed. |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Pre-generated comparison pages | C(248,2) = 30K+ pages; bloats build; Google may see as thin content | Keep client-side comparison. Assess organic demand later. |
-| Keyword-stuffed meta descriptions | Google penalizes over-optimization | Current data-driven descriptions are already excellent. |
-| AMP pages | Google no longer prioritizes AMP. Astro SSG is already fast. | Focus on Core Web Vitals. |
-
-### Dependencies
-- `seo.ts` has existing JSON-LD builders -- extend with new functions
-- robots.txt needs immediate typo fix
-
----
-
-## 3. LLM Readability / Discoverability
-
-### Context
-
-LLMs increasingly surface website content in AI search (ChatGPT, Perplexity, Google AI Overviews). The llms.txt standard was proposed in 2024 by Jeremy Howard (Answer.AI). No major LLM company has officially committed to reading these files, but adoption is growing among documentation sites. For a data-driven site, machine-readable data is a natural fit.
-
-### Table Stakes
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| /llms.txt file | **[BEST PRACTICE]** | Emerging standard. Markdown file listing key pages. Low cost, high potential. | Low | Curated list: homepage, methodology, global safety, sample country pages. Follow spec: H1, blockquote summary, H2 sections. Static file in `public/`. |
-| Semantic HTML audit | **[BEST PRACTICE]** | Proper heading hierarchy and landmarks improve LLM content extraction. | Low | Audit Astro templates for `<main>`, `<nav>`, `<article>`, `<section>`. Likely mostly correct. |
-| AI crawler directives in robots.txt | **[BEST PRACTICE]** | Explicitly allow AI crawlers (GPTBot, ClaudeBot, etc.). Site is open data -- visibility is the goal. | Low | Add User-agent rules. |
-
-### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| /llms-full.txt auto-generated at build | Complete site content in single Markdown. Enables RAG pipelines to ingest all data in one request. | Medium | Build step: concatenate methodology + all 248 country summaries. ~50-100KB. |
-| Static JSON data endpoint (/api/scores.json) | Machine-readable safety scores. Enables LLMs, researchers, developers to consume data. | Low-Medium | Pipeline already produces data. Expose subset as static file. |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Blocking AI crawlers | Site is open data; visibility serves the mission | Explicitly allow all AI crawlers |
-| Over-optimizing for single LLM | llms.txt is LLM-agnostic | Follow the standard spec |
-
-### Dependencies
-- robots.txt exists -- extend (and fix typo)
-- Build pipeline produces JSON data -- expose subset
-- All content rendered as static HTML (SSG)
-
----
-
-## 4. Cookie Consent System
-
-### Context
-
-**This is the most critical architecture decision.** The site currently sets ZERO cookies. The ePrivacy Directive requires consent only for non-essential cookies. No cookies = no consent needed.
-
-### Decision: Maintain Zero-Cookie Architecture
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| NO cookie consent banner | **[REQUIRED approach]** -- banner NOT needed when no cookies set | ePrivacy Directive exempts sites with no non-essential cookies. Adding an unnecessary banner hurts UX and falsely signals tracking. | None | **Correct and recommended.** Every technology choice must preserve zero-cookie status. |
-| Cookie audit documentation | **[BEST PRACTICE]** | Proof that no cookies are set. Useful if regulators inquire. | Low | Verify with browser DevTools. Document in privacy policy. |
-| Privacy policy cookie statement | **[BEST PRACTICE]** | Proactive transparency: "This site does not use cookies." | Low | Single paragraph in privacy policy. |
-
-### Conditional Features (only if architecture changes)
-
-| Feature | Trigger Condition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Cookie consent banner | ONLY if future feature introduces non-essential cookies | Medium | If ever needed: lightweight (~3KB JS), equal-prominence accept/reject per 2025 EU guidance. **Strongly recommend never triggering this.** |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Preemptive cookie consent banner | Legally unnecessary; UX damage; false tracking signal; JS bloat | Maintain zero-cookie architecture |
-| Google Analytics | Sets 5+ cookies; requires consent; sends data to US (Schrems II) | Cloudflare Web Analytics (free, zero cookies) |
-| YouTube/Vimeo embeds | Set tracking cookies; require consent | Self-host video or use privacy-enhanced embed modes |
-| Social media widget buttons | Set third-party cookies; significant JS weight | Simple `<a href>` share links with pre-filled URLs |
-| Google Fonts CDN | Transfers IP data (ruled personal data by German courts Jan 2022) | Self-host fonts or use system font stack |
-
-### Dependencies
-- **CRITICAL:** Analytics choice determines cookie status. CF Web Analytics = zero cookies.
-- Every third-party integration must be audited for cookie behavior before inclusion.
-
----
-
-## 5. Donation Platform
-
-### Context
-
-Free, open-source, ~10 EUR/month budget. No user accounts. Donations handled by external platforms -- no payment processing on-site.
-
-### Table Stakes
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| Dedicated donations page | **[BEST PRACTICE]** | Central place explaining what donations fund. | Medium | Multilingual (5 languages), ~20 new i18n keys. |
-| Platform links (external) | **[BEST PRACTICE]** | Users need a way to donate. External links only. | Low | Buttons to GitHub Sponsors + Ko-fi. No server-side code. |
-| Funding transparency | **[BEST PRACTICE]** | Open-source community expects transparency. | Low | "Donations cover: hosting (~X EUR/mo), domain (~Y EUR/yr)." |
-| Footer donation link | **[BEST PRACTICE]** | Discoverable from any page. | Low | Small i18n addition to footer. |
-| FUNDING.yml in repo | **[BEST PRACTICE]** | GitHub displays "Sponsor" button on repository. | Trivial | Single YAML file. |
-
-### Platform Recommendation
-
-| Platform | Fees | Recurring | One-time | Recommendation |
-|----------|------|-----------|----------|----------------|
-| **GitHub Sponsors** | 0% | Yes | Yes | **Primary.** Zero fees. Best for developer audience. |
-| **Ko-fi** | 0% on donations | Yes | Yes | **Secondary.** Zero fees. No account needed to donate. Good for general audience. |
-| Open Collective | ~10% | Yes | Yes | **Skip.** High fees. Overkill for small project. |
-| Buy Me a Coffee | 5% | Yes | Yes | **Skip.** Ko-fi does same with zero fees. |
-
-### Differentiators
-
-| Feature | Value Proposition | Complexity | Notes |
-|---------|-------------------|------------|-------|
-| Sponsor acknowledgment section | Public "thank you" list. Encourages contributions. | Low | Manual or build-time generated. |
-| Funding goal progress | Shows progress toward monthly costs. Visual motivator. | Low | Simple text/bar on donations page. |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Paywalled content | Contradicts open-source mission; destroys SEO | All data free; donations voluntary |
-| Ads / affiliate links | PROJECT.md out of scope; introduces cookies/consent | Revisit only if donations insufficient |
-| Embedded payment forms | Could introduce cookies from payment providers; server-side complexity | External links only |
-| Stripe/PayPal direct integration | PCI compliance, server code, maintenance | Use platforms that handle payments |
-
-### Dependencies
-- i18n system ready for new page
-- Legal page structure exists
-- No server-side code required
-
----
-
-## 6. Privacy-Respecting Analytics
-
-### Context
-
-Need basic traffic insights without cookies and without compromising zero-consent architecture.
-
-### Recommendation: Cloudflare Web Analytics
-
-| Criterion | CF Web Analytics | Plausible Cloud | Umami Self-Host |
-|-----------|-----------------|-----------------|-----------------|
-| **Cost** | Free (CF Pages included) | $9+/month | Free (VPS ~$5/mo) |
-| **Cookies** | None | None | None |
-| **Personal data** | None | None | None |
-| **Consent needed** | No | No | No |
-| **Setup** | Auto-enabled Oct 2025 for CF free domains | Script tag | Deploy server |
-| **Features** | Pageviews, paths, referrers, countries | Goals, funnels, UTM, events | Events, custom data |
-| **Maintenance** | Zero | Zero (managed) | Ongoing |
-
-**Use Cloudflare Web Analytics.** Zero cost, zero cookies, zero maintenance, zero consent requirements. Auto-enabled for free CF domains since October 2025 -- may already be active. Features (pageviews, top pages, referrers, geographic breakdown) are sufficient for an informational site.
-
-**Upgrade path:** Plausible Cloud ($9/mo) if richer analytics needed later. Still cookie-free, EU-hosted.
-
-### Table Stakes
-
-| Feature | Legal Status | Why Expected | Complexity | Notes |
-|---------|-------------|--------------|------------|-------|
-| Basic pageview analytics | **[BEST PRACTICE]** | Understand traffic patterns, popular pages | Low | CF Web Analytics |
-| Cookie-free implementation | **[REQUIRED to preserve no-consent]** | Must not introduce cookies | None | CF Web Analytics: no cookies, no localStorage, no fingerprinting |
-| Privacy policy disclosure | **[BEST PRACTICE]** | Disclose CF Web Analytics usage | Low | Paragraph in privacy policy |
-
-### Anti-Features
-
-| Anti-Feature | Why Avoid | What to Do Instead |
-|--------------|-----------|-------------------|
-| Google Analytics (GA4) | Cookies; consent banner; data to US | CF Web Analytics |
-| Session recording (Hotjar, FullStory) | Personal data; consent; massive JS | Not needed for static content |
-| Self-hosted analytics | VPS maintenance; exceeds budget | CF Web Analytics at zero cost |
-| Multiple analytics tools | Diminishing returns; JS weight | Single tool sufficient |
-
-### Dependencies
-- Deployed on Cloudflare Pages -- CF Web Analytics is native
-- May already be auto-enabled -- verify in dashboard
-- Privacy policy should disclose
-
----
-
-## 7. Production Hardening
-
-### 7a. Security Headers
-
-All via single `public/_headers` file for Cloudflare Pages.
-
-| Feature | Legal Status | Complexity | Notes |
-|---------|-------------|------------|-------|
-| Content-Security-Policy (CSP) | **[BEST PRACTICE]** | Medium | D3 inline scripts/styles require CSP hashing. Use `astro-cloudflare-pages-headers` for auto-hashing. Most complex header. |
-| Strict-Transport-Security (HSTS) | **[BEST PRACTICE]** | Low | `max-age=31536000; includeSubDomains; preload` |
-| X-Content-Type-Options | **[BEST PRACTICE]** | Low | `nosniff` |
-| X-Frame-Options | **[BEST PRACTICE]** | Low | `DENY` |
-| Referrer-Policy | **[BEST PRACTICE]** | Low | `strict-origin-when-cross-origin` |
-| Permissions-Policy | **[BEST PRACTICE]** | Low | `camera=(), microphone=(), geolocation=(), interest-cohort=()` |
-
-### 7b. Error Pages
-
-| Feature | Legal Status | Complexity | Notes |
-|---------|-------------|------------|-------|
-| Custom 404 page | **[BEST PRACTICE]** | Medium | Multilingual: detect language from URL prefix. Search suggestion + homepage link. Astro `src/pages/404.astro`. |
-| Custom 5xx page | **[BEST PRACTICE]** | N/A | Requires CF Business plan or Workers on free tier. Accept CF default 5xx pages. |
-
-### 7c. Accessibility (WCAG 2.1 AA)
-
-EU European Accessibility Act (EAA) entered force June 2025. While a non-commercial informational site may not fall directly under EAA, WCAG 2.1 AA is the project's stated constraint.
-
-| Feature | Legal Status | Complexity | Notes |
-|---------|-------------|------------|-------|
-| Skip navigation link | **[REQUIRED]** WCAG 2.4.1 | Low | Hidden `<a>` in Base.astro, visible on `:focus`. |
-| Focus indicators | **[REQUIRED]** WCAG 2.4.7 | Low | Tailwind `focus-visible:ring-2` on all interactive elements. |
-| Color contrast audit | **[REQUIRED]** WCAG 1.4.3 | Medium | 4.5:1 normal text, 3:1 large text. Check light + dark mode. |
-| ARIA labels for charts/map | **[REQUIRED]** WCAG 1.1.1 | Medium | `role="img"` + `aria-label` on SVG. Data table alternative for screen readers. |
-| Keyboard navigation | **[REQUIRED]** WCAG 2.1.1 | High | D3 map keyboard support is hardest item. Comparison dropdown needs keyboard. |
-| Form labels | **[REQUIRED]** WCAG 1.3.1 | Low | Verify search/comparison inputs have `<label>` or `aria-label`. |
-| Heading hierarchy | **[BEST PRACTICE]** | Low | One H1 per page, no skipped levels. |
-
-### 7d. Caching and Performance
-
-| Feature | Legal Status | Complexity | Notes |
-|---------|-------------|------------|-------|
-| Cache-Control headers | **[BEST PRACTICE]** | Low | Static assets: `max-age=31536000, immutable`. HTML: `max-age=3600`. In `_headers` file. |
-| Asset fingerprinting | **[BEST PRACTICE]** | None | Astro already handles with hashed filenames. |
-| Font loading optimization | **[BEST PRACTICE]** | Low | `font-display: swap` + preload if custom fonts used. |
-
----
-
-## Feature Dependencies (Complete Map)
+# Feature Research: Near-Realtime Data Sources & Scoring Overhaul
+
+**Domain:** Travel safety platform -- near-realtime data source integration
+**Researched:** 2026-03-22
+**Confidence:** MEDIUM (data source APIs verified; blending methodology is novel design work)
+
+## Feature Landscape
+
+### Table Stakes (Users Expect These)
+
+Features the platform must have for scores to reflect current crises rather than stale annual data.
+
+| Feature | Why Expected | Complexity | Pillar | Notes |
+|---------|--------------|------------|--------|-------|
+| **GDELT Stability Index** | Only free source providing daily conflict instability scores per country, updated every 15 min | MEDIUM | Conflict | API: `https://api.gdeltproject.org/api/v1/dash_stabilitytimeline/dash_stabilitytimeline?LOC={fips}&VAR=instability&OUTPUT=csv&TIMERES=day&SMOOTH=3`. Uses FIPS codes (not ISO) -- need mapping table. Returns CSV with date + instability ratio. Free, no auth, no documented rate limit. Fetch daily with `TIMERES=day` for 180-day history. |
+| **GDACS Natural Disaster Alerts** | Only free near-realtime source for earthquakes, floods, cyclones, volcanoes, wildfires, droughts at country level | MEDIUM | Environment | API: `https://www.gdacs.org/gdacsapi/api/events/geteventlist/SEARCH?eventlist=EQ;TC;FL;VO;WF;DR&fromdate={30d_ago}&todate={today}&alertlevel=red;orange`. Returns JSON with country, severity (green/orange/red), alert score. Free, no auth. Also available as RSS at `www.gdacs.org/xml/rss.xml`. |
+| **ReliefWeb Disasters & Reports** | UN-curated humanitarian crisis reports with country tagging, updated continuously | MEDIUM | Conflict, Health | API: `https://api.reliefweb.int/v2/disasters` and `/v2/reports`. JSON, free, no auth. Filter by country, date, disaster type. Provides crisis severity context that GDELT misses (humanitarian angle). Updated as reports come in (effectively daily). |
+| **WHO Disease Outbreak News** | Authoritative source for active disease outbreaks per country, critical for health pillar | HIGH | Health | API: `https://www.who.int/api/news/diseaseoutbreaknews`. Returns JSON with title, summary, regions, publication date. No documented auth. Country filtering via Regions relationship. Parsing challenge: semi-structured text, no severity score -- need NLP or keyword extraction. Updated as outbreaks declared (weekly-ish cadence). |
+| **Government Travel Advisory Updates** | Already fetched daily; need to ensure freshness and add more countries (CA, AU, NZ advisories) | LOW | Crime | Existing fetchers for US + UK. Consider adding Canada (`travel.gc.ca`) and Australia (`smartraveller.gov.au`) for broader advisory coverage. RSS feeds available for both. Incremental complexity on existing pattern. |
+| **Baseline + Signal Blending Formula** | Core scoring change: annual indices as baseline, realtime sources as modifiers | HIGH | All | Without this, adding realtime sources is pointless. Must design: (1) baseline from annual sources (GPI, World Bank, INFORM Risk), (2) realtime signal that adjusts baseline up/down, (3) decay function so old events fade. See Architecture notes below. |
+
+### Differentiators (Competitive Advantage)
+
+Features that would set IsItSafeToTravel apart from competitors like TravelOffPath, SafetyIndex.net, or government advisory sites.
+
+| Feature | Value Proposition | Complexity | Pillar | Notes |
+|---------|-------------------|------------|--------|-------|
+| **INFORM Severity Index** | Monthly-updated crisis severity for 100+ active crises, composite of impact + conditions + complexity -- bridges gap between annual INFORM Risk and daily signals | LOW | All | Available via ACAPS API: `https://api.acaps.org/api/v1/inform-severity-index/`. Requires free registration for auth token. Monthly updates. JSON response with country-level severity 0-5 scale. Excellent "middle frequency" signal between annual and daily data. |
+| **Crisis Event Timeline** | Show users a timeline of recent events (disasters, outbreaks, conflict spikes) that affected a country's score | MEDIUM | N/A (UX) | Differentiator vs competitors who show only static scores. Requires storing event metadata from GDELT/GDACS/ReliefWeb alongside scores. Country detail page enhancement. |
+| **Score Change Alerts Indicator** | Visual indicator on map/cards showing "score changed significantly in last 7 days" (up/down arrow, delta) | LOW | N/A (UX) | Trivial to compute from history-index.json. Powerful UX signal that the platform is alive and current. No new data source needed. |
+| **USGS Earthquake Feed** | Real-time earthquake data with magnitude, location, tsunami warning | LOW | Environment | GeoJSON feed: `https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/significant_month.geojson`. Free, no auth. Significant earthquakes only (M4.5+). Need reverse geocoding to map to countries. Supplements GDACS with faster earthquake detection. |
+| **Data Freshness Transparency** | Show users when each data source was last updated, per country | LOW | N/A (UX) | Already have `fetchedAt` in SourceMeta. Surface it in UI with "last updated: 2h ago" style badges. Builds trust. No new data needed. |
+| **GHO Health Indicators** | WHO Global Health Observatory provides 2300+ health indicators per country | MEDIUM | Health | OData API at `https://ghoapi.azureedge.net/api/`. Free, no auth. WARNING: WHO announced deprecation "near end of 2025" -- replacement is Athena API, status unclear. LOW confidence this will be stable. Defer unless existing World Bank health indicators prove insufficient. |
+
+### Anti-Features (Commonly Requested, Often Problematic)
+
+| Feature | Why Requested | Why Problematic | Alternative |
+|---------|---------------|-----------------|-------------|
+| **Full GDELT Event Database ingestion** | "More data = better scores" | GDELT produces millions of events/day. BigQuery or raw file download is massive. Overkill for country-level daily scoring. | Use GDELT Stability Dashboard API which pre-aggregates to country-level instability ratios. One CSV fetch per country vs parsing terabytes. |
+| **EM-DAT Natural Disaster Database** | Comprehensive historical disaster data | No API -- Excel download only, requires account registration, non-commercial license, data released periodically not in realtime | Use GDACS for realtime disaster alerts + INFORM for annual disaster risk baseline. EM-DAT is backward-looking; we need forward-looking signals. |
+| **Social media sentiment analysis** | "Detect emerging crises from Twitter/X" | Requires paid API access ($100+/mo for X API), NLP pipeline, high noise ratio, political bias risk, violates budget constraint | GDELT already analyzes global media tone; use its `tone` variable as proxy for sentiment without building our own NLP. |
+| **Real-time push notifications** | "Alert users when score changes" | Requires server infrastructure (WebSockets/push service), user accounts, notification preferences -- contradicts static site architecture and "no user accounts" constraint | Show score delta badges on the static site. Users who care can check daily. Consider email digest as future v4 feature. |
+| **City/region-level scoring** | "Paris is safe even if some French overseas territories aren't" | Requires sub-national data for all sources (most only provide country-level), multiplies data volume by 10-100x, UX complexity | GDELT supports ADM1 regions. Flag as future v4 feature. For now, keep country-level with advisory text noting regional variations. |
+| **UNHCR Displacement Data** | Shows refugee flows indicating instability | Updated quarterly at best, primarily about refugee hosting (not traveler safety), complex to normalize | Displacement is already captured indirectly via INFORM Risk Index components. Adding raw UNHCR data adds complexity without proportional insight for travelers. |
+| **HDX/OCHA Humanitarian Data Exchange** | 18,000+ humanitarian datasets | Meta-platform, not a single API. Each dataset has different format, schema, update frequency. Integration cost is unbounded. | Cherry-pick specific HDX datasets via their individual APIs (INFORM Severity is on HDX but has its own API via ACAPS). Do not build a generic HDX connector. |
+
+## Data Sources per Pillar (Summary Matrix)
+
+| Pillar (Weight) | Current Sources | Proposed New Sources | Update Frequency | Free? | Auth? |
+|-----------------|----------------|---------------------|------------------|-------|-------|
+| **Conflict (30%)** | GPI (annual), ACLED (weekly), WB Political Stability (annual) | GDELT Stability (daily), ReliefWeb Reports (continuous) | Daily | Yes | GDELT: no, ReliefWeb: no |
+| **Crime (25%)** | WB Rule of Law (annual), US Advisory (as issued), UK Advisory (as issued) | Canada Advisory (RSS), Australia Advisory (RSS) | As issued | Yes | No |
+| **Health (20%)** | WB Child Mortality (annual), INFORM Health (annual), INFORM Epidemic (annual) | WHO DON (as issued), INFORM Severity health dimension (monthly) | Weekly-ish | Yes | WHO: no, ACAPS: token |
+| **Governance (15%)** | WB Gov Effectiveness (annual), WB Corruption (annual), INFORM Governance (annual) | No new realtime sources identified | Annual | Yes | No |
+| **Environment (10%)** | WB Air Pollution (annual), INFORM Natural (annual), INFORM Climate (annual) | GDACS Disaster Alerts (realtime), USGS Earthquakes (realtime) | Daily | Yes | No |
+
+## Feature Dependencies
 
 ```
-Zero-Cookie Architecture (PRESERVE -- foundation of legal compliance)
-    |
-    +--> Cloudflare Web Analytics (no cookies, free, auto-enabled)
-    |       +--> Privacy policy disclosure
-    |
-    +--> No consent banner needed
-    |
-    +--> External-only donation links (no payment forms)
+Baseline + Signal Blending Formula
+    +-- requires --> FIPS-to-ISO country code mapping (for GDELT)
+    +-- requires --> Realtime signal normalization (0-1 scale per source)
+    +-- requires --> Decay function design (events fade over time)
+    +-- requires --> At least one realtime source fetcher working
 
-Security Headers (public/_headers -- single file)
-    |
-    +--> HSTS, X-Content-Type-Options, X-Frame-Options,
-    |    Referrer-Policy, Permissions-Policy: all independent
-    |
-    +--> CSP: depends on D3 inline script/style audit
-    |       +--> Consider astro-cloudflare-pages-headers integration
-    |
-    +--> Cache-Control: same _headers file
+GDELT Stability Fetcher
+    +-- requires --> FIPS-to-ISO mapping table
+    +-- requires --> CSV parser for GDELT output format
 
-SEO Schema Extensions (extend seo.ts)
-    |
-    +--> BreadcrumbList: independent
-    +--> Organization: independent
-    +--> FAQPage: depends on methodology structure
-    +--> Dataset: depends on public data format decision
+GDACS Disaster Alerts Fetcher
+    +-- requires --> JSON/XML parser for GDACS event format
+    +-- requires --> Country extraction from event coordinates
 
-LLM Readability
-    |
-    +--> /llms.txt: independent (static file)
-    +--> /llms-full.txt: depends on build pipeline
-    +--> robots.txt AI directives: independent
-    +--> /api/scores.json: depends on data pipeline
+WHO DON Fetcher
+    +-- requires --> Text parsing / keyword extraction for severity
+    +-- requires --> Country mapping from WHO region codes
 
-Legal Pages
-    |
-    +--> Privacy policy: depends on analytics choice
-    +--> Imprint: independent
-    +--> Donation terms: depends on platform choice
+ReliefWeb Fetcher
+    +-- requires --> JSON filter construction for API v2
 
-Donations Page
-    |
-    +--> ~20 i18n keys x 5 languages
-    +--> FUNDING.yml: independent
+INFORM Severity Fetcher
+    +-- requires --> ACAPS account registration (free)
+    +-- requires --> Auth token management in pipeline
 
-Custom 404 Page
-    |
-    +--> Language detection from URL path
-    +--> Uses Base.astro layout
+Score Change Indicators (UX)
+    +-- requires --> Baseline + Signal Blending Formula (to produce meaningful deltas)
 
-Accessibility
-    |
-    +--> Skip nav, focus indicators: Base.astro + CSS (do first)
-    +--> ARIA labels: D3 component modifications
-    +--> Color contrast: design token audit
-    +--> Keyboard navigation: D3 refactoring (HIGHEST EFFORT, do last)
+Crisis Event Timeline (UX)
+    +-- requires --> Event metadata storage (new data model alongside scores)
+    +-- requires --> At least GDELT + GDACS + ReliefWeb fetchers
+
+Methodology Page Update
+    +-- requires --> Baseline + Signal Blending Formula (to document)
+    +-- requires --> All new fetchers (to list sources)
 ```
 
----
+### Dependency Notes
 
-## MVP Recommendation
+- **Blending formula is the critical path.** Every new data source is useless without a formula that incorporates realtime signals into the 1-10 score.
+- **FIPS-to-ISO mapping is a one-time artifact** but blocks GDELT integration. GDELT uses adapted FIPS country codes (e.g., "IS" for Israel, "GM" for Germany), not ISO-3166. A static lookup table of ~250 entries resolves this.
+- **ACAPS auth token is the only new credential needed.** All other proposed sources are fully open. Token can be stored as a GitHub Actions secret alongside existing ACLED credentials.
+- **WHO DON is the hardest fetcher to build** because it returns semi-structured text, not numeric scores. Consider a simple approach: count active outbreaks per country in last 90 days, normalize by historical average.
 
-### Priority 1: Immediate Wins (trivial-to-low, high impact)
+## MVP Definition (v3.0)
 
-1. **robots.txt fix** -- sitemap URL typo actively hurting SEO
-2. **Security headers** (`_headers` file) -- all except CSP, single file
-3. **CF Web Analytics verification** -- likely auto-enabled; verify
-4. **Skip navigation link** -- WCAG, ~10 lines in Base.astro
-5. **Focus indicators audit** -- Tailwind `focus-visible` check
-6. **FUNDING.yml** -- GitHub Sponsors + Ko-fi, 5 lines
+### Launch With (v3.0 Core)
 
-### Priority 2: High-Value, Low-Medium Complexity
+Must-haves for the scoring overhaul to be meaningful.
 
-7. **Privacy policy page** -- expand legal page; disclose analytics; no-cookie statement
-8. **BreadcrumbList schema + UI component** -- immediate SEO benefit
-9. **Organization schema** -- add to homepage JSON-LD
-10. **/llms.txt** -- static Markdown file
-11. **Custom 404 page** -- multilingual, helpful navigation
-12. **AI crawler directives in robots.txt**
+- [ ] **GDELT Stability fetcher** -- daily country instability scores, highest-impact new signal for conflict pillar
+- [ ] **GDACS Disaster Alerts fetcher** -- active disaster alerts per country, fills environment pillar realtime gap
+- [ ] **Baseline + Signal Blending formula** -- design and implement the weighted blend of annual + realtime data
+- [ ] **FIPS-to-ISO mapping table** -- prerequisite for GDELT
+- [ ] **Updated weights.json** -- new indicators registered, weights rebalanced for realtime signals
+- [ ] **Methodology page update (all 5 languages)** -- document new sources and formula transparently
+- [ ] **Score change delta indicator** -- show users the platform is now dynamic (low effort, high perception impact)
 
-### Priority 3: Medium Complexity, High Value
+### Add After Validation (v3.x)
 
-13. **Donations page** (5 languages) with GitHub Sponsors + Ko-fi
-14. **CSP header with D3 inline hashing** -- most complex header
-15. **ARIA labels for D3 charts and map** -- accessibility
-16. **Color contrast audit** (light + dark mode)
-17. **Form labels audit**
-18. **/llms-full.txt auto-generation**
+Add once core blending is working and validated against known crises.
 
-### Priority 4: Differentiators (defer if time-constrained)
+- [ ] **ReliefWeb Reports fetcher** -- humanitarian context layer; validate that it adds signal beyond GDELT
+- [ ] **WHO DON fetcher** -- disease outbreaks; complex to parse but valuable for health pillar
+- [ ] **INFORM Severity Index fetcher** -- monthly bridge between annual and daily data; needs ACAPS account
+- [ ] **Canada + Australia advisory fetchers** -- incremental improvement to crime pillar; low risk
+- [ ] **Crisis Event Timeline on country page** -- UX differentiator; requires event metadata storage
 
-19. **Dataset schema markup**
-20. **FAQPage schema on methodology**
-21. **Internal cross-linking strategy**
-22. **Static JSON endpoint** (/api/scores.json)
-23. **SpeakableSpecification schema**
+### Future Consideration (v4+)
 
-### Defer Entirely
+Defer until v3.0 proves the blending approach works.
 
-- **Cookie consent banner** -- not needed; preserve zero-cookie architecture
-- **D3 map full keyboard navigation** -- highest effort a11y item; do after others
-- **Google Analytics / session recording** -- contradicts privacy architecture
-- **Self-hosted analytics** -- unnecessary given CF Web Analytics
-- **Custom 5xx pages** -- requires CF Business plan
+- [ ] **USGS Earthquake Feed** -- supplements GDACS but lower priority since GDACS covers earthquakes
+- [ ] **GHO Health Indicators** -- WHO API in flux (deprecation); wait for stable replacement
+- [ ] **Sub-national (ADM1) scoring** -- GDELT supports it, but exponentially more complex
+- [ ] **Data freshness badges in UI** -- polish feature, low priority vs core scoring
+- [ ] **Email/RSS score change notifications** -- requires infrastructure beyond static site
 
----
+## Feature Prioritization Matrix
 
-## Complexity Estimates
+| Feature | User Value | Implementation Cost | Pipeline Dependency | Priority |
+|---------|------------|---------------------|---------------------|----------|
+| Baseline + Signal Blending Formula | HIGH | HIGH | Core (blocks everything) | P1 |
+| GDELT Stability Fetcher | HIGH | MEDIUM | FIPS mapping | P1 |
+| GDACS Disaster Alerts Fetcher | HIGH | MEDIUM | None | P1 |
+| FIPS-to-ISO Mapping | LOW (invisible) | LOW | None | P1 |
+| Updated weights.json | HIGH | MEDIUM | Formula design | P1 |
+| Methodology Page Update (5 langs) | MEDIUM | MEDIUM | All P1 features | P1 |
+| Score Change Delta Indicator | MEDIUM | LOW | Blending formula | P1 |
+| ReliefWeb Fetcher | MEDIUM | MEDIUM | None | P2 |
+| WHO DON Fetcher | MEDIUM | HIGH | Text parsing | P2 |
+| INFORM Severity Fetcher | MEDIUM | LOW | ACAPS account | P2 |
+| Canada + Australia Advisories | LOW | LOW | Existing pattern | P2 |
+| Crisis Event Timeline | MEDIUM | MEDIUM | Event storage model | P2 |
+| USGS Earthquake Feed | LOW | LOW | None | P3 |
+| GHO Health Indicators | LOW | MEDIUM | WHO API stability | P3 |
+| Sub-national Scoring | HIGH | VERY HIGH | All sources need ADM1 | P3 |
 
-| Feature Group | Effort | Key Risk |
-|---------------|--------|----------|
-| robots.txt fix + AI directives | Trivial (0.5h) | None |
-| Security headers (non-CSP) | Low (2h) | None |
-| CSP with D3 hashing | Medium (4-8h) | D3 inline scripts may need refactoring |
-| CF Web Analytics verification | Trivial (0.5h) | May need JS snippet if not auto-enabled |
-| Privacy policy expansion | Low (2-4h) | Wording accuracy across 5 languages |
-| BreadcrumbList + Org schema + UI | Low (3-4h) | None |
-| /llms.txt + /llms-full.txt | Medium (3-5h) | Build pipeline integration for full txt |
-| Custom 404 page | Medium (3-4h) | Language detection |
-| Donations page (5 langs) | Medium (4-6h) | ~20 keys x 5 languages |
-| Accessibility audit + fixes | Medium-High (8-12h) | D3 ARIA + keyboard is the long pole |
-| Color contrast audit | Medium (3-4h) | May need design token adjustments |
-| Dataset/FAQ schema | Low (2-3h) | None |
-| **Total estimate** | **~35-55 hours** | CSP + accessibility are main risks |
+## Competitor Feature Analysis
 
----
+| Feature | TravelOffPath (SafetyIndex) | Gov Advisory Sites (US/UK) | Numbeo Safety Index | Our Approach |
+|---------|---------------------------|---------------------------|--------------------|----|
+| Score freshness | "Real-time" (crowdsourced + gov baseline) | Updated as issued (irregular) | Crowdsourced (stale for small countries) | Daily automated from 8+ sources |
+| Scoring transparency | Opaque ("proprietary algorithm") | Single advisory level (1-4) | User-reported perception only | Fully transparent: every weight, every source, every indicator |
+| Number of sources | Unknown (claims "anonymous voting") | 1 government per site | 1 (user surveys) | 8+ verified public sources per country |
+| Near-realtime crisis detection | Claims realtime via crowdsourcing | Slow (days to update advisories) | No realtime capability | GDELT (15min delay) + GDACS (hours) + ReliefWeb (daily) |
+| Historical trends | No | No | Limited | Full historical charts with drag-to-zoom (existing) |
+| Multilingual | English only | Single language per site | English only | 5 languages (EN/IT/ES/FR/PT) |
+| Free/open | Free but closed methodology | Free | Free but closed | Free AND open methodology |
+
+## Blending Architecture Notes
+
+Research into how travel safety platforms blend baselines with realtime signals reveals no open-source standard. Commercial platforms (Dataminr, Crisis24, Riskline) use proprietary approaches. The Skift Travel Health Index provides the closest public methodology: it compares current performance to baseline readings from the same period in the previous year.
+
+**Recommended approach for IsItSafeToTravel:**
+
+```
+final_score = baseline_weight * annual_score + signal_weight * realtime_modifier
+
+where:
+- annual_score = existing pillar-weighted composite (GPI, WB, INFORM Risk, advisories)
+- realtime_modifier = decayed aggregate of recent events normalized to 0-1
+- baseline_weight = 0.70 (annual data is still the foundation)
+- signal_weight = 0.30 (realtime adjusts, does not dominate)
+- decay function: event_weight = e^(-days_since_event / half_life)
+- half_life = 30 days (events lose half their impact weight after 30 days)
+```
+
+This means a severe crisis in Cuba would immediately drag its score down by up to 30% of the score range, then gradually recover as the crisis ages. Annual indices still anchor the score, preventing volatile swings from media-driven event noise.
+
+**Key design constraints:**
+- Realtime signals can only make scores WORSE, not better (a quiet news day does not make a dangerous country safe)
+- Annual baseline provides the floor; realtime signals provide upward adjustment to danger
+- If no realtime data exists for a country, score equals the annual baseline (graceful degradation)
+- Maximum realtime impact capped at 30% of total score to prevent noise domination
+
+## Update Frequency Summary
+
+| Source | Type | Update Cadence | Data Lag | Reliability |
+|--------|------|---------------|----------|-------------|
+| GPI | Annual baseline | Once/year (June) | 6-12 months | HIGH -- established index |
+| World Bank WGI | Annual baseline | Once/year | 12-18 months | HIGH -- gold standard |
+| INFORM Risk | Annual baseline | Once/year | 6-12 months | HIGH -- EU JRC backed |
+| ACLED | Semi-realtime | Weekly | 1-2 weeks | HIGH -- academic standard, needs API key |
+| US/UK Advisories | As-issued | Days-weeks | Hours-days | HIGH -- official government |
+| **GDELT Stability** | **Near-realtime** | **Every 15 min** | **Minutes** | **MEDIUM -- media-derived, noisy** |
+| **GDACS Alerts** | **Near-realtime** | **Hours** | **Hours** | **HIGH -- UN/EU system** |
+| **ReliefWeb** | **Continuous** | **Daily** | **Hours-days** | **HIGH -- UN OCHA curated** |
+| **WHO DON** | **As-issued** | **Weekly-ish** | **Days** | **HIGH -- WHO authority** |
+| **INFORM Severity** | **Monthly** | **Monthly** | **Weeks** | **HIGH -- ACAPS/EU JRC** |
+| **Canada/AU Advisories** | **As-issued** | **Days-weeks** | **Hours** | **HIGH -- official government** |
+
+## Data Quality Considerations
+
+1. **GDELT noise problem:** GDELT measures media coverage, not ground truth. A country trending on social media (e.g., Olympics) will spike in "instability" even without actual danger. Mitigation: use `SMOOTH=3` parameter for 3-day rolling average, and cap GDELT's contribution to the conflict pillar at 15% (half the pillar's weight).
+
+2. **GDACS false positives:** Small earthquakes (M3-4) trigger alerts but pose no travel risk. Mitigation: filter to `alertlevel=red;orange` only, ignoring green alerts.
+
+3. **WHO DON parsing difficulty:** Outbreak news is text, not structured data. A Nipah virus outbreak in Kerala, India differs vastly in severity from a seasonal flu advisory. Mitigation: count active outbreaks per country as a simple signal; do NOT attempt to parse severity from text in v3.0.
+
+4. **Country code mismatches:** GDELT uses FIPS, WHO uses WHO region codes, ACLED uses ISO3, advisories use mixed formats. Mitigation: build a robust country code mapping module that all fetchers use. This is a one-time investment that prevents per-fetcher bugs.
+
+5. **Missing data graceful degradation:** Many small countries (Tuvalu, Nauru) will have zero realtime signals. Mitigation: the blending formula must handle zero-signal gracefully by falling back to annual baseline only. Already designed into the proposed formula.
 
 ## Sources
 
-### Legal / GDPR / ePrivacy
-- [GDPR Cookie Consent Requirements 2025](https://secureprivacy.ai/blog/gdpr-cookie-consent-requirements-2025) -- ePrivacy Directive withdrawal, current enforcement
-- [Cloudflare ePrivacy Directive explainer](https://www.cloudflare.com/learning/privacy/what-is-eprivacy-directive/) -- cookie consent scope
-- [GDPR.eu Cookies Guide](https://gdpr.eu/cookies/) -- when consent is / is not required
-- [iubenda Cookies and GDPR](https://www.iubenda.com/en/help/5525-cookies-gdpr-requirements/) -- strictly necessary cookie exception
-- [EU Cookie Compliance 2025](https://usercentrics.com/knowledge-hub/eu-cookie-compliance/) -- member state implementation
-- [ICO Privacy Information Guide](https://ico.org.uk/for-organisations/uk-gdpr-guidance-and-resources/individual-rights/the-right-to-be-informed/what-privacy-information-should-we-provide/) -- privacy disclosure requirements
-
-### Analytics
-- [Cloudflare Web Analytics](https://www.cloudflare.com/web-analytics/) -- free, no cookies, no personal data
-- [CF Web Analytics auto-enabled Oct 2025](https://x.com/Cloudflare/status/1968395474420871174) -- default for free domains
-- [CF Web Analytics GDPR discussion](https://community.cloudflare.com/t/web-analytics-without-cookie-banner-gdpr-conform/238770) -- conformity without consent
-- [Plausible vs Umami](https://vemetric.com/blog/plausible-vs-umami) -- upgrade path comparison
-
-### SEO
-- [Schema markup for travel websites](https://blackbearmedia.io/11-powerful-schema-markup-strategies-for-travel-websites/) -- BreadcrumbList, Dataset
-- [FAQ Schema 2025-2026](https://searchengineland.com/faq-schema-rise-fall-seo-today-463993) -- Google restrictions
-- [BreadcrumbList SEO impact](https://searchengineland.com/guide/seo-breadcrumbs) -- CTR data
-- [Schema markup 2026](https://almcorp.com/blog/schema-markup-detailed-guide-2026-serp-visibility/) -- current practices
-- [Google Structured Data docs](https://developers.google.com/search/docs/appearance/structured-data) -- official reference
-
-### LLM Readability
-- [llms.txt specification](https://llmstxt.org/) -- official standard
-- [Semrush llms.txt analysis](https://www.semrush.com/blog/llms-txt/) -- adoption status
-- [Yoast SEO llms.txt spec](https://developer.yoast.com/features/llms-txt/functional-specification/) -- format details
-- [GitBook llms.txt guide](https://www.gitbook.com/blog/what-is-llms-txt) -- implementation
-
-### Security Headers
-- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) -- `_headers` file format
-- [Astro CSP for CF Pages](https://jacob.earth/post/2024/astro-csp-headers-for-sri-with-cloudflare-pages/) -- CSP auto-hashing
-- [astro-cloudflare-pages-headers](https://github.com/martinsilha/astro-cloudflare-pages-headers) -- integration
-- [Cloudflare HSTS docs](https://developers.cloudflare.com/ssl/edge-certificates/additional-options/http-strict-transport-security/) -- configuration
-
-### Accessibility
-- [WCAG 2.1 AA Checklist](https://accessible.org/wcag/) -- comprehensive checklist
-- [WCAG 2.2 Compliance 2026](https://www.levelaccess.com/blog/wcag-2-2-aa-summary-and-checklist-for-website-owners/) -- current landscape
-- [WebAIM WCAG 2 Checklist](https://webaim.org/standards/wcag/checklist) -- practical implementation
-
-### Donations
-- [GitHub Sponsors via OSC](https://docs.oscollective.org/campaigns-programs-and-partnerships/github-sponsors) -- zero-fee donations
-- [Open Source Funding Guide](https://sealos.io/blog/funding-open-source/) -- platform comparison
+- [GDELT Stability Dashboard API](https://blog.gdeltproject.org/announcing-the-gdelt-stability-dashboard-api-stability-timeline/) -- API docs and country code lookup
+- [GDELT Project Data Access](https://www.gdeltproject.org/data.html) -- overview of all GDELT data products
+- [GDACS API Quick Start (2025 PDF)](https://www.gdacs.org/Documents/2025/GDACS_API_quickstart_v1.pdf) -- endpoints, filtering, event types
+- [GDACS Overview](https://www.gdacs.org/About/overview.aspx) -- RSS feeds and alert categories
+- [ReliefWeb API Documentation](https://apidoc.reliefweb.int/endpoints) -- v2 endpoints, filtering, field tables
+- [WHO Disease Outbreak News API](https://www.who.int/api/news/diseaseoutbreaknews/sfhelp) -- REST endpoint reference
+- [ACAPS API / INFORM Severity](https://api.acaps.org/) -- crisis severity index with monthly updates
+- [INFORM Severity on HDX](https://data.humdata.org/dataset/inform-global-crisis-severity-index) -- data download and methodology
+- [USGS Earthquake Feed](https://earthquake.usgs.gov/earthquakes/feed/) -- GeoJSON realtime earthquake data
+- [WHO GHO OData API](https://www.who.int/data/gho/info/gho-odata-api) -- health indicators (deprecation warning)
+- [EM-DAT Emergency Events Database](https://www.emdat.be/) -- historical disasters (no API, Excel only)
+- [TravelOffPath Traveler Safety Index](https://www.traveloffpath.com/traveler-safety-index/) -- competitor methodology
+- [Skift Travel Health Index Methodology](https://research.skift.com/reports/methodology/) -- baseline comparison approach
 
 ---
-*Feature research for: IsItSafeToTravel.com v2.0 -- Production Ready*
-*Researched: 2026-03-21*
+*Feature research for: Near-realtime data sources and scoring overhaul*
+*Researched: 2026-03-22*

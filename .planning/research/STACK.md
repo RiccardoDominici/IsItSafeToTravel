@@ -1,383 +1,367 @@
-# Technology Stack: v2.0 Production Ready
+# Technology Stack: v3.0 Near-Realtime Data Sources & Scoring Overhaul
 
 **Project:** IsItSafeToTravel.com
-**Researched:** 2026-03-21
-**Scope:** Stack additions for legal compliance, advanced SEO, LLM readability, cookie consent, donations, analytics, and production hardening
+**Researched:** 2026-03-22
+**Scope:** Stack additions for near-realtime data sources, new fetchers, RSS/XML parsing, and scoring formula changes. Focused ONLY on pipeline additions -- no frontend changes.
 
 ## TL;DR
 
-Minimal new dependencies. Use Cloudflare Web Analytics (free, cookie-free, already on the platform). Use Ko-fi for donations (0% platform fee, external link -- no SDK needed). Build cookie consent as a lightweight custom Astro component since the site uses only cookie-free analytics and sets no tracking cookies, making a full consent library unnecessary. All structured data (breadcrumbs, FAQ schema) and security headers are configuration/markup -- no libraries required. One optional npm addition: `astro-breadcrumbs` for navigation UI with built-in schema.org support.
+Add 4 new data sources to the existing TypeScript pipeline: **GDELT** (near-realtime conflict/instability via free CSV API), **ReliefWeb** (humanitarian crises via free JSON API), **HDX HAPI** (conflict events + displacement via free JSON API), and **WHO DONs** (disease outbreaks via free JSON API). One new npm dependency: `rss-parser` for potential RSS fallback. Everything else uses native `fetch()` + the existing `papaparse` (already installed) for CSV parsing. No paid APIs. No new auth credentials beyond a free ReliefWeb appname and a free HDX HAPI app_identifier.
 
 ## Existing Stack (validated, DO NOT change)
 
 | Technology | Version | Role |
 |------------|---------|------|
-| Astro | ^6.0.6 | SSG framework, i18n routing |
-| D3.js | ^7.9.0 | Charts, map, scales, zoom |
-| Tailwind CSS | ^4.2.2 | Styling |
-| Fuse.js | ^7.1.0 | Client-side fuzzy search |
-| topojson-client | ^3.1.0 | Map topology |
+| Astro | ^6.0.6 | SSG framework |
 | TypeScript | ^5.9.3 | Type safety |
-| @astrojs/sitemap | ^3.7.1 | Sitemap generation |
-| @astrojs/cloudflare | ^13.1.2 | Cloudflare Pages adapter |
-| Cloudflare Pages | - | Hosting/deployment |
+| tsx | ^4.21.0 | Pipeline runner |
+| papaparse | ^5.5.3 | CSV parser (devDep, already installed) |
+| xlsx | ^0.18.5 | Excel parser (devDep, already installed) |
+| Node 22 native fetch | - | HTTP requests in pipeline fetchers |
 
-## Feature-by-Feature Stack Analysis
+## Existing Pipeline Pattern (follow this exactly)
 
-### 1. Cookie Consent Banner
+Each fetcher follows the same pattern established in `src/pipeline/fetchers/acled.ts`:
 
-**New libraries needed: NONE**
+1. Export an async function `fetchX(date: string): Promise<FetchResult>`
+2. Fetch raw data from API, save to `data/raw/{date}/` as raw JSON/CSV
+3. Parse into `RawIndicator[]` with `{ countryIso3, indicatorName, value, year, source }`
+4. Save parsed data as `{source}-parsed.json`
+5. Fallback to cached data from `findLatestCached()` on failure
+6. Return `FetchResult` with success/failure status
 
-**Why no cookie consent library is needed:**
+New fetchers MUST follow this pattern. No architectural changes needed.
 
-The site currently sets zero tracking cookies and uses no third-party trackers. Cloudflare Web Analytics (recommended below) is cookie-free. Ko-fi donations are external links. There is no Google Analytics, no Facebook Pixel, no ad network.
+## New Data Sources: Recommended
 
-Under GDPR/ePrivacy, cookie consent is required only when setting non-essential cookies. A site that sets no cookies (or only strictly necessary ones) does not legally require a consent banner. However, adding a lightweight informational banner is good practice for transparency.
+### 1. GDELT Stability Timeline API
 
-**Implementation approach:**
-- Build a simple Astro component (`CookieBanner.astro`) with Tailwind styling.
-- Show on first visit, store dismissal in `localStorage` (not a cookie).
-- Content: "This site uses privacy-respecting analytics that set no cookies. See our Privacy Policy."
-- Approximately 30 lines of component code, ~1 KB client JS.
-- If the site later adds services that set cookies (e.g., Google Analytics, ad networks), upgrade to `vanilla-cookieconsent` v3 at that point.
+**Purpose:** Near-realtime instability/conflict signal, updated every 15 minutes. Complements ACLED (which covers last 30 days) with a faster signal.
 
-**What NOT to add:**
-- Do NOT add `vanilla-cookieconsent` (v3, ~40 KB), `cookieconsent` by Osano, `klaro` (~20 KB), or `@jop-software/astro-cookieconsent`. These are designed for sites managing multiple cookie categories (analytics, marketing, functional). Overkill when the site sets no cookies.
-- Do NOT add any Google Consent Mode v2 integration -- not using Google services.
+**Why GDELT:** Only free source providing near-realtime, country-level instability metrics derived from global news media. No registration required. No API key. The Stability Dashboard API distills billions of news articles into a single "instability" score per country.
 
-**If requirements change (cookies are introduced later):**
+| Property | Detail |
+|----------|--------|
+| API endpoint | `https://api.gdeltproject.org/api/v1/dash_stabilitytimeline/dash_stabilitytimeline` |
+| Auth | **None** -- completely open |
+| Rate limits | **Undocumented** -- but responses are lightweight CSV. Use conservative 1 req/sec pacing. |
+| Data format | CSV (via `OUTPUT=csv`) |
+| Country format | FIPS 2-letter codes (NOT ISO). Requires FIPS-to-ISO3 mapping. |
+| Update frequency | Every 15 minutes (we only need daily) |
+| Key params | `LOC={fips_code}`, `VAR=instability`, `TIMERES=day`, `SMOOTH=3`, `OUTPUT=csv` |
+| Indicators produced | `gdelt_instability` (daily instability score per country) |
+| Pillar mapping | `conflict` pillar |
+| Confidence | **MEDIUM** -- API is undocumented regarding rate limits; data quality well-established |
 
-| Library | Size (gzipped) | Why Consider |
-|---------|---------------|-------------|
-| vanilla-cookieconsent | ~40 KB | Most popular Astro-compatible option, has dedicated Astro wrapper `@jop-software/astro-cookieconsent`. Known Astro 5+ ViewTransitions compatibility issue (GitHub #814), but not a concern for SSG without client-side routing. |
-| klaro | ~20 KB | Open-source (BSD-3), lighter, no dependencies. Good alternative. |
+**Integration approach:**
+- Fetch one CSV per country (batch with 500ms delays to avoid hammering)
+- Parse CSV with `papaparse` (already installed)
+- Take the most recent day's value as the indicator
+- Need a FIPS-to-ISO3 mapping utility (~250 country mappings, static lookup table)
 
-### 2. Privacy-Respecting Analytics
+**Concern:** Fetching 248 countries individually at 500ms spacing = ~2 minutes. Acceptable in a daily cron pipeline. Could batch into regional queries if needed later.
 
-**New libraries needed: NONE (Cloudflare Web Analytics is platform-native)**
+**Alternative considered:** GDELT DOC 2.0 API (full-text search). Rejected: requires building custom query logic to derive a "safety score" from article counts. The Stability API already computes this.
 
-**Recommendation: Cloudflare Web Analytics**
+### 2. ReliefWeb API v2
 
-| Criterion | Cloudflare Web Analytics | Plausible (cloud) | Umami (self-hosted) |
-|-----------|------------------------|-------------------|-------------------|
-| Cost | Free (unlimited) | $9/month (10K pageviews) | Free (need server) |
-| Cookie-free | Yes | Yes | Yes |
-| Script size | ~4.3 KB gzipped | ~1.5 KB gzipped | ~2 KB gzipped |
-| GDPR compliant | Yes (no PII collected) | Yes | Yes |
-| Setup effort | One toggle in Cloudflare dashboard | DNS + script tag | Deploy + maintain server |
-| Data sampling | 10% sample (extrapolated) | Exact counts | Exact counts |
-| Data retention | 6 months | Unlimited (paid) | Unlimited (self-hosted) |
-| Top-N limit | Top 15 per dimension | Unlimited | Unlimited |
-| Budget impact | $0 | $108/year | $0 + server costs |
+**Purpose:** Active humanitarian crises and disaster reports by country. Captures ongoing emergencies (earthquakes, floods, outbreaks) that annual indices miss entirely.
 
-**Why Cloudflare Web Analytics:**
-- Zero cost aligns with the near-zero budget constraint ($10/month max).
-- Already on Cloudflare Pages -- one-click enable, no DNS changes, no script tag needed (auto-injected for proxied sites).
-- Cookie-free means no cookie consent complexity.
-- The 10% sampling and top-15 limitation are acceptable tradeoffs for a free informational site. You get directional traffic data without operational overhead.
-- No server to maintain (unlike Umami self-hosted).
+**Why ReliefWeb:** UN OCHA's official platform. Free JSON API. Structured disaster data with country tagging. Only requires a free appname (approved within 1 business day).
 
-**Known limitations to accept:**
-- 10% sampling means numbers are approximate, not exact. Fine for a non-commercial site.
-- Top 15 pages/referrers only. With 248 countries x 5 languages = 1,240+ country pages, you will only see the top 15 most visited. Acceptable for understanding traffic patterns.
-- 6-month retention. Export any needed data periodically if long-term trends matter.
+| Property | Detail |
+|----------|--------|
+| API endpoint | `https://api.reliefweb.int/v2/disasters` and `/v2/reports` |
+| Auth | **Appname required** (free, register at reliefweb.int). Pass as `appname` query param. |
+| Rate limits | **1,000 calls/day** (sufficient -- we need ~5 calls total per pipeline run) |
+| Data format | JSON |
+| Country format | ISO3 in nested objects |
+| Update frequency | Continuous (new reports posted as events happen) |
+| Key params | `filter[field]=status&filter[value]=current` for active disasters; `filter[field]=country.iso3` for by-country |
+| Indicators produced | `reliefweb_active_disasters` (count of active disasters per country), `reliefweb_severity` (max severity level) |
+| Pillar mapping | `environment` pillar (natural disasters), `conflict` pillar (conflict-related crises) |
+| Confidence | **HIGH** -- well-documented API, UN-backed, stable for 10+ years |
 
-**Setup:** Enable via Cloudflare Dashboard > Web Analytics. For Pages sites, the beacon script is auto-injected. No code changes needed.
+**Integration approach:**
+- Single API call to `/v2/disasters?filter[field]=status&filter[value]=current&limit=1000` to get all active disasters
+- Parse country associations from response, count per country
+- Extract severity levels where available
+- Env var: `RELIEFWEB_APPNAME` (register at reliefweb.int/help/api)
 
-**What NOT to add:**
-- Do NOT add Google Analytics. Requires cookie consent, ships 19 KB, sends data to Google, violates the privacy-respecting principle.
-- Do NOT self-host Umami or Plausible. Adds server maintenance burden and cost for a solo project on a near-zero budget.
+### 3. HDX HAPI (Humanitarian API)
 
-### 3. Advanced SEO (Breadcrumbs, FAQ Schema, Rich Snippets)
+**Purpose:** Conflict event aggregates and displacement data (refugees, IDPs) by country. Consolidates ACLED data + UNHCR data + other humanitarian sources into a single standardized API.
 
-**New libraries needed: NONE (or optionally `astro-breadcrumbs`)**
+**Why HDX HAPI:** Single API for conflict events AND displacement data. ISO3 country codes native. Free. JSON response. Maintained by UN OCHA. Replaces the need to call UNHCR API separately.
 
-The site already has JSON-LD structured data infrastructure in `Base.astro` via the `jsonLd` prop. Adding new schema types (BreadcrumbList, FAQPage) is pure data -- no library needed.
+| Property | Detail |
+|----------|--------|
+| API endpoint (v2) | `https://hapi.humdata.org/api/v2/coordination-context/conflict-events` |
+| API endpoint (v2) | `https://hapi.humdata.org/api/v2/affected-people/refugees-persons-of-concern` |
+| Auth | **app_identifier** -- base64 of `appname:email`. Free, no approval needed. Pass as `X-HDX-HAPI-APP-IDENTIFIER` header or query param. |
+| Rate limits | **Undocumented** but generous. Max 10,000 records per request with pagination. |
+| Data format | JSON (also supports CSV) |
+| Country format | ISO3 natively |
+| Update frequency | Monthly aggregation, updated regularly |
+| Key params | `location_code={iso3}`, `limit=10000`, `output_format=json` |
+| Indicators produced | `hdx_conflict_events` (monthly event count), `hdx_conflict_fatalities`, `hdx_displaced_persons` |
+| Pillar mapping | `conflict` pillar (events/fatalities), `governance` pillar (displacement as governance failure signal) |
+| Confidence | **MEDIUM** -- API is v0.9.x (beta). Endpoints may change. But data is solid (sourced from ACLED + UNHCR). |
 
-**Breadcrumb navigation + schema:**
+**Integration approach:**
+- 2 API calls: one for conflict events, one for refugees/displaced persons
+- Both return data aggregated by country with ISO3 codes
+- Generate app_identifier: `Buffer.from('isitsafetotravel:email@example.com').toString('base64')`
+- Env vars: `HDX_HAPI_APP_NAME`, `HDX_HAPI_EMAIL`
 
-Option A (recommended): Build a custom `Breadcrumb.astro` component.
-- Render `<nav aria-label="Breadcrumb"><ol>...</ol></nav>` with Tailwind styling.
-- Generate `BreadcrumbList` JSON-LD and pass to `Base.astro`'s existing `jsonLd` slot.
-- Full control over i18n route translation (critical for 5-language site with translated slugs like `/es/pais/` vs `/en/country/`).
-- Zero additional bytes.
+**Note:** HDX HAPI conflict data is sourced from ACLED. This creates overlap with the existing ACLED fetcher. Options: (a) use HDX HAPI as the single conflict source and drop direct ACLED, or (b) use both but weight accordingly. Recommend option (b) initially -- ACLED direct gives 30-day granularity while HDX HAPI gives monthly aggregates. Evaluate overlap during scoring formula design.
 
-Option B: Install `astro-breadcrumbs` (npm package).
-- Provides component with built-in schema.org JSON-LD output.
-- May not handle the custom i18n slug translation correctly (the package generates paths from URL segments, but this site uses translated route slugs).
-- Adds a dependency for something achievable in ~50 lines.
+### 4. WHO Disease Outbreak News (DONs) API
 
-**Recommendation: Option A (custom component).** The i18n routing with translated slugs (`/it/paese/`, `/es/pais/`, `/fr/pays/`, `/pt/pais/`) makes a generic breadcrumb package more trouble than it's worth.
+**Purpose:** Active disease outbreaks by country. Captures epidemics (Ebola, cholera, MERS, etc.) that affect travel safety and are missed by annual health indices.
 
-**FAQ Schema:**
+**Why WHO DONs:** Official WHO source. Free JSON API. No auth required. Directly relevant to traveler health safety.
 
-- Create a `FAQSchema` utility function that takes an array of `{question, answer}` and returns a `FAQPage` JSON-LD object.
-- Use on methodology page, about page, and potentially auto-generate FAQ sections on country pages ("Is [country] safe to travel to?").
-- Pass through the existing `jsonLd` prop in `Base.astro`.
-- Zero dependencies needed.
+| Property | Detail |
+|----------|--------|
+| API endpoint | `https://www.who.int/api/news/diseaseoutbreaknews` |
+| Auth | **None** |
+| Rate limits | **Undocumented** -- be conservative (max 2-3 requests per pipeline run) |
+| Data format | JSON |
+| Country format | Country names in text fields (requires name-to-ISO3 mapping, reuse existing `getCountryByName()`) |
+| Update frequency | As outbreaks occur (irregular, typically 2-10 per month) |
+| Key params | OData-style filtering (exact filter syntax poorly documented) |
+| Indicators produced | `who_active_outbreaks` (count of active outbreak reports per country in last 90 days) |
+| Pillar mapping | `health` pillar |
+| Confidence | **MEDIUM** -- API exists and returns JSON, but filtering by country is not well-documented. May need to fetch all DONs and parse country from title/text. |
 
-**Other structured data enhancements:**
+**Integration approach:**
+- Fetch all recent DONs (last 90 days) in a single request
+- Parse country names from titles (format: "Disease name - Country") using regex + `getCountryByName()`
+- Count active outbreaks per country
+- No env vars needed
 
-| Schema Type | Where | Purpose |
-|-------------|-------|---------|
-| BreadcrumbList | All pages | Navigation rich snippets in Google |
-| FAQPage | Methodology, country pages | FAQ rich results |
-| WebSite + SearchAction | Homepage | Sitelinks search box in Google |
-| Organization | About page | Knowledge panel |
+## Data Sources: Evaluated and NOT Recommended
 
-All are JSON-LD objects constructed in Astro frontmatter -- no libraries needed.
+### EM-DAT (Emergency Events Database)
 
-### 4. LLM Readability (llms.txt)
+**Why NOT:** No REST API. Requires manual registration, login, and Excel download from web portal. Cannot be automated in a daily pipeline. The HDX platform hosts weekly EM-DAT country profile exports as XLSX, but these are annual aggregates (useless for near-realtime). ReliefWeb already covers active disasters better.
 
-**New libraries needed: NONE**
+### UNHCR Refugee Statistics API (standalone)
 
-**What llms.txt is:**
-A proposed standard (llmstxt.org) for providing LLM-readable content at `/llms.txt`. It is a markdown file at the site root that describes the site's purpose, structure, and links to key resources.
+**Why NOT:** HDX HAPI already includes UNHCR displacement data through its `/affected-people/refugees-persons-of-concern` endpoint. Adding the standalone UNHCR API (`api.unhcr.org/population/v1/`) would duplicate this data. If HDX HAPI proves unreliable (it is beta), UNHCR standalone is the fallback.
 
-**Implementation:**
-- Create `public/llms.txt` -- a curated markdown overview of the site (what it does, how scores work, data sources, key pages).
-- Optionally create `public/llms-full.txt` -- comprehensive version with all methodology details.
-- Both are static files, zero build cost, zero runtime cost.
-- Content should be in English (the lingua franca for LLMs).
-- Include links to key JSON data endpoints (`/scores.json`) for programmatic access.
+**UNHCR fallback details (if needed later):**
+- Endpoint: `https://api.unhcr.org/population/v1/`
+- Auth: None
+- Format: JSON
+- Good: ISO3 natively, no registration
+- Bad: Annual data only (mid-year statistics), so no near-realtime advantage
 
-**Adoption status (honest assessment):**
-- Proposed by Jeremy Howard (Answer.AI) in September 2024.
-- Adopted by Anthropic, Cursor, Mintlify-hosted docs, and thousands of documentation sites.
-- No major LLM company has confirmed they actively crawl llms.txt during training or inference.
-- **Confidence: MEDIUM.** Low effort to implement, potential upside, no downside. Worth doing.
+### RSS Feeds (generic news)
 
-**Semantic HTML improvements:**
-- Ensure country pages use proper `<article>`, `<section>`, `<aside>`, `<header>` tags.
-- Use descriptive heading hierarchy (already likely in place).
-- Add `aria-label` attributes on interactive elements.
-- These are code improvements, not library additions.
+**Why NOT as primary source:** RSS feeds from news outlets require NLP to extract safety-relevant signals from unstructured text. GDELT already does this processing at scale. Adding raw RSS parsing adds complexity without clear value over GDELT's curated instability metrics.
 
-### 5. Donation Page Integration
+**Exception:** WHO DONs may have an RSS feed as fallback if the JSON API proves unreliable. Keep `rss-parser` as optional dependency for this edge case.
 
-**New libraries needed: NONE**
+### GDELT Events Database (raw events, not Stability API)
 
-**Recommendation: Ko-fi (external link, no SDK)**
+**Why NOT:** Raw GDELT event data requires downloading 15-minute CSV dumps (~100MB each) and computing aggregate metrics. The Stability Timeline API already computes the country-level instability metric. Use the pre-computed API instead of raw event data.
 
-| Platform | Fee on Tips | Payment Methods | Integration Complexity |
-|----------|-------------|-----------------|----------------------|
-| Ko-fi | 0% (only Stripe/PayPal processing fees) | Stripe + PayPal (cards, Apple Pay, Google Pay) | Link/button only |
-| Buy Me a Coffee | 5% platform fee | Stripe only (no PayPal) | Link/button or embed widget |
-| Stripe direct | ~2.9% + $0.30 | Cards only | Full integration, PCI considerations |
-| GitHub Sponsors | 0% | Cards (via Stripe) | Link only, requires GitHub account |
+### Global Terrorism Database (GTD)
 
-**Why Ko-fi:**
-- 0% platform fee -- on a $10 donation, you receive ~$9.41 (only Stripe processing fees).
-- Supports both Stripe AND PayPal, covering more payment methods than BMC.
-- No SDK or widget embed needed -- just link to your Ko-fi page.
-- Free tier is sufficient (no subscription required for receiving tips).
-- Multilingual supporters can use it (PayPal is global).
+**Why NOT:** Annual release only (1-2 year lag). Not near-realtime. ACLED + GDELT already cover terrorism events.
 
-**Implementation approach:**
-- Create a `/[lang]/donate/` page in each locale with i18n content explaining the project and its costs.
-- Include a prominent "Support on Ko-fi" button linking to `https://ko-fi.com/[username]`.
-- Optionally embed Ko-fi's widget (`<iframe>`) for inline donation, but a simple external link is cleaner and avoids iframe CSP complications.
-- Style the donation page with existing Tailwind design system.
-- Add Ko-fi button/link in the site footer across all pages.
+## New Dependencies
 
-**What NOT to add:**
-- Do NOT integrate Stripe directly. Requires server-side code (incompatible with pure SSG), PCI compliance considerations, and webhook handling. Way overengineered for a donation page.
-- Do NOT embed Buy Me a Coffee widget. 5% fee for no additional value over Ko-fi, fewer payment methods.
-- Do NOT add any payment processing SDK to the codebase.
+### Required: None (zero new npm packages for core functionality)
 
-### 6. Legal Compliance Documents
+The existing stack already has everything needed:
+- **`fetch()`** -- Node 22 native, used by all existing fetchers
+- **`papaparse`** ^5.5.3 -- Already installed, handles GDELT CSV parsing
+- **`AbortSignal.timeout()`** -- Node 22 native, used by all existing fetchers
 
-**New libraries needed: NONE**
+### Optional: rss-parser (fallback only)
 
-**What's needed:**
-- Privacy Policy page (per locale)
-- Terms of Service page (per locale)
-- Cookie Policy page (per locale, can be section of Privacy Policy)
-- Legal notice / Impressum (depending on jurisdiction)
+| Package | Version | Purpose | When to Add |
+|---------|---------|---------|-------------|
+| `rss-parser` | ^3.13.0 | Parse RSS/Atom feeds | Only if WHO DONs JSON API proves unreliable and RSS fallback is needed |
 
-**Implementation:**
-- Static Astro content pages, same pattern as methodology page.
-- Store legal text in i18n translation files or as markdown content.
-- PROJECT.md notes: "stored locally, not on GitHub" -- legal documents may contain personal information (address, company details). Use `.gitignore` for the content source if needed, but the built pages will be public.
-- Add links in site footer.
+**Why rss-parser over alternatives:** 1.5M weekly downloads, TypeScript types included, lightweight (~25KB), actively maintained, well-tested. `feedsmith` (v2.8.0) is newer and faster with native TypeScript, but has only 2 dependents -- too early to trust for production. `rss-parser` is battle-tested.
 
-### 7. Production Hardening (Security Headers, CSP, HSTS, Error Pages)
-
-**New libraries needed: NONE**
-
-**Security Headers via Cloudflare Pages `_headers` file:**
-
-Create `public/_headers` with the following configuration:
-
-```
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
-  X-XSS-Protection: 0
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), interest-cohort=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' cloudflareinsights.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+Install only when needed:
+```bash
+npm install -D rss-parser
 ```
 
-**Key CSP considerations for this site:**
-- `'unsafe-inline'` for scripts: Required because Astro SSG inlines small scripts (dark mode detection, D3 chart initialization). Astro does not currently support CSP nonces in SSG mode.
-- `static.cloudflareinsights.com`: Required for Cloudflare Web Analytics beacon.
-- `cloudflareinsights.com` in connect-src: Required for beacon data submission.
-- No `frame-src` needed (no iframes unless Ko-fi widget is embedded).
-- No external font CDNs (fonts are self-hosted via `@fontsource-variable`).
+## New Environment Variables
 
-**Cloudflare Pages `_headers` limitations:**
-- Max 100 header rules.
-- 2,000 character limit per line.
-- Does NOT apply to responses from Pages Functions (SSR). Since this is SSG, this is not a concern.
+| Variable | Source | Required | How to Get |
+|----------|--------|----------|------------|
+| `RELIEFWEB_APPNAME` | ReliefWeb API | Yes (for ReliefWeb) | Register free at https://reliefweb.int/help/api |
+| `HDX_HAPI_APP_NAME` | HDX HAPI | Yes (for HDX HAPI) | Choose any descriptive name |
+| `HDX_HAPI_EMAIL` | HDX HAPI | Yes (for HDX HAPI) | Your email for app_identifier generation |
 
-**HSTS via Cloudflare:**
-- Can also be enabled via Cloudflare Dashboard > SSL/TLS > Edge Certificates > HSTS. This applies at the edge before the `_headers` file, which is more reliable.
-- Recommend enabling HSTS both via dashboard AND `_headers` file (belt and suspenders).
+**Existing env vars (no changes):**
+- `ACLED_API_KEY` -- Already configured
+- `ACLED_EMAIL` -- Already configured
 
-**Custom Error Pages:**
-- Create `src/pages/404.astro` -- Astro automatically generates `404.html` which Cloudflare Pages serves for 404 responses.
-- For 500 errors: Cloudflare Pages serves its own error page for 5xx responses. Custom 5xx pages require a Business/Enterprise plan or a Cloudflare Worker. On the free tier, accept Cloudflare's default 500 page.
-- Ensure 404 page uses the site's layout, navigation, and provides helpful links (homepage, search, popular countries).
+**GitHub Actions secrets to add:** `RELIEFWEB_APPNAME`, `HDX_HAPI_APP_NAME`, `HDX_HAPI_EMAIL`
 
-**Caching headers:**
-```
-/scores.json
-  Cache-Control: public, max-age=3600, s-maxage=86400
+## New Utility: FIPS-to-ISO3 Country Code Mapping
 
-/fonts/*
-  Cache-Control: public, max-age=31536000, immutable
+GDELT uses FIPS 10-4 country codes (2-letter), not ISO. The pipeline needs a static mapping table.
 
-/_astro/*
-  Cache-Control: public, max-age=31536000, immutable
-```
+**Implementation:** Add `src/pipeline/config/fips-to-iso3.ts` exporting a `Map<string, string>` with ~250 FIPS-to-ISO3 mappings. This is a static lookup -- no external dependency needed. Source the mapping from the GNS country codes file referenced in GDELT docs.
 
-Astro already hashes static assets in `_astro/`, so immutable caching is safe. `scores.json` should be cached shorter since it updates daily.
+## Pipeline Integration Summary
 
-## Recommended Stack Additions
+### New Fetcher Files to Create
 
-### New Dependencies: NONE
+| File | Source | Data Format | Auth | Indicators |
+|------|--------|-------------|------|------------|
+| `src/pipeline/fetchers/gdelt.ts` | GDELT Stability API | CSV | None | `gdelt_instability` |
+| `src/pipeline/fetchers/reliefweb.ts` | ReliefWeb API v2 | JSON | Appname | `reliefweb_active_disasters`, `reliefweb_severity` |
+| `src/pipeline/fetchers/hdx.ts` | HDX HAPI v2 | JSON | App identifier | `hdx_conflict_events`, `hdx_conflict_fatalities`, `hdx_displaced_persons` |
+| `src/pipeline/fetchers/who-dons.ts` | WHO DONs API | JSON | None | `who_active_outbreaks` |
 
-No new npm packages are required for v2.0. Every feature is achievable with:
-- Existing Astro components and layouts
-- Static files in `public/`
-- Cloudflare Pages `_headers` file
-- Cloudflare Dashboard configuration
-- External service links (Ko-fi)
+### Changes to Existing Files
 
-### New Dev Dependencies: NONE
+| File | Change |
+|------|--------|
+| `src/pipeline/fetchers/index.ts` | Import and add 4 new fetchers to `fetchAllSources()` |
+| `src/pipeline/config/weights.json` | Add new indicators to appropriate pillars, bump version to 5.0.0 |
+| `src/pipeline/scoring/normalize.ts` | Add normalization ranges for new indicators |
+| `src/pipeline/scoring/engine.ts` | Add new sources to `SOURCE_CATALOG` |
 
-### New External Services
+### Updated `fetchAllSources()` (9 sources total)
 
-| Service | Cost | Purpose | Integration |
-|---------|------|---------|-------------|
-| Cloudflare Web Analytics | Free | Privacy-respecting traffic analytics | One-click enable in dashboard |
-| Ko-fi | Free (0% platform fee) | Accept donations | External link to Ko-fi page |
-
-## What NOT to Add (Anti-Dependencies)
-
-| Temptation | Why Avoid |
-|------------|-----------|
-| vanilla-cookieconsent / klaro / CookieConsent | Site sets no cookies. Unnecessary complexity. Revisit only if adding cookie-setting services. |
-| Google Analytics / GA4 | Violates privacy-respecting principle, requires cookie consent, 19 KB script, sends data to Google. |
-| Plausible (cloud) | $108/year exceeds budget for analytics alone. |
-| Umami (self-hosted) | Requires maintaining a server + database. Operational burden for a solo project. |
-| Stripe SDK / payment processing | Requires server-side code, PCI compliance. Ko-fi handles this externally. |
-| astro-breadcrumbs | Generic package won't handle 5-language translated route slugs correctly. Custom component is simpler. |
-| @astrojs/react or @astrojs/preact | Still no need for a UI framework. Cookie banner is a simple DOM toggle. |
-| astro-seo / astro-schema | The site already has JSON-LD infrastructure in Base.astro. These packages add abstraction over what is already a solved pattern. |
-| Sentry / error tracking | Budget constraint. Cloudflare Pages provides basic analytics. Add error tracking only if persistent issues arise. |
-
-## Configuration Changes Required
-
-### public/_headers (NEW FILE)
-
-Security headers, caching rules, and permissions policy as detailed in section 7.
-
-### public/llms.txt (NEW FILE)
-
-Markdown file describing the site for LLM consumption.
-
-### public/robots.txt (UPDATE)
-
-Add reference to llms.txt (convention, not yet standardized):
-```
-# LLM-readable site description
-# See: https://llmstxt.org/
-# /llms.txt
+```typescript
+const results = await Promise.allSettled([
+  fetchWorldBank(date),     // existing - annual
+  fetchGpi(date),           // existing - annual
+  fetchInform(date),        // existing - annual
+  fetchAcled(date),         // existing - 30-day window
+  fetchAdvisories(date),    // existing - daily
+  fetchGdelt(date),         // NEW - daily (15-min resolution)
+  fetchReliefWeb(date),     // NEW - continuous
+  fetchHdx(date),           // NEW - monthly aggregates
+  fetchWhoDons(date),       // NEW - as outbreaks occur
+]);
 ```
 
-### Cloudflare Dashboard
+### Updated Weights Config (proposed indicator additions)
 
-- Enable Web Analytics (one toggle)
-- Enable HSTS (SSL/TLS > Edge Certificates)
-- Verify Always Use HTTPS is enabled
+```json
+{
+  "version": "5.0.0",
+  "pillars": [
+    {
+      "name": "conflict",
+      "weight": 0.30,
+      "indicators": [
+        "wb_political_stability", "gpi_overall", "gpi_safety_security",
+        "gpi_militarisation", "acled_fatalities", "acled_events",
+        "gdelt_instability", "hdx_conflict_events", "hdx_conflict_fatalities"
+      ]
+    },
+    {
+      "name": "crime",
+      "weight": 0.25,
+      "indicators": ["wb_rule_of_law", "advisory_level_us", "advisory_level_uk"]
+    },
+    {
+      "name": "health",
+      "weight": 0.20,
+      "indicators": [
+        "wb_child_mortality", "inform_health", "inform_epidemic",
+        "who_active_outbreaks"
+      ]
+    },
+    {
+      "name": "governance",
+      "weight": 0.15,
+      "indicators": [
+        "wb_gov_effectiveness", "wb_corruption_control", "inform_governance",
+        "hdx_displaced_persons"
+      ]
+    },
+    {
+      "name": "environment",
+      "weight": 0.10,
+      "indicators": [
+        "wb_air_pollution", "inform_natural", "inform_climate",
+        "reliefweb_active_disasters"
+      ]
+    }
+  ]
+}
+```
 
-### Astro Pages (NEW)
+## Data Freshness After v3.0
 
-| Page | Path Pattern | Purpose |
-|------|-------------|---------|
-| 404 | `/404.astro` | Custom error page |
-| Privacy Policy | `/[lang]/privacy/` | Legal compliance |
-| Terms of Service | `/[lang]/terms/` | Legal compliance |
-| Cookie Policy | `/[lang]/cookies/` | Legal compliance (can merge with privacy) |
-| Donate | `/[lang]/donate/` | Ko-fi donation page |
+| Source | Update Frequency | Latency |
+|--------|-----------------|---------|
+| GDELT | 15 min | Same day |
+| ReliefWeb | Continuous | Same day |
+| WHO DONs | Days | 1-3 days |
+| ACLED | Weekly | ~7 days |
+| HDX HAPI | Monthly | ~30 days |
+| Advisories (US/UK) | As issued | 1-7 days |
+| World Bank | Annual | 6-18 months |
+| GPI | Annual | 6-12 months |
+| INFORM | Annual | 6-12 months |
 
-### Astro Components (NEW)
+**Result:** Crises like a sudden conflict in Cuba or an earthquake in Turkey will now be reflected within the same day via GDELT + ReliefWeb, rather than waiting for the next annual index update.
 
-| Component | Purpose |
-|-----------|---------|
-| CookieBanner.astro | Informational privacy banner |
-| Breadcrumb.astro | Navigation breadcrumbs with JSON-LD |
+## Scoring Formula Implications
 
-### Utility Functions (NEW)
+The current scoring engine averages all indicators within a pillar equally. With 9 indicators in the `conflict` pillar (after adding GDELT + HDX), the near-realtime signals risk being diluted by 6 annual/monthly baselines.
 
-| Function | Purpose |
-|----------|---------|
-| faqSchema() | Generate FAQPage JSON-LD from Q&A pairs |
-| breadcrumbSchema() | Generate BreadcrumbList JSON-LD from path segments |
-| websiteSchema() | Generate WebSite + SearchAction JSON-LD |
+**Recommendation for scoring overhaul (separate from stack):**
+- Introduce a **recency weight** multiplier: indicators from sources updated daily/weekly get a 1.5x-2x weight relative to annual baselines
+- Or split each pillar into `baseline` (annual) + `signal` (near-realtime) sub-components with configurable blend ratio (e.g., 60% baseline, 40% signal)
+- This is a scoring formula design question, not a stack question. Document in ARCHITECTURE.md.
 
-## Bundle Size Impact
+## Installation
 
-| Feature | Client JS Impact |
-|---------|-----------------|
-| Cookie banner | ~1 KB (show/hide logic + localStorage) |
-| Cloudflare Analytics | ~4.3 KB (auto-injected by Cloudflare, not in bundle) |
-| Breadcrumbs | 0 KB (static HTML + JSON-LD in head) |
-| FAQ Schema | 0 KB (JSON-LD in head at build time) |
-| llms.txt | 0 KB (static file) |
-| Security headers | 0 KB (served by Cloudflare edge) |
-| Donation page | 0 KB (static page with external link) |
-| Error pages | 0 KB (static HTML) |
+```bash
+# No new production dependencies needed
 
-**Total additional client-side JavaScript: ~1 KB** (cookie banner only). Cloudflare Analytics beacon is edge-injected and not part of the build.
+# Optional (only if WHO DONs RSS fallback needed):
+npm install -D rss-parser
+```
+
+**GitHub Actions secrets to add:**
+```
+RELIEFWEB_APPNAME=isitsafetotravel-pipeline
+HDX_HAPI_APP_NAME=isitsafetotravel
+HDX_HAPI_EMAIL=your-email@example.com
+```
 
 ## Confidence Assessment
 
-| Decision | Confidence | Basis |
-|----------|------------|-------|
-| No cookie consent library needed | HIGH | Site sets no cookies; Cloudflare Web Analytics is cookie-free (verified via Cloudflare docs). GDPR requires consent only for non-essential cookies. |
-| Cloudflare Web Analytics over Plausible/Umami | HIGH | Free tier with zero budget impact; auto-injected on Cloudflare Pages; cookie-free. Limitations (10% sampling, top-15) acceptable for informational site. |
-| Ko-fi over BMC/Stripe | HIGH | 0% platform fee vs 5% BMC fee; more payment methods (PayPal + Stripe); no SDK integration needed. |
-| Custom breadcrumbs over astro-breadcrumbs | MEDIUM | 5-language translated slugs create friction with generic packages. Custom is ~50 lines. Could use package if i18n works, but likely won't. |
-| llms.txt worth implementing | MEDIUM | Low effort (static file), growing adoption. No LLM company has confirmed active crawling, but Anthropic and Cursor support it. |
-| Security headers via _headers file | HIGH | Verified in Cloudflare Pages docs. Works for SSG responses. Well-documented format. |
-| No custom 5xx error pages on free tier | HIGH | Cloudflare Pages free tier does not support custom 5xx pages without a Worker. Verified in community docs and Cloudflare docs. |
-| JSON-LD structured data without libraries | HIGH | Site already has working JSON-LD infrastructure in Base.astro. BreadcrumbList and FAQPage are standard schema.org types. |
+| Area | Confidence | Notes |
+|------|------------|-------|
+| GDELT Stability API | MEDIUM | API works and is free, but rate limits undocumented. FIPS codes add mapping complexity. |
+| ReliefWeb API | HIGH | Well-documented, UN-backed, 10+ years stable. Appname requirement is trivial. |
+| HDX HAPI | MEDIUM | API is beta (v0.9.x). Endpoints may change. Data quality is solid (ACLED + UNHCR sourced). |
+| WHO DONs API | MEDIUM | API exists but country filtering is poorly documented. May need text parsing fallback. |
+| Pipeline integration | HIGH | Existing fetcher pattern is clean and extensible. Adding 4 fetchers is straightforward. |
+| Zero new npm deps | HIGH | papaparse already handles CSV, native fetch handles HTTP, no XML sources in recommended set. |
 
 ## Sources
 
-- Cloudflare Web Analytics documentation: https://developers.cloudflare.com/web-analytics/about/
-- Cloudflare Web Analytics FAQ (cookie-free, 4.3 KB beacon): https://developers.cloudflare.com/web-analytics/faq/
-- Cloudflare Pages headers configuration: https://developers.cloudflare.com/pages/configuration/headers/
-- Cloudflare HSTS documentation: https://developers.cloudflare.com/ssl/edge-certificates/additional-options/http-strict-transport-security/
-- Plausible vs Cloudflare comparison: https://plausible.io/vs-cloudflare-web-analytics
-- Ko-fi vs Buy Me a Coffee comparison: https://talks.co/p/kofi-vs-buy-me-a-coffee/
-- llms.txt specification: https://llmstxt.org/
-- llms.txt adoption and overview: https://www.semrush.com/blog/llms-txt/
-- vanilla-cookieconsent (for future reference): https://github.com/orestbida/cookieconsent/
-- Astro structured data patterns: https://stephen-lunt.dev/blog/astro-structured-data/
-- Astro breadcrumbs package: https://docs.astro-breadcrumbs.kasimir.dev/
-- Cloudflare Pages custom error pages: https://developers.cloudflare.com/pages/configuration/headers/
+- GDELT Stability Dashboard API: https://blog.gdeltproject.org/announcing-the-gdelt-stability-dashboard-api-stability-timeline/
+- GDELT DOC 2.0 API: https://blog.gdeltproject.org/gdelt-doc-2-0-api-debuts/
+- GDELT Data Access: https://www.gdeltproject.org/data.html
+- ReliefWeb API Documentation: https://apidoc.reliefweb.int/
+- ReliefWeb API Help: https://reliefweb.int/help/api
+- HDX HAPI Documentation: https://hdx-hapi.readthedocs.io/
+- HDX HAPI OpenAPI: https://hapi.humdata.org/docs
+- WHO Disease Outbreak News API: https://www.who.int/api/news/diseaseoutbreaknews/sfhelp
+- WHO Outbreaks API: https://www.who.int/api/news/outbreaks/sfhelp
+- UNHCR Refugee Statistics API: https://api.unhcr.org/docs/refugee-statistics.html
+- EM-DAT Data Accessibility: https://doc.emdat.be/docs/data-accessibility/
+- rss-parser npm: https://www.npmjs.com/package/rss-parser
+- feedsmith npm: https://www.npmjs.com/package/feedsmith

@@ -1,389 +1,394 @@
 # Architecture Patterns
 
-**Domain:** Production hardening for Astro 6 SSG + Cloudflare Pages travel safety platform (v2.0)
-**Researched:** 2026-03-21
-**Confidence:** HIGH (based on direct codebase analysis + official docs verification)
+**Domain:** Travel safety scoring platform -- near-realtime data integration
+**Researched:** 2026-03-22
 
-## Existing Architecture (Baseline)
+## Current Architecture Summary
+
+The existing pipeline follows a clean 5-stage sequential pattern:
 
 ```
-src/
-  layouts/Base.astro      -- Global HTML shell (head, body, header, footer)
-  pages/
-    index.astro           -- Root redirect (language detection via is:inline script)
-    [lang]/               -- en/, it/, es/, fr/, pt/
-      index.astro         -- Home (map)
-      compare.astro       -- Country comparison
-      global-safety.astro -- Global benchmark
-      country/[slug].astro-- Country detail
-      legal/index.astro   -- Legal page
-      methodology/        -- Methodology pages
-  components/             -- Astro components (Header, Footer, SafetyMap, Search, etc.)
-  lib/                    -- Utilities (seo.ts, scores.ts, colors.ts)
-  i18n/                   -- ui.ts (translations ~200 keys), utils.ts
-public/                   -- Static assets (robots.txt, favicon, scores.json, topojson)
-dist/client/              -- Build output deployed to Cloudflare Pages
-wrangler.toml             -- Minimal (name, compat_date, nodejs_compat only)
+Fetch (parallel) -> Load Raw -> Score -> Snapshot -> History Index
 ```
 
-**Key constraints for v2.0 integration:**
-- Pure SSG output to `dist/client/` -- no SSR, no Cloudflare Functions, no edge runtime
-- Inline scripts exist: dark mode detection (`Base.astro`), language redirect (`index.astro`), JSON-LD
-- External JS: D3 chart scripts bundled by Vite into `_astro/` directory
-- Deploy via `wrangler pages deploy dist/client`
-- Astro version: 6.0.6 (CSP stable, but only for SSR mode)
+- **Fetchers** (`src/pipeline/fetchers/`): 5 sources (WorldBank, GPI, INFORM, ACLED, Advisories), all parallel via `Promise.allSettled`, each writes `{source}-parsed.json` to `data/raw/{date}/`
+- **Scoring** (`src/pipeline/scoring/engine.ts`): Merges all `RawIndicator[]`, normalizes via hardcoded `INDICATOR_RANGES`, averages indicators per pillar, computes weighted composite 1-10
+- **Output**: `data/scores/{date}.json` (~1MB) + `data/scores/latest.json` + `data/scores/history-index.json`
+- **Trigger**: Daily at 06:00 UTC via GitHub Actions, commits to repo, Cloudflare Pages auto-deploys
+- **Data volume**: 529MB scores (568 snapshots since 2012), 1.5GB raw data
 
----
+Key architectural properties to preserve:
+- `RawIndicator` as universal data contract between fetch and score stages
+- `Promise.allSettled` fault isolation per source
+- Cached fallback via `findLatestCached()` for failed fetches
+- Static file output compatible with Astro SSG build
 
-## Integration Map: Where Each v2.0 Feature Goes
+## Recommended Architecture
 
-### Feature Classification
+### Principle: Baseline + Signal Adjustment
 
-| Feature | Type | Touch Points | New i18n Keys | New Files |
-|---------|------|-------------|---------------|-----------|
-| Security headers | Config only | `public/_headers` | None | 1 |
-| Cookie consent | Conditional | Possibly `Base.astro` + component | ~5-10 | 0-2 |
-| Analytics script | Layout change | `Base.astro`, `public/_headers` | None | 0 |
-| Donations page | New pages + footer | `[lang]/donate.astro` x5, `Footer.astro`, `ui.ts` | ~15-20 | 5 |
-| llms.txt | Static file | `public/llms.txt` | None | 1 |
-| Error pages (404) | New pages | `[lang]/404.astro` x5, `404.astro` | ~5-8 | 6 |
-| CSP configuration | Config (in _headers) | `public/_headers` | None | 0 |
+The core insight: annual indices (GPI, World Bank WGI, INFORM) provide stable baselines that change slowly. Near-realtime sources (GDELT, ReliefWeb, HDX HAPI, WHO DONs, advisory changes) provide fast-moving signals. The scoring formula should blend these two tiers rather than treating all indicators equally.
 
----
-
-## Detailed Integration: Each Feature
-
-### 1. Security Headers -- `public/_headers` File
-
-**Where:** Create `public/_headers` (no extension). Astro copies all `public/` files to `dist/client/` at build time. Cloudflare Pages reads `_headers` automatically from the deploy directory.
-
-**Why `_headers` and not `wrangler.toml`:** The current `wrangler.toml` has no headers configuration capability for Pages projects. Cloudflare Pages' `_headers` file is the documented, standard approach for static sites. It is version-controlled, path-aware, and requires zero code changes.
-
-**Recommended content:**
 ```
-/*
-  X-Content-Type-Options: nosniff
-  X-Frame-Options: DENY
-  Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
-  X-XSS-Protection: 0
+                    +------------------+
+                    |  Annual Sources   |  (GPI, WorldBank, INFORM)
+                    |  Tier: BASELINE   |  Updated: yearly/quarterly
+                    +--------+---------+
+                             |
+                             v
++------------------+   +----+--------+   +------------------+
+| Realtime Sources |-->| Score Engine|-->| Daily Snapshot   |
+| Tier: SIGNAL     |   | (Baseline + |   | data/scores/     |
+| (GDELT, Relief-  |   |  Signal     |   | {date}.json      |
+|  Web, HDX, WHO,  |   |  Adjustment)|   +------------------+
+|  ACLED, Advisory) |   +-------------+
++------------------+
 ```
 
-**Limits:** Max 100 header rules per file, 2000 chars per line. More than sufficient for this project.
-
-**Confidence:** HIGH -- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) confirm this approach.
-
----
-
-### 2. Cookie Consent -- Likely NOT Needed
-
-**Assessment:** The site currently sets zero cookies. If the analytics choice is cookieless (Cloudflare Web Analytics or Plausible), no cookie consent banner is legally required.
-
-**The dark mode `localStorage` usage is NOT a cookie.** The ePrivacy Directive covers cookies and "similar technologies," but localStorage for strictly functional purposes (theme preference) is generally covered under legitimate interest, not requiring consent.
-
-**If future changes introduce cookies (unlikely):**
-- Create `src/components/CookieConsent.astro` -- banner at bottom of viewport
-- Include in `Base.astro` before closing `</body>`
-- Use `localStorage` to track consent state (no server needed for SSG)
-- Block non-essential scripts until consent granted via conditional `is:inline` loader
-- i18n keys: `consent.message`, `consent.accept`, `consent.reject`, `consent.settings`
-
-**Recommendation:** Choose cookieless analytics. No cookies = no consent banner = no UX friction = no legal complexity. This is the simplest, cheapest, most privacy-respecting option.
-
-**Confidence:** MEDIUM on legal assessment (jurisdiction-specific nuances exist). HIGH on technical approach.
-
----
-
-### 3. Analytics Script -- `Base.astro` Layout Change
-
-**Where:** In `src/layouts/Base.astro`, the single layout file used by all pages.
-
-**Option A: Cloudflare Web Analytics (RECOMMENDED -- free, zero config)**
-Add before `</body>` in `Base.astro`:
-```html
-<script defer src='https://static.cloudflareinsights.com/beacon.min.js'
-  data-cf-beacon='{"token": "YOUR_TOKEN"}'></script>
-```
-- Free on all Cloudflare plans
-- No cookies, GDPR-compliant by design
-- Already on CF infrastructure (no external dependency)
-- Privacy-preserving: no PII, no cross-site tracking
-
-**Option B: Plausible Analytics ($9/mo cloud, or self-hosted free)**
-Add in `<head>` of `Base.astro`:
-```html
-<script defer data-domain="isitsafetotravels.com" src="https://plausible.io/js/script.js"></script>
-```
-
-**CSP impact:** The analytics script domain must be added to `script-src` in `_headers`. For Cloudflare Web Analytics: `https://static.cloudflareinsights.com`. For Plausible: `https://plausible.io`.
-
-**Recommendation:** Cloudflare Web Analytics. Zero cost, already on the same infrastructure, cookieless, and the budget constraint is "near-zero (~10EUR/month max)."
-
-**Confidence:** HIGH -- both options well-documented and cookieless.
-
----
-
-### 4. Donations Page -- New Page + Footer Link
-
-**Where:** New Astro page per language, following the existing routing pattern.
-
-**New files:**
-```
-src/pages/en/donate.astro
-src/pages/it/dona.astro
-src/pages/es/donar.astro
-src/pages/fr/faire-un-don.astro
-src/pages/pt/doar.astro
-```
-
-**Route registration in `ui.ts`:**
-```typescript
-export const routes = {
-  en: { /* existing... */ donate: 'donate' },
-  it: { /* existing... */ donate: 'dona' },
-  es: { /* existing... */ donate: 'donar' },
-  fr: { /* existing... */ donate: 'faire-un-don' },
-  pt: { /* existing... */ donate: 'doar' },
-};
-```
-
-**Page structure:** Uses `Base.astro` layout. Content is static text explaining the project mission + external link/button to donation platform. No embedded payment forms.
-
-**Footer modification in `Footer.astro`:**
-```astro
-<a href={`/${lang}/${r.donate}/`}
-   class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 ...">
-  {t('footer.donate')}
-</a>
-```
-
-**External platform: Ko-fi** -- zero fees on donations, simple link integration, no account required for donors. Just a styled `<a>` link to `https://ko-fi.com/isitsafetotravel`. No external scripts needed (avoid the widget JS for simplicity and CSP cleanliness).
-
-**New i18n keys:** `donate.title`, `donate.meta_description`, `donate.heading`, `donate.intro`, `donate.why`, `donate.how`, `donate.cta_text`, `donate.cta_label`, `donate.thankyou`, `footer.donate` (~10 keys x 5 languages).
-
-**Confidence:** HIGH -- follows existing page creation patterns exactly.
-
----
-
-### 5. llms.txt -- Static File in `public/`
-
-**Where:** `public/llms.txt` -- copied to `dist/client/llms.txt` at build, served at `https://isitsafetotravels.com/llms.txt`.
-
-**Content (following [llmstxt.org spec](https://llmstxt.org/)):**
-```markdown
-# IsItSafeToTravel
-
-> Travel safety scores for 248 countries in 5 languages, powered by transparent open data. Combines conflict, crime, health, governance, and environment indices into a 1-10 safety rating, updated daily.
-
-## Documentation
-- [Methodology](https://isitsafetotravels.com/en/methodology/): How safety scores are calculated, data sources, and weights
-- [Legal](https://isitsafetotravels.com/en/legal/): Terms of service and privacy policy
-
-## Data
-- [Safety Scores JSON](https://isitsafetotravels.com/scores.json): Machine-readable safety data for all 248 countries
-
-## Pages
-- [Home / World Map](https://isitsafetotravels.com/en/): Interactive safety map with per-pillar filtering
-- [Country Comparison](https://isitsafetotravels.com/en/compare/): Side-by-side safety comparison (up to 5 countries)
-- [Global Safety Index](https://isitsafetotravels.com/en/global-safety/): World average benchmark and trends
-
-## Optional
-- [Sitemap](https://isitsafetotravels.com/sitemap-index.xml): Full page index
-```
-
-**robots.txt update:** Add `llms.txt` reference (emerging convention, not standardized):
-```
-# robots.txt for isitsafetotravel.com
-User-agent: *
-Allow: /
-
-Sitemap: https://isitsafetotravels.com/sitemap-index.xml
-
-# LLM-readable site summary
-# https://llmstxt.org/
-# See: https://isitsafetotravels.com/llms.txt
-```
-
-**Confidence:** HIGH -- static file, spec is simple and well-documented.
-
----
-
-### 6. Custom Error Pages (404)
-
-**How Cloudflare Pages handles 404s:** Looks for `404.html` in the same directory as the request path, then walks up the directory tree until it finds one, ending at root `/404.html`.
-
-**Strategy -- per-language 404 pages:**
-```
-src/pages/en/404.astro  --> dist/client/en/404.html   (English 404)
-src/pages/it/404.astro  --> dist/client/it/404.html   (Italian 404)
-src/pages/es/404.astro  --> dist/client/es/404.html   (Spanish 404)
-src/pages/fr/404.astro  --> dist/client/fr/404.html   (French 404)
-src/pages/pt/404.astro  --> dist/client/pt/404.html   (Portuguese 404)
-src/pages/404.astro     --> dist/client/404.html       (Root fallback, English)
-```
-
-**How routing works:**
-- Request to `/en/nonexistent-page` --> CF looks for `/en/404.html` --> found, serves English 404
-- Request to `/it/pagina-inesistente` --> CF looks for `/it/404.html` --> found, serves Italian 404
-- Request to `/random-path` --> CF walks up to `/404.html` --> serves root fallback (English)
-
-**Page content:** Use `Base.astro` layout for consistent header/footer/styling. Show friendly message with link back to home page. Include the search component so users can find what they were looking for.
-
-**500 pages:** Not applicable. Pure static sites have no server to produce 500 errors. Cloudflare serves its own error page for infrastructure issues. No action needed.
-
-**New i18n keys:** `error.404.title`, `error.404.heading`, `error.404.message`, `error.404.back_home`, `error.404.search_suggestion` (~5 keys x 5 languages).
-
-**Confidence:** HIGH -- [Cloudflare Pages Serving docs](https://developers.cloudflare.com/pages/configuration/serving-pages/) confirm hierarchical `404.html` lookup.
-
----
-
-### 7. CSP Configuration -- `_headers` File (NOT Astro's Built-in CSP)
-
-**Critical finding:** Astro 6's `security.csp` feature (stable since 6.0) generates CSP via `<meta>` tags but **only works for SSR/on-demand rendered pages**. It is explicitly incompatible with SSG/prerendered pages. Since this project is 100% SSG, Astro's built-in CSP cannot be used.
-
-Source: [Astro CSP docs](https://docs.astro.build/en/reference/experimental-flags/csp/) -- "These features only exist for pages rendered on demand (SSR)."
-
-**Approach: CSP via `_headers` file with `unsafe-inline` (pragmatic) or hashes (strict)**
-
-**Inline scripts that need CSP allowance:**
-1. Dark mode detection in `Base.astro` (`is:inline`, ~8 lines)
-2. Language redirect in `index.astro` (`is:inline`, ~12 lines)
-3. JSON-LD (`type="application/ld+json"`) -- exempt from `script-src`, not executable
-
-**Bundled scripts (D3, Fuse.js):** Vite outputs these as external `.js` files in `_astro/` with hashed filenames. They load from the same origin, so `script-src 'self'` covers them.
-
-**Option A: Pragmatic CSP with `unsafe-inline` (RECOMMENDED to start)**
-```
-/*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
-```
-
-**Why `unsafe-inline` is acceptable here:**
-- The site has no user-generated content, no form inputs that render to HTML, no dynamic content injection
-- All inline scripts are author-controlled and static
-- The primary XSS vector (`unsafe-inline` blocks) does not exist on a read-only SSG site
-- The security benefit of hash-based CSP over `unsafe-inline` on a static site with no user input is marginal
-
-**Option B: Strict hash-based CSP (follow-up hardening)**
-1. Build the site
-2. Run a script to extract inline `<script>` content from built HTML
-3. Compute SHA-256 hashes: `echo -n "content" | openssl dgst -sha256 -binary | base64`
-4. Replace `'unsafe-inline'` with `'sha256-XXXXX' 'sha256-YYYYY'` in `_headers`
-
-**Problem with hashes:** Every time an inline script changes, hashes break. Requires a build-time script (`scripts/generate-csp-hashes.js`) and CI integration. Worth doing later, not for initial v2.0.
-
-**Analytics domain in CSP:** Must allowlist the analytics script source:
-- Cloudflare Web Analytics: `https://static.cloudflareinsights.com`
-- Plausible: `https://plausible.io`
-
-Also add `connect-src` for the analytics beacon endpoint if needed.
-
-**Confidence:** HIGH -- Astro SSG + CSP limitation confirmed in official docs. `_headers` approach confirmed by Cloudflare docs.
-
----
-
-## Component Boundaries (v2.0 Updated)
+### Component Boundaries
 
 | Component | Responsibility | Status | Communicates With |
 |-----------|---------------|--------|-------------------|
-| `public/_headers` | Security headers + CSP | **NEW** | Cloudflare Pages (auto-read at deploy) |
-| `public/llms.txt` | LLM discoverability | **NEW** | External AI crawlers |
-| `public/robots.txt` | Crawler directives | **MODIFIED** (add llms.txt ref) | Search engines, AI crawlers |
-| `src/layouts/Base.astro` | Global HTML shell | **MODIFIED** (analytics script) | All pages |
-| `src/components/Footer.astro` | Site footer links | **MODIFIED** (donate link) | i18n/ui.ts for routes |
-| `src/i18n/ui.ts` | Translations + routes | **MODIFIED** (~30 new keys, donate route) | All pages + components |
-| `src/pages/[lang]/donate.astro` | Donations page | **NEW** (x5 languages) | Base.astro, i18n, Ko-fi (external link) |
-| `src/pages/[lang]/404.astro` | Per-language error page | **NEW** (x5 languages) | Base.astro, i18n, Search component |
-| `src/pages/404.astro` | Root fallback error | **NEW** | Language detection (same as index.astro) |
+| `fetchers/gdelt.ts` | Fetch GDELT Stability Timeline instability scores per country | NEW | Raw data dir, scoring engine |
+| `fetchers/reliefweb.ts` | Fetch ReliefWeb active disasters and severity by country | NEW | Raw data dir, scoring engine |
+| `fetchers/hdx.ts` | Fetch HDX HAPI conflict events + displacement data by country | NEW | Raw data dir, scoring engine |
+| `fetchers/who-dons.ts` | Fetch WHO Disease Outbreak News | NEW | Raw data dir, scoring engine |
+| `fetchers/index.ts` | Orchestrate all fetchers in parallel | MODIFY | Add 4 new fetchers to `Promise.allSettled` array |
+| `scoring/normalize.ts` | Normalize indicators to 0-1 | MODIFY | Add ranges for 8 new indicator names |
+| `scoring/engine.ts` | Compute country scores with baseline+signal formula | MODIFY | Core formula change |
+| `scoring/freshness.ts` | Track per-indicator data age, compute decay weights | NEW | Used by engine.ts |
+| `config/weights.json` | Pillar weights and indicator assignments | MODIFY | Add new indicators to pillars, bump to v5.0.0 |
+| `config/sources.json` | Source metadata: tier, freshness expectations, decay params | NEW | Used by engine.ts, freshness.ts |
+| `config/fips-to-iso3.ts` | Static FIPS 10-4 to ISO3 country code mapping for GDELT | NEW | Used by fetchers/gdelt.ts |
+| `types.ts` | Type definitions | MODIFY | Add tier, freshness fields |
 
-## Data Flow Changes
-
-**None.** All v2.0 production-readiness features are either:
-- Static configuration files (`_headers`, `llms.txt`)
-- New static pages following existing patterns (donations, 404)
-- Layout additions (analytics snippet)
-
-The data pipeline (`src/pipeline/`), scoring system (`src/lib/scores.ts`), and build process remain completely unchanged. The only build process addition is Astro's automatic copying of new `public/` files to `dist/client/`.
-
----
-
-## Recommended Build Order
-
-Dependencies dictate this order:
+### Data Flow (Modified Pipeline)
 
 ```
-Phase 1: Zero-dependency config files (all parallel, zero risk)
-  |-- Create public/_headers (security headers + initial CSP with unsafe-inline)
-  |-- Create public/llms.txt
-  |-- Update public/robots.txt (add llms.txt reference)
-  Deploy and verify headers with curl -I or securityheaders.com
+Stage 1: Fetch (parallel, unchanged pattern)
+  +-- WorldBank       -> data/raw/{date}/worldbank-parsed.json    [BASELINE]
+  +-- GPI             -> data/raw/{date}/gpi-parsed.json          [BASELINE]
+  +-- INFORM          -> data/raw/{date}/inform-parsed.json       [BASELINE]
+  +-- ACLED           -> data/raw/{date}/acled-parsed.json        [SIGNAL]
+  +-- Advisories      -> data/raw/{date}/advisories-parsed.json   [SIGNAL]
+  +-- GDELT [NEW]     -> data/raw/{date}/gdelt-parsed.json        [SIGNAL]
+  +-- ReliefWeb [NEW] -> data/raw/{date}/reliefweb-parsed.json    [SIGNAL]
+  +-- HDX HAPI [NEW]  -> data/raw/{date}/hdx-parsed.json          [SIGNAL]
+  +-- WHO DONs [NEW]  -> data/raw/{date}/who-dons-parsed.json     [SIGNAL]
 
-Phase 2: Analytics (single layout change, affects all pages)
-  |-- Set up Cloudflare Web Analytics in CF dashboard (get beacon token)
-  |-- Add analytics script to Base.astro before </body>
-  |-- Update _headers CSP script-src to allow analytics domain
-  Deploy and verify analytics collecting data
+Stage 2: Load raw data (unchanged)
+  +-- Read all *-parsed.json, build Map<string, RawSourceData>
 
-Phase 3: New pages (parallel after i18n keys added)
-  |-- Add all new i18n keys to ui.ts (404 + donate, all 5 languages)
-  |-- Add donate route to ui.ts routes object
-  |-- Create src/pages/[lang]/404.astro (x5) + root src/pages/404.astro
-  |-- Create src/pages/[lang]/donate.astro (x5)
-  |-- Add donate link to Footer.astro
-  Deploy and verify 404 pages work, donate pages render correctly
+Stage 3: Score [MODIFIED]
+  +-- Load source tier config from sources.json
+  +-- Separate indicators into BASELINE tier and SIGNAL tier
+  +-- Compute baseline pillar scores (annual indices, slow-moving)
+  +-- Compute signal adjustments (realtime sources, with freshness decay)
+  +-- Blend: final_score = baseline * (1 - signal_influence) + signal * signal_influence
 
-Phase 4: Cookie consent assessment (decision gate)
-  |-- Verify: does Cloudflare Web Analytics set any cookies? (Answer: No)
-  |-- If no cookies anywhere: SKIP cookie consent entirely
-  |-- If cookies found: implement CookieConsent.astro + Base.astro integration
+Stage 4: Snapshot (unchanged structure, enriched metadata)
+Stage 5: History Index (unchanged)
 ```
 
-**Rationale:**
-- Phase 1 is pure additive (new files only), zero risk of breaking existing functionality
-- Phase 2 changes the global layout -- validate before adding new pages that use it
-- Phase 3 follows established page patterns but needs i18n keys committed first
-- Phase 4 is a decision gate that depends on Phase 2's analytics choice -- likely results in "skip"
+## Scoring Formula Architecture
 
----
+### Current Formula (to be replaced)
+
+```
+pillar_score = average(normalize(indicators_in_pillar))
+composite = sum(pillar_score * pillar_weight) * 9 + 1
+```
+
+All indicators are treated equally regardless of freshness or source type.
+
+### New Formula: Baseline + Signal with Freshness Decay
+
+#### Step 1: Indicator Classification
+
+Each indicator is classified by its source's tier (from `sources.json`):
+
+```typescript
+// NEW: src/pipeline/config/sources.json
+{
+  "sources": {
+    "worldbank":  { "tier": "baseline", "maxAgeDays": 730,  "decayHalfLifeDays": 365 },
+    "gpi":        { "tier": "baseline", "maxAgeDays": 730,  "decayHalfLifeDays": 365 },
+    "inform":     { "tier": "baseline", "maxAgeDays": 730,  "decayHalfLifeDays": 365 },
+    "acled":      { "tier": "signal",   "maxAgeDays": 60,   "decayHalfLifeDays": 14  },
+    "advisories": { "tier": "signal",   "maxAgeDays": 30,   "decayHalfLifeDays": 7   },
+    "gdelt":      { "tier": "signal",   "maxAgeDays": 14,   "decayHalfLifeDays": 3   },
+    "reliefweb":  { "tier": "signal",   "maxAgeDays": 60,   "decayHalfLifeDays": 14  },
+    "hdx":        { "tier": "signal",   "maxAgeDays": 90,   "decayHalfLifeDays": 30  },
+    "who-dons":   { "tier": "signal",   "maxAgeDays": 90,   "decayHalfLifeDays": 30  }
+  }
+}
+```
+
+**Why these decay values**: GDELT updates every 15 minutes so 3-day half-life keeps only the last week relevant. ACLED and ReliefWeb update weekly so 14-day half-life gives two weeks of high relevance. WHO DONs and HDX update less frequently so 30-day half-life. Annual baselines get 365-day half-life meaning they lose 50% weight after a year of no update, but never fully disappear within 2 years.
+
+#### Step 2: Freshness Weight Computation
+
+```typescript
+// NEW: src/pipeline/scoring/freshness.ts
+
+/**
+ * Compute a freshness weight for an indicator based on its age.
+ * Uses exponential decay: weight = e^(-lambda * ageDays)
+ * where lambda = ln(2) / halfLifeDays
+ *
+ * Returns 1.0 for fresh data, approaches 0.0 for stale data.
+ * Clamped to 0 if age exceeds maxAgeDays.
+ */
+export function freshnessWeight(
+  dataAgeMs: number,
+  halfLifeDays: number,
+  maxAgeDays: number,
+): number {
+  const ageDays = dataAgeMs / (1000 * 60 * 60 * 24);
+
+  if (ageDays > maxAgeDays) return 0;
+  if (ageDays <= 0) return 1;
+
+  const lambda = Math.LN2 / halfLifeDays;
+  return Math.exp(-lambda * ageDays);
+}
+```
+
+**Why exponential decay over linear**: Linear decay creates an arbitrary cliff where data goes from "slightly useful" to "zero" in one day. Exponential decay naturally models information relevance -- yesterday's crisis matters a lot, last month's matters some, last year's barely registers. The half-life parameter makes this tunable per source type without changing the formula.
+
+#### Step 3: Per-Pillar Baseline + Signal Blending
+
+```typescript
+// MODIFIED: src/pipeline/scoring/engine.ts (conceptual)
+
+interface WeightedIndicator {
+  normalizedValue: number;  // 0-1, higher = safer
+  freshnessWeight: number;  // 0-1, from decay function
+}
+
+function computePillarScore(
+  pillarDef: PillarWeight,
+  baselineIndicators: WeightedIndicator[],
+  signalIndicators: WeightedIndicator[],
+  maxSignalInfluence: number,  // from config, e.g., 0.30
+  expectedSignalCount: number, // how many signal indicators this pillar expects
+): number {
+  // Baseline: freshness-weighted average of baseline indicators
+  const baselineScore = freshWeightedAverage(baselineIndicators) ?? 0.5;
+
+  // If no signals, use pure baseline (graceful degradation)
+  if (signalIndicators.length === 0) {
+    return baselineScore;
+  }
+
+  // Signal: freshness-weighted average of signal indicators
+  const signalScore = freshWeightedAverage(signalIndicators);
+
+  // Signal influence scales with data completeness
+  // More signal sources available = more influence, up to maxSignalInfluence
+  const signalCompleteness = Math.min(1, signalIndicators.length / expectedSignalCount);
+  const signalInfluence = maxSignalInfluence * signalCompleteness;
+
+  // Blend
+  return baselineScore * (1 - signalInfluence) + signalScore * signalInfluence;
+}
+
+function freshWeightedAverage(indicators: WeightedIndicator[]): number | null {
+  if (indicators.length === 0) return null;
+  const totalWeight = indicators.reduce((sum, i) => sum + i.freshnessWeight, 0);
+  if (totalWeight === 0) return null;
+  return indicators.reduce(
+    (sum, i) => sum + i.normalizedValue * i.freshnessWeight,
+    0,
+  ) / totalWeight;
+}
+```
+
+**Why 70/30 baseline-to-signal max blend**: Baseline indices are peer-reviewed, comprehensive, and authoritative. Signals are timely but noisy. A 70/30 split means signals can meaningfully move a score (e.g., drop a country from 7.0 to 5.5 during a major crisis) without a single bad news day causing wild swings. The influence also scales with data availability -- if only 1 of 4 signal sources has data for a country, it gets proportionally less influence (~7.5% instead of 30%).
+
+**Key property**: When all signal sources fail, the formula degrades to pure baseline scoring. This is identical to current behavior, making the migration safe.
+
+#### Step 4: Composite Score (unchanged)
+
+```
+composite = sum(pillar_score * pillar_weight) * 9 + 1
+```
+
+The 1-10 mapping stays the same. Only the per-pillar scoring changes.
+
+### Type Extensions
+
+```typescript
+// MODIFIED: src/pipeline/types.ts additions
+
+export interface RawIndicator {
+  countryIso3: string;
+  indicatorName: string;
+  value: number;
+  year: number;
+  source: string;
+  fetchedAt?: string;  // NEW: ISO 8601 when this data was fetched
+  dataDate?: string;   // NEW: ISO 8601 when the underlying data was published/valid
+}
+
+export type SourceTier = 'baseline' | 'signal';
+
+export interface SourceConfig {
+  tier: SourceTier;
+  maxAgeDays: number;
+  decayHalfLifeDays: number;
+}
+
+export interface SourcesConfig {
+  maxSignalInfluence: number;  // e.g., 0.30
+  sources: Record<string, SourceConfig>;
+}
+```
 
 ## Anti-Patterns to Avoid
 
-### Anti-Pattern 1: Using Astro's `security.csp` for SSG
-**What:** Enabling `security: { csp: true }` in `astro.config.mjs`
-**Why bad:** Only works for SSR pages. SSG pages silently ignore it -- no error, no CSP meta tag generated. Creates a false sense of security.
-**Instead:** Use Cloudflare Pages `_headers` file for CSP on static sites.
+### Anti-Pattern 1: Treating Realtime Sources as Equal to Annual Indices
+**What**: Adding GDELT/ReliefWeb indicators to `INDICATOR_RANGES` and pillar assignments without tier separation, relying on the existing simple average.
+**Why bad**: With 9 indicators in the conflict pillar, a single GDELT instability spike would be diluted to ~11% influence, making the whole realtime effort pointless. Conversely, if you over-weight signal indicators by giving them 2x-3x within the average, a false positive tanks a country's score for a day.
+**Instead**: Use the tiered baseline+signal architecture where signals have bounded influence (max 30%) proportional to data completeness.
 
-### Anti-Pattern 2: Embedding Payment Processing
-**What:** Building a custom donation form or embedding Ko-fi's JavaScript widget
-**Why bad:** PCI compliance burden, CSP complications (external scripts), maintenance cost -- all for a "nice to have" feature on a zero-budget project.
-**Instead:** Simple `<a>` link to external Ko-fi page. Zero scripts, zero CSP additions, zero liability.
+### Anti-Pattern 2: Separate "Realtime Pipeline" Running on Different Schedule
+**What**: Running a second pipeline every hour for realtime sources, merging with daily baseline.
+**Why bad**: Doubles complexity, introduces race conditions between two pipelines writing to the same output files, and exceeds the zero-budget constraint (GitHub Actions minutes). Also creates confusing history-index.json entries.
+**Instead**: Keep single daily pipeline. Add all fetchers to the same `Promise.allSettled` call. The freshness decay handles the temporal difference naturally.
 
-### Anti-Pattern 3: Full CMP for a Cookieless Site
-**What:** Adding CookieYes, OneTrust, or similar Consent Management Platform
-**Why bad:** Adds 30-100KB JS, UX friction (banner), legal complexity, ongoing maintenance -- when the site sets literally zero cookies.
-**Instead:** Choose cookieless analytics (Cloudflare Web Analytics). No cookies = no consent needed = no banner.
+### Anti-Pattern 3: Storing Realtime Data in a Database
+**What**: Adding SQLite/Postgres to store event-level realtime data between pipeline runs.
+**Why bad**: Violates the static-files-only architecture, adds deployment complexity, and is unnecessary when the pipeline runs daily and sources provide their own lookback windows (GDELT: 7 days, ACLED: 30 days, ReliefWeb: active disasters).
+**Instead**: Each fetcher queries its source's built-in lookback window. No inter-run state needed.
 
-### Anti-Pattern 4: Server-Side 404 Routing
-**What:** Adding Cloudflare Functions/Workers for language-aware 404 routing
-**Why bad:** Breaks the pure SSG model. Introduces SSR dependency, cold starts, complexity.
-**Instead:** Use Cloudflare Pages' built-in hierarchical `404.html` lookup with per-directory files.
+### Anti-Pattern 4: Per-Event Granularity in Scored Output
+**What**: Including individual disaster events or GDELT articles in the country score output.
+**Why bad**: The ~1MB daily snapshot would balloon. GDELT processes billions of articles.
+**Instead**: Fetchers aggregate to country-level indicators (event counts, instability scores, max severity) before writing parsed JSON. Only aggregates enter the scoring pipeline.
 
-### Anti-Pattern 5: Nonce-Based CSP for Static Sites
-**What:** Trying to use CSP nonces (`'nonce-XXXX'`) with SSG output
-**Why bad:** Nonces require a server to generate a unique value per request and inject it into both the header and each `<script>` tag. Impossible with pre-built static HTML.
-**Instead:** Use hash-based CSP (or `unsafe-inline` as pragmatic starting point).
+### Anti-Pattern 5: Recency-Weighted Simple Average (instead of tier separation)
+**What**: Keeping the current `average(indicators)` formula but multiplying realtime indicators by 1.5x-2x.
+**Why bad**: Multipliers within an average are fragile. The effective weight depends on how many other indicators exist in the pillar. Adding or removing one indicator changes the balance of all others. Hard to reason about and explain on the methodology page.
+**Instead**: Explicit tier separation with clear, configurable blend ratio. Easy to explain: "70% of your score comes from established annual indices, 30% from near-realtime signals."
 
----
+## Scalability Considerations
+
+| Concern | Current (5 sources) | After (9 sources) | At 20+ sources |
+|---------|---------------------|---------------------|----------------|
+| **Fetch time** | ~30s (parallel) | ~2.5min (GDELT fetches 248 countries at 500ms spacing) | Batch GDELT queries by region |
+| **Raw data volume** | 1.5GB (2+ years) | ~2.5GB/year (GDELT CSV + ReliefWeb JSON) | Prune raw data older than 90 days |
+| **Snapshot size** | ~1MB/day | ~1.1MB/day (more indicators per country) | Consider splitting history-index.json by year |
+| **Build time** | ~2min (Astro SSG) | Unchanged (reads latest.json only) | Unchanged |
+| **GitHub repo size** | 2GB+ (data/) | ~4GB in 1 year | Add `data/raw/` to .gitignore, store in artifact/release |
+| **GitHub Actions** | ~3min/run | ~5min/run (GDELT sequential fetching) | Still within 15min timeout |
+
+### GDELT Fetch Time Concern
+
+GDELT's Stability Timeline API requires one request per country (~248 countries). At 500ms spacing to avoid rate limiting, this takes ~2 minutes. This is the bottleneck.
+
+**Mitigation**: Run GDELT fetch concurrently with other fetchers via `Promise.allSettled`. The 2-minute GDELT fetch runs in parallel with other sources. Total pipeline time increases from ~3min to ~5min, well within the 15min GitHub Actions timeout.
+
+**Future optimization**: If GDELT adds a bulk/batch endpoint, switch to that. Or reduce to top-100 countries by travel volume.
+
+### Data Volume Management
+
+The repo is already at 2GB+ from historical raw data. Adding 4 new daily sources will add approximately 200KB/day raw data. This is manageable short-term.
+
+**Recommended approach**:
+1. Short-term: No change needed. 200KB/day is trivial.
+2. Medium-term (6+ months): Add a cleanup step to the pipeline that removes `data/raw/` directories older than 90 days. The scored snapshots in `data/scores/` preserve all historical information needed.
+3. Long-term: Move `data/raw/` out of git entirely (GitHub Releases artifacts or external storage).
+
+## Integration Points Summary
+
+### Files to Create (NEW)
+
+| File | Purpose |
+|------|---------|
+| `src/pipeline/fetchers/gdelt.ts` | GDELT Stability Timeline API fetcher (CSV, per-country) |
+| `src/pipeline/fetchers/reliefweb.ts` | ReliefWeb API v2 active disasters fetcher (JSON) |
+| `src/pipeline/fetchers/hdx.ts` | HDX HAPI conflict events + displacement fetcher (JSON) |
+| `src/pipeline/fetchers/who-dons.ts` | WHO Disease Outbreak News fetcher (JSON) |
+| `src/pipeline/scoring/freshness.ts` | Freshness decay weight calculator |
+| `src/pipeline/config/sources.json` | Source tier config, decay parameters |
+| `src/pipeline/config/fips-to-iso3.ts` | FIPS 10-4 to ISO3 country code mapping for GDELT |
+
+### Files to Modify (EXISTING)
+
+| File | Change |
+|------|--------|
+| `src/pipeline/fetchers/index.ts` | Add 4 new fetcher imports and calls to `Promise.allSettled` |
+| `src/pipeline/scoring/normalize.ts` | Add `INDICATOR_RANGES` entries for 8 new indicators |
+| `src/pipeline/scoring/engine.ts` | Implement baseline+signal blending formula; add sources to `SOURCE_CATALOG` |
+| `src/pipeline/types.ts` | Add `fetchedAt?`, `dataDate?` to `RawIndicator`; add `SourceTier`, `SourceConfig`, `SourcesConfig` types |
+| `src/pipeline/config/weights.json` | Add new indicator names to pillar assignments; bump version to 5.0.0 |
+
+### Files Unchanged
+
+| File | Why |
+|------|-----|
+| `src/pipeline/run.ts` | Pipeline stages unchanged; calls same `fetchAllSources()` and `computeAllScores()` |
+| `src/pipeline/scoring/snapshot.ts` | Output format unchanged |
+| `src/pipeline/scoring/history.ts` | Reads snapshots unchanged |
+| `src/pipeline/utils/fs.ts` | Utility functions unchanged |
+| `.github/workflows/data-pipeline.yml` | Only needs new env vars for ReliefWeb and HDX HAPI secrets |
+
+## Suggested Build Order
+
+Based on dependency analysis:
+
+1. **Phase 1: Types and Config** -- Extend `types.ts` with `fetchedAt`, `dataDate`, `SourceTier`, `SourceConfig`. Create `sources.json`. Create `fips-to-iso3.ts`. Zero-risk, no behavior change.
+2. **Phase 2: Freshness Module** -- Build `freshness.ts` with unit tests. Independent, testable in isolation.
+3. **Phase 3: New Fetchers (one at a time)**:
+   - ReliefWeb first (cleanest API, ISO3 native, well-documented, HIGH confidence)
+   - WHO DONs second (no auth, test country name parsing)
+   - HDX HAPI third (needs app_identifier, beta API)
+   - GDELT last (most complex: per-country fetching, FIPS mapping, CSV parsing)
+   - Wire each into `fetchers/index.ts` as ready
+4. **Phase 4: Normalize Expansion** -- Add `INDICATOR_RANGES` for new indicators. Add to `weights.json` pillar assignments. At this point, new data flows but scoring still uses old formula (indicators are just averaged in).
+5. **Phase 5: Scoring Engine Overhaul** -- Implement baseline+signal blending in `engine.ts`. This is the riskiest change and should come last, after all data is flowing correctly.
+6. **Phase 6: Validation and Tuning** -- Run pipeline with both old and new formula, compare outputs. Tune decay parameters and signal influence weight. Test edge cases (country with only baseline data, country with only signal data, all signals failed).
+
+**Rationale**: This order minimizes risk. Phases 1-4 add data without changing scoring behavior (new indicators participate in simple average, which is a minor improvement already). Phase 5 changes the formula only after all inputs are verified. Phase 6 validates the whole system.
+
+## Caching Strategy
+
+### Fetcher-Level Caching (Existing Pattern -- reuse exactly)
+
+The existing `findLatestCached()` pattern works well and must be reused for all new fetchers:
+- Each fetcher writes `{source}-parsed.json` to `data/raw/{date}/`
+- On failure, falls back to the most recent cached version from any previous date
+- This provides graceful degradation: if ReliefWeb is down today, yesterday's ReliefWeb data is used with appropriate freshness decay reducing its influence
+
+### No Additional Caching Layer Needed
+
+The daily pipeline pattern means each run starts fresh. Sources like ACLED and ReliefWeb provide their own lookback windows, so there is no need to maintain state between pipeline runs. The freshness decay system handles staleness naturally.
+
+### Build-Time Caching
+
+The Astro SSG build reads `data/scores/latest.json` only. No change needed. The snapshot format is unchanged, just richer indicator data inside the same structure.
+
+## Failure Mode Analysis
+
+| Failure | Impact | Mitigation |
+|---------|--------|------------|
+| GDELT API down | No instability signal for conflict pillar | Cached fallback + ACLED still provides daily conflict data |
+| ReliefWeb API down | No active disaster signal | Cached fallback; INFORM natural/climate baselines still active |
+| HDX HAPI down (beta) | No displacement or additional conflict data | Cached fallback; ACLED covers conflict events directly |
+| WHO DONs API down | No outbreak signal | Cached fallback; INFORM health/epidemic baselines still active |
+| All 4 new sources fail | No new signal tier data | ACLED + Advisories still provide some signal; formula degrades gracefully toward baseline |
+| All signal sources fail | Zero signal influence | Formula returns pure baseline scoring, identical to current behavior |
+| GDELT returns extreme instability | Signal overweights one country | 30% max signal influence caps the damage; freshness-weighted average across multiple signals dampens outliers |
+| Stale baseline (GPI not updated in 2 years) | Baseline doesn't reflect reality | Freshness decay at 365-day half-life reduces GPI weight to ~25% after 2 years; signal sources compensate |
+| FIPS-to-ISO3 mapping mismatch | GDELT data for some countries dropped | Log warnings, country still scored from other sources |
 
 ## Sources
 
-- [Cloudflare Pages Headers docs](https://developers.cloudflare.com/pages/configuration/headers/) -- `_headers` file format and limits
-- [Cloudflare Pages Serving Pages](https://developers.cloudflare.com/pages/configuration/serving-pages/) -- 404.html hierarchical lookup
-- [Astro CSP docs](https://docs.astro.build/en/reference/experimental-flags/csp/) -- confirms SSR-only limitation
-- [llms.txt specification](https://llmstxt.org/) -- format and required sections
-- [Cloudflare Web Analytics](https://developers.cloudflare.com/analytics/web-analytics/) -- free, cookieless analytics
-- [Ko-fi donation widget](https://help.ko-fi.com/hc/en-us/articles/360018381678-Ko-fi-tip-widget) -- integration options
-- [Plausible privacy-focused analytics](https://plausible.io/privacy-focused-web-analytics) -- cookieless alternative
-- [GDPR cookie consent requirements 2025](https://secureprivacy.ai/blog/gdpr-cookie-consent-requirements-2025) -- when consent is/isn't required
-- Direct codebase analysis: `Base.astro`, `Footer.astro`, `astro.config.mjs`, `wrangler.toml`, `deploy.yml`, `ui.ts`, `index.astro`
+- [GDELT Project](https://www.gdeltproject.org/) -- free, no auth, 15-minute updates
+- [GDELT Stability Dashboard API](https://blog.gdeltproject.org/announcing-the-gdelt-stability-dashboard-api-stability-timeline/)
+- [ReliefWeb API](https://apidoc.reliefweb.int/) -- free, requires appname, well-documented
+- [HDX HAPI](https://hdx-hapi.readthedocs.io/) -- free, beta, ISO3 native
+- [WHO Disease Outbreak News API](https://www.who.int/api/news/outbreaks/sfhelp) -- free, no auth
+- [GDACS API](https://www.gdacs.org/gdacsapi/swagger/index.html) -- free, no auth (backup for natural disasters if ReliefWeb insufficient)
+- [USGS Earthquake API](https://earthquake.usgs.gov/fdsnws/event/1/) -- free, no auth (backup for earthquakes)
