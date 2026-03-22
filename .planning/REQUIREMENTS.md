@@ -174,11 +174,11 @@ Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
 
 ### Scoring Formula
 
-- [ ] **FORM-01**: System computes scores using a tiered baseline+signal architecture where annual indices contribute ~70% and realtime sources contribute max ~30%
-- [ ] **FORM-02**: Each data source is weighted by freshness using exponential decay (configurable half-life per source in sources.json)
-- [ ] **FORM-03**: Source tiers and decay parameters are defined in a sources.json config file alongside existing weights.json
-- [ ] **FORM-04**: Scoring engine handles missing realtime data gracefully, falling back to pure baseline scoring
-- [ ] **FORM-05**: Per-indicator sub-weights exist within each pillar (replacing equal averaging) to prevent score inflation when adding indicators
+- [x] **FORM-01**: System computes scores using a tiered baseline+signal architecture where annual indices contribute ~70% and realtime sources contribute max ~30%
+- [x] **FORM-02**: Each data source is weighted by freshness using exponential decay (configurable half-life per source in sources.json)
+- [x] **FORM-03**: Source tiers and decay parameters are defined in a sources.json config file alongside existing weights.json
+- [x] **FORM-04**: Scoring engine handles missing realtime data gracefully, falling back to pure baseline scoring
+- [x] **FORM-05**: Per-indicator sub-weights exist within each pillar (replacing equal averaging) to prevent score inflation when adding indicators
 
 ### New Data Sources
 
@@ -186,7 +186,7 @@ Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
 - [ ] **SRC-02**: Pipeline fetches GDACS disaster alerts (earthquakes, floods, cyclones, volcanoes) filtered to orange/red severity
 - [ ] **SRC-03**: Pipeline fetches ReliefWeb active disasters and humanitarian reports per country
 - [ ] **SRC-04**: Pipeline fetches WHO Disease Outbreak News and counts active outbreaks per country
-- [ ] **SRC-05**: Static FIPS-to-ISO3 country code mapping table exists for GDELT integration
+- [x] **SRC-05**: Static FIPS-to-ISO3 country code mapping table exists for GDELT integration
 
 ### Historical Continuity
 
@@ -396,12 +396,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FORM-01 | Phase 21 | Pending |
-| FORM-02 | Phase 21 | Pending |
-| FORM-03 | Phase 21 | Pending |
-| FORM-04 | Phase 21 | Pending |
-| FORM-05 | Phase 21 | Pending |
-| SRC-05 | Phase 21 | Pending |
+| FORM-01 | Phase 21 | Complete |
+| FORM-02 | Phase 21 | Complete |
+| FORM-03 | Phase 21 | Complete |
+| FORM-04 | Phase 21 | Complete |
+| FORM-05 | Phase 21 | Complete |
+| SRC-05 | Phase 21 | Complete |
 | HIST-01 | Phase 22 | Pending |
 | HIST-02 | Phase 22 | Pending |
 | SRC-02 | Phase 23 | Pending |

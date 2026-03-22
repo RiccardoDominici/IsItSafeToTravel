@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: ready_to_plan
-stopped_at: Roadmap created, ready to plan Phase 21
-last_updated: "2026-03-23"
-last_activity: 2026-03-23
+status: Ready to execute
+stopped_at: Completed 21-02 (Scoring Engine Redesign)
+last_updated: "2026-03-22T23:43:03.052Z"
+last_activity: 2026-03-22
 progress:
-  total_phases: 6
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 11
+  completed_phases: 1
+  total_plans: 5
+  completed_plans: 8
 ---
 
 # Project State
@@ -24,12 +24,8 @@ See: .planning/PROJECT.md (updated 2026-03-22)
 
 ## Current Position
 
-Phase: 21 of 26 (Scoring Formula Redesign)
-Plan: 0 of 0 in current phase
-Status: Ready to plan
-Last activity: 2026-03-23 — v3.0 roadmap created (Phases 21-26)
-
-Progress: [####################..........] 67% (20/26 phases complete across all milestones)
+Phase: 21 (Scoring Formula Redesign) — EXECUTING
+Plan: 3 of 3
 
 ## Performance Metrics
 
@@ -49,6 +45,9 @@ Recent decisions affecting current work:
 - [v3.0 research]: GDELT for within-country spike detection only (not cross-country) to contain media bias
 - [v3.0 research]: Fetcher order by API confidence: ReliefWeb+GDACS, then GDELT, then WHO DONs
 - [v3.0 research]: Historical backfill mandatory before new sources go live to prevent "v3 cliff"
+- [Phase 21]: Named tiered config source-tiers.json to avoid overwriting existing sources.json catalog
+- [Phase 21]: Tiered scoring loads source-tiers.json (not sources.json) to avoid overwriting source catalog
+- [Phase 21]: sourcesConfig optional 7th param on computeCountryScore for backward compatibility
 
 ### Pending Todos
 
@@ -66,10 +65,12 @@ None yet.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 260320-ip2 | Fix 5 UI issues: language selector dropdown, health chart, back button, category summary, comparison search | 2026-03-20 | 6a94a4d | [260320-ip2-fix-5-ui-issues-language-selector-dropdo](./quick/260320-ip2-fix-5-ui-issues-language-selector-dropdo/) |
+| Phase 21 P01 | 4min | 2 tasks | 4 files |
+| Phase 21 P02 | 4min | 2 tasks | 5 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-23
-Last session: 2026-03-23
-Stopped at: v3.0 roadmap created, ready to plan Phase 21
+Last activity: 2026-03-22
+Last session: 2026-03-22T23:43:03.049Z
+Stopped at: Completed 21-02 (Scoring Engine Redesign)
 Resume file: None
