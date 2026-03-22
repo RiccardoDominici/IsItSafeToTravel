@@ -157,7 +157,12 @@ Plans:
   3. When all realtime source data is missing or stale beyond max-age, the engine falls back to pure baseline scoring and produces valid scores for all 248 countries
   4. Adding or removing an indicator does not silently change the effective weight of other indicators in the same pillar (per-indicator sub-weights enforce this)
   5. A static FIPS-to-ISO3 mapping file exists with coverage for all GDELT country codes needed in Phase 24
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 21-01-PLAN.md — Types, sources.json config, FIPS-to-ISO3 mapping, weights.json v5.0.0 with per-indicator sub-weights
+- [ ] 21-02-PLAN.md — Freshness decay module and scoring engine rewrite with tiered baseline+signal blending
+- [ ] 21-03-PLAN.md — Pipeline integration wiring and end-to-end verification
 
 ### Phase 22: Historical Backfill
 **Goal**: All historical scores from 2012 onward are recalculated with the new formula so trend charts show smooth continuity instead of a v3 cliff
@@ -239,7 +244,7 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 18. SEO Enhancement | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 19. Donations and Error Pages | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 20. Accessibility and CSP Hardening | v2.0 | 1/1 | Complete | 2026-03-21 |
-| 21. Scoring Formula Redesign | v3.0 | 0/0 | Not started | - |
+| 21. Scoring Formula Redesign | v3.0 | 0/3 | In progress | - |
 | 22. Historical Backfill | v3.0 | 0/0 | Not started | - |
 | 23. ReliefWeb and GDACS Fetchers | v3.0 | 0/0 | Not started | - |
 | 24. GDELT Stability Fetcher | v3.0 | 0/0 | Not started | - |
