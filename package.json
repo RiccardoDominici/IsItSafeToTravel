@@ -11,6 +11,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
+    "test:freshness": "node --import tsx --test src/pipeline/scoring/__tests__/freshness.test.ts",
     "pipeline": "tsx src/pipeline/run.ts",
     "pipeline:date": "tsx src/pipeline/run.ts"
   },
