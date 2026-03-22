@@ -168,7 +168,53 @@ Requirements for milestone v2.0: Production Ready.
 - [x] **CSP-01**: Content-Security-Policy header is deployed (report-only first, then enforced)
 - [x] **CSP-02**: CSP does not break D3 charts, map, or dark mode toggle
 
-## v3 Requirements
+## v3.0 Requirements
+
+Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
+
+### Scoring Formula
+
+- [ ] **FORM-01**: System computes scores using a tiered baseline+signal architecture where annual indices contribute ~70% and realtime sources contribute max ~30%
+- [ ] **FORM-02**: Each data source is weighted by freshness using exponential decay (configurable half-life per source in sources.json)
+- [ ] **FORM-03**: Source tiers and decay parameters are defined in a sources.json config file alongside existing weights.json
+- [ ] **FORM-04**: Scoring engine handles missing realtime data gracefully, falling back to pure baseline scoring
+- [ ] **FORM-05**: Per-indicator sub-weights exist within each pillar (replacing equal averaging) to prevent score inflation when adding indicators
+
+### New Data Sources
+
+- [ ] **SRC-01**: Pipeline fetches daily GDELT Stability scores per country (FIPS-to-ISO3 mapping, CSV parsing)
+- [ ] **SRC-02**: Pipeline fetches GDACS disaster alerts (earthquakes, floods, cyclones, volcanoes) filtered to orange/red severity
+- [ ] **SRC-03**: Pipeline fetches ReliefWeb active disasters and humanitarian reports per country
+- [ ] **SRC-04**: Pipeline fetches WHO Disease Outbreak News and counts active outbreaks per country
+- [ ] **SRC-05**: Static FIPS-to-ISO3 country code mapping table exists for GDELT integration
+
+### Historical Continuity
+
+- [ ] **HIST-01**: All historical scores back to 2012 are recalculated with the new formula to avoid the "v3 cliff"
+- [ ] **HIST-02**: History-index.json reflects consistent scoring across all dates after backfill
+
+### Validation
+
+- [ ] **VALID-01**: Automated CI test catches single-day score changes >0.5 points (score drift guard)
+- [ ] **VALID-02**: New formula is validated against known historical crises to confirm realtime signals improve accuracy
+
+### Site Documentation
+
+- [ ] **DOC-01**: Methodology page explains the new baseline+signal formula, all data sources, and all weights in all 5 languages
+- [ ] **DOC-02**: Each new data source is listed with its update frequency and role in the scoring formula
+- [ ] **DOC-03**: Pillar explanations are updated to reflect new realtime indicators
+
+### Repo Documentation
+
+- [ ] **REPO-01**: README documents the new data architecture and source list
+- [ ] **REPO-02**: Pipeline documentation explains the baseline+signal scoring engine, source tiers, and decay parameters
+
+### UX Indicators
+
+- [ ] **UX-01**: User sees a score change delta indicator (arrow/badge) on country cards showing recent score movement
+- [ ] **UX-02**: User sees data freshness badges showing when each source was last updated per country
+
+## v4 Requirements
 
 Deferred to future release. Tracked but not in current roadmap.
 
@@ -193,6 +239,12 @@ Deferred to future release. Tracked but not in current roadmap.
 - **FEAT-09**: Static JSON data endpoint (/api/scores.json) for developers
 - **FEAT-10**: /llms-full.txt auto-generated at build time
 
+### Data Sources (v3.x deferred)
+
+- **SRC-06**: Canada and Australia travel advisory fetchers (RSS)
+- **SRC-07**: INFORM Severity Index fetcher (monthly, requires ACAPS account)
+- **SRC-08**: Crisis event timeline on country detail page (requires event metadata storage)
+
 ## Out of Scope
 
 | Feature | Reason |
@@ -210,6 +262,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | Google Analytics | Italian Garante ruled non-compliant (June 2022); use CF Web Analytics instead |
 | Custom 5xx error pages | Requires Cloudflare Business plan; accept CF default |
 | Self-hosted analytics | Unnecessary given CF Web Analytics; exceeds budget |
+| Full GDELT Event Database ingestion | Billions of events; use pre-aggregated Stability API instead |
+| EM-DAT disaster database | No API, manual Excel download only, not realtime |
+| Social media sentiment analysis | Paid API, NLP pipeline, violates budget and neutrality constraints |
+| Generic HDX/OCHA connector | 18,000 datasets with different schemas; unbounded integration cost |
+| Sub-national (ADM1) scoring | Exponentially more complex; defer to v4+ |
 
 ## Traceability
 
@@ -337,4 +394,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-21 after v2.0 roadmap creation*
+*Last updated: 2026-03-23 after v3.0 requirements definition*
