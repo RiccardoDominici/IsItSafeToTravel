@@ -6,7 +6,7 @@ import { writeFileSync } from 'node:fs';
 import * as XLSX from 'xlsx';
 
 const GPI_EXCEL_URL =
-  'https://www.visionofhumanity.org/wp-content/uploads/2024/06/GPI-2024-overall-scores-and-domains-2008-2024.xlsx';
+  'https://www.visionofhumanity.org/wp-content/uploads/2023/06/GPI-2023-overall-scores-and-domains-2008-2023.xlsx';
 
 /**
  * Common country name aliases that differ between GPI and ISO standard names.
@@ -136,144 +136,120 @@ export async function fetchGpi(date: string): Promise<FetchResult> {
   }
 }
 
-function parseGpiExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
+/**
+ * Parse a single GPI sheet. The Excel has a header row (Row 1 in the JSON)
+ * where __EMPTY = "Country", __EMPTY_1 = "iso3c", __EMPTY_2..N = year numbers.
+ * Data rows follow from Row 2 onward.
+ */
+function parseGpiSheet(
+  workbook: XLSX.WorkBook,
+  sheetName: string,
+  indicatorName: string,
+  fetchedAt: string
+): { indicators: RawIndicator[]; latestYear: number } {
   const indicators: RawIndicator[] = [];
-  const workbook = XLSX.read(buffer, { type: 'buffer' });
-
-  // GPI Excel typically has sheets for overall scores and domain scores
-  // Try to find the most relevant sheet
-  const sheetNames = workbook.SheetNames;
-  console.log(`[GPI] Found sheets: ${sheetNames.join(', ')}`);
-
-  // Look for the overall scores sheet first
-  const overallSheet =
-    sheetNames.find(
-      (name) =>
-        name.toLowerCase().includes('overall') || name.toLowerCase().includes('score')
-    ) || sheetNames[0];
-
-  const sheet = workbook.Sheets[overallSheet];
-  if (!sheet) return indicators;
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet) return { indicators, latestYear: 0 };
 
   const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
-  if (rows.length === 0) return indicators;
+  if (rows.length < 2) return { indicators, latestYear: 0 };
 
-  // Find the year columns - GPI typically has columns like "2024", "2023", etc.
-  const sampleRow = rows[0];
-  const columns = Object.keys(sampleRow);
-
-  // Find country name column
-  const countryCol =
-    columns.find(
-      (c) =>
-        c.toLowerCase().includes('country') || c.toLowerCase().includes('name')
-    ) || columns[0];
-
-  // Find the most recent year column
-  const yearCols = columns
-    .filter((c) => /^20\d{2}$/.test(c.trim()))
-    .sort()
-    .reverse();
-  const latestYearCol = yearCols[0];
-  const latestYear = latestYearCol ? parseInt(latestYearCol) : new Date().getFullYear();
-
-  console.log(
-    `[GPI] Using country column: "${countryCol}", year column: "${latestYearCol || 'N/A'}"`
+  // Row 0 is empty/spacer, Row 1 is the real header
+  const headerRow = rows.find(
+    (r) => String(r['__EMPTY'] || '').toLowerCase() === 'country'
   );
+  if (!headerRow) return { indicators, latestYear: 0 };
 
-  for (const row of rows) {
-    const rawCountryName = String(row[countryCol] || '').trim();
-    if (!rawCountryName) continue;
-
-    const resolvedName = resolveCountryName(rawCountryName);
-    const country = getCountryByName(resolvedName);
-    if (!country) {
-      // Try original name as well
-      const countryAlt = getCountryByName(rawCountryName);
-      if (!countryAlt) continue;
-      // Use the alt match
-      const score = latestYearCol ? parseFloat(String(row[latestYearCol])) : NaN;
-      if (!isNaN(score)) {
-        indicators.push({
-          countryIso3: countryAlt.iso3,
-          indicatorName: 'gpi_overall',
-          value: score,
-          year: latestYear,
-          source: 'gpi',
-        });
-      }
-      continue;
-    }
-
-    // Extract overall GPI score from latest year column
-    if (latestYearCol) {
-      const score = parseFloat(String(row[latestYearCol]));
-      if (!isNaN(score)) {
-        indicators.push({
-          countryIso3: country.iso3,
-          indicatorName: 'gpi_overall',
-          value: score,
-          year: latestYear,
-          source: 'gpi',
-        });
-      }
+  // Build column-to-year mapping from header row
+  const colKeys = Object.keys(headerRow);
+  const yearMap = new Map<string, number>();
+  let latestYear = 0;
+  for (const col of colKeys) {
+    const val = headerRow[col];
+    const num = typeof val === 'number' ? val : parseInt(String(val));
+    if (num >= 2000 && num <= 2100) {
+      yearMap.set(col, num);
+      if (num > latestYear) latestYear = num;
     }
   }
 
-  // Try to find domain-specific sheets for safety_security and militarisation
-  for (const sheetName of sheetNames) {
-    const lowerName = sheetName.toLowerCase();
-    let indicatorName: string | null = null;
-
-    if (lowerName.includes('safety') || lowerName.includes('security')) {
-      indicatorName = 'gpi_safety_security';
-    } else if (lowerName.includes('militari')) {
-      indicatorName = 'gpi_militarisation';
+  // Find the column key for the latest year
+  let latestYearCol: string | null = null;
+  for (const [col, year] of yearMap) {
+    if (year === latestYear) {
+      latestYearCol = col;
+      break;
     }
+  }
 
-    if (!indicatorName || sheetName === overallSheet) continue;
+  if (!latestYearCol) return { indicators, latestYear: 0 };
 
-    const domainSheet = workbook.Sheets[sheetName];
-    if (!domainSheet) continue;
+  // Find country and iso3c column keys
+  const countryCol = colKeys.find(
+    (c) => String(headerRow[c] || '').toLowerCase() === 'country'
+  ) || '__EMPTY';
+  const iso3Col = colKeys.find(
+    (c) => String(headerRow[c] || '').toLowerCase() === 'iso3c'
+  );
 
-    const domainRows = XLSX.utils.sheet_to_json<Record<string, unknown>>(domainSheet, {
-      defval: '',
-    });
-    if (domainRows.length === 0) continue;
+  console.log(
+    `[GPI] Sheet "${sheetName}": latest year ${latestYear}, col "${latestYearCol}"`
+  );
 
-    const domainCols = Object.keys(domainRows[0]);
-    const domainCountryCol =
-      domainCols.find(
-        (c) =>
-          c.toLowerCase().includes('country') || c.toLowerCase().includes('name')
-      ) || domainCols[0];
-    const domainYearCols = domainCols
-      .filter((c) => /^20\d{2}$/.test(c.trim()))
-      .sort()
-      .reverse();
-    const domainLatestYearCol = domainYearCols[0];
+  // Parse data rows (skip header and spacer rows)
+  const headerIdx = rows.indexOf(headerRow);
+  for (let i = headerIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    const rawCountryName = String(row[countryCol] || '').trim();
+    if (!rawCountryName || rawCountryName.toLowerCase() === 'country') continue;
 
-    for (const row of domainRows) {
-      const rawName = String(row[domainCountryCol] || '').trim();
-      if (!rawName) continue;
-
-      const resolvedName = resolveCountryName(rawName);
-      const country = getCountryByName(resolvedName) || getCountryByName(rawName);
-      if (!country) continue;
-
-      if (domainLatestYearCol) {
-        const score = parseFloat(String(row[domainLatestYearCol]));
-        if (!isNaN(score)) {
-          indicators.push({
-            countryIso3: country.iso3,
-            indicatorName,
-            value: score,
-            year: latestYear,
-            source: 'gpi',
-          });
-        }
-      }
+    // Try ISO3 first, then name resolution
+    let country = iso3Col
+      ? getCountryByName(String(row[iso3Col] || '').trim())
+      : null;
+    if (!country) {
+      const resolvedName = resolveCountryName(rawCountryName);
+      country = getCountryByName(resolvedName) || getCountryByName(rawCountryName);
     }
+    if (!country) continue;
+
+    const score = parseFloat(String(row[latestYearCol]));
+    if (!isNaN(score)) {
+      indicators.push({
+        countryIso3: country.iso3,
+        indicatorName,
+        value: score,
+        year: latestYear,
+        source: 'gpi',
+      });
+    }
+  }
+
+  return { indicators, latestYear };
+}
+
+function parseGpiExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
+  const indicators: RawIndicator[] = [];
+  const workbook = XLSX.read(buffer, { type: 'buffer' });
+  const sheetNames = workbook.SheetNames;
+  console.log(`[GPI] Found sheets: ${sheetNames.join(', ')}`);
+
+  // Map sheet names to indicator names
+  const sheetMap: [string, string][] = [];
+  for (const name of sheetNames) {
+    const lower = name.toLowerCase();
+    if (lower.includes('overall') || lower.includes('score')) {
+      sheetMap.push([name, 'gpi_overall']);
+    } else if (lower.includes('safety') || lower.includes('security')) {
+      sheetMap.push([name, 'gpi_safety_security']);
+    } else if (lower.includes('militari')) {
+      sheetMap.push([name, 'gpi_militarisation']);
+    }
+  }
+
+  for (const [sheetName, indicatorName] of sheetMap) {
+    const result = parseGpiSheet(workbook, sheetName, indicatorName, fetchedAt);
+    indicators.push(...result.indicators);
   }
 
   return indicators;
