@@ -392,6 +392,37 @@ Which phases cover which requirements. Updated during roadmap creation.
 - Mapped to phases: 32
 - Unmapped: 0
 
+### v3.0 Traceability
+
+| Requirement | Phase | Status |
+|-------------|-------|--------|
+| FORM-01 | Phase 21 | Pending |
+| FORM-02 | Phase 21 | Pending |
+| FORM-03 | Phase 21 | Pending |
+| FORM-04 | Phase 21 | Pending |
+| FORM-05 | Phase 21 | Pending |
+| SRC-05 | Phase 21 | Pending |
+| HIST-01 | Phase 22 | Pending |
+| HIST-02 | Phase 22 | Pending |
+| SRC-02 | Phase 23 | Pending |
+| SRC-03 | Phase 23 | Pending |
+| SRC-01 | Phase 24 | Pending |
+| SRC-04 | Phase 25 | Pending |
+| VALID-01 | Phase 26 | Pending |
+| VALID-02 | Phase 26 | Pending |
+| DOC-01 | Phase 26 | Pending |
+| DOC-02 | Phase 26 | Pending |
+| DOC-03 | Phase 26 | Pending |
+| REPO-01 | Phase 26 | Pending |
+| REPO-02 | Phase 26 | Pending |
+| UX-01 | Phase 26 | Pending |
+| UX-02 | Phase 26 | Pending |
+
+**Coverage (v3.0):**
+- v3.0 requirements: 21 total
+- Mapped to phases: 21
+- Unmapped: 0
+
 ---
 *Requirements defined: 2026-03-19*
-*Last updated: 2026-03-23 after v3.0 requirements definition*
+*Last updated: 2026-03-23 after v3.0 roadmap creation*
