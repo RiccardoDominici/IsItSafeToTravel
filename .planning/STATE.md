@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: Ready to execute
-stopped_at: Completed 21-02 (Scoring Engine Redesign)
-last_updated: "2026-03-22T23:43:03.052Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 21-03 (Pipeline Integration)
+last_updated: "2026-03-22T23:45:55.499Z"
 last_activity: 2026-03-22
 progress:
   total_phases: 11
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 5
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -48,6 +48,7 @@ Recent decisions affecting current work:
 - [Phase 21]: Named tiered config source-tiers.json to avoid overwriting existing sources.json catalog
 - [Phase 21]: Tiered scoring loads source-tiers.json (not sources.json) to avoid overwriting source catalog
 - [Phase 21]: sourcesConfig optional 7th param on computeCountryScore for backward compatibility
+- [Phase 21]: Minimal run.ts change -- engine handles tiered scoring internally, pipeline just logs summary
 
 ### Pending Todos
 
@@ -67,10 +68,11 @@ None yet.
 | 260320-ip2 | Fix 5 UI issues: language selector dropdown, health chart, back button, category summary, comparison search | 2026-03-20 | 6a94a4d | [260320-ip2-fix-5-ui-issues-language-selector-dropdo](./quick/260320-ip2-fix-5-ui-issues-language-selector-dropdo/) |
 | Phase 21 P01 | 4min | 2 tasks | 4 files |
 | Phase 21 P02 | 4min | 2 tasks | 5 files |
+| Phase 21 P03 | 2min | 2 tasks | 2 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-22
-Last session: 2026-03-22T23:43:03.049Z
-Stopped at: Completed 21-02 (Scoring Engine Redesign)
+Last session: 2026-03-22T23:45:55.496Z
+Stopped at: Completed 21-03 (Pipeline Integration)
 Resume file: None
