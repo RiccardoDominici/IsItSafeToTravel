@@ -37,18 +37,16 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-#### Current Milestone: v2.0 Production Ready
+#### Current Milestone: v3.0 Data Sources & Scoring Overhaul
 
-**Goal:** Transform the site into a production-ready platform with legal compliance, SEO perfection, LLM readability, monitoring, and donation support.
+**Goal:** Diversify and accelerate data sources so scores reflect near-realtime crises, improve the scoring formula, and update all documentation to be coherent and transparent.
 
 **Target features:**
-- Legal compliance research (GDPR, ePrivacy, cookies, privacy policy, ToS) — stored locally, not on GitHub
-- SEO optimization for Google (Core Web Vitals, rich snippets, breadcrumbs, FAQ schema)
-- LLM readability (llms.txt, semantic HTML, machine-readable data)
-- Cookie consent system (if legally required)
-- Multilingual donations page
-- Privacy-respecting analytics and monitoring
-- Production hardening (security headers, CSP, HSTS, error pages, accessibility, caching)
+- Add near-realtime data sources to complement annual indices (so crises like Cuba show immediately)
+- Redesign scoring formula to blend annual baselines with realtime signals
+- Update methodology page and pillar explanations in all 5 languages for new sources/formula
+- Update repo documentation (README, data pipeline docs) for new data architecture
+- Ensure data coherence: every source documented, every weight justified, every score explainable
 
 ### Out of Scope
 
@@ -115,4 +113,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-21 after v2.0 milestone start*
+*Last updated: 2026-03-22 after v3.0 milestone start*

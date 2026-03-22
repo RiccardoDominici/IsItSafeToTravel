@@ -1,35 +1,37 @@
 ---
 gsd_state_version: 1.0
-milestone: v2.0
-milestone_name: Production Ready
+milestone: v3.0
+milestone_name: Data Sources & Scoring Overhaul
 status: unknown
-stopped_at: Completed 20-01 (Accessibility and CSP Hardening)
-last_updated: "2026-03-21T13:43:45.086Z"
-last_activity: 2026-03-21
+stopped_at: Defining requirements
+last_updated: "2026-03-22"
+last_activity: 2026-03-22
 progress:
-  total_phases: 5
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 6
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-21)
+See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** v2.0 Production Ready milestone complete
+**Current focus:** v3.0 Data Sources & Scoring Overhaul
 
 ## Current Position
 
-Phase: 20
-Plan: Not started
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-03-22 — Milestone v3.0 started
 
 ## Performance Metrics
 
-**Velocity (from v1.0 + v1.1 + v1.2):**
+**Velocity (from v1.0 + v1.1 + v1.2 + v2.0):**
 
 - Total plans completed: 27
 - Average attempts per plan: ~2.2
@@ -45,14 +47,6 @@ Recent decisions affecting current work:
 - [v2.0 Research]: No cookie consent banner — site sets zero cookies; banner legally unnecessary
 - [v2.0 Research]: Cloudflare Web Analytics only — Google Analytics prohibited under Italian Garante ruling
 - [v2.0 Research]: Ko-fi external link only — no embedded iframes or payment SDKs
-- [Phase 17]: Single legal page with three sections (disclaimer, privacy, imprint) separated by hr dividers
-- [Phase 17]: No cookie consent banner needed - zero cookies architecture confirmed by legal research
-- [Phase 17]: Imprint has placeholder operator info - user must update with real name/email
-- [Phase 18]: @graph JSON-LD merge pattern for pages with multiple schemas
-- [Phase 18]: Cloudflare _redirects file for server-side root redirect
-- [Phase 19]: Single 404.astro with client-side language detection for Cloudflare Pages static hosting
-- [Phase 19]: Donation link uses terracotta color in footer to visually differentiate
-- [Phase 20]: unsafe-inline CSP for SSG site — acceptable for read-only static site with no user input
 
 ### Pending Todos
 
@@ -60,8 +54,6 @@ None yet.
 
 ### Blockers/Concerns
 
-- [CRITICAL] Domain typo in robots.txt and astro.config.mjs ("isitsafetotravels.com" vs "isitsafetotravel.com") — must verify against DNS before Phase 18 SEO work
-- [Phase 20] Astro 6 experimental CSP for SSG has known limitations with is:inline scripts — needs prototype in feature branch
 - [Carry-over] Inline data embedding for comparison page needs monitoring (~1MB threshold at ~6 months of daily data)
 
 ### Quick Tasks Completed
@@ -72,7 +64,7 @@ None yet.
 
 ## Session Continuity
 
-Last activity: 2026-03-21
-Last session: 2026-03-21T13:28:25.749Z
-Stopped at: Completed 20-01 (Accessibility and CSP Hardening)
+Last activity: 2026-03-22
+Last session: 2026-03-22
+Stopped at: Defining requirements for v3.0
 Resume file: None
