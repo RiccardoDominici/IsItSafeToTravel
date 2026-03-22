@@ -45,6 +45,7 @@ export interface PillarWeight {
   name: PillarName;
   weight: number;
   indicators: string[];
+  indicatorWeights?: Record<string, number>;  // Per-indicator sub-weight (must sum to 1.0 within pillar)
 }
 
 export interface WeightsConfig {

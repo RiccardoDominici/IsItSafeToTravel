@@ -1,30 +1,58 @@
 {
-  "version": "4.0.0",
+  "version": "5.0.0",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "acled_fatalities", "acled_events"]
+      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "acled_fatalities", "acled_events"],
+      "indicatorWeights": {
+        "wb_political_stability": 0.20,
+        "gpi_overall": 0.25,
+        "gpi_safety_security": 0.15,
+        "gpi_militarisation": 0.10,
+        "acled_fatalities": 0.15,
+        "acled_events": 0.15
+      }
     },
     {
       "name": "crime",
       "weight": 0.25,
-      "indicators": ["wb_rule_of_law", "advisory_level_us", "advisory_level_uk"]
+      "indicators": ["wb_rule_of_law", "advisory_level_us", "advisory_level_uk"],
+      "indicatorWeights": {
+        "wb_rule_of_law": 0.40,
+        "advisory_level_us": 0.30,
+        "advisory_level_uk": 0.30
+      }
     },
     {
       "name": "health",
       "weight": 0.20,
-      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"]
+      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"],
+      "indicatorWeights": {
+        "wb_child_mortality": 0.35,
+        "inform_health": 0.35,
+        "inform_epidemic": 0.30
+      }
     },
     {
       "name": "governance",
       "weight": 0.15,
-      "indicators": ["wb_gov_effectiveness", "wb_corruption_control", "inform_governance"]
+      "indicators": ["wb_gov_effectiveness", "wb_corruption_control", "inform_governance"],
+      "indicatorWeights": {
+        "wb_gov_effectiveness": 0.35,
+        "wb_corruption_control": 0.35,
+        "inform_governance": 0.30
+      }
     },
     {
       "name": "environment",
       "weight": 0.10,
-      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate"]
+      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate"],
+      "indicatorWeights": {
+        "wb_air_pollution": 0.30,
+        "inform_natural": 0.35,
+        "inform_climate": 0.35
+      }
     }
   ]
 }
