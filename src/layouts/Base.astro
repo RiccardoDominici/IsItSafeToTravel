@@ -98,5 +98,14 @@ const resolvedOgType = ogType || 'website';
       <slot />
     </main>
     {!hideFooter && <Footer lang={lang} />}
+    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js" is:inline></script>
+    <script is:inline define:vars={{ donateButtonText: t('nav.donate') }}>
+      kofiWidgetOverlay.draw('isitsafetotravel', {
+        'type': 'floating-chat',
+        'floating-chat.donateButton.text': donateButtonText,
+        'floating-chat.donateButton.background-color': '#ffffff',
+        'floating-chat.donateButton.text-color': '#323842'
+      });
+    </script>
   </body>
 </html>
