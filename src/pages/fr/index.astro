@@ -3,6 +3,7 @@ export const prerender = true;
 import Base from '../../layouts/Base.astro';
 import SafetyMap from '../../components/SafetyMap.astro';
 import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
+import AdvisoryTicker from '../../components/AdvisoryTicker.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { buildHomepageJsonLd, buildOrganizationJsonLd } from '../../lib/seo';
@@ -31,6 +32,7 @@ const jsonLd = {
       </p>
     </div>
     <GlobalScoreBanner lang={lang} />
+    <AdvisoryTicker lang={lang} />
     <div class="flex-1 min-h-0 overflow-hidden">
       <SafetyMap lang={lang} />
     </div>

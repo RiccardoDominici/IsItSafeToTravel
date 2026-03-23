@@ -1,0 +1,167 @@
+---
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { loadLatestScores } from '../lib/scores';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const countryRoute = routes[lang].country;
+
+const countries = loadLatestScores();
+
+interface TickerItem {
+  country: string;
+  iso3: string;
+  source: string;
+  level: number;
+  text: string;
+}
+
+// Collect level 3-4 advisories, deduplicate by country (keep highest level)
+const countryAlerts = new Map<string, TickerItem>();
+for (const c of countries) {
+  if (!c.advisories) continue;
+  for (const [src, info] of Object.entries(c.advisories)) {
+    if (!info || typeof info.level !== 'number' || info.level < 3) continue;
+    const existing = countryAlerts.get(c.iso3);
+    if (!existing || info.level > existing.level) {
+      const sourceKey = `country.advisory.${src}` as any;
+      countryAlerts.set(c.iso3, {
+        country: c.name[lang] || c.name.en,
+        iso3: c.iso3,
+        source: t(sourceKey),
+        level: info.level,
+        text: info.text,
+      });
+    }
+  }
+}
+
+// Sort: level 4 first, then alphabetically
+const alerts = Array.from(countryAlerts.values())
+  .sort((a, b) => b.level - a.level || a.country.localeCompare(b.country));
+---
+
+{alerts.length > 0 && (
+  <div class="advisory-ticker relative overflow-hidden bg-sand-100/80 dark:bg-sand-800/80 border-y border-sand-200 dark:border-sand-700">
+    <div class="flex items-center">
+      <!-- Fixed label -->
+      <div class="flex-shrink-0 z-10 flex items-center gap-1.5 px-3 py-1.5 bg-red-600 text-white text-xs font-bold uppercase tracking-wide">
+        <svg class="w-3.5 h-3.5 animate-pulse" fill="currentColor" viewBox="0 0 20 20">
+          <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd" />
+        </svg>
+        <span>{t('ticker.label')}</span>
+      </div>
+      <!-- Scrolling content -->
+      <div class="ticker-track flex items-center whitespace-nowrap">
+        <div class="ticker-content flex items-center gap-6 px-4 py-1.5">
+          {alerts.map((alert) => (
+            <a
+              href={`/${lang}/${countryRoute}/${alert.iso3.toLowerCase()}`}
+              class="inline-flex items-center gap-2 text-xs hover:underline transition-colors group"
+            >
+              <span
+                class:list={[
+                  'inline-block w-2 h-2 rounded-full flex-shrink-0',
+                  alert.level === 4 ? 'bg-red-500' : 'bg-orange-400',
+                ]}
+              />
+              <span class="font-semibold text-sand-800 dark:text-sand-100 group-hover:text-terracotta-600 dark:group-hover:text-terracotta-400">
+                {alert.country}
+              </span>
+              <span class="text-sand-500 dark:text-sand-400">
+                {alert.text}
+              </span>
+              <span
+                class:list={[
+                  'px-1.5 py-0.5 rounded text-[10px] font-bold uppercase',
+                  alert.level === 4
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
+                ]}
+              >
+                {alert.level === 4 ? t('ticker.level4') : t('ticker.level3')}
+              </span>
+            </a>
+          ))}
+        </div>
+        <!-- Duplicate for seamless loop -->
+        <div class="ticker-content flex items-center gap-6 px-4 py-1.5" aria-hidden="true">
+          {alerts.map((alert) => (
+            <a
+              href={`/${lang}/${countryRoute}/${alert.iso3.toLowerCase()}`}
+              class="inline-flex items-center gap-2 text-xs hover:underline transition-colors group"
+              tabindex="-1"
+            >
+              <span
+                class:list={[
+                  'inline-block w-2 h-2 rounded-full flex-shrink-0',
+                  alert.level === 4 ? 'bg-red-500' : 'bg-orange-400',
+                ]}
+              />
+              <span class="font-semibold text-sand-800 dark:text-sand-100 group-hover:text-terracotta-600 dark:group-hover:text-terracotta-400">
+                {alert.country}
+              </span>
+              <span class="text-sand-500 dark:text-sand-400">
+                {alert.text}
+              </span>
+              <span
+                class:list={[
+                  'px-1.5 py-0.5 rounded text-[10px] font-bold uppercase',
+                  alert.level === 4
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/40 dark:text-red-300'
+                    : 'bg-orange-100 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300',
+                ]}
+              >
+                {alert.level === 4 ? t('ticker.level4') : t('ticker.level3')}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+<style>
+  .ticker-track {
+    animation: ticker-scroll 120s linear infinite;
+  }
+
+  .ticker-track:hover {
+    animation-play-state: paused;
+  }
+
+  @keyframes ticker-scroll {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+
+  /* Fade edges */
+  .advisory-ticker::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 3rem;
+    pointer-events: none;
+  }
+
+  :global(.dark) .advisory-ticker::after {
+    background: linear-gradient(to right, transparent, rgb(28 25 23 / 0.8));
+  }
+
+  :global(:not(.dark)) .advisory-ticker::after {
+    background: linear-gradient(to right, transparent, rgb(245 243 240 / 0.8));
+  }
+</style>
