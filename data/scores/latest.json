@@ -1,8 +1,8 @@
 {
-  "date": "2026-03-22",
-  "generatedAt": "2026-03-22T06:54:01.854Z",
+  "date": "2026-03-23",
+  "generatedAt": "2026-03-23T00:17:59.632Z",
   "pipelineVersion": "0.0.1",
-  "weightsVersion": "4.0.0",
+  "weightsVersion": "5.1.0",
   "globalScore": 6.24,
   "countries": [
     {
@@ -100,12 +100,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.367,
-      "lastUpdated": "2026-03-22T06:54:01.836Z",
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -225,9 +225,16 @@
         },
         {
           "name": "environment",
-          "score": 0.41304302111343133,
+          "score": 0.3597822658350735,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 4,
+              "normalizedValue": 0.19999999999999996,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.7,
@@ -250,18 +257,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.792Z",
+      "dataCompleteness": 0.727,
+      "lastUpdated": "2026-03-23T00:17:59.578Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -418,17 +431,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.794Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.579Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -503,12 +516,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.836Z",
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -563,7 +576,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.836Z",
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": []
     },
     {
@@ -707,17 +720,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.793Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.579Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -840,17 +853,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.5,
-      "lastUpdated": "2026-03-22T06:54:01.794Z",
+      "dataCompleteness": 0.473,
+      "lastUpdated": "2026-03-23T00:17:59.579Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -1002,17 +1015,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.833Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -1170,17 +1183,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.795Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.580Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -1338,17 +1351,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.795Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.580Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -1449,12 +1462,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.836Z",
+      "dataCompleteness": 0.273,
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": [
         {
           "name": "worldbank",
@@ -1522,12 +1535,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.836Z",
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -1582,7 +1595,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.839Z",
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": []
     },
     {
@@ -1726,17 +1739,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.795Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.580Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -1894,17 +1907,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.796Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.580Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2062,17 +2075,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.796Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.581Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2230,17 +2243,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.796Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.581Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2398,17 +2411,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.802Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.584Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2566,17 +2579,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.798Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.582Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2734,17 +2747,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.799Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.582Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2811,7 +2824,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.837Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": []
     },
     {
@@ -2955,17 +2968,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.801Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.584Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -2991,7 +3004,7 @@
         "fr": "Bangladesh",
         "pt": "Bangladesh"
       },
-      "score": 4.3,
+      "score": 4.4,
       "scoreDisplay": 4,
       "pillars": [
         {
@@ -3098,9 +3111,16 @@
         },
         {
           "name": "environment",
-          "score": 0.2587287458800117,
+          "score": 0.3440465594100088,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 8.1,
@@ -3123,18 +3143,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.797Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.581Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -3291,17 +3317,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.801Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.584Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -3459,17 +3485,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.797Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.581Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -3627,17 +3653,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.797Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.581Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -3795,17 +3821,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.800Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.583Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -3872,7 +3898,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.844Z",
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": []
     },
     {
@@ -4016,17 +4042,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.798Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.582Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -4184,17 +4210,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.798Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.582Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -4327,9 +4353,16 @@
         },
         {
           "name": "environment",
-          "score": 0.58373513641923,
+          "score": 0.6378013523144225,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.7,
@@ -4352,18 +4385,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.799Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.583Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -4520,17 +4559,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.800Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.583Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -4688,17 +4727,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.797Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.582Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -4856,17 +4895,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.801Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.584Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5024,17 +5063,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.799Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.583Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5101,7 +5140,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.837Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": []
     },
     {
@@ -5245,17 +5284,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.800Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.583Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5413,17 +5452,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.803Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.585Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5581,17 +5620,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.803Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.585Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5658,7 +5697,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.838Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": []
     },
     {
@@ -5802,17 +5841,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.830Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -5970,17 +6009,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.804Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -6006,7 +6045,7 @@
         "fr": "Chine",
         "pt": "China"
       },
-      "score": 6,
+      "score": 5.9,
       "scoreDisplay": 6,
       "pillars": [
         {
@@ -6113,9 +6152,16 @@
         },
         {
           "name": "environment",
-          "score": 0.3139649209489273,
+          "score": 0.23547369071169547,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 9,
+              "normalizedValue": 0,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.8,
@@ -6138,18 +6184,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.804Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -6292,12 +6344,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.806Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "inform",
@@ -6454,17 +6506,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.803Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.585Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -6590,9 +6642,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5445017222645383,
+          "score": 0.45837629169840377,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 4,
+              "normalizedValue": 0.19999999999999996,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4,
@@ -6615,18 +6674,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.806Z",
+      "dataCompleteness": 0.727,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -6776,17 +6841,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.805Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -6853,7 +6918,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.838Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": []
     },
     {
@@ -6865,7 +6930,7 @@
         "fr": "Colombie",
         "pt": "Colombia"
       },
-      "score": 4.8,
+      "score": 4.9,
       "scoreDisplay": 5,
       "pillars": [
         {
@@ -6972,9 +7037,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5027224950316453,
+          "score": 0.577041871273734,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 6.5,
@@ -6997,18 +7069,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.805Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -7165,17 +7243,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.805Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -7301,9 +7379,16 @@
         },
         {
           "name": "environment",
-          "score": 0.8055915930314805,
+          "score": 0.8041936947736106,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 1.6,
@@ -7326,18 +7411,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.802Z",
+      "dataCompleteness": 0.727,
+      "lastUpdated": "2026-03-23T00:17:59.584Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -7494,17 +7585,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.806Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -7637,9 +7728,16 @@
         },
         {
           "name": "environment",
-          "score": 0.749210919062813,
+          "score": 0.7619081892971097,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.9,
@@ -7662,18 +7760,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.806Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -7739,7 +7843,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.838Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": []
     },
     {
@@ -7792,7 +7896,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.838Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": []
     },
     {
@@ -7883,12 +7987,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.837Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -8040,17 +8144,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -8194,12 +8298,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.588Z",
       "sources": [
         {
           "name": "inform",
@@ -8356,17 +8460,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.591Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -8524,17 +8628,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.588Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -8692,17 +8796,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.588Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -8860,17 +8964,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.588Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -9028,17 +9132,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.807Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.588Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -9196,17 +9300,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.793Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.579Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -9232,7 +9336,7 @@
         "fr": "Equateur",
         "pt": "Equador"
       },
-      "score": 5.2,
+      "score": 5.3,
       "scoreDisplay": 5,
       "pillars": [
         {
@@ -9339,9 +9443,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5111432630803593,
+          "score": 0.5833574473102695,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 6.5,
@@ -9364,18 +9475,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -9532,17 +9649,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -9700,17 +9817,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -9785,12 +9902,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.846Z",
+      "lastUpdated": "2026-03-23T00:17:59.621Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -9936,17 +10053,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -10104,17 +10221,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -10247,9 +10364,16 @@
         },
         {
           "name": "environment",
-          "score": 0.6123155745098393,
+          "score": 0.6092366808823795,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 3.7,
@@ -10272,18 +10396,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.810Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.590Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -10440,17 +10570,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.810Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.590Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -10608,17 +10738,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.810Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.590Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -10693,12 +10823,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.838Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -10844,17 +10974,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.590Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -10921,7 +11051,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.839Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": []
     },
     {
@@ -11051,12 +11181,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.819Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "inform",
@@ -11213,17 +11343,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.591Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -11367,12 +11497,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.834Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "inform",
@@ -11529,17 +11659,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.591Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -11606,7 +11736,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.841Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": []
     },
     {
@@ -11750,17 +11880,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.591Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -11835,12 +11965,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.839Z",
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -11986,17 +12116,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -12071,12 +12201,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.840Z",
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -12208,12 +12338,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.811Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.591Z",
       "sources": [
         {
           "name": "inform",
@@ -12363,17 +12493,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -12531,17 +12661,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -12699,17 +12829,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -12867,17 +12997,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -12985,17 +13115,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.367,
-      "lastUpdated": "2026-03-22T06:54:01.840Z",
+      "dataCompleteness": 0.34,
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -13122,9 +13252,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5945475480265013,
+          "score": 0.595910661019876,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.8,
@@ -13147,18 +13284,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -13239,12 +13382,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.839Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -13333,12 +13476,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.840Z",
+      "dataCompleteness": 0.273,
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "worldbank",
@@ -13489,17 +13632,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.812Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.592Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -13604,12 +13747,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.840Z",
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -13761,17 +13904,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.593Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -13929,17 +14072,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.806Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.587Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -14097,17 +14240,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.593Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -14265,17 +14408,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.593Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -14408,9 +14551,16 @@
         },
         {
           "name": "environment",
-          "score": 0.4137283350053383,
+          "score": 0.31029625125400373,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 7,
+              "normalizedValue": 0,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.4,
@@ -14433,18 +14583,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -14518,12 +14674,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.840Z",
+      "lastUpdated": "2026-03-23T00:17:59.616Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -14644,9 +14800,16 @@
         },
         {
           "name": "environment",
-          "score": 0.2720172949348087,
+          "score": 0.2040129712011065,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 5,
+              "normalizedValue": 0,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.8,
@@ -14669,18 +14832,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.593Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -14754,12 +14923,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.837Z",
+      "lastUpdated": "2026-03-23T00:17:59.614Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -14905,17 +15074,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15073,17 +15242,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15241,17 +15410,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15409,17 +15578,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.813Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.593Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15570,17 +15739,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15738,17 +15907,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.594Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -15881,9 +16050,16 @@
         },
         {
           "name": "environment",
-          "score": 0.7752878765280299,
+          "score": 0.7814659073960224,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5,
@@ -15906,18 +16082,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -15983,7 +16165,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.841Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": []
     },
     {
@@ -16127,17 +16309,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -16295,17 +16477,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.814Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -16463,17 +16645,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -16631,17 +16813,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -16799,17 +16981,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -16942,9 +17124,16 @@
         },
         {
           "name": "environment",
-          "score": 0.48285465906551606,
+          "score": 0.5121409942991371,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.5,
@@ -16967,18 +17156,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.802Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.585Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -17135,17 +17330,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.595Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -17296,17 +17491,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -17464,17 +17659,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -17632,17 +17827,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -17800,17 +17995,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -17968,17 +18163,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -18136,17 +18331,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -18304,17 +18499,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -18465,17 +18660,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -18619,17 +18814,17 @@
               "year": 2026
             }
           ],
-          "dataCompleteness": 0.6666666666666666
+          "dataCompleteness": 0.4
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.647,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -18762,9 +18957,16 @@
         },
         {
           "name": "environment",
-          "score": 0.7401185304547973,
+          "score": 0.7550888978410981,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 3.9,
@@ -18787,18 +18989,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.830Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -18955,17 +19163,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -19123,17 +19331,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.597Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -19291,17 +19499,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -19459,17 +19667,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.816Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -19567,7 +19775,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.233,
-      "lastUpdated": "2026-03-22T06:54:01.841Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": [
         {
           "name": "worldbank",
@@ -19627,7 +19835,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.844Z",
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": []
     },
     {
@@ -19771,17 +19979,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -19904,17 +20112,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.5,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.473,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -20066,17 +20274,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.819Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -20209,9 +20417,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5674882668299364,
+          "score": 0.5756162001224523,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.6,
@@ -20234,18 +20449,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.817Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -20402,17 +20623,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -20438,7 +20659,7 @@
         "fr": "Mexique",
         "pt": "Mexico"
       },
-      "score": 4.9,
+      "score": 5,
       "scoreDisplay": 5,
       "pillars": [
         {
@@ -20545,9 +20766,16 @@
         },
         {
           "name": "environment",
-          "score": 0.470025519918895,
+          "score": 0.5525191399391712,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 6.5,
@@ -20570,18 +20798,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.819Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -20738,17 +20972,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -20899,17 +21133,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -21067,17 +21301,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -21235,17 +21469,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -21371,9 +21605,16 @@
         },
         {
           "name": "environment",
-          "score": 0.358949886657111,
+          "score": 0.3192124149928332,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 4,
+              "normalizedValue": 0.19999999999999996,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.2,
@@ -21396,18 +21637,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.727,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -21564,17 +21811,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -21732,17 +21979,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -21812,12 +22059,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.843Z",
+      "dataCompleteness": 0.04,
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": [
         {
           "name": "worldbank",
@@ -21943,9 +22190,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5597325052262744,
+          "score": 0.5697993789197058,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.1,
@@ -21968,18 +22222,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.820Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.600Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -22136,17 +22396,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.819Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -22228,12 +22488,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.842Z",
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -22296,12 +22556,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.841Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -22447,17 +22707,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.819Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.599Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -22615,17 +22875,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -22758,9 +23018,16 @@
         },
         {
           "name": "environment",
-          "score": 0.566020489254026,
+          "score": 0.6245153669405196,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.6,
@@ -22783,18 +23050,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.818Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.598Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -22868,12 +23141,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.842Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -23019,17 +23292,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -23111,12 +23384,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.842Z",
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -23262,17 +23535,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -23339,7 +23612,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.842Z",
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": []
     },
     {
@@ -23458,9 +23731,16 @@
         },
         {
           "name": "environment",
-          "score": 0.3782289042369143,
+          "score": 0.4336716781776857,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.7,
@@ -23483,18 +23763,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -23651,17 +23937,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -23728,7 +24014,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.842Z",
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": []
     },
     {
@@ -23872,17 +24158,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -24040,17 +24326,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -24076,7 +24362,7 @@
         "fr": "Nepal",
         "pt": "Nepal"
       },
-      "score": 5.7,
+      "score": 5.8,
       "scoreDisplay": 6,
       "pillars": [
         {
@@ -24183,9 +24469,16 @@
         },
         {
           "name": "environment",
-          "score": 0.45093076452913533,
+          "score": 0.5381980733968514,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5,
@@ -24208,18 +24501,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -24376,17 +24675,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -24544,17 +24843,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.821Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.601Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -24712,17 +25011,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -24748,7 +25047,7 @@
         "fr": "Pakistan",
         "pt": "Paquistao"
       },
-      "score": 3.5,
+      "score": 3.6,
       "scoreDisplay": 4,
       "pillars": [
         {
@@ -24855,9 +25154,16 @@
         },
         {
           "name": "environment",
-          "score": 0.29333942191670737,
+          "score": 0.37000456643753055,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.4,
@@ -24880,18 +25186,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.822Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.602Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -25048,17 +25360,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.823Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -25125,7 +25437,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.843Z",
+      "lastUpdated": "2026-03-23T00:17:59.618Z",
       "sources": []
     },
     {
@@ -25269,17 +25581,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -25305,7 +25617,7 @@
         "fr": "Philippines",
         "pt": "Filipinas"
       },
-      "score": 5.1,
+      "score": 5,
       "scoreDisplay": 5,
       "pillars": [
         {
@@ -25412,9 +25724,16 @@
         },
         {
           "name": "environment",
-          "score": 0.4357041942924613,
+          "score": 0.326778145719346,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 10,
+              "normalizedValue": 0,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 8.2,
@@ -25437,18 +25756,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -25605,17 +25930,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.823Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -25641,7 +25966,7 @@
         "fr": "Papouasie-Nouvelle-Guinee",
         "pt": "Papua-Nova Guine"
       },
-      "score": 5,
+      "score": 5.1,
       "scoreDisplay": 5,
       "pillars": [
         {
@@ -25748,9 +26073,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5889648581442537,
+          "score": 0.6417236436081903,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 6,
@@ -25773,18 +26105,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.823Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -25941,17 +26279,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -26052,12 +26390,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.843Z",
+      "dataCompleteness": 0.273,
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": [
         {
           "name": "worldbank",
@@ -26194,12 +26532,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.815Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.596Z",
       "sources": [
         {
           "name": "inform",
@@ -26356,17 +26694,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -26524,17 +26862,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.823Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -26685,17 +27023,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.823Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.603Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -26777,12 +27115,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.839Z",
+      "lastUpdated": "2026-03-23T00:17:59.615Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -26928,17 +27266,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -27005,7 +27343,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.843Z",
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": []
     },
     {
@@ -27149,17 +27487,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.824Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -27292,9 +27630,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5124240747043683,
+          "score": 0.5343180560282762,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.1,
@@ -27317,18 +27662,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.604Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -27485,17 +27836,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -27653,17 +28004,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.826Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -27821,17 +28172,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.830Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -27989,17 +28340,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.826Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -28157,17 +28508,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.827Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -28234,7 +28585,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.845Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": []
     },
     {
@@ -28287,7 +28638,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.844Z",
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": []
     },
     {
@@ -28340,7 +28691,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.845Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": []
     },
     {
@@ -28484,17 +28835,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -28652,17 +29003,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.827Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -28820,17 +29171,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.808Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.589Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -28953,17 +29304,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.5,
-      "lastUpdated": "2026-03-22T06:54:01.826Z",
+      "dataCompleteness": 0.473,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -29115,17 +29466,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -29192,7 +29543,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.844Z",
+      "lastUpdated": "2026-03-23T00:17:59.619Z",
       "sources": []
     },
     {
@@ -29336,17 +29687,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.826Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -29479,9 +29830,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5108755071288412,
+          "score": 0.583156630346631,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 3.9,
@@ -29504,18 +29862,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -29665,17 +30029,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.826Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -29833,17 +30197,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.830Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30001,17 +30365,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.828Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30169,17 +30533,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30337,17 +30701,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.830Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.608Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30498,17 +30862,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.809Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.590Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30583,12 +30947,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.067,
-      "lastUpdated": "2026-03-22T06:54:01.844Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -30734,17 +31098,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.827Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.606Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30902,17 +31266,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.831Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -30995,12 +31359,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.845Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -31152,17 +31516,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.804Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.586Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -31320,17 +31684,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -31356,7 +31720,7 @@
         "fr": "Thailande",
         "pt": "Tailandia"
       },
-      "score": 5.6,
+      "score": 5.7,
       "scoreDisplay": 6,
       "pillars": [
         {
@@ -31463,9 +31827,16 @@
         },
         {
           "name": "environment",
-          "score": 0.37330932790761356,
+          "score": 0.4799819959307102,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.9,
@@ -31488,18 +31859,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.831Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -31656,17 +32033,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.831Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -31733,7 +32110,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.845Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": []
     },
     {
@@ -31877,17 +32254,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.833Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -32031,12 +32408,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.62,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "inform",
@@ -32193,17 +32570,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -32361,17 +32738,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -32529,17 +32906,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -32672,9 +33049,16 @@
         },
         {
           "name": "environment",
-          "score": 0.547959843606739,
+          "score": 0.5109698827050543,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 3,
+              "normalizedValue": 0.4,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.4,
@@ -32697,18 +33081,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.832Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -32865,17 +33255,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.833Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.610Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -32957,12 +33347,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.831Z",
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         }
       ]
@@ -33108,17 +33498,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.831Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.609Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -33276,17 +33666,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.833Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -33444,17 +33834,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.833Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -33521,7 +33911,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.845Z",
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": []
     },
     {
@@ -33665,17 +34055,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.834Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -33701,7 +34091,7 @@
         "fr": "Etats-Unis",
         "pt": "Estados Unidos"
       },
-      "score": 7,
+      "score": 7.1,
       "scoreDisplay": 7,
       "pillars": [
         {
@@ -33794,9 +34184,16 @@
         },
         {
           "name": "environment",
-          "score": 0.4906171415878296,
+          "score": 0.5679628561908723,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7,
@@ -33819,13 +34216,19 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.7,
-      "lastUpdated": "2026-03-22T06:54:01.834Z",
+      "dataCompleteness": 0.66,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
+        },
         {
           "name": "inform",
           "url": "",
@@ -33981,17 +34384,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.834Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.611Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -34058,7 +34461,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": []
     },
     {
@@ -34195,17 +34598,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.767,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.687,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -34338,9 +34741,16 @@
         },
         {
           "name": "environment",
-          "score": 0.562478067929042,
+          "score": 0.5718585509467814,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 2,
+              "normalizedValue": 0.6,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 5.9,
@@ -34363,18 +34773,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -34456,12 +34872,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.133,
-      "lastUpdated": "2026-03-22T06:54:01.846Z",
+      "lastUpdated": "2026-03-23T00:17:59.621Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -34556,12 +34972,12 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 0.3333333333333333
+          "dataCompleteness": 0.2
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.3,
-      "lastUpdated": "2026-03-22T06:54:01.846Z",
+      "dataCompleteness": 0.273,
+      "lastUpdated": "2026-03-23T00:17:59.620Z",
       "sources": [
         {
           "name": "worldbank",
@@ -34687,9 +35103,16 @@
         },
         {
           "name": "environment",
-          "score": 0.35732978608960203,
+          "score": 0.3679973395672015,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 3,
+              "normalizedValue": 0.4,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 7.3,
@@ -34712,18 +35135,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -34880,17 +35309,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.834Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -34957,7 +35386,7 @@
       ],
       "advisories": {},
       "dataCompleteness": 0,
-      "lastUpdated": "2026-03-22T06:54:01.846Z",
+      "lastUpdated": "2026-03-23T00:17:59.621Z",
       "sources": []
     },
     {
@@ -35101,17 +35530,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.825Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.605Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -35231,12 +35660,12 @@
       ],
       "advisories": {},
       "dataCompleteness": 0.433,
-      "lastUpdated": "2026-03-22T06:54:01.841Z",
+      "lastUpdated": "2026-03-23T00:17:59.617Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -35256,7 +35685,7 @@
         "fr": "Yemen",
         "pt": "Iemen"
       },
-      "score": 2.9,
+      "score": 3,
       "scoreDisplay": 3,
       "pillars": [
         {
@@ -35363,9 +35792,16 @@
         },
         {
           "name": "environment",
-          "score": 0.5338921338813004,
+          "score": 0.6004191004109752,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4.5,
@@ -35388,18 +35824,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -35424,7 +35866,7 @@
         "fr": "Afrique du Sud",
         "pt": "Africa do Sul"
       },
-      "score": 6,
+      "score": 6.1,
       "scoreDisplay": 6,
       "pillars": [
         {
@@ -35531,9 +35973,16 @@
         },
         {
           "name": "environment",
-          "score": 0.6808231025254633,
+          "score": 0.7106173268940975,
           "weight": 0.1,
           "indicators": [
+            {
+              "name": "gdacs_disaster_alerts",
+              "rawValue": 1,
+              "normalizedValue": 0.8,
+              "source": "gdacs",
+              "year": 2026
+            },
             {
               "name": "inform_natural",
               "rawValue": 4,
@@ -35556,18 +36005,24 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.8
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.829Z",
+      "dataCompleteness": 0.793,
+      "lastUpdated": "2026-03-23T00:17:59.607Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
+        },
+        {
+          "name": "gdacs",
+          "url": "",
+          "fetchedAt": "2026-03-23T00:17:56.063Z",
+          "description": "gdacs"
         },
         {
           "name": "inform",
@@ -35724,17 +36179,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.612Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -35892,17 +36347,17 @@
               "year": 2020
             }
           ],
-          "dataCompleteness": 1
+          "dataCompleteness": 0.6
         }
       ],
       "advisories": {},
-      "dataCompleteness": 0.833,
-      "lastUpdated": "2026-03-22T06:54:01.835Z",
+      "dataCompleteness": 0.753,
+      "lastUpdated": "2026-03-23T00:17:59.613Z",
       "sources": [
         {
           "name": "advisories",
           "url": "https://travel.state.gov/",
-          "fetchedAt": "2026-03-22T06:53:57.427Z",
+          "fetchedAt": "2026-03-23T00:17:56.061Z",
           "description": "Travel advisories from US State Department and UK FCDO"
         },
         {
@@ -35932,13 +36387,14 @@
       "source": "gpi",
       "success": false,
       "countriesFound": 0,
-      "error": "HTTP 404: Not Found",
-      "fetchedAt": "2026-03-22T06:53:57.419Z"
+      "error": "ENOENT: no such file or directory, open '/Users/riccardo/Developer/VibeCoding/Isitsafetotravel/.claude/worktrees/agent-a3a4fe22/data/raw/2026-03-23/gpi.xlsx'",
+      "fetchedAt": "2026-03-23T00:17:56.056Z"
     },
     {
       "source": "inform",
       "success": true,
       "countriesFound": 191,
+      "error": "Used cached data. Original error: ENOENT: no such file or directory, open '/Users/riccardo/Developer/VibeCoding/Isitsafetotravel/.claude/worktrees/agent-a3a4fe22/data/raw/2026-03-23/inform.xlsx'",
       "fetchedAt": "2026-03-22T06:53:57.420Z"
     },
     {
@@ -35946,13 +36402,26 @@
       "success": false,
       "countriesFound": 0,
       "error": "ACLED credentials not configured. Set ACLED_API_KEY and ACLED_EMAIL environment variables.",
-      "fetchedAt": "2026-03-22T06:53:57.421Z"
+      "fetchedAt": "2026-03-23T00:17:56.057Z"
     },
     {
       "source": "advisories",
       "success": true,
       "countriesFound": 209,
-      "fetchedAt": "2026-03-22T06:53:57.427Z"
+      "fetchedAt": "2026-03-23T00:17:56.061Z"
+    },
+    {
+      "source": "reliefweb",
+      "success": false,
+      "countriesFound": 0,
+      "error": "HTTP 403: Forbidden",
+      "fetchedAt": "2026-03-23T00:17:56.061Z"
+    },
+    {
+      "source": "gdacs",
+      "success": true,
+      "countriesFound": 35,
+      "fetchedAt": "2026-03-23T00:17:56.063Z"
     }
   ]
 }
