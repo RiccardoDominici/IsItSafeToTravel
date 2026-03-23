@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
 status: Ready to plan
-stopped_at: Completed 21-03 (Pipeline Integration)
-last_updated: "2026-03-22T23:48:31.975Z"
-last_activity: 2026-03-22
+stopped_at: Completed 22-01 (Historical Backfill)
+last_updated: "2026-03-23T00:05:29.349Z"
+last_activity: 2026-03-23
 progress:
   total_phases: 11
-  completed_phases: 2
-  total_plans: 5
-  completed_plans: 9
+  completed_phases: 3
+  total_plans: 6
+  completed_plans: 10
 ---
 
 # Project State
@@ -20,11 +20,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 21 — Scoring Formula Redesign
+**Current focus:** Phase 22 — Historical Backfill
 
 ## Current Position
 
-Phase: 22
+Phase: 23
 Plan: Not started
 
 ## Performance Metrics
@@ -49,6 +49,7 @@ Recent decisions affecting current work:
 - [Phase 21]: Tiered scoring loads source-tiers.json (not sources.json) to avoid overwriting source catalog
 - [Phase 21]: sourcesConfig optional 7th param on computeCountryScore for backward compatibility
 - [Phase 21]: Minimal run.ts change -- engine handles tiered scoring internally, pipeline just logs summary
+- [Phase 22]: Re-score all historical snapshots from raw data using weights v4.0.0 without re-fetching
 
 ### Pending Todos
 
@@ -69,10 +70,11 @@ None yet.
 | Phase 21 P01 | 4min | 2 tasks | 4 files |
 | Phase 21 P02 | 4min | 2 tasks | 5 files |
 | Phase 21 P03 | 2min | 2 tasks | 2 files |
+| Phase 22 P01 | 2min | 2 tasks | 570 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-22
-Last session: 2026-03-22T23:45:55.496Z
-Stopped at: Completed 21-03 (Pipeline Integration)
+Last activity: 2026-03-23
+Last session: 2026-03-22T23:58:13.555Z
+Stopped at: Completed 22-01 (Historical Backfill)
 Resume file: None
