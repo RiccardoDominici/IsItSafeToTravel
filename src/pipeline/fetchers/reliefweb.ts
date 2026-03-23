@@ -11,7 +11,7 @@ export async function fetchReliefweb(date: string): Promise<FetchResult> {
   try {
     console.log('[RELIEFWEB] Fetching active disaster data...');
 
-    const appname = process.env.RELIEFWEB_APPNAME || 'isitsafetotravel.com';
+    const appname = process.env.RELIEFWEB_APPNAME || 'isitsafetotravel.org';
 
     const url = `${RELIEFWEB_API_URL}?appname=${encodeURIComponent(appname)}`;
 
