@@ -12,7 +12,7 @@ import TrendChart from '../../../components/country/TrendChart.astro';
 
 import SourcesList from '../../../components/country/SourcesList.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
-import { loadLatestScores, loadHistoricalScores, loadPillarHistory } from '../../../lib/scores';
+import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
@@ -30,6 +30,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
       country,
       trend: history.get(country.iso3) ?? [],
       pillarTrend: loadPillarHistory(country.iso3),
+      scoreDelta: getScoreDelta(country.iso3, history),
     },
   }));
 };
@@ -38,9 +39,10 @@ interface Props {
   country: ScoredCountry;
   trend: HistoryPoint[];
   pillarTrend: PillarHistoryData | null;
+  scoreDelta: { delta: number; period: string } | null;
 }
 
-const { country, trend, pillarTrend } = Astro.props;
+const { country, trend, pillarTrend, scoreDelta } = Astro.props;
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
@@ -52,7 +54,7 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
       { label: t('nav.countries'), href: `/${lang}/` },
       { label: country.name[lang], href: `/${lang}/country/${country.iso3.toLowerCase()}/` },
     ]} />
-    <ScoreHero country={country} lang={lang} />
+    <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
