@@ -202,8 +202,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 24-01-PLAN.md — GDELT Stability Timeline API fetcher module (FIPS mapping, CSV parsing, sequential fetch with rate limiting)
-- [ ] 24-02-PLAN.md — Pipeline wiring (index registration, normalization range, conflict pillar weights with 15% cap)
+- [x] 24-01-PLAN.md — GDELT Stability Timeline API fetcher module (FIPS mapping, CSV parsing, sequential fetch with rate limiting)
+- [x] 24-02-PLAN.md — Pipeline wiring (index registration, normalization range, conflict pillar weights with 15% cap)
 
 ### Phase 25: WHO DONs Fetcher
 **Goal**: Pipeline ingests WHO Disease Outbreak News to give the health pillar a realtime signal for active epidemics and disease events
@@ -266,6 +266,6 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 21. Scoring Formula Redesign | v3.0 | 3/3 | Complete    | 2026-03-22 |
 | 22. Historical Backfill | v3.0 | 0/1 | Complete    | 2026-03-23 |
 | 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | Complete    | 2026-03-23 |
-| 24. GDELT Stability Fetcher | v3.0 | 0/2 | Not started | - |
+| 24. GDELT Stability Fetcher | v3.0 | 2/2 | Complete   | 2026-03-23 |
 | 25. WHO DONs Fetcher | v3.0 | 0/0 | Not started | - |
 | 26. Validation, Documentation, and UX | v3.0 | 0/0 | Not started | - |

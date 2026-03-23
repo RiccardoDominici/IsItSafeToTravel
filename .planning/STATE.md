@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: Ready to plan
-stopped_at: Completed 23-02 (Pipeline Wiring for ReliefWeb and GDACS)
-last_updated: "2026-03-23T00:24:05.125Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 24-02 (GDELT Pipeline Integration)
+last_updated: "2026-03-23T00:53:57.391Z"
 last_activity: 2026-03-23
 progress:
   total_phases: 11
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 12
+  completed_phases: 5
+  total_plans: 10
+  completed_plans: 14
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 23 — ReliefWeb and GDACS Fetchers
+**Current focus:** Phase 24 — GDELT Stability Fetcher
 
 ## Current Position
 
-Phase: 24
-Plan: Not started
+Phase: 24 (GDELT Stability Fetcher) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -52,6 +52,9 @@ Recent decisions affecting current work:
 - [Phase 22]: Re-score all historical snapshots from raw data using weights v4.0.0 without re-fetching
 - [Phase 23]: ReliefWeb v2 API requires POST with JSON body for filtering (GET returns 400)
 - [Phase 23]: Engine uses simple averaging in pillars (no indicatorWeights), new disaster indicators get equal weight
+- [Phase 24]: Used GDELT DOC v2 API (timelinetone mode) instead of deprecated v1 Stability Timeline endpoint
+- [Phase 24]: Tone-to-instability linear mapping: instability = clamp((0-tone)/10+0.5, 0, 1)
+- [Phase 24]: indicatorWeights distribute 85% across 6 existing indicators with baseline sources getting slightly more than signal sources
 
 ### Pending Todos
 
@@ -75,10 +78,12 @@ None yet.
 | Phase 22 P01 | 2min | 2 tasks | 570 files |
 | Phase 23 P01 | 3min | 2 tasks | 2 files |
 | Phase 23 P02 | 2min | 2 tasks | 5 files |
+| Phase 24 P01 | 10m | 1 tasks | 2 files |
+| Phase 24 P02 | 2min | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-23
-Last session: 2026-03-23T00:19:48.892Z
-Stopped at: Completed 23-02 (Pipeline Wiring for ReliefWeb and GDACS)
+Last session: 2026-03-23T00:53:57.387Z
+Stopped at: Completed 24-02 (GDELT Pipeline Integration)
 Resume file: None
