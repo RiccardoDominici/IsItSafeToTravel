@@ -19,16 +19,16 @@ import { join } from 'node:path';
  * Where: baseline = median tone over 30 days, recent = last 3 days average.
  * A country whose tone drops significantly below its own baseline = spike.
  *
- * Rate limit: 1 request per 2 seconds.
- * CI budget: fetches top ~50 priority countries to stay under 3 minutes.
+ * Rate limit: 1 request per 5 seconds (conservative).
+ * Fetches ALL countries with valid FIPS codes (~190 countries).
+ * At 5s/request this takes ~16 minutes — acceptable for daily pipeline (15min timeout).
+ * Priority countries are fetched first so the most important data is captured
+ * even if the pipeline times out.
  */
 const GDELT_BASE_URL = 'https://api.gdeltproject.org/api/v2/doc/doc';
 
-/** Max countries to fetch — keeps CI under 3 minutes at 2s/request */
-const MAX_COUNTRIES = 50;
-
-/** Delay between requests in ms */
-const REQUEST_DELAY_MS = 2_000;
+/** Delay between requests in ms — 5s to respect GDELT rate limits */
+const REQUEST_DELAY_MS = 5_000;
 
 /** Scale factor for tone deviation → instability conversion */
 const TONE_DEVIATION_SCALE = 5;
@@ -164,16 +164,17 @@ export async function fetchGdelt(date: string): Promise<FetchResult> {
     });
 
     // Sort: priority countries first, then rest alphabetically
+    // No limit — fetch all countries. Priority countries go first so
+    // if the pipeline times out, the most important data is captured.
     const fipsCodes = allFipsCodes
       .sort((a, b) => {
         const aPriority = PRIORITY_FIPS.has(a) ? 0 : 1;
         const bPriority = PRIORITY_FIPS.has(b) ? 0 : 1;
         if (aPriority !== bPriority) return aPriority - bPriority;
         return a.localeCompare(b);
-      })
-      .slice(0, MAX_COUNTRIES);
+      });
 
-    console.log(`[GDELT] Fetching ${fipsCodes.length} priority countries (${REQUEST_DELAY_MS / 1000}s spacing, self-relative normalization)...`);
+    console.log(`[GDELT] Fetching ${fipsCodes.length} countries (${REQUEST_DELAY_MS / 1000}s spacing, priority countries first)...`);
 
     const results = new Map<string, number>();
     let fetched = 0;
