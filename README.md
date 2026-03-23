@@ -12,43 +12,73 @@
 
 ## What It Does
 
-IsItSafeToTravel combines multiple public safety indices -- conflict data, governance quality, health risks, crime indicators, and environmental hazards -- into a single 1--10 safety score for **248 countries**. Scores are recomputed daily by an automated pipeline and displayed on an interactive world map with country detail pages, historical trend charts, and a side-by-side comparison tool.
+IsItSafeToTravel combines **9 public data sources** -- conflict data, governance quality, health risks, crime indicators, environmental hazards, and near-realtime crisis signals -- into a single 1--10 safety score for **248 countries**. Scores are recomputed daily by an automated pipeline using a tiered baseline+signal architecture, and displayed on an interactive world map with country detail pages, historical trend charts, and a side-by-side comparison tool.
 
 ## Features
 
-- **Interactive world map** -- Color-coded by safety score with hover tooltips and click-through to country pages.
-- **Country detail pages** -- Full score breakdown by pillar, individual indicator analysis, and historical trend chart.
+- **Interactive world map** -- Color-coded by safety score with hover tooltips, per-pillar category filtering, and click-through to country pages.
+- **Country detail pages** -- Full score breakdown by pillar, individual indicator analysis, and historical trend chart with drag-to-zoom.
 - **Global safety score** -- Arithmetic mean across all countries, serving as a world benchmark on a dedicated page.
 - **Country comparison** -- Select up to 5 countries for side-by-side cards, pillar bar charts, overlay trend lines, and shareable URLs.
 - **Historical trends** -- 14+ years of data from World Bank WGI with interactive tooltips; daily snapshots accumulate over time.
+- **Tiered scoring** -- Baseline annual indices (~70%) blended with near-realtime signal sources (up to 30%) with exponential freshness decay.
 - **Search** -- Fuzzy search across all 248 countries powered by Fuse.js.
-- **Multilingual** -- English and Italian, with locale-prefixed routing and i18n-aware sitemap.
+- **Multilingual** -- English, Italian, Spanish, French, and Portuguese, with locale-prefixed routing and i18n-aware sitemap.
 - **SEO optimized** -- JSON-LD structured data, meta tags, and auto-generated sitemap for every page.
 
 ## Data Sources
 
-| Source | Covers | Provider |
-|--------|--------|----------|
-| World Bank WGI | Governance, political stability, rule of law, corruption, health, environment | World Bank |
-| INFORM Risk Index | Natural hazards, epidemics, conflict probability, governance | EU Joint Research Centre (JRC) |
-| US State Department | Travel advisory levels (1--4) | US Department of State |
-| UK FCDO | Travel advisory levels | UK Foreign, Commonwealth & Development Office |
-| Global Peace Index | Overall peacefulness, safety & security, militarisation | Institute for Economics & Peace (configured, pending URL update) |
-| ACLED | Conflict events and fatalities | Armed Conflict Location & Event Data (requires API key) |
+| Source | Covers | Provider | Tier | Update Frequency |
+|--------|--------|----------|------|-----------------|
+| World Bank WGI | Governance, political stability, rule of law, corruption, health, environment | World Bank | Baseline | Annual |
+| INFORM Risk Index | Natural hazards, epidemics, conflict probability, governance | EU Joint Research Centre (JRC) | Baseline | Quarterly |
+| Global Peace Index | Overall peacefulness, safety & security, militarisation | Institute for Economics & Peace | Baseline | Annual |
+| ACLED | Conflict events and fatalities | Armed Conflict Location & Event Data | Signal | Weekly |
+| US State Department | Travel advisory levels (1--4) | US Department of State | Signal | Varies |
+| UK FCDO | Travel advisory levels | UK Foreign, Commonwealth & Development Office | Signal | Varies |
+| ReliefWeb | Active humanitarian disasters | UN OCHA | Signal | Daily |
+| GDACS | Natural disaster alerts (earthquakes, floods, cyclones, volcanoes) | EU JRC / UN | Signal | Daily |
+| GDELT Project | Media-derived instability signal | GDELT | Signal | Daily |
+| WHO Disease Outbreak News | Active disease outbreaks | World Health Organization | Signal | Weekly |
 
 All sources are free and publicly available. The pipeline fetches them in parallel using `Promise.allSettled`, so a single source failure does not block the others.
 
 ## Scoring Methodology
 
-Each country's safety score is computed from **5 pillars**, each a weighted average of its underlying indicators:
+Each country's safety score is computed from **5 pillars** (weights from `src/pipeline/config/weights.json` v5.3.0):
 
 | Pillar | Weight | Key Indicators |
 |--------|--------|----------------|
-| Conflict | 25% | Political stability, GPI scores, ACLED events/fatalities |
-| Crime | 20% | Rule of law, US & UK advisory levels |
-| Health | 20% | Child mortality, INFORM health & epidemic risk |
-| Governance | 20% | Government effectiveness, corruption control, INFORM governance |
-| Environment | 15% | Air pollution, natural hazard risk, climate risk |
+| Conflict | 30% | Political stability, GPI scores, ACLED events/fatalities, GDELT instability |
+| Crime | 25% | Rule of law, US & UK advisory levels |
+| Health | 20% | Child mortality, INFORM health & epidemic risk, WHO active outbreaks |
+| Governance | 15% | Government effectiveness, corruption control, INFORM governance |
+| Environment | 10% | Air pollution, natural hazard risk, climate risk, ReliefWeb disasters, GDACS alerts |
+
+### Baseline + Signal Tiering
+
+The 9 data sources are split into two tiers (configured in `src/pipeline/config/source-tiers.json`):
+
+- **Baseline sources** (World Bank, INFORM, GPI): Updated annually/quarterly. Provide stable, long-term structural indicators. Contribute ~70% of the score.
+- **Signal sources** (ACLED, advisories, GDELT, ReliefWeb, GDACS, WHO DONs): Updated daily/weekly. Capture emerging crises -- armed conflicts, natural disasters, disease outbreaks. Contribute up to 30% of the score.
+
+Signal influence is capped at 30% (`maxSignalInfluence: 0.30`) so that volatile short-term data cannot dominate long-term structural indicators.
+
+### Freshness Decay
+
+Each source has a configurable half-life for exponential freshness decay (see `source-tiers.json`). Data that is one half-life old contributes 50% of its weight; at two half-lives, 25%; and so on. Beyond a source's `maxAgeDays`, stale data is dropped entirely.
+
+| Source | Half-Life | Max Age |
+|--------|-----------|---------|
+| World Bank / INFORM / GPI | 365 days | 730 days |
+| ACLED / ReliefWeb | 14 days | 60 days |
+| Advisories / GDACS | 7 days | 30 days |
+| GDELT | 3 days | 14 days |
+| WHO DONs | 30 days | 90 days |
+
+### Per-Indicator Sub-Weights
+
+Indicators within a pillar are not equally averaged. Pillars with `indicatorWeights` in `weights.json` use explicit sub-weights (e.g., Conflict: wb_political_stability 17%, gpi_overall 17%, gdelt_instability 15%, etc.). Pillars without explicit weights use equal averaging.
 
 Raw indicator values are normalized to a 0--1 scale (higher = safer) using known min/max ranges, then aggregated into the final 1--10 score.
 
@@ -104,14 +134,14 @@ ACLED data requires the `ACLED_API_KEY` and `ACLED_EMAIL` environment variables 
 
 ```
 src/
-  pages/          Astro pages (EN + IT locale routing)
+  pages/          Astro pages (EN, IT, ES, FR, PT locale routing)
   components/     Reusable Astro and client-side components
   pipeline/       Data fetchers, scoring engine, and config
-    fetchers/     One module per data source
-    scoring/      Normalization, pillar aggregation, engine
-    config/       weights.json and indicator definitions
+    fetchers/     One module per data source (9 fetchers)
+    scoring/      Tiered baseline+signal engine with freshness decay
+    config/       weights.json, source-tiers.json, countries, normalization
   lib/            Shared utilities (scores, colors, SEO helpers)
-  i18n/           Translation strings (en, it)
+  i18n/           Translation strings (en, it, es, fr, pt)
 data/
   scores/         Historical score snapshots + latest.json
   raw/            Raw fetched data (gitignored where appropriate)
@@ -127,12 +157,22 @@ A GitHub Actions workflow (`data-pipeline.yml`) runs every day at **06:00 UTC**:
 
 1. Checks out the repository.
 2. Installs dependencies with `npm ci`.
-3. Runs `npx tsx src/pipeline/run.ts` to fetch all data sources in parallel.
+3. Runs `npx tsx src/pipeline/run.ts` to fetch all 9 data sources in parallel.
 4. Validates that `data/scores/latest.json` was produced.
 5. Copies scores to `public/scores.json` for the frontend.
 6. Commits and pushes any data changes, which triggers a Cloudflare Pages redeploy.
 
 The workflow can also be triggered manually from the GitHub Actions UI with an optional date override.
+
+## Adding a New Data Source
+
+1. **Create fetcher**: Add a new module in `src/pipeline/fetchers/` that exports a fetch function returning normalized data.
+2. **Register**: Import and add the fetcher to `src/pipeline/fetchers/index.ts`.
+3. **Configure tier**: Add an entry to `src/pipeline/config/source-tiers.json` with `tier` (baseline or signal), `maxAgeDays`, and `decayHalfLifeDays`.
+4. **Add indicators**: Add the new indicator(s) to the relevant pillar in `src/pipeline/config/weights.json`. If the pillar has `indicatorWeights`, add an explicit sub-weight.
+5. **Normalization**: Add normalization ranges for the new indicator(s) in the scoring engine.
+6. **Translations**: Add `methodology.source.*` and `methodology.indicator.*` keys in `src/i18n/ui.ts` for all 5 languages.
+7. **Methodology page**: Add the source to the `dataSources` array in all 5 methodology page templates.
 
 ## License
 
