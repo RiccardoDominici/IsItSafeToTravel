@@ -33,6 +33,7 @@ async function getAcledToken(email: string, password: string): Promise<string> {
 
   if (!response.ok) {
     const text = await response.text().catch(() => '');
+    console.warn(`[ACLED] OAuth response body: ${text.slice(0, 500)}`);
     throw new Error(`ACLED OAuth failed: HTTP ${response.status} — ${text.slice(0, 200)}`);
   }
 
