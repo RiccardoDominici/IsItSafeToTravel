@@ -28,6 +28,87 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/portugal",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/portugal",
+        "base_path": "/foreign-travel-advice/portugal",
+        "content_id": "84647e7e-66d3-4b91-b562-b2a65c3c0be6",
+        "details": {
+          "change_description": "Updated information on staying in Portugal for longer than 90 days in exceptional circumstances (‘Entry requirements’ page). ",
+          "country": {
+            "name": "Portugal",
+            "slug": "portugal",
+            "synonyms": [
+              "Madeira",
+              "Azores"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-20T11:45:02Z",
+        "schema_name": "travel_advice",
+        "title": "Portugal travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/portugal",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/laos",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/laos",
+        "base_path": "/foreign-travel-advice/laos",
+        "content_id": "602e34bf-8222-4391-96d9-548dbe1e1799",
+        "details": {
+          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "Laos",
+            "slug": "laos",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:06:45Z",
+        "schema_name": "travel_advice",
+        "title": "Laos travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/laos",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/democratic-republic-of-the-congo",
         "base_path": "/foreign-travel-advice/democratic-republic-of-the-congo",
@@ -298,45 +379,6 @@
         "schema_name": "travel_advice",
         "title": "Tuvalu travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/tuvalu",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/laos",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/laos",
-        "base_path": "/foreign-travel-advice/laos",
-        "content_id": "602e34bf-8222-4391-96d9-548dbe1e1799",
-        "details": {
-          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page). ",
-          "country": {
-            "name": "Laos",
-            "slug": "laos",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-19T14:06:45Z",
-        "schema_name": "travel_advice",
-        "title": "Laos travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/laos",
         "withdrawn": false
       },
       {
@@ -3458,48 +3500,6 @@
         "schema_name": "travel_advice",
         "title": "Nigeria travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/nigeria",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/portugal",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/portugal",
-        "base_path": "/foreign-travel-advice/portugal",
-        "content_id": "84647e7e-66d3-4b91-b562-b2a65c3c0be6",
-        "details": {
-          "change_description": "Updated information about ongoing risks following a period of severe weather conditions across Portugal (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "Portugal",
-            "slug": "portugal",
-            "synonyms": [
-              "Madeira",
-              "Azores"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-02-19T14:01:39Z",
-        "schema_name": "travel_advice",
-        "title": "Portugal travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/portugal",
         "withdrawn": false
       },
       {
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-03-19T15:00:29+00:00",
+  "updated_at": "2026-03-20T11:45:04+00:00",
   "withdrawn_notice": {}
 }

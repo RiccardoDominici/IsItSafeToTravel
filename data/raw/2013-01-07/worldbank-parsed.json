@@ -1,6 +1,6 @@
 {
   "source": "worldbank",
-  "fetchedAt": "2026-03-19T23:10:56.100Z",
+  "fetchedAt": "2026-03-20T13:01:09.765Z",
   "indicators": [
     {
       "countryIso3": "AFG",
@@ -1539,6 +1539,776 @@
       "countryIso3": "MAC",
       "indicatorName": "wb_rule_of_law",
       "value": 0.638206481933594,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.40146291255951,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.324457377195358,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.431544005870819,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.486766904592514,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.53249549865723,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.24288654327393,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.486766904592514,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.254236966371536,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0783172845840454,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.22108125686646,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.632453083992,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.57137954235077,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.452178388834,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.867620706558228,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.563222289085388,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.797781109809875,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.35085844993591,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.962117969989777,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.70195496082306,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.145570039749146,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.508882761001587,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.420869916677475,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.378559440374374,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.433313488960266,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.378747165203094,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.119030974805355,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.8647221326828,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0132329864427447,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.670198976993561,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.07123398780823,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0416815020143986,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.914554417133331,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.925760507583618,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.78074109554291,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.22108125686646,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.62575948238373,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.38974499702454,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.15803158283234,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.00512068951502442,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0531518310308456,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.6100869178772,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.46852135658264,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.15917134284973,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.455911159515381,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.938218176364899,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.675364792346954,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.410627126693726,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.35990357398987,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.915809273719788,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.94326293468475,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.980954170227051,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.795055389404297,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.488938599824905,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.448586314916611,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.782936871051788,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.121620632708073,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.3561155796051,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.55202722549438,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.966788172721863,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.370076358318329,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.620984315872192,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.02984869480133,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 2.18062210083008,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.48205244541168,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.868893802165985,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.74015212059021,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.606947124004364,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.51041460037231,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.134414941072464,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.357173413038254,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.938511729240417,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.276314854621887,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0360973589122295,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.727540254592896,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.17050647735596,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.45703411102295,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.102227434515953,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.59057712554932,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.724005818367004,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.73794031143188,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.678418397903442,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.48298573493958,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.157355144619942,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.244262352585793,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.690026342868805,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.04929423332214,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.50404286384583,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.24306440353394,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.532426714897156,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.0747434422373772,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.61050939559937,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.00805195607244968,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.620734989643097,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.477865993976593,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.768480479717255,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.89813280105591,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.0034042596817,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.35639289021492,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.0887207984924316,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.649990081787109,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.735925436019897,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.87935084104538,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.307863891124725,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -0.457246333360672,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.3646342754364,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": -1.31830942630768,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.74691927433014,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 0.8258997797966,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.62242209911346,
+      "year": 2013,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_gov_effectiveness",
+      "value": 1.05867087841034,
       "year": 2013,
       "source": "worldbank"
     },

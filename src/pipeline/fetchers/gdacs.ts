@@ -152,7 +152,6 @@ function parseGdacsData(rawData: unknown, fetchedAt: string): RawIndicator[] {
       value: count,
       year: currentYear,
       source: 'gdacs',
-      fetchedAt,
     });
   }
 

@@ -1,7 +1,777 @@
 {
   "source": "worldbank",
-  "fetchedAt": "2026-03-19T23:18:36.443Z",
+  "fetchedAt": "2026-03-20T13:08:07.843Z",
   "indicators": [
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_political_stability",
+      "value": -2.75344133377075,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.366779267787933,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.842107713222504,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_political_stability",
+      "value": 1.16629731655121,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_political_stability",
+      "value": 1.39124858379364,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.347208589315414,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.823102116584778,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.00690981233492494,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.451066911220551,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_political_stability",
+      "value": 1.33750987052917,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_political_stability",
+      "value": 0.971185445785522,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_political_stability",
+      "value": 0.884860396385193,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_political_stability",
+      "value": -0.711399376392365,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_political_stability",
+      "value": 0.847745537757874,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.846294164657593,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_political_stability",
+      "value": -0.985569059848785,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.900694906711578,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.353592693805695,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_political_stability",
+      "value": 0.393769443035126,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.00212321965955198,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.146990418434143,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.07766103744507,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_political_stability",
+      "value": -0.286620706319809,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_political_stability",
+      "value": -0.400853604078293,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.958469867706299,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.459598511457443,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.23603785037994,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.444411188364029,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_political_stability",
+      "value": -1.06026446819305,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_political_stability",
+      "value": -1.57027816772461,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_political_stability",
+      "value": 0.833261907100677,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.110921673476696,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_political_stability",
+      "value": -1.40180146694183,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.963971078395844,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_political_stability",
+      "value": 1.11083495616913,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_political_stability",
+      "value": -2.17220759391785,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_political_stability",
+      "value": -1.47801554203033,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_political_stability",
+      "value": 0.412769764661789,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.298572480678558,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_political_stability",
+      "value": -0.806941986083984,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.361612617969513,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_political_stability",
+      "value": -2.08051562309265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_political_stability",
+      "value": -0.34833887219429,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_political_stability",
+      "value": 0.453386008739471,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_political_stability",
+      "value": -0.89799964427948,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_political_stability",
+      "value": 0.793678283691406,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_political_stability",
+      "value": 0.640602827072144,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_political_stability",
+      "value": 0.48454225063324,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_political_stability",
+      "value": 1.0264128446579,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_political_stability",
+      "value": 0.931982338428497,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.133426666259766,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_political_stability",
+      "value": 1.06905841827393,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.012300387956202,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0947211682796478,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_political_stability",
+      "value": -1.18812155723572,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_political_stability",
+      "value": -0.389159649610519,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0901522859930992,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.609360635280609,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_political_stability",
+      "value": 0.580415546894073,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.377749621868134,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_political_stability",
+      "value": -1.27460920810699,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_political_stability",
+      "value": 0.832882523536682,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.891889691352844,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.013894104398787,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.257340848445892,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0874964967370033,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.447562873363495,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_political_stability",
+      "value": 0.577865242958069,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0366430282592773,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_political_stability",
+      "value": 0.153979063034058,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.93680357933044,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_political_stability",
+      "value": 0.968813717365265,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.697404980659485,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_political_stability",
+      "value": -0.538147449493408,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.880597352981567,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_political_stability",
+      "value": -0.684820473194122,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_political_stability",
+      "value": -0.191837906837463,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_political_stability",
+      "value": -0.640141665935516,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_political_stability",
+      "value": -0.531820952892303,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_political_stability",
+      "value": 0.776628255844116,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_political_stability",
+      "value": 0.737591445446014,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.39481735229492,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_political_stability",
+      "value": -0.997706770896912,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_political_stability",
+      "value": -0.552034020423889,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.34218072891235,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_political_stability",
+      "value": -2.52111387252808,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_political_stability",
+      "value": 1.01136958599091,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.918100237846375,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.326271682977676,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_political_stability",
+      "value": 0.423993796110153,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_political_stability",
+      "value": 1.03756272792816,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.379854559898376,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.0524022579193115,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.17971229553223,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.998790442943573,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_political_stability",
+      "value": -0.340687155723572,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_political_stability",
+      "value": 0.638123750686646,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_political_stability",
+      "value": -0.675371170043945,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_political_stability",
+      "value": 0.0906421020627022,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_political_stability",
+      "value": -0.529712080955505,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_political_stability",
+      "value": 0.407969743013382,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_political_stability",
+      "value": 0.395444005727768,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_political_stability",
+      "value": -1.62160050868988,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_political_stability",
+      "value": -0.188606411218643,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_political_stability",
+      "value": -0.204105362296104,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_political_stability",
+      "value": -2.43511581420898,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_political_stability",
+      "value": 1.45383167266846,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_political_stability",
+      "value": 0.729236841201782,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_political_stability",
+      "value": 1.34749054908752,
+      "year": 2018,
+      "source": "worldbank"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_political_stability",
+      "value": 1.22980165481567,
+      "year": 2018,
+      "source": "worldbank"
+    },
     {
       "countryIso3": "AFG",
       "indicatorName": "wb_rule_of_law",

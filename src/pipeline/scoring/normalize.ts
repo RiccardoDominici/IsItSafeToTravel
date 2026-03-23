@@ -41,6 +41,12 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   acled_fatalities: { min: 0, max: 10000, inverse: true },
   acled_events: { min: 0, max: 5000, inverse: true },
 
+  // ReliefWeb active disasters (lower = safer)
+  reliefweb_active_disasters: { min: 0, max: 10, inverse: true },
+
+  // GDACS disaster alerts - orange/red (lower = safer)
+  gdacs_disaster_alerts: { min: 0, max: 5, inverse: true },
+
   // Global Peace Index: 1 to 5 scale (lower = more peaceful = safer)
   gpi_overall: { min: 1, max: 4, inverse: true },
   gpi_safety_security: { min: 1, max: 5, inverse: true },

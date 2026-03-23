@@ -129,7 +129,6 @@ function parseReliefwebData(rawData: unknown, fetchedAt: string): RawIndicator[]
       value: count,
       year: currentYear,
       source: 'reliefweb',
-      fetchedAt,
     });
   }
 

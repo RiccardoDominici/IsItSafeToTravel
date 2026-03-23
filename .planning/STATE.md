@@ -2,9 +2,9 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: Ready to execute
-stopped_at: Completed 23-01 (ReliefWeb and GDACS Fetchers)
-last_updated: "2026-03-23T00:14:00.222Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 23-02 (Pipeline Wiring for ReliefWeb and GDACS)
+last_updated: "2026-03-23T00:19:48.895Z"
 last_activity: 2026-03-23
 progress:
   total_phases: 11
@@ -51,6 +51,7 @@ Recent decisions affecting current work:
 - [Phase 21]: Minimal run.ts change -- engine handles tiered scoring internally, pipeline just logs summary
 - [Phase 22]: Re-score all historical snapshots from raw data using weights v4.0.0 without re-fetching
 - [Phase 23]: ReliefWeb v2 API requires POST with JSON body for filtering (GET returns 400)
+- [Phase 23]: Engine uses simple averaging in pillars (no indicatorWeights), new disaster indicators get equal weight
 
 ### Pending Todos
 
@@ -73,10 +74,11 @@ None yet.
 | Phase 21 P03 | 2min | 2 tasks | 2 files |
 | Phase 22 P01 | 2min | 2 tasks | 570 files |
 | Phase 23 P01 | 3min | 2 tasks | 2 files |
+| Phase 23 P02 | 2min | 2 tasks | 5 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-23
-Last session: 2026-03-23T00:14:00.219Z
-Stopped at: Completed 23-01 (ReliefWeb and GDACS Fetchers)
+Last session: 2026-03-23T00:19:48.892Z
+Stopped at: Completed 23-02 (Pipeline Wiring for ReliefWeb and GDACS)
 Resume file: None

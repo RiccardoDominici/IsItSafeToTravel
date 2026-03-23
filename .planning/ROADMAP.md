@@ -202,7 +202,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
+- [x] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
 - [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 
 ### Phase 25: WHO DONs Fetcher

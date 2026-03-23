@@ -1,6 +1,6 @@
 {
   "source": "advisories",
-  "fetchedAt": "2026-03-19T23:23:32.989Z",
+  "fetchedAt": "2026-03-20T13:11:48.376Z",
   "indicators": [
     {
       "countryIso3": "ALB",
@@ -1368,6 +1368,20 @@
       "source": "advisories_us"
     },
     {
+      "countryIso3": "PRT",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "COD",
       "indicatorName": "advisory_level_uk",
       "value": 2,
@@ -1404,13 +1418,6 @@
     },
     {
       "countryIso3": "TUV",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "LAO",
       "indicatorName": "advisory_level_uk",
       "value": 2,
       "year": 2026,
@@ -1929,13 +1936,6 @@
     },
     {
       "countryIso3": "NGA",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PRT",
       "indicatorName": "advisory_level_uk",
       "value": 2,
       "year": 2026,
