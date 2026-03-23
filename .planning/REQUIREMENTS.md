@@ -195,8 +195,8 @@ Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
 
 ### Validation
 
-- [ ] **VALID-01**: Automated CI test catches single-day score changes >0.5 points (score drift guard)
-- [ ] **VALID-02**: New formula is validated against known historical crises to confirm realtime signals improve accuracy
+- [x] **VALID-01**: Automated CI test catches single-day score changes >0.5 points (score drift guard)
+- [x] **VALID-02**: New formula is validated against known historical crises to confirm realtime signals improve accuracy
 
 ### Site Documentation
 
@@ -211,8 +211,8 @@ Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
 
 ### UX Indicators
 
-- [ ] **UX-01**: User sees a score change delta indicator (arrow/badge) on country cards showing recent score movement
-- [ ] **UX-02**: User sees data freshness badges showing when each source was last updated per country
+- [x] **UX-01**: User sees a score change delta indicator (arrow/badge) on country cards showing recent score movement
+- [x] **UX-02**: User sees data freshness badges showing when each source was last updated per country
 
 ## v4 Requirements
 
@@ -408,15 +408,15 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SRC-03 | Phase 23 | Complete |
 | SRC-01 | Phase 24 | Complete |
 | SRC-04 | Phase 25 | Complete |
-| VALID-01 | Phase 26 | Pending |
-| VALID-02 | Phase 26 | Pending |
+| VALID-01 | Phase 26 | Complete |
+| VALID-02 | Phase 26 | Complete |
 | DOC-01 | Phase 26 | Pending |
 | DOC-02 | Phase 26 | Pending |
 | DOC-03 | Phase 26 | Pending |
 | REPO-01 | Phase 26 | Pending |
 | REPO-02 | Phase 26 | Pending |
-| UX-01 | Phase 26 | Pending |
-| UX-02 | Phase 26 | Pending |
+| UX-01 | Phase 26 | Complete |
+| UX-02 | Phase 26 | Complete |
 
 **Coverage (v3.0):**
 - v3.0 requirements: 21 total

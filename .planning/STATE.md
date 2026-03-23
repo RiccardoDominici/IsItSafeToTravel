@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: Ready to plan
-stopped_at: Completed 25-02 (WHO DONs Pipeline Integration)
-last_updated: "2026-03-23T01:07:45.005Z"
+status: Milestone complete
+stopped_at: Completed 26-03 (Score Delta and Freshness Badges)
+last_updated: "2026-03-23T01:44:51.783Z"
 last_activity: 2026-03-23
 progress:
   total_phases: 11
-  completed_phases: 6
-  total_plans: 12
-  completed_plans: 16
+  completed_phases: 7
+  total_plans: 15
+  completed_plans: 19
 ---
 
 # Project State
@@ -20,7 +20,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 25 — WHO DONs Fetcher
+**Current focus:** Phase 26 — Validation, Documentation, and UX
 
 ## Current Position
 
@@ -58,6 +58,10 @@ Recent decisions affecting current work:
 - [Phase 25]: Country extraction from DON titles uses dash-split then in-split fallback
 - [Phase 25]: Health pillar indicatorWeights: baseline 30/25/25%, signal (WHO DONs) 20%
 - [Phase 25]: who_active_outbreaks normalization range 0-5 (inverse)
+- [Phase 26]: Drift guard uses 1.5/day fail threshold because signal sources cause up to 0.9/day fluctuation
+- [Phase 26]: Crisis validation uses synthetic indicators since historical raw data lacks signal source files
+- [Phase 26]: Score delta compares latest vs closest point to 7 days ago with 14-day max tolerance
+- [Phase 26]: Freshness thresholds: Fresh<=7d, Recent<=30d, Stale<=90d, Outdated>90d
 
 ### Pending Todos
 
@@ -85,10 +89,12 @@ None yet.
 | Phase 24 P02 | 2min | 2 tasks | 3 files |
 | Phase 25 P01 | 193s | 1 tasks | 1 files |
 | Phase 25 P02 | 193s | 2 tasks | 3 files |
+| Phase 26 P01 | 4min | 2 tasks | 2 files |
+| Phase 26 P03 | 16min | 2 tasks | 9 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-23
-Last session: 2026-03-23T01:06:59.635Z
-Stopped at: Completed 25-02 (WHO DONs Pipeline Integration)
+Last session: 2026-03-23T01:33:31.386Z
+Stopped at: Completed 26-03 (Score Delta and Freshness Badges)
 Resume file: None
