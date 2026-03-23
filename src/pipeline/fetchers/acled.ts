@@ -168,6 +168,7 @@ export async function fetchAcled(date: string): Promise<FetchResult> {
       const auth = await authenticateAcled(email, password);
 
       const url = new URL(ACLED_API_URL);
+      url.searchParams.set('_format', 'json');
       url.searchParams.set('event_date', `${startStr}|${endStr}`);
       url.searchParams.set('event_date_where', 'BETWEEN');
       url.searchParams.set('fields', 'country|event_type|fatalities');
