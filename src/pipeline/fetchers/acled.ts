@@ -3,19 +3,60 @@ import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js
 import { getCountryByName } from '../config/countries.js';
 import { join } from 'node:path';
 
-const ACLED_API_URL = 'https://api.acleddata.com/acled/read';
+/**
+ * ACLED API — Armed Conflict Location & Event Data.
+ *
+ * Authentication: OAuth token via username/password (changed Sept 2025).
+ * Env vars: ACLED_EMAIL + ACLED_PASSWORD
+ *
+ * The token endpoint returns a 24h access_token + 14d refresh_token.
+ * We request a fresh token each pipeline run (runs daily, so 24h is fine).
+ */
+const ACLED_TOKEN_URL = 'https://acleddata.com/oauth/token';
+const ACLED_API_URL = 'https://acleddata.com/api/acled/read';
+
+/**
+ * Get an OAuth access token from ACLED using email/password.
+ */
+async function getAcledToken(email: string, password: string): Promise<string> {
+  const response = await fetch(ACLED_TOKEN_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      username: email,
+      password: password,
+      grant_type: 'password',
+      client_id: 'acled',
+    }),
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  if (!response.ok) {
+    const text = await response.text().catch(() => '');
+    throw new Error(`ACLED OAuth failed: HTTP ${response.status} — ${text.slice(0, 200)}`);
+  }
+
+  const data = (await response.json()) as { access_token?: string };
+  if (!data.access_token) {
+    throw new Error('ACLED OAuth response missing access_token');
+  }
+
+  return data.access_token;
+}
 
 export async function fetchAcled(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
 
-  // Check for required credentials
-  const apiKey = process.env.ACLED_API_KEY;
+  // Check for required credentials (new OAuth system)
   const email = process.env.ACLED_EMAIL;
+  const password = process.env.ACLED_PASSWORD;
+  // Legacy support: also check old API key env var
+  const apiKey = process.env.ACLED_API_KEY;
 
-  if (!apiKey || !email) {
+  if (!email || (!password && !apiKey)) {
     const errorMessage =
-      'ACLED credentials not configured. Set ACLED_API_KEY and ACLED_EMAIL environment variables.';
+      'ACLED credentials not configured. Set ACLED_EMAIL and ACLED_PASSWORD environment variables.';
     console.warn(`[ACLED] ${errorMessage}`);
 
     // Try fallback to cached data
@@ -56,17 +97,38 @@ export async function fetchAcled(date: string): Promise<FetchResult> {
     const startStr = startDate.toISOString().split('T')[0];
     const endStr = endDate.toISOString().split('T')[0];
 
-    const url = new URL(ACLED_API_URL);
-    url.searchParams.set('key', apiKey);
-    url.searchParams.set('email', email);
-    url.searchParams.set('event_date', `${startStr}|${endStr}`);
-    url.searchParams.set('event_date_where', 'BETWEEN');
-    url.searchParams.set('fields', 'country|event_type|fatalities');
-    url.searchParams.set('limit', '0'); // No limit — get all events
+    let response: Response;
 
-    const response = await fetch(url.toString(), {
-      signal: AbortSignal.timeout(60_000),
-    });
+    if (password) {
+      // New OAuth flow (Sept 2025+)
+      console.log('[ACLED] Authenticating via OAuth token...');
+      const token = await getAcledToken(email, password);
+
+      const url = new URL(ACLED_API_URL);
+      url.searchParams.set('event_date', `${startStr}|${endStr}`);
+      url.searchParams.set('event_date_where', 'BETWEEN');
+      url.searchParams.set('fields', 'country|event_type|fatalities');
+      url.searchParams.set('limit', '0');
+
+      response = await fetch(url.toString(), {
+        headers: { Authorization: `Bearer ${token}` },
+        signal: AbortSignal.timeout(60_000),
+      });
+    } else {
+      // Legacy API key flow (pre-Sept 2025)
+      console.log('[ACLED] Using legacy API key authentication...');
+      const url = new URL('https://api.acleddata.com/acled/read');
+      url.searchParams.set('key', apiKey!);
+      url.searchParams.set('email', email);
+      url.searchParams.set('event_date', `${startStr}|${endStr}`);
+      url.searchParams.set('event_date_where', 'BETWEEN');
+      url.searchParams.set('fields', 'country|event_type|fatalities');
+      url.searchParams.set('limit', '0');
+
+      response = await fetch(url.toString(), {
+        signal: AbortSignal.timeout(60_000),
+      });
+    }
 
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
