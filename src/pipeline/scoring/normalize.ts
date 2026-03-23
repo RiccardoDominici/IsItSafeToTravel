@@ -65,6 +65,9 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
 
   // GDELT instability score (higher = more unstable = less safe)
   gdelt_instability: { min: 0, max: 1.0, inverse: true },
+
+  // WHO Disease Outbreak News - active outbreaks (lower = safer)
+  who_active_outbreaks: { min: 0, max: 5, inverse: true },
 };
 
 /**
