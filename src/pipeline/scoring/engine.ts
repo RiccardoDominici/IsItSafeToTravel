@@ -1,7 +1,7 @@
 import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
-import { readJson } from '../utils/fs.js';
+import { readJson, findLatestCached } from '../utils/fs.js';
 import { join } from 'node:path';
 import type {
   RawIndicator,
@@ -38,7 +38,7 @@ export function computeCountryScore(
   allIndicators: RawIndicator[],
   weightsConfig: WeightsConfig,
   countryEntry: CountryEntry,
-  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo },
+  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo },
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
@@ -217,7 +217,7 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   },
   advisories: {
     url: 'https://travel.state.gov/',
-    description: 'Travel advisories from US State Department and UK FCDO',
+    description: 'Travel advisories from US State Department, UK FCDO, Government of Canada, and Australian Government',
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
@@ -317,6 +317,36 @@ export function computeAllScores(
     iso3Set.add(ind.countryIso3.toUpperCase());
   }
 
+  // Load advisory info from side-channel file
+  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo }>;
+  let advisoryInfoMap: AdvisoryInfoMap = {};
+
+  // Find advisories-info.json from the raw data directory
+  // Derive path from the advisories source data
+  const advisoriesSource = rawDataBySource.get('advisories');
+  if (advisoriesSource) {
+    // The fetchedAt timestamp tells us the date — but we need the rawDir path
+    // Try to find it by looking at the indicators' source to derive the date
+    const dateMatch = advisoriesSource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
+    const today = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
+    const advisoryInfoPath = join(process.cwd(), 'data', 'raw', today, 'advisories-info.json');
+    const loaded = readJson<AdvisoryInfoMap>(advisoryInfoPath);
+    if (loaded) {
+      advisoryInfoMap = loaded;
+      console.log(`  Loaded advisory info for ${Object.keys(advisoryInfoMap).length} countries`);
+    } else {
+      // Try to find most recent cached advisory info file
+      const cachedPath = findLatestCached('advisories-info.json');
+      if (cachedPath) {
+        const info = readJson<AdvisoryInfoMap>(cachedPath);
+        if (info) {
+          advisoryInfoMap = info;
+          console.log(`  Loaded advisory info from cache: ${cachedPath}`);
+        }
+      }
+    }
+  }
+
   // Score each country
   const results: ScoredCountry[] = [];
   for (const iso3 of iso3Set) {
@@ -324,7 +354,8 @@ export function computeAllScores(
     if (!entry) continue; // Skip unknown iso3 codes not in our country list
 
     const sources = buildSourcesForCountry(iso3, rawDataBySource);
-    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, {}, sources, sourcesConfig);
+    const countryAdvisories = advisoryInfoMap[iso3] || {};
+    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, countryAdvisories, sources, sourcesConfig);
     results.push(scored);
   }
 

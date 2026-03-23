@@ -62,6 +62,8 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   // Government travel advisories: raw levels 1-4 (lower = safer)
   advisory_level_us: { min: 1, max: 4, inverse: true },
   advisory_level_uk: { min: 1, max: 4, inverse: true },
+  advisory_level_ca: { min: 1, max: 4, inverse: true },
+  advisory_level_au: { min: 1, max: 4, inverse: true },
 
   // GDELT instability score (higher = more unstable = less safe)
   gdelt_instability: { min: 0, max: 1.0, inverse: true },

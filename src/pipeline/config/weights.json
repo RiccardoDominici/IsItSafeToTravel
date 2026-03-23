@@ -1,5 +1,5 @@
 {
-  "version": "5.3.0",
+  "version": "5.4.0",
   "pillars": [
     {
       "name": "conflict",
@@ -18,7 +18,7 @@
     {
       "name": "crime",
       "weight": 0.25,
-      "indicators": ["wb_rule_of_law", "advisory_level_us", "advisory_level_uk"]
+      "indicators": ["wb_rule_of_law", "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au"]
     },
     {
       "name": "health",
