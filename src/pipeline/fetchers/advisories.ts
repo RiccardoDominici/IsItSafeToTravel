@@ -213,24 +213,16 @@ async function fetchUsAdvisories(
     type: 'html',
   });
 
-  // Strip HTML tags and normalize whitespace for plain text parsing
-  const plainText = html
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]+>/g, ' ')
-    .replace(/&amp;/g, '&')
-    .replace(/&nbsp;/g, ' ')
-    .replace(/\s+/g, ' ');
-
-  // Pattern: date DD/DD/YYYY followed by "Country Name Level N:"
-  const countryLevelPattern =
-    /(\d{2}\/\d{2}\/\d{4})\s+([A-Z][a-z]+(?:\s+(?:and\s+)?[A-Za-z'&\-]+)*?)\s+Level\s+(\d)/g;
+  // Parse HTML table rows directly — much more reliable than plain text regex.
+  // Each row: <tr>...<th><a>CountryName</a></th>...<td>level-badge-N</td>...MM/DD/YYYY...</tr>
+  const rowPattern = /<tr>[\s\S]*?<th[^>]*>[\s\S]*?<a[^>]*>([^<]+)<\/a>[\s\S]*?level-badge-(\d)[\s\S]*?(\d{2}\/\d{2}\/\d{4})[\s\S]*?<\/tr>/gi;
 
   const seen = new Set<string>();
   let match;
-  while ((match = countryLevelPattern.exec(plainText)) !== null) {
-    const dateStr = match[1];
-    const countryName = match[2].trim();
-    const level = parseInt(match[3]);
+  while ((match = rowPattern.exec(html)) !== null) {
+    const countryName = match[1].trim();
+    const level = parseInt(match[2]);
+    const dateStr = match[3];
 
     if (level < 1 || level > 4) continue;
     if (countryName.length < 3) continue;
@@ -240,7 +232,6 @@ async function fetchUsAdvisories(
     if (seen.has(country.iso3)) continue;
     seen.add(country.iso3);
 
-    // Store RAW level (1-4). The normalizer handles the conversion.
     indicators.push({
       countryIso3: country.iso3,
       indicatorName: 'advisory_level_us',
@@ -249,7 +240,6 @@ async function fetchUsAdvisories(
       source: 'advisories_us',
     });
 
-    // Build AdvisoryInfo
     // Parse date from MM/DD/YYYY format
     let updatedAt = fetchedAt;
     if (dateStr) {
@@ -272,10 +262,42 @@ async function fetchUsAdvisories(
   return { indicators, advisoryInfo };
 }
 
+/** UK FCDO alert_status values mapped to 1-4 advisory levels */
+const UK_ALERT_LEVEL: Record<string, number> = {
+  avoid_all_travel_to_whole_country: 4,
+  avoid_all_but_essential_travel_to_whole_country: 3,
+  avoid_all_travel_to_parts: 3,
+  avoid_all_but_essential_travel_to_parts: 2,
+};
+
+/** UK level number to descriptive text */
+const UK_LEVEL_TEXT: Record<number, string> = {
+  1: 'No specific advisory — see latest advice',
+  2: 'Exercise caution in some areas — see latest advice',
+  3: 'Advise against all but essential travel',
+  4: 'Advise against all travel',
+};
+
+/** Fetch a batch of URLs concurrently */
+async function fetchBatch<T>(
+  items: T[],
+  fn: (item: T) => Promise<void>,
+  concurrency: number,
+): Promise<void> {
+  const queue = [...items];
+  const workers = Array.from({ length: concurrency }, async () => {
+    while (queue.length > 0) {
+      const item = queue.shift();
+      if (item) await fn(item);
+    }
+  });
+  await Promise.allSettled(workers);
+}
+
 /**
  * Fetch UK FCDO travel advisories.
- * The GOV.UK API provides structured JSON data for travel advice.
- * Stores advisory levels as 1-4 integer scale matching US system.
+ * Step 1: Get country list from /api/content/foreign-travel-advice
+ * Step 2: Batch-fetch individual country pages to get alert_status
  */
 async function fetchUkAdvisories(
   rawDir: string,
@@ -285,6 +307,7 @@ async function fetchUkAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
+  // Step 1: Get the list of all countries
   const response = await fetch(UK_FCDO_API_URL, {
     signal: AbortSignal.timeout(30_000),
     headers: {
@@ -300,7 +323,6 @@ async function fetchUkAdvisories(
   const rawData = await response.json();
   writeJson(join(rawDir, 'advisories-uk.json'), rawData);
 
-  // GOV.UK API returns a content item with links to country pages
   const links = (rawData as Record<string, unknown>)?.links as Record<string, unknown[]> | undefined;
   const children = links?.children || links?.related || [];
 
@@ -309,72 +331,117 @@ async function fetchUkAdvisories(
     return { indicators, advisoryInfo };
   }
 
+  // Build list of countries to fetch
+  interface UkCountryEntry {
+    countryName: string;
+    slug: string;
+    iso3: string;
+    updatedAt: string;
+    apiUrl: string;
+  }
+  const countriesToFetch: UkCountryEntry[] = [];
+
   for (const child of children) {
     if (!child || typeof child !== 'object') continue;
-
     const childObj = child as Record<string, unknown>;
     const title = String(childObj.title || '').trim();
     if (!title) continue;
 
-    // Strip " travel advice" suffix from title to get country name
     const countryName = title.replace(/\s*travel advice\s*$/i, '').trim();
     const country = getCountryByName(countryName);
     if (!country) continue;
 
-    // UK FCDO uses text-based advisory levels in the description
-    const description = String(childObj.description || '').toLowerCase();
     const basePath = String(childObj.base_path || '');
+    const slug = basePath ? basePath.replace(/^\/foreign-travel-advice\//, '') : countryName.toLowerCase().replace(/\s+/g, '-');
+    const updatedAt = String(childObj.public_updated_at || fetchedAt);
 
-    // Map to 1-4 scale matching US system
-    let level = 2; // Default: some caution (Exercise Increased Caution)
-    let levelText = description;
-    if (
-      description.includes('advise against all travel') ||
-      description.includes('do not travel')
-    ) {
-      level = 4; // Do Not Travel
-    } else if (
-      description.includes('advise against all but essential travel') ||
-      description.includes('reconsider')
-    ) {
-      level = 3; // Reconsider Travel
-    } else if (
-      description.includes('no travel restrictions') ||
-      description.includes('is generally safe') ||
-      description.includes('normal precautions')
-    ) {
-      level = 1; // Normal Precautions
+    countriesToFetch.push({
+      countryName,
+      slug,
+      iso3: country.iso3,
+      updatedAt,
+      apiUrl: `https://www.gov.uk/api/content/foreign-travel-advice/${slug}`,
+    });
+  }
+
+  // Step 2: Batch-fetch individual country pages for alert_status (20 concurrent)
+  await fetchBatch(countriesToFetch, async (entry) => {
+    let level = 1; // Default: no specific advisory
+    let alertText = '';
+
+    try {
+      const r = await fetch(entry.apiUrl, {
+        signal: AbortSignal.timeout(15_000),
+        headers: {
+          Accept: 'application/json',
+          'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
+        },
+      });
+
+      if (r.ok) {
+        const data = await r.json() as Record<string, unknown>;
+        const details = data.details as Record<string, unknown> | undefined;
+        const alertStatus = (details?.alert_status || []) as string[];
+
+        // Use the most severe alert status
+        let maxLevel = 1;
+        for (const status of alertStatus) {
+          const statusLevel = UK_ALERT_LEVEL[status] ?? 1;
+          if (statusLevel > maxLevel) maxLevel = statusLevel;
+        }
+        level = maxLevel;
+
+        // Use the description from the individual page if available
+        const desc = String(data.description || '').trim();
+        if (desc && !desc.startsWith('FCDO travel advice')) {
+          alertText = desc;
+        }
+      }
+    } catch {
+      // Individual country fetch failed — use default level 1
     }
 
     indicators.push({
-      countryIso3: country.iso3,
+      countryIso3: entry.iso3,
       indicatorName: 'advisory_level_uk',
       value: level,
       year: currentYear,
       source: 'advisories_uk',
     });
 
-    // Build AdvisoryInfo
-    const slug = basePath ? basePath.replace(/^\/foreign-travel-advice\//, '') : countryName.toLowerCase().replace(/\s+/g, '-');
-    const updatedAt = String(childObj.public_updated_at || fetchedAt);
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].uk = {
-      level: String(childObj.description || '').trim() || `Level ${level}`,
-      text: String(childObj.description || '').trim(),
+    if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
+    advisoryInfo[entry.iso3].uk = {
+      level,
+      text: alertText || UK_LEVEL_TEXT[level] || `Level ${level}`,
       source: 'UK FCDO',
-      url: `https://www.gov.uk/foreign-travel-advice/${slug}`,
-      updatedAt,
+      url: `https://www.gov.uk/foreign-travel-advice/${entry.slug}`,
+      updatedAt: entry.updatedAt,
     };
-  }
+  }, 20);
 
   return { indicators, advisoryInfo };
 }
 
+/** Parse Canada advisory level from individual country page HTML.
+ *  Only match the actual banner class (not the legend section which lists all levels). */
+function parseCaAdvisoryLevel(html: string): number {
+  // The active advisory banner uses class="banner-X" with the advisory text inside
+  // e.g. <div class='banner-do-not-travel'>Avoid all travel</div>
+  const bannerMatch = html.match(/class=['"]banner-(do-not-travel|reconsider-travel|increased-caution|normal-precautions)['"]/i);
+  if (bannerMatch) {
+    const bannerType = bannerMatch[1].toLowerCase();
+    if (bannerType === 'do-not-travel') return 4;
+    if (bannerType === 'reconsider-travel') return 3;
+    if (bannerType === 'increased-caution') return 2;
+    if (bannerType === 'normal-precautions') return 1;
+  }
+  return 2; // default to caution
+}
+
 /**
  * Fetch Canada Government travel advisories.
- * Parses HTML from travel.gc.ca/destinations to extract advisory levels.
- * Canada uses 4 levels matching the standard 1-4 scale.
+ * Step 1: Extract country slugs from the dropdown on travel.gc.ca/destinations
+ * Step 2: Batch-fetch individual country pages to extract advisory levels
  */
 async function fetchCaAdvisories(
   rawDir: string,
@@ -384,6 +451,7 @@ async function fetchCaAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
+  // Step 1: Get the destinations page with the dropdown
   const response = await fetch(CA_ADVISORIES_URL, {
     signal: AbortSignal.timeout(30_000),
     redirect: 'follow',
@@ -405,98 +473,68 @@ async function fetchCaAdvisories(
     type: 'html',
   });
 
-  // Parse: look for country links with advisory text
-  // Pattern: country name followed by or associated with advisory level text
-  // The page typically has rows with country name and advisory level
-  const seen = new Set<string>();
-
-  // Try to find patterns like: href="/destinations/countryslug" ... advisory text
-  // Canada page uses a table/list with country names and advisory levels
-  const countryBlockPattern = /href="\/destinations\/([^"]+)"[^>]*>([^<]+)<[\s\S]*?(?:Exercise normal security precautions|Exercise a high degree of caution|Avoid non-essential travel|Avoid all travel)/gi;
+  // Extract country slugs from <option value="slug">Country Name</option>
+  const optionPattern = /<option\s+value="([^"]+)">([^<]+)<\/option>/gi;
+  interface CaEntry { slug: string; name: string; iso3: string }
+  const entries: CaEntry[] = [];
 
   let match;
-  while ((match = countryBlockPattern.exec(html)) !== null) {
+  while ((match = optionPattern.exec(html)) !== null) {
     const slug = match[1].trim();
-    const countryName = match[2].trim();
-    const blockText = match[0].toLowerCase();
+    const name = match[2].trim();
+    if (!slug || slug === '') continue; // skip empty "Select" option
 
-    let level = 2;
-    if (blockText.includes('avoid all travel')) {
-      level = 4;
-    } else if (blockText.includes('avoid non-essential travel')) {
-      level = 3;
-    } else if (blockText.includes('exercise a high degree of caution')) {
-      level = 2;
-    } else if (blockText.includes('exercise normal security precautions')) {
-      level = 1;
-    }
-
-    const country = getCountryByName(countryName);
+    const country = getCountryByName(name);
     if (!country) continue;
-    if (seen.has(country.iso3)) continue;
-    seen.add(country.iso3);
 
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_ca',
-      value: level,
-      year: currentYear,
-      source: 'advisories_ca',
-    });
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].ca = {
-      level,
-      text: CA_LEVEL_TEXT[level] || `Level ${level}`,
-      source: 'Government of Canada',
-      url: `https://travel.gc.ca/destinations/${slug}`,
-      updatedAt: fetchedAt,
-    };
+    entries.push({ slug, name, iso3: country.iso3 });
   }
 
-  // Fallback: if regex didn't match, try simpler line-by-line approach
-  if (indicators.length === 0) {
-    console.warn('[ADVISORIES] CA: Primary pattern matched 0 countries, trying fallback parser...');
+  console.log(`[ADVISORIES] CA: Found ${entries.length} countries in dropdown, fetching advisory levels...`);
 
-    // Strip tags, look for country names near advisory text
-    const plainText = html.replace(/<[^>]+>/g, '\n').replace(/\s+/g, ' ');
+  // Step 2: Batch-fetch individual country pages (20 concurrent)
+  const seen = new Set<string>();
 
-    for (const levelEntry of Object.entries(CA_LEVEL_TEXT)) {
-      const [lvlStr, lvlText] = levelEntry;
-      const lvl = parseInt(lvlStr);
-      // Find country names near this text
-      const escapedText = lvlText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-      const nearPattern = new RegExp(`([A-Z][a-z]+(?:\\s+[A-Za-z]+){0,3})\\s*[-:]?\\s*${escapedText}`, 'gi');
-      let m;
-      while ((m = nearPattern.exec(plainText)) !== null) {
-        const name = m[1].trim();
-        const country = getCountryByName(name);
-        if (!country || seen.has(country.iso3)) continue;
-        seen.add(country.iso3);
+  await fetchBatch(entries, async (entry) => {
+    if (seen.has(entry.iso3)) return;
 
-        indicators.push({
-          countryIso3: country.iso3,
-          indicatorName: 'advisory_level_ca',
-          value: lvl,
-          year: currentYear,
-          source: 'advisories_ca',
-        });
+    try {
+      const r = await fetch(`https://travel.gc.ca/destinations/${entry.slug}`, {
+        signal: AbortSignal.timeout(15_000),
+        redirect: 'follow',
+        headers: {
+          'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
+          Accept: 'text/html',
+        },
+      });
 
-        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-        advisoryInfo[country.iso3].ca = {
-          level: lvl,
-          text: lvlText,
-          source: 'Government of Canada',
-          url: `https://travel.gc.ca/destinations/${name.toLowerCase().replace(/\s+/g, '-')}`,
-          updatedAt: fetchedAt,
-        };
-      }
+      if (!r.ok) return;
+
+      const pageHtml = await r.text();
+      const level = parseCaAdvisoryLevel(pageHtml);
+
+      seen.add(entry.iso3);
+
+      indicators.push({
+        countryIso3: entry.iso3,
+        indicatorName: 'advisory_level_ca',
+        value: level,
+        year: currentYear,
+        source: 'advisories_ca',
+      });
+
+      if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
+      advisoryInfo[entry.iso3].ca = {
+        level,
+        text: CA_LEVEL_TEXT[level] || `Level ${level}`,
+        source: 'Government of Canada',
+        url: `https://travel.gc.ca/destinations/${entry.slug}`,
+        updatedAt: fetchedAt,
+      };
+    } catch {
+      // Individual country fetch failed — skip it
     }
-
-    if (indicators.length === 0) {
-      console.warn('[ADVISORIES] CA: Fallback parser also matched 0 countries — page format may have changed');
-    }
-  }
+  }, 20);
 
   return { indicators, advisoryInfo };
 }
