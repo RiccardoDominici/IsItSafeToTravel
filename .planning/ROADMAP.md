@@ -231,12 +231,12 @@ Plans:
   3. User can read the methodology page in any of the 5 languages and find explanations of the baseline+signal formula, every data source, its update frequency, and its role in scoring
   4. README and pipeline documentation explain the new data architecture, source tiers, decay parameters, and how to add a new source
   5. User sees a score change delta indicator (arrow or badge) on country cards showing recent score movement, and data freshness badges showing when each source was last updated
-**Plans**: 2 plans
+**Plans**: 3 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
-- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
-**UI hint**: yes
+- [ ] 26-01-PLAN.md — Score drift CI guard and crisis validation tests
+- [ ] 26-02-PLAN.md — Methodology page update (5 languages) and README/pipeline documentation
+- [ ] 26-03-PLAN.md — Score delta indicators and data freshness badges on country detail pages
 
 ## Progress
 
@@ -270,4 +270,4 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | Complete    | 2026-03-23 |
 | 24. GDELT Stability Fetcher | v3.0 | 2/2 | Complete    | 2026-03-23 |
 | 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete    | 2026-03-23 |
-| 26. Validation, Documentation, and UX | v3.0 | 0/0 | Not started | - |
+| 26. Validation, Documentation, and UX | v3.0 | 0/3 | Not started | - |
