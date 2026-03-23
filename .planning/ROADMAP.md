@@ -216,8 +216,10 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
-- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
+- [ ] 25-01-PLAN.md — WHO DONs fetcher module (API integration, title parsing, country extraction, caching)
+- [ ] 25-02-PLAN.md — Pipeline wiring (index registration, normalization range, health pillar weights v5.3.0)
+
+
 
 ### Phase 26: Validation, Documentation, and UX
 **Goal**: All sources are validated against known crises, score drift is guarded in CI, methodology and repo documentation reflect the new architecture, and users see dynamic score indicators
