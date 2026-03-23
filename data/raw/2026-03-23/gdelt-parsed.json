@@ -1,53 +1,88 @@
 {
   "source": "gdelt",
-  "fetchedAt": "2026-03-23T09:16:04.647Z",
+  "fetchedAt": "2026-03-23T09:24:04.209Z",
   "indicators": [
     {
-      "countryIso3": "AUT",
+      "countryIso3": "AFG",
       "indicatorName": "gdelt_instability",
-      "value": 0.6237072,
+      "value": 0.7416566666666666,
       "year": 2026,
       "source": "gdelt"
     },
     {
-      "countryIso3": "MMR",
+      "countryIso3": "DZA",
       "indicatorName": "gdelt_instability",
-      "value": 0.79832,
+      "value": 0.5712607999999999,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gdelt_instability",
+      "value": 0.6259471999999999,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gdelt_instability",
+      "value": 0.5364366666666667,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gdelt_instability",
+      "value": 0.5630533333333333,
       "year": 2026,
       "source": "gdelt"
     },
     {
       "countryIso3": "CAN",
       "indicatorName": "gdelt_instability",
-      "value": 0.5106733333333333,
+      "value": 0.5105233333333333,
       "year": 2026,
       "source": "gdelt"
     },
     {
-      "countryIso3": "FRA",
+      "countryIso3": "KHM",
       "indicatorName": "gdelt_instability",
-      "value": 0.5807599999999999,
+      "value": 0.43268600000000007,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gdelt_instability",
+      "value": 0.8167659999999999,
       "year": 2026,
       "source": "gdelt"
     },
     {
       "countryIso3": "GRC",
       "indicatorName": "gdelt_instability",
-      "value": 0.7437884,
+      "value": 0.7440784,
       "year": 2026,
       "source": "gdelt"
     },
     {
-      "countryIso3": "IRQ",
+      "countryIso3": "IDN",
       "indicatorName": "gdelt_instability",
-      "value": 0.9576192000000001,
+      "value": 0.49061,
       "year": 2026,
       "source": "gdelt"
     },
     {
-      "countryIso3": "PRK",
+      "countryIso3": "ITA",
       "indicatorName": "gdelt_instability",
-      "value": 0.9380966666666666,
+      "value": 0.5394800000000001,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gdelt_instability",
+      "value": 0.5652056,
       "year": 2026,
       "source": "gdelt"
     },
@@ -59,16 +94,65 @@
       "source": "gdelt"
     },
     {
-      "countryIso3": "ESP",
+      "countryIso3": "NLD",
       "indicatorName": "gdelt_instability",
-      "value": 0.5964328,
+      "value": 0.6300566666666667,
       "year": 2026,
       "source": "gdelt"
     },
     {
-      "countryIso3": "UKR",
+      "countryIso3": "PAK",
       "indicatorName": "gdelt_instability",
-      "value": 0.8456952,
+      "value": 0.6144233333333333,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gdelt_instability",
+      "value": 0.52899,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gdelt_instability",
+      "value": 0.5315616,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gdelt_instability",
+      "value": 0.59424,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gdelt_instability",
+      "value": 0.8106584,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gdelt_instability",
+      "value": 0.6835751999999999,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gdelt_instability",
+      "value": 0.5340966666666667,
+      "year": 2026,
+      "source": "gdelt"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gdelt_instability",
+      "value": 0.75844,
       "year": 2026,
       "source": "gdelt"
     }
