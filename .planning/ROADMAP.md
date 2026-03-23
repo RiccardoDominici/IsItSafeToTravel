@@ -265,7 +265,7 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 20. Accessibility and CSP Hardening | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 21. Scoring Formula Redesign | v3.0 | 3/3 | Complete    | 2026-03-22 |
 | 22. Historical Backfill | v3.0 | 0/1 | Complete    | 2026-03-23 |
-| 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | In Progress|  |
+| 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | Complete    | 2026-03-23 |
 | 24. GDELT Stability Fetcher | v3.0 | 0/0 | Not started | - |
 | 25. WHO DONs Fetcher | v3.0 | 0/0 | Not started | - |
 | 26. Validation, Documentation, and UX | v3.0 | 0/0 | Not started | - |
