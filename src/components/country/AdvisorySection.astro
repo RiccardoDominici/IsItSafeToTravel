@@ -14,7 +14,9 @@ const t = useTranslations(lang);
 
 const hasUs = !!advisories.us;
 const hasUk = !!advisories.uk;
-const hasAny = hasUs || hasUk;
+const hasCa = !!advisories.ca;
+const hasAu = !!advisories.au;
+const hasAny = hasUs || hasUk || hasCa || hasAu;
 ---
 
 <section class="py-6 px-4 max-w-2xl mx-auto">
@@ -28,6 +30,7 @@ const hasAny = hasUs || hasUk;
         <AdvisoryCard
           advisory={advisories.us}
           sourceName={t('country.advisory.us')}
+          sourceKey="us"
           lang={lang}
         />
       )}
@@ -35,6 +38,23 @@ const hasAny = hasUs || hasUk;
         <AdvisoryCard
           advisory={advisories.uk}
           sourceName={t('country.advisory.uk')}
+          sourceKey="uk"
+          lang={lang}
+        />
+      )}
+      {hasCa && advisories.ca && (
+        <AdvisoryCard
+          advisory={advisories.ca}
+          sourceName={t('country.advisory.ca')}
+          sourceKey="ca"
+          lang={lang}
+        />
+      )}
+      {hasAu && advisories.au && (
+        <AdvisoryCard
+          advisory={advisories.au}
+          sourceName={t('country.advisory.au')}
+          sourceKey="au"
           lang={lang}
         />
       )}

@@ -6,15 +6,17 @@ import { useTranslations } from '../../i18n/utils';
 interface Props {
   advisory: AdvisoryInfo;
   sourceName: string;
+  sourceKey: 'us' | 'uk' | 'ca' | 'au';
   lang: Lang;
 }
 
-const { advisory, sourceName, lang } = Astro.props;
+const { advisory, sourceName, sourceKey, lang } = Astro.props;
 const t = useTranslations(lang);
 
 // Advisory level color mapping
-function getAdvisoryColor(advisory: AdvisoryInfo, source: 'us' | 'uk'): string {
-  if (source === 'us') {
+function getAdvisoryColor(advisory: AdvisoryInfo, source: 'us' | 'uk' | 'ca' | 'au'): string {
+  if (source === 'us' || source === 'ca' || source === 'au') {
+    // All three use numeric 1-4 scale with same color mapping
     const level = Number(advisory.level);
     if (level === 1) return '#22c55e';
     if (level === 2) return '#eab308';
@@ -30,9 +32,7 @@ function getAdvisoryColor(advisory: AdvisoryInfo, source: 'us' | 'uk'): string {
   return '#22c55e';
 }
 
-// Determine source type from sourceName
-const sourceType = sourceName.includes('us') || sourceName.includes('US') ? 'us' as const : 'uk' as const;
-const borderColor = getAdvisoryColor(advisory, sourceType);
+const borderColor = getAdvisoryColor(advisory, sourceKey);
 
 const formattedDate = new Intl.DateTimeFormat(lang, {
   year: 'numeric',
