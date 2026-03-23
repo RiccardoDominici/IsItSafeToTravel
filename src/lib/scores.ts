@@ -69,6 +69,42 @@ export function loadPillarHistory(iso3: string): PillarHistoryData | null {
   return index.pillarHistory[iso3];
 }
 
+/**
+ * Compute the score delta for a country by comparing the latest score
+ * with the score from approximately 7 days ago.
+ * Returns null if insufficient history data.
+ */
+export function getScoreDelta(
+  iso3: string,
+  history: Map<string, HistoryPoint[]>
+): { delta: number; period: string } | null {
+  const points = history.get(iso3);
+  if (!points || points.length < 2) return null;
+
+  const latest = points[points.length - 1];
+  const latestDate = new Date(latest.date).getTime();
+  const targetDate = latestDate - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+
+  // Find the closest point to 7 days back
+  let closestIdx = -1;
+  let closestDiff = Infinity;
+
+  for (let i = 0; i < points.length - 1; i++) {
+    const pointDate = new Date(points[i].date).getTime();
+    const diff = Math.abs(pointDate - targetDate);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestIdx = i;
+    }
+  }
+
+  // If no point exists within 14 days of the target, return null
+  if (closestIdx === -1 || closestDiff > 14 * 24 * 60 * 60 * 1000) return null;
+
+  const delta = latest.score - points[closestIdx].score;
+  return { delta, period: '7d' };
+}
+
 function loadFromHistoryIndex(days?: number): Map<string, HistoryPoint[]> {
   const history = new Map<string, HistoryPoint[]>();
   const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));

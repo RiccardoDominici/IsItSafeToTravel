@@ -10,6 +10,36 @@ interface Props {
 
 const { sources, lang } = Astro.props;
 const t = useTranslations(lang);
+
+type FreshnessLevel = 'fresh' | 'recent' | 'stale' | 'outdated' | 'unknown';
+
+function getFreshnessLevel(fetchedAt: string | undefined): FreshnessLevel {
+  if (!fetchedAt) return 'unknown';
+  const date = new Date(fetchedAt);
+  if (isNaN(date.getTime())) return 'unknown';
+  const now = new Date();
+  const daysDiff = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24));
+  if (daysDiff <= 7) return 'fresh';
+  if (daysDiff <= 30) return 'recent';
+  if (daysDiff <= 90) return 'stale';
+  return 'outdated';
+}
+
+const freshnessStyles: Record<FreshnessLevel, string> = {
+  fresh: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300',
+  recent: 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300',
+  stale: 'bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-300',
+  outdated: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
+  unknown: 'bg-sand-200 text-sand-600 dark:bg-sand-700 dark:text-sand-300',
+};
+
+const freshnessKeys: Record<FreshnessLevel, string> = {
+  fresh: 'sources.freshness.fresh',
+  recent: 'sources.freshness.recent',
+  stale: 'sources.freshness.stale',
+  outdated: 'sources.freshness.outdated',
+  unknown: 'sources.freshness.unknown',
+};
 ---
 
 {sources.length > 0 && (
@@ -20,28 +50,41 @@ const t = useTranslations(lang);
 
     <ul class="space-y-3 divide-y divide-sand-200 dark:divide-sand-700">
       {sources.map((source) => {
-        const fetchedDate = new Intl.DateTimeFormat(lang, {
-          year: 'numeric',
-          month: 'short',
-          day: 'numeric',
-        }).format(new Date(source.fetchedAt));
+        const freshness = getFreshnessLevel(source.fetchedAt);
+        const fetchedDate = source.fetchedAt && !isNaN(new Date(source.fetchedAt).getTime())
+          ? new Intl.DateTimeFormat(lang, {
+              year: 'numeric',
+              month: 'short',
+              day: 'numeric',
+            }).format(new Date(source.fetchedAt))
+          : null;
 
         return (
           <li class="pt-3 first:pt-0">
-            <a
-              href={source.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              class="text-terracotta-500 hover:text-terracotta-600 underline font-medium"
-            >
-              {source.name}
-            </a>
+            <div class="flex items-center gap-2 flex-wrap">
+              <a
+                href={source.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-terracotta-500 hover:text-terracotta-600 underline font-medium"
+              >
+                {source.name}
+              </a>
+              <span
+                class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${freshnessStyles[freshness]}`}
+                title={fetchedDate ? t('country.source_fetched').replace('{date}', fetchedDate) : ''}
+              >
+                {t(freshnessKeys[freshness])}
+              </span>
+            </div>
             <p class="text-sm text-sand-600 dark:text-sand-400 mt-1">
               {source.description}
             </p>
-            <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
-              {t('country.source_fetched').replace('{date}', fetchedDate)}
-            </p>
+            {fetchedDate && (
+              <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
+                {t('country.source_fetched').replace('{date}', fetchedDate)}
+              </p>
+            )}
           </li>
         );
       })}

@@ -7,9 +7,10 @@ import { scoreToColor } from '../../lib/colors';
 interface Props {
   country: ScoredCountry;
   lang: Lang;
+  scoreDelta?: { delta: number; period: string } | null;
 }
 
-const { country, lang } = Astro.props;
+const { country, lang, scoreDelta } = Astro.props;
 const t = useTranslations(lang);
 
 const bgColor = scoreToColor(country.score);
@@ -84,6 +85,19 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
   <p class="mt-1 text-sm text-sand-500 dark:text-sand-400 italic">
     {verdict.text[lang]}
   </p>
+
+  {scoreDelta && scoreDelta.delta !== 0 && (
+    <p class={`mt-2 inline-flex items-center gap-1 text-sm font-medium ${scoreDelta.delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+      {scoreDelta.delta > 0 ? (
+        <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 4l4 6H4l4-6z"/></svg>
+      ) : (
+        <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-6h8l-4 6z"/></svg>
+      )}
+      <span>
+        {scoreDelta.delta > 0 ? '+' : ''}{scoreDelta.delta.toFixed(1)} {t('country.score_delta_label')}
+      </span>
+    </p>
+  )}
 
   <div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-sand-500 dark:text-sand-400">
     <span>{t('country.last_updated').replace('{date}', formattedDate)}</span>
