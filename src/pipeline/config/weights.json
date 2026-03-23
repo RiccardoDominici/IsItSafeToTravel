@@ -1,5 +1,5 @@
 {
-  "version": "5.2.0",
+  "version": "5.3.0",
   "pillars": [
     {
       "name": "conflict",
@@ -23,7 +23,13 @@
     {
       "name": "health",
       "weight": 0.20,
-      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"]
+      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic", "who_active_outbreaks"],
+      "indicatorWeights": {
+        "wb_child_mortality": 0.30,
+        "inform_health": 0.25,
+        "inform_epidemic": 0.25,
+        "who_active_outbreaks": 0.20
+      }
     },
     {
       "name": "governance",
