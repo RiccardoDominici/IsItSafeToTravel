@@ -46,41 +46,43 @@ const PRIORITY_FIPS = new Set([
 ]);
 
 /**
- * Compute self-relative instability from a country's tone time series.
- * Compares recent tone (last 3 days) against the 30-day baseline median.
- * Returns 0-1 where 0 = normal/better than baseline, 1 = severe tone drop.
+ * Compute instability from a country's tone time series.
+ * Uses ABSOLUTE tone mapping (not self-relative) because self-relative
+ * normalization makes chronic conflict zones (Ukraine, Syria) appear "stable"
+ * since their bad tone is already their baseline.
+ *
+ * Tone ranges roughly -10 to +10:
+ *  -5 or lower = very negative coverage (conflict/crisis) → instability 1.0
+ *   0 = neutral coverage → instability 0.5
+ *  +5 or higher = very positive coverage → instability 0.0
+ *
+ * Additionally applies a spike boost: if recent tone is significantly worse
+ * than the 30-day baseline, add extra instability (capped at 1.0).
  */
-function computeSelfRelativeInstability(toneValues: number[]): number {
-  if (toneValues.length < 4) {
-    return 0; // Not enough data for meaningful comparison
-  }
+function computeInstability(toneValues: number[]): number {
+  if (toneValues.length === 0) return 0;
 
-  // Split: last 3 values = recent, rest = baseline
-  const recentCount = Math.min(3, Math.floor(toneValues.length / 3));
+  // Recent average: last 3 data points (or all if fewer)
+  const recentCount = Math.min(3, toneValues.length);
   const recentValues = toneValues.slice(-recentCount);
-  const baselineValues = toneValues.slice(0, -recentCount);
-
-  if (baselineValues.length === 0) return 0;
-
-  // Baseline: median of historical values
-  const sorted = [...baselineValues].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / 2);
-  const baselineMedian = sorted.length % 2 === 0
-    ? (sorted[mid - 1] + sorted[mid]) / 2
-    : sorted[mid];
-
-  // Recent: average of last few values
   const recentAvg = recentValues.reduce((s, v) => s + v, 0) / recentValues.length;
 
-  // Deviation: how much worse is recent vs baseline?
-  // Negative deviation (tone dropped) = instability increase
-  const deviation = baselineMedian - recentAvg;
+  // Absolute mapping: tone → instability
+  // tone=-5 → 1.0, tone=0 → 0.5, tone=+5 → 0.0
+  const absoluteInstability = Math.max(0, Math.min(1, (0 - recentAvg) / 10 + 0.5));
 
-  // Only negative tone shifts indicate instability (positive = improvement = 0 instability)
-  if (deviation <= 0) return 0;
+  // Spike boost: if we have enough data, compare recent vs baseline
+  let spikeBoost = 0;
+  if (toneValues.length >= 10) {
+    const baselineValues = toneValues.slice(0, -recentCount);
+    const baselineAvg = baselineValues.reduce((s, v) => s + v, 0) / baselineValues.length;
+    const deviation = baselineAvg - recentAvg; // positive = tone dropped
+    if (deviation > 0) {
+      spikeBoost = Math.min(0.2, deviation / TONE_DEVIATION_SCALE); // max 0.2 boost
+    }
+  }
 
-  // Scale and clamp to 0-1
-  return Math.min(1, deviation / TONE_DEVIATION_SCALE);
+  return Math.min(1, absoluteInstability + spikeBoost);
 }
 
 /**
@@ -131,8 +133,8 @@ async function fetchCountryInstability(
       return null;
     }
 
-    // Self-relative instability: compare recent tone to country's own baseline
-    const instability = computeSelfRelativeInstability(toneValues);
+    // Absolute instability with spike boost
+    const instability = computeInstability(toneValues);
 
     return { fips, value: instability };
   } catch (error) {
