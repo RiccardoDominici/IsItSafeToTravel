@@ -185,7 +185,11 @@ Plans:
   2. After a pipeline run, data/raw/{date}/ contains gdacs-parsed.json with orange/red severity disaster alerts (earthquakes, floods, cyclones, volcanoes) mapped to affected countries
   3. Countries with active humanitarian crises or major natural disasters show measurably higher signal-tier contributions in their scores compared to countries without active events
   4. When ReliefWeb or GDACS API is unreachable, the pipeline completes successfully using cached data or pure baseline fallback
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
+- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 
 ### Phase 24: GDELT Stability Fetcher
 **Goal**: Pipeline ingests GDELT instability scores as a near-realtime conflict signal, with media bias explicitly contained through self-relative spike detection
@@ -195,7 +199,11 @@ Plans:
   1. After a pipeline run, data/raw/{date}/ contains gdelt-parsed.json with per-country instability scores fetched via the GDELT Stability Timeline API using the FIPS-to-ISO3 mapping
   2. GDELT's contribution is capped (no more than 15% of the conflict pillar) so media volume bias cannot dominate a country's safety score
   3. The pipeline completes its full GDELT fetch within the GitHub Actions CI time budget (under 5 minutes for all countries)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
+- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 
 ### Phase 25: WHO DONs Fetcher
 **Goal**: Pipeline ingests WHO Disease Outbreak News to give the health pillar a realtime signal for active epidemics and disease events
@@ -205,7 +213,11 @@ Plans:
   1. After a pipeline run, data/raw/{date}/ contains who-dons-parsed.json with active outbreak counts per country from the last 90 days
   2. Countries with WHO-declared disease outbreaks show a measurable increase in their health pillar signal contribution
   3. When the WHO DONs API is unreachable or returns unparseable data, the pipeline completes successfully and the health pillar falls back to baseline-only scoring
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
+- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 
 ### Phase 26: Validation, Documentation, and UX
 **Goal**: All sources are validated against known crises, score drift is guarded in CI, methodology and repo documentation reflect the new architecture, and users see dynamic score indicators
@@ -217,7 +229,11 @@ Plans:
   3. User can read the methodology page in any of the 5 languages and find explanations of the baseline+signal formula, every data source, its update frequency, and its role in scoring
   4. README and pipeline documentation explain the new data architecture, source tiers, decay parameters, and how to add a new source
   5. User sees a score change delta indicator (arrow or badge) on country cards showing recent score movement, and data freshness badges showing when each source was last updated
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
+- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 **UI hint**: yes
 
 ## Progress
