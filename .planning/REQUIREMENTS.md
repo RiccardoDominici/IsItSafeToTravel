@@ -182,7 +182,7 @@ Requirements for milestone v3.0: Data Sources & Scoring Overhaul.
 
 ### New Data Sources
 
-- [ ] **SRC-01**: Pipeline fetches daily GDELT Stability scores per country (FIPS-to-ISO3 mapping, CSV parsing)
+- [x] **SRC-01**: Pipeline fetches daily GDELT Stability scores per country (FIPS-to-ISO3 mapping, CSV parsing)
 - [x] **SRC-02**: Pipeline fetches GDACS disaster alerts (earthquakes, floods, cyclones, volcanoes) filtered to orange/red severity
 - [x] **SRC-03**: Pipeline fetches ReliefWeb active disasters and humanitarian reports per country
 - [ ] **SRC-04**: Pipeline fetches WHO Disease Outbreak News and counts active outbreaks per country
@@ -406,7 +406,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HIST-02 | Phase 22 | Pending |
 | SRC-02 | Phase 23 | Complete |
 | SRC-03 | Phase 23 | Complete |
-| SRC-01 | Phase 24 | Pending |
+| SRC-01 | Phase 24 | Complete |
 | SRC-04 | Phase 25 | Pending |
 | VALID-01 | Phase 26 | Pending |
 | VALID-02 | Phase 26 | Pending |
