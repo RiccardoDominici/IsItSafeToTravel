@@ -91,10 +91,11 @@ None yet.
 | Phase 25 P02 | 193s | 2 tasks | 3 files |
 | Phase 26 P01 | 4min | 2 tasks | 2 files |
 | Phase 26 P03 | 16min | 2 tasks | 9 files |
+| 260323-mcr | Add CA/AU government advisories, populate AdvisoryInfo, 4-card frontend | 2026-03-23 | 8d37e41, d2a026b | [260323-mcr-add-government-advisories-section-with-c](./quick/260323-mcr-add-government-advisories-section-with-c/) |
 
 ## Session Continuity
 
 Last activity: 2026-03-23
-Last session: 2026-03-23T01:33:31.386Z
-Stopped at: Completed 26-03 (Score Delta and Freshness Badges)
+Last session: 2026-03-23T15:16:35Z
+Stopped at: Completed 260323-mcr (Government Advisories)
 Resume file: None
