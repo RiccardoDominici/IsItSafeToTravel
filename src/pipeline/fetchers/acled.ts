@@ -16,7 +16,7 @@ const ACLED_LOGIN_URL = 'https://acleddata.com/user/login?_format=json';
 const ACLED_TOKEN_URL = 'https://acleddata.com/oauth/token';
 const ACLED_API_URL = 'https://acleddata.com/api/acled/read';
 
-const ACLED_UA = 'IsItSafeToTravel/3.0 (https://isitsafetotravel.com; data pipeline)';
+const ACLED_UA = 'IsItSafeToTravel/3.0 (https://isitsafetotravel.org; data pipeline)';
 
 /**
  * Login via cookie-based auth. Returns session cookies as a string.
@@ -46,12 +46,20 @@ async function getAcledSession(email: string, password: string): Promise<string>
   const cookies = response.headers.getSetCookie?.() ?? [];
   const cookieStr = cookies.map(c => c.split(';')[0]).join('; ');
 
+  console.log(`[ACLED] Cookies received: ${cookies.length}, total length=${cookieStr.length}`);
+
   if (!cookieStr) {
-    // Some environments don't expose Set-Cookie — fall back to OAuth
     throw new Error('No session cookies returned');
   }
 
-  console.log('[ACLED] Cookie login successful');
+  // Also extract CSRF token from response body (needed for some endpoints)
+  const body = await response.json().catch(() => null) as { csrf_token?: string } | null;
+  if (body?.csrf_token) {
+    console.log('[ACLED] CSRF token received');
+    return `${cookieStr}|||${body.csrf_token}`;
+  }
+
+  console.log('[ACLED] Cookie login successful (no CSRF token)');
   return cookieStr;
 }
 
@@ -181,7 +189,12 @@ export async function fetchAcled(date: string): Promise<FetchResult> {
       if (auth.type === 'bearer') {
         headers['Authorization'] = `Bearer ${auth.value}`;
       } else {
-        headers['Cookie'] = auth.value;
+        // Cookie auth — may include CSRF token separated by |||
+        const parts = auth.value.split('|||');
+        headers['Cookie'] = parts[0];
+        if (parts[1]) {
+          headers['X-CSRF-Token'] = parts[1];
+        }
       }
 
       response = await fetch(url.toString(), {
