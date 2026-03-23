@@ -216,8 +216,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 25-01-PLAN.md — WHO DONs fetcher module (API integration, title parsing, country extraction, caching)
-- [ ] 25-02-PLAN.md — Pipeline wiring (index registration, normalization range, health pillar weights v5.3.0)
+- [x] 25-01-PLAN.md — WHO DONs fetcher module (API integration, title parsing, country extraction, caching)
+- [x] 25-02-PLAN.md — Pipeline wiring (index registration, normalization range, health pillar weights v5.3.0)
 
 
 
@@ -269,5 +269,5 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 22. Historical Backfill | v3.0 | 0/1 | Complete    | 2026-03-23 |
 | 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | Complete    | 2026-03-23 |
 | 24. GDELT Stability Fetcher | v3.0 | 2/2 | Complete    | 2026-03-23 |
-| 25. WHO DONs Fetcher | v3.0 | 0/0 | Not started | - |
+| 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete   | 2026-03-23 |
 | 26. Validation, Documentation, and UX | v3.0 | 0/0 | Not started | - |

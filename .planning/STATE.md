@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
-status: Ready to plan
-stopped_at: Completed 24-02 (GDELT Pipeline Integration)
-last_updated: "2026-03-23T00:59:20.593Z"
+status: Phase complete — ready for verification
+stopped_at: Completed 25-02 (WHO DONs Pipeline Integration)
+last_updated: "2026-03-23T01:06:59.639Z"
 last_activity: 2026-03-23
 progress:
   total_phases: 11
-  completed_phases: 5
-  total_plans: 10
-  completed_plans: 14
+  completed_phases: 6
+  total_plans: 12
+  completed_plans: 16
 ---
 
 # Project State
@@ -20,12 +20,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 24 — GDELT Stability Fetcher
+**Current focus:** Phase 25 — WHO DONs Fetcher
 
 ## Current Position
 
-Phase: 25
-Plan: Not started
+Phase: 25 (WHO DONs Fetcher) — EXECUTING
+Plan: 2 of 2
 
 ## Performance Metrics
 
@@ -55,6 +55,9 @@ Recent decisions affecting current work:
 - [Phase 24]: Used GDELT DOC v2 API (timelinetone mode) instead of deprecated v1 Stability Timeline endpoint
 - [Phase 24]: Tone-to-instability linear mapping: instability = clamp((0-tone)/10+0.5, 0, 1)
 - [Phase 24]: indicatorWeights distribute 85% across 6 existing indicators with baseline sources getting slightly more than signal sources
+- [Phase 25]: Country extraction from DON titles uses dash-split then in-split fallback
+- [Phase 25]: Health pillar indicatorWeights: baseline 30/25/25%, signal (WHO DONs) 20%
+- [Phase 25]: who_active_outbreaks normalization range 0-5 (inverse)
 
 ### Pending Todos
 
@@ -80,10 +83,12 @@ None yet.
 | Phase 23 P02 | 2min | 2 tasks | 5 files |
 | Phase 24 P01 | 10m | 1 tasks | 2 files |
 | Phase 24 P02 | 2min | 2 tasks | 3 files |
+| Phase 25 P01 | 193s | 1 tasks | 1 files |
+| Phase 25 P02 | 193s | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-23
-Last session: 2026-03-23T00:53:57.387Z
-Stopped at: Completed 24-02 (GDELT Pipeline Integration)
+Last session: 2026-03-23T01:06:59.635Z
+Stopped at: Completed 25-02 (WHO DONs Pipeline Integration)
 Resume file: None
