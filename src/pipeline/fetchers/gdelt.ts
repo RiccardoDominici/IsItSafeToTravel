@@ -8,35 +8,91 @@ import { join } from 'node:path';
 /**
  * GDELT DOC 2.0 API — timelinetone mode returns average media tone over time.
  * We use `sourcecountry:{FIPS}` to get per-country tone data.
- * Tone ranges roughly -10 to +10 (negative = negative sentiment = instability proxy).
- * We convert to an instability score 0-1 via: instability = clamp((0 - avgTone) / 10 + 0.5, 0, 1)
- * This maps tone=0 to 0.5, tone=-5 to 1.0, tone=+5 to 0.0.
  *
- * Rate limit: 1 request per 5 seconds (documented).
- * Smoothing: TIMELINESMOOTH=3 for 3-point rolling average to reduce noise.
+ * SELF-RELATIVE NORMALIZATION (media bias containment):
+ * Instead of mapping absolute tone to instability, we compute each country's
+ * own 30-day baseline median and express current tone as a relative deviation.
+ * This prevents English-language media bias from making heavily-covered countries
+ * appear systematically more dangerous (GDELT over-represents Western media).
+ *
+ * instability = clamp(baselineTone - recentTone, 0, 1) / scale
+ * Where: baseline = median tone over 30 days, recent = last 3 days average.
+ * A country whose tone drops significantly below its own baseline = spike.
+ *
+ * Rate limit: 1 request per 2 seconds.
+ * CI budget: fetches top ~50 priority countries to stay under 3 minutes.
  */
 const GDELT_BASE_URL = 'https://api.gdeltproject.org/api/v2/doc/doc';
 
+/** Max countries to fetch — keeps CI under 3 minutes at 2s/request */
+const MAX_COUNTRIES = 50;
+
+/** Delay between requests in ms */
+const REQUEST_DELAY_MS = 2_000;
+
+/** Scale factor for tone deviation → instability conversion */
+const TONE_DEVIATION_SCALE = 5;
+
 /**
- * Convert GDELT average tone (-10 to +10) to instability score (0 to 1).
- * More negative tone = higher instability.
+ * Priority FIPS codes — most-traveled destinations + conflict-prone regions.
+ * These are fetched first; remaining countries get GDELT data only if time allows.
  */
-function toneToInstability(tone: number): number {
-  // Map: tone=-5 -> 1.0 (max instability), tone=0 -> 0.5, tone=+5 -> 0.0
-  const instability = (0 - tone) / 10 + 0.5;
-  return Math.max(0, Math.min(1, instability));
+const PRIORITY_FIPS = new Set([
+  'US', 'UK', 'FR', 'GM', 'IT', 'SP', 'TU', 'EG', 'MX', 'TH',
+  'JA', 'IN', 'CH', 'BR', 'AU', 'CA', 'GR', 'PO', 'NL', 'SZ',
+  'IS', 'SA', 'IZ', 'AF', 'SY', 'YM', 'SO', 'SU', 'NG', 'CO',
+  'VE', 'PK', 'IR', 'RS', 'UP', 'BO', 'MO', 'KN', 'KS', 'CB',
+  'RP', 'ID', 'MY', 'VM', 'BM', 'CE', 'ET', 'KE', 'SF', 'AG',
+]);
+
+/**
+ * Compute self-relative instability from a country's tone time series.
+ * Compares recent tone (last 3 days) against the 30-day baseline median.
+ * Returns 0-1 where 0 = normal/better than baseline, 1 = severe tone drop.
+ */
+function computeSelfRelativeInstability(toneValues: number[]): number {
+  if (toneValues.length < 4) {
+    return 0; // Not enough data for meaningful comparison
+  }
+
+  // Split: last 3 values = recent, rest = baseline
+  const recentCount = Math.min(3, Math.floor(toneValues.length / 3));
+  const recentValues = toneValues.slice(-recentCount);
+  const baselineValues = toneValues.slice(0, -recentCount);
+
+  if (baselineValues.length === 0) return 0;
+
+  // Baseline: median of historical values
+  const sorted = [...baselineValues].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  const baselineMedian = sorted.length % 2 === 0
+    ? (sorted[mid - 1] + sorted[mid]) / 2
+    : sorted[mid];
+
+  // Recent: average of last few values
+  const recentAvg = recentValues.reduce((s, v) => s + v, 0) / recentValues.length;
+
+  // Deviation: how much worse is recent vs baseline?
+  // Negative deviation (tone dropped) = instability increase
+  const deviation = baselineMedian - recentAvg;
+
+  // Only negative tone shifts indicate instability (positive = improvement = 0 instability)
+  if (deviation <= 0) return 0;
+
+  // Scale and clamp to 0-1
+  return Math.min(1, deviation / TONE_DEVIATION_SCALE);
 }
 
 /**
  * Fetch instability score for a single country from GDELT DOC v2 API.
- * Uses timelinetone mode with sourcecountry filter.
- * Returns the average tone of the last 24h converted to instability (0-1), or null on failure.
+ * Uses timelinetone mode with 30-day timespan for self-relative analysis.
+ * Returns the self-relative instability score (0-1), or null on failure.
  */
 async function fetchCountryInstability(
   fips: string,
 ): Promise<{ fips: string; value: number } | null> {
   try {
-    const url = `${GDELT_BASE_URL}?query=sourcecountry:${fips}&mode=timelinetone&format=csv&TIMELINESMOOTH=3&TIMESPAN=7d`;
+    const url = `${GDELT_BASE_URL}?query=sourcecountry:${fips}&mode=timelinetone&format=csv&TIMELINESMOOTH=3&TIMESPAN=30d`;
     const response = await fetch(url, {
       signal: AbortSignal.timeout(10_000),
     });
@@ -48,7 +104,6 @@ async function fetchCountryInstability(
 
     const text = await response.text();
 
-    // Check for rate-limit or error text responses
     if (text.includes('Please limit requests') || text.includes('Invalid mode')) {
       console.warn(`[GDELT] Rate limited or invalid response for FIPS=${fips}`);
       return null;
@@ -63,12 +118,9 @@ async function fetchCountryInstability(
       return null;
     }
 
-    // Take the last 24 rows (last 24 hours of hourly data) and average their tone
-    // If fewer rows available, use all of them
-    const recentRows = parsed.data.slice(-24);
+    // Extract tone values from the 30-day time series
     const toneValues: number[] = [];
-
-    for (const row of recentRows) {
+    for (const row of parsed.data) {
       const val = parseFloat(row['Value'] || '');
       if (!isNaN(val)) {
         toneValues.push(val);
@@ -79,8 +131,8 @@ async function fetchCountryInstability(
       return null;
     }
 
-    const avgTone = toneValues.reduce((sum, v) => sum + v, 0) / toneValues.length;
-    const instability = toneToInstability(avgTone);
+    // Self-relative instability: compare recent tone to country's own baseline
+    const instability = computeSelfRelativeInstability(toneValues);
 
     return { fips, value: instability };
   } catch (error) {
@@ -104,12 +156,22 @@ export async function fetchGdelt(date: string): Promise<FetchResult> {
     console.log('[GDELT] Fetching instability scores from DOC v2 API (timelinetone mode)...');
 
     // Filter FIPS codes to only those whose ISO3 maps to a valid country in our list
-    const fipsCodes = Object.keys(FIPS_TO_ISO3).filter((fips) => {
+    const allFipsCodes = Object.keys(FIPS_TO_ISO3).filter((fips) => {
       const iso3 = FIPS_TO_ISO3[fips];
       return iso3 && getCountryByIso3(iso3) !== undefined;
     });
 
-    console.log(`[GDELT] Fetching ${fipsCodes.length} countries sequentially (5s spacing)...`);
+    // Sort: priority countries first, then rest alphabetically
+    const fipsCodes = allFipsCodes
+      .sort((a, b) => {
+        const aPriority = PRIORITY_FIPS.has(a) ? 0 : 1;
+        const bPriority = PRIORITY_FIPS.has(b) ? 0 : 1;
+        if (aPriority !== bPriority) return aPriority - bPriority;
+        return a.localeCompare(b);
+      })
+      .slice(0, MAX_COUNTRIES);
+
+    console.log(`[GDELT] Fetching ${fipsCodes.length} priority countries (${REQUEST_DELAY_MS / 1000}s spacing, self-relative normalization)...`);
 
     const results = new Map<string, number>();
     let fetched = 0;
@@ -132,9 +194,9 @@ export async function fetchGdelt(date: string): Promise<FetchResult> {
         console.log(`[GDELT] Progress: ${fetched}/${fipsCodes.length} countries fetched...`);
       }
 
-      // Rate-limit: 5s delay between requests (GDELT documented limit)
+      // Rate-limit delay between requests
       if (fetched < fipsCodes.length) {
-        await new Promise((r) => setTimeout(r, 5_000));
+        await new Promise((r) => setTimeout(r, REQUEST_DELAY_MS));
       }
     }
 
