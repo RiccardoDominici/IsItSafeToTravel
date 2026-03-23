@@ -6,6 +6,7 @@ import { fetchGpi } from './gpi.js';
 import { fetchInform } from './inform.js';
 import { fetchReliefweb } from './reliefweb.js';
 import { fetchGdacs } from './gdacs.js';
+import { fetchGdelt } from './gdelt.js';
 
 export { fetchWorldBank } from './worldbank.js';
 export { fetchAcled } from './acled.js';
@@ -14,6 +15,7 @@ export { fetchGpi } from './gpi.js';
 export { fetchInform } from './inform.js';
 export { fetchReliefweb } from './reliefweb.js';
 export { fetchGdacs } from './gdacs.js';
+export { fetchGdelt } from './gdelt.js';
 
 /**
  * Fetch all data sources in parallel using Promise.allSettled.
@@ -27,6 +29,7 @@ export { fetchGdacs } from './gdacs.js';
  * - Advisories (US State Dept + UK FCDO) — free, no auth
  * - ReliefWeb (active humanitarian disasters) — free, no auth
  * - GDACS (natural disaster alerts) — free, no auth
+ * - GDELT (media tone instability proxy) — free, no auth
  */
 export async function fetchAllSources(date: string): Promise<FetchResult[]> {
   console.log(`[PIPELINE] Starting data fetch for ${date}...`);
@@ -40,9 +43,10 @@ export async function fetchAllSources(date: string): Promise<FetchResult[]> {
     fetchAdvisories(date),
     fetchReliefweb(date),
     fetchGdacs(date),
+    fetchGdelt(date),
   ]);
 
-  const sourceNames = ['worldbank', 'gpi', 'inform', 'acled', 'advisories', 'reliefweb', 'gdacs'];
+  const sourceNames = ['worldbank', 'gpi', 'inform', 'acled', 'advisories', 'reliefweb', 'gdacs', 'gdelt'];
   const fetchResults: FetchResult[] = results.map((result, index) => {
     if (result.status === 'fulfilled') {
       return result.value;
