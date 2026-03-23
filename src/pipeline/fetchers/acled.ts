@@ -21,7 +21,11 @@ const ACLED_API_URL = 'https://acleddata.com/api/acled/read';
 async function getAcledToken(email: string, password: string): Promise<string> {
   const response = await fetch(ACLED_TOKEN_URL, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'User-Agent': 'IsItSafeToTravel/3.0 (https://isitsafetotravel.com; data pipeline)',
+      'Accept': 'application/json',
+    },
     body: new URLSearchParams({
       username: email,
       password: password,
@@ -112,7 +116,11 @@ export async function fetchAcled(date: string): Promise<FetchResult> {
       url.searchParams.set('limit', '0');
 
       response = await fetch(url.toString(), {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'User-Agent': 'IsItSafeToTravel/3.0 (https://isitsafetotravel.com; data pipeline)',
+          'Accept': 'application/json',
+        },
         signal: AbortSignal.timeout(60_000),
       });
     } else {

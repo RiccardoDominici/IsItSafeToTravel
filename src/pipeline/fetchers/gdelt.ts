@@ -20,17 +20,14 @@ import { join } from 'node:path';
  * A country whose tone drops significantly below its own baseline = spike.
  *
  * Rate limit: 1 request per 5 seconds (conservative).
- * Fetches top 50 priority countries only to stay within CI budget (~5 min).
- * Priority list covers war zones + major travel destinations.
- * Countries not in the priority list use baseline-only scoring (correct behavior).
+ * Fetches ALL countries with valid FIPS codes (~190).
+ * At 10s/request this takes ~32 minutes. Pipeline timeout set to 45 min.
+ * Priority countries fetched first (war zones + top destinations).
  */
 const GDELT_BASE_URL = 'https://api.gdeltproject.org/api/v2/doc/doc';
 
-/** Max countries to fetch — 50 priority countries at 5s = ~4.5 min */
-const MAX_COUNTRIES = 50;
-
-/** Delay between requests in ms */
-const REQUEST_DELAY_MS = 5_000;
+/** Delay between requests in ms — 10s to avoid 429 rate limits */
+const REQUEST_DELAY_MS = 10_000;
 
 /** Scale factor for tone deviation → instability conversion */
 const TONE_DEVIATION_SCALE = 5;
@@ -165,15 +162,14 @@ export async function fetchGdelt(date: string): Promise<FetchResult> {
       return iso3 && getCountryByIso3(iso3) !== undefined;
     });
 
-    // Sort: priority countries first, then rest. Limit to MAX_COUNTRIES for CI budget.
+    // Sort: priority countries first, then rest alphabetically. No limit.
     const fipsCodes = allFipsCodes
       .sort((a, b) => {
         const aPriority = PRIORITY_FIPS.has(a) ? 0 : 1;
         const bPriority = PRIORITY_FIPS.has(b) ? 0 : 1;
         if (aPriority !== bPriority) return aPriority - bPriority;
         return a.localeCompare(b);
-      })
-      .slice(0, MAX_COUNTRIES);
+      });
 
     console.log(`[GDELT] Fetching ${fipsCodes.length} priority countries (${REQUEST_DELAY_MS / 1000}s spacing)...`);
 
