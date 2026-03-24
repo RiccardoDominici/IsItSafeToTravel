@@ -53,11 +53,6 @@ describe('DATA-04: GitHub Actions cron workflow structure', () => {
   it('has write permissions for commits', () => {
     assert.ok(yaml.includes('contents: write'), 'Should have write permission');
   });
-
-  it('passes ACLED credentials as secrets', () => {
-    assert.ok(yaml.includes('ACLED_API_KEY'), 'Should reference ACLED_API_KEY secret');
-    assert.ok(yaml.includes('ACLED_EMAIL'), 'Should reference ACLED_EMAIL secret');
-  });
 });
 
 describe('DATA-04: pipeline orchestrator module', () => {

@@ -82,7 +82,7 @@ describe('normalizeIndicators', () => {
 const TEST_WEIGHTS: WeightsConfig = {
   version: '1.0.0',
   pillars: [
-    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'acled_fatalities', 'acled_events'] },
+    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'ucdp_fatalities', 'ucdp_events'] },
     { name: 'crime', weight: 0.20, indicators: ['gpi_safety_security', 'advisory_level_us', 'advisory_level_uk'] },
     { name: 'health', weight: 0.20, indicators: ['inform_health', 'inform_epidemic'] },
     { name: 'governance', weight: 0.20, indicators: ['inform_governance', 'gpi_militarisation'] },
@@ -103,8 +103,8 @@ describe('computeCountryScore', () => {
     // Create indicators that will normalize to ~0.8
     // gpi_overall: inverse, min=1, max=4 => value=1.6 => norm = (1.6-1)/(4-1)=0.2 => inverse=0.8
     // gpi_safety_security: inverse, min=1, max=5 => value=1.8 => norm=(1.8-1)/(5-1)=0.2 => inverse=0.8
-    // acled_fatalities: inverse, min=0, max=10000 => value=2000 => norm=0.2 => inverse=0.8
-    // acled_events: inverse, min=0, max=5000 => value=1000 => norm=0.2 => inverse=0.8
+    // ucdp_fatalities: inverse, min=0, max=10000 => value=2000 => norm=0.2 => inverse=0.8
+    // ucdp_events: inverse, min=0, max=5000 => value=1000 => norm=0.2 => inverse=0.8
     // advisory_level_us: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
     // advisory_level_uk: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
     // inform_health: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
@@ -115,8 +115,8 @@ describe('computeCountryScore', () => {
     // inform_climate: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 2000, year: 2025, source: 'acled' },
-      { countryIso3: 'TST', indicatorName: 'acled_events', value: 1000, year: 2025, source: 'acled' },
+      { countryIso3: 'TST', indicatorName: 'ucdp_fatalities', value: 2000, year: 2025, source: 'ucdp' },
+      { countryIso3: 'TST', indicatorName: 'ucdp_events', value: 1000, year: 2025, source: 'ucdp' },
       { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1.8, year: 2025, source: 'gpi' },
       { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state' },
       { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo' },
@@ -146,7 +146,7 @@ describe('computeCountryScore', () => {
     // Only provide conflict indicators, leave others empty
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 2000, year: 2025, source: 'acled' },
+      { countryIso3: 'TST', indicatorName: 'ucdp_fatalities', value: 2000, year: 2025, source: 'ucdp' },
     ];
 
     const result = computeCountryScore('TST', indicators, TEST_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
@@ -224,7 +224,7 @@ const TEST_SOURCES_CONFIG: SourcesConfig = {
     gpi: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
     worldbank: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
     inform: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
-    acled: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
+    ucdp: { tier: 'signal', maxAgeDays: 730, decayHalfLifeDays: 180 },
     advisories: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
     state: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
     fcdo: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
@@ -238,8 +238,8 @@ const TIERED_WEIGHTS: WeightsConfig = {
     {
       name: 'conflict',
       weight: 0.30,
-      indicators: ['gpi_overall', 'acled_fatalities', 'acled_events'],
-      indicatorWeights: { gpi_overall: 0.50, acled_fatalities: 0.25, acled_events: 0.25 },
+      indicators: ['gpi_overall', 'ucdp_fatalities', 'ucdp_events'],
+      indicatorWeights: { gpi_overall: 0.50, ucdp_fatalities: 0.25, ucdp_events: 0.25 },
     },
     {
       name: 'crime',
@@ -272,11 +272,11 @@ const freshTimestamp = new Date().toISOString();
 
 describe('tiered scoring with sourcesConfig', () => {
   it('blends baseline and signal tiers when both have data', () => {
-    // Baseline indicators (gpi) and signal indicators (acled) for conflict pillar
+    // Baseline indicators (gpi) and signal indicators (ucdp) for conflict pillar
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 2000, year: 2025, source: 'acled', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'acled_events', value: 1000, year: 2025, source: 'acled', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'ucdp_fatalities', value: 2000, year: 2025, source: 'ucdp', fetchedAt: freshTimestamp },
+      { countryIso3: 'TST', indicatorName: 'ucdp_events', value: 1000, year: 2025, source: 'ucdp', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
@@ -299,7 +299,7 @@ describe('tiered scoring with sourcesConfig', () => {
 
 describe('graceful degradation — baseline only', () => {
   it('produces same score as baseline-only when no signal data is present', () => {
-    // Only baseline indicators (gpi, inform) — no acled/advisories signal data
+    // Only baseline indicators (gpi, inform) — no ucdp/advisories signal data
     const baselineOnlyIndicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
@@ -315,7 +315,7 @@ describe('graceful degradation — baseline only', () => {
     // so score should equal pure baseline score
     assert.ok(tieredResult.score >= 1 && tieredResult.score <= 10);
 
-    // Conflict pillar: only gpi_overall (baseline), no acled (signal)
+    // Conflict pillar: only gpi_overall (baseline), no ucdp (signal)
     // So signal completeness = 0 for conflict pillar => pure baseline
     const conflict = tieredResult.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.score > 0, 'Conflict pillar should have a non-zero score from baseline GPI data');
@@ -410,16 +410,16 @@ describe('tiered scoring integration', () => {
       ],
     });
 
-    // Signal source: acled (recent, 2 days old)
+    // Signal source: ucdp (recent, 2 days old)
     const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString();
-    rawData.set('acled', {
-      source: 'acled',
+    rawData.set('ucdp', {
+      source: 'ucdp',
       fetchedAt: twoDaysAgo,
       indicators: [
-        { countryIso3: 'USA', indicatorName: 'acled_fatalities', value: 100, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
-        { countryIso3: 'USA', indicatorName: 'acled_events', value: 500, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
-        { countryIso3: 'AFG', indicatorName: 'acled_fatalities', value: 5000, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
-        { countryIso3: 'AFG', indicatorName: 'acled_events', value: 3000, year: 2025, source: 'acled', fetchedAt: twoDaysAgo },
+        { countryIso3: 'USA', indicatorName: 'ucdp_fatalities', value: 100, year: 2025, source: 'ucdp', fetchedAt: twoDaysAgo },
+        { countryIso3: 'USA', indicatorName: 'ucdp_events', value: 500, year: 2025, source: 'ucdp', fetchedAt: twoDaysAgo },
+        { countryIso3: 'AFG', indicatorName: 'ucdp_fatalities', value: 5000, year: 2025, source: 'ucdp', fetchedAt: twoDaysAgo },
+        { countryIso3: 'AFG', indicatorName: 'ucdp_events', value: 3000, year: 2025, source: 'ucdp', fetchedAt: twoDaysAgo },
       ],
     });
 
@@ -438,8 +438,8 @@ describe('tiered scoring integration', () => {
 
 describe('stale signal data is discounted', () => {
   it('stale signal data produces nearly identical score to baseline-only', () => {
-    // Stale signal timestamp: 90 days ago (past acled maxAgeDays=60)
-    const staleDate = new Date(Date.now() - 90 * 86_400_000).toISOString();
+    // Stale signal timestamp: 800 days ago (past ucdp maxAgeDays=730)
+    const staleDate = new Date(Date.now() - 800 * 86_400_000).toISOString();
 
     const baselineOnlyIndicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
@@ -452,9 +452,9 @@ describe('stale signal data is discounted', () => {
 
     const withStaleSignal: RawIndicator[] = [
       ...baselineOnlyIndicators,
-      // Stale signal data: past maxAgeDays for acled (60 days), should get weight 0
-      { countryIso3: 'TST', indicatorName: 'acled_fatalities', value: 9000, year: 2025, source: 'acled', fetchedAt: staleDate },
-      { countryIso3: 'TST', indicatorName: 'acled_events', value: 4000, year: 2025, source: 'acled', fetchedAt: staleDate },
+      // Stale signal data: past maxAgeDays for ucdp (730 days), should get weight 0
+      { countryIso3: 'TST', indicatorName: 'ucdp_fatalities', value: 9000, year: 2025, source: 'ucdp', fetchedAt: staleDate },
+      { countryIso3: 'TST', indicatorName: 'ucdp_events', value: 4000, year: 2025, source: 'ucdp', fetchedAt: staleDate },
     ];
 
     const baselineResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);

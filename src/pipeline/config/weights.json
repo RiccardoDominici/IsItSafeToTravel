@@ -4,14 +4,14 @@
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "acled_fatalities", "acled_events", "gdelt_instability", "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au"],
+      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "ucdp_fatalities", "ucdp_events", "gdelt_instability", "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au"],
       "indicatorWeights": {
         "wb_political_stability": 0.12,
         "gpi_overall": 0.12,
         "gpi_safety_security": 0.10,
         "gpi_militarisation": 0.10,
-        "acled_fatalities": 0.09,
-        "acled_events": 0.08,
+        "ucdp_fatalities": 0.09,
+        "ucdp_events": 0.08,
         "gdelt_instability": 0.11,
         "advisory_level_us": 0.08,
         "advisory_level_uk": 0.07,
