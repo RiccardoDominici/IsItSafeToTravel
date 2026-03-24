@@ -8,6 +8,7 @@ const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
 export interface HistoryPoint {
   date: string;
   score: number;
+  dc?: number; // dataCompleteness 0-1 (omitted = full data)
 }
 
 export type PillarHistoryData = Record<PillarName, HistoryPoint[]>;
@@ -15,7 +16,7 @@ export type PillarHistoryData = Record<PillarName, HistoryPoint[]>;
 interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
-  countries: Record<string, Array<{ date: string; score: number }>>;
+  countries: Record<string, Array<{ date: string; score: number; dc?: number }>>;
   pillarHistory?: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
@@ -112,7 +113,7 @@ function loadFromHistoryIndex(days?: number): Map<string, HistoryPoint[]> {
   for (const [iso3, points] of Object.entries(index.countries)) {
     const filtered = days ? points.slice(-days) : points;
     if (filtered.length > 0) {
-      history.set(iso3, filtered);
+      history.set(iso3, filtered.map(p => p.dc !== undefined ? { date: p.date, score: p.score, dc: p.dc } : { date: p.date, score: p.score }));
     }
   }
 

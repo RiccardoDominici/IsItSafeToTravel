@@ -6,7 +6,7 @@ import type { PillarName } from '../types.js';
 export interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
-  countries: Record<string, Array<{ date: string; score: number }>>;
+  countries: Record<string, Array<{ date: string; score: number; dc?: number }>>;
   pillarHistory: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
@@ -19,7 +19,7 @@ export interface HistoryIndex {
 export function writeHistoryIndex(): HistoryIndex {
   const dates = listSnapshotDates();
   const global: Array<{ date: string; score: number }> = [];
-  const countries: Record<string, Array<{ date: string; score: number }>> = {};
+  const countries: Record<string, Array<{ date: string; score: number; dc?: number }>> = {};
   const pillarHistory: Record<string, Record<string, Array<{ date: string; score: number }>>> = {};
 
   for (const date of dates) {
@@ -35,7 +35,10 @@ export function writeHistoryIndex(): HistoryIndex {
     // Per-country scores and per-pillar scores
     for (const country of snapshot.countries) {
       if (!countries[country.iso3]) countries[country.iso3] = [];
-      countries[country.iso3].push({ date, score: country.score });
+      // Include dataCompleteness only when below 0.5 (to save space in JSON)
+      const point: { date: string; score: number; dc?: number } = { date, score: country.score };
+      if (country.dataCompleteness < 0.5) point.dc = country.dataCompleteness;
+      countries[country.iso3].push(point);
 
       // Extract per-pillar scores
       if (country.pillars) {

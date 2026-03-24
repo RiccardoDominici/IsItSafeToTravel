@@ -626,7 +626,11 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
         renderChart(filtered, baseData);
         animatePaths(oldLinePath, oldAreaPath);
-        resetBtn.classList.add('hidden');
+        if (range === 'max') {
+          resetBtn.classList.add('hidden');
+        } else {
+          resetBtn.classList.remove('hidden');
+        }
 
         // Update button styles
         document.querySelectorAll('.time-range-btn').forEach(btn => {
