@@ -13,13 +13,7 @@
     "description": "Institute for Economics and Peace annual ranking of 163 countries by peacefulness",
     "updateFrequency": "annual"
   },
-  "acled": {
-    "name": "ACLED - Armed Conflict Location & Event Data",
-    "url": "https://acleddata.com",
-    "dataUrl": "https://api.acleddata.com/acled/read",
-    "description": "Real-time conflict event data including battles, violence, and protests",
-    "updateFrequency": "weekly"
-  },
+
   "advisories": {
     "name": "Government Travel Advisories",
     "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html",

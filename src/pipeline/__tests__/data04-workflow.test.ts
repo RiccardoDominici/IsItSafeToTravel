@@ -54,9 +54,8 @@ describe('DATA-04: GitHub Actions cron workflow structure', () => {
     assert.ok(yaml.includes('contents: write'), 'Should have write permission');
   });
 
-  it('passes ACLED credentials as secrets', () => {
-    assert.ok(yaml.includes('ACLED_API_KEY'), 'Should reference ACLED_API_KEY secret');
-    assert.ok(yaml.includes('ACLED_EMAIL'), 'Should reference ACLED_EMAIL secret');
+  it('passes required secrets to pipeline', () => {
+    assert.ok(yaml.includes('RELIEFWEB_APPNAME'), 'Should reference RELIEFWEB_APPNAME secret');
   });
 });
 

@@ -5,7 +5,7 @@
     "worldbank": { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "gpi":       { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "inform":    { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
-    "acled":     { "tier": "signal",   "maxAgeDays": 60,  "decayHalfLifeDays": 14 },
+
     "advisories":{ "tier": "signal",   "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
     "advisories_us":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
     "advisories_uk":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },

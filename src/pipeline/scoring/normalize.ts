@@ -23,7 +23,6 @@ export function normalizeInverse(value: number, min: number, max: number): numbe
  *
  * World Bank WGI indicators: -2.5 to 2.5 (higher = better governance/stability)
  * Advisory levels: 1 to 4 (lower = safer)
- * ACLED: 0 to N (lower = fewer conflicts = safer)
  * Health/environment: lower = better
  */
 const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: boolean }> = {
@@ -36,10 +35,6 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   // World Bank health & environment (lower = better)
   wb_child_mortality: { min: 0, max: 200, inverse: true },
   wb_air_pollution: { min: 0, max: 100, inverse: true },
-
-  // ACLED conflict data (lower = safer)
-  acled_fatalities: { min: 0, max: 10000, inverse: true },
-  acled_events: { min: 0, max: 5000, inverse: true },
 
   // ReliefWeb active disasters (lower = safer)
   reliefweb_active_disasters: { min: 0, max: 10, inverse: true },

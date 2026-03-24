@@ -33,7 +33,6 @@ IsItSafeToTravel combines **9 public data sources** -- conflict data, governance
 | World Bank WGI | Governance, political stability, rule of law, corruption, health, environment | World Bank | Baseline | Annual |
 | INFORM Risk Index | Natural hazards, epidemics, conflict probability, governance | EU Joint Research Centre (JRC) | Baseline | Quarterly |
 | Global Peace Index | Overall peacefulness, safety & security, militarisation | Institute for Economics & Peace | Baseline | Annual |
-| ACLED | Conflict events and fatalities | Armed Conflict Location & Event Data | Signal | Weekly |
 | US State Department | Travel advisory levels (1--4) | US Department of State | Signal | Varies |
 | UK FCDO | Travel advisory levels | UK Foreign, Commonwealth & Development Office | Signal | Varies |
 | ReliefWeb | Active humanitarian disasters | UN OCHA | Signal | Daily |
@@ -49,7 +48,7 @@ Each country's safety score is computed from **5 pillars** (weights from `src/pi
 
 | Pillar | Weight | Key Indicators |
 |--------|--------|----------------|
-| Conflict | 30% | Political stability, GPI scores, ACLED events/fatalities, GDELT instability |
+| Conflict | 30% | Political stability, GPI scores, GDELT instability, government advisories |
 | Crime | 25% | Rule of law, US & UK advisory levels |
 | Health | 20% | Child mortality, INFORM health & epidemic risk, WHO active outbreaks |
 | Governance | 15% | Government effectiveness, corruption control, INFORM governance |
@@ -57,10 +56,10 @@ Each country's safety score is computed from **5 pillars** (weights from `src/pi
 
 ### Baseline + Signal Tiering
 
-The 9 data sources are split into two tiers (configured in `src/pipeline/config/source-tiers.json`):
+The 8 data sources are split into two tiers (configured in `src/pipeline/config/source-tiers.json`):
 
 - **Baseline sources** (World Bank, INFORM, GPI): Updated annually/quarterly. Provide stable, long-term structural indicators. Contribute ~70% of the score.
-- **Signal sources** (ACLED, advisories, GDELT, ReliefWeb, GDACS, WHO DONs): Updated daily/weekly. Capture emerging crises -- armed conflicts, natural disasters, disease outbreaks. Contribute up to 30% of the score.
+- **Signal sources** (advisories, GDELT, ReliefWeb, GDACS, WHO DONs): Updated daily/weekly. Capture emerging crises -- conflicts, natural disasters, disease outbreaks. Contribute up to 30% of the score.
 
 Signal influence is capped at 30% (`maxSignalInfluence: 0.30`) so that volatile short-term data cannot dominate long-term structural indicators.
 
@@ -71,7 +70,7 @@ Each source has a configurable half-life for exponential freshness decay (see `s
 | Source | Half-Life | Max Age |
 |--------|-----------|---------|
 | World Bank / INFORM / GPI | 365 days | 730 days |
-| ACLED / ReliefWeb | 14 days | 60 days |
+| ReliefWeb | 14 days | 60 days |
 | Advisories / GDACS | 7 days | 30 days |
 | GDELT | 3 days | 14 days |
 | WHO DONs | 30 days | 90 days |
@@ -128,7 +127,7 @@ npx tsx src/pipeline/run.ts
 npx tsx src/pipeline/run.ts 2026-03-20
 ```
 
-ACLED data requires the `ACLED_API_KEY` and `ACLED_EMAIL` environment variables to be set.
+All data sources used are free and publicly available. No API keys are required except for ReliefWeb (`RELIEFWEB_APPNAME`).
 
 ## Project Structure
 
