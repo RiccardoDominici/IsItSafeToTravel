@@ -576,16 +576,25 @@ for (const [iso3, points] of history.entries()) {
         yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
       }
 
-      // X axis ticks - smart format
+      // X axis ticks - smart format, remove overlapping labels (keep most recent)
       const uniqueDates = [...new Set(allDates.map(d => d.getTime()))].map(t => new Date(t));
       uniqueDates.sort((a, b) => a.getTime() - b.getTime());
       const tickCount = Math.min(6, uniqueDates.length);
       const fmt = smartDateFormat(uniqueDates);
-      let xLabels = '';
+      const ticks: {x: number, label: string}[] = [];
       for (let i = 0; i < tickCount; i++) {
         const idx = Math.round((i / (tickCount - 1)) * (uniqueDates.length - 1));
-        const xPos = x(uniqueDates[idx]);
-        xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(uniqueDates[idx])}</text>`;
+        ticks.push({ x: x(uniqueDates[idx]), label: fmt(uniqueDates[idx]) });
+      }
+      const minGap = 50;
+      for (let i = ticks.length - 2; i >= 0; i--) {
+        if (ticks[i + 1].x - ticks[i].x < minGap) {
+          ticks.splice(i, 1);
+        }
+      }
+      let xLabels = '';
+      for (const t of ticks) {
+        xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
       }
 
       // Country paths (using filtered data)
@@ -709,7 +718,7 @@ for (const [iso3, points] of history.entries()) {
           localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }
         );
-        const scoresStr = entry.scores.map(s => `${s.name} ${s.score.toFixed(1)}`).join(', ');
+        const scoresStr = entry.scores.map(s => `${s.name} ${s.score.toFixed(2)}`).join(', ');
         tooltip.textContent = `${dateStr}: ${scoresStr}`;
         tooltip.classList.remove('hidden');
 

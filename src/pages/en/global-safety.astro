@@ -59,7 +59,7 @@ const showChart = globalHistory.length >= 2;
             <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="10y" type="button">10Y</button>
             <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="max" type="button" aria-pressed="true">MAX</button>
           </div>
-          <button id="global-reset-btn" class="hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1" type="button">Reset</button>
+          <button id="global-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 mb-1" type="button">Reset</button>
           <div id="global-chart-container" class="relative" data-history={JSON.stringify(globalHistory)} data-lang={lang}>
             <svg id="global-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('global.trend_title')}></svg>
             <div id="global-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
@@ -214,11 +214,20 @@ const showChart = globalHistory.length >= 2;
 
           const tickCount = Math.min(6, dates.length);
           const fmt = smartDateFormat(dates);
-          let xLabels = '';
+          const ticks: {x: number, label: string}[] = [];
           for (let i = 0; i < tickCount; i++) {
             const idx = Math.round((i / (tickCount - 1)) * (dates.length - 1));
-            const xPos = xScale(dates[idx]);
-            xLabels += `<text x="${xPos}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${fmt(dates[idx])}</text>`;
+            ticks.push({ x: xScale(dates[idx]), label: fmt(dates[idx]) });
+          }
+          const minGap = 50;
+          for (let i = ticks.length - 2; i >= 0; i--) {
+            if (ticks[i + 1].x - ticks[i].x < minGap) {
+              ticks.splice(i, 1);
+            }
+          }
+          let xLabels = '';
+          for (const t of ticks) {
+            xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
           }
 
           svg.innerHTML = `
@@ -387,7 +396,7 @@ const showChart = globalHistory.length >= 2;
         function formatPoint(point: HistoryPoint): string {
           const d = new Date(point.date + 'T00:00:00Z');
           const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          return `${dateStr}: ${point.score.toFixed(1)}`;
+          return `${dateStr}: ${point.score.toFixed(2)}`;
         }
 
         function positionTooltip(point: HistoryPoint, rect: DOMRect): void {
