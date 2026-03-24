@@ -26,14 +26,14 @@ const WEIGHTS: WeightsConfig = {
     {
       name: 'conflict',
       weight: 0.30,
-      indicators: ['wb_political_stability', 'gpi_overall', 'gpi_safety_security', 'gpi_militarisation', 'acled_fatalities', 'acled_events', 'gdelt_instability'],
+      indicators: ['wb_political_stability', 'gpi_overall', 'gpi_safety_security', 'gpi_militarisation', 'ucdp_fatalities', 'ucdp_events', 'gdelt_instability'],
       indicatorWeights: {
         wb_political_stability: 0.17,
         gpi_overall: 0.17,
         gpi_safety_security: 0.14,
         gpi_militarisation: 0.14,
-        acled_fatalities: 0.12,
-        acled_events: 0.11,
+        ucdp_fatalities: 0.12,
+        ucdp_events: 0.11,
         gdelt_instability: 0.15,
       },
     },
@@ -73,7 +73,7 @@ const SOURCE_TIERS: SourcesConfig = {
     worldbank: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
     gpi: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
     inform: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
-    acled: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
+    ucdp: { tier: 'signal', maxAgeDays: 730, decayHalfLifeDays: 180 },
     advisories: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
     gdelt: { tier: 'signal', maxAgeDays: 14, decayHalfLifeDays: 3 },
     reliefweb: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
@@ -172,7 +172,7 @@ const CRISIS_CASES: CrisisCase[] = [
     iso3: 'SDN',
     country: makeCountry('SDN', 'Sudan'),
     relevantPillar: 'conflict',
-    description: 'Civil war escalation; conflict pillar should show extreme risk with ACLED and GDELT signals',
+    description: 'Civil war escalation; conflict pillar should show extreme risk with UCDP and GDELT signals',
     buildIndicators: () => [
       // Baseline: Sudan already unstable
       makeIndicator('SDN', 'wb_political_stability', -2.2, 'worldbank'),
@@ -191,9 +191,9 @@ const CRISIS_CASES: CrisisCase[] = [
       makeIndicator('SDN', 'inform_governance', 8, 'inform'),
       makeIndicator('SDN', 'advisory_level_us', 4, 'advisories', { dataDate: now, fetchedAt: now }),
       makeIndicator('SDN', 'advisory_level_uk', 4, 'advisories', { dataDate: now, fetchedAt: now }),
-      // Signal: escalation - massive ACLED events + GDELT instability spike
-      makeIndicator('SDN', 'acled_fatalities', 9000, 'acled', { dataDate: now, fetchedAt: now }),
-      makeIndicator('SDN', 'acled_events', 4500, 'acled', { dataDate: now, fetchedAt: now }),
+      // Signal: escalation - massive UCDP events + GDELT instability spike
+      makeIndicator('SDN', 'ucdp_fatalities', 9000, 'ucdp', { dataDate: now, fetchedAt: now }),
+      makeIndicator('SDN', 'ucdp_events', 4500, 'ucdp', { dataDate: now, fetchedAt: now }),
       makeIndicator('SDN', 'gdelt_instability', 0.9, 'gdelt', { dataDate: now, fetchedAt: now }),
     ],
   },

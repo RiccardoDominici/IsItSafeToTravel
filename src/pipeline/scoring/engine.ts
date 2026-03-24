@@ -211,9 +211,9 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
     url: 'https://data.worldbank.org/',
     description: 'World Bank Development Indicators -- governance, health, and environment data',
   },
-  acled: {
-    url: 'https://acleddata.com/',
-    description: 'Armed Conflict Location & Event Data Project -- conflict event counts',
+  ucdp: {
+    url: 'https://ucdp.uu.se/',
+    description: 'Uppsala Conflict Data Program -- verified conflict event counts',
   },
   advisories: {
     url: 'https://travel.state.gov/',

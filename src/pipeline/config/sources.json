@@ -13,12 +13,12 @@
     "description": "Institute for Economics and Peace annual ranking of 163 countries by peacefulness",
     "updateFrequency": "annual"
   },
-  "acled": {
-    "name": "ACLED - Armed Conflict Location & Event Data",
-    "url": "https://acleddata.com",
-    "dataUrl": "https://api.acleddata.com/acled/read",
-    "description": "Real-time conflict event data including battles, violence, and protests",
-    "updateFrequency": "weekly"
+  "ucdp": {
+    "name": "UCDP - Uppsala Conflict Data Program",
+    "url": "https://ucdp.uu.se",
+    "dataUrl": "https://ucdpapi.pcr.uu.se/api/gedevents/24.1",
+    "description": "Verified conflict event data including battles, violence against civilians, and non-state conflicts",
+    "updateFrequency": "annual"
   },
   "advisories": {
     "name": "Government Travel Advisories",
