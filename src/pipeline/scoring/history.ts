@@ -35,9 +35,11 @@ export function writeHistoryIndex(): HistoryIndex {
     // Per-country scores and per-pillar scores
     for (const country of snapshot.countries) {
       if (!countries[country.iso3]) countries[country.iso3] = [];
-      // Include dataCompleteness only when below 0.5 (to save space in JSON)
+      // Include dataCompleteness when it's low enough to indicate insufficient data.
+      // dc=0 means no real data (all pillars at neutral default 0.5).
+      // We store dc when below 0.15 to flag truly data-sparse snapshots.
       const point: { date: string; score: number; dc?: number } = { date, score: country.score };
-      if (country.dataCompleteness < 0.5) point.dc = country.dataCompleteness;
+      if (country.dataCompleteness < 0.15) point.dc = country.dataCompleteness;
       countries[country.iso3].push(point);
 
       // Extract per-pillar scores

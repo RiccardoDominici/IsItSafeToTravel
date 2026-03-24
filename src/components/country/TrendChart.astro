@@ -207,7 +207,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       }
 
       function isInsufficient(p: HistoryPoint): boolean {
-        return p.dc !== undefined && p.dc < 0.5;
+        return p.dc !== undefined && p.dc < 0.15;
       }
 
       function renderChart(filteredData: HistoryPoint[], allData: HistoryPoint[]): void {
