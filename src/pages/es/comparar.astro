@@ -801,7 +801,11 @@ for (const [iso3, points] of history.entries()) {
         const range = (btn as HTMLElement).dataset.range || 'max';
         currentCompareTimeRange = range;
         renderInner(getTimeRangeDates(range));
-        resetBtn.classList.add('hidden');
+        if (range === 'max') {
+          resetBtn.classList.add('hidden');
+        } else {
+          resetBtn.classList.remove('hidden');
+        }
 
         timeRangeDiv.querySelectorAll('.time-range-btn').forEach(b => {
           const el = b as HTMLElement;

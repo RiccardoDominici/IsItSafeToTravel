@@ -489,7 +489,11 @@ const showChart = globalHistory.length >= 2;
 
           renderChart(filtered, fullData);
           animatePaths(oldLinePath, oldAreaPath);
-          resetBtn.classList.add('hidden');
+          if (range === 'max') {
+            resetBtn.classList.add('hidden');
+          } else {
+            resetBtn.classList.remove('hidden');
+          }
 
           document.querySelectorAll('.time-range-btn').forEach(btn => {
             const el = btn as HTMLElement;
