@@ -27,6 +27,19 @@ interface BackfillResult {
 /**
  * Load all parsed raw data for a given date directory.
  */
+/**
+ * Check if a source's fetchedAt timestamp is consistent with the date directory.
+ * Advisory data fetched on 2026-03-20 should NOT be used for a 2012 snapshot.
+ * Allows up to 7 days of tolerance for pipeline timing differences.
+ */
+function isFetchedAtConsistent(fetchedAt: string, directoryDate: string, toleranceDays = 7): boolean {
+  const fetchDate = new Date(fetchedAt);
+  const dirDate = new Date(directoryDate);
+  const diffMs = Math.abs(fetchDate.getTime() - dirDate.getTime());
+  const diffDays = diffMs / (1000 * 60 * 60 * 24);
+  return diffDays <= toleranceDays;
+}
+
 function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
   const rawDir = getRawDir(date);
   if (!existsSync(rawDir)) return null;
@@ -38,6 +51,17 @@ function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
     const filePath = join(rawDir, file);
     const data = readJson<RawSourceData>(filePath);
     if (data) {
+      // Only worldbank data is truly historical — its indicators have per-year
+      // values (year field matches the directory date). All other sources
+      // (INFORM, advisories, GPI, GDELT, etc.) in historical directories
+      // contain CURRENT data fetched recently and must be skipped if fetchedAt
+      // doesn't match the directory date.
+      const YEAR_BASED_SOURCES = new Set(['worldbank']);
+      const isYearBased = YEAR_BASED_SOURCES.has(data.source);
+
+      if (!isYearBased && data.fetchedAt && !isFetchedAtConsistent(data.fetchedAt, date)) {
+        continue;
+      }
       rawDataMap.set(data.source, data);
     }
   }

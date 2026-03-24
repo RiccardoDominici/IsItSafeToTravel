@@ -119,8 +119,8 @@ export function computeCountryScore(
     compositeScore = Math.min(compositeScore, criticalCap);
   }
 
-  // Map to 1-10 scale: score = compositeScore * 9 + 1
-  let score = Math.round((compositeScore * 9 + 1) * 10) / 10;
+  // Map to 1-10 scale: score = compositeScore * 9 + 1 (no rounding — keep full precision)
+  let score = compositeScore * 9 + 1;
 
   // Apply advisory hard cap last (overrides everything)
   if (hasDoNotTravel) {
@@ -384,28 +384,20 @@ export function computeAllScores(
   let advisoryInfoMap: AdvisoryInfoMap = {};
 
   // Find advisories-info.json from the raw data directory
-  // Derive path from the advisories source data
+  // IMPORTANT: only use advisory info from the SAME date's raw directory.
+  // Never fall back to a different date — applying modern advisories
+  // (e.g. Level 4 "Do Not Travel") to historical dates would be incorrect.
   const advisoriesSource = rawDataBySource.get('advisories');
   if (advisoriesSource) {
-    // The fetchedAt timestamp tells us the date — but we need the rawDir path
-    // Try to find it by looking at the indicators' source to derive the date
     const dateMatch = advisoriesSource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
-    const today = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
-    const advisoryInfoPath = join(process.cwd(), 'data', 'raw', today, 'advisories-info.json');
+    const dataDate = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
+    const advisoryInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-info.json');
     const loaded = readJson<AdvisoryInfoMap>(advisoryInfoPath);
     if (loaded) {
       advisoryInfoMap = loaded;
       console.log(`  Loaded advisory info for ${Object.keys(advisoryInfoMap).length} countries`);
     } else {
-      // Try to find most recent cached advisory info file
-      const cachedPath = findLatestCached('advisories-info.json');
-      if (cachedPath) {
-        const info = readJson<AdvisoryInfoMap>(cachedPath);
-        if (info) {
-          advisoryInfoMap = info;
-          console.log(`  Loaded advisory info from cache: ${cachedPath}`);
-        }
-      }
+      console.log(`  No advisories-info.json for ${dataDate} — advisory hard caps will not apply`);
     }
   }
 
