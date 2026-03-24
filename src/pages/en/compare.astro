@@ -437,11 +437,35 @@ for (const [iso3, points] of history.entries()) {
     resetBtn.type = 'button';
     resetBtn.textContent = 'Reset';
 
+    const timeRangeDiv = document.createElement('div');
+    timeRangeDiv.className = 'time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5 mb-3';
+    timeRangeDiv.setAttribute('role', 'group');
+    timeRangeDiv.setAttribute('aria-label', 'Time range');
+    const ranges = [
+      { key: '1m', label: '1M' },
+      { key: '6m', label: '6M' },
+      { key: '1y', label: '1Y' },
+      { key: '10y', label: '10Y' },
+      { key: 'max', label: 'MAX' },
+    ];
+    ranges.forEach(r => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.dataset.range = r.key;
+      btn.textContent = r.label;
+      btn.className = r.key === 'max'
+        ? 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white'
+        : 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
+      if (r.key === 'max') btn.setAttribute('aria-pressed', 'true');
+      timeRangeDiv.appendChild(btn);
+    });
+
     // Chart wrapper
     const chartWrapper = document.createElement('div');
     chartWrapper.className = 'relative';
 
     section.appendChild(heading);
+    section.appendChild(timeRangeDiv);
     section.appendChild(resetBtn);
     section.appendChild(chartWrapper);
 
@@ -774,7 +798,37 @@ for (const [iso3, points] of history.entries()) {
       resetBtn.classList.add('hidden');
     });
 
-    // Initial render
+    let currentCompareTimeRange = 'max';
+
+    function getTimeRangeDates(range: string): [Date, Date] | null {
+      if (range === 'max') return null;
+      const now = new Date();
+      const daysMap: Record<string, number> = { '1m': 30, '6m': 180, '1y': 365, '10y': 3650 };
+      const days = daysMap[range] || 0;
+      if (!days) return null;
+      return [new Date(now.getTime() - days * 86400000), now];
+    }
+
+    timeRangeDiv.querySelectorAll('.time-range-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const range = (btn as HTMLElement).dataset.range || 'max';
+        currentCompareTimeRange = range;
+        renderInner(getTimeRangeDates(range));
+        resetBtn.classList.add('hidden');
+
+        timeRangeDiv.querySelectorAll('.time-range-btn').forEach(b => {
+          const el = b as HTMLElement;
+          if (el.dataset.range === range) {
+            el.className = 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white';
+            el.setAttribute('aria-pressed', 'true');
+          } else {
+            el.className = 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
+            el.setAttribute('aria-pressed', 'false');
+          }
+        });
+      });
+    });
+
     renderInner(null);
   }
 
