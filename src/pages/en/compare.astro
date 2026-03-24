@@ -593,8 +593,10 @@ for (const [iso3, points] of history.entries()) {
         }
       }
       let xLabels = '';
-      for (const t of ticks) {
-        xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
+      for (let ti = 0; ti < ticks.length; ti++) {
+        const t = ticks[ti];
+        const anchor = ti === ticks.length - 1 ? 'end' : ti === 0 ? 'start' : 'middle';
+        xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
       }
 
       // Country paths (using filtered data)
