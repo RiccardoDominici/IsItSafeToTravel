@@ -139,37 +139,14 @@ export function buildGlobalSafetyJsonLd(
     pt: `Pontuacao de seguranca global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de seguranca mundial.`,
   };
 
-  const placeNames: Record<Lang, string> = {
-    en: 'World',
-    it: 'Mondo',
-    es: 'Mundo',
-    fr: 'Monde',
-    pt: 'Mundo',
-  };
-
   return {
     '@context': 'https://schema.org',
-    '@graph': [
-      {
-        '@type': 'WebPage',
-        '@id': canonicalUrl,
-        url: canonicalUrl,
-        name: names[lang],
-        description: descriptions[lang],
-        inLanguage: localeMap[lang],
-      },
-      {
-        '@type': 'AggregateRating',
-        ratingValue: globalScore.toFixed(1),
-        bestRating: '10',
-        worstRating: '1',
-        ratingCount: 248,
-        itemReviewed: {
-          '@type': 'Place',
-          name: placeNames[lang],
-        },
-      },
-    ],
+    '@type': 'WebPage',
+    '@id': canonicalUrl,
+    url: canonicalUrl,
+    name: names[lang],
+    description: descriptions[lang],
+    inLanguage: localeMap[lang],
   };
 }
 
