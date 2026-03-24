@@ -115,6 +115,40 @@ export function computeCountryScore(
 }
 
 /**
+ * Map indicator names to their source name for tier classification.
+ * This is used to determine expected signal count from config, not from
+ * available data, preventing score spikes when a fetch temporarily fails.
+ */
+const INDICATOR_SOURCE_MAP: Record<string, string> = {
+  wb_political_stability: 'worldbank',
+  wb_rule_of_law: 'worldbank',
+  wb_gov_effectiveness: 'worldbank',
+  wb_corruption_control: 'worldbank',
+  wb_child_mortality: 'worldbank',
+  wb_air_pollution: 'worldbank',
+  gpi_overall: 'gpi',
+  gpi_safety_security: 'gpi',
+  gpi_militarisation: 'gpi',
+  inform_natural: 'inform',
+  inform_health: 'inform',
+  inform_epidemic: 'inform',
+  inform_governance: 'inform',
+  inform_climate: 'inform',
+  advisory_level_us: 'advisories_us',
+  advisory_level_uk: 'advisories_uk',
+  advisory_level_ca: 'advisories_ca',
+  advisory_level_au: 'advisories_au',
+  gdelt_instability: 'gdelt',
+  reliefweb_active_disasters: 'reliefweb',
+  gdacs_disaster_alerts: 'gdacs',
+  who_active_outbreaks: 'who-dons',
+};
+
+function indicatorToSource(indicatorName: string): string | undefined {
+  return INDICATOR_SOURCE_MAP[indicatorName];
+}
+
+/**
  * Compute a tiered pillar score using baseline+signal blending.
  *
  * For each indicator:
@@ -132,12 +166,10 @@ function computeTieredPillarScore(
 ): number {
   const now = Date.now();
 
-  // Count expected signal indicators for this pillar
+  // Count expected signal indicators for this pillar based on config, not available data.
+  // This prevents score spikes when a signal source fetch fails temporarily.
   const expectedSignalCount = pillarDef.indicators.filter((indName) => {
-    // Look up the source for this indicator in the raw data
-    // If not in raw data, check via indicator naming convention
-    const raw = rawByName.get(indName);
-    const sourceName = raw?.source;
+    const sourceName = indicatorToSource(indName);
     if (!sourceName) return false;
     const sourceConf = sourcesConfig.sources[sourceName];
     return sourceConf?.tier === 'signal';
@@ -210,10 +242,6 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   worldbank: {
     url: 'https://data.worldbank.org/',
     description: 'World Bank Development Indicators -- governance, health, and environment data',
-  },
-  acled: {
-    url: 'https://acleddata.com/',
-    description: 'Armed Conflict Location & Event Data Project -- conflict event counts',
   },
   advisories: {
     url: 'https://travel.state.gov/',
