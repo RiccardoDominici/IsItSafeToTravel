@@ -41,37 +41,41 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
   {showChartSection ? (
     <div>
-      <div class="flex flex-wrap items-center gap-2 mb-3">
-        {hasPillarData && (
-          <div id="trend-filter-wrapper" class="relative inline-block">
-            <button
-              id="trend-filter-toggle"
-              class="flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg text-xs font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer transition-colors"
-              type="button"
-            >
-              <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
-                <path d="M3 4h14M5 8h10M7 12h6M9 16h2" stroke-linecap="round" />
-              </svg>
-              <span>Filtri</span>
-              <svg class="w-2.5 h-2.5 opacity-50" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-            <div id="trend-filter-dropdown" class="hidden absolute top-full left-0 mt-1 p-1.5 bg-sand-50/95 dark:bg-sand-800/95 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-lg min-w-[160px] z-20">
-              <div class="flex flex-col gap-0.5" id="trend-pillar-filter">
-                {pillarFilters.map(f => (
-                  <button
-                    class={`trend-pillar-pill px-2.5 py-1.5 text-xs font-medium rounded-md border transition-colors cursor-pointer text-left ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-transparent text-sand-600 dark:text-sand-300 border-transparent hover:bg-sand-200 dark:hover:bg-sand-700'}`}
-                    data-pillar={f.id}
-                    data-weight={f.weight !== null ? f.weight : ''}
-                  >
-                    {f.weight !== null ? f.label : f.label}
-                  </button>
-                ))}
-              </div>
+      {hasPillarData && (
+        <div id="trend-filter-wrapper" class="relative inline-block mb-3">
+          <button
+            id="trend-filter-toggle"
+            class="flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg text-xs font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer transition-colors"
+            type="button"
+          >
+            <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M3 4h14M5 8h10M7 12h6M9 16h2" stroke-linecap="round" />
+            </svg>
+            <span>Filtri</span>
+            <svg class="w-2.5 h-2.5 opacity-50" viewBox="0 0 12 12" fill="currentColor">
+              <path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+          </button>
+          <div id="trend-filter-dropdown" class="hidden absolute top-full left-0 mt-1 p-1.5 bg-sand-50/95 dark:bg-sand-800/95 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-lg min-w-[160px] z-20">
+            <div class="flex flex-col gap-0.5" id="trend-pillar-filter">
+              {pillarFilters.map(f => (
+                <button
+                  class={`trend-pillar-pill px-2.5 py-1.5 text-xs font-medium rounded-md border transition-colors cursor-pointer text-left ${f.id === 'overall' ? 'bg-terracotta-500 text-white border-terracotta-500' : 'bg-transparent text-sand-600 dark:text-sand-300 border-transparent hover:bg-sand-200 dark:hover:bg-sand-700'}`}
+                  data-pillar={f.id}
+                  data-weight={f.weight !== null ? f.weight : ''}
+                >
+                  {f.weight !== null ? f.label : f.label}
+                </button>
+              ))}
             </div>
           </div>
-        )}
+        </div>
+      )}
+      <div id="trend-chart-container" class="relative" data-history={JSON.stringify(data)} data-pillar-history={pillarData ? JSON.stringify(pillarData) : ''} data-lang={lang}>
+        <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('country.trend_title')}></svg>
+        <div id="trend-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+      </div>
+      <div class="flex flex-wrap items-center gap-2 mt-2">
         <div class="time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5" role="group" aria-label="Time range">
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="1m" type="button">1M</button>
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="6m" type="button">6M</button>
@@ -79,11 +83,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="10y" type="button">10Y</button>
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="max" type="button" aria-pressed="true">MAX</button>
         </div>
-      </div>
-      <button id="trend-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700 mb-1" type="button">Reset</button>
-      <div id="trend-chart-container" class="relative" data-history={JSON.stringify(data)} data-pillar-history={pillarData ? JSON.stringify(pillarData) : ''} data-lang={lang}>
-        <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('country.trend_title')}></svg>
-        <div id="trend-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
+        <button id="trend-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" type="button">Reset</button>
       </div>
 
       {showAccumulating && (
@@ -128,7 +128,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
     const resetBtn = document.getElementById('trend-reset-btn')!;
     const lang = container.dataset.lang || 'en';
 
-    interface HistoryPoint { date: string; score: number; }
+    interface HistoryPoint { date: string; score: number; dc?: number; }
     const fullData: HistoryPoint[] = JSON.parse(container.dataset.history || '[]');
 
     // Parse pillar history data
@@ -206,6 +206,10 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         ];
       }
 
+      function isInsufficient(p: HistoryPoint): boolean {
+        return p.dc !== undefined && p.dc < 0.5;
+      }
+
       function renderChart(filteredData: HistoryPoint[], allData: HistoryPoint[]): void {
         currentData = filteredData;
         pinnedPoint = null;
@@ -233,13 +237,45 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           .y0(innerHeight)
           .y1(d => yScale(d.score));
 
-        const pathD = lineGen(filteredData) ?? '';
-        const areaD = areaGen(filteredData) ?? '';
+        // Split data into segments by data quality (dc < 0.5 = insufficient)
+
+        interface Segment { points: HistoryPoint[]; insufficient: boolean; }
+        const segments: Segment[] = [];
+        let currentSeg: Segment | null = null;
+        for (const p of filteredData) {
+          const insuf = isInsufficient(p);
+          if (!currentSeg || currentSeg.insufficient !== insuf) {
+            // Overlap: connect segments by including the last point of prev segment
+            if (currentSeg && currentSeg.points.length > 0) {
+              const overlap = currentSeg.points[currentSeg.points.length - 1];
+              currentSeg = { points: [overlap], insufficient: insuf };
+            } else {
+              currentSeg = { points: [], insufficient: insuf };
+            }
+            segments.push(currentSeg);
+          }
+          currentSeg.points.push(p);
+        }
+
+        // Build segmented paths
+        let segmentPaths = '';
+        for (const seg of segments) {
+          if (seg.points.length < 2) continue;
+          const segLineD = lineGen(seg.points) ?? '';
+          const segAreaD = areaGen(seg.points) ?? '';
+          if (seg.insufficient) {
+            segmentPaths += `<path d="${segAreaD}" fill="currentColor" fill-opacity="0.06" clip-path="url(#chart-clip)" />`;
+            segmentPaths += `<path d="${segLineD}" fill="none" stroke="currentColor" stroke-width="2" stroke-dasharray="6 4" stroke-opacity="0.35" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#chart-clip)" />`;
+          } else {
+            segmentPaths += `<path class="area-path" d="${segAreaD}" fill="url(#trendGradient)" clip-path="url(#chart-clip)" />`;
+            segmentPaths += `<path class="line-path" d="${segLineD}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#chart-clip)" />`;
+          }
+        }
 
         const lastPoint = filteredData[filteredData.length - 1];
         const endCx = xScale(new Date(lastPoint.date + 'T00:00:00Z'));
         const endCy = yScale(lastPoint.score);
-        const endColor = scoreToColor(lastPoint.score);
+        const endColor = isInsufficient(lastPoint) ? '#9ca3af' : scoreToColor(lastPoint.score);
 
         // Y gridlines and labels (dynamic based on data range)
         const yTickCount = 5;
@@ -285,8 +321,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           </defs>
           <g class="chart-main" transform="translate(${margin.left}, ${margin.top})">
             ${gridLines}
-            <path class="area-path" d="${areaD}" fill="url(#trendGradient)" clip-path="url(#chart-clip)" />
-            <path class="line-path" d="${pathD}" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" clip-path="url(#chart-clip)" />
+            ${segmentPaths}
             <circle cx="${endCx}" cy="${endCy}" r="4" fill="${endColor}" />
             ${yLabels}
             ${xLabels}
@@ -499,7 +534,8 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       function formatPoint(point: HistoryPoint): string {
         const d = new Date(point.date + 'T00:00:00Z');
         const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-        return `${dateStr}: ${point.score.toFixed(2)}`;
+        const suffix = isInsufficient(point) ? ' (limited data)' : '';
+        return `${dateStr}: ${point.score.toFixed(2)}${suffix}`;
       }
 
       function positionTooltip(point: HistoryPoint, rect: DOMRect): void {

@@ -433,12 +433,12 @@ for (const [iso3, points] of history.entries()) {
 
     // Reset button (hidden initially)
     const resetBtn = document.createElement('button');
-    resetBtn.className = 'hidden text-xs text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-800 dark:hover:text-terracotta-200 cursor-pointer mb-1';
+    resetBtn.className = 'hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
     resetBtn.type = 'button';
     resetBtn.textContent = 'Reset';
 
     const timeRangeDiv = document.createElement('div');
-    timeRangeDiv.className = 'time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5 mb-3';
+    timeRangeDiv.className = 'time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5';
     timeRangeDiv.setAttribute('role', 'group');
     timeRangeDiv.setAttribute('aria-label', 'Time range');
     const ranges = [
@@ -464,10 +464,15 @@ for (const [iso3, points] of history.entries()) {
     const chartWrapper = document.createElement('div');
     chartWrapper.className = 'relative';
 
+    // Controls wrapper below chart
+    const controlsWrapper = document.createElement('div');
+    controlsWrapper.className = 'flex flex-wrap items-center gap-2 mt-2';
+    controlsWrapper.appendChild(timeRangeDiv);
+    controlsWrapper.appendChild(resetBtn);
+
     section.appendChild(heading);
-    section.appendChild(timeRangeDiv);
-    section.appendChild(resetBtn);
     section.appendChild(chartWrapper);
+    section.appendChild(controlsWrapper);
 
     // Current scales and tooltip data (updated on each renderInner)
     let currentX: ReturnType<typeof scaleTime<number, number>>;
