@@ -6,19 +6,22 @@ import { join } from 'node:path';
 /**
  * UCDP GED API — Uppsala Conflict Data Program, Georeferenced Event Dataset.
  *
- * Free and open access, no authentication required.
+ * Free access with token (request via email to UCDP).
  * Provides verified conflict event data including battles, violence against
  * civilians, and non-state conflicts with fatality estimates.
  *
- * API docs: https://ucdpapi.pcr.uu.se/api/gedevents/
+ * Env vars: UCDP_ACCESS_TOKEN (required since Feb 2026)
+ *
+ * API docs: https://ucdp.uu.se/apidocs/
  */
-const UCDP_API_URL = 'https://ucdpapi.pcr.uu.se/api/gedevents/24.1';
+const UCDP_API_URL = 'https://ucdpapi.pcr.uu.se/api/gedevents/25.1';
 const UCDP_UA = 'IsItSafeToTravel/3.0 (https://isitsafetotravel.org; data pipeline)';
 const PAGE_SIZE = 1000;
 
 interface UcdpEvent {
   id: number;
   country: string;
+  country_id: number; // Gleditsch-Ward country code
   best: number; // best estimate of fatalities
   type_of_violence: number; // 1=state-based, 2=non-state, 3=one-sided
   date_start: string;
@@ -34,6 +37,40 @@ interface UcdpResponse {
 export async function fetchUcdp(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
+
+  const token = process.env.UCDP_ACCESS_TOKEN;
+  if (!token) {
+    const errorMessage =
+      'UCDP access token not configured. Set UCDP_ACCESS_TOKEN environment variable. ' +
+      'Request a free token from UCDP: https://ucdp.uu.se/apidocs/';
+    console.warn(`[UCDP] ${errorMessage}`);
+
+    // Try fallback to cached data
+    const cached = findLatestCached('ucdp-parsed.json');
+    if (cached) {
+      const cachedData = readJson<RawSourceData>(cached);
+      if (cachedData) {
+        console.warn(`[UCDP] Using cached data from ${cached}`);
+        writeJson(join(rawDir, 'ucdp-parsed.json'), cachedData);
+        const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
+        return {
+          source: 'ucdp',
+          success: true,
+          countriesFound: uniqueCountries.size,
+          error: `Used cached data. ${errorMessage}`,
+          fetchedAt: cachedData.fetchedAt,
+        };
+      }
+    }
+
+    return {
+      source: 'ucdp',
+      success: false,
+      countriesFound: 0,
+      error: errorMessage,
+      fetchedAt,
+    };
+  }
 
   try {
     console.log('[UCDP] Fetching conflict event data...');
@@ -62,6 +99,7 @@ export async function fetchUcdp(date: string): Promise<FetchResult> {
         headers: {
           'User-Agent': UCDP_UA,
           'Accept': 'application/json',
+          'x-ucdp-access-token': token,
         },
         signal: AbortSignal.timeout(60_000),
       });
@@ -143,7 +181,9 @@ function parseUcdpData(events: UcdpEvent[], fetchedAt: string): RawIndicator[] {
   const indicators: RawIndicator[] = [];
   const currentYear = new Date().getFullYear();
 
-  // Aggregate by country: total events and total fatalities
+  // Aggregate by country name: total events and total fatalities
+  // UCDP uses Gleditsch-Ward country codes, but also provides country names
+  // which we map to ISO3 via getCountryByName()
   const countryStats = new Map<string, { events: number; fatalities: number }>();
 
   for (const event of events) {

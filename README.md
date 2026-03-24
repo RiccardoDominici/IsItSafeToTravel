@@ -129,7 +129,7 @@ npx tsx src/pipeline/run.ts
 npx tsx src/pipeline/run.ts 2026-03-20
 ```
 
-All data sources are free and require no authentication (UCDP replaced ACLED as the conflict data provider).
+UCDP requires a free access token (set `UCDP_ACCESS_TOKEN` env var). Request one at https://ucdp.uu.se/apidocs/
 
 ## Project Structure
 

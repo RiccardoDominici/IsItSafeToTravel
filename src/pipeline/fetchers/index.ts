@@ -27,7 +27,7 @@ export { fetchWhoDons } from './who-dons.js';
  * - World Bank (governance, health, environment indicators) — free, no auth
  * - GPI (Global Peace Index) — free, Excel download
  * - INFORM (Risk Index) — free, JSON API
- * - UCDP (conflict events) — free, no auth
+ * - UCDP (conflict events) — free, requires access token
  * - Advisories (US State Dept + UK FCDO) — free, no auth
  * - ReliefWeb (active humanitarian disasters) — free, no auth
  * - GDACS (natural disaster alerts) — free, no auth

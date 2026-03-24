@@ -38,6 +38,7 @@ jobs:
       - name: Run data pipeline
         run: npx tsx src/pipeline/run.ts ${{ github.event.inputs.date || '' }}
         env:
+          UCDP_ACCESS_TOKEN: ${{ secrets.UCDP_ACCESS_TOKEN }}
           RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
         continue-on-error: true
         id: pipeline
