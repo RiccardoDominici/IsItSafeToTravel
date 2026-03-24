@@ -28,6 +28,205 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/mauritania",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mauritania",
+        "base_path": "/foreign-travel-advice/mauritania",
+        "content_id": "15469fdc-d0d1-4a9f-a59e-b3d3acdea226",
+        "details": {
+          "change_description": "New information about protests (‘Warnings and insurance’ page). ",
+          "country": {
+            "name": "Mauritania",
+            "slug": "mauritania",
+            "synonyms": [
+              "Sahel"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-24T16:23:01Z",
+        "schema_name": "travel_advice",
+        "title": "Mauritania travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/mauritania",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/senegal",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/senegal",
+        "base_path": "/foreign-travel-advice/senegal",
+        "content_id": "4ac15add-d794-4b65-9dfe-3488dcc04fa1",
+        "details": {
+          "change_description": " New information for LGBT+ travellers (see ‘LGBT+ travellers’ on the ‘Safety and security page’).",
+          "country": {
+            "name": "Senegal",
+            "slug": "senegal",
+            "synonyms": [
+              "Sahel"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-24T10:51:38Z",
+        "schema_name": "travel_advice",
+        "title": "Senegal travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/senegal",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/israel",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/israel",
+        "base_path": "/foreign-travel-advice/israel",
+        "content_id": "250a060b-d764-4e0c-b131-dc2d10c3160e",
+        "details": {
+          "change_description": "Updated information that Ben Gurion Airport is operating a limited schedule of outbound flights (see 'Leaving Israel and Palestine' on the 'Warnings and insurance' page).",
+          "country": {
+            "name": "Israel",
+            "slug": "israel",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-24T09:48:11Z",
+        "schema_name": "travel_advice",
+        "title": "Israel travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/israel",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/palestine",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/palestine",
+        "base_path": "/foreign-travel-advice/palestine",
+        "content_id": "1db59f95-ea74-4cb0-b5c3-9b0724001e17",
+        "details": {
+          "change_description": "Updated information that Ben Gurion Airport is operating a limited schedule of outbound flights (see 'Leaving Israel and Palestine' on the 'Warnings and insurance' page).",
+          "country": {
+            "name": "Palestine",
+            "slug": "palestine",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-24T09:47:46Z",
+        "schema_name": "travel_advice",
+        "title": "Palestine travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/palestine",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/south-korea",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/south-korea",
+        "base_path": "/foreign-travel-advice/south-korea",
+        "content_id": "78f22c79-1f19-4ce2-ab69-2a221c770e52",
+        "details": {
+          "change_description": "New information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "South Korea",
+            "slug": "south-korea",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-03-19T14:03:28Z",
+        "schema_name": "travel_advice",
+        "title": "South Korea travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/south-korea",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/bolivia",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/bolivia",
         "base_path": "/foreign-travel-advice/bolivia",
@@ -1100,45 +1299,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/south-korea",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/south-korea",
-        "base_path": "/foreign-travel-advice/south-korea",
-        "content_id": "78f22c79-1f19-4ce2-ab69-2a221c770e52",
-        "details": {
-          "change_description": "New information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "South Korea",
-            "slug": "south-korea",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-19T14:03:28Z",
-        "schema_name": "travel_advice",
-        "title": "South Korea travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/south-korea",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/cambodia",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/cambodia",
         "base_path": "/foreign-travel-advice/cambodia",
@@ -1615,45 +1775,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/palestine",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/palestine",
-        "base_path": "/foreign-travel-advice/palestine",
-        "content_id": "1db59f95-ea74-4cb0-b5c3-9b0724001e17",
-        "details": {
-          "change_description": "Updated information on entry to Egypt ('Warnings and insurance' and 'Entry requirements' pages).",
-          "country": {
-            "name": "Palestine",
-            "slug": "palestine",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-18T17:12:42Z",
-        "schema_name": "travel_advice",
-        "title": "Palestine travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/palestine",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/egypt",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/egypt",
         "base_path": "/foreign-travel-advice/egypt",
@@ -1690,45 +1811,6 @@
         "schema_name": "travel_advice",
         "title": "Egypt travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/egypt",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/israel",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/israel",
-        "base_path": "/foreign-travel-advice/israel",
-        "content_id": "250a060b-d764-4e0c-b131-dc2d10c3160e",
-        "details": {
-          "change_description": "Updated information on entry to Egypt ('Warnings and insurance' and 'Entry requirements' pages).",
-          "country": {
-            "name": "Israel",
-            "slug": "israel",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-18T17:12:01Z",
-        "schema_name": "travel_advice",
-        "title": "Israel travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/israel",
         "withdrawn": false
       },
       {
@@ -5877,47 +5959,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/mauritania",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mauritania",
-        "base_path": "/foreign-travel-advice/mauritania",
-        "content_id": "15469fdc-d0d1-4a9f-a59e-b3d3acdea226",
-        "details": {
-          "change_description": "New information about dual nationals returning to the UK (‘Entry requirements’ page).",
-          "country": {
-            "name": "Mauritania",
-            "slug": "mauritania",
-            "synonyms": [
-              "Sahel"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2025-12-10T13:39:18Z",
-        "schema_name": "travel_advice",
-        "title": "Mauritania travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/mauritania",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/falkland-islands",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/falkland-islands",
         "base_path": "/foreign-travel-advice/falkland-islands",
@@ -7254,47 +7295,6 @@
         "schema_name": "travel_advice",
         "title": "French Guiana travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/french-guiana",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/senegal",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/senegal",
-        "base_path": "/foreign-travel-advice/senegal",
-        "content_id": "4ac15add-d794-4b65-9dfe-3488dcc04fa1",
-        "details": {
-          "change_description": "New information about dual nationals returning to the UK (‘Entry requirements’ page).",
-          "country": {
-            "name": "Senegal",
-            "slug": "senegal",
-            "synonyms": [
-              "Sahel"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2025-12-10T13:35:01Z",
-        "schema_name": "travel_advice",
-        "title": "Senegal travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/senegal",
         "withdrawn": false
       },
       {
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-03-20T18:48:42+00:00",
+  "updated_at": "2026-03-24T16:23:02+00:00",
   "withdrawn_notice": {}
 }
