@@ -25,14 +25,19 @@ import type {
  * with freshness decay and per-indicator sub-weights.
  * When sourcesConfig is omitted, falls back to legacy equal-averaging behavior.
  *
- * Logic (tiered mode):
- * - Filter & normalize indicators for this country
- * - For each pillar: separate indicators into baseline and signal tiers
- * - Apply freshness decay weights and per-indicator sub-weights
- * - Blend tiers: pillarScore = baseline * (1 - effectiveSignalInfluence) + signal * effectiveSignalInfluence
- * - effectiveSignalInfluence = maxSignalInfluence * signalCompleteness
- * - Composite = weighted sum of pillar scores, mapped to 1-10 scale
+ * Hybrid scoring strategy (v6.0):
+ * 1. Per-pillar: baseline+signal tiered blending (unchanged)
+ * 2. Composite: weighted GEOMETRIC mean of pillar scores (penalizes low outliers)
+ * 3. Hard cap: if any government advisory is Level 4 "Do Not Travel" → score ≤ 2
+ * 4. Critical floor: if any pillar score < CRITICAL_PILLAR_THRESHOLD → score ≤ minPillar * CRITICAL_FLOOR_MULTIPLIER * 9 + 1
  */
+
+// Scoring strategy constants
+const CRITICAL_PILLAR_THRESHOLD = 0.25; // pillar score (0-1) below which critical floor kicks in
+const CRITICAL_FLOOR_MULTIPLIER = 1.5;  // max score = minPillar * this * 9 + 1
+const ADVISORY_HARD_CAP_LEVEL = 4;      // advisory level that triggers hard cap
+const ADVISORY_HARD_CAP_SCORE = 2;      // max score when hard cap is active
+const GEOMETRIC_MEAN_FLOOR = 0.01;      // floor for pillar scores in geometric mean (avoid log(0))
 export function computeCountryScore(
   iso3: string,
   allIndicators: RawIndicator[],
@@ -88,11 +93,40 @@ export function computeCountryScore(
     };
   });
 
-  // Compute composite weighted score (0-1 range)
-  const weightedSum = pillars.reduce((acc, p) => acc + p.score * p.weight, 0);
+  // Compute composite score using weighted geometric mean (0-1 range)
+  // Geometric mean: exp(Σ(weight_i * ln(score_i))) — naturally penalizes low outliers
+  const totalWeight = pillars.reduce((acc, p) => acc + p.weight, 0);
+  const weightedLogSum = pillars.reduce((acc, p) => {
+    const clampedScore = Math.max(GEOMETRIC_MEAN_FLOOR, p.score);
+    return acc + p.weight * Math.log(clampedScore);
+  }, 0);
+  let compositeScore = Math.exp(weightedLogSum / totalWeight);
 
-  // Map to 1-10 scale: score = weightedSum * 9 + 1
-  const score = Math.round((weightedSum * 9 + 1) * 10) / 10;
+  // Hard cap: if any advisory is Level 4 "Do Not Travel", cap score
+  const advisoryLevels = [
+    advisories.us?.level, advisories.uk?.level,
+    advisories.ca?.level, advisories.au?.level,
+  ].filter((l): l is number | string => l !== undefined)
+   .map((l) => typeof l === 'string' ? parseFloat(l) : l)
+   .filter((l) => !isNaN(l));
+
+  const hasDoNotTravel = advisoryLevels.some((l) => l >= ADVISORY_HARD_CAP_LEVEL);
+
+  // Critical floor: if any pillar is below critical threshold, cap the score
+  const minPillarScore = Math.min(...pillars.map((p) => p.score));
+  if (minPillarScore < CRITICAL_PILLAR_THRESHOLD) {
+    const criticalCap = minPillarScore * CRITICAL_FLOOR_MULTIPLIER;
+    compositeScore = Math.min(compositeScore, criticalCap);
+  }
+
+  // Map to 1-10 scale: score = compositeScore * 9 + 1
+  let score = Math.round((compositeScore * 9 + 1) * 10) / 10;
+
+  // Apply advisory hard cap last (overrides everything)
+  if (hasDoNotTravel) {
+    score = Math.min(score, ADVISORY_HARD_CAP_SCORE);
+  }
+
   const scoreDisplay = Math.round(score);
 
   // Overall data completeness: average of pillar completeness
