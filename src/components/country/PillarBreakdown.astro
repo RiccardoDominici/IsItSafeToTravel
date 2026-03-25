@@ -29,6 +29,30 @@ const pillarKeys: Record<string, string> = {
     {t('country.pillars_title')}
   </h2>
 
+  <table class="w-full text-sm mb-4 border-collapse">
+    <thead>
+      <tr class="border-b border-sand-200 dark:border-sand-700">
+        <th class="text-left py-2 text-sand-600 dark:text-sand-400">{t('country.pillar_category')}</th>
+        <th class="text-right py-2 text-sand-600 dark:text-sand-400">{t('country.score_label')}</th>
+        <th class="text-right py-2 text-sand-600 dark:text-sand-400">{t('country.pillar_risk')}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {sorted.map((pillar) => {
+        const label = t(pillarKeys[pillar.name] as any);
+        const displayScore = (pillar.score * 10).toFixed(1);
+        const riskLevel = pillar.score >= 0.7 ? t('country.risk_low') : pillar.score >= 0.4 ? t('country.risk_moderate') : t('country.risk_high');
+        return (
+          <tr class="border-b border-sand-100 dark:border-sand-800">
+            <td class="py-2 text-sand-700 dark:text-sand-300">{label}</td>
+            <td class="py-2 text-right text-sand-700 dark:text-sand-300">{displayScore}/10</td>
+            <td class="py-2 text-right text-sand-700 dark:text-sand-300">{riskLevel}</td>
+          </tr>
+        );
+      })}
+    </tbody>
+  </table>
+
   <div class="space-y-3">
     {sorted.map((pillar) => {
       const label = t(pillarKeys[pillar.name] as any);
