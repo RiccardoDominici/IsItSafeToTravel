@@ -49,7 +49,7 @@ const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl);
 ---
-<Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} >
+<Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

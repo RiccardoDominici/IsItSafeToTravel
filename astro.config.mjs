@@ -19,6 +19,11 @@ export default defineConfig({
           pt: 'pt',
         },
       },
+      serialize(item) {
+        // Set lastmod to today's date (site rebuilds daily with fresh scores)
+        item.lastmod = new Date().toISOString().split('T')[0];
+        return item;
+      },
     }),
   ],
 
