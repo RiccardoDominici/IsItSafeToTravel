@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v3.0
 milestone_name: Data Sources & Scoring Overhaul
 status: Milestone complete
-stopped_at: Completed 26-03 (Score Delta and Freshness Badges)
-last_updated: "2026-03-23T01:44:51.783Z"
-last_activity: 2026-03-23
+stopped_at: Completed 27-03 (OG Images & Sitemap)
+last_updated: "2026-03-25T12:45:22.188Z"
+last_activity: 2026-03-25
 progress:
-  total_phases: 11
-  completed_phases: 7
-  total_plans: 15
-  completed_plans: 19
+  total_phases: 12
+  completed_phases: 8
+  total_plans: 18
+  completed_plans: 22
 ---
 
 # Project State
@@ -20,11 +20,11 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-22)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 26 — Validation, Documentation, and UX
+**Current focus:** Phase 27 — seo-ai-search-optimization
 
 ## Current Position
 
-Phase: 26
+Phase: 27
 Plan: Not started
 
 ## Performance Metrics
@@ -62,6 +62,16 @@ Recent decisions affecting current work:
 - [Phase 26]: Crisis validation uses synthetic indicators since historical raw data lacks signal source files
 - [Phase 26]: Score delta compares latest vs closest point to 7 days ago with 14-day max tolerance
 - [Phase 26]: Freshness thresholds: Fresh<=7d, Recent<=30d, Stale<=90d, Outdated>90d
+- [Phase 27]: datePublished set to 2026-03-19 (site launch), dateModified uses build-time date
+- [Phase 27]: FAQ questions hardcoded per language for natural language phrasing in Schema.org
+- [Phase 27]: About pages use split() template pattern for inline links
+- [Phase 27]: Static HTML table before interactive SVG chart for crawler accessibility
+- [Phase 27]: OG images use English country names for universal social sharing readability
+- [Phase 27]: Generated OG images excluded from git, built at deploy time via generate:og script
+
+### Roadmap Evolution
+
+- Phase 27 added: SEO & AI Search Optimization
 
 ### Pending Todos
 
@@ -92,10 +102,13 @@ None yet.
 | Phase 26 P01 | 4min | 2 tasks | 2 files |
 | Phase 26 P03 | 16min | 2 tasks | 9 files |
 | 260323-mcr | Add CA/AU government advisories, populate AdvisoryInfo, 4-card frontend | 2026-03-23 | 8d37e41, d2a026b | [260323-mcr-add-government-advisories-section-with-c](./quick/260323-mcr-add-government-advisories-section-with-c/) |
+| Phase 27 P01 | 53min | 2 tasks | 28 files |
+| Phase 27 P02 | 56min | 2 tasks | 16 files |
+| Phase 27 P03 | 30min | 2 tasks | 32 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-23
-Last session: 2026-03-23T15:16:35Z
-Stopped at: Completed 260323-mcr (Government Advisories)
+Last activity: 2026-03-25
+Last session: 2026-03-25T12:30:09.200Z
+Stopped at: Completed 27-03 (OG Images & Sitemap)
 Resume file: None
