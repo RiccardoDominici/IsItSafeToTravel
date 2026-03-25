@@ -42,7 +42,7 @@ const searchData = COUNTRIES.map(c => {
 
   <div
     id="search-panel"
-    class="hidden absolute right-0 top-12 w-[calc(100vw-2rem)] sm:w-80"
+    class="hidden absolute right-0 top-12 z-50 w-[calc(100vw-2rem)] sm:w-80"
     role="combobox"
     aria-expanded="false"
     aria-haspopup="listbox"
@@ -51,6 +51,10 @@ const searchData = COUNTRIES.map(c => {
       type="text"
       id="search-input"
       role="searchbox"
+      autocomplete="off"
+      autocapitalize="off"
+      autocorrect="off"
+      spellcheck="false"
       aria-label={t('search.label')}
       aria-autocomplete="list"
       aria-controls="search-listbox"
