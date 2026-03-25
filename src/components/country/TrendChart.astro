@@ -77,11 +77,11 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       </div>
       <div class="flex flex-wrap items-center gap-2 mt-2">
         <div class="time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5" role="group" aria-label="Time range">
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="1m" type="button">1M</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="1m" type="button" aria-pressed="true">1M</button>
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="6m" type="button">6M</button>
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="1y" type="button">1Y</button>
           <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="10y" type="button">10Y</button>
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="max" type="button" aria-pressed="true">MAX</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="max" type="button">MAX</button>
         </div>
         <button id="trend-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" type="button">Reset</button>
       </div>
@@ -603,7 +603,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       });
 
       // Time range buttons
-      let currentTimeRange = 'max';
+      let currentTimeRange = '1m';
 
       function filterByTimeRange(data: HistoryPoint[], range: string): HistoryPoint[] {
         if (range === 'max') return data;
@@ -652,7 +652,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       });
 
       // Initial render
-      renderChart(fullData, fullData);
+      applyTimeRange('1m');
     }
   }
 </script>

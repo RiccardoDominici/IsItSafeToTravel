@@ -455,10 +455,10 @@ for (const [iso3, points] of history.entries()) {
       btn.type = 'button';
       btn.dataset.range = r.key;
       btn.textContent = r.label;
-      btn.className = r.key === 'max'
+      btn.className = r.key === '1m'
         ? 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white'
         : 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
-      if (r.key === 'max') btn.setAttribute('aria-pressed', 'true');
+      if (r.key === '1m') btn.setAttribute('aria-pressed', 'true');
       timeRangeDiv.appendChild(btn);
     });
 
@@ -816,7 +816,7 @@ for (const [iso3, points] of history.entries()) {
       resetBtn.classList.add('hidden');
     });
 
-    let currentCompareTimeRange = 'max';
+    let currentCompareTimeRange = '1m';
 
     function getTimeRangeDates(range: string): [Date, Date] | null {
       if (range === 'max') return null;
@@ -851,7 +851,7 @@ for (const [iso3, points] of history.entries()) {
       });
     });
 
-    renderInner(null);
+    renderInner(getTimeRangeDates('1m'));
   }
 
   function render(): void {
