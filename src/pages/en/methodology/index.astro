@@ -101,8 +101,9 @@ const pillarI18n: Record<string, string> = {
         <div>Composite = exp(&Sigma;(w<sub>i</sub> &middot; ln(Pillar<sub>i</sub>))) &nbsp;&mdash;&nbsp; weighted geometric mean</div>
         <div>Score = Composite x 9 + 1 &nbsp;&rarr;&nbsp; 1-10 scale</div>
         <div class="text-xs text-sand-500 dark:text-sand-400 pt-1 border-t border-sand-200 dark:border-sand-700">
-          Hard cap: if any advisory = Level 4 "Do Not Travel" &rarr; Score &le; 2<br/>
-          Critical floor: if any pillar &lt; 0.25 &rarr; Score &le; min(pillar) x 1.5 x 9 + 1
+          Hard cap: if majority of advisories = Level 4 "Do Not Travel" &rarr; variable cap based on worst pillar<br/>
+          Critical floor: if any pillar with data &lt; 0.25 &rarr; Score &le; min(pillar) x 1.5 x 9 + 1<br/>
+          Sparse data: if data completeness &lt; 30% &rarr; blend with advisory-derived score
         </div>
       </div>
     </section>
