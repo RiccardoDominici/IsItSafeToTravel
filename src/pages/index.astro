@@ -1,8 +1,8 @@
 ---
 export const prerender = true;
-// Root URL: redirect to /en/ or /it/ based on browser language
-// In static mode, we use client-side detection since Accept-Language
-// headers are not available at build time. Default redirect to /en/.
+// Root URL redirect is handled server-side by Cloudflare Pages Function
+// (functions/index.ts) which reads Accept-Language to serve the right language.
+// This static page is a fallback only — uses JS detection for non-Cloudflare envs.
 ---
 
 <!doctype html>
@@ -10,34 +10,22 @@ export const prerender = true;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <!-- Default redirect to English (overridden by JS language detection) -->
-    <meta http-equiv="refresh" content="0;url=/en/" />
     <link rel="alternate" hreflang="en" href="https://isitsafetotravel.org/en/" />
     <link rel="alternate" hreflang="it" href="https://isitsafetotravel.org/it/" />
     <link rel="alternate" hreflang="es" href="https://isitsafetotravel.org/es/" />
     <link rel="alternate" hreflang="fr" href="https://isitsafetotravel.org/fr/" />
     <link rel="alternate" hreflang="pt" href="https://isitsafetotravel.org/pt/" />
     <link rel="alternate" hreflang="x-default" href="https://isitsafetotravel.org/en/" />
-    <title>Redirecting...</title>
+    <title>Is It Safe to Travel?</title>
     <script is:inline>
-      // Detect browser language and redirect accordingly
       (function() {
-        var lang = (navigator.language || navigator.userLanguage || '').toLowerCase();
-        if (lang.indexOf('it') === 0) {
-          window.location.replace('/it/');
-        } else if (lang.indexOf('es') === 0) {
-          window.location.replace('/es/');
-        } else if (lang.indexOf('fr') === 0) {
-          window.location.replace('/fr/');
-        } else if (lang.indexOf('pt') === 0) {
-          window.location.replace('/pt/');
-        } else {
-          window.location.replace('/en/');
-        }
+        var lang = (navigator.language || '').toLowerCase().split('-')[0];
+        var supported = { it: 1, es: 1, fr: 1, pt: 1 };
+        window.location.replace('/' + (supported[lang] ? lang : 'en') + '/');
       })();
     </script>
   </head>
   <body>
-    <p>Redirecting to <a href="/en/">English</a>...</p>
+    <p>Redirecting... <a href="/en/">English</a> | <a href="/it/">Italiano</a> | <a href="/es/">Español</a> | <a href="/fr/">Français</a> | <a href="/pt/">Português</a></p>
   </body>
 </html>
