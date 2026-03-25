@@ -357,6 +357,14 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
             renderChart(filtered, allData);
             resetBtn.classList.remove('hidden');
+            currentTimeRange = 'custom';
+
+            // Deselect all time range buttons
+            document.querySelectorAll('.time-range-btn').forEach(btn => {
+              const el = btn as HTMLElement;
+              el.className = 'time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
+              el.setAttribute('aria-pressed', 'false');
+            });
 
             // Animate transition
             animatePaths(oldLinePath, oldAreaPath);
@@ -393,14 +401,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
       // Reset button handler — reset to full date range of current pillar
       resetBtn.addEventListener('click', () => {
-        const oldLinePath = svg.querySelector('.line-path')?.getAttribute('d') || '';
-        const oldAreaPath = svg.querySelector('.area-path')?.getAttribute('d') || '';
-
-        const currentFullData = getChartData(currentPillar);
-        renderChart(currentFullData, currentFullData);
-        resetBtn.classList.add('hidden');
-
-        animatePaths(oldLinePath, oldAreaPath);
+        applyTimeRange('1m');
       });
 
       // Filter dropdown toggle
@@ -626,11 +627,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
         renderChart(filtered, baseData);
         animatePaths(oldLinePath, oldAreaPath);
-        if (range === 'max') {
-          resetBtn.classList.add('hidden');
-        } else {
-          resetBtn.classList.remove('hidden');
-        }
+        resetBtn.classList.add('hidden');
 
         // Update button styles
         document.querySelectorAll('.time-range-btn').forEach(btn => {
