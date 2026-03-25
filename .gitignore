@@ -37,3 +37,6 @@ data/raw/**/*.partial
 # Legal research (local only, not published)
 .legal-research/
 .claude/worktrees/
+
+# Generated OG images (built at deploy time)
+public/og/
