@@ -7,6 +7,7 @@ import type { HistoryPoint, PillarHistoryData } from '../../../lib/scores';
 import Base from '../../../layouts/Base.astro';
 import ScoreHero from '../../../components/country/ScoreHero.astro';
 import PillarBreakdown from '../../../components/country/PillarBreakdown.astro';
+import PillarDetailTable from '../../../components/country/PillarDetailTable.astro';
 import AdvisorySection from '../../../components/country/AdvisorySection.astro';
 import TrendChart from '../../../components/country/TrendChart.astro';
 
@@ -56,9 +57,10 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
       { label: country.name[lang], href: `/${lang}/country/${country.iso3.toLowerCase()}/` },
     ]} />
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
-    <PillarBreakdown pillars={country.pillars} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
+    <PillarDetailTable pillars={country.pillars} lang={lang} />
   </div>
 </Base>

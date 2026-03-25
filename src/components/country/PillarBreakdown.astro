@@ -29,87 +29,26 @@ const pillarKeys: Record<string, string> = {
     {t('country.pillars_title')}
   </h2>
 
-  <table class="w-full text-sm mb-4 border-collapse">
-    <thead>
-      <tr class="border-b border-sand-200 dark:border-sand-700">
-        <th class="text-left py-2 text-sand-600 dark:text-sand-400">{t('country.pillar_category')}</th>
-        <th class="text-right py-2 text-sand-600 dark:text-sand-400">{t('country.score_label')}</th>
-        <th class="text-right py-2 text-sand-600 dark:text-sand-400">{t('country.pillar_risk')}</th>
-        <th class="text-right py-2 text-sand-600 dark:text-sand-400">{t('country.pillar_coverage')}</th>
-      </tr>
-    </thead>
-    <tbody>
-      {sorted.map((pillar) => {
-        const label = t(pillarKeys[pillar.name] as any);
-        const displayScore = (pillar.score * 10).toFixed(1);
-        const riskLevel = pillar.score >= 0.7 ? t('country.risk_low') : pillar.score >= 0.4 ? t('country.risk_moderate') : t('country.risk_high');
-        const coveragePercent = Math.round(pillar.dataCompleteness * 100);
-        return (
-          <tr class="border-b border-sand-100 dark:border-sand-800">
-            <td class="py-2 text-sand-700 dark:text-sand-300">{label}</td>
-            <td class="py-2 text-right text-sand-700 dark:text-sand-300">{displayScore}/10</td>
-            <td class="py-2 text-right text-sand-700 dark:text-sand-300">{riskLevel}</td>
-            <td class="py-2 text-right text-sand-700 dark:text-sand-300">{coveragePercent}%</td>
-          </tr>
-        );
-      })}
-    </tbody>
-  </table>
-
   <div class="space-y-3">
     {sorted.map((pillar) => {
       const label = t(pillarKeys[pillar.name] as any);
       const displayScore = (pillar.score * 10).toFixed(1);
       const barWidth = Math.max(pillar.score * 180, 2);
       const color = pillarToColor(pillar.score);
-      const coveragePercent = Math.round(pillar.dataCompleteness * 100);
 
       return (
-        <details class="group">
-          <summary class="flex items-center gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-            <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right flex items-center justify-end gap-1">
-              {label}
-              <svg class="w-3 h-3 text-sand-400 dark:text-sand-500 transition-transform group-open:rotate-90" viewBox="0 0 12 12" fill="currentColor">
-                <path d="M4 2l4 4-4 4z" />
-              </svg>
-            </span>
-            <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10`}>
-              <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-              <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
-            </svg>
-            <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
-              {displayScore}/10
-            </span>
-          </summary>
-
-          <div class="ml-[7.5rem] mt-1 mb-2 pl-3 border-l-2 border-sand-200 dark:border-sand-700">
-            <p class="text-xs text-sand-500 dark:text-sand-400 mb-1">
-              {t('country.pillar_coverage')}: {coveragePercent}%
-            </p>
-            {pillar.indicators.length > 0 && (
-              <table class="w-full text-xs border-collapse">
-                <thead>
-                  <tr class="border-b border-sand-200 dark:border-sand-700">
-                    <th class="text-left py-1 text-sand-500 dark:text-sand-400">{t('country.pillar_indicators')}</th>
-                    <th class="text-right py-1 text-sand-500 dark:text-sand-400">{t('country.pillar_value')}</th>
-                    <th class="text-right py-1 text-sand-500 dark:text-sand-400">{t('country.pillar_source')}</th>
-                    <th class="text-right py-1 text-sand-500 dark:text-sand-400">{t('country.pillar_year')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pillar.indicators.map((ind) => (
-                    <tr class="border-b border-sand-100 dark:border-sand-800">
-                      <td class="py-1 text-sand-600 dark:text-sand-300">{ind.name.replace(/_/g, ' ')}</td>
-                      <td class="py-1 text-right text-sand-600 dark:text-sand-300">{(ind.normalizedValue * 10).toFixed(1)}/10</td>
-                      <td class="py-1 text-right text-sand-600 dark:text-sand-300">{ind.source}</td>
-                      <td class="py-1 text-right text-sand-600 dark:text-sand-300">{ind.year}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        </details>
+        <div class="flex items-center gap-3">
+          <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right">
+            {label}
+          </span>
+          <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10`}>
+            <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+            <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
+          </svg>
+          <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
+            {displayScore}/10
+          </span>
+        </div>
       );
     })}
   </div>

@@ -1,0 +1,71 @@
+---
+import type { PillarScore } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  pillars: PillarScore[];
+  lang: Lang;
+}
+
+const { pillars, lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Sort by score ascending (worst first)
+const sorted = [...pillars].sort((a, b) => a.score - b.score);
+
+const pillarKeys: Record<string, string> = {
+  conflict: 'country.pillar.conflict',
+  crime: 'country.pillar.crime',
+  health: 'country.pillar.health',
+  governance: 'country.pillar.governance',
+  environment: 'country.pillar.environment',
+};
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.pillars_title')} — Detail
+  </h2>
+
+  {sorted.map((pillar) => {
+    const label = t(pillarKeys[pillar.name] as any);
+    const displayScore = (pillar.score * 10).toFixed(1);
+    const riskLevel = pillar.score >= 0.7 ? t('country.risk_low') : pillar.score >= 0.4 ? t('country.risk_moderate') : t('country.risk_high');
+    const coveragePercent = Math.round(pillar.dataCompleteness * 100);
+
+    return (
+      <div class="mb-6">
+        <h3 class="text-sm font-semibold text-sand-700 dark:text-sand-200 mb-2">
+          {label}
+          <span class="ml-2 font-normal text-sand-500 dark:text-sand-400">
+            {displayScore}/10 · {riskLevel} · {t('country.pillar_coverage')}: {coveragePercent}%
+          </span>
+        </h3>
+
+        {pillar.indicators.length > 0 && (
+          <table class="w-full text-xs border-collapse">
+            <thead>
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <th class="text-left py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_indicators')}</th>
+                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_value')}</th>
+                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_source')}</th>
+                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_year')}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pillar.indicators.map((ind) => (
+                <tr class="border-b border-sand-100 dark:border-sand-800">
+                  <td class="py-1.5 text-sand-600 dark:text-sand-300">{ind.name.replace(/_/g, ' ')}</td>
+                  <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{(ind.normalizedValue * 10).toFixed(1)}/10</td>
+                  <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.source}</td>
+                  <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.year}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    );
+  })}
+</section>
