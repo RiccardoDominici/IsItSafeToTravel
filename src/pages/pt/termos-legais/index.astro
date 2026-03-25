@@ -8,7 +8,8 @@ import { buildWebPageJsonLd } from '../../../lib/seo';
 const lang: Lang = 'pt';
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const jsonLd = buildWebPageJsonLd(t('legal.title'), t('legal.description'), canonicalUrl, lang);
+const dateModified = new Date().toISOString().split('T')[0];
+const jsonLd = buildWebPageJsonLd(t('legal.title'), t('legal.description'), canonicalUrl, lang, dateModified);
 ---
 <Base lang={lang} title={t('legal.title')} description={t('legal.description')} jsonLd={jsonLd}>
   <div class="max-w-4xl mx-auto px-4 py-12">

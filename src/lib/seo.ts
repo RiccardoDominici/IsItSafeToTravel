@@ -48,12 +48,13 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const sourceCount = country.sources.length || 3; // fallback: pipeline uses 3 public sources
   const name = country.name[lang];
 
+  const roundedScore = score.toFixed(1);
   const templates: Record<Lang, string> = {
-    en: `${name} safety score: ${score}/10. ${riskLevel} destination. Strongest: ${strongestLabel} (${strongestScore}). Top concern: ${weakestLabel} (${weakestScore}). Updated daily from ${sourceCount}+ public sources.`,
-    it: `Punteggio di sicurezza ${name}: ${score}/10. Destinazione a ${riskLevel}. Punto forte: ${strongestLabel} (${strongestScore}). Principale preoccupazione: ${weakestLabel} (${weakestScore}). Aggiornato quotidianamente da ${sourceCount}+ fonti pubbliche.`,
-    es: `Puntuacion de seguridad de ${name}: ${score}/10. Destino de ${riskLevel}. Punto fuerte: ${strongestLabel} (${strongestScore}). Principal preocupacion: ${weakestLabel} (${weakestScore}). Actualizado diariamente de ${sourceCount}+ fuentes publicas.`,
-    fr: `Score de securite de ${name} : ${score}/10. Destination a ${riskLevel}. Point fort : ${strongestLabel} (${strongestScore}). Principale preoccupation : ${weakestLabel} (${weakestScore}). Mis a jour quotidiennement a partir de ${sourceCount}+ sources publiques.`,
-    pt: `Pontuacao de seguranca de ${name}: ${score}/10. Destino de ${riskLevel}. Ponto forte: ${strongestLabel} (${strongestScore}). Principal preocupacao: ${weakestLabel} (${weakestScore}). Atualizado diariamente de ${sourceCount}+ fontes publicas.`,
+    en: `${name} safety score: ${roundedScore}/10. ${riskLevel} destination. Strongest: ${strongestLabel} (${strongestScore}). Top concern: ${weakestLabel} (${weakestScore}). Updated daily from ${sourceCount}+ public sources.`,
+    it: `Punteggio di sicurezza ${name}: ${roundedScore}/10. Destinazione a ${riskLevel}. Punto forte: ${strongestLabel} (${strongestScore}). Principale preoccupazione: ${weakestLabel} (${weakestScore}). Aggiornato quotidianamente da ${sourceCount}+ fonti pubbliche.`,
+    es: `Puntuacion de seguridad de ${name}: ${roundedScore}/10. Destino de ${riskLevel}. Punto fuerte: ${strongestLabel} (${strongestScore}). Principal preocupacion: ${weakestLabel} (${weakestScore}). Actualizado diariamente de ${sourceCount}+ fuentes publicas.`,
+    fr: `Score de securite de ${name} : ${roundedScore}/10. Destination a ${riskLevel}. Point fort : ${strongestLabel} (${strongestScore}). Principale preoccupation : ${weakestLabel} (${weakestScore}). Mis a jour quotidiennement a partir de ${sourceCount}+ sources publiques.`,
+    pt: `Pontuacao de seguranca de ${name}: ${roundedScore}/10. Destino de ${riskLevel}. Ponto forte: ${strongestLabel} (${strongestScore}). Principal preocupacao: ${weakestLabel} (${weakestScore}). Atualizado diariamente de ${sourceCount}+ fontes publicas.`,
   };
   return templates[lang];
 }
@@ -62,7 +63,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
  * Build JSON-LD structured data for a country detail page.
  * Uses @graph with WebPage and Place nodes.
  */
-export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string): Record<string, unknown> {
+export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string, dateModified?: string): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -73,6 +74,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         name: `${country.name[lang]} Safety Score`,
         description: buildCountryMetaDescription(country, lang),
         inLanguage: localeMap[lang],
+        ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
       },
       {
         '@type': 'Place',
@@ -87,7 +89,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
  * Build JSON-LD structured data for the homepage.
  * Includes WebSite schema with SearchAction.
  */
-export function buildHomepageJsonLd(siteUrl: string, lang: Lang): Record<string, unknown> {
+export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: string): Record<string, unknown> {
   const descriptions: Record<Lang, string> = {
     en: 'Find out how safe your travel destination is',
     it: 'Scopri quanto e sicura la tua destinazione di viaggio',
@@ -111,6 +113,7 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang): Record<string,
       },
       'query-input': 'required name=search_term_string',
     },
+    ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }
 
@@ -122,6 +125,7 @@ export function buildGlobalSafetyJsonLd(
   globalScore: number,
   canonicalUrl: string,
   lang: Lang,
+  dateModified?: string,
 ): Record<string, unknown> {
   const names: Record<Lang, string> = {
     en: 'Global Safety Score',
@@ -147,13 +151,14 @@ export function buildGlobalSafetyJsonLd(
     name: names[lang],
     description: descriptions[lang],
     inLanguage: localeMap[lang],
+    ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }
 
 /**
  * Build simple WebPage JSON-LD for static pages (methodology, legal).
  */
-export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang): Record<string, unknown> {
+export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang, dateModified?: string): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -161,6 +166,7 @@ export function buildWebPageJsonLd(title: string, description: string, canonical
     description,
     url: canonicalUrl,
     inLanguage: localeMap[lang],
+    ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }
 
@@ -191,6 +197,9 @@ export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown
     name: 'IsItSafeToTravel',
     url: siteUrl,
     description: 'Free travel safety platform providing transparent, data-driven safety scores for 200+ countries worldwide.',
+    logo: `${siteUrl}/favicon.svg`,
+    sameAs: ['https://github.com/RiccardoDominici/IsItSafeToTravel'],
+    foundingDate: '2026',
   };
 }
 

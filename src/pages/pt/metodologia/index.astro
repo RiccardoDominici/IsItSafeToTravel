@@ -12,11 +12,15 @@ const lang: Lang = 'pt';
 const r = routes[lang];
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang);
-const faqQuestions = weightsConfig.pillars.map(pillar => ({
-  question: t(`methodology.pillar.${pillar.name}.title` as any),
-  answer: t(`methodology.pillar.${pillar.name}.description` as any),
-}));
+const dateModified = new Date().toISOString().split('T')[0];
+const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang, dateModified);
+const faqQuestions = [
+  { question: 'O que a categoria Conflito mede na pontuacao de seguranca?', answer: t('methodology.pillar.conflict.description' as any) },
+  { question: 'O que a categoria Criminalidade mede na pontuacao de seguranca?', answer: t('methodology.pillar.crime.description' as any) },
+  { question: 'O que a categoria Saude mede na pontuacao de seguranca?', answer: t('methodology.pillar.health.description' as any) },
+  { question: 'O que a categoria Governanca mede na pontuacao de seguranca?', answer: t('methodology.pillar.governance.description' as any) },
+  { question: 'O que a categoria Meio Ambiente mede na pontuacao de seguranca?', answer: t('methodology.pillar.environment.description' as any) },
+];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
 const jsonLd = {
   '@context': 'https://schema.org',

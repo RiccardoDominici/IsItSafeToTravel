@@ -11,10 +11,11 @@ const lang: Lang = 'pt';
 const t = useTranslations(lang);
 
 const siteUrl = 'https://isitsafetotravel.org';
+const dateModified = new Date().toISOString().split('T')[0];
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
-    { ...buildHomepageJsonLd(siteUrl, lang), '@context': undefined },
+    { ...buildHomepageJsonLd(siteUrl, lang, dateModified), '@context': undefined },
     { ...buildOrganizationJsonLd(siteUrl), '@context': undefined },
   ],
 };

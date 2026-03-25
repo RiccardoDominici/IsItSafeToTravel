@@ -16,7 +16,8 @@ const bgColor = scoreToColor(globalScore);
 const globalHistory = loadGlobalHistory();
 
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const jsonLd = buildGlobalSafetyJsonLd(globalScore, canonicalUrl, lang);
+const dateModified = new Date().toISOString().split('T')[0];
+const jsonLd = buildGlobalSafetyJsonLd(globalScore, canonicalUrl, lang, dateModified);
 
 const showChart = globalHistory.length >= 2;
 ---

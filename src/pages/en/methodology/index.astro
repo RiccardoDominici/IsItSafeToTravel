@@ -10,13 +10,17 @@ import weightsConfig from '../../../pipeline/config/weights.json';
 const lang: Lang = 'en';
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang);
+const dateModified = new Date().toISOString().split('T')[0];
+const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang, dateModified);
 
-// Build FAQ from pillar expandable sections
-const faqQuestions = weightsConfig.pillars.map(pillar => ({
-  question: t(`methodology.pillar.${pillar.name}.title` as any),
-  answer: t(`methodology.pillar.${pillar.name}.description` as any),
-}));
+// Build FAQ from pillar expandable sections with natural language questions
+const faqQuestions = [
+  { question: 'What does the Conflict category measure in the safety score?', answer: t('methodology.pillar.conflict.description' as any) },
+  { question: 'What does the Crime category measure in the safety score?', answer: t('methodology.pillar.crime.description' as any) },
+  { question: 'What does the Health category measure in the safety score?', answer: t('methodology.pillar.health.description' as any) },
+  { question: 'What does the Governance category measure in the safety score?', answer: t('methodology.pillar.governance.description' as any) },
+  { question: 'What does the Environment category measure in the safety score?', answer: t('methodology.pillar.environment.description' as any) },
+];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
 
 const jsonLd = {
