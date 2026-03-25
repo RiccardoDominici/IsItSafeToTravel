@@ -58,9 +58,9 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
       { label: country.name[lang], href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
     ]} />
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
-    <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <PillarBreakdown pillars={country.pillars} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
   </div>
 </Base>
