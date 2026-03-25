@@ -277,9 +277,9 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 **Goal:** Maximize visibility in Google Search and AI chatbot citations through OG images, enriched structured data, About page with E-E-A-T signals, crawlable static content, and sitemap improvements
 **Requirements**: SEO27-01, SEO27-02, SEO27-03, SEO27-04, SEO27-05, SEO27-06, SEO27-07, SEO27-08, SEO27-09, SEO27-10, SEO27-11, SEO27-12, SEO27-13, SEO27-14
 **Depends on:** Phase 26
-**Plans:** 3 plans
+**Plans:** 3/3 plans executed
 
 Plans:
-- [ ] 27-01-PLAN.md — SEO metadata fixes: score rounding, dateModified/datePublished, Organization schema, FAQ natural language, meta robots, preload, llms.txt
-- [ ] 27-02-PLAN.md — About page (5 languages) with E-E-A-T, Person schema, static pillar table, homepage country listing
-- [ ] 27-03-PLAN.md — OG image generation at build time, sitemap lastmod and language coverage
+- [x] 27-01-PLAN.md — SEO metadata fixes: score rounding, dateModified/datePublished, Organization schema, FAQ natural language, meta robots, preload, llms.txt
+- [x] 27-02-PLAN.md — About page (5 languages) with E-E-A-T, Person schema, static pillar table, homepage country listing
+- [x] 27-03-PLAN.md — OG image generation at build time, sitemap lastmod and language coverage
