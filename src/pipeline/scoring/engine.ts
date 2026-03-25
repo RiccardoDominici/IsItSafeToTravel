@@ -36,8 +36,10 @@ import type {
 const CRITICAL_PILLAR_THRESHOLD = 0.25; // pillar score (0-1) below which critical floor kicks in
 const CRITICAL_FLOOR_MULTIPLIER = 1.5;  // max score = minPillar * this * 9 + 1
 const ADVISORY_HARD_CAP_LEVEL = 4;      // advisory level that triggers hard cap
-const ADVISORY_HARD_CAP_SCORE = 2;      // max score when hard cap is active
+const ADVISORY_HARD_CAP_MAJORITY = true; // require majority of advisory sources at Level 4
+const ADVISORY_HARD_CAP_BASE = 2;       // base hard cap score
 const GEOMETRIC_MEAN_FLOOR = 0.01;      // floor for pillar scores in geometric mean (avoid log(0))
+const LOW_DATA_THRESHOLD = 0.3;         // overall dataCompleteness below which advisory blending kicks in
 export function computeCountryScore(
   iso3: string,
   allIndicators: RawIndicator[],
@@ -93,16 +95,7 @@ export function computeCountryScore(
     };
   });
 
-  // Compute composite score using weighted geometric mean (0-1 range)
-  // Geometric mean: exp(Σ(weight_i * ln(score_i))) — naturally penalizes low outliers
-  const totalWeight = pillars.reduce((acc, p) => acc + p.weight, 0);
-  const weightedLogSum = pillars.reduce((acc, p) => {
-    const clampedScore = Math.max(GEOMETRIC_MEAN_FLOOR, p.score);
-    return acc + p.weight * Math.log(clampedScore);
-  }, 0);
-  let compositeScore = Math.exp(weightedLogSum / totalWeight);
-
-  // Hard cap: if any advisory is Level 4 "Do Not Travel", cap score
+  // --- Advisory analysis (used in multiple steps below) ---
   const advisoryLevels = [
     advisories.us?.level, advisories.uk?.level,
     advisories.ca?.level, advisories.au?.level,
@@ -110,30 +103,64 @@ export function computeCountryScore(
    .map((l) => typeof l === 'string' ? parseFloat(l) : l)
    .filter((l) => !isNaN(l));
 
-  const hasDoNotTravel = advisoryLevels.some((l) => l >= ADVISORY_HARD_CAP_LEVEL);
+  const advisoryAvg = advisoryLevels.length > 0
+    ? advisoryLevels.reduce((a, b) => a + b, 0) / advisoryLevels.length
+    : null;
 
-  // Critical floor: if any pillar is below critical threshold, cap the score
-  const minPillarScore = Math.min(...pillars.map((p) => p.score));
-  if (minPillarScore < CRITICAL_PILLAR_THRESHOLD) {
-    const criticalCap = minPillarScore * CRITICAL_FLOOR_MULTIPLIER;
-    compositeScore = Math.min(compositeScore, criticalCap);
-  }
+  // Advisory-derived score (0-1): maps avg advisory 1→0.9, 2→0.6, 3→0.35, 4→0.1
+  const advisoryScore = advisoryAvg !== null
+    ? Math.max(0.05, 1.0 - (advisoryAvg - 1) * 0.3)
+    : null;
 
-  // Map to 1-10 scale: score = compositeScore * 9 + 1 (no rounding — keep full precision)
-  let score = compositeScore * 9 + 1;
+  // --- Composite score: weighted geometric mean ---
+  const totalWeight = pillars.reduce((acc, p) => acc + p.weight, 0);
+  const weightedLogSum = pillars.reduce((acc, p) => {
+    const clampedScore = Math.max(GEOMETRIC_MEAN_FLOOR, p.score);
+    return acc + p.weight * Math.log(clampedScore);
+  }, 0);
+  let compositeScore = Math.exp(weightedLogSum / totalWeight);
 
-  // Apply advisory hard cap last (overrides everything)
-  if (hasDoNotTravel) {
-    score = Math.min(score, ADVISORY_HARD_CAP_SCORE);
-  }
-
-  const scoreDisplay = Math.round(score);
-
-  // Overall data completeness: average of pillar completeness
+  // --- Fix 2+3: blend with advisory score when data is sparse ---
   const overallCompleteness =
     pillars.length > 0
       ? pillars.reduce((acc, p) => acc + p.dataCompleteness, 0) / pillars.length
       : 0;
+
+  if (overallCompleteness < LOW_DATA_THRESHOLD && advisoryScore !== null) {
+    // The less data we have, the more we trust advisories
+    // At dc=0: 100% advisory. At dc=LOW_DATA_THRESHOLD: 0% advisory.
+    const advisoryBlend = 1 - (overallCompleteness / LOW_DATA_THRESHOLD);
+    compositeScore = compositeScore * (1 - advisoryBlend) + advisoryScore * advisoryBlend;
+  }
+
+  // --- Critical floor: if any pillar with real data is below threshold ---
+  const pillarsWithData = pillars.filter((p) => p.dataCompleteness > 0);
+  if (pillarsWithData.length > 0) {
+    const minPillarScore = Math.min(...pillarsWithData.map((p) => p.score));
+    if (minPillarScore < CRITICAL_PILLAR_THRESHOLD) {
+      const criticalCap = minPillarScore * CRITICAL_FLOOR_MULTIPLIER;
+      compositeScore = Math.min(compositeScore, criticalCap);
+    }
+  }
+
+  // Map to 1-10 scale
+  let score = compositeScore * 9 + 1;
+
+  // --- Fix 1+4: advisory hard cap requires consensus (2+ sources) and varies by min pillar ---
+  const level4Count = advisoryLevels.filter((l) => l >= ADVISORY_HARD_CAP_LEVEL).length;
+  const majorityThreshold = Math.ceil(advisoryLevels.length / 2 + 0.1); // >50%: 2/3, 3/4, 2/2
+  if (level4Count >= majorityThreshold && advisoryLevels.length > 0) {
+    // Variable cap: worse countries get lower cap based on their min pillar score
+    // Base cap = 2, but if min pillar is very low, cap is lower (down to 1)
+    const minPillar = pillarsWithData.length > 0
+      ? Math.min(...pillarsWithData.map((p) => p.score))
+      : 0.1;
+    const variableCap = ADVISORY_HARD_CAP_BASE + (minPillar - 0.1) * 2; // range ~1.0 to ~2.8
+    const hardCap = Math.max(1, Math.min(ADVISORY_HARD_CAP_BASE + 1, variableCap));
+    score = Math.min(score, hardCap);
+  }
+
+  const scoreDisplay = Math.round(score);
 
   return {
     iso3: iso3.toUpperCase(),
