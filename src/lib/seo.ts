@@ -156,6 +156,19 @@ export function buildGlobalSafetyJsonLd(
 }
 
 /**
+ * Build Person JSON-LD structured data for the author.
+ */
+export function buildPersonJsonLd(): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: 'Riccardo Dominici',
+    jobTitle: 'Independent developer and data analyst',
+    url: 'https://github.com/RiccardoDominici',
+  };
+}
+
+/**
  * Build simple WebPage JSON-LD for static pages (methodology, legal).
  */
 export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang, dateModified?: string): Record<string, unknown> {

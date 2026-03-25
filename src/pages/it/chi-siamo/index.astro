@@ -1,0 +1,67 @@
+---
+export const prerender = true;
+import Base from '../../../layouts/Base.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
+import { buildWebPageJsonLd, buildPersonJsonLd, buildBreadcrumbJsonLd } from '../../../lib/seo';
+
+const lang: Lang = 'it';
+const t = useTranslations(lang);
+const r = routes[lang];
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = 'https://isitsafetotravel.org';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { ...buildWebPageJsonLd(t('about.title'), t('about.description'), canonicalUrl, lang), '@context': undefined },
+    { ...buildPersonJsonLd(), '@context': undefined },
+    { ...buildBreadcrumbJsonLd([
+      { name: t('nav.home'), url: `${siteUrl}/${lang}/` },
+      { name: t('nav.about'), url: canonicalUrl },
+    ]), '@context': undefined },
+  ],
+};
+---
+<Base lang={lang} title={t('about.title')} description={t('about.description')} jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('about.heading')}</h1>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.project_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.project_text')}</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.mission_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.mission_text')}</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.author_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.author_text')}</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.sources_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {t('about.sources_text').split('{methodology_link}')[0]}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text')}</a>{t('about.sources_text').split('{methodology_link}')[1]}
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.opensource_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {t('about.opensource_text').split('{github_link}')[0]}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">GitHub</a>{t('about.opensource_text').split('{github_link}')[1]}
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.contact_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {t('about.contact_text').split('{github_issues_link}')[0]}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel/issues" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.github_issues_text')}</a>{t('about.contact_text').split('{github_issues_link}')[1]}
+      </p>
+    </section>
+  </div>
+</Base>

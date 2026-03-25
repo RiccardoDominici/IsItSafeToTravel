@@ -5,10 +5,13 @@ import SafetyMap from '../../components/SafetyMap.astro';
 import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
 import { buildHomepageJsonLd, buildOrganizationJsonLd } from '../../lib/seo';
+import { loadLatestScores } from '../../lib/scores';
 
 const lang: Lang = 'it';
 const t = useTranslations(lang);
+const countries = loadLatestScores().sort((a, b) => a.name[lang].localeCompare(b.name[lang]));
 
 const siteUrl = 'https://isitsafetotravel.org';
 const dateModified = new Date().toISOString().split('T')[0];
@@ -36,4 +39,17 @@ const jsonLd = {
       <SafetyMap lang={lang} />
     </div>
   </section>
+  <details class="max-w-6xl mx-auto px-4 py-6">
+    <summary class="cursor-pointer text-sm font-medium text-sand-600 dark:text-sand-400 hover:text-sand-800 dark:hover:text-sand-200">
+      {t('home.all_countries')} ({countries.length})
+    </summary>
+    <div class="mt-4 columns-2 sm:columns-3 md:columns-4 gap-4">
+      {countries.map(c => (
+        <a href={`/${lang}/${routes[lang].country}/${c.iso3.toLowerCase()}/`}
+           class="block text-sm text-sand-600 dark:text-sand-400 hover:text-terracotta-500 dark:hover:text-terracotta-400 py-0.5">
+          {c.name[lang]}
+        </a>
+      ))}
+    </div>
+  </details>
 </Base>
