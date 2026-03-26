@@ -45,7 +45,7 @@ export function computeCountryScore(
   allIndicators: RawIndicator[],
   weightsConfig: WeightsConfig,
   countryEntry: CountryEntry,
-  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo },
+  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo },
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
@@ -101,6 +101,10 @@ export function computeCountryScore(
     advisories.ca?.level, advisories.au?.level,
     advisories.de?.level, advisories.nl?.level,
     advisories.jp?.level, advisories.sk?.level,
+    advisories.fr?.level, advisories.nz?.level,
+    advisories.ie?.level, advisories.fi?.level,
+    advisories.hk?.level, advisories.br?.level,
+    advisories.at?.level, advisories.ph?.level,
   ].filter((l): l is number | string => l !== undefined)
    .map((l) => typeof l === 'string' ? parseFloat(l) : l)
    .filter((l) => !isNaN(l));
@@ -205,6 +209,14 @@ const INDICATOR_SOURCE_MAP: Record<string, string> = {
   advisory_level_nl: 'advisories_nl',
   advisory_level_jp: 'advisories_jp',
   advisory_level_sk: 'advisories_sk',
+  advisory_level_fr: 'advisories_fr',
+  advisory_level_nz: 'advisories_nz',
+  advisory_level_ie: 'advisories_ie',
+  advisory_level_fi: 'advisories_fi',
+  advisory_level_hk: 'advisories_hk',
+  advisory_level_br: 'advisories_br',
+  advisory_level_at: 'advisories_at',
+  advisory_level_ph: 'advisories_ph',
   reliefweb_active_disasters: 'reliefweb',
   gdacs_disaster_alerts: 'gdacs',
 };
@@ -310,7 +322,7 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   },
   advisories: {
     url: 'https://travel.state.gov/',
-    description: 'Travel advisories from US, UK, Canada, Australia, Germany, Netherlands, Japan, and Slovakia',
+    description: 'Travel advisories from US, UK, Canada, Australia, Germany, Netherlands, Japan, Slovakia, France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, and Philippines',
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
@@ -403,17 +415,24 @@ export function computeAllScores(
   }
 
   // Load advisory info from side-channel file
-  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo }>;
+  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo }>;
   let advisoryInfoMap: AdvisoryInfoMap = {};
 
   // Find advisories-info.json from the raw data directory
   // IMPORTANT: only use advisory info from the SAME date's raw directory.
   // Never fall back to a different date — applying modern advisories
   // (e.g. Level 4 "Do Not Travel") to historical dates would be incorrect.
+  // Determine the data date from any available advisory source
   const advisoriesSource = rawDataBySource.get('advisories');
-  if (advisoriesSource) {
-    const dateMatch = advisoriesSource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
+  const tier1Source = rawDataBySource.get('advisories_tier1');
+  const tier2aSource = rawDataBySource.get('advisories_tier2a');
+  const anyAdvisorySource = advisoriesSource || tier1Source || tier2aSource;
+
+  if (anyAdvisorySource) {
+    const dateMatch = anyAdvisorySource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
     const dataDate = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
+
+    // Load base advisories-info.json
     const advisoryInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-info.json');
     const loaded = readJson<AdvisoryInfoMap>(advisoryInfoPath);
     if (loaded) {
@@ -421,6 +440,28 @@ export function computeAllScores(
       console.log(`  Loaded advisory info for ${Object.keys(advisoryInfoMap).length} countries`);
     } else {
       console.log(`  No advisories-info.json for ${dataDate} — advisory hard caps will not apply`);
+    }
+
+    // Also load tier-1 advisory info
+    const tier1InfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier1-info.json');
+    const tier1Info = readJson<AdvisoryInfoMap>(tier1InfoPath);
+    if (tier1Info) {
+      for (const [iso3, info] of Object.entries(tier1Info)) {
+        if (!advisoryInfoMap[iso3]) advisoryInfoMap[iso3] = {};
+        Object.assign(advisoryInfoMap[iso3], info);
+      }
+      console.log(`  Merged tier-1 advisory info`);
+    }
+
+    // Also load tier-2a advisory info
+    const tier2aInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier2a-info.json');
+    const tier2aInfo = readJson<AdvisoryInfoMap>(tier2aInfoPath);
+    if (tier2aInfo) {
+      for (const [iso3, info] of Object.entries(tier2aInfo)) {
+        if (!advisoryInfoMap[iso3]) advisoryInfoMap[iso3] = {};
+        Object.assign(advisoryInfoMap[iso3], info);
+      }
+      console.log(`  Merged tier-2a advisory info`);
     }
   }
 
