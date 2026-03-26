@@ -52,6 +52,12 @@ const r = routes[lang];
       >
         {t('nav.about')}
       </a>
+      <a
+        href={`/${lang}/${r.feedback}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
+      >
+        {t('nav.feedback')}
+      </a>
     </nav>
 
     <!-- Actions -->
@@ -97,6 +103,12 @@ const r = routes[lang];
             class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
           >
             {t('nav.about')}
+          </a>
+          <a
+            href={`/${lang}/${r.feedback}/`}
+            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
+          >
+            {t('nav.feedback')}
           </a>
         </nav>
       </details>

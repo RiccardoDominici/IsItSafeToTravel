@@ -1,0 +1,119 @@
+---
+export const prerender = true;
+import Base from '../../../layouts/Base.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
+import { buildWebPageJsonLd, buildBreadcrumbJsonLd } from '../../../lib/seo';
+
+const lang: Lang = 'es';
+const t = useTranslations(lang);
+const r = routes[lang];
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const siteUrl = 'https://isitsafetotravel.org';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { ...buildWebPageJsonLd(t('feedback.title'), t('feedback.description'), canonicalUrl, lang), '@context': undefined },
+    { ...buildBreadcrumbJsonLd([
+      { name: t('nav.home'), url: `${siteUrl}/${lang}/` },
+      { name: t('nav.feedback'), url: canonicalUrl },
+    ]), '@context': undefined },
+  ],
+};
+---
+<Base lang={lang} title={t('feedback.title')} description={t('feedback.description')} jsonLd={jsonLd} ogImage="/og/default.png">
+  <div class="max-w-2xl mx-auto px-4 py-8 space-y-8">
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50">{t('feedback.heading')}</h1>
+
+    <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('feedback.intro')}</p>
+
+    <div id="feedback-success" class="hidden rounded-xl border border-sage-300 dark:border-sage-600 bg-sage-50 dark:bg-sage-600/20 p-6 text-center space-y-2">
+      <svg class="w-12 h-12 mx-auto text-sage-500 dark:text-sage-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+      </svg>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100">{t('feedback.success_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300">{t('feedback.success_text')}</p>
+    </div>
+
+    <div id="feedback-error" class="hidden rounded-xl border border-red-300 dark:border-red-700 bg-red-50 dark:bg-red-900/20 p-6 text-center space-y-2">
+      <svg class="w-12 h-12 mx-auto text-red-500 dark:text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+      </svg>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100">{t('feedback.error_title')}</h2>
+      <p class="text-sand-600 dark:text-sand-300">{t('feedback.error_text')}</p>
+    </div>
+
+    <form id="feedback-form" class="space-y-5">
+      <div>
+        <label for="name" class="block text-sm font-medium text-sand-700 dark:text-sand-200 mb-1">{t('feedback.name_label')}</label>
+        <input type="text" id="name" name="name" required placeholder={t('feedback.name_placeholder')}
+          class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 placeholder-sand-400 dark:placeholder-sand-500 focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:border-terracotta-500 transition-colors" />
+      </div>
+      <div>
+        <label for="email" class="block text-sm font-medium text-sand-700 dark:text-sand-200 mb-1">{t('feedback.email_label')}</label>
+        <input type="email" id="email" name="email" required placeholder={t('feedback.email_placeholder')}
+          class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 placeholder-sand-400 dark:placeholder-sand-500 focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:border-terracotta-500 transition-colors" />
+      </div>
+      <div>
+        <label for="type" class="block text-sm font-medium text-sand-700 dark:text-sand-200 mb-1">{t('feedback.type_label')}</label>
+        <select id="type" name="type" required
+          class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:border-terracotta-500 transition-colors">
+          <option value="suggestion">{t('feedback.type_suggestion')}</option>
+          <option value="bug">{t('feedback.type_bug')}</option>
+          <option value="data">{t('feedback.type_data')}</option>
+          <option value="compliment">{t('feedback.type_compliment')}</option>
+          <option value="other">{t('feedback.type_other')}</option>
+        </select>
+      </div>
+      <div>
+        <label for="message" class="block text-sm font-medium text-sand-700 dark:text-sand-200 mb-1">{t('feedback.message_label')} <span class="text-terracotta-500">*</span></label>
+        <textarea id="message" name="message" required rows="5" placeholder={t('feedback.message_placeholder')}
+          class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 text-sand-900 dark:text-sand-50 placeholder-sand-400 dark:placeholder-sand-500 focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:border-terracotta-500 transition-colors resize-y min-h-[120px]"></textarea>
+      </div>
+      <button type="submit" id="feedback-submit"
+        class="w-full py-3 px-6 rounded-lg bg-terracotta-500 hover:bg-terracotta-600 active:bg-terracotta-700 text-white font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:ring-offset-2 focus:ring-offset-sand-50 dark:focus:ring-offset-sand-900 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]">
+        {t('feedback.submit')}
+      </button>
+    </form>
+  </div>
+
+  <script define:vars={{ sendingText: t('feedback.sending'), submitText: t('feedback.submit') }}>
+    const form = document.getElementById('feedback-form');
+    const successEl = document.getElementById('feedback-success');
+    const errorEl = document.getElementById('feedback-error');
+    const submitBtn = document.getElementById('feedback-submit');
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      submitBtn.textContent = sendingText;
+      successEl.classList.add('hidden');
+      errorEl.classList.add('hidden');
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      try {
+        const res = await fetch('/api/feedback', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        });
+
+        if (res.ok) {
+          form.classList.add('hidden');
+          successEl.classList.remove('hidden');
+        } else {
+          errorEl.classList.remove('hidden');
+        }
+      } catch {
+        errorEl.classList.remove('hidden');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = submitText;
+      }
+    });
+  </script>
+</Base>
