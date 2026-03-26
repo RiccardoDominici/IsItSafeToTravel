@@ -102,14 +102,15 @@ jobs:
             key.private_key = key.private_key.replace(/\\n/g, '\n');
           }
 
-          const auth = new google.auth.JWT(
-            key.client_email,
-            null,
-            key.private_key,
-            ['https://www.googleapis.com/auth/indexing']
-          );
+          console.log(`Service account: ${key.client_email}`);
+          console.log(`Private key starts with: ${key.private_key?.substring(0, 30)}...`);
 
-          await auth.authorize();
+          const auth = new google.auth.GoogleAuth({
+            credentials: key,
+            scopes: ['https://www.googleapis.com/auth/indexing'],
+          });
+
+          const client = await auth.getClient();
           console.log(`Authenticated as ${key.client_email}`);
 
           // --- Read sitemap ---
@@ -152,7 +153,7 @@ jobs:
           console.log(`Submitting ${toSubmit.length} of ${allUrls.length} URLs (limit: ${MAX_URLS})`);
 
           // --- Submit to Indexing API ---
-          const indexing = google.indexing({ version: 'v3', auth });
+          const indexing = google.indexing({ version: 'v3', auth: client });
 
           let success = 0;
           let failed = 0;
