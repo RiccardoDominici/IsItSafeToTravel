@@ -342,8 +342,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 32-01-PLAN.md
-- [ ] 32-02-PLAN.md
+- [ ] 32-01-PLAN.md — Extend types/normalization/config for 6 Tier 3a complex sources (IT, ES, KR, TW, CN, IN)
+- [ ] 32-02-PLAN.md — Create advisories-tier3a.ts with 6 sub-fetchers and pipeline wiring
 
 ### Phase 33: Tier 3 Complex Sources Batch 2
 **Goal**: Pipeline extracts advisory data from 7 more European countries with complex source structures, completing the full 30+ source expansion
