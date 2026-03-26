@@ -1,15 +1,3 @@
-interface Env {
-  RESEND_API_KEY: string;
-  FEEDBACK_EMAIL: string;
-}
-
-interface FeedbackBody {
-  name: string;
-  email: string;
-  type: string;
-  message: string;
-}
-
 const TYPE_LABELS: Record<string, string> = {
   suggestion: 'Suggestion',
   bug: 'Bug Report',
@@ -18,15 +6,24 @@ const TYPE_LABELS: Record<string, string> = {
   other: 'Other',
 };
 
-export const onRequestPost: PagesFunction<Env> = async (context) => {
-  const corsHeaders = {
-    'Access-Control-Allow-Origin': '*',
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-  };
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
 
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'POST, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type',
+};
+
+export async function onRequestPost(context: any) {
   try {
-    const body = (await context.request.json()) as FeedbackBody;
+    const body = await context.request.json();
 
     if (!body.message || !body.name || !body.email) {
       return new Response(JSON.stringify({ error: 'Missing required fields' }), {
@@ -35,7 +32,6 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       });
     }
 
-    // Basic input length validation
     if (body.message.length > 5000 || body.name.length > 200 || body.email.length > 200) {
       return new Response(JSON.stringify({ error: 'Input too long' }), {
         status: 400,
@@ -43,14 +39,13 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       });
     }
 
-    const apiKey = context.env.RESEND_API_KEY;
-    const recipientEmail = context.env.FEEDBACK_EMAIL;
+    const apiKey = context.env?.RESEND_API_KEY;
+    const recipientEmail = context.env?.FEEDBACK_EMAIL;
 
     if (!apiKey || !recipientEmail) {
       const missing = [];
       if (!apiKey) missing.push('RESEND_API_KEY');
       if (!recipientEmail) missing.push('FEEDBACK_EMAIL');
-      console.error('Missing env vars:', missing.join(', '));
       return new Response(JSON.stringify({ error: 'Server configuration error', missing }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
@@ -107,8 +102,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     if (!res.ok) {
       const errorText = await res.text();
-      console.error('Resend API error:', errorText);
-      return new Response(JSON.stringify({ error: 'Failed to send email' }), {
+      return new Response(JSON.stringify({ error: 'Failed to send email', detail: errorText }), {
         status: 502,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
@@ -118,31 +112,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       status: 200,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
-  } catch (err) {
-    console.error('Feedback function error:', err);
-    return new Response(JSON.stringify({ error: 'Internal server error' }), {
+  } catch (err: any) {
+    return new Response(JSON.stringify({ error: 'Internal server error', detail: err?.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
-};
+}
 
-export const onRequestOptions: PagesFunction = async () => {
+export async function onRequestOptions() {
   return new Response(null, {
     status: 204,
-    headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type',
-    },
+    headers: corsHeaders,
   });
-};
-
-function escapeHtml(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;');
 }
