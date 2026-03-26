@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: executing
-stopped_at: Completed 32-01-PLAN.md
-last_updated: "2026-03-26T20:38:08.571Z"
+status: verifying
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-26T20:45:15.154Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
-  completed_phases: 12
+  completed_phases: 13
   total_plans: 28
-  completed_plans: 31
+  completed_plans: 32
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 Phase: 32 (tier-3-complex-sources-batch-1) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -61,6 +61,8 @@ Recent decisions affecting current work:
 - [Phase 31]: Extended advisory level aggregation and info loading for tier2b sources in engine.ts
 - [Phase 31]: Followed tier2a pattern exactly for tier2b fetcher module structure
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
+- [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
+- [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
 
 ### Pending Todos
 
@@ -88,10 +90,11 @@ None yet.
 | Phase 31 P01 | 121s | 2 tasks | 5 files |
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
+| Phase 32 P02 | 354s | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T20:38:08.567Z
-Stopped at: Completed 32-01-PLAN.md
+Last session: 2026-03-26T20:45:15.151Z
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None
