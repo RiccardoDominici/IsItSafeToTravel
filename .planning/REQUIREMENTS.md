@@ -57,9 +57,9 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### Cleanup
 
-- [ ] **CLEAN-01**: WHO DONs fetcher and all references removed from pipeline and scoring
-- [ ] **CLEAN-02**: GDELT fetcher and all references removed from pipeline and scoring
-- [ ] **CLEAN-03**: Weights and normalization ranges updated after source removal
+- [x] **CLEAN-01**: WHO DONs fetcher and all references removed from pipeline and scoring
+- [x] **CLEAN-02**: GDELT fetcher and all references removed from pipeline and scoring
+- [x] **CLEAN-03**: Weights and normalization ranges updated after source removal
 
 ### CI/CD
 
@@ -101,9 +101,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| CLEAN-01 | Phase 28 | Pending |
-| CLEAN-02 | Phase 28 | Pending |
-| CLEAN-03 | Phase 28 | Pending |
+| CLEAN-01 | Phase 28 | Complete |
+| CLEAN-02 | Phase 28 | Complete |
+| CLEAN-03 | Phase 28 | Complete |
 | API-01 | Phase 29 | Pending |
 | API-02 | Phase 29 | Pending |
 | API-03 | Phase 29 | Pending |

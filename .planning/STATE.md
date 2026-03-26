@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: Ready to plan
-stopped_at: Roadmap created for v4.0
-last_updated: "2026-03-26T11:00:00.000Z"
+status: executing
+stopped_at: Completed 28-01-PLAN.md
+last_updated: "2026-03-26T18:41:17.631Z"
 last_activity: 2026-03-26
 progress:
-  total_phases: 10
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 22
+  completed_phases: 8
+  total_plans: 20
+  completed_plans: 23
+  percent: 0
 ---
 
 # Project State
@@ -20,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 28 - Cleanup (remove WHO DONs and GDELT)
+**Current focus:** Phase 28 — cleanup
 
 ## Current Position
 
-Phase: 28 of 37 (Cleanup)
-Plan: —
-Status: Ready to plan
-Last activity: 2026-03-26 — Roadmap created for v4.0
+Phase: 28 (cleanup) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -50,6 +51,7 @@ Recent decisions affecting current work:
 - [v3.0]: Advisory sub-weights in Conflict pillar: US 9%, UK 8%, CA 7%, AU 6%
 - [v4.0]: New advisory sources must normalize to unified 1-4 level scale
 - [v4.0]: Integration order: cleanup first, then API, HTML, complex, scoring, CI, docs, calibration
+- [Phase 28]: Redistributed GDELT/WHO DONs weights proportionally among remaining indicators in v7.0.0
 
 ### Pending Todos
 
@@ -68,10 +70,11 @@ None yet.
 |---|-------------|------|--------|-----------|
 | 260320-ip2 | Fix 5 UI issues: language selector dropdown, health chart, back button, category summary, comparison search | 2026-03-20 | 6a94a4d | [260320-ip2-fix-5-ui-issues-language-selector-dropdo](./quick/260320-ip2-fix-5-ui-issues-language-selector-dropdo/) |
 | 260323-mcr | Add CA/AU government advisories, populate AdvisoryInfo, 4-card frontend | 2026-03-23 | 8d37e41, d2a026b | [260323-mcr-add-government-advisories-section-with-c](./quick/260323-mcr-add-government-advisories-section-with-c/) |
+| Phase 28 P01 | 5min | 2 tasks | 11 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T11:00:00.000Z
-Stopped at: Roadmap created for v4.0 — ready to plan Phase 28
+Last session: 2026-03-26T18:41:17.628Z
+Stopped at: Completed 28-01-PLAN.md
 Resume file: None
