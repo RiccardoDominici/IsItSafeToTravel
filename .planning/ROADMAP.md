@@ -313,7 +313,7 @@ Plans:
 
 Plans:
 - [x] 30-01-PLAN.md — Install cheerio, extend types/normalization/engine for 8 Tier 2a sources
-- [ ] 30-02-PLAN.md — Create advisories-tier2a.ts with 8 sub-fetchers and pipeline registration
+- [x] 30-02-PLAN.md — Create advisories-tier2a.ts with 8 sub-fetchers and pipeline registration
 
 ### Phase 31: Tier 2 HTML Sources Batch 2
 **Goal**: Pipeline scrapes advisory data from 8 more countries, completing Tier 2 coverage across Northern Europe, Southeast Asia, Eastern Europe, and South America
@@ -456,7 +456,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
 | 28. Cleanup | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 29. Tier 1 API Sources | v4.0 | 2/2 | Complete    | 2026-03-26 |
-| 30. Tier 2 HTML Sources Batch 1 | v4.0 | 1/2 | In Progress|  |
+| 30. Tier 2 HTML Sources Batch 1 | v4.0 | 2/2 | Complete   | 2026-03-26 |
 | 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/2 | Not started | - |
 | 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/2 | Not started | - |
 | 33. Tier 3 Complex Sources Batch 2 | v4.0 | 0/2 | Not started | - |
