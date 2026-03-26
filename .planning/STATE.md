@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: Defining requirements
-stopped_at: Milestone v4.0 started
-last_updated: "2026-03-26T10:00:00.000Z"
+status: Ready to plan
+stopped_at: Roadmap created for v4.0
+last_updated: "2026-03-26T11:00:00.000Z"
 last_activity: 2026-03-26
 progress:
-  total_phases: 0
+  total_phases: 10
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,18 +20,20 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Defining requirements for v4.0
+**Current focus:** Phase 28 - Cleanup (remove WHO DONs and GDELT)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 28 of 37 (Cleanup)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-03-26 — Milestone v4.0 started
+Status: Ready to plan
+Last activity: 2026-03-26 — Roadmap created for v4.0
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
-**Velocity (from v1.0 + v1.1 + v1.2 + v2.0 + v3.0):**
+**Velocity (from v1.0 through v3.0):**
 
 - Total plans completed: 27
 - Average attempts per plan: ~2.2
@@ -47,11 +49,7 @@ Recent decisions affecting current work:
 - [v3.0]: Advisory sources are signal tier with 7-day half-life, 30-day max age
 - [v3.0]: Advisory sub-weights in Conflict pillar: US 9%, UK 8%, CA 7%, AU 6%
 - [v4.0]: New advisory sources must normalize to unified 1-4 level scale
-- [v4.0]: Integration order: API-based first, then structured HTML, then complex scraping
-
-### Roadmap Evolution
-
-(New milestone — roadmap pending)
+- [v4.0]: Integration order: cleanup first, then API, HTML, complex, scoring, CI, docs, calibration
 
 ### Pending Todos
 
@@ -74,6 +72,6 @@ None yet.
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T10:00:00.000Z
-Stopped at: Milestone v4.0 started — defining requirements
+Last session: 2026-03-26T11:00:00.000Z
+Stopped at: Roadmap created for v4.0 — ready to plan Phase 28
 Resume file: None

@@ -6,7 +6,8 @@
 - ✅ **v1.1 Comparison & Historical Trends** — Phases 7-10 (shipped 2026-03-19)
 - ✅ **v1.2 Improvements & Category Filtering** — Phases 11-15 (shipped 2026-03-20)
 - ✅ **v2.0 Production Ready** — Phases 16-20 (shipped 2026-03-21)
-- 🚧 **v3.0 Data Sources & Scoring Overhaul** — Phases 21-26 (in progress)
+- ✅ **v3.0 Data Sources & Scoring Overhaul** — Phases 21-27 (shipped 2026-03-25)
+- 🚧 **v4.0 Global Advisory Sources Expansion** — Phases 28-37 (in progress)
 
 ## Phases
 
@@ -54,16 +55,33 @@
 
 </details>
 
-### v3.0 Data Sources & Scoring Overhaul (In Progress)
+<details>
+<summary>v3.0 Data Sources & Scoring Overhaul (Phases 21-27) — SHIPPED 2026-03-25</summary>
 
-**Milestone Goal:** Diversify and accelerate data sources so scores reflect near-realtime crises, redesign the scoring formula with baseline+signal tiering, backfill historical data for continuity, and update all documentation for transparency.
+- [x] **Phase 21: Scoring Formula Redesign** — Tiered baseline+signal scoring engine, source config, freshness decay, FIPS mapping
+- [x] **Phase 22: Historical Backfill** — Recalculate all scores back to 2012 with the new formula
+- [x] **Phase 23: ReliefWeb and GDACS Fetchers** — Humanitarian and environment realtime signal sources
+- [x] **Phase 24: GDELT Stability Fetcher** — Near-realtime conflict instability signal
+- [x] **Phase 25: WHO DONs Fetcher** — Disease outbreak tracking for health pillar
+- [x] **Phase 26: Validation, Documentation, and UX** — Score drift CI guard, crisis validation, methodology update, score indicators
+- [x] **Phase 27: SEO & AI Search Optimization** — OG images, structured data, About page, sitemap improvements
 
-- [ ] **Phase 21: Scoring Formula Redesign** — Tiered baseline+signal scoring engine, source config, freshness decay, FIPS mapping
-- [ ] **Phase 22: Historical Backfill** — Recalculate all scores back to 2012 with the new formula to prevent trend chart discontinuity
-- [ ] **Phase 23: ReliefWeb and GDACS Fetchers** — First realtime sources with highest API confidence for humanitarian and environment signals
-- [ ] **Phase 24: GDELT Stability Fetcher** — Near-realtime conflict instability signal with FIPS mapping and media bias containment
-- [ ] **Phase 25: WHO DONs Fetcher** — Disease outbreak tracking to complete the health pillar with realtime signals
-- [ ] **Phase 26: Validation, Documentation, and UX** — Score drift CI guard, crisis validation, methodology update in 5 languages, repo docs, score delta and freshness indicators
+</details>
+
+### v4.0 Global Advisory Sources Expansion (In Progress)
+
+**Milestone Goal:** Eliminate anglophone bias by integrating government travel advisories from 30+ countries worldwide, covering all continents and geopolitical perspectives, with proper normalization, CI automation, documentation, and calibration.
+
+- [ ] **Phase 28: Cleanup** — Remove WHO DONs and GDELT broken sources to simplify codebase before expansion
+- [ ] **Phase 29: Tier 1 API Sources** — Germany, Netherlands, Japan, Slovakia advisory fetchers plus normalization foundation
+- [ ] **Phase 30: Tier 2 HTML Sources Batch 1** — France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines
+- [ ] **Phase 31: Tier 2 HTML Sources Batch 2** — Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, Argentina
+- [ ] **Phase 32: Tier 3 Complex Sources Batch 1** — Italy, Spain, South Korea, Taiwan, China, India
+- [ ] **Phase 33: Tier 3 Complex Sources Batch 2** — Switzerland, Sweden, Norway, Poland, Czech Republic, Hungary, Portugal
+- [ ] **Phase 34: Scoring Integration** — Update weights, source tiers, and scoring engine for all new advisory sources
+- [ ] **Phase 35: CI/CD Automation** — GitHub Actions workflows for daily advisory fetching across 30+ sources
+- [ ] **Phase 36: Documentation** — Methodology page, country pages, and sources page updated in all 5 languages
+- [ ] **Phase 37: Calibration & Validation** — Reference scores, deviation analysis, bias detection, weight balancing proposals
 
 ## Phase Details
 
@@ -147,6 +165,9 @@ Plans:
 
 </details>
 
+<details>
+<summary>v3.0 Phase Details (Phases 21-27) — SHIPPED</summary>
+
 ### Phase 21: Scoring Formula Redesign
 **Goal**: Scoring engine uses a tiered baseline+signal architecture with freshness decay so that realtime sources can be integrated without destabilizing existing scores
 **Depends on**: Phase 20 (v2.0 complete)
@@ -174,7 +195,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 22-01-PLAN.md — Backfill script to re-score all ~566 historical snapshots with v5.0.0 tiered engine and rebuild history-index.json
+- [x] 22-01-PLAN.md — Backfill script to re-score all ~566 historical snapshots with v5.0.0 tiered engine and rebuild history-index.json
 
 ### Phase 23: ReliefWeb and GDACS Fetchers
 **Goal**: Pipeline ingests humanitarian disaster data from ReliefWeb and natural disaster alerts from GDACS as the first two realtime signal sources
@@ -189,7 +210,7 @@ Plans:
 
 Plans:
 - [x] 23-01-PLAN.md — ReliefWeb and GDACS fetcher modules (API integration, parsing, caching)
-- [ ] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
+- [x] 23-02-PLAN.md — Pipeline wiring (index registration, normalization ranges, weights config, e2e test)
 
 ### Phase 24: GDELT Stability Fetcher
 **Goal**: Pipeline ingests GDELT instability scores as a near-realtime conflict signal, with media bias explicitly contained through self-relative spike detection
@@ -219,8 +240,6 @@ Plans:
 - [x] 25-01-PLAN.md — WHO DONs fetcher module (API integration, title parsing, country extraction, caching)
 - [x] 25-02-PLAN.md — Pipeline wiring (index registration, normalization range, health pillar weights v5.3.0)
 
-
-
 ### Phase 26: Validation, Documentation, and UX
 **Goal**: All sources are validated against known crises, score drift is guarded in CI, methodology and repo documentation reflect the new architecture, and users see dynamic score indicators
 **Depends on**: Phase 25 (all sources flowing before validation and documentation)
@@ -234,14 +253,137 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 26-01-PLAN.md — Score drift CI guard and crisis validation tests
-- [ ] 26-02-PLAN.md — Methodology page update (5 languages) and README/pipeline documentation
-- [ ] 26-03-PLAN.md — Score delta indicators and data freshness badges on country detail pages
+- [x] 26-01-PLAN.md — Score drift CI guard and crisis validation tests
+- [x] 26-02-PLAN.md — Methodology page update (5 languages) and README/pipeline documentation
+- [x] 26-03-PLAN.md — Score delta indicators and data freshness badges on country detail pages
+
+### Phase 27: SEO & AI Search Optimization
+**Goal**: Maximize visibility in Google Search and AI chatbot citations through OG images, enriched structured data, About page with E-E-A-T signals, crawlable static content, and sitemap improvements
+**Depends on**: Phase 26
+**Requirements**: SEO27-01, SEO27-02, SEO27-03, SEO27-04, SEO27-05, SEO27-06, SEO27-07, SEO27-08, SEO27-09, SEO27-10, SEO27-11, SEO27-12, SEO27-13, SEO27-14
+**Plans**: 3 plans
+
+Plans:
+- [x] 27-01-PLAN.md — SEO metadata fixes: score rounding, dateModified/datePublished, Organization schema, FAQ natural language, meta robots, preload, llms.txt
+- [x] 27-02-PLAN.md — About page (5 languages) with E-E-A-T, Person schema, static pillar table, homepage country listing
+- [x] 27-03-PLAN.md — OG image generation at build time, sitemap lastmod and language coverage
+
+</details>
+
+### Phase 28: Cleanup
+**Goal**: Broken WHO DONs and GDELT sources are fully removed from the codebase so the pipeline is clean and stable before adding 30+ new sources
+**Depends on**: Phase 27 (v3.0 complete)
+**Requirements**: CLEAN-01, CLEAN-02, CLEAN-03
+**Success Criteria** (what must be TRUE):
+  1. Pipeline runs successfully with no references to WHO DONs fetcher, parser, or normalization code anywhere in the codebase
+  2. Pipeline runs successfully with no references to GDELT fetcher, parser, FIPS mapping usage, or normalization code anywhere in the codebase
+  3. Scores for all 248 countries are recalculated after source removal and weights.json reflects the updated configuration without WHO DONs or GDELT indicators
+  4. No country scores deviate by more than 0.3 points from pre-removal scores (since these sources contributed minimal signal)
+**Plans**: TBD
+
+### Phase 29: Tier 1 API Sources
+**Goal**: Pipeline fetches advisory data from 4 countries with clean REST/JSON/XML APIs and establishes the normalization foundation that all subsequent sources will use
+**Depends on**: Phase 28 (clean codebase before adding new sources)
+**Requirements**: API-01, API-02, API-03, API-04, NORM-01
+**Success Criteria** (what must be TRUE):
+  1. After a pipeline run, data/raw/{date}/ contains parsed advisory JSON for Germany (Auswaertiges Amt), Netherlands (nederlandwereldwijd.nl), Japan (MOFA), and Slovakia (MZV) with per-country advisory levels
+  2. A shared normalization module maps each source's native level system (3-level, 4-level, 5-level, color-coded) to the unified 1-4 advisory scale
+  3. When any individual API is unreachable, the pipeline completes successfully and that source falls back gracefully without blocking other sources
+  4. Each fetcher includes country name-to-ISO3 mapping so advisory levels are correctly assigned to the right countries in the scoring engine
+**Plans**: TBD
+
+### Phase 30: Tier 2 HTML Sources Batch 1
+**Goal**: Pipeline scrapes advisory data from 8 countries with structured HTML pages, expanding geographic coverage to Western Europe, Oceania, South America, and Asia
+**Depends on**: Phase 29 (normalization foundation established)
+**Requirements**: HTML-01, HTML-02, HTML-03, HTML-04, HTML-05, HTML-06, HTML-07, HTML-08
+**Success Criteria** (what must be TRUE):
+  1. After a pipeline run, data/raw/{date}/ contains parsed advisory JSON for France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, and Philippines with per-country advisory levels
+  2. All 8 sources normalize to the unified 1-4 scale via the shared normalization module from Phase 29
+  3. HTML parsing is resilient to minor page structure changes (uses semantic selectors, not brittle positional selectors)
+  4. When any individual source page is unreachable or has changed structure, the fetcher logs a warning and the pipeline continues without that source
+**Plans**: TBD
+
+### Phase 31: Tier 2 HTML Sources Batch 2
+**Goal**: Pipeline scrapes advisory data from 8 more countries, completing Tier 2 coverage across Northern Europe, Southeast Asia, Eastern Europe, and South America
+**Depends on**: Phase 30 (HTML scraping patterns validated)
+**Requirements**: HTML-09, HTML-10, HTML-11, HTML-12, HTML-13, HTML-14, HTML-15, HTML-16
+**Success Criteria** (what must be TRUE):
+  1. After a pipeline run, data/raw/{date}/ contains parsed advisory JSON for Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, and Argentina with per-country advisory levels
+  2. All 8 sources normalize to the unified 1-4 scale via the shared normalization module
+  3. Fetcher code reuses the HTML scraping infrastructure from Phase 30, minimizing code duplication
+  4. Total Tier 2 fetch time (16 sources) stays within GitHub Actions CI budget (under 10 minutes)
+**Plans**: TBD
+
+### Phase 32: Tier 3 Complex Sources Batch 1
+**Goal**: Pipeline extracts advisory data from 6 countries with complex scraping challenges (dynamic rendering, non-Latin scripts, text-based levels requiring pattern matching)
+**Depends on**: Phase 31 (simpler HTML patterns validated before tackling complex sources)
+**Requirements**: CPLX-01, CPLX-02, CPLX-03, CPLX-04, CPLX-05, CPLX-06
+**Success Criteria** (what must be TRUE):
+  1. After a pipeline run, data/raw/{date}/ contains parsed advisory JSON for Italy, Spain, South Korea, Taiwan, China, and India with per-country advisory levels
+  2. Non-Latin scripts (Korean, Chinese) and text-based advisory descriptions are correctly mapped to the unified 1-4 scale
+  3. Complex sources that require multi-step navigation or JavaScript rendering use appropriate techniques (static HTML snapshots, API discovery, or cached fallbacks)
+  4. Each complex fetcher documents its fragility level and expected failure modes in code comments
+**Plans**: TBD
+
+### Phase 33: Tier 3 Complex Sources Batch 2
+**Goal**: Pipeline extracts advisory data from 7 more European countries with complex source structures, completing the full 30+ source expansion
+**Depends on**: Phase 32 (complex scraping techniques validated)
+**Requirements**: CPLX-07, CPLX-08, CPLX-09, CPLX-10, CPLX-11, CPLX-12, CPLX-13
+**Success Criteria** (what must be TRUE):
+  1. After a pipeline run, data/raw/{date}/ contains parsed advisory JSON for Switzerland, Sweden, Norway, Poland, Czech Republic, Hungary, and Portugal with per-country advisory levels
+  2. All 7 sources normalize to the unified 1-4 scale via the shared normalization module
+  3. The total advisory source count is 34+ (4 existing Five Eyes + 4 Tier 1 + 16 Tier 2 + 13 Tier 3 - 3 removed = 34)
+  4. A summary log after pipeline run reports fetch success/failure for all 34+ advisory sources
+**Plans**: TBD
+
+### Phase 34: Scoring Integration
+**Goal**: Scoring engine properly weights all 34+ advisory sources in the Conflict pillar, with source-tiers configuration reflecting the expanded source set
+**Depends on**: Phase 33 (all sources must be fetching before scoring integration)
+**Requirements**: NORM-02, NORM-03
+**Success Criteria** (what must be TRUE):
+  1. weights.json assigns sub-weights to all 34+ advisory sources within the Conflict pillar, with diminishing per-source weight as count increases (no single advisory dominates)
+  2. source-tiers.json lists all new advisory sources as signal tier with appropriate decay half-life and max-age parameters
+  3. Countries covered by more advisory sources show greater score stability (consensus effect) compared to countries with sparse coverage
+  4. Running the full pipeline produces valid scores for all 248 countries with the expanded advisory set
+**Plans**: TBD
+
+### Phase 35: CI/CD Automation
+**Goal**: All new advisory sources are fetched automatically via GitHub Actions daily with staggered scheduling and graceful failure handling
+**Depends on**: Phase 34 (scoring integration complete so CI runs produce valid scores)
+**Requirements**: CI-01, CI-02, CI-03
+**Success Criteria** (what must be TRUE):
+  1. GitHub Actions workflow triggers daily and fetches all 34+ advisory sources
+  2. Sources are fetched in staggered batches with delays between groups to respect rate limits and avoid IP blocking
+  3. When individual sources fail, the workflow logs the failure, continues with remaining sources, and the pipeline produces valid scores using available data
+  4. Workflow completes within GitHub Actions free-tier time limits (under 30 minutes total)
+**Plans**: TBD
+
+### Phase 36: Documentation
+**Goal**: Users can understand where scores come from, see which advisories apply to each country, and find all advisory sources listed on the sources page
+**Depends on**: Phase 35 (CI running so documentation reflects final production state)
+**Requirements**: DOC-01, DOC-02, DOC-03
+**Success Criteria** (what must be TRUE):
+  1. Methodology page in all 5 languages explains the expanded advisory source set, how normalization works, and how advisory consensus affects scoring
+  2. Country detail pages display advisory information from the new sources (showing which governments have issued advisories for that country)
+  3. Sources page lists all 34+ government advisory sources with country of origin, data format, and update frequency
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 37: Calibration & Validation
+**Goal**: Scores are validated against real-world safety perceptions, systematic biases are identified, and weight adjustments are proposed based on data
+**Depends on**: Phase 36 (full pipeline running with documentation before calibration)
+**Requirements**: CAL-01, CAL-02, CAL-03, CAL-04
+**Success Criteria** (what must be TRUE):
+  1. A reference score dataset exists with research-backed expected safety scores (1-10) for at least 50 representative countries across all regions
+  2. A deviation report shows per-country delta between site scores and reference scores, with global mean absolute deviation computed
+  3. Systematic bias patterns are identified and documented (e.g., "European countries score 0.4 higher than expected" or "conflict zones show adequate differentiation")
+  4. At least 2 concrete weight adjustment proposals are documented with projected impact on deviation metrics
+**Plans**: TBD
 
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
+Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 → 35 → 36 → 37
 
 | Phase | Milestone | Plans Complete | Status | Completed |
 |-------|-----------|----------------|--------|-----------|
@@ -265,21 +407,20 @@ Phases execute in numeric order: 21 → 22 → 23 → 24 → 25 → 26
 | 18. SEO Enhancement | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 19. Donations and Error Pages | v2.0 | 1/1 | Complete | 2026-03-21 |
 | 20. Accessibility and CSP Hardening | v2.0 | 1/1 | Complete | 2026-03-21 |
-| 21. Scoring Formula Redesign | v3.0 | 3/3 | Complete    | 2026-03-22 |
-| 22. Historical Backfill | v3.0 | 0/1 | Complete    | 2026-03-23 |
-| 23. ReliefWeb and GDACS Fetchers | v3.0 | 1/2 | Complete    | 2026-03-23 |
-| 24. GDELT Stability Fetcher | v3.0 | 2/2 | Complete    | 2026-03-23 |
-| 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete    | 2026-03-23 |
-| 26. Validation, Documentation, and UX | v3.0 | 0/3 | Complete    | 2026-03-23 |
-
-### Phase 27: SEO & AI Search Optimization
-
-**Goal:** Maximize visibility in Google Search and AI chatbot citations through OG images, enriched structured data, About page with E-E-A-T signals, crawlable static content, and sitemap improvements
-**Requirements**: SEO27-01, SEO27-02, SEO27-03, SEO27-04, SEO27-05, SEO27-06, SEO27-07, SEO27-08, SEO27-09, SEO27-10, SEO27-11, SEO27-12, SEO27-13, SEO27-14
-**Depends on:** Phase 26
-**Plans:** 3/3 plans complete
-
-Plans:
-- [x] 27-01-PLAN.md — SEO metadata fixes: score rounding, dateModified/datePublished, Organization schema, FAQ natural language, meta robots, preload, llms.txt
-- [x] 27-02-PLAN.md — About page (5 languages) with E-E-A-T, Person schema, static pillar table, homepage country listing
-- [x] 27-03-PLAN.md — OG image generation at build time, sitemap lastmod and language coverage
+| 21. Scoring Formula Redesign | v3.0 | 3/3 | Complete | 2026-03-22 |
+| 22. Historical Backfill | v3.0 | 1/1 | Complete | 2026-03-23 |
+| 23. ReliefWeb and GDACS Fetchers | v3.0 | 2/2 | Complete | 2026-03-23 |
+| 24. GDELT Stability Fetcher | v3.0 | 2/2 | Complete | 2026-03-23 |
+| 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete | 2026-03-23 |
+| 26. Validation, Documentation, and UX | v3.0 | 3/3 | Complete | 2026-03-23 |
+| 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
+| 28. Cleanup | v4.0 | 0/0 | Not started | - |
+| 29. Tier 1 API Sources | v4.0 | 0/0 | Not started | - |
+| 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/0 | Not started | - |
+| 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/0 | Not started | - |
+| 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/0 | Not started | - |
+| 33. Tier 3 Complex Sources Batch 2 | v4.0 | 0/0 | Not started | - |
+| 34. Scoring Integration | v4.0 | 0/0 | Not started | - |
+| 35. CI/CD Automation | v4.0 | 0/0 | Not started | - |
+| 36. Documentation | v4.0 | 0/0 | Not started | - |
+| 37. Calibration & Validation | v4.0 | 0/0 | Not started | - |
