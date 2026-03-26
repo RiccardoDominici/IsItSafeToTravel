@@ -34,5 +34,12 @@
     "dataUrl": "https://www.bmeia.gv.at/reise-services/reisewarnungen",
     "description": "Official travel advisory levels from France (MEAE), New Zealand (SafeTravel), Ireland (DFA), Finland (UM), Hong Kong (OTA), Brazil (Itamaraty), Austria (BMEIA), and Philippines (DFA)",
     "updateFrequency": "as issued"
+  },
+  "advisories_tier2b": {
+    "name": "Tier 2b Government Travel Advisories",
+    "url": "https://diplomatie.belgium.be",
+    "dataUrl": "https://diplomatie.belgium.be",
+    "description": "Official travel advisory levels from Belgium (MFA), Denmark (UM), Singapore (MFA), Romania (MAE), Serbia (MFA), Estonia (Kriis), Croatia (MVEP), and Argentina (Cancilleria)",
+    "updateFrequency": "as issued"
   }
 }
