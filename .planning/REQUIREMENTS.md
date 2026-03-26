@@ -9,10 +9,10 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### API Sources (Tier 1)
 
-- [ ] **API-01**: Pipeline fetches Germany advisory levels from Auswaertiges Amt REST API daily
-- [ ] **API-02**: Pipeline fetches Netherlands advisory levels from nederlandwereldwijd.nl JSON API daily
-- [ ] **API-03**: Pipeline fetches Japan advisory levels from MOFA XML open data daily
-- [ ] **API-04**: Pipeline fetches Slovakia advisory data from MZV open data portal daily
+- [x] **API-01**: Pipeline fetches Germany advisory levels from Auswaertiges Amt REST API daily
+- [x] **API-02**: Pipeline fetches Netherlands advisory levels from nederlandwereldwijd.nl JSON API daily
+- [x] **API-03**: Pipeline fetches Japan advisory levels from MOFA XML open data daily
+- [x] **API-04**: Pipeline fetches Slovakia advisory data from MZV open data portal daily
 
 ### Structured HTML Sources (Tier 2)
 
@@ -104,10 +104,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CLEAN-01 | Phase 28 | Complete |
 | CLEAN-02 | Phase 28 | Complete |
 | CLEAN-03 | Phase 28 | Complete |
-| API-01 | Phase 29 | Pending |
-| API-02 | Phase 29 | Pending |
-| API-03 | Phase 29 | Pending |
-| API-04 | Phase 29 | Pending |
+| API-01 | Phase 29 | Complete |
+| API-02 | Phase 29 | Complete |
+| API-03 | Phase 29 | Complete |
+| API-04 | Phase 29 | Complete |
 | NORM-01 | Phase 29 | Complete |
 | HTML-01 | Phase 30 | Pending |
 | HTML-02 | Phase 30 | Pending |

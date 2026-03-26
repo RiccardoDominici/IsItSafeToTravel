@@ -298,7 +298,7 @@ Plans:
 
 Plans:
 - [x] 29-01-PLAN.md — Normalization module, type extensions, config updates for DE/NL/JP/SK advisory sources
-- [ ] 29-02-PLAN.md — Tier 1 fetchers (Germany, Netherlands, Japan, Slovakia) and pipeline registration
+- [x] 29-02-PLAN.md — Tier 1 fetchers (Germany, Netherlands, Japan, Slovakia) and pipeline registration
 
 ### Phase 30: Tier 2 HTML Sources Batch 1
 **Goal**: Pipeline scrapes advisory data from 8 countries with structured HTML pages, expanding geographic coverage to Western Europe, Oceania, South America, and Asia
@@ -455,7 +455,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 26. Validation, Documentation, and UX | v3.0 | 3/3 | Complete | 2026-03-23 |
 | 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
 | 28. Cleanup | v4.0 | 2/2 | Complete    | 2026-03-26 |
-| 29. Tier 1 API Sources | v4.0 | 1/2 | In Progress|  |
+| 29. Tier 1 API Sources | v4.0 | 2/2 | Complete   | 2026-03-26 |
 | 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/2 | Not started | - |
 | 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/2 | Not started | - |
 | 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/2 | Not started | - |

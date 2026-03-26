@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: executing
-stopped_at: Completed 29-01-PLAN.md
-last_updated: "2026-03-26T19:24:24.562Z"
+status: verifying
+stopped_at: Completed 29-02-PLAN.md
+last_updated: "2026-03-26T19:29:19.311Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
-  completed_phases: 9
+  completed_phases: 10
   total_plans: 22
-  completed_plans: 25
+  completed_plans: 26
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 Phase: 29 (tier-1-api-sources) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -54,6 +54,8 @@ Recent decisions affecting current work:
 - [Phase 28]: Redistributed GDELT/WHO DONs weights proportionally among remaining indicators in v7.0.0
 - [Phase 28]: Updated source count from 9 to 7 in all user-facing content after GDELT/WHO DONs removal
 - [Phase 29]: UnifiedLevel 1-4 scale as standard for all advisory normalization
+- [Phase 29]: Extended AdvisoryInfoMap type with de/nl/jp/sk keys for tier-1 sources
+- [Phase 29]: Used static MOFA page ID to ISO3 mapping (120+ entries) for Japan advisory fetcher
 
 ### Pending Todos
 
@@ -75,10 +77,11 @@ None yet.
 | Phase 28 P01 | 5min | 2 tasks | 11 files |
 | Phase 28 P02 | 15min | 2 tasks | 12 files |
 | Phase 29-01 P01 | 2min | 2 tasks | 6 files |
+| Phase 29 P02 | 245s | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T19:24:24.558Z
-Stopped at: Completed 29-01-PLAN.md
+Last session: 2026-03-26T19:29:19.308Z
+Stopped at: Completed 29-02-PLAN.md
 Resume file: None
