@@ -6,10 +6,12 @@ import { fetchGpi } from './gpi.js';
 import { fetchInform } from './inform.js';
 import { fetchReliefweb } from './reliefweb.js';
 import { fetchGdacs } from './gdacs.js';
+import { fetchTier1Advisories } from './advisories-tier1.js';
 
 export { fetchWorldBank } from './worldbank.js';
 
 export { fetchAdvisories } from './advisories.js';
+export { fetchTier1Advisories } from './advisories-tier1.js';
 export { fetchGpi } from './gpi.js';
 export { fetchInform } from './inform.js';
 export { fetchReliefweb } from './reliefweb.js';
@@ -24,6 +26,7 @@ export { fetchGdacs } from './gdacs.js';
  * - GPI (Global Peace Index) — free, Excel download
  * - INFORM (Risk Index) — free, JSON API
  * - Advisories (US State Dept + UK FCDO + CA + AU) — free, no auth
+ * - Tier 1 Advisories (DE, NL, JP, SK government advisories) — free, no auth
  * - ReliefWeb (active humanitarian disasters) — free, no auth
  * - GDACS (natural disaster alerts) — free, no auth
  */
@@ -36,11 +39,12 @@ export async function fetchAllSources(date: string): Promise<FetchResult[]> {
     fetchGpi(date),
     fetchInform(date),
     fetchAdvisories(date),
+    fetchTier1Advisories(date),
     fetchReliefweb(date),
     fetchGdacs(date),
   ]);
 
-  const sourceNames = ['worldbank', 'gpi', 'inform', 'advisories', 'reliefweb', 'gdacs'];
+  const sourceNames = ['worldbank', 'gpi', 'inform', 'advisories', 'advisories_tier1', 'reliefweb', 'gdacs'];
   const fetchResults: FetchResult[] = results.map((result, index) => {
     if (result.status === 'fulfilled') {
       return result.value;
