@@ -4,7 +4,7 @@ milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: verifying
 stopped_at: Completed 31-02-PLAN.md
-last_updated: "2026-03-26T20:20:30.055Z"
+last_updated: "2026-03-26T20:24:11.331Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 ## Current Position
 
-Phase: 31 (tier-2-html-sources-batch-2) — EXECUTING
-Plan: 2 of 2
+Phase: 32
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-03-26
 
