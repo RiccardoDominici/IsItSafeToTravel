@@ -97,6 +97,11 @@ jobs:
             process.exit(1);
           }
 
+          // Fix private_key newlines (GitHub secrets may escape them)
+          if (key.private_key) {
+            key.private_key = key.private_key.replace(/\\n/g, '\n');
+          }
+
           const auth = new google.auth.JWT(
             key.client_email,
             null,
