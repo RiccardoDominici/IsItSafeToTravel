@@ -11,6 +11,10 @@
     "advisories_uk":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
     "advisories_ca":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
     "advisories_au":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "advisories_de":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "advisories_nl":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "advisories_jp":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
+    "advisories_sk":{ "tier": "signal", "maxAgeDays": 30,  "decayHalfLifeDays": 7 },
     "reliefweb": { "tier": "signal",   "maxAgeDays": 60,  "decayHalfLifeDays": 14 },
     "gdacs":     { "tier": "signal",   "maxAgeDays": 30,  "decayHalfLifeDays": 7 }
   }

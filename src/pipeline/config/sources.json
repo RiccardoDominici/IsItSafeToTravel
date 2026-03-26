@@ -20,5 +20,12 @@
     "dataUrl": "https://cadatalog.state.gov/catalog/api/3/action/package_search",
     "description": "Official travel advisory levels from US State Department and UK FCDO",
     "updateFrequency": "as issued"
+  },
+  "advisories_tier1": {
+    "name": "Tier 1 Government Travel Advisories",
+    "url": "https://www.auswaertiges-amt.de/opendata/travelwarning",
+    "dataUrl": "https://www.auswaertiges-amt.de/opendata/travelwarning",
+    "description": "Official travel advisory levels from Germany (AA), Netherlands (BZ), Japan (MOFA), and Slovakia (MZV)",
+    "updateFrequency": "as issued"
   }
 }

@@ -89,6 +89,10 @@ export interface ScoredCountry {
     uk?: AdvisoryInfo;
     ca?: AdvisoryInfo;
     au?: AdvisoryInfo;
+    de?: AdvisoryInfo;
+    nl?: AdvisoryInfo;
+    jp?: AdvisoryInfo;
+    sk?: AdvisoryInfo;
   };
   dataCompleteness: number; // 0-1 overall
   lastUpdated: string; // ISO 8601

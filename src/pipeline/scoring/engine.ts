@@ -45,7 +45,7 @@ export function computeCountryScore(
   allIndicators: RawIndicator[],
   weightsConfig: WeightsConfig,
   countryEntry: CountryEntry,
-  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo },
+  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo },
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
@@ -99,6 +99,8 @@ export function computeCountryScore(
   const advisoryLevels = [
     advisories.us?.level, advisories.uk?.level,
     advisories.ca?.level, advisories.au?.level,
+    advisories.de?.level, advisories.nl?.level,
+    advisories.jp?.level, advisories.sk?.level,
   ].filter((l): l is number | string => l !== undefined)
    .map((l) => typeof l === 'string' ? parseFloat(l) : l)
    .filter((l) => !isNaN(l));
@@ -199,6 +201,10 @@ const INDICATOR_SOURCE_MAP: Record<string, string> = {
   advisory_level_uk: 'advisories_uk',
   advisory_level_ca: 'advisories_ca',
   advisory_level_au: 'advisories_au',
+  advisory_level_de: 'advisories_de',
+  advisory_level_nl: 'advisories_nl',
+  advisory_level_jp: 'advisories_jp',
+  advisory_level_sk: 'advisories_sk',
   reliefweb_active_disasters: 'reliefweb',
   gdacs_disaster_alerts: 'gdacs',
 };
@@ -304,7 +310,7 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   },
   advisories: {
     url: 'https://travel.state.gov/',
-    description: 'Travel advisories from US State Department, UK FCDO, Government of Canada, and Australian Government',
+    description: 'Travel advisories from US, UK, Canada, Australia, Germany, Netherlands, Japan, and Slovakia',
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
@@ -397,7 +403,7 @@ export function computeAllScores(
   }
 
   // Load advisory info from side-channel file
-  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo }>;
+  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo }>;
   let advisoryInfoMap: AdvisoryInfoMap = {};
 
   // Find advisories-info.json from the raw data directory

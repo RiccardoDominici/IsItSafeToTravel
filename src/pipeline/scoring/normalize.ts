@@ -59,6 +59,10 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   advisory_level_uk: { min: 1, max: 4, inverse: true },
   advisory_level_ca: { min: 1, max: 4, inverse: true },
   advisory_level_au: { min: 1, max: 4, inverse: true },
+  advisory_level_de: { min: 1, max: 4, inverse: true },
+  advisory_level_nl: { min: 1, max: 4, inverse: true },
+  advisory_level_jp: { min: 1, max: 4, inverse: true },
+  advisory_level_sk: { min: 1, max: 4, inverse: true },
 
 };
 
