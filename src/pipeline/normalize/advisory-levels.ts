@@ -220,3 +220,73 @@ export function normalizeArAlert(text: string): UnifiedLevel {
   if (lower.includes('precaución') || lower.includes('precaucion') || lower.includes('alerta')) return 2;
   return 1;
 }
+
+// --- Tier 3a normalization functions ---
+
+/**
+ * Normalize Italy (Viaggiare Sicuri) advisory text to unified 1-4 scale.
+ * Italian text patterns: "non recarsi", "sconsigliato", "cautela", etc.
+ */
+export function normalizeItLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('non recarsi') || lower.includes('sconsigliato')) return 4;
+  if (lower.includes('sconsigliati i viaggi') || lower.includes('evitare')) return 3;
+  if (lower.includes('cautela') || lower.includes('attenzione') || lower.includes('particolare prudenza')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Spain (Exteriores) advisory text to unified 1-4 scale.
+ * Spanish text patterns: "se desaconseja todo viaje", "precaucion", etc.
+ */
+export function normalizeEsLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('se desaconseja todo viaje') || lower.includes('no viajar')) return 4;
+  if (lower.includes('se desaconseja') || lower.includes('evitar')) return 3;
+  if (lower.includes('precaucion') || lower.includes('prudencia')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize South Korea (MOFA) numeric level to unified 1-4 scale.
+ * Korea uses a 4-level system (1-4) that maps directly.
+ */
+export function normalizeKrLevel(level: number): UnifiedLevel {
+  return Math.min(4, Math.max(1, Math.round(level))) as UnifiedLevel;
+}
+
+/**
+ * Normalize Taiwan (BOCA) color/text advisory to unified 1-4 scale.
+ * Taiwan uses color codes: red (紅色), orange (橙色), yellow (黃色), gray (灰色).
+ */
+export function normalizeTwLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('紅色') || lower.includes('red')) return 4;
+  if (lower.includes('橙色') || lower.includes('orange')) return 3;
+  if (lower.includes('黃色') || lower.includes('yellow')) return 2;
+  // 灰色 / gray / default -> normal precautions
+  return 1;
+}
+
+/**
+ * Normalize China (MFA) advisory text to unified 1-4 scale.
+ * Chinese text patterns: "暂勿前往" (do not travel), "谨慎前往" (proceed with caution), etc.
+ */
+export function normalizeCnLevel(text: string): UnifiedLevel {
+  if (text.includes('暂勿前往')) return 4;
+  if (text.includes('谨慎前往')) return 3;
+  if (text.includes('注意安全')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize India (MEA) English advisory text to unified 1-4 scale.
+ * English text patterns: "do not travel", "avoid", "caution", etc.
+ */
+export function normalizeInLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('do not travel') || lower.includes('leave immediately')) return 4;
+  if (lower.includes('avoid') || lower.includes('defer') || lower.includes('reconsider')) return 3;
+  if (lower.includes('caution') || lower.includes('exercise')) return 2;
+  return 1;
+}
