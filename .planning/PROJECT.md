@@ -37,16 +37,18 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ### Active
 
-#### Current Milestone: v3.0 Data Sources & Scoring Overhaul
+#### Current Milestone: v4.0 Global Advisory Sources Expansion
 
-**Goal:** Diversify and accelerate data sources so scores reflect near-realtime crises, improve the scoring formula, and update all documentation to be coherent and transparent.
+**Goal:** Eliminate anglophone bias by integrating government travel advisories from 30+ countries worldwide, covering all continents and geopolitical perspectives.
 
 **Target features:**
-- Add near-realtime data sources to complement annual indices (so crises like Cuba show immediately)
-- Redesign scoring formula to blend annual baselines with realtime signals
-- Update methodology page and pillar explanations in all 5 languages for new sources/formula
-- Update repo documentation (README, data pipeline docs) for new data architecture
-- Ensure data coherence: every source documented, every weight justified, every score explainable
+- Tier 1 (API-based): Germany, Netherlands, Japan, Slovakia advisory fetchers
+- Tier 2 (Structured HTML): France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines + 8 more
+- Tier 3 (Complex scraping): Italy, Spain, South Korea, Taiwan, China, India, Switzerland + 6 more
+- Scoring engine: normalize diverse level systems (3/4/5/6-level, color-coded, text-based) to unified 1-4 scale
+- GitHub Actions CI: daily automated fetching for all new sources
+- Methodology page & documentation updates in all 5 languages
+- Fix broken sources (WHO DONs, GDELT coverage)
 
 ### Out of Scope
 
@@ -61,9 +63,9 @@ Any traveler can instantly see how safe a destination is, backed by transparent,
 
 ## Context
 
-Shipped v1.0 MVP, v1.1 Comparison & Historical Trends, and v1.2 Improvements & Category Filtering. The platform covers 248 countries in 5 languages (EN, IT, ES, FR, PT) with daily automated scoring from GPI, ACLED, World Bank, WHO, INFORM, and government advisories (US, UK). Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages. Total ~15,200 LOC (TypeScript + Astro).
+Shipped v1.0 MVP, v1.1 Comparison & Historical Trends, v1.2 Improvements & Category Filtering, and v3.0 Data Sources & Scoring Overhaul. The platform covers 248 countries in 5 languages (EN, IT, ES, FR, PT) with daily automated scoring from 9 sources: GPI, World Bank WGI, INFORM Risk Index, GDELT, ReliefWeb, GDACS, WHO DONs, and government advisories (US, UK, CA, AU). Uses tiered baseline+signal scoring architecture with freshness decay. Built with Astro 6 SSG, D3.js, Tailwind CSS 4, deployed on Cloudflare Pages.
 
-v1.2 significantly expanded client-side interactivity: TrendChart converted to client-side D3 with brush zoom, map supports per-pillar filtering, and pipeline now stores per-pillar historical data. Spanish added as third language with full page coverage.
+v3.0 introduced tiered scoring (baseline 70% + signal 30%), added ReliefWeb, GDACS, GDELT, WHO DONs as realtime signal sources, historical re-scoring, and comprehensive SEO optimization including Schema.org, OG images, and sitemap. Current advisory sources are limited to Five Eyes anglophone countries (US, UK, CA, AU), creating geographic and geopolitical bias.
 
 ## Constraints
 
@@ -113,4 +115,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-22 after v3.0 milestone start*
+*Last updated: 2026-03-26 after v4.0 milestone start*
