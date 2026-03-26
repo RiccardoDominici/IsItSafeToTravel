@@ -25,7 +25,7 @@ import type {
  * with freshness decay and per-indicator sub-weights.
  * When sourcesConfig is omitted, falls back to legacy equal-averaging behavior.
  *
- * Hybrid scoring strategy (v6.0):
+ * Hybrid scoring strategy (v7.0):
  * 1. Per-pillar: baseline+signal tiered blending (unchanged)
  * 2. Composite: weighted GEOMETRIC mean of pillar scores (penalizes low outliers)
  * 3. Hard cap: if any government advisory is Level 4 "Do Not Travel" → score ≤ 2
@@ -199,10 +199,8 @@ const INDICATOR_SOURCE_MAP: Record<string, string> = {
   advisory_level_uk: 'advisories_uk',
   advisory_level_ca: 'advisories_ca',
   advisory_level_au: 'advisories_au',
-  gdelt_instability: 'gdelt',
   reliefweb_active_disasters: 'reliefweb',
   gdacs_disaster_alerts: 'gdacs',
-  who_active_outbreaks: 'who-dons',
 };
 
 function indicatorToSource(indicatorName: string): string | undefined {
@@ -316,10 +314,6 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
     url: 'https://drmkc.jrc.ec.europa.eu/inform-index',
     description: 'INFORM Risk Index -- hazard, exposure, vulnerability, and coping capacity',
   },
-  gdelt: {
-    url: 'https://www.gdeltproject.org/',
-    description: 'Global Database of Events, Language, and Tone -- media-derived event monitoring',
-  },
   reliefweb: {
     url: 'https://reliefweb.int/',
     description: 'ReliefWeb -- humanitarian situation reports and disaster alerts',
@@ -327,10 +321,6 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   gdacs: {
     url: 'https://www.gdacs.org/',
     description: 'Global Disaster Alerting Coordination System -- natural disaster alerts',
-  },
-  'who-dons': {
-    url: 'https://www.who.int/emergencies/disease-outbreak-news',
-    description: 'WHO Disease Outbreak News -- disease outbreak alerts and updates',
   },
 };
 

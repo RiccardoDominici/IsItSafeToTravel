@@ -1,20 +1,19 @@
 {
-  "version": "6.0.0",
+  "version": "7.0.0",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "gdelt_instability", "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au"],
+      "indicators": ["wb_political_stability", "gpi_overall", "gpi_safety_security", "gpi_militarisation", "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au"],
       "indicatorWeights": {
-        "wb_political_stability": 0.14,
-        "gpi_overall": 0.14,
-        "gpi_safety_security": 0.13,
-        "gpi_militarisation": 0.11,
-        "gdelt_instability": 0.18,
-        "advisory_level_us": 0.09,
-        "advisory_level_uk": 0.08,
-        "advisory_level_ca": 0.07,
-        "advisory_level_au": 0.06
+        "wb_political_stability": 0.17,
+        "gpi_overall": 0.17,
+        "gpi_safety_security": 0.16,
+        "gpi_militarisation": 0.14,
+        "advisory_level_us": 0.11,
+        "advisory_level_uk": 0.10,
+        "advisory_level_ca": 0.08,
+        "advisory_level_au": 0.07
       }
     },
     {
@@ -25,12 +24,11 @@
     {
       "name": "health",
       "weight": 0.20,
-      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic", "who_active_outbreaks"],
+      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"],
       "indicatorWeights": {
-        "wb_child_mortality": 0.30,
-        "inform_health": 0.25,
-        "inform_epidemic": 0.25,
-        "who_active_outbreaks": 0.20
+        "wb_child_mortality": 0.38,
+        "inform_health": 0.31,
+        "inform_epidemic": 0.31
       }
     },
     {
