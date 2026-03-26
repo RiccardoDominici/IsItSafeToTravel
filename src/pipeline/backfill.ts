@@ -53,7 +53,7 @@ function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
     if (data) {
       // Only worldbank data is truly historical — its indicators have per-year
       // values (year field matches the directory date). All other sources
-      // (INFORM, advisories, GPI, GDELT, etc.) in historical directories
+      // (INFORM, advisories, GPI, etc.) in historical directories
       // contain CURRENT data fetched recently and must be skipped if fetchedAt
       // doesn't match the directory date.
       const YEAR_BASED_SOURCES = new Set(['worldbank']);

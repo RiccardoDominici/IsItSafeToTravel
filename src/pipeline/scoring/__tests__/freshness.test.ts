@@ -22,12 +22,12 @@ describe('freshnessWeight', () => {
     assert.equal(freshnessWeight(-1, 365, 730), 1.0);
   });
 
-  it('returns ~0.5 at GDELT half-life (3-day half-life)', () => {
+  it('returns ~0.5 at short half-life (3-day half-life)', () => {
     const weight = freshnessWeight(3 * DAY_MS, 3, 14);
     assert.ok(Math.abs(weight - 0.5) < 0.001, `Expected ~0.5, got ${weight}`);
   });
 
-  it('returns 0 when past GDELT maxAge (14 days exceeded)', () => {
+  it('returns 0 when past short-lived source maxAge (14 days exceeded)', () => {
     assert.equal(freshnessWeight(14 * DAY_MS + 1, 3, 14), 0);
   });
 
