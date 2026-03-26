@@ -27,5 +27,12 @@
     "dataUrl": "https://www.auswaertiges-amt.de/opendata/travelwarning",
     "description": "Official travel advisory levels from Germany (AA), Netherlands (BZ), Japan (MOFA), and Slovakia (MZV)",
     "updateFrequency": "as issued"
+  },
+  "advisories_tier2a": {
+    "name": "Tier 2a Government Travel Advisories",
+    "url": "https://www.bmeia.gv.at/reise-services/reisewarnungen",
+    "dataUrl": "https://www.bmeia.gv.at/reise-services/reisewarnungen",
+    "description": "Official travel advisory levels from France (MEAE), New Zealand (SafeTravel), Ireland (DFA), Finland (UM), Hong Kong (OTA), Brazil (Itamaraty), Austria (BMEIA), and Philippines (DFA)",
+    "updateFrequency": "as issued"
   }
 }
