@@ -12,7 +12,7 @@
 
 ## What It Does
 
-IsItSafeToTravel combines **9 public data sources** -- conflict data, governance quality, health risks, crime indicators, environmental hazards, and near-realtime crisis signals -- into a single 1--10 safety score for **248 countries**. Scores are recomputed daily by an automated pipeline using a tiered baseline+signal architecture, and displayed on an interactive world map with country detail pages, historical trend charts, and a side-by-side comparison tool.
+IsItSafeToTravel combines **7 public data sources** -- conflict data, governance quality, health risks, crime indicators, environmental hazards, and near-realtime crisis signals -- into a single 1--10 safety score for **248 countries**. Scores are recomputed daily by an automated pipeline using a tiered baseline+signal architecture, and displayed on an interactive world map with country detail pages, historical trend charts, and a side-by-side comparison tool.
 
 ## Features
 
@@ -37,10 +37,8 @@ IsItSafeToTravel combines **9 public data sources** -- conflict data, governance
 | UK FCDO | Travel advisory levels | UK Foreign, Commonwealth & Development Office | Signal | Varies |
 | ReliefWeb | Active humanitarian disasters | UN OCHA | Signal | Daily |
 | GDACS | Natural disaster alerts (earthquakes, floods, cyclones, volcanoes) | EU JRC / UN | Signal | Daily |
-| GDELT Project | Media-derived instability signal | GDELT | Signal | Daily |
-| WHO Disease Outbreak News | Active disease outbreaks | World Health Organization | Signal | Weekly |
 
-All sources are free and publicly available. The pipeline fetches them in parallel using `Promise.allSettled`, so a single source failure does not block the others.
+All sources are free and publicly available. The pipeline fetches them in parallel using `Promise.allSettled`, so a single source failure does not block the others. GDELT and WHO Disease Outbreak News were previously included but have been removed due to reliability issues.
 
 ## Scoring Methodology
 
@@ -48,18 +46,18 @@ Each country's safety score is computed from **5 pillars** (weights from `src/pi
 
 | Pillar | Weight | Key Indicators |
 |--------|--------|----------------|
-| Conflict | 30% | Political stability, GPI scores, GDELT instability, government advisories |
+| Conflict | 30% | Political stability, GPI scores, government advisories |
 | Crime | 25% | Rule of law, US & UK advisory levels |
-| Health | 20% | Child mortality, INFORM health & epidemic risk, WHO active outbreaks |
+| Health | 20% | Child mortality, INFORM health & epidemic risk |
 | Governance | 15% | Government effectiveness, corruption control, INFORM governance |
 | Environment | 10% | Air pollution, natural hazard risk, climate risk, ReliefWeb disasters, GDACS alerts |
 
 ### Baseline + Signal Tiering
 
-The 8 data sources are split into two tiers (configured in `src/pipeline/config/source-tiers.json`):
+The data sources are split into two tiers (configured in `src/pipeline/config/source-tiers.json`):
 
 - **Baseline sources** (World Bank, INFORM, GPI): Updated annually/quarterly. Provide stable, long-term structural indicators. Contribute ~70% of the score.
-- **Signal sources** (advisories, GDELT, ReliefWeb, GDACS, WHO DONs): Updated daily/weekly. Capture emerging crises -- conflicts, natural disasters, disease outbreaks. Contribute up to 30% of the score.
+- **Signal sources** (advisories, ReliefWeb, GDACS): Updated daily/weekly. Capture emerging crises -- conflicts, natural disasters, disease outbreaks. Contribute up to 30% of the score.
 
 Signal influence is capped at 30% (`maxSignalInfluence: 0.30`) so that volatile short-term data cannot dominate long-term structural indicators.
 
@@ -72,12 +70,10 @@ Each source has a configurable half-life for exponential freshness decay (see `s
 | World Bank / INFORM / GPI | 365 days | 730 days |
 | ReliefWeb | 14 days | 60 days |
 | Advisories / GDACS | 7 days | 30 days |
-| GDELT | 3 days | 14 days |
-| WHO DONs | 30 days | 90 days |
 
 ### Per-Indicator Sub-Weights
 
-Indicators within a pillar are not equally averaged. Pillars with `indicatorWeights` in `weights.json` use explicit sub-weights (e.g., Conflict: wb_political_stability 17%, gpi_overall 17%, gdelt_instability 15%, etc.). Pillars without explicit weights use equal averaging.
+Indicators within a pillar are not equally averaged. Pillars with `indicatorWeights` in `weights.json` use explicit sub-weights (e.g., Conflict: wb_political_stability, gpi_overall, advisory levels, etc.). Pillars without explicit weights use equal averaging.
 
 Raw indicator values are normalized to a 0--1 scale (higher = safer) using known min/max ranges, then aggregated into the final 1--10 score.
 
@@ -136,7 +132,7 @@ src/
   pages/          Astro pages (EN, IT, ES, FR, PT locale routing)
   components/     Reusable Astro and client-side components
   pipeline/       Data fetchers, scoring engine, and config
-    fetchers/     One module per data source (9 fetchers)
+    fetchers/     One module per data source (7 fetchers)
     scoring/      Tiered baseline+signal engine with freshness decay
     config/       weights.json, source-tiers.json, countries, normalization
   lib/            Shared utilities (scores, colors, SEO helpers)
@@ -156,7 +152,7 @@ A GitHub Actions workflow (`data-pipeline.yml`) runs every day at **06:00 UTC**:
 
 1. Checks out the repository.
 2. Installs dependencies with `npm ci`.
-3. Runs `npx tsx src/pipeline/run.ts` to fetch all 9 data sources in parallel.
+3. Runs `npx tsx src/pipeline/run.ts` to fetch all data sources in parallel.
 4. Validates that `data/scores/latest.json` was produced.
 5. Copies scores to `public/scores.json` for the frontend.
 6. Commits and pushes any data changes, which triggers a Cloudflare Pages redeploy.

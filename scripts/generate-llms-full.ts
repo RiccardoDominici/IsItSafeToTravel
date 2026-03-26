@@ -130,7 +130,7 @@ function main() {
   lines.push("");
   lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." Data is updated daily and licensed under CC BY-NC 4.0.`);
   lines.push("");
-  lines.push(`> **Source:** IsItSafeToTravel.org — Free, open-source travel safety platform. Data updated daily from government advisories (US, UK, Canada, Australia), Global Peace Index, INFORM Risk Index, and GDELT.`);
+  lines.push(`> **Source:** IsItSafeToTravel.org — Free, open-source travel safety platform. Data updated daily from government advisories (US, UK, Canada, Australia), Global Peace Index, INFORM Risk Index, ReliefWeb, and GDACS.`);
   lines.push("");
 
   // How to Cite
@@ -282,7 +282,7 @@ function main() {
 ## Data
 
 - Scores updated daily via automated GitHub Actions pipeline
-- Sources: Global Peace Index (GPI), INFORM Risk Index, GDELT, US/UK/CA/AU government travel advisories
+- Sources: Global Peace Index (GPI), INFORM Risk Index, ReliefWeb, GDACS, US/UK/CA/AU government travel advisories
 - Composite scoring uses weighted average across 5 safety pillars
 - All data is from publicly available sources
 
