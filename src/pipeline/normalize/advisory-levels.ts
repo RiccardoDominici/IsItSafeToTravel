@@ -76,3 +76,57 @@ export function normalizeToUnified(
   const level = Math.round(normalized * 3) + 1;
   return Math.min(4, Math.max(1, level)) as UnifiedLevel;
 }
+
+/**
+ * Normalize France (diplomatie.gouv.fr) color codes to unified 1-4 scale.
+ * French advisory colors: vert (green), jaune (yellow), orange, rouge (red).
+ * Also matches descriptive text variants.
+ */
+export function normalizeFrColor(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('rouge') || lower.includes('formellement deconseill')) return 4;
+  if (lower.includes('orange') || (lower.includes('deconseill') && !lower.includes('formellement'))) return 3;
+  if (lower.includes('jaune') || lower.includes('vigilance renforcee') || lower.includes('vigilance renforcée')) return 2;
+  return 1; // vert / vigilance normale
+}
+
+/**
+ * Normalize Hong Kong OTA alert levels to unified 1-4 scale.
+ * HK uses 3 levels: Amber (signs of threat), Red (significant), Black (severe).
+ * No alert = level 1.
+ */
+export function normalizeHkAlert(alert: string): UnifiedLevel {
+  const lower = alert.toLowerCase();
+  if (lower.includes('black')) return 4;
+  if (lower.includes('red')) return 3;
+  if (lower.includes('amber') || lower.includes('yellow')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Ireland DFA security ratings to unified 1-4 scale.
+ * Ireland uses 4 levels matching the standard advisory pattern.
+ */
+export function normalizeIeRating(rating: string): UnifiedLevel {
+  const lower = rating.toLowerCase();
+  if (lower.includes('do not travel')) return 4;
+  if (lower.includes('avoid') && (lower.includes('non-essential') || lower.includes('unnecessary'))) return 3;
+  if (lower.includes('caution') || lower.includes('high degree')) return 2;
+  return 1; // normal precautions
+}
+
+/**
+ * Normalize Finland (um.fi) advisory text to unified 1-4 scale.
+ * Finnish text-based levels. Also matches English equivalents.
+ */
+export function normalizeFiLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  // Finnish: Valta kaikkea matkustamista = Avoid all travel
+  if (lower.includes('kaikkea matkustamista') || lower.includes('avoid all travel') || lower.includes('do not travel')) return 4;
+  // Finnish: Valta tarpeetonta matkustamista = Avoid unnecessary travel
+  if (lower.includes('tarpeetonta matkustamista') || lower.includes('avoid') || lower.includes('non-essential')) return 3;
+  // Finnish: Noudata erityista varovaisuutta = Exercise special caution
+  if (lower.includes('erityist') || lower.includes('special caution') || lower.includes('increased caution')) return 2;
+  // Finnish: Noudata tavanomaista varovaisuutta = Exercise normal caution
+  return 1;
+}
