@@ -59,8 +59,11 @@ const jsonLd = {
 
     <section>
       <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.contact_title')}</h2>
-      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed mb-3">
         For questions, feedback, or data inquiries, reach out via <a href="https://github.com/RiccardoDominici/IsItSafeToTravel/issues" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.github_issues_text')}</a>.
+      </p>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {t('about.contact_feedback').split('{feedback_link}')[0]}<a href={`/${lang}/${r.feedback}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.feedback_link_text')}</a>{t('about.contact_feedback').split('{feedback_link}')[1]}
       </p>
     </section>
   </div>

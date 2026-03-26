@@ -47,7 +47,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const recipientEmail = context.env.FEEDBACK_EMAIL;
 
     if (!apiKey || !recipientEmail) {
-      return new Response(JSON.stringify({ error: 'Server configuration error' }), {
+      const missing = [];
+      if (!apiKey) missing.push('RESEND_API_KEY');
+      if (!recipientEmail) missing.push('FEEDBACK_EMAIL');
+      console.error('Missing env vars:', missing.join(', '));
+      return new Response(JSON.stringify({ error: 'Server configuration error', missing }), {
         status: 500,
         headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
