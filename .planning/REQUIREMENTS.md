@@ -51,7 +51,7 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### Normalization & Scoring
 
-- [ ] **NORM-01**: All new sources normalize to unified 1-4 advisory level scale
+- [x] **NORM-01**: All new sources normalize to unified 1-4 advisory level scale
 - [ ] **NORM-02**: Scoring engine weights updated to include all new advisory sources in Conflict pillar
 - [ ] **NORM-03**: Source-tiers.json updated with all new sources as signal tier
 
@@ -108,7 +108,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-02 | Phase 29 | Pending |
 | API-03 | Phase 29 | Pending |
 | API-04 | Phase 29 | Pending |
-| NORM-01 | Phase 29 | Pending |
+| NORM-01 | Phase 29 | Complete |
 | HTML-01 | Phase 30 | Pending |
 | HTML-02 | Phase 30 | Pending |
 | HTML-03 | Phase 30 | Pending |
