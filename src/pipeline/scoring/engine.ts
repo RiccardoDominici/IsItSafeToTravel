@@ -428,7 +428,7 @@ export function computeAllScores(
   }
 
   // Load advisory info from side-channel file
-  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo; be?: AdvisoryInfo; dk?: AdvisoryInfo; sg?: AdvisoryInfo; ro?: AdvisoryInfo; rs?: AdvisoryInfo; ee?: AdvisoryInfo; hr?: AdvisoryInfo; ar?: AdvisoryInfo }>;
+  type AdvisoryInfoMap = Record<string, { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo; be?: AdvisoryInfo; dk?: AdvisoryInfo; sg?: AdvisoryInfo; ro?: AdvisoryInfo; rs?: AdvisoryInfo; ee?: AdvisoryInfo; hr?: AdvisoryInfo; ar?: AdvisoryInfo; it?: AdvisoryInfo; es?: AdvisoryInfo; kr?: AdvisoryInfo; tw?: AdvisoryInfo; cn?: AdvisoryInfo; in?: AdvisoryInfo }>;
   let advisoryInfoMap: AdvisoryInfoMap = {};
 
   // Find advisories-info.json from the raw data directory
@@ -440,7 +440,8 @@ export function computeAllScores(
   const tier1Source = rawDataBySource.get('advisories_tier1');
   const tier2aSource = rawDataBySource.get('advisories_tier2a');
   const tier2bSource = rawDataBySource.get('advisories_tier2b');
-  const anyAdvisorySource = advisoriesSource || tier1Source || tier2aSource || tier2bSource;
+  const tier3aSource = rawDataBySource.get('advisories_tier3a');
+  const anyAdvisorySource = advisoriesSource || tier1Source || tier2aSource || tier2bSource || tier3aSource;
 
   if (anyAdvisorySource) {
     const dateMatch = anyAdvisorySource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
@@ -487,6 +488,17 @@ export function computeAllScores(
         Object.assign(advisoryInfoMap[iso3], info);
       }
       console.log(`  Merged tier-2b advisory info`);
+    }
+
+    // Also load tier-3a advisory info
+    const tier3aInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier3a-info.json');
+    const tier3aInfo = readJson<AdvisoryInfoMap>(tier3aInfoPath);
+    if (tier3aInfo) {
+      for (const [iso3, info] of Object.entries(tier3aInfo)) {
+        if (!advisoryInfoMap[iso3]) advisoryInfoMap[iso3] = {};
+        Object.assign(advisoryInfoMap[iso3], info);
+      }
+      console.log(`  Merged tier-3a advisory info`);
     }
   }
 

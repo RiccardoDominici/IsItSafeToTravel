@@ -9,6 +9,7 @@ import { fetchGdacs } from './gdacs.js';
 import { fetchTier1Advisories } from './advisories-tier1.js';
 import { fetchTier2aAdvisories } from './advisories-tier2a.js';
 import { fetchTier2bAdvisories } from './advisories-tier2b.js';
+import { fetchTier3aAdvisories } from './advisories-tier3a.js';
 
 export { fetchWorldBank } from './worldbank.js';
 
@@ -16,6 +17,7 @@ export { fetchAdvisories } from './advisories.js';
 export { fetchTier1Advisories } from './advisories-tier1.js';
 export { fetchTier2aAdvisories } from './advisories-tier2a.js';
 export { fetchTier2bAdvisories } from './advisories-tier2b.js';
+export { fetchTier3aAdvisories } from './advisories-tier3a.js';
 export { fetchGpi } from './gpi.js';
 export { fetchInform } from './inform.js';
 export { fetchReliefweb } from './reliefweb.js';
@@ -33,6 +35,7 @@ export { fetchGdacs } from './gdacs.js';
  * - Tier 1 Advisories (DE, NL, JP, SK government advisories) — free, no auth
  * - Tier 2a Advisories (FR, NZ, IE, FI, HK, BR, AT, PH government advisories) — free, no auth
  * - Tier 2b Advisories (BE, DK, SG, RO, RS, EE, HR, AR government advisories) — free, no auth
+ * - Tier 3a Advisories (IT, ES, KR, TW, CN, IN government advisories) — free, complex scraping
  * - ReliefWeb (active humanitarian disasters) — free, no auth
  * - GDACS (natural disaster alerts) — free, no auth
  */
@@ -48,11 +51,12 @@ export async function fetchAllSources(date: string): Promise<FetchResult[]> {
     fetchTier1Advisories(date),
     fetchTier2aAdvisories(date),
     fetchTier2bAdvisories(date),
+    fetchTier3aAdvisories(date),
     fetchReliefweb(date),
     fetchGdacs(date),
   ]);
 
-  const sourceNames = ['worldbank', 'gpi', 'inform', 'advisories', 'advisories_tier1', 'advisories_tier2a', 'advisories_tier2b', 'reliefweb', 'gdacs'];
+  const sourceNames = ['worldbank', 'gpi', 'inform', 'advisories', 'advisories_tier1', 'advisories_tier2a', 'advisories_tier2b', 'advisories_tier3a', 'reliefweb', 'gdacs'];
   const fetchResults: FetchResult[] = results.map((result, index) => {
     if (result.status === 'fulfilled') {
       return result.value;
