@@ -7,8 +7,10 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "npm run generate:og && astro build",
+    "build": "npm run generate:og && npm run generate:llms && astro build && npm run validate:seo",
+    "validate:seo": "npx tsx scripts/validate-seo.ts",
     "generate:og": "npx tsx scripts/generate-og-images.ts",
+    "generate:llms": "npx tsx scripts/generate-llms-full.ts",
     "preview": "astro preview",
     "astro": "astro",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",

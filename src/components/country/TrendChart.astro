@@ -72,7 +72,10 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         </div>
       )}
       <div id="trend-chart-container" class="relative" data-history={JSON.stringify(data)} data-pillar-history={pillarData ? JSON.stringify(pillarData) : ''} data-lang={lang}>
-        <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('country.trend_title')}></svg>
+        <div id="trend-chart-placeholder" class="flex items-center justify-center w-full bg-sand-50 dark:bg-sand-900 rounded" style="aspect-ratio: 800/240;">
+          <span class="text-sm text-sand-400 dark:text-sand-500 animate-pulse">Loading chart...</span>
+        </div>
+        <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300 hidden" role="img" aria-label={t('country.trend_title')}></svg>
         <div id="trend-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
       </div>
       <div class="flex flex-wrap items-center gap-2 mt-2">
@@ -107,22 +110,30 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 </section>
 
 <script>
-  import { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } from 'd3';
   import { scoreToColor } from '../../lib/colors';
 
-  function smartDateFormat(dates: Date[]): (d: Date) => string {
-    const first = dates[0], last = dates[dates.length - 1];
-    if (first.getUTCFullYear() !== last.getUTCFullYear()) {
-      return utcFormat('%b %Y');
-    } else if (first.getUTCMonth() !== last.getUTCMonth()) {
-      return utcFormat('%b %d');
-    } else {
-      return utcFormat('%d');
-    }
-  }
+  function initTrendChart(): void {
+    // Dynamic import of D3 — only loaded when chart is in view
+    import('d3').then(({ scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut }) => {
 
-  const container = document.getElementById('trend-chart-container');
-  if (container) {
+    function smartDateFormat(dates: Date[]): (d: Date) => string {
+      const first = dates[0], last = dates[dates.length - 1];
+      if (first.getUTCFullYear() !== last.getUTCFullYear()) {
+        return utcFormat('%b %Y');
+      } else if (first.getUTCMonth() !== last.getUTCMonth()) {
+        return utcFormat('%b %d');
+      } else {
+        return utcFormat('%d');
+      }
+    }
+
+    const container = document.getElementById('trend-chart-container');
+    if (container) {
+      // Remove placeholder and show SVG
+      const placeholder = document.getElementById('trend-chart-placeholder');
+      const svgEl = document.getElementById('trend-chart-svg');
+      if (placeholder) placeholder.remove();
+      if (svgEl) svgEl.classList.remove('hidden');
     const svg = document.getElementById('trend-chart-svg') as unknown as SVGSVGElement;
     const tooltip = document.getElementById('trend-tooltip')!;
     const resetBtn = document.getElementById('trend-reset-btn')!;
@@ -651,5 +662,23 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       // Initial render
       applyTimeRange('1m');
     }
+    } // end if (container)
+
+    }); // end import('d3').then()
+  } // end initTrendChart
+
+  // Lazy load: only initialize when chart scrolls into view
+  const chartContainer = document.getElementById('trend-chart-container');
+  if (chartContainer) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          observer.disconnect();
+          initTrendChart();
+        }
+      });
+    }, { rootMargin: '200px' });
+
+    observer.observe(chartContainer);
   }
 </script>

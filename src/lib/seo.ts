@@ -82,6 +82,22 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         description: `Safety information for ${country.name[lang]}`,
       },
       buildCountryFaqJsonLd(country, lang),
+      {
+        '@type': 'TouristDestination',
+        name: country.name[lang],
+        description: `Travel safety information for ${country.name[lang]}. Safety score: ${country.score.toFixed(1)}/10 (${country.score >= 7 ? 'Low risk' : country.score >= 4 ? 'Moderate risk' : 'High risk'}). Data from IsItSafeToTravel.org, updated daily.`,
+        touristType: country.score >= 7 ? 'All travelers including families' : country.score >= 4 ? 'General travelers' : 'Adventure travelers',
+        url: canonicalUrl,
+      },
+      {
+        '@type': 'Dataset',
+        name: `${country.name[lang]} Travel Safety Data ${new Date().getFullYear()}`,
+        description: `Daily updated safety scores for ${country.name[lang]}, covering conflict, crime, health, governance, and environment.`,
+        url: canonicalUrl,
+        license: 'https://creativecommons.org/licenses/by-nc/4.0/',
+        temporalCoverage: '2025/..',
+        creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org' },
+      },
     ],
   };
 }

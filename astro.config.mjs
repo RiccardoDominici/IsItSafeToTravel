@@ -21,7 +21,7 @@ export default defineConfig({
       },
       serialize(item) {
         // Set lastmod to today's date (site rebuilds daily with fresh scores)
-        item.lastmod = new Date().toISOString().split('T')[0];
+        item.lastmod = new Date().toISOString();
         return item;
       },
     }),
