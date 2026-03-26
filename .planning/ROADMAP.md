@@ -279,7 +279,11 @@ Plans:
   2. Pipeline runs successfully with no references to GDELT fetcher, parser, FIPS mapping usage, or normalization code anywhere in the codebase
   3. Scores for all 248 countries are recalculated after source removal and weights.json reflects the updated configuration without WHO DONs or GDELT indicators
   4. No country scores deviate by more than 0.3 points from pre-removal scores (since these sources contributed minimal signal)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 29: Tier 1 API Sources
 **Goal**: Pipeline fetches advisory data from 4 countries with clean REST/JSON/XML APIs and establishes the normalization foundation that all subsequent sources will use
@@ -290,7 +294,11 @@ Plans:
   2. A shared normalization module maps each source's native level system (3-level, 4-level, 5-level, color-coded) to the unified 1-4 advisory scale
   3. When any individual API is unreachable, the pipeline completes successfully and that source falls back gracefully without blocking other sources
   4. Each fetcher includes country name-to-ISO3 mapping so advisory levels are correctly assigned to the right countries in the scoring engine
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 30: Tier 2 HTML Sources Batch 1
 **Goal**: Pipeline scrapes advisory data from 8 countries with structured HTML pages, expanding geographic coverage to Western Europe, Oceania, South America, and Asia
@@ -301,7 +309,11 @@ Plans:
   2. All 8 sources normalize to the unified 1-4 scale via the shared normalization module from Phase 29
   3. HTML parsing is resilient to minor page structure changes (uses semantic selectors, not brittle positional selectors)
   4. When any individual source page is unreachable or has changed structure, the fetcher logs a warning and the pipeline continues without that source
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 31: Tier 2 HTML Sources Batch 2
 **Goal**: Pipeline scrapes advisory data from 8 more countries, completing Tier 2 coverage across Northern Europe, Southeast Asia, Eastern Europe, and South America
@@ -312,7 +324,11 @@ Plans:
   2. All 8 sources normalize to the unified 1-4 scale via the shared normalization module
   3. Fetcher code reuses the HTML scraping infrastructure from Phase 30, minimizing code duplication
   4. Total Tier 2 fetch time (16 sources) stays within GitHub Actions CI budget (under 10 minutes)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 32: Tier 3 Complex Sources Batch 1
 **Goal**: Pipeline extracts advisory data from 6 countries with complex scraping challenges (dynamic rendering, non-Latin scripts, text-based levels requiring pattern matching)
@@ -323,7 +339,11 @@ Plans:
   2. Non-Latin scripts (Korean, Chinese) and text-based advisory descriptions are correctly mapped to the unified 1-4 scale
   3. Complex sources that require multi-step navigation or JavaScript rendering use appropriate techniques (static HTML snapshots, API discovery, or cached fallbacks)
   4. Each complex fetcher documents its fragility level and expected failure modes in code comments
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 33: Tier 3 Complex Sources Batch 2
 **Goal**: Pipeline extracts advisory data from 7 more European countries with complex source structures, completing the full 30+ source expansion
@@ -334,7 +354,11 @@ Plans:
   2. All 7 sources normalize to the unified 1-4 scale via the shared normalization module
   3. The total advisory source count is 34+ (4 existing Five Eyes + 4 Tier 1 + 16 Tier 2 + 13 Tier 3 - 3 removed = 34)
   4. A summary log after pipeline run reports fetch success/failure for all 34+ advisory sources
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 34: Scoring Integration
 **Goal**: Scoring engine properly weights all 34+ advisory sources in the Conflict pillar, with source-tiers configuration reflecting the expanded source set
@@ -345,7 +369,11 @@ Plans:
   2. source-tiers.json lists all new advisory sources as signal tier with appropriate decay half-life and max-age parameters
   3. Countries covered by more advisory sources show greater score stability (consensus effect) compared to countries with sparse coverage
   4. Running the full pipeline produces valid scores for all 248 countries with the expanded advisory set
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 35: CI/CD Automation
 **Goal**: All new advisory sources are fetched automatically via GitHub Actions daily with staggered scheduling and graceful failure handling
@@ -356,7 +384,11 @@ Plans:
   2. Sources are fetched in staggered batches with delays between groups to respect rate limits and avoid IP blocking
   3. When individual sources fail, the workflow logs the failure, continues with remaining sources, and the pipeline produces valid scores using available data
   4. Workflow completes within GitHub Actions free-tier time limits (under 30 minutes total)
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 36: Documentation
 **Goal**: Users can understand where scores come from, see which advisories apply to each country, and find all advisory sources listed on the sources page
@@ -366,7 +398,11 @@ Plans:
   1. Methodology page in all 5 languages explains the expanded advisory source set, how normalization works, and how advisory consensus affects scoring
   2. Country detail pages display advisory information from the new sources (showing which governments have issued advisories for that country)
   3. Sources page lists all 34+ government advisory sources with country of origin, data format, and update frequency
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 **UI hint**: yes
 
 ### Phase 37: Calibration & Validation
@@ -378,7 +414,11 @@ Plans:
   2. A deviation report shows per-country delta between site scores and reference scores, with global mean absolute deviation computed
   3. Systematic bias patterns are identified and documented (e.g., "European countries score 0.4 higher than expected" or "conflict zones show adequate differentiation")
   4. At least 2 concrete weight adjustment proposals are documented with projected impact on deviation metrics
-**Plans**: TBD
+**Plans**: 2 plans
+
+Plans:
+- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ## Progress
 
@@ -414,7 +454,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete | 2026-03-23 |
 | 26. Validation, Documentation, and UX | v3.0 | 3/3 | Complete | 2026-03-23 |
 | 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
-| 28. Cleanup | v4.0 | 0/0 | Not started | - |
+| 28. Cleanup | v4.0 | 0/2 | In progress | - |
 | 29. Tier 1 API Sources | v4.0 | 0/0 | Not started | - |
 | 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/0 | Not started | - |
 | 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/0 | Not started | - |
