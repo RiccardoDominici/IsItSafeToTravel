@@ -6,7 +6,7 @@ import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
-import { buildHomepageJsonLd, buildOrganizationJsonLd } from '../../lib/seo';
+import { buildHomepageJsonLd, buildOrganizationJsonLd, buildDatasetJsonLd } from '../../lib/seo';
 import { loadLatestScores } from '../../lib/scores';
 
 const lang: Lang = 'fr';
@@ -20,6 +20,7 @@ const jsonLd = {
   '@graph': [
     { ...buildHomepageJsonLd(siteUrl, lang, dateModified), '@context': undefined },
     { ...buildOrganizationJsonLd(siteUrl), '@context': undefined },
+    buildDatasetJsonLd(),
   ],
 };
 ---

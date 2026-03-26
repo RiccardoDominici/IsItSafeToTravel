@@ -81,6 +81,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         name: country.name[lang],
         description: `Safety information for ${country.name[lang]}`,
       },
+      buildCountryFaqJsonLd(country, lang),
     ],
   };
 }
@@ -232,5 +233,115 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
         text: qa.answer,
       },
     })),
+  };
+}
+
+/**
+ * Build FAQPage JSON-LD for a country page with 3 dynamic FAQ items.
+ * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ */
+export function buildCountryFaqJsonLd(country: ScoredCountry, lang: Lang): Record<string, unknown> {
+  const name = country.name[lang];
+  const score = country.score;
+  const roundedScore = score.toFixed(1);
+  const year = new Date().getFullYear().toString();
+
+  // Determine risk level
+  const riskLevels: Record<Lang, [string, string, string]> = {
+    en: ['Low risk', 'Moderate risk', 'High risk'],
+    it: ['rischio basso', 'rischio moderato', 'rischio alto'],
+    es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
+    fr: ['risque faible', 'risque modere', 'risque eleve'],
+    pt: ['risco baixo', 'risco moderado', 'risco alto'],
+  };
+  const [low, moderate, high] = riskLevels[lang];
+  const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
+
+  // Find weakest pillar
+  const pillars = country.pillars;
+  let weakest = pillars[0];
+  for (const p of pillars) {
+    if (p.score < weakest.score) weakest = p;
+  }
+  const weakestLabel = pillarLabels[lang][weakest.name];
+  const weakestScore = (weakest.score * 10).toFixed(1);
+
+  // FAQ 1: Is it safe to travel to {country} in {year}?
+  const q1: Record<Lang, string> = {
+    en: `Is it safe to travel to ${name} in ${year}?`,
+    it: `E sicuro viaggiare in ${name} nel ${year}?`,
+    es: `Es seguro viajar a ${name} en ${year}?`,
+    fr: `Est-il sur de voyager au/en ${name} en ${year} ?`,
+    pt: `E seguro viajar para ${name} em ${year}?`,
+  };
+  const a1: Record<Lang, string> = {
+    en: `${name} has a safety score of ${roundedScore}/10, classified as ${riskLevel}. This score is updated daily using data from ${country.sources.length || 3}+ public sources including government advisories, health data, and conflict indicators.`,
+    it: `${name} ha un punteggio di sicurezza di ${roundedScore}/10, classificato come ${riskLevel}. Questo punteggio viene aggiornato quotidianamente utilizzando dati da ${country.sources.length || 3}+ fonti pubbliche tra cui avvisi governativi, dati sanitari e indicatori di conflitto.`,
+    es: `${name} tiene una puntuacion de seguridad de ${roundedScore}/10, clasificado como ${riskLevel}. Esta puntuacion se actualiza diariamente utilizando datos de ${country.sources.length || 3}+ fuentes publicas que incluyen avisos gubernamentales, datos de salud e indicadores de conflicto.`,
+    fr: `${name} a un score de securite de ${roundedScore}/10, classe comme ${riskLevel}. Ce score est mis a jour quotidiennement a partir de ${country.sources.length || 3}+ sources publiques incluant les avis gouvernementaux, les donnees sanitaires et les indicateurs de conflit.`,
+    pt: `${name} tem uma pontuacao de seguranca de ${roundedScore}/10, classificado como ${riskLevel}. Esta pontuacao e atualizada diariamente usando dados de ${country.sources.length || 3}+ fontes publicas incluindo avisos governamentais, dados de saude e indicadores de conflito.`,
+  };
+
+  // FAQ 2: What is the biggest risk when traveling to {country}?
+  const q2: Record<Lang, string> = {
+    en: `What is the biggest risk when traveling to ${name}?`,
+    it: `Qual e il rischio maggiore viaggiando in ${name}?`,
+    es: `Cual es el mayor riesgo al viajar a ${name}?`,
+    fr: `Quel est le plus grand risque en voyageant au/en ${name} ?`,
+    pt: `Qual e o maior risco ao viajar para ${name}?`,
+  };
+  const a2: Record<Lang, string> = {
+    en: `The area of greatest concern for ${name} is ${weakestLabel}, with a score of ${weakestScore}/10. Travelers should pay particular attention to this aspect when planning their trip. Check the full pillar breakdown on this page for detailed insights.`,
+    it: `L'area di maggiore preoccupazione per ${name} e ${weakestLabel}, con un punteggio di ${weakestScore}/10. I viaggiatori dovrebbero prestare particolare attenzione a questo aspetto quando pianificano il viaggio. Consulta la ripartizione completa dei pilastri in questa pagina per approfondimenti dettagliati.`,
+    es: `El area de mayor preocupacion para ${name} es ${weakestLabel}, con una puntuacion de ${weakestScore}/10. Los viajeros deben prestar especial atencion a este aspecto al planificar su viaje. Consulta el desglose completo de pilares en esta pagina para obtener informacion detallada.`,
+    fr: `Le domaine de plus grande preoccupation pour ${name} est ${weakestLabel}, avec un score de ${weakestScore}/10. Les voyageurs doivent accorder une attention particuliere a cet aspect lors de la planification de leur voyage. Consultez la repartition complete des piliers sur cette page pour des informations detaillees.`,
+    pt: `A area de maior preocupacao para ${name} e ${weakestLabel}, com uma pontuacao de ${weakestScore}/10. Os viajantes devem prestar atencao especial a este aspecto ao planejar sua viagem. Consulte a divisao completa dos pilares nesta pagina para informacoes detalhadas.`,
+  };
+
+  // FAQ 3: Do I need travel insurance for {country}?
+  const q3: Record<Lang, string> = {
+    en: `Do I need travel insurance for ${name}?`,
+    it: `Ho bisogno di un'assicurazione di viaggio per ${name}?`,
+    es: `Necesito seguro de viaje para ${name}?`,
+    fr: `Ai-je besoin d'une assurance voyage pour ${name} ?`,
+    pt: `Preciso de seguro de viagem para ${name}?`,
+  };
+  const a3: Record<Lang, string> = {
+    en: `Travel insurance is strongly recommended for any international trip, including visits to ${name}. A comprehensive policy should cover medical emergencies, trip cancellations, and evacuation. This is especially important given that health-related risks can change rapidly.`,
+    it: `L'assicurazione di viaggio e fortemente raccomandata per qualsiasi viaggio internazionale, incluse le visite in ${name}. Una polizza completa dovrebbe coprire emergenze mediche, cancellazioni del viaggio ed evacuazione. Questo e particolarmente importante dato che i rischi legati alla salute possono cambiare rapidamente.`,
+    es: `El seguro de viaje es altamente recomendable para cualquier viaje internacional, incluyendo visitas a ${name}. Una poliza integral debe cubrir emergencias medicas, cancelaciones de viaje y evacuacion. Esto es especialmente importante dado que los riesgos relacionados con la salud pueden cambiar rapidamente.`,
+    fr: `L'assurance voyage est fortement recommandee pour tout voyage international, y compris les visites au/en ${name}. Une police complete devrait couvrir les urgences medicales, les annulations de voyage et l'evacuation. C'est particulierement important car les risques lies a la sante peuvent evoluer rapidement.`,
+    pt: `O seguro de viagem e fortemente recomendado para qualquer viagem internacional, incluindo visitas a ${name}. Uma apolice abrangente deve cobrir emergencias medicas, cancelamentos de viagem e evacuacao. Isso e especialmente importante dado que os riscos relacionados a saude podem mudar rapidamente.`,
+  };
+
+  return {
+    '@type': 'FAQPage',
+    mainEntity: [
+      { '@type': 'Question', name: q1[lang], acceptedAnswer: { '@type': 'Answer', text: a1[lang] } },
+      { '@type': 'Question', name: q2[lang], acceptedAnswer: { '@type': 'Answer', text: a2[lang] } },
+      { '@type': 'Question', name: q3[lang], acceptedAnswer: { '@type': 'Answer', text: a3[lang] } },
+    ],
+  };
+}
+
+/**
+ * Build Dataset JSON-LD structured data for the homepage.
+ * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ */
+export function buildDatasetJsonLd(): Record<string, unknown> {
+  return {
+    '@type': 'Dataset',
+    name: 'Global Travel Safety Scores 2026',
+    description: 'Daily updated safety scores for 240+ countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.',
+    url: 'https://isitsafetotravel.org',
+    license: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    temporalCoverage: '2025/..',
+    spatialCoverage: 'Global',
+    creator: { '@type': 'Organization', name: 'Is It Safe to Travel' },
+    distribution: {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://isitsafetotravel.org/scores.json',
+    },
   };
 }

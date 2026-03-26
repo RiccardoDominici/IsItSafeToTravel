@@ -1,0 +1,183 @@
+# ============================================================================
+# Google Indexing API Submission
+# ============================================================================
+#
+# ONE-TIME SETUP (required before this workflow can run):
+#
+#   1. Create a Google Cloud project (or use an existing one)
+#      https://console.cloud.google.com/projectcreate
+#
+#   2. Enable the "Web Search Indexing API" in the project
+#      https://console.cloud.google.com/apis/library/indexing.googleapis.com
+#
+#   3. Create a Service Account in IAM & Admin > Service Accounts
+#      No special roles needed on the GCP side
+#
+#   4. Create a JSON key for the service account and download it
+#
+#   5. In Google Search Console (https://search.google.com/search-console):
+#      - Go to Settings > Users and permissions
+#      - Add the service account email (e.g. name@project.iam.gserviceaccount.com)
+#      - Grant it "Owner" permission
+#
+#   6. In this GitHub repo, go to Settings > Secrets and variables > Actions:
+#      - Create a secret named GOOGLE_SA_KEY
+#      - Paste the full JSON key file contents as the value
+#
+# Google's daily quota: 200 URL submissions per day.
+# ============================================================================
+
+name: SEO Google Indexing API
+
+on:
+  workflow_dispatch:
+    inputs:
+      max_urls:
+        description: 'Max URLs to submit (Google daily limit is 200)'
+        required: false
+        default: '200'
+        type: number
+
+jobs:
+  google-indexing:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy scores to public
+        run: |
+          if [ -f "data/scores/latest.json" ]; then
+            cp data/scores/latest.json public/scores.json
+          fi
+
+      - name: Build site
+        run: npm run build
+
+      - name: Install googleapis
+        run: npm install googleapis
+
+      - name: Submit URLs to Google Indexing API
+        env:
+          GOOGLE_SA_KEY: ${{ secrets.GOOGLE_SA_KEY }}
+        run: |
+          node --input-type=module << 'SCRIPT'
+          import { google } from 'googleapis';
+          import { readFileSync } from 'fs';
+
+          const MAX_URLS = Math.min(
+            parseInt(process.env.MAX_URLS || '200', 10),
+            200
+          );
+
+          // --- Authenticate ---
+          const keyJson = process.env.GOOGLE_SA_KEY;
+          if (!keyJson) {
+            console.error('::error::GOOGLE_SA_KEY secret is not set');
+            process.exit(1);
+          }
+
+          let key;
+          try {
+            key = JSON.parse(keyJson);
+          } catch (e) {
+            console.error('::error::GOOGLE_SA_KEY is not valid JSON');
+            process.exit(1);
+          }
+
+          const auth = new google.auth.JWT(
+            key.client_email,
+            null,
+            key.private_key,
+            ['https://www.googleapis.com/auth/indexing']
+          );
+
+          await auth.authorize();
+          console.log(`Authenticated as ${key.client_email}`);
+
+          // --- Read sitemap ---
+          const sitemapPath = 'dist/client/sitemap-0.xml';
+          let sitemapXml;
+          try {
+            sitemapXml = readFileSync(sitemapPath, 'utf8');
+          } catch (e) {
+            console.error(`::error::Sitemap not found at ${sitemapPath}`);
+            process.exit(1);
+          }
+
+          const locRegex = /<loc>([^<]+)<\/loc>/g;
+          const allUrls = [];
+          let match;
+          while ((match = locRegex.exec(sitemapXml)) !== null) {
+            allUrls.push(match[1]);
+          }
+
+          console.log(`Found ${allUrls.length} URLs in sitemap`);
+
+          // --- Prioritize URLs ---
+          // Homepage and /en/ pages first, then other languages
+          const priority = [];
+          const rest = [];
+
+          for (const url of allUrls) {
+            const path = new URL(url).pathname;
+            if (path === '/' || path.startsWith('/en/') || path === '/en') {
+              priority.push(url);
+            } else {
+              rest.push(url);
+            }
+          }
+
+          const sorted = [...priority, ...rest];
+          const toSubmit = sorted.slice(0, MAX_URLS);
+
+          console.log(`Prioritized: ${priority.length} homepage/en URLs, ${rest.length} other`);
+          console.log(`Submitting ${toSubmit.length} of ${allUrls.length} URLs (limit: ${MAX_URLS})`);
+
+          // --- Submit to Indexing API ---
+          const indexing = google.indexing({ version: 'v3', auth });
+
+          let success = 0;
+          let failed = 0;
+
+          for (const url of toSubmit) {
+            try {
+              const res = await indexing.urlNotifications.publish({
+                requestBody: {
+                  url,
+                  type: 'URL_UPDATED',
+                },
+              });
+              success++;
+              console.log(`OK  ${res.status} ${url}`);
+            } catch (err) {
+              failed++;
+              const status = err?.response?.status || 'unknown';
+              const message = err?.response?.data?.error?.message || err.message;
+              console.error(`FAIL ${status} ${url} - ${message}`);
+            }
+          }
+
+          console.log('');
+          console.log('=== Summary ===');
+          console.log(`Total submitted: ${success + failed}`);
+          console.log(`Successful:      ${success}`);
+          console.log(`Failed:          ${failed}`);
+
+          if (failed > 0) {
+            console.log('::warning::Some URL submissions failed. Check logs above.');
+          }
+          SCRIPT
+        env:
+          MAX_URLS: ${{ inputs.max_urls }}
