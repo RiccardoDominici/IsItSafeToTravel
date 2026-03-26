@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: verifying
-stopped_at: Completed 30-02-PLAN.md
-last_updated: "2026-03-26T19:59:20.459Z"
+status: executing
+stopped_at: Completed 31-01-PLAN.md
+last_updated: "2026-03-26T20:15:10.766Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
   completed_phases: 11
-  total_plans: 24
-  completed_plans: 28
+  total_plans: 26
+  completed_plans: 29
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 30 — tier-2-html-sources-batch-1
+**Current focus:** Phase 31 — tier-2-html-sources-batch-2
 
 ## Current Position
 
-Phase: 31
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 31 (tier-2-html-sources-batch-2) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -58,6 +58,7 @@ Recent decisions affecting current work:
 - [Phase 29]: Used static MOFA page ID to ISO3 mapping (120+ entries) for Japan advisory fetcher
 - [Phase 30]: Extended dataDate extraction to work from any advisory source (base/tier1/tier2a)
 - [Phase 30]: Used cheerio HTML/XML parsing for all Tier 2a sources; Austria BMEIA JS object is most reliable source
+- [Phase 31]: Extended advisory level aggregation and info loading for tier2b sources in engine.ts
 
 ### Pending Todos
 
@@ -82,10 +83,11 @@ None yet.
 | Phase 29 P02 | 245s | 2 tasks | 3 files |
 | Phase 30 P01 | 156s | 2 tasks | 5 files |
 | Phase 30 P02 | 211s | 2 tasks | 3 files |
+| Phase 31 P01 | 121s | 2 tasks | 5 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T19:55:04.481Z
-Stopped at: Completed 30-02-PLAN.md
+Last session: 2026-03-26T20:15:10.762Z
+Stopped at: Completed 31-01-PLAN.md
 Resume file: None

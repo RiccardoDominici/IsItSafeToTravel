@@ -24,14 +24,14 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 - [x] **HTML-06**: Pipeline fetches Brazil advisory levels from Itamaraty daily
 - [x] **HTML-07**: Pipeline fetches Austria advisory levels from BMEIA daily
 - [x] **HTML-08**: Pipeline fetches Philippines alert levels from DFA daily
-- [ ] **HTML-09**: Pipeline fetches Belgium advisory levels from diplomatie.belgium.be daily
-- [ ] **HTML-10**: Pipeline fetches Denmark advisory data from um.dk daily
-- [ ] **HTML-11**: Pipeline fetches Singapore advisory notices from MFA daily
-- [ ] **HTML-12**: Pipeline fetches Romania advisory data from MAE daily
-- [ ] **HTML-13**: Pipeline fetches Serbia advisory levels from MFA daily
-- [ ] **HTML-14**: Pipeline fetches Estonia advisory data from kriis.ee daily
-- [ ] **HTML-15**: Pipeline fetches Croatia advisory data from MVEP daily
-- [ ] **HTML-16**: Pipeline fetches Argentina advisory alerts from Cancilleria daily
+- [x] **HTML-09**: Pipeline fetches Belgium advisory levels from diplomatie.belgium.be daily
+- [x] **HTML-10**: Pipeline fetches Denmark advisory data from um.dk daily
+- [x] **HTML-11**: Pipeline fetches Singapore advisory notices from MFA daily
+- [x] **HTML-12**: Pipeline fetches Romania advisory data from MAE daily
+- [x] **HTML-13**: Pipeline fetches Serbia advisory levels from MFA daily
+- [x] **HTML-14**: Pipeline fetches Estonia advisory data from kriis.ee daily
+- [x] **HTML-15**: Pipeline fetches Croatia advisory data from MVEP daily
+- [x] **HTML-16**: Pipeline fetches Argentina advisory alerts from Cancilleria daily
 
 ### Complex Sources (Tier 3)
 
@@ -117,14 +117,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HTML-06 | Phase 30 | Complete |
 | HTML-07 | Phase 30 | Complete |
 | HTML-08 | Phase 30 | Complete |
-| HTML-09 | Phase 31 | Pending |
-| HTML-10 | Phase 31 | Pending |
-| HTML-11 | Phase 31 | Pending |
-| HTML-12 | Phase 31 | Pending |
-| HTML-13 | Phase 31 | Pending |
-| HTML-14 | Phase 31 | Pending |
-| HTML-15 | Phase 31 | Pending |
-| HTML-16 | Phase 31 | Pending |
+| HTML-09 | Phase 31 | Complete |
+| HTML-10 | Phase 31 | Complete |
+| HTML-11 | Phase 31 | Complete |
+| HTML-12 | Phase 31 | Complete |
+| HTML-13 | Phase 31 | Complete |
+| HTML-14 | Phase 31 | Complete |
+| HTML-15 | Phase 31 | Complete |
+| HTML-16 | Phase 31 | Complete |
 | CPLX-01 | Phase 32 | Pending |
 | CPLX-02 | Phase 32 | Pending |
 | CPLX-03 | Phase 32 | Pending |

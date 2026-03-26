@@ -327,7 +327,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 31-01-PLAN.md — Extend types/normalization/engine/config for 8 Tier 2b sources
+- [x] 31-01-PLAN.md — Extend types/normalization/engine/config for 8 Tier 2b sources
 - [ ] 31-02-PLAN.md — Create advisories-tier2b.ts with 8 sub-fetchers and pipeline wiring
 
 ### Phase 32: Tier 3 Complex Sources Batch 1
@@ -457,7 +457,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 28. Cleanup | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 29. Tier 1 API Sources | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 30. Tier 2 HTML Sources Batch 1 | v4.0 | 2/2 | Complete    | 2026-03-26 |
-| 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/2 | Not started | - |
+| 31. Tier 2 HTML Sources Batch 2 | v4.0 | 1/2 | In Progress|  |
 | 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/2 | Not started | - |
 | 33. Tier 3 Complex Sources Batch 2 | v4.0 | 0/2 | Not started | - |
 | 34. Scoring Integration | v4.0 | 0/2 | Not started | - |
