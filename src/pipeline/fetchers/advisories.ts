@@ -10,7 +10,7 @@ const CA_ADVISORIES_URL = 'https://travel.gc.ca/destinations';
 const AU_ADVISORIES_URL = 'https://www.smartraveller.gov.au/api/smartraveller/destinations';
 const AU_ADVISORIES_FALLBACK_URL = 'https://www.smartraveller.gov.au/destinations';
 
-/** Advisory info map: iso3 -> { us?, uk?, ca?, au?, de?, nl?, jp?, sk?, fr?, nz?, ie?, fi?, hk?, br?, at?, ph?, be?, dk?, sg?, ro?, rs?, ee?, hr?, ar? } */
+/** Advisory info map: iso3 -> { us?, uk?, ca?, au?, de?, nl?, jp?, sk?, fr?, nz?, ie?, fi?, hk?, br?, at?, ph?, be?, dk?, sg?, ro?, rs?, ee?, hr?, ar?, it?, es?, kr?, tw?, cn?, in? } */
 export type AdvisoryInfoMap = Record<string, {
   us?: AdvisoryInfo;
   uk?: AdvisoryInfo;
@@ -38,6 +38,13 @@ export type AdvisoryInfoMap = Record<string, {
   ee?: AdvisoryInfo;
   hr?: AdvisoryInfo;
   ar?: AdvisoryInfo;
+  // Tier 3a
+  it?: AdvisoryInfo;
+  es?: AdvisoryInfo;
+  kr?: AdvisoryInfo;
+  tw?: AdvisoryInfo;
+  cn?: AdvisoryInfo;
+  in?: AdvisoryInfo;
 }>;
 
 /** US level number to descriptive text */

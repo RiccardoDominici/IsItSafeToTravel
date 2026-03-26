@@ -41,5 +41,12 @@
     "dataUrl": "https://diplomatie.belgium.be",
     "description": "Official travel advisory levels from Belgium (MFA), Denmark (UM), Singapore (MFA), Romania (MAE), Serbia (MFA), Estonia (Kriis), Croatia (MVEP), and Argentina (Cancilleria)",
     "updateFrequency": "as issued"
+  },
+  "advisories_tier3a": {
+    "name": "Tier 3a Government Travel Advisories (Complex)",
+    "url": "https://www.viaggiaresicuri.it",
+    "dataUrl": "https://www.viaggiaresicuri.it",
+    "description": "Official travel advisory levels from Italy (Viaggiare Sicuri), Spain (Exteriores), South Korea (MOFA), Taiwan (BOCA), China (MFA), and India (MEA)",
+    "updateFrequency": "as issued"
   }
 }

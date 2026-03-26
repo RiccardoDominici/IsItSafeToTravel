@@ -111,6 +111,13 @@ export interface ScoredCountry {
     ee?: AdvisoryInfo;
     hr?: AdvisoryInfo;
     ar?: AdvisoryInfo;
+    // Tier 3a
+    it?: AdvisoryInfo;
+    es?: AdvisoryInfo;
+    kr?: AdvisoryInfo;
+    tw?: AdvisoryInfo;
+    cn?: AdvisoryInfo;
+    in?: AdvisoryInfo;
   };
   dataCompleteness: number; // 0-1 overall
   lastUpdated: string; // ISO 8601
