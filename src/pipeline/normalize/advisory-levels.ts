@@ -130,3 +130,93 @@ export function normalizeFiLevel(text: string): UnifiedLevel {
   // Finnish: Noudata tavanomaista varovaisuutta = Exercise normal caution
   return 1;
 }
+
+// --- Tier 2b normalization functions ---
+
+/**
+ * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
+ */
+export function normalizeBeLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('ne pas voyager') || lower.includes('quitter le pays')) return 4;
+  if (lower.includes('déconseillé') || lower.includes('deconseille') || lower.includes('éviter') || lower.includes('eviter')) return 3;
+  if (lower.includes('prudence') || lower.includes('vigilance') || lower.includes('attention')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Denmark (um.dk) Danish advisory text to unified 1-4 scale.
+ */
+export function normalizeDkLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('frarådes alle rejser') || lower.includes('fraraades alle') || lower.includes('forlad landet')) return 4;
+  if (lower.includes('frarådes') || lower.includes('fraraades') || lower.includes('undgå') || lower.includes('undgaa')) return 3;
+  if (lower.includes('skærpet') || lower.includes('skaerpet') || lower.includes('opmærksom') || lower.includes('opmaerksom') || lower.includes('vær forsigtig')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Singapore (mfa.gov.sg) English advisory text to unified 1-4 scale.
+ */
+export function normalizeSgLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('do not travel') || lower.includes('leave immediately') || lower.includes('defer all travel')) return 4;
+  if (lower.includes('travel advisory') || lower.includes('avoid') || lower.includes('reconsider') || lower.includes('defer')) return 3;
+  if (lower.includes('travel notice') || lower.includes('caution') || lower.includes('increased')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Romania (mae.ro) 9-level numeric scale to unified 1-4 scale.
+ */
+export function normalizeRoLevel(level: number): UnifiedLevel {
+  if (level >= 7) return 4;
+  if (level >= 5) return 3;
+  if (level >= 3) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Serbia (mfa.gov.rs) English advisory text to unified 1-4 scale.
+ */
+export function normalizeRsLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('do not travel') || lower.includes('extremely high') || lower.includes('leave immediately')) return 4;
+  if (lower.includes('avoid') || lower.includes('high level') || lower.includes('reconsider')) return 3;
+  if (lower.includes('increased') || lower.includes('caution') || lower.includes('elevated')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Estonia (kriis.ee) Estonian advisory text to unified 1-4 scale.
+ */
+export function normalizeEeLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('mitte reisida') || lower.includes('lahkuda') || lower.includes('vältida igasugust')) return 4;
+  if (lower.includes('vältida') || lower.includes('vaeltida') || lower.includes('hoiduda')) return 3;
+  if (lower.includes('ettevaatlik') || lower.includes('tähelepanelik') || lower.includes('tahelepanelik')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Croatia (mvep.gov.hr) advisory text to unified 1-4 scale.
+ * Supports both English and Croatian text patterns.
+ */
+export function normalizeHrLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('do not travel') || lower.includes('leave') || lower.includes('ne putujte')) return 4;
+  if (lower.includes('avoid') || lower.includes('reconsider') || lower.includes('izbjegavajte')) return 3;
+  if (lower.includes('caution') || lower.includes('oprez') || lower.includes('increased')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Argentina (cancilleria.gob.ar) Spanish advisory text to unified 1-4 scale.
+ */
+export function normalizeArAlert(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('no viaje') || lower.includes('abandone') || lower.includes('evacuación') || lower.includes('evacuacion')) return 4;
+  if (lower.includes('evite') || lower.includes('absténgase') || lower.includes('abstengase') || lower.includes('reconsidere')) return 3;
+  if (lower.includes('precaución') || lower.includes('precaucion') || lower.includes('alerta')) return 2;
+  return 1;
+}
