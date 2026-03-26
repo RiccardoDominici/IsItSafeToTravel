@@ -12,7 +12,9 @@ import AdvisorySection from '../../../components/country/AdvisorySection.astro';
 import TrendChart from '../../../components/country/TrendChart.astro';
 
 import SourcesList from '../../../components/country/SourcesList.astro';
+import RelatedCountries from '../../../components/country/RelatedCountries.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
+import StatsSummary from '../../../components/country/StatsSummary.astro';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
@@ -26,26 +28,34 @@ const t = useTranslations(lang);
 export const getStaticPaths: GetStaticPaths = async () => {
   const countries = loadLatestScores();
   const history = loadHistoricalScores();
+  const sorted = [...countries].sort((a, b) => b.score - a.score);
+  const rankMap = new Map(sorted.map((c, i) => [c.iso3, i + 1]));
 
   return countries.map((country) => ({
     params: { slug: country.iso3.toLowerCase() },
     props: {
       country,
+      allCountries: countries,
       trend: history.get(country.iso3) ?? [],
       pillarTrend: loadPillarHistory(country.iso3),
       scoreDelta: getScoreDelta(country.iso3, history),
+      rank: rankMap.get(country.iso3) ?? 0,
+      totalCountries: countries.length,
     },
   }));
 };
 
 interface Props {
   country: ScoredCountry;
+  allCountries: ScoredCountry[];
   trend: HistoryPoint[];
   pillarTrend: PillarHistoryData | null;
   scoreDelta: { delta: number; period: string } | null;
+  rank: number;
+  totalCountries: number;
 }
 
-const { country, trend, pillarTrend, scoreDelta } = Astro.props;
+const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries } = Astro.props;
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
@@ -58,10 +68,15 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
       { label: t('nav.countries'), href: `/${lang}/` },
       { label: country.name[lang], href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
     ]} />
+    <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
+      &#8635; Dados atualizados diariamente &mdash; &Uacute;ltima atualiza&ccedil;&atilde;o: {new Date().toLocaleDateString('pt-BR', { year: 'numeric', month: 'long', day: 'numeric' })}
+    </p>
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
     <PillarDetailTable pillars={country.pillars} lang={lang} />
   </div>

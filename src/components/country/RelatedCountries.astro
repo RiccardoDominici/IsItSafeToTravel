@@ -1,0 +1,162 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+
+interface Props {
+  country: ScoredCountry;
+  allCountries: ScoredCountry[];
+  lang: Lang;
+}
+
+const { country, allCountries, lang } = Astro.props;
+
+const titles: Record<Lang, { heading: string; region: string; similar: string }> = {
+  en: { heading: 'Related Countries', region: 'In the same region', similar: 'Similar safety scores' },
+  it: { heading: 'Paesi correlati', region: 'Nella stessa regione', similar: 'Punteggi simili' },
+  es: { heading: 'Pa\u00edses relacionados', region: 'En la misma regi\u00f3n', similar: 'Puntuaciones similares' },
+  fr: { heading: 'Pays similaires', region: 'Dans la m\u00eame r\u00e9gion', similar: 'Scores similaires' },
+  pt: { heading: 'Pa\u00edses relacionados', region: 'Na mesma regi\u00e3o', similar: 'Pontua\u00e7\u00f5es similares' },
+};
+
+const t = titles[lang];
+
+// Region mapping by ISO3
+const regionMap: Record<string, string> = {
+  // Europe
+  ALB: 'europe', AND: 'europe', AUT: 'europe', BEL: 'europe', BGR: 'europe',
+  BIH: 'europe', BLR: 'europe', CHE: 'europe', CYP: 'europe', CZE: 'europe',
+  DEU: 'europe', DNK: 'europe', ESP: 'europe', EST: 'europe', FIN: 'europe',
+  FRA: 'europe', GBR: 'europe', GEO: 'europe', GRC: 'europe', HRV: 'europe',
+  HUN: 'europe', IRL: 'europe', ISL: 'europe', ITA: 'europe', KOS: 'europe',
+  LIE: 'europe', LTU: 'europe', LUX: 'europe', LVA: 'europe', MCO: 'europe',
+  MDA: 'europe', MKD: 'europe', MLT: 'europe', MNE: 'europe', NLD: 'europe',
+  NOR: 'europe', POL: 'europe', PRT: 'europe', ROU: 'europe', SRB: 'europe',
+  SVK: 'europe', SVN: 'europe', SWE: 'europe', UKR: 'europe', XKX: 'europe',
+  SMR: 'europe', VAT: 'europe',
+  // Asia
+  AFG: 'asia', BGD: 'asia', BTN: 'asia', BRN: 'asia', KHM: 'asia',
+  CHN: 'asia', IND: 'asia', IDN: 'asia', JPN: 'asia', KAZ: 'asia',
+  KGZ: 'asia', LAO: 'asia', MYS: 'asia', MDV: 'asia', MNG: 'asia',
+  MMR: 'asia', NPL: 'asia', PRK: 'asia', KOR: 'asia', PAK: 'asia',
+  PHL: 'asia', SGP: 'asia', LKA: 'asia', TWN: 'asia', TJK: 'asia',
+  THA: 'asia', TLS: 'asia', TKM: 'asia', UZB: 'asia', VNM: 'asia',
+  HKG: 'asia', MAC: 'asia',
+  // Middle East
+  ARE: 'middle_east', BHR: 'middle_east', IRN: 'middle_east', IRQ: 'middle_east',
+  ISR: 'middle_east', JOR: 'middle_east', KWT: 'middle_east', LBN: 'middle_east',
+  OMN: 'middle_east', PSE: 'middle_east', QAT: 'middle_east', SAU: 'middle_east',
+  SYR: 'middle_east', TUR: 'middle_east', YEM: 'middle_east', AZE: 'middle_east',
+  ARM: 'middle_east',
+  // Africa
+  DZA: 'africa', AGO: 'africa', BEN: 'africa', BWA: 'africa', BFA: 'africa',
+  BDI: 'africa', CPV: 'africa', CMR: 'africa', CAF: 'africa', TCD: 'africa',
+  COM: 'africa', COG: 'africa', COD: 'africa', CIV: 'africa', DJI: 'africa',
+  EGY: 'africa', GNQ: 'africa', ERI: 'africa', SWZ: 'africa', ETH: 'africa',
+  GAB: 'africa', GMB: 'africa', GHA: 'africa', GIN: 'africa', GNB: 'africa',
+  KEN: 'africa', LSO: 'africa', LBR: 'africa', LBY: 'africa', MDG: 'africa',
+  MWI: 'africa', MLI: 'africa', MRT: 'africa', MUS: 'africa', MAR: 'africa',
+  MOZ: 'africa', NAM: 'africa', NER: 'africa', NGA: 'africa', RWA: 'africa',
+  STP: 'africa', SEN: 'africa', SYC: 'africa', SLE: 'africa', SOM: 'africa',
+  ZAF: 'africa', SSD: 'africa', SDN: 'africa', TZA: 'africa', TGO: 'africa',
+  TUN: 'africa', UGA: 'africa', ZMB: 'africa', ZWE: 'africa',
+  // Americas
+  ARG: 'americas', ATG: 'americas', BHS: 'americas', BRB: 'americas', BLZ: 'americas',
+  BOL: 'americas', BRA: 'americas', CAN: 'americas', CHL: 'americas', COL: 'americas',
+  CRI: 'americas', CUB: 'americas', DMA: 'americas', DOM: 'americas', ECU: 'americas',
+  SLV: 'americas', GRD: 'americas', GTM: 'americas', GUY: 'americas', HTI: 'americas',
+  HND: 'americas', JAM: 'americas', MEX: 'americas', NIC: 'americas', PAN: 'americas',
+  PRY: 'americas', PER: 'americas', KNA: 'americas', LCA: 'americas', VCT: 'americas',
+  SUR: 'americas', TTO: 'americas', USA: 'americas', URY: 'americas', VEN: 'americas',
+  // Oceania
+  AUS: 'oceania', FJI: 'oceania', KIR: 'oceania', MHL: 'oceania', FSM: 'oceania',
+  NRU: 'oceania', NZL: 'oceania', PLW: 'oceania', PNG: 'oceania', WSM: 'oceania',
+  SLB: 'oceania', TON: 'oceania', TUV: 'oceania', VUT: 'oceania',
+};
+
+function getRegion(iso3: string): string {
+  return regionMap[iso3] ?? 'other';
+}
+
+// Get score color class based on score value
+function getScoreBadgeClasses(score: number): string {
+  if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
+  if (score >= 4) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+  return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+}
+
+const currentRegion = getRegion(country.iso3);
+const others = allCountries.filter(c => c.iso3 !== country.iso3);
+
+// Same region, closest scores
+const sameRegion = others
+  .filter(c => getRegion(c.iso3) === currentRegion)
+  .sort((a, b) => Math.abs(a.score - country.score) - Math.abs(b.score - country.score))
+  .slice(0, 3);
+
+// Similar scores globally (excluding those already in sameRegion)
+const sameRegionIsos = new Set(sameRegion.map(c => c.iso3));
+const similarScore = others
+  .filter(c => !sameRegionIsos.has(c.iso3))
+  .sort((a, b) => Math.abs(a.score - country.score) - Math.abs(b.score - country.score))
+  .slice(0, 3);
+
+const r = routes[lang];
+function countryUrl(iso3: string): string {
+  return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
+}
+---
+
+{(sameRegion.length > 0 || similarScore.length > 0) && (
+  <section class="py-6 px-4 max-w-2xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-5">
+      {t.heading}
+    </h2>
+
+    {sameRegion.length > 0 && (
+      <div class="mb-5">
+        <h3 class="text-sm font-semibold text-sand-500 dark:text-sand-400 uppercase tracking-wide mb-3">
+          {t.region}
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {sameRegion.map((c) => (
+            <a
+              href={countryUrl(c.iso3)}
+              class="flex items-center justify-between gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+            >
+              <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate">
+                {c.name[lang]}
+              </span>
+              <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
+                {c.score.toFixed(1)}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    {similarScore.length > 0 && (
+      <div>
+        <h3 class="text-sm font-semibold text-sand-500 dark:text-sand-400 uppercase tracking-wide mb-3">
+          {t.similar}
+        </h3>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {similarScore.map((c) => (
+            <a
+              href={countryUrl(c.iso3)}
+              class="flex items-center justify-between gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+            >
+              <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate">
+                {c.name[lang]}
+              </span>
+              <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
+                {c.score.toFixed(1)}
+              </span>
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+  </section>
+)}
