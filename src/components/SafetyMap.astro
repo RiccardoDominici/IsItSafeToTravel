@@ -245,11 +245,12 @@ const countryRoute = routes[lang].country;
     }
 
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    const maxZoom = isTouchDevice ? 20 : 8;
 
     // Zoom behavior
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
-      .scaleExtent([1, 8])
+      .scaleExtent([1, maxZoom])
       .translateExtent([
         [0, 0],
         [width, height],
@@ -257,7 +258,7 @@ const countryRoute = routes[lang].country;
       .filter((event: any) => {
         // Always allow programmatic zoom (buttons)
         if (!event.type) return true;
-        // Allow zoom buttons (click on non-country elements)
+        // Disable double-click zoom
         if (event.type === 'dblclick') return false;
 
         // Wheel: require Ctrl/Meta key
@@ -270,14 +271,8 @@ const countryRoute = routes[lang].country;
         // Touch: require two fingers for pan/zoom
         if (event.type === 'touchstart' || event.type === 'touchmove') {
           if (event.touches && event.touches.length >= 2) return true;
-          // Single finger: block D3 zoom/pan (let page scroll through)
-          // Don't show overlay on touchstart (could be a tap); show on touchmove (drag attempt)
-          if (event.touches && event.touches.length === 1) {
-            if (event.type === 'touchmove') {
-              showZoomGuard(translations.twoFinger);
-            }
-            return false;
-          }
+          // Single finger: block entirely so browser handles native scroll
+          return false;
         }
 
         // Allow mouse drag for panning when zoomed in (desktop only)
@@ -287,11 +282,37 @@ const countryRoute = routes[lang].country;
       })
       .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
         g.attr('transform', event.transform.toString());
+        // On mobile, keep stroke-width visually constant regardless of zoom level
+        if (isTouchDevice) {
+          g.selectAll<SVGPathElement, any>('.country-path')
+            .attr('stroke-width', 0.5 / event.transform.k);
+        }
       });
 
     svg.call(zoom);
-    // Prevent default touch action so single-finger scroll passes through to page
-    svg.style('touch-action', 'pan-y');
+
+    // On touch devices: let the browser handle single-finger scroll natively,
+    // but allow two-finger pinch-zoom to be captured by D3.
+    // 'pan-y pinch-zoom' tells the browser: "you handle vertical scroll,
+    // but don't handle pinch — let JS (D3) do it."
+    if (isTouchDevice) {
+      svg.style('touch-action', 'pan-y');
+      // Show two-finger hint on single-finger drag attempts
+      const svgEl = svg.node()!;
+      let touchMoveCount = 0;
+      svgEl.addEventListener('touchstart', (e: TouchEvent) => {
+        touchMoveCount = 0;
+      }, { passive: true });
+      svgEl.addEventListener('touchmove', (e: TouchEvent) => {
+        if (e.touches.length === 1) {
+          touchMoveCount++;
+          // Show hint after a few move events (distinguish drag from scroll)
+          if (touchMoveCount === 3) {
+            showZoomGuard(translations.twoFinger);
+          }
+        }
+      }, { passive: true });
+    }
 
     // Zoom buttons
     const zoomInBtn = document.getElementById('zoom-in');
