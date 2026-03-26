@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: verifying
-stopped_at: Completed 31-02-PLAN.md
-last_updated: "2026-03-26T20:24:11.331Z"
+status: executing
+stopped_at: Completed 32-01-PLAN.md
+last_updated: "2026-03-26T20:38:08.571Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
   completed_phases: 12
-  total_plans: 26
-  completed_plans: 30
+  total_plans: 28
+  completed_plans: 31
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 31 — tier-2-html-sources-batch-2
+**Current focus:** Phase 32 — tier-3-complex-sources-batch-1
 
 ## Current Position
 
-Phase: 32
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 32 (tier-3-complex-sources-batch-1) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-03-26
 
 Progress: [░░░░░░░░░░] 0%
@@ -60,6 +60,7 @@ Recent decisions affecting current work:
 - [Phase 30]: Used cheerio HTML/XML parsing for all Tier 2a sources; Austria BMEIA JS object is most reliable source
 - [Phase 31]: Extended advisory level aggregation and info loading for tier2b sources in engine.ts
 - [Phase 31]: Followed tier2a pattern exactly for tier2b fetcher module structure
+- [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 
 ### Pending Todos
 
@@ -86,10 +87,11 @@ None yet.
 | Phase 30 P02 | 211s | 2 tasks | 3 files |
 | Phase 31 P01 | 121s | 2 tasks | 5 files |
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
+| Phase 32 P01 | 82s | 2 tasks | 4 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T20:20:30.051Z
-Stopped at: Completed 31-02-PLAN.md
+Last session: 2026-03-26T20:38:08.567Z
+Stopped at: Completed 32-01-PLAN.md
 Resume file: None

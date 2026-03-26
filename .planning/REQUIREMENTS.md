@@ -35,12 +35,12 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### Complex Sources (Tier 3)
 
-- [ ] **CPLX-01**: Pipeline fetches Italy advisory data from Viaggiare Sicuri daily
-- [ ] **CPLX-02**: Pipeline fetches Spain advisory data from exteriores.gob.es daily
-- [ ] **CPLX-03**: Pipeline fetches South Korea advisory levels from 0404.go.kr daily
-- [ ] **CPLX-04**: Pipeline fetches Taiwan advisory levels from BOCA daily
-- [ ] **CPLX-05**: Pipeline fetches China advisory data from cs.mfa.gov.cn daily
-- [ ] **CPLX-06**: Pipeline fetches India advisory data from MEA daily
+- [x] **CPLX-01**: Pipeline fetches Italy advisory data from Viaggiare Sicuri daily
+- [x] **CPLX-02**: Pipeline fetches Spain advisory data from exteriores.gob.es daily
+- [x] **CPLX-03**: Pipeline fetches South Korea advisory levels from 0404.go.kr daily
+- [x] **CPLX-04**: Pipeline fetches Taiwan advisory levels from BOCA daily
+- [x] **CPLX-05**: Pipeline fetches China advisory data from cs.mfa.gov.cn daily
+- [x] **CPLX-06**: Pipeline fetches India advisory data from MEA daily
 - [ ] **CPLX-07**: Pipeline fetches Switzerland advisory data from EDA daily
 - [ ] **CPLX-08**: Pipeline fetches Sweden advisory data from regeringen.se daily
 - [ ] **CPLX-09**: Pipeline fetches Norway advisory data from regjeringen.no daily
@@ -125,12 +125,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | HTML-14 | Phase 31 | Complete |
 | HTML-15 | Phase 31 | Complete |
 | HTML-16 | Phase 31 | Complete |
-| CPLX-01 | Phase 32 | Pending |
-| CPLX-02 | Phase 32 | Pending |
-| CPLX-03 | Phase 32 | Pending |
-| CPLX-04 | Phase 32 | Pending |
-| CPLX-05 | Phase 32 | Pending |
-| CPLX-06 | Phase 32 | Pending |
+| CPLX-01 | Phase 32 | Complete |
+| CPLX-02 | Phase 32 | Complete |
+| CPLX-03 | Phase 32 | Complete |
+| CPLX-04 | Phase 32 | Complete |
+| CPLX-05 | Phase 32 | Complete |
+| CPLX-06 | Phase 32 | Complete |
 | CPLX-07 | Phase 33 | Pending |
 | CPLX-08 | Phase 33 | Pending |
 | CPLX-09 | Phase 33 | Pending |
