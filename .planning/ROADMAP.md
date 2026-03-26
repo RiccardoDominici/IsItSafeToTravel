@@ -283,7 +283,7 @@ Plans:
 
 Plans:
 - [x] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [x] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 29: Tier 1 API Sources
 **Goal**: Pipeline fetches advisory data from 4 countries with clean REST/JSON/XML APIs and establishes the normalization foundation that all subsequent sources will use
@@ -297,7 +297,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
+- [x] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
 - [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
 
 ### Phase 30: Tier 2 HTML Sources Batch 1
@@ -454,7 +454,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 25. WHO DONs Fetcher | v3.0 | 2/2 | Complete | 2026-03-23 |
 | 26. Validation, Documentation, and UX | v3.0 | 3/3 | Complete | 2026-03-23 |
 | 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
-| 28. Cleanup | v4.0 | 1/2 | In Progress|  |
+| 28. Cleanup | v4.0 | 2/2 | Complete   | 2026-03-26 |
 | 29. Tier 1 API Sources | v4.0 | 0/0 | Not started | - |
 | 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/0 | Not started | - |
 | 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/0 | Not started | - |
