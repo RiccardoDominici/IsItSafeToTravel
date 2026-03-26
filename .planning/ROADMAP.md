@@ -72,7 +72,7 @@
 
 **Milestone Goal:** Eliminate anglophone bias by integrating government travel advisories from 30+ countries worldwide, covering all continents and geopolitical perspectives, with proper normalization, CI automation, documentation, and calibration.
 
-- [ ] **Phase 28: Cleanup** — Remove WHO DONs and GDELT broken sources to simplify codebase before expansion
+- [x] **Phase 28: Cleanup** — Remove WHO DONs and GDELT broken sources to simplify codebase before expansion
 - [ ] **Phase 29: Tier 1 API Sources** — Germany, Netherlands, Japan, Slovakia advisory fetchers plus normalization foundation
 - [ ] **Phase 30: Tier 2 HTML Sources Batch 1** — France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines
 - [ ] **Phase 31: Tier 2 HTML Sources Batch 2** — Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, Argentina
@@ -297,8 +297,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [x] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 29-01-PLAN.md — Normalization module, type extensions, config updates for DE/NL/JP/SK advisory sources
+- [ ] 29-02-PLAN.md — Tier 1 fetchers (Germany, Netherlands, Japan, Slovakia) and pipeline registration
 
 ### Phase 30: Tier 2 HTML Sources Batch 1
 **Goal**: Pipeline scrapes advisory data from 8 countries with structured HTML pages, expanding geographic coverage to Western Europe, Oceania, South America, and Asia
@@ -312,8 +312,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 30-01-PLAN.md
+- [ ] 30-02-PLAN.md
 
 ### Phase 31: Tier 2 HTML Sources Batch 2
 **Goal**: Pipeline scrapes advisory data from 8 more countries, completing Tier 2 coverage across Northern Europe, Southeast Asia, Eastern Europe, and South America
@@ -327,8 +327,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 31-01-PLAN.md
+- [ ] 31-02-PLAN.md
 
 ### Phase 32: Tier 3 Complex Sources Batch 1
 **Goal**: Pipeline extracts advisory data from 6 countries with complex scraping challenges (dynamic rendering, non-Latin scripts, text-based levels requiring pattern matching)
@@ -342,8 +342,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 32-01-PLAN.md
+- [ ] 32-02-PLAN.md
 
 ### Phase 33: Tier 3 Complex Sources Batch 2
 **Goal**: Pipeline extracts advisory data from 7 more European countries with complex source structures, completing the full 30+ source expansion
@@ -357,8 +357,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 33-01-PLAN.md
+- [ ] 33-02-PLAN.md
 
 ### Phase 34: Scoring Integration
 **Goal**: Scoring engine properly weights all 34+ advisory sources in the Conflict pillar, with source-tiers configuration reflecting the expanded source set
@@ -372,8 +372,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 34-01-PLAN.md
+- [ ] 34-02-PLAN.md
 
 ### Phase 35: CI/CD Automation
 **Goal**: All new advisory sources are fetched automatically via GitHub Actions daily with staggered scheduling and graceful failure handling
@@ -387,8 +387,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 35-01-PLAN.md
+- [ ] 35-02-PLAN.md
 
 ### Phase 36: Documentation
 **Goal**: Users can understand where scores come from, see which advisories apply to each country, and find all advisory sources listed on the sources page
@@ -401,8 +401,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 36-01-PLAN.md
+- [ ] 36-02-PLAN.md
 **UI hint**: yes
 
 ### Phase 37: Calibration & Validation
@@ -417,8 +417,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 28-01-PLAN.md — Remove GDELT and WHO DONs fetchers, update weights/config/normalize/engine, fix tests
-- [ ] 28-02-PLAN.md — Update i18n strings, methodology pages, docs, verify score stability
+- [ ] 37-01-PLAN.md
+- [ ] 37-02-PLAN.md
 
 ## Progress
 
@@ -455,12 +455,12 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 26. Validation, Documentation, and UX | v3.0 | 3/3 | Complete | 2026-03-23 |
 | 27. SEO & AI Search Optimization | v3.0 | 3/3 | Complete | 2026-03-25 |
 | 28. Cleanup | v4.0 | 2/2 | Complete    | 2026-03-26 |
-| 29. Tier 1 API Sources | v4.0 | 0/0 | Not started | - |
-| 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/0 | Not started | - |
-| 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/0 | Not started | - |
-| 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/0 | Not started | - |
-| 33. Tier 3 Complex Sources Batch 2 | v4.0 | 0/0 | Not started | - |
-| 34. Scoring Integration | v4.0 | 0/0 | Not started | - |
-| 35. CI/CD Automation | v4.0 | 0/0 | Not started | - |
-| 36. Documentation | v4.0 | 0/0 | Not started | - |
-| 37. Calibration & Validation | v4.0 | 0/0 | Not started | - |
+| 29. Tier 1 API Sources | v4.0 | 0/2 | Not started | - |
+| 30. Tier 2 HTML Sources Batch 1 | v4.0 | 0/2 | Not started | - |
+| 31. Tier 2 HTML Sources Batch 2 | v4.0 | 0/2 | Not started | - |
+| 32. Tier 3 Complex Sources Batch 1 | v4.0 | 0/2 | Not started | - |
+| 33. Tier 3 Complex Sources Batch 2 | v4.0 | 0/2 | Not started | - |
+| 34. Scoring Integration | v4.0 | 0/2 | Not started | - |
+| 35. CI/CD Automation | v4.0 | 0/2 | Not started | - |
+| 36. Documentation | v4.0 | 0/2 | Not started | - |
+| 37. Calibration & Validation | v4.0 | 0/2 | Not started | - |
