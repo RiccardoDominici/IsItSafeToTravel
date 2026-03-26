@@ -312,8 +312,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 30-01-PLAN.md
-- [ ] 30-02-PLAN.md
+- [ ] 30-01-PLAN.md — Install cheerio, extend types/normalization/engine for 8 Tier 2a sources
+- [ ] 30-02-PLAN.md — Create advisories-tier2a.ts with 8 sub-fetchers and pipeline registration
 
 ### Phase 31: Tier 2 HTML Sources Batch 2
 **Goal**: Pipeline scrapes advisory data from 8 more countries, completing Tier 2 coverage across Northern Europe, Southeast Asia, Eastern Europe, and South America
