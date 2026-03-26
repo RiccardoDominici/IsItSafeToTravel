@@ -327,8 +327,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 31-01-PLAN.md
-- [ ] 31-02-PLAN.md
+- [ ] 31-01-PLAN.md — Extend types/normalization/engine/config for 8 Tier 2b sources
+- [ ] 31-02-PLAN.md — Create advisories-tier2b.ts with 8 sub-fetchers and pipeline wiring
 
 ### Phase 32: Tier 3 Complex Sources Batch 1
 **Goal**: Pipeline extracts advisory data from 6 countries with complex scraping challenges (dynamic rendering, non-Latin scripts, text-based levels requiring pattern matching)
