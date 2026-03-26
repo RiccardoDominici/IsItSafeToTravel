@@ -16,14 +16,14 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### Structured HTML Sources (Tier 2)
 
-- [ ] **HTML-01**: Pipeline fetches France advisory levels from diplomatie.gouv.fr RSS/HTML daily
-- [ ] **HTML-02**: Pipeline fetches New Zealand advisory levels from SafeTravel.govt.nz daily
-- [ ] **HTML-03**: Pipeline fetches Ireland security ratings from DFA daily
-- [ ] **HTML-04**: Pipeline fetches Finland advisory levels from um.fi daily
-- [ ] **HTML-05**: Pipeline fetches Hong Kong OTA alert levels daily
-- [ ] **HTML-06**: Pipeline fetches Brazil advisory levels from Itamaraty daily
-- [ ] **HTML-07**: Pipeline fetches Austria advisory levels from BMEIA daily
-- [ ] **HTML-08**: Pipeline fetches Philippines alert levels from DFA daily
+- [x] **HTML-01**: Pipeline fetches France advisory levels from diplomatie.gouv.fr RSS/HTML daily
+- [x] **HTML-02**: Pipeline fetches New Zealand advisory levels from SafeTravel.govt.nz daily
+- [x] **HTML-03**: Pipeline fetches Ireland security ratings from DFA daily
+- [x] **HTML-04**: Pipeline fetches Finland advisory levels from um.fi daily
+- [x] **HTML-05**: Pipeline fetches Hong Kong OTA alert levels daily
+- [x] **HTML-06**: Pipeline fetches Brazil advisory levels from Itamaraty daily
+- [x] **HTML-07**: Pipeline fetches Austria advisory levels from BMEIA daily
+- [x] **HTML-08**: Pipeline fetches Philippines alert levels from DFA daily
 - [ ] **HTML-09**: Pipeline fetches Belgium advisory levels from diplomatie.belgium.be daily
 - [ ] **HTML-10**: Pipeline fetches Denmark advisory data from um.dk daily
 - [ ] **HTML-11**: Pipeline fetches Singapore advisory notices from MFA daily
@@ -109,14 +109,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-03 | Phase 29 | Complete |
 | API-04 | Phase 29 | Complete |
 | NORM-01 | Phase 29 | Complete |
-| HTML-01 | Phase 30 | Pending |
-| HTML-02 | Phase 30 | Pending |
-| HTML-03 | Phase 30 | Pending |
-| HTML-04 | Phase 30 | Pending |
-| HTML-05 | Phase 30 | Pending |
-| HTML-06 | Phase 30 | Pending |
-| HTML-07 | Phase 30 | Pending |
-| HTML-08 | Phase 30 | Pending |
+| HTML-01 | Phase 30 | Complete |
+| HTML-02 | Phase 30 | Complete |
+| HTML-03 | Phase 30 | Complete |
+| HTML-04 | Phase 30 | Complete |
+| HTML-05 | Phase 30 | Complete |
+| HTML-06 | Phase 30 | Complete |
+| HTML-07 | Phase 30 | Complete |
+| HTML-08 | Phase 30 | Complete |
 | HTML-09 | Phase 31 | Pending |
 | HTML-10 | Phase 31 | Pending |
 | HTML-11 | Phase 31 | Pending |
