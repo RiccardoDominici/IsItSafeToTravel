@@ -1,0 +1,100 @@
+name: SEO IndexNow Submission
+
+on:
+  workflow_run:
+    workflows: ["Deploy to Cloudflare Pages"]
+    types: [completed]
+  workflow_dispatch:
+
+jobs:
+  index-now:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Copy scores to public
+        run: |
+          if [ -f "data/scores/latest.json" ]; then
+            cp data/scores/latest.json public/scores.json
+          fi
+
+      - name: Build site
+        run: npm run build
+
+      - name: Extract URLs from sitemap and submit to IndexNow
+        run: |
+          SITEMAP_FILE="dist/client/sitemap-0.xml"
+
+          if [ ! -f "$SITEMAP_FILE" ]; then
+            echo "::error::Sitemap not found at $SITEMAP_FILE"
+            exit 1
+          fi
+
+          # Extract all <loc> URLs from the sitemap
+          URLS=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_FILE")
+          URL_COUNT=$(echo "$URLS" | wc -l | tr -d ' ')
+
+          echo "Found $URL_COUNT URLs in sitemap"
+          echo "$URLS"
+
+          # Build JSON array of URLs
+          URL_JSON=$(echo "$URLS" | jq -R -s 'split("\n") | map(select(length > 0))')
+
+          # Submit in batches of 10,000
+          BATCH_SIZE=10000
+          TOTAL=$(echo "$URL_JSON" | jq 'length')
+          OFFSET=0
+
+          while [ "$OFFSET" -lt "$TOTAL" ]; do
+            BATCH=$(echo "$URL_JSON" | jq --argjson offset "$OFFSET" --argjson size "$BATCH_SIZE" '.[$offset:$offset+$size]')
+            BATCH_COUNT=$(echo "$BATCH" | jq 'length')
+
+            echo "Submitting batch of $BATCH_COUNT URLs (offset $OFFSET)..."
+
+            PAYLOAD=$(jq -n \
+              --arg host "isitsafetotravel.org" \
+              --arg key "b4f7e2a1d9c8365f" \
+              --arg keyLocation "https://isitsafetotravel.org/b4f7e2a1d9c8365f.txt" \
+              --argjson urlList "$BATCH" \
+              '{host: $host, key: $key, keyLocation: $keyLocation, urlList: $urlList}')
+
+            echo "Payload:"
+            echo "$PAYLOAD" | jq .
+
+            # Submit to IndexNow via api.indexnow.org
+            HTTP_STATUS=$(curl -s -o /tmp/indexnow-response.txt -w "%{http_code}" \
+              -X POST "https://api.indexnow.org/IndexNow" \
+              -H "Content-Type: application/json; charset=utf-8" \
+              -d "$PAYLOAD")
+
+            RESPONSE=$(cat /tmp/indexnow-response.txt)
+            echo "IndexNow response: HTTP $HTTP_STATUS"
+            echo "$RESPONSE"
+
+            if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
+              echo "Batch submitted successfully"
+            else
+              echo "::warning::IndexNow returned HTTP $HTTP_STATUS for batch at offset $OFFSET"
+            fi
+
+            OFFSET=$((OFFSET + BATCH_SIZE))
+          done
+
+      - name: Ping Google sitemap
+        run: |
+          echo "Pinging Google with sitemap URL..."
+          curl -s "https://www.google.com/ping?sitemap=https://isitsafetotravel.org/sitemap-index.xml"
+          echo ""
+          echo "Google sitemap ping complete"
