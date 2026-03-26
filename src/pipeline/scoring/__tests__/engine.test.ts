@@ -82,7 +82,7 @@ describe('normalizeIndicators', () => {
 const TEST_WEIGHTS: WeightsConfig = {
   version: '1.0.0',
   pillars: [
-    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'gdelt_instability'] },
+    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall'] },
     { name: 'crime', weight: 0.20, indicators: ['gpi_safety_security', 'advisory_level_us', 'advisory_level_uk'] },
     { name: 'health', weight: 0.20, indicators: ['inform_health', 'inform_epidemic'] },
     { name: 'governance', weight: 0.20, indicators: ['inform_governance', 'gpi_militarisation'] },
@@ -102,7 +102,6 @@ describe('computeCountryScore', () => {
   it('computes correct score when all indicators at 0.8 normalized', () => {
     // Create indicators that will normalize to ~0.8
     // gpi_overall: inverse, min=1, max=4 => value=1.6 => norm = (1.6-1)/(4-1)=0.2 => inverse=0.8
-    // gdelt_instability: inverse, min=0, max=1.0 => value=0.2 => norm=0.2 => inverse=0.8
     // gpi_safety_security: inverse, min=1, max=5 => value=1.8 => norm=(1.8-1)/(5-1)=0.2 => inverse=0.8
     // advisory_level_us: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
     // advisory_level_uk: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
@@ -114,7 +113,6 @@ describe('computeCountryScore', () => {
     // inform_climate: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'gdelt_instability', value: 0.2, year: 2025, source: 'gdelt' },
       { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1.8, year: 2025, source: 'gpi' },
       { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state' },
       { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo' },
@@ -141,23 +139,28 @@ describe('computeCountryScore', () => {
   });
 
   it('handles missing indicators with reduced dataCompleteness', () => {
-    // Only provide conflict indicators, leave others empty
+    // Only provide one conflict indicator and one health indicator, leave others empty
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform' },
     ];
 
     const result = computeCountryScore('TST', indicators, TEST_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
 
     assert.ok(result.dataCompleteness < 1.0, 'dataCompleteness should be less than 1.0');
     assert.ok(result.score >= 1 && result.score <= 10, 'Score should be in 1-10 range');
-    // Conflict pillar: 1 of 2 indicators
+    // Conflict pillar: 1 of 1 indicator = complete
     const conflict = result.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.dataCompleteness > 0);
-    assert.ok(conflict.dataCompleteness < 1.0);
-    // Other pillars: 0 indicators
+    assert.equal(conflict.dataCompleteness, 1.0);
+    // Health pillar: 1 of 2 indicators = partial
     const health = result.pillars.find((p) => p.name === 'health')!;
-    assert.equal(health.dataCompleteness, 0);
-    assert.equal(health.score, 0.5); // neutral default
+    assert.ok(health.dataCompleteness > 0);
+    assert.ok(health.dataCompleteness < 1.0);
+    // Governance pillar: 0 of 2 indicators
+    const governance = result.pillars.find((p) => p.name === 'governance')!;
+    assert.equal(governance.dataCompleteness, 0);
+    assert.equal(governance.score, 0.5); // neutral default
   });
 
   it('produces neutral score 5.0 with zero indicators', () => {
@@ -224,7 +227,8 @@ const TEST_SOURCES_CONFIG: SourcesConfig = {
     advisories: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
     state: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
     fcdo: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
-    gdelt: { tier: 'signal', maxAgeDays: 14, decayHalfLifeDays: 3 },
+    reliefweb: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
+    gdacs: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
   },
 };
 
@@ -235,8 +239,8 @@ const TIERED_WEIGHTS: WeightsConfig = {
     {
       name: 'conflict',
       weight: 0.30,
-      indicators: ['gpi_overall', 'gdelt_instability'],
-      indicatorWeights: { gpi_overall: 0.50, gdelt_instability: 0.50 },
+      indicators: ['gpi_overall'],
+      indicatorWeights: { gpi_overall: 1.0 },
     },
     {
       name: 'crime',
@@ -269,10 +273,9 @@ const freshTimestamp = new Date().toISOString();
 
 describe('tiered scoring with sourcesConfig', () => {
   it('blends baseline and signal tiers when both have data', () => {
-    // Baseline indicators (gpi) and signal indicators (gdelt) for conflict pillar
+    // Baseline indicators (gpi) and signal indicators (advisories) for conflict/crime pillars
     const indicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'gdelt_instability', value: 0.2, year: 2025, source: 'gdelt', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
@@ -295,7 +298,7 @@ describe('tiered scoring with sourcesConfig', () => {
 
 describe('graceful degradation — baseline only', () => {
   it('produces same score as baseline-only when no signal data is present', () => {
-    // Only baseline indicators (gpi, inform) — no acled/advisories signal data
+    // Only baseline indicators (gpi, inform) — no signal data
     const baselineOnlyIndicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
       { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
@@ -311,7 +314,7 @@ describe('graceful degradation — baseline only', () => {
     // so score should equal pure baseline score
     assert.ok(tieredResult.score >= 1 && tieredResult.score <= 10);
 
-    // Conflict pillar: only gpi_overall (baseline), no gdelt (signal)
+    // Conflict pillar: only gpi_overall (baseline), no signal indicators
     // So signal completeness = 0 for conflict pillar => pure baseline
     const conflict = tieredResult.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.score > 0, 'Conflict pillar should have a non-zero score from baseline GPI data');
@@ -406,17 +409,6 @@ describe('tiered scoring integration', () => {
       ],
     });
 
-    // Signal source: gdelt (recent, 2 days old)
-    const twoDaysAgo = new Date(Date.now() - 2 * 86400000).toISOString();
-    rawData.set('gdelt', {
-      source: 'gdelt',
-      fetchedAt: twoDaysAgo,
-      indicators: [
-        { countryIso3: 'USA', indicatorName: 'gdelt_instability', value: 0.1, year: 2025, source: 'gdelt', fetchedAt: twoDaysAgo },
-        { countryIso3: 'AFG', indicatorName: 'gdelt_instability', value: 0.8, year: 2025, source: 'gdelt', fetchedAt: twoDaysAgo },
-      ],
-    });
-
     const results = computeAllScores(rawData, TIERED_WEIGHTS);
 
     const usa = results.find(r => r.iso3 === 'USA');
@@ -432,8 +424,8 @@ describe('tiered scoring integration', () => {
 
 describe('stale signal data is discounted', () => {
   it('stale signal data produces nearly identical score to baseline-only', () => {
-    // Stale signal timestamp: 30 days ago (past gdelt maxAgeDays=14)
-    const staleDate = new Date(Date.now() - 30 * 86_400_000).toISOString();
+    // Stale signal timestamp: 90 days ago (past reliefweb maxAgeDays=60)
+    const staleDate = new Date(Date.now() - 90 * 86_400_000).toISOString();
 
     const baselineOnlyIndicators: RawIndicator[] = [
       { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
@@ -446,8 +438,8 @@ describe('stale signal data is discounted', () => {
 
     const withStaleSignal: RawIndicator[] = [
       ...baselineOnlyIndicators,
-      // Stale signal data: past maxAgeDays for gdelt (14 days), should get weight 0
-      { countryIso3: 'TST', indicatorName: 'gdelt_instability', value: 0.9, year: 2025, source: 'gdelt', fetchedAt: staleDate },
+      // Stale signal data: past maxAgeDays for reliefweb (60 days), should get weight 0
+      { countryIso3: 'TST', indicatorName: 'reliefweb_active_disasters', value: 8, year: 2025, source: 'reliefweb', fetchedAt: staleDate },
     ];
 
     const baselineResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);

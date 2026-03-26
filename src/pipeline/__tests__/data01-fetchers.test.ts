@@ -15,12 +15,11 @@ describe('DATA-01: fetcher module contracts', () => {
     assert.equal(typeof mod.fetchAllSources, 'function', 'fetchAllSources should be exported');
   });
 
-  it('exports individual fetchers (inform, gpi, advisories, gdelt)', async () => {
+  it('exports individual fetchers (inform, gpi, advisories)', async () => {
     const mod = await import('../fetchers/index.js');
     assert.equal(typeof mod.fetchInform, 'function', 'fetchInform should be exported');
     assert.equal(typeof mod.fetchGpi, 'function', 'fetchGpi should be exported');
     assert.equal(typeof mod.fetchAdvisories, 'function', 'fetchAdvisories should be exported');
-    assert.equal(typeof mod.fetchGdelt, 'function', 'fetchGdelt should be exported');
   });
 
   it('fetchAllSources uses Promise.allSettled for fault isolation', async () => {

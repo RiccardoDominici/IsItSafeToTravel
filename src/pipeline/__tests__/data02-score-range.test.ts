@@ -6,7 +6,7 @@ import type { RawIndicator, WeightsConfig, CountryEntry } from '../types.js';
 const WEIGHTS: WeightsConfig = {
   version: '1.0.0',
   pillars: [
-    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'gdelt_instability'] },
+    { name: 'conflict', weight: 0.20, indicators: ['gpi_overall'] },
     { name: 'crime', weight: 0.20, indicators: ['gpi_safety_security', 'advisory_level_us', 'advisory_level_uk'] },
     { name: 'health', weight: 0.20, indicators: ['inform_health', 'inform_epidemic'] },
     { name: 'governance', weight: 0.20, indicators: ['inform_governance', 'gpi_militarisation'] },
@@ -33,7 +33,6 @@ describe('DATA-02: composite score is always in 1-10 range', () => {
     // All indicators at maximum danger values
     const indicators: RawIndicator[] = [
       makeIndicator('gpi_overall', 4.0),        // worst
-      makeIndicator('gdelt_instability', 1.0),  // worst
       makeIndicator('gpi_safety_security', 5.0), // worst
       makeIndicator('advisory_level_us', 4),     // worst
       makeIndicator('advisory_level_uk', 4),     // worst
@@ -53,7 +52,6 @@ describe('DATA-02: composite score is always in 1-10 range', () => {
     // All indicators at maximum safety values
     const indicators: RawIndicator[] = [
       makeIndicator('gpi_overall', 1.0),        // best
-      makeIndicator('gdelt_instability', 0),    // best
       makeIndicator('gpi_safety_security', 1.0), // best
       makeIndicator('advisory_level_us', 1),     // best
       makeIndicator('advisory_level_uk', 0),     // best
