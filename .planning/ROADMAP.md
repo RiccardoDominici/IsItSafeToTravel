@@ -387,8 +387,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 35-01-PLAN.md — Staggered batch execution in fetchAllSources (5 batches with 5s delays)
-- [ ] 35-02-PLAN.md — Workflow timeout increase to 30min and enhanced output validation
+- [x] 35-01-PLAN.md — Staggered batch fetching and enhanced workflow reporting
+- [ ] 35-02-PLAN.md
 
 ### Phase 36: Documentation
 **Goal**: Users can understand where scores come from, see which advisories apply to each country, and find all advisory sources listed on the sources page
@@ -461,6 +461,6 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 32. Tier 3 Complex Sources Batch 1 | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 33. Tier 3 Complex Sources Batch 2 | v4.0 | 2/2 | Complete    | 2026-03-27 |
 | 34. Scoring Integration | v4.0 | 0/2 | Complete    | 2026-03-27 |
-| 35. CI/CD Automation | v4.0 | 0/2 | Not started | - |
+| 35. CI/CD Automation | v4.0 | 1/2 | In progress | - |
 | 36. Documentation | v4.0 | 0/2 | Not started | - |
 | 37. Calibration & Validation | v4.0 | 0/2 | Not started | - |
