@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 32-02-PLAN.md
-last_updated: "2026-03-27T11:22:22.031Z"
+stopped_at: Completed 37-01-PLAN.md
+last_updated: "2026-03-27T11:38:00.000Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 22
   completed_phases: 17
   total_plans: 36
-  completed_plans: 40
-  percent: 0
+  completed_plans: 41
+  percent: 95
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 36 — documentation
+**Current focus:** Phase 37 — calibration and validation
 
 ## Current Position
 
 Phase: 37
-Plan: Not started
-Status: Executing Phase 36
+Plan: 37-01 complete, 37-02 pending
+Status: Executing Phase 37
 Last activity: 2026-03-27
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [█████████░] 95%
 
 ## Performance Metrics
 
@@ -63,6 +63,8 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
+- [Phase 37]: Calibration MAD of 0.32 confirms good scoring accuracy; 79% within 0.5 of reference
+- [Phase 37]: 3 weight adjustment proposals: advisory rebalancing, pillar floor mechanism, regional health defaults
 
 ### Pending Todos
 
@@ -91,10 +93,11 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
+| Phase 37 P01 | 3min | 3 tasks | 3 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-26
-Last session: 2026-03-26T20:45:15.151Z
-Stopped at: Completed 32-02-PLAN.md
+Last activity: 2026-03-27
+Last session: 2026-03-27T11:38:00.000Z
+Stopped at: Completed 37-01-PLAN.md
 Resume file: None
