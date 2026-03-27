@@ -58,6 +58,10 @@ const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
+const advisorySources = Object.keys(country.advisories || {}).map(key => ({
+  key,
+  name: t(`country.advisory.${key}` as any),
+}));
 ---
 <Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -73,7 +77,7 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
     <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} />
-    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} advisorySources={advisorySources} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
     <PillarDetailTable pillars={country.pillars} lang={lang} />

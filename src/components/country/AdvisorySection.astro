@@ -43,12 +43,14 @@ const showLessText = t('country.advisory.show_less' as any);
     <div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         {primaryAdvisories.map(({ key, advisory }) => (
-          <AdvisoryCard
-            advisory={advisory}
-            sourceName={t(`country.advisory.${key}` as any)}
-            sourceKey={key}
-            lang={lang}
-          />
+          <div data-advisory-source={key}>
+            <AdvisoryCard
+              advisory={advisory}
+              sourceName={t(`country.advisory.${key}` as any)}
+              sourceKey={key}
+              lang={lang}
+            />
+          </div>
         ))}
       </div>
 
@@ -64,12 +66,14 @@ const showLessText = t('country.advisory.show_less' as any);
           </button>
           <div id="additional-advisories" class="hidden mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
             {additionalAdvisories.map(({ key, advisory }) => (
-              <AdvisoryCard
-                advisory={advisory}
-                sourceName={t(`country.advisory.${key}` as any)}
-                sourceKey={key}
-                lang={lang}
-              />
+              <div data-advisory-source={key}>
+                <AdvisoryCard
+                  advisory={advisory}
+                  sourceName={t(`country.advisory.${key}` as any)}
+                  sourceKey={key}
+                  lang={lang}
+                />
+              </div>
             ))}
           </div>
         </div>
