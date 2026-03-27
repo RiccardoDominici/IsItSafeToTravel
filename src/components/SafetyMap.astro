@@ -16,7 +16,15 @@ const translations = {
   zoomOut: t('map.zoom.out'),
   ctrlZoom: t('map.ctrl_zoom'),
   twoFinger: t('map.two_finger'),
+  sourcesLabel: t('filter.sources'),
+  allSourcesLabel: t('filter.all_sources'),
 };
+
+const ADVISORY_KEYS = ['us','uk','ca','au','de','nl','jp','sk','fr','nz','ie','fi','hk','br','at','ph','be','dk','sg','ro','rs','ee','hr','ar','it','es','kr','tw','cn','in','ch','se','no','pl','cz','hu','pt'] as const;
+const sourceLabels: Record<string, string> = {};
+for (const key of ADVISORY_KEYS) {
+  sourceLabels[key] = t(`country.advisory.${key}` as any);
+}
 
 const pillarFilters = [
   { id: 'overall', label: t('filter.overall'), weight: null as number | null },
@@ -41,6 +49,7 @@ const countryRoute = routes[lang].country;
   aria-label="Interactive world map showing safety scores by country"
   data-lang={lang}
   data-translations={JSON.stringify(translations)}
+  data-source-labels={JSON.stringify(sourceLabels)}
   data-country-route={countryRoute}
 >
   <!-- SVG injected by D3 -->
@@ -106,6 +115,13 @@ const countryRoute = routes[lang].country;
           </button>
         ))}
       </div>
+      <div class="border-t border-sand-200 dark:border-sand-700 my-2"></div>
+      <div class="text-[10px] font-medium text-sand-500 dark:text-sand-400 px-1 mb-1" id="source-filter-header">
+        {t('filter.sources')}
+      </div>
+      <div class="flex flex-col gap-0 max-h-[200px] overflow-y-auto" id="source-filter-list">
+        <!-- Populated dynamically from scores.json -->
+      </div>
     </div>
   </div>
 
@@ -139,6 +155,8 @@ const countryRoute = routes[lang].country;
     zoomOut: string;
     ctrlZoom: string;
     twoFinger: string;
+    sourcesLabel: string;
+    allSourcesLabel: string;
   }
 
   async function initMap() {
@@ -155,6 +173,8 @@ const countryRoute = routes[lang].country;
     let scores: ScoreEntry[] = [];
     const pillarScoreMap = new Map<string, Map<string, number>>();
     const pillarLabelMap = new Map<string, string>();
+    const sourceCounts = new Map<string, number>();
+    const advisoryMap = new Map<string, Record<string, any>>();
     try {
       const res = await fetch('/scores.json');
       if (res.ok) {
@@ -171,10 +191,85 @@ const countryRoute = routes[lang].country;
             pillarMap.set(p.name, p.score);
           }
           pillarScoreMap.set(c.iso3, pillarMap);
+          // Collect advisory data
+          if (c.advisories) {
+            advisoryMap.set(c.iso3, c.advisories);
+            for (const key of Object.keys(c.advisories)) {
+              sourceCounts.set(key, (sourceCounts.get(key) || 0) + 1);
+            }
+          }
         }
       }
     } catch (e) {
       console.error('Failed to load scores:', e);
+    }
+
+    // Sort sources by coverage count descending
+    const sortedSources = [...sourceCounts.entries()].sort((a, b) => b[1] - a[1]);
+    const sourceLabelsData: Record<string, string> = JSON.parse(container.dataset.sourceLabels || '{}');
+    const enabledSources = new Set<string>(sortedSources.map(s => s[0]));
+
+    // Build source filter checkboxes
+    const sourceFilterList = document.getElementById('source-filter-list');
+    const sourceFilterHeader = document.getElementById('source-filter-header');
+
+    if (sourceFilterList && sortedSources.length > 0) {
+      // Update header with count
+      if (sourceFilterHeader) {
+        sourceFilterHeader.textContent = `${translations.sourcesLabel} (${sortedSources.length})`;
+      }
+
+      // "All sources" toggle
+      const allLabel = document.createElement('label');
+      allLabel.className = 'flex items-center gap-2 px-2 py-1 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer font-medium';
+      allLabel.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3" id="source-all-toggle" /><span class="text-sand-600 dark:text-sand-300">${translations.allSourcesLabel}</span>`;
+      sourceFilterList.appendChild(allLabel);
+
+      // Individual source checkboxes
+      for (const [key, count] of sortedSources) {
+        const label = document.createElement('label');
+        label.className = 'flex items-center gap-2 px-2 py-0.5 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer';
+        label.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3 source-checkbox" data-source="${key}" /><span class="text-sand-600 dark:text-sand-300 truncate">${sourceLabelsData[key] || key.toUpperCase()}</span><span class="ml-auto text-[10px] text-sand-400 shrink-0">(${count})</span>`;
+        sourceFilterList.appendChild(label);
+      }
+
+      // Prevent dropdown close on checkbox clicks
+      sourceFilterList.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      // "All sources" toggle handler
+      const allToggle = document.getElementById('source-all-toggle') as HTMLInputElement | null;
+      allToggle?.addEventListener('change', () => {
+        const checked = allToggle.checked;
+        document.querySelectorAll('.source-checkbox').forEach((cb) => {
+          const input = cb as HTMLInputElement;
+          input.checked = checked;
+          const src = input.dataset.source;
+          if (src) {
+            if (checked) enabledSources.add(src);
+            else enabledSources.delete(src);
+          }
+        });
+      });
+
+      // Individual checkbox handlers
+      sourceFilterList.addEventListener('change', (e) => {
+        const target = e.target as HTMLInputElement;
+        if (!target.classList.contains('source-checkbox')) return;
+        const src = target.dataset.source;
+        if (!src) return;
+        if (target.checked) enabledSources.add(src);
+        else enabledSources.delete(src);
+
+        // Update "All" toggle state
+        const allCbs = document.querySelectorAll('.source-checkbox') as NodeListOf<HTMLInputElement>;
+        const checkedCount = [...allCbs].filter(cb => cb.checked).length;
+        if (allToggle) {
+          allToggle.checked = checkedCount === allCbs.length;
+          allToggle.indeterminate = checkedCount > 0 && checkedCount < allCbs.length;
+        }
+      });
     }
 
     // Build pillar label map from pill buttons
@@ -356,13 +451,32 @@ const countryRoute = routes[lang].country;
       }
 
       const displayName = name || iso3;
-      const scoreText = displayScore
+      const scoreHtml = displayScore
         ? displayScore.label
-          ? `${displayName} \u2014 ${displayScore.value.toFixed(1)} (${displayScore.label})`
-          : `${displayName} \u2014 ${displayScore.value.toFixed(1)}`
-        : `${displayName} \u2014 ${translations.nodata}`;
+          ? `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)} (${displayScore.label})</div>`
+          : `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)}</div>`
+        : `<div class="font-medium">${displayName}</div><div>${translations.nodata}</div>`;
 
-      tooltip.textContent = scoreText;
+      // Build advisory lines
+      let advisoryHtml = '';
+      const advisories = advisoryMap.get(iso3);
+      if (advisories) {
+        const visibleAdvisories = Object.entries(advisories)
+          .filter(([key]) => enabledSources.has(key))
+          .sort((a, b) => (a[1] as any).level - (b[1] as any).level);
+        if (visibleAdvisories.length > 0) {
+          const lines = visibleAdvisories.slice(0, 4).map(([key, adv]: [string, any]) => {
+            const sName = sourceLabelsData[key] || key.toUpperCase();
+            return `<div>${sName}: L${adv.level}</div>`;
+          });
+          if (visibleAdvisories.length > 4) {
+            lines.push(`<div>+${visibleAdvisories.length - 4} more</div>`);
+          }
+          advisoryHtml = `<div class="text-[10px] text-sand-500 dark:text-sand-400 mt-1 border-t border-sand-200 dark:border-sand-700 pt-1">${lines.join('')}</div>`;
+        }
+      }
+
+      tooltip.innerHTML = scoreHtml + advisoryHtml;
       tooltip.classList.remove('hidden');
 
       // Position tooltip
