@@ -290,3 +290,89 @@ export function normalizeInLevel(text: string): UnifiedLevel {
   if (lower.includes('caution') || lower.includes('exercise')) return 2;
   return 1;
 }
+
+// --- Tier 3b normalization functions ---
+
+/**
+ * Normalize Switzerland (EDA) German/English advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizeChLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('von reisen wird abgeraten') || lower.includes('grundsätzlich abgeraten') || lower.includes('grundsaetzlich abgeraten') || lower.includes('do not travel')) return 4;
+  if (lower.includes('von nicht dringenden reisen') || lower.includes('nicht dringenden reisen wird abgeraten') || lower.includes('avoid non-essential')) return 3;
+  if (lower.includes('erhöhte vorsicht') || lower.includes('erhoehte vorsicht') || lower.includes('increased caution')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Sweden (UD) Swedish advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizeSeLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('avråder alla resor') || lower.includes('avraader alla resor') || lower.includes('alla resor avrads')) return 4;
+  if (lower.includes('avråder resor') || lower.includes('avraader resor') || lower.includes('ud avråder') || lower.includes('ud avraader')) return 3;
+  if (lower.includes('iaktta stor försiktighet') || lower.includes('iaktta stor forsiktighet') || lower.includes('skärpt uppmaning') || lower.includes('skaerpt uppmaning')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Norway (UD) Norwegian advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizeNoLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('fraråder alle reiser') || lower.includes('fraraader alle reiser') || lower.includes('ikke reis')) return 4;
+  if (lower.includes('fraråder reiser') || lower.includes('fraraader reiser') || lower.includes('ikke-nødvendige reiser') || lower.includes('ikke-noedvendige reiser')) return 3;
+  if (lower.includes('utvise forsiktighet') || lower.includes('økt aktsomhet') || lower.includes('oekt aktsomhet')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Poland (MSZ) Polish advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizePlLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('nie planuj podróży') || lower.includes('nie planuj podrozy') || lower.includes('zakaz wjazdu')) return 4;
+  if (lower.includes('odradza się podróżowanie') || lower.includes('odradza sie podrozowanie') || lower.includes('odradza podróże') || lower.includes('odradza podroze')) return 3;
+  if (lower.includes('zachowaj szczególną ostrożność') || lower.includes('zachowaj szczegolna ostroznosc') || lower.includes('zachowaj ostrożność') || lower.includes('zachowaj ostroznosc')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Czech Republic (MZV) Czech advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizeCzLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('nedoporučujeme cestovat') || lower.includes('nedoporucujeme cestovat') || lower.includes('necestujte')) return 4;
+  if (lower.includes('zvažit nezbytnost cesty') || lower.includes('zvazit nezbytnost cesty') || lower.includes('doporučujeme se vyhnout') || lower.includes('doporucujeme se vyhnout')) return 3;
+  if (lower.includes('zvýšená opatrnost') || lower.includes('zvysena opatrnost') || lower.includes('dbejte zvýšené opatrnosti') || lower.includes('dbejte zvysene opatrnosti')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Hungary (KKM) Hungarian advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizeHuLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('ne utazzon') || lower.includes('utazás nem javasolt') || lower.includes('utazas nem javasolt')) return 4;
+  if (lower.includes('fokozott előrelátás') || lower.includes('fokozott elore-latas') || lower.includes('kiemelt figyelemmel')) return 3;
+  if (lower.includes('fokozott óvatosság') || lower.includes('fokozott ovatossag') || lower.includes('utazás előtt tájékozódjon') || lower.includes('utazas elott tajekodjon')) return 2;
+  return 1;
+}
+
+/**
+ * Normalize Portugal (MNE) Portuguese advisory text to unified 1-4 scale.
+ * Includes both diacritical and ASCII-folded variants for resilience.
+ */
+export function normalizePtLevel(text: string): UnifiedLevel {
+  const lower = text.toLowerCase();
+  if (lower.includes('desaconselhada') || lower.includes('não viaje') || lower.includes('nao viaje') || lower.includes('evite todas as viagens')) return 4;
+  if (lower.includes('condicionada') || lower.includes('evite viagens não essenciais') || lower.includes('evite viagens nao essenciais')) return 3;
+  if (lower.includes('recomenda precaução') || lower.includes('recomenda precaucao') || lower.includes('cuidados especiais')) return 2;
+  return 1;
+}
