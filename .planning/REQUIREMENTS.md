@@ -71,7 +71,7 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 - [x] **DOC-01**: Methodology page updated with all new sources in all 5 languages
 - [x] **DOC-02**: Country detail pages show advisory info from new sources
-- [ ] **DOC-03**: Sources page lists all new government advisory sources
+- [x] **DOC-03**: Sources page lists all new government advisory sources
 
 ### Calibration & Validation
 
@@ -145,7 +145,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CI-03 | Phase 35 | Complete |
 | DOC-01 | Phase 36 | Complete |
 | DOC-02 | Phase 36 | Complete |
-| DOC-03 | Phase 36 | Pending |
+| DOC-03 | Phase 36 | Complete |
 | CAL-01 | Phase 37 | Pending |
 | CAL-02 | Phase 37 | Pending |
 | CAL-03 | Phase 37 | Pending |

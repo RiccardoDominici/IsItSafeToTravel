@@ -401,8 +401,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 36-01-PLAN.md — i18n keys, advisory component refactor, methodology page updates (DOC-01, DOC-02)
-- [ ] 36-02-PLAN.md — Sources page in 5 languages, footer link (DOC-03)
+- [x] 36-01-PLAN.md — i18n keys, advisory component refactor, methodology page updates (DOC-01, DOC-02)
+- [x] 36-02-PLAN.md — Sources page in 5 languages, footer link (DOC-03)
 **UI hint**: yes
 
 ### Phase 37: Calibration & Validation
@@ -462,5 +462,5 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 33. Tier 3 Complex Sources Batch 2 | v4.0 | 2/2 | Complete    | 2026-03-27 |
 | 34. Scoring Integration | v4.0 | 0/2 | Complete    | 2026-03-27 |
 | 35. CI/CD Automation | v4.0 | 1/2 | Complete    | 2026-03-27 |
-| 36. Documentation | v4.0 | 0/2 | Not started | - |
+| 36. Documentation | v4.0 | 2/2 | Complete   | 2026-03-27 |
 | 37. Calibration & Validation | v4.0 | 0/2 | Not started | - |

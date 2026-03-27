@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 36-01-PLAN.md
-last_updated: "2026-03-27T11:04:10.211Z"
+stopped_at: Completed 36-02-PLAN.md
+last_updated: "2026-03-27T11:16:12.934Z"
 last_activity: 2026-03-27
 progress:
   total_phases: 22
-  completed_phases: 16
-  total_plans: 34
-  completed_plans: 39
+  completed_phases: 17
+  total_plans: 36
+  completed_plans: 40
   percent: 0
 ---
 
@@ -65,6 +65,7 @@ Recent decisions affecting current work:
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
 - [Phase 36]: Dynamic ADVISORY_KEYS array for 37 advisory sources instead of hardcoded checks
 - [Phase 36]: Separate advisory sources table on methodology page (37 rows) instead of bloating main data sources table
+- [Phase 36]: Sources page uses three-section layout (baseline/signal/advisory) matching scoring architecture
 
 ### Pending Todos
 
@@ -94,10 +95,11 @@ None yet.
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
 | Phase 36 P01 | 1050s | 2 tasks | 8 files |
+| Phase 36 P02 | 414 | 1 tasks | 6 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-27T11:04:10.208Z
-Stopped at: Completed 36-01-PLAN.md
+Last session: 2026-03-27T11:16:12.931Z
+Stopped at: Completed 36-02-PLAN.md
 Resume file: None
