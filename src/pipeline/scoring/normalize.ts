@@ -64,6 +64,43 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   advisory_level_jp: { min: 1, max: 4, inverse: true },
   advisory_level_sk: { min: 1, max: 4, inverse: true },
 
+  // Tier 2a advisory sources (HTML scraping)
+  advisory_level_fr: { min: 1, max: 4, inverse: true },
+  advisory_level_nz: { min: 1, max: 4, inverse: true },
+  advisory_level_ie: { min: 1, max: 4, inverse: true },
+  advisory_level_fi: { min: 1, max: 4, inverse: true },
+  advisory_level_hk: { min: 1, max: 4, inverse: true },
+  advisory_level_br: { min: 1, max: 4, inverse: true },
+  advisory_level_at: { min: 1, max: 4, inverse: true },
+  advisory_level_ph: { min: 1, max: 4, inverse: true },
+
+  // Tier 2b advisory sources (HTML scraping)
+  advisory_level_be: { min: 1, max: 4, inverse: true },
+  advisory_level_dk: { min: 1, max: 4, inverse: true },
+  advisory_level_sg: { min: 1, max: 4, inverse: true },
+  advisory_level_ro: { min: 1, max: 4, inverse: true },
+  advisory_level_rs: { min: 1, max: 4, inverse: true },
+  advisory_level_ee: { min: 1, max: 4, inverse: true },
+  advisory_level_hr: { min: 1, max: 4, inverse: true },
+  advisory_level_ar: { min: 1, max: 4, inverse: true },
+
+  // Tier 3a complex advisory sources
+  advisory_level_it: { min: 1, max: 4, inverse: true },
+  advisory_level_es: { min: 1, max: 4, inverse: true },
+  advisory_level_kr: { min: 1, max: 4, inverse: true },
+  advisory_level_tw: { min: 1, max: 4, inverse: true },
+  advisory_level_cn: { min: 1, max: 4, inverse: true },
+  advisory_level_in: { min: 1, max: 4, inverse: true },
+
+  // Tier 3b complex advisory sources
+  advisory_level_ch: { min: 1, max: 4, inverse: true },
+  advisory_level_se: { min: 1, max: 4, inverse: true },
+  advisory_level_no: { min: 1, max: 4, inverse: true },
+  advisory_level_pl: { min: 1, max: 4, inverse: true },
+  advisory_level_cz: { min: 1, max: 4, inverse: true },
+  advisory_level_hu: { min: 1, max: 4, inverse: true },
+  advisory_level_pt: { min: 1, max: 4, inverse: true },
+
 };
 
 /**
