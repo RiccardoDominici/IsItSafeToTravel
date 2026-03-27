@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 36-02-PLAN.md
-last_updated: "2026-03-27T11:16:12.934Z"
-last_activity: 2026-03-27
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-27T10:42:39.796Z"
+last_activity: 2026-03-27 -- Phase 36 execution started
 progress:
   total_phases: 22
-  completed_phases: 17
+  completed_phases: 16
   total_plans: 36
-  completed_plans: 40
+  completed_plans: 38
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 35 — ci-cd-automation
+**Current focus:** Phase 36 — documentation
 
 ## Current Position
 
-Phase: 36
-Plan: Not started
-Status: Executing Phase 35
-Last activity: 2026-03-27
+Phase: 36 (documentation) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 36
+Last activity: 2026-03-27 -- Phase 36 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -63,9 +63,6 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
-- [Phase 36]: Dynamic ADVISORY_KEYS array for 37 advisory sources instead of hardcoded checks
-- [Phase 36]: Separate advisory sources table on methodology page (37 rows) instead of bloating main data sources table
-- [Phase 36]: Sources page uses three-section layout (baseline/signal/advisory) matching scoring architecture
 
 ### Pending Todos
 
@@ -94,12 +91,10 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
-| Phase 36 P01 | 1050s | 2 tasks | 8 files |
-| Phase 36 P02 | 414 | 1 tasks | 6 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-27T11:16:12.931Z
-Stopped at: Completed 36-02-PLAN.md
+Last session: 2026-03-26T20:45:15.151Z
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None
