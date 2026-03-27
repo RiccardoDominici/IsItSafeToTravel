@@ -52,6 +52,47 @@ const pillarI18n: Record<string, string> = {
   governance: 'country.pillar.governance',
   environment: 'country.pillar.environment',
 };
+
+// Government advisory sources for the dedicated table
+const advisorySources = [
+  { key: 'us', tier: 'base', weight: '2.6%' },
+  { key: 'uk', tier: 'base', weight: '2.5%' },
+  { key: 'ca', tier: 'base', weight: '2.5%' },
+  { key: 'au', tier: 'base', weight: '2.5%' },
+  { key: 'de', tier: 'tier1', weight: '1.8%' },
+  { key: 'nl', tier: 'tier1', weight: '1.8%' },
+  { key: 'jp', tier: 'tier1', weight: '1.8%' },
+  { key: 'sk', tier: 'tier1', weight: '1.8%' },
+  { key: 'fr', tier: 'tier2a', weight: '1.0%' },
+  { key: 'nz', tier: 'tier2a', weight: '1.0%' },
+  { key: 'ie', tier: 'tier2a', weight: '1.0%' },
+  { key: 'fi', tier: 'tier2a', weight: '1.0%' },
+  { key: 'hk', tier: 'tier2a', weight: '1.0%' },
+  { key: 'br', tier: 'tier2a', weight: '1.0%' },
+  { key: 'at', tier: 'tier2a', weight: '1.0%' },
+  { key: 'ph', tier: 'tier2a', weight: '1.0%' },
+  { key: 'be', tier: 'tier2b', weight: '0.7%' },
+  { key: 'dk', tier: 'tier2b', weight: '0.7%' },
+  { key: 'sg', tier: 'tier2b', weight: '0.7%' },
+  { key: 'ro', tier: 'tier2b', weight: '0.7%' },
+  { key: 'rs', tier: 'tier2b', weight: '0.7%' },
+  { key: 'ee', tier: 'tier2b', weight: '0.7%' },
+  { key: 'hr', tier: 'tier2b', weight: '0.7%' },
+  { key: 'ar', tier: 'tier2b', weight: '0.7%' },
+  { key: 'it', tier: 'tier3a', weight: '0.5%' },
+  { key: 'es', tier: 'tier3a', weight: '0.5%' },
+  { key: 'kr', tier: 'tier3a', weight: '0.5%' },
+  { key: 'tw', tier: 'tier3a', weight: '0.5%' },
+  { key: 'cn', tier: 'tier3a', weight: '0.5%' },
+  { key: 'in', tier: 'tier3a', weight: '0.5%' },
+  { key: 'ch', tier: 'tier3b', weight: '0.3%' },
+  { key: 'se', tier: 'tier3b', weight: '0.3%' },
+  { key: 'no', tier: 'tier3b', weight: '0.3%' },
+  { key: 'pl', tier: 'tier3b', weight: '0.3%' },
+  { key: 'cz', tier: 'tier3b', weight: '0.3%' },
+  { key: 'hu', tier: 'tier3b', weight: '0.3%' },
+  { key: 'pt', tier: 'tier3b', weight: '0.3%' },
+];
 ---
 <Base lang={lang} title={t('methodology.title')} description={t('methodology.description')} jsonLd={jsonLd} ogImage="/og/default.png">
   <div class="max-w-4xl mx-auto px-4 py-12">
@@ -87,6 +128,33 @@ const pillarI18n: Record<string, string> = {
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`methodology.source.${src.key}_desc` as any)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.frequency}</td>
                 <td class="py-3"><a href={t(`methodology.source.${src.key}_url` as any)} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">Visit</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <!-- Government Advisory Sources -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('sources.advisory_heading' as any)}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('sources.advisory_intro' as any)}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.source' as any)}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.tier' as any)}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.weight' as any)}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {advisorySources.map(src => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-2 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`country.advisory.${src.key}` as any)}</td>
+                <td class="py-2 pr-4 text-sand-600 dark:text-sand-300">{t(`sources.tier.${src.tier}` as any)}</td>
+                <td class="py-2 text-sand-600 dark:text-sand-300">{src.weight}</td>
               </tr>
             ))}
           </tbody>

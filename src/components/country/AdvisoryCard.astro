@@ -6,7 +6,7 @@ import { useTranslations } from '../../i18n/utils';
 interface Props {
   advisory: AdvisoryInfo;
   sourceName: string;
-  sourceKey: 'us' | 'uk' | 'ca' | 'au';
+  sourceKey: string;
   lang: Lang;
 }
 
@@ -14,22 +14,22 @@ const { advisory, sourceName, sourceKey, lang } = Astro.props;
 const t = useTranslations(lang);
 
 // Advisory level color mapping
-function getAdvisoryColor(advisory: AdvisoryInfo, source: 'us' | 'uk' | 'ca' | 'au'): string {
-  if (source === 'us' || source === 'ca' || source === 'au') {
-    // All three use numeric 1-4 scale with same color mapping
-    const level = Number(advisory.level);
-    if (level === 1) return '#22c55e';
-    if (level === 2) return '#eab308';
-    if (level === 3) return '#f97316';
-    if (level === 4) return '#ef4444';
-    return '#9ca3af';
+function getAdvisoryColor(advisory: AdvisoryInfo, source: string): string {
+  if (source === 'uk') {
+    // UK FCDO text-based levels
+    const text = String(advisory.level).toLowerCase();
+    if (text.includes('no travel')) return '#ef4444';
+    if (text.includes('essential')) return '#f97316';
+    if (text.includes('some parts')) return '#eab308';
+    return '#22c55e';
   }
-  // UK FCDO text-based levels
-  const text = String(advisory.level).toLowerCase();
-  if (text.includes('no travel')) return '#ef4444';
-  if (text.includes('essential')) return '#f97316';
-  if (text.includes('some parts')) return '#eab308';
-  return '#22c55e';
+  // All other sources use numeric 1-4 scale
+  const level = Number(advisory.level);
+  if (level === 1) return '#22c55e';
+  if (level === 2) return '#eab308';
+  if (level === 3) return '#f97316';
+  if (level === 4) return '#ef4444';
+  return '#9ca3af';
 }
 
 const borderColor = getAdvisoryColor(advisory, sourceKey);
