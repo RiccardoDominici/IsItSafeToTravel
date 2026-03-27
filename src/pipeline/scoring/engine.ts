@@ -45,7 +45,7 @@ export function computeCountryScore(
   allIndicators: RawIndicator[],
   weightsConfig: WeightsConfig,
   countryEntry: CountryEntry,
-  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo; be?: AdvisoryInfo; dk?: AdvisoryInfo; sg?: AdvisoryInfo; ro?: AdvisoryInfo; rs?: AdvisoryInfo; ee?: AdvisoryInfo; hr?: AdvisoryInfo; ar?: AdvisoryInfo },
+  advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo; be?: AdvisoryInfo; dk?: AdvisoryInfo; sg?: AdvisoryInfo; ro?: AdvisoryInfo; rs?: AdvisoryInfo; ee?: AdvisoryInfo; hr?: AdvisoryInfo; ar?: AdvisoryInfo; it?: AdvisoryInfo; es?: AdvisoryInfo; kr?: AdvisoryInfo; tw?: AdvisoryInfo; cn?: AdvisoryInfo; in?: AdvisoryInfo; ch?: AdvisoryInfo; se?: AdvisoryInfo; no?: AdvisoryInfo; pl?: AdvisoryInfo; cz?: AdvisoryInfo; hu?: AdvisoryInfo; pt?: AdvisoryInfo },
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
@@ -109,6 +109,13 @@ export function computeCountryScore(
     advisories.sg?.level, advisories.ro?.level,
     advisories.rs?.level, advisories.ee?.level,
     advisories.hr?.level, advisories.ar?.level,
+    advisories.it?.level, advisories.es?.level,
+    advisories.kr?.level, advisories.tw?.level,
+    advisories.cn?.level, advisories.in?.level,
+    advisories.ch?.level, advisories.se?.level,
+    advisories.no?.level, advisories.pl?.level,
+    advisories.cz?.level, advisories.hu?.level,
+    advisories.pt?.level,
   ].filter((l): l is number | string => l !== undefined)
    .map((l) => typeof l === 'string' ? parseFloat(l) : l)
    .filter((l) => !isNaN(l));
@@ -230,6 +237,21 @@ const INDICATOR_SOURCE_MAP: Record<string, string> = {
   advisory_level_ee: 'advisories_ee',
   advisory_level_hr: 'advisories_hr',
   advisory_level_ar: 'advisories_ar',
+  // Tier 3a complex
+  advisory_level_it: 'advisories_it',
+  advisory_level_es: 'advisories_es',
+  advisory_level_kr: 'advisories_kr',
+  advisory_level_tw: 'advisories_tw',
+  advisory_level_cn: 'advisories_cn',
+  advisory_level_in: 'advisories_in',
+  // Tier 3b complex
+  advisory_level_ch: 'advisories_ch',
+  advisory_level_se: 'advisories_se',
+  advisory_level_no: 'advisories_no',
+  advisory_level_pl: 'advisories_pl',
+  advisory_level_cz: 'advisories_cz',
+  advisory_level_hu: 'advisories_hu',
+  advisory_level_pt: 'advisories_pt',
   reliefweb_active_disasters: 'reliefweb',
   gdacs_disaster_alerts: 'gdacs',
 };
@@ -335,7 +357,7 @@ const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   },
   advisories: {
     url: 'https://travel.state.gov/',
-    description: 'Travel advisories from US, UK, Canada, Australia, Germany, Netherlands, Japan, Slovakia, France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines, Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, and Argentina',
+    description: 'Travel advisories from 37 governments worldwide including US, UK, Canada, Australia, Germany, Netherlands, Japan, Slovakia, France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines, Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, Argentina, Italy, Spain, South Korea, Taiwan, China, India, Switzerland, Sweden, Norway, Poland, Czech Republic, Hungary, and Portugal',
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',

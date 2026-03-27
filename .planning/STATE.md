@@ -3,7 +3,7 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 34-01-PLAN.md
+stopped_at: Completed 32-02-PLAN.md
 last_updated: "2026-03-27T09:29:21.422Z"
 last_activity: 2026-03-27
 progress:
@@ -21,12 +21,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 34 — scoring-integration
+**Current focus:** Phase 33 — tier-3-complex-sources-batch-2
 
 ## Current Position
 
 Phase: 34
-Plan: 1 of 2
+Plan: 2 of 2
 Status: Executing Phase 34
 Last activity: 2026-03-27
 
@@ -63,8 +63,6 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
-- [Phase 34]: Advisory sub-weights use diminishing tiers: original (0.025-0.026) > tier1 (0.018) > tier2a (0.010) > tier2b (0.007) > tier3a (0.005) > tier3b (0.003)
-- [Phase 34]: Total advisory weight 0.36 in conflict pillar, baseline 0.64 unchanged from v7.0.0
 
 ### Pending Todos
 
@@ -93,11 +91,10 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
-| Phase 34 P01 | 122s | 2 tasks | 3 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
 Last session: 2026-03-26T20:45:15.151Z
-Stopped at: Completed 34-01-PLAN.md
+Stopped at: Completed 34-02-PLAN.md
 Resume file: None
