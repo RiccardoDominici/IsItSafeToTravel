@@ -18,7 +18,7 @@ permissions:
 jobs:
   pipeline:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
 
     steps:
       - name: Checkout repository
@@ -36,11 +36,50 @@ jobs:
         run: npm ci
 
       - name: Run data pipeline
-        run: npx tsx src/pipeline/run.ts ${{ github.event.inputs.date || '' }}
+        run: npx tsx src/pipeline/run.ts ${{ github.event.inputs.date || '' }} 2>&1 | tee pipeline-output.log
         env:
           RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
         continue-on-error: true
         id: pipeline
+
+      - name: Generate fetch summary
+        if: always()
+        run: |
+          echo "## Fetch Summary" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -f pipeline-output.log ]; then
+            # Extract the summary line
+            SUMMARY_LINE=$(grep -o 'Total: [0-9]* sources.*Duration: [0-9.]*s' pipeline-output.log || echo "")
+            if [ -n "$SUMMARY_LINE" ]; then
+              echo "**${SUMMARY_LINE}**" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            fi
+
+            # Report failed sources as GitHub warnings
+            FAILED=$(grep '^\s*FAILED:' pipeline-output.log || true)
+            if [ -n "$FAILED" ]; then
+              echo "### Failed Sources" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "$FAILED" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+
+              # Emit GitHub Actions warnings for each failed source
+              echo "$FAILED" | while IFS= read -r line; do
+                SOURCE=$(echo "$line" | sed 's/.*FAILED: \([^ ]*\).*/\1/')
+                echo "::warning::Advisory source failed: ${SOURCE}"
+              done
+            else
+              echo "All sources fetched successfully." >> "$GITHUB_STEP_SUMMARY"
+            fi
+
+            # Report successful sources
+            OK_COUNT=$(grep -c '^\s*OK:' pipeline-output.log || echo "0")
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "**Successful sources:** ${OK_COUNT}" >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::Pipeline output log not found"
+          fi
 
       - name: Check pipeline output
         run: |
@@ -60,14 +99,18 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/raw/ data/scores/ public/scores.json
+          git add data/raw/ data/scores/ data/history/ public/scores.json
           if git diff --cached --quiet; then
             echo "No data changes to commit"
           else
             DATE=$(date -u +%Y-%m-%d)
             git commit -m "data: update safety scores for $DATE
 
-          Automated daily pipeline run.
+          Automated daily pipeline run (34+ advisory sources).
           See data/scores/$DATE.json for details."
             git push
           fi
+
+      - name: Cleanup
+        if: always()
+        run: rm -f pipeline-output.log
