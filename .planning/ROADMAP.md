@@ -357,8 +357,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 33-01-PLAN.md
-- [ ] 33-02-PLAN.md
+- [ ] 33-01-PLAN.md — Extend types/normalization/config for 7 Tier 3b complex sources (CH, SE, NO, PL, CZ, HU, PT)
+- [ ] 33-02-PLAN.md — Create advisories-tier3b.ts with 7 sub-fetchers and pipeline wiring
 
 ### Phase 34: Scoring Integration
 **Goal**: Scoring engine properly weights all 34+ advisory sources in the Conflict pillar, with source-tiers configuration reflecting the expanded source set
