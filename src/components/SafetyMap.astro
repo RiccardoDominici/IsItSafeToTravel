@@ -209,6 +209,27 @@ const countryRoute = routes[lang].country;
     const sourceLabelsData: Record<string, string> = JSON.parse(container.dataset.sourceLabels || '{}');
     const enabledSources = new Set<string>(sortedSources.map(s => s[0]));
 
+    // Ref to SVG group for source filter — assigned after map renders
+    let mapGroupRef: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
+
+    // Apply source filter to map: dim countries with no visible advisory sources
+    function applySourceFilterToMap() {
+      if (!mapGroupRef) return;
+      const allEnabled = enabledSources.size === sortedSources.length;
+      mapGroupRef!.selectAll<SVGPathElement, any>('.country-path')
+        .transition()
+        .duration(200)
+        .style('opacity', (d: any) => {
+          if (allEnabled) return 1;
+          const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+          if (!iso3) return 1;
+          const advisories = advisoryMap.get(iso3);
+          if (!advisories) return 1;
+          const hasVisible = Object.keys(advisories).some(k => enabledSources.has(k));
+          return hasVisible ? 1 : 0.3;
+        });
+    }
+
     // Build source filter checkboxes
     const sourceFilterList = document.getElementById('source-filter-list');
     const sourceFilterHeader = document.getElementById('source-filter-header');
@@ -620,22 +641,8 @@ const countryRoute = routes[lang].country;
             });
         }
 
-        // Apply source filter to map: dim countries that lose all visible advisory sources
-        function applySourceFilterToMap() {
-          const allEnabled = enabledSources.size === sortedSources.length;
-          g.selectAll<SVGPathElement, any>('.country-path')
-            .transition()
-            .duration(200)
-            .style('opacity', (d: any) => {
-              if (allEnabled) return 1;
-              const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
-              if (!iso3) return 1;
-              const advisories = advisoryMap.get(iso3);
-              if (!advisories) return 1;
-              const hasVisible = Object.keys(advisories).some(k => enabledSources.has(k));
-              return hasVisible ? 1 : 0.3;
-            });
-        }
+        // Store g reference for source filter (defined in outer scope)
+        mapGroupRef = g;
 
         // Filter dropdown toggle
         const filterToggle = document.getElementById('pillar-filter-toggle');
