@@ -251,6 +251,7 @@ const countryRoute = routes[lang].country;
             else enabledSources.delete(src);
           }
         });
+        applySourceFilterToMap();
       });
 
       // Individual checkbox handlers
@@ -269,6 +270,7 @@ const countryRoute = routes[lang].country;
           allToggle.checked = checkedCount === allCbs.length;
           allToggle.indeterminate = checkedCount > 0 && checkedCount < allCbs.length;
         }
+        applySourceFilterToMap();
       });
     }
 
@@ -615,6 +617,23 @@ const countryRoute = routes[lang].country;
                 : dark
                   ? UNSCORED_COLOR_DARK
                   : UNSCORED_COLOR;
+            });
+        }
+
+        // Apply source filter to map: dim countries that lose all visible advisory sources
+        function applySourceFilterToMap() {
+          const allEnabled = enabledSources.size === sortedSources.length;
+          g.selectAll<SVGPathElement, any>('.country-path')
+            .transition()
+            .duration(200)
+            .style('opacity', (d: any) => {
+              if (allEnabled) return 1;
+              const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
+              if (!iso3) return 1;
+              const advisories = advisoryMap.get(iso3);
+              if (!advisories) return 1;
+              const hasVisible = Object.keys(advisories).some(k => enabledSources.has(k));
+              return hasVisible ? 1 : 0.3;
             });
         }
 
