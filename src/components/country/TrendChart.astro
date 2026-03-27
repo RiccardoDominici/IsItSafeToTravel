@@ -508,6 +508,14 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
                 (el as HTMLElement).classList.toggle('hidden', !trendEnabledSources.has(src));
               }
             });
+            // Expand additional advisories container if any visible cards inside
+            const additionalContainer = document.getElementById('additional-advisories');
+            if (additionalContainer) {
+              const hasVisibleChild = additionalContainer.querySelector('[data-advisory-source]:not(.hidden)');
+              if (hasVisibleChild) {
+                additionalContainer.classList.remove('hidden');
+              }
+            }
           }
 
           // Prevent dropdown close
