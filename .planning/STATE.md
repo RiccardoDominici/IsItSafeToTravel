@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: verifying
-stopped_at: Completed 32-02-PLAN.md
-last_updated: "2026-03-26T20:48:53.571Z"
+stopped_at: Completed 33-01-PLAN.md
+last_updated: "2026-03-27T09:09:55.964Z"
 last_activity: 2026-03-26
 progress:
   total_phases: 22
-  completed_phases: 13
-  total_plans: 28
-  completed_plans: 32
+  completed_phases: 14
+  total_plans: 29
+  completed_plans: 33
   percent: 0
 ---
 
@@ -63,6 +63,7 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
+- [Phase 33]: All 7 Tier 3b sources use toLowerCase() for Latin-script matching with diacritical+ASCII-folded variants
 
 ### Pending Todos
 
@@ -91,10 +92,11 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
+| Phase 33 P01 | 472s | 2 tasks | 4 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-26T20:45:15.151Z
-Stopped at: Completed 32-02-PLAN.md
+Last session: 2026-03-27T09:09:55.960Z
+Stopped at: Completed 33-01-PLAN.md
 Resume file: None

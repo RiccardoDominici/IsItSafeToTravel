@@ -41,13 +41,13 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 - [x] **CPLX-04**: Pipeline fetches Taiwan advisory levels from BOCA daily
 - [x] **CPLX-05**: Pipeline fetches China advisory data from cs.mfa.gov.cn daily
 - [x] **CPLX-06**: Pipeline fetches India advisory data from MEA daily
-- [ ] **CPLX-07**: Pipeline fetches Switzerland advisory data from EDA daily
-- [ ] **CPLX-08**: Pipeline fetches Sweden advisory data from regeringen.se daily
-- [ ] **CPLX-09**: Pipeline fetches Norway advisory data from regjeringen.no daily
-- [ ] **CPLX-10**: Pipeline fetches Poland advisory data from MSZ daily
-- [ ] **CPLX-11**: Pipeline fetches Czech Republic advisory data from MZV daily
-- [ ] **CPLX-12**: Pipeline fetches Hungary advisory data from KKM daily
-- [ ] **CPLX-13**: Pipeline fetches Portugal advisory data from MNE daily
+- [x] **CPLX-07**: Pipeline fetches Switzerland advisory data from EDA daily
+- [x] **CPLX-08**: Pipeline fetches Sweden advisory data from regeringen.se daily
+- [x] **CPLX-09**: Pipeline fetches Norway advisory data from regjeringen.no daily
+- [x] **CPLX-10**: Pipeline fetches Poland advisory data from MSZ daily
+- [x] **CPLX-11**: Pipeline fetches Czech Republic advisory data from MZV daily
+- [x] **CPLX-12**: Pipeline fetches Hungary advisory data from KKM daily
+- [x] **CPLX-13**: Pipeline fetches Portugal advisory data from MNE daily
 
 ### Normalization & Scoring
 
@@ -131,13 +131,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CPLX-04 | Phase 32 | Complete |
 | CPLX-05 | Phase 32 | Complete |
 | CPLX-06 | Phase 32 | Complete |
-| CPLX-07 | Phase 33 | Pending |
-| CPLX-08 | Phase 33 | Pending |
-| CPLX-09 | Phase 33 | Pending |
-| CPLX-10 | Phase 33 | Pending |
-| CPLX-11 | Phase 33 | Pending |
-| CPLX-12 | Phase 33 | Pending |
-| CPLX-13 | Phase 33 | Pending |
+| CPLX-07 | Phase 33 | Complete |
+| CPLX-08 | Phase 33 | Complete |
+| CPLX-09 | Phase 33 | Complete |
+| CPLX-10 | Phase 33 | Complete |
+| CPLX-11 | Phase 33 | Complete |
+| CPLX-12 | Phase 33 | Complete |
+| CPLX-13 | Phase 33 | Complete |
 | NORM-02 | Phase 34 | Pending |
 | NORM-03 | Phase 34 | Pending |
 | CI-01 | Phase 35 | Pending |
