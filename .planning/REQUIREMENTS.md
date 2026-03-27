@@ -63,9 +63,9 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### CI/CD
 
-- [ ] **CI-01**: GitHub Actions workflow fetches all new advisory sources daily
-- [ ] **CI-02**: Staggered fetching to respect rate limits across 30+ sources
-- [ ] **CI-03**: Graceful degradation: individual source failures don't block pipeline
+- [x] **CI-01**: GitHub Actions workflow fetches all new advisory sources daily
+- [x] **CI-02**: Staggered fetching to respect rate limits across 30+ sources
+- [x] **CI-03**: Graceful degradation: individual source failures don't block pipeline
 
 ### Documentation
 
@@ -140,9 +140,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CPLX-13 | Phase 33 | Complete |
 | NORM-02 | Phase 34 | Complete |
 | NORM-03 | Phase 34 | Complete |
-| CI-01 | Phase 35 | Pending |
-| CI-02 | Phase 35 | Pending |
-| CI-03 | Phase 35 | Pending |
+| CI-01 | Phase 35 | Complete |
+| CI-02 | Phase 35 | Complete |
+| CI-03 | Phase 35 | Complete |
 | DOC-01 | Phase 36 | Pending |
 | DOC-02 | Phase 36 | Pending |
 | DOC-03 | Phase 36 | Pending |
