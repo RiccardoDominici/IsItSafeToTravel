@@ -48,5 +48,12 @@
     "dataUrl": "https://www.viaggiaresicuri.it",
     "description": "Official travel advisory levels from Italy (Viaggiare Sicuri), Spain (Exteriores), South Korea (MOFA), Taiwan (BOCA), China (MFA), and India (MEA)",
     "updateFrequency": "as issued"
+  },
+  "advisories_tier3b": {
+    "name": "Tier 3b Government Travel Advisories (Complex)",
+    "url": "https://www.eda.admin.ch",
+    "dataUrl": "https://www.eda.admin.ch",
+    "description": "Official travel advisory levels from Switzerland (EDA), Sweden (UD), Norway (UD), Poland (MSZ), Czech Republic (MZV), Hungary (KKM), and Portugal (MNE)",
+    "updateFrequency": "as issued"
   }
 }
