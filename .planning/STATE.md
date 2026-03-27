@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 37-02-PLAN.md
-last_updated: "2026-03-27T11:51:00Z"
-last_activity: 2026-03-27
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-27T11:32:03.749Z"
+last_activity: 2026-03-27 -- Phase 37 execution started
 progress:
   total_phases: 22
   completed_phases: 17
-  total_plans: 36
+  total_plans: 38
   completed_plans: 40
   percent: 0
 ---
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 36 — documentation
+**Current focus:** Phase 37 — calibration-validation
 
 ## Current Position
 
-Phase: 37
-Plan: 02 complete
+Phase: 37 (calibration-validation) — EXECUTING
+Plan: 1 of 2
 Status: Executing Phase 37
-Last activity: 2026-03-27
+Last activity: 2026-03-27 -- Phase 37 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -63,9 +63,6 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
-- [Phase 37]: Scoring model well-calibrated: MAD 0.32, Pearson r 0.987, no systematic bias exceeding threshold
-- [Phase 37]: Bias threshold: |MSD| > 0.5 with n >= 5 for group bias detection
-- [Phase 37]: Recommend Proposal B (advisory sub-weight equalization) first for fairness, Proposal A (pillar rebalancing) second
 
 ### Pending Todos
 
@@ -94,11 +91,10 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
-| Phase 37 P02 | 276s | 2 tasks | 5 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-27
-Last session: 2026-03-27T11:51:00Z
-Stopped at: Completed 37-02-PLAN.md
+Last activity: 2026-03-26
+Last session: 2026-03-26T20:45:15.151Z
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None
