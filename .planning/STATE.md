@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 35-02-PLAN.md
-last_updated: "2026-03-27T10:29:06.975Z"
-last_activity: 2026-03-27
+stopped_at: Completed 32-02-PLAN.md
+last_updated: "2026-03-27T10:19:34.938Z"
+last_activity: 2026-03-27 -- Phase 35 execution started
 progress:
   total_phases: 22
   completed_phases: 15
-  total_plans: 32
-  completed_plans: 37
+  total_plans: 34
+  completed_plans: 36
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 34 — scoring-integration
+**Current focus:** Phase 35 — ci-cd-automation
 
 ## Current Position
 
-Phase: 35
-Plan: Not started
-Status: Executing Phase 34
-Last activity: 2026-03-27
+Phase: 35 (ci-cd-automation) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 35
+Last activity: 2026-03-27 -- Phase 35 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -63,7 +63,6 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
-- [Phase 35]: Country count threshold of 100 as warning trigger for pipeline output validation
 
 ### Pending Todos
 
@@ -92,11 +91,10 @@ None yet.
 | Phase 31 P02 | 237s | 2 tasks | 2 files |
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
-| Phase 35 P02 | 78s | 2 tasks | 1 files |
 
 ## Session Continuity
 
 Last activity: 2026-03-26
-Last session: 2026-03-27T10:29:06.971Z
-Stopped at: Completed 35-02-PLAN.md
+Last session: 2026-03-26T20:45:15.151Z
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None
