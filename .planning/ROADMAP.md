@@ -372,8 +372,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 34-01-PLAN.md
-- [ ] 34-02-PLAN.md
+- [ ] 34-01-PLAN.md — Update weights.json, source-tiers.json, and normalize.ts for all 37 advisory sources
+- [ ] 34-02-PLAN.md — Wire tier-3 sources into engine.ts and verify full pipeline
 
 ### Phase 35: CI/CD Automation
 **Goal**: All new advisory sources are fetched automatically via GitHub Actions daily with staggered scheduling and graceful failure handling
