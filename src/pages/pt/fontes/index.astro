@@ -1,0 +1,163 @@
+---
+export const prerender = true;
+import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+import { buildWebPageJsonLd } from '../../../lib/seo';
+
+const lang: Lang = 'pt';
+const t = useTranslations(lang);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const dateModified = new Date().toISOString().split('T')[0];
+const webPageJsonLd = buildWebPageJsonLd(t('sources.title'), t('sources.description'), canonicalUrl, lang, dateModified);
+
+// All 37 government advisory sources with metadata
+const advisorySources = [
+  { key: 'us', country: 'United States', tier: 'base', weight: '2.6%', format: 'JSON API' },
+  { key: 'uk', country: 'United Kingdom', tier: 'base', weight: '2.5%', format: 'JSON API' },
+  { key: 'ca', country: 'Canada', tier: 'base', weight: '2.5%', format: 'JSON API' },
+  { key: 'au', country: 'Australia', tier: 'base', weight: '2.5%', format: 'JSON API' },
+  { key: 'de', country: 'Germany', tier: 'tier1', weight: '1.8%', format: 'REST API' },
+  { key: 'nl', country: 'Netherlands', tier: 'tier1', weight: '1.8%', format: 'JSON API' },
+  { key: 'jp', country: 'Japan', tier: 'tier1', weight: '1.8%', format: 'XML API' },
+  { key: 'sk', country: 'Slovakia', tier: 'tier1', weight: '1.8%', format: 'Open Data' },
+  { key: 'fr', country: 'France', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'nz', country: 'New Zealand', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'ie', country: 'Ireland', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'fi', country: 'Finland', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'hk', country: 'Hong Kong', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'br', country: 'Brazil', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'at', country: 'Austria', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'ph', country: 'Philippines', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
+  { key: 'be', country: 'Belgium', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'dk', country: 'Denmark', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'sg', country: 'Singapore', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'ro', country: 'Romania', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'rs', country: 'Serbia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'ee', country: 'Estonia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'hr', country: 'Croatia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'ar', country: 'Argentina', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
+  { key: 'it', country: 'Italy', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'es', country: 'Spain', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'kr', country: 'South Korea', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'tw', country: 'Taiwan', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'cn', country: 'China', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'in', country: 'India', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
+  { key: 'ch', country: 'Switzerland', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'se', country: 'Sweden', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'no', country: 'Norway', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'pl', country: 'Poland', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'cz', country: 'Czech Republic', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'hu', country: 'Hungary', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'pt', country: 'Portugal', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+];
+
+const baselineSources = [
+  { name: 'World Bank Governance Indicators', measures: 'Political Stability, Rule of Law, Government Effectiveness, Corruption Control', frequency: 'Annual', url: 'https://info.worldbank.org/governance/wgi/' },
+  { name: 'Global Peace Index (IEP)', measures: 'Overall peace, Safety & Security, Militarisation', frequency: 'Annual', url: 'https://www.visionofhumanity.org/maps/' },
+  { name: 'INFORM Risk Index', measures: 'Health, Epidemic, Governance, Natural Hazard, Climate Risk', frequency: 'Quarterly', url: 'https://drmkc.jrc.ec.europa.eu/inform-index/' },
+];
+
+const signalSources = [
+  { name: 'ReliefWeb (OCHA)', measures: 'Active humanitarian disasters and crises', frequency: 'Daily', url: 'https://reliefweb.int/' },
+  { name: 'GDACS (UN/EC)', measures: 'Natural disaster alerts (earthquakes, floods, cyclones)', frequency: 'Daily', url: 'https://www.gdacs.org/' },
+];
+---
+<Base lang={lang} title={t('sources.title')} description={t('sources.description')} jsonLd={webPageJsonLd} ogImage="/og/default.png">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: t('nav.sources'), href: `/${lang}/fontes/` },
+    ]} />
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('sources.heading')}</h1>
+
+    <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-10">{t('sources.intro')}</p>
+
+    <!-- Baseline Data Sources -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('sources.baseline_heading')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('sources.baseline_intro')}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.source')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">Measures</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.frequency')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            {baselineSources.map(src => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{src.name}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.measures}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.frequency}</td>
+                <td class="py-3"><a href={src.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">Visit</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Signal Data Sources -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('sources.signal_heading')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('sources.signal_intro')}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.source')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">Measures</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.frequency')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">Link</th>
+            </tr>
+          </thead>
+          <tbody>
+            {signalSources.map(src => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{src.name}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.measures}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.frequency}</td>
+                <td class="py-3"><a href={src.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">Visit</a></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Government Advisory Sources -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('sources.advisory_heading')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('sources.advisory_intro')}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.source')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.country')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.tier')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.weight')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.format')}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {advisorySources.map(src => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`country.advisory.${src.key}` as any)}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.country}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`sources.tier.${src.tier}` as any)}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.weight}</td>
+                <td class="py-3 text-sand-600 dark:text-sand-300">{src.format}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+</Base>
