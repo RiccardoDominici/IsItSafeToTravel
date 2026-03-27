@@ -4,12 +4,12 @@ milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
 stopped_at: Completed 32-02-PLAN.md
-last_updated: "2026-03-27T09:29:21.422Z"
-last_activity: 2026-03-27
+last_updated: "2026-03-27T09:44:02.972Z"
+last_activity: 2026-03-27 -- Phase 34 execution started
 progress:
   total_phases: 22
   completed_phases: 14
-  total_plans: 30
+  total_plans: 32
   completed_plans: 34
   percent: 0
 ---
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** Any traveler can instantly see how safe a destination is, backed by transparent, automatically-updated data from trusted public sources.
-**Current focus:** Phase 33 — tier-3-complex-sources-batch-2
+**Current focus:** Phase 34 — scoring-integration
 
 ## Current Position
 
-Phase: 34
-Plan: 2 of 2
+Phase: 34 (scoring-integration) — EXECUTING
+Plan: 1 of 2
 Status: Executing Phase 34
-Last activity: 2026-03-27
+Last activity: 2026-03-27 -- Phase 34 execution started
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -96,5 +96,5 @@ None yet.
 
 Last activity: 2026-03-26
 Last session: 2026-03-26T20:45:15.151Z
-Stopped at: Completed 34-02-PLAN.md
+Stopped at: Completed 32-02-PLAN.md
 Resume file: None
