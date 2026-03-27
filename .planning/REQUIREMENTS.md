@@ -75,10 +75,10 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 
 ### Calibration & Validation
 
-- [ ] **CAL-01**: Research-based reference score (1-10) established for each country via global safety perception analysis
-- [ ] **CAL-02**: Compare site scores vs reference scores, compute per-country delta and global mean deviation
-- [ ] **CAL-03**: Identify systematic bias patterns (by region, risk level, geopolitical bloc)
-- [ ] **CAL-04**: Propose weight balancing options based on deviation analysis
+- [x] **CAL-01**: Research-based reference score (1-10) established for each country via global safety perception analysis
+- [x] **CAL-02**: Compare site scores vs reference scores, compute per-country delta and global mean deviation
+- [x] **CAL-03**: Identify systematic bias patterns (by region, risk level, geopolitical bloc)
+- [x] **CAL-04**: Propose weight balancing options based on deviation analysis
 
 ## Future Requirements
 
@@ -146,10 +146,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DOC-01 | Phase 36 | Complete |
 | DOC-02 | Phase 36 | Complete |
 | DOC-03 | Phase 36 | Complete |
-| CAL-01 | Phase 37 | Pending |
-| CAL-02 | Phase 37 | Pending |
-| CAL-03 | Phase 37 | Pending |
-| CAL-04 | Phase 37 | Pending |
+| CAL-01 | Phase 37 | Complete |
+| CAL-02 | Phase 37 | Complete |
+| CAL-03 | Phase 37 | Complete |
+| CAL-04 | Phase 37 | Complete |
 
 **Coverage:**
 - v4.0 requirements: 49 total

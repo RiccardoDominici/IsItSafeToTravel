@@ -417,7 +417,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 37-01-PLAN.md
+- [x] 37-01-PLAN.md — Reference scores, deviation analysis, calibration report (CAL-01, CAL-02, CAL-03, CAL-04)
 - [ ] 37-02-PLAN.md
 
 ## Progress
@@ -463,4 +463,4 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 34. Scoring Integration | v4.0 | 0/2 | Complete    | 2026-03-27 |
 | 35. CI/CD Automation | v4.0 | 1/2 | Complete    | 2026-03-27 |
 | 36. Documentation | v4.0 | 2/2 | Complete    | 2026-03-27 |
-| 37. Calibration & Validation | v4.0 | 0/2 | Not started | - |
+| 37. Calibration & Validation | v4.0 | 1/2 | In progress | - |
