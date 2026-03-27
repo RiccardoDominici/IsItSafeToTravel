@@ -22,12 +22,19 @@ const ADVISORY_KEYS = [
 
 const PRIMARY_KEYS = ['us', 'uk', 'ca', 'au'];
 
+const sortByDate = (list: { key: string; advisory: any }[]) =>
+  list.sort((a, b) => {
+    const da = a.advisory.updatedAt ? new Date(a.advisory.updatedAt).getTime() : 0;
+    const db = b.advisory.updatedAt ? new Date(b.advisory.updatedAt).getTime() : 0;
+    return db - da;
+  });
+
 const activeAdvisories = ADVISORY_KEYS
   .filter(key => (advisories as any)[key])
   .map(key => ({ key, advisory: (advisories as any)[key]! }));
 
-const primaryAdvisories = activeAdvisories.filter(a => PRIMARY_KEYS.includes(a.key));
-const additionalAdvisories = activeAdvisories.filter(a => !PRIMARY_KEYS.includes(a.key));
+const primaryAdvisories = sortByDate(activeAdvisories.filter(a => PRIMARY_KEYS.includes(a.key)));
+const additionalAdvisories = sortByDate(activeAdvisories.filter(a => !PRIMARY_KEYS.includes(a.key)));
 const hasAny = activeAdvisories.length > 0;
 
 const showMoreText = t('country.advisory.show_more' as any).replace('{count}', String(activeAdvisories.length));
