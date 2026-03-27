@@ -387,8 +387,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 35-01-PLAN.md
-- [ ] 35-02-PLAN.md
+- [ ] 35-01-PLAN.md — Staggered batch execution in fetchAllSources (5 batches with 5s delays)
+- [ ] 35-02-PLAN.md — Workflow timeout increase to 30min and enhanced output validation
 
 ### Phase 36: Documentation
 **Goal**: Users can understand where scores come from, see which advisories apply to each country, and find all advisory sources listed on the sources page
