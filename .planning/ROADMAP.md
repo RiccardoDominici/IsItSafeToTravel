@@ -401,8 +401,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 36-01-PLAN.md
-- [ ] 36-02-PLAN.md
+- [ ] 36-01-PLAN.md — i18n keys, advisory component refactor, methodology page updates (DOC-01, DOC-02)
+- [ ] 36-02-PLAN.md — Sources page in 5 languages, footer link (DOC-03)
 **UI hint**: yes
 
 ### Phase 37: Calibration & Validation
