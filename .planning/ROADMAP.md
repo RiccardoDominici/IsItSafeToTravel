@@ -372,7 +372,7 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 34-01-PLAN.md
+- [x] 34-01-PLAN.md — Update weights.json v8.0.0, source-tiers.json, normalize.ts for all 37 advisory sources
 - [ ] 34-02-PLAN.md
 
 ### Phase 35: CI/CD Automation
@@ -460,7 +460,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 31. Tier 2 HTML Sources Batch 2 | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 32. Tier 3 Complex Sources Batch 1 | v4.0 | 2/2 | Complete    | 2026-03-26 |
 | 33. Tier 3 Complex Sources Batch 2 | v4.0 | 2/2 | Complete    | 2026-03-27 |
-| 34. Scoring Integration | v4.0 | 0/2 | Not started | - |
+| 34. Scoring Integration | v4.0 | 1/2 | In progress | - |
 | 35. CI/CD Automation | v4.0 | 0/2 | Not started | - |
 | 36. Documentation | v4.0 | 0/2 | Not started | - |
 | 37. Calibration & Validation | v4.0 | 0/2 | Not started | - |

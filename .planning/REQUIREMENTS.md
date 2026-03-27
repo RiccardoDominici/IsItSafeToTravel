@@ -52,8 +52,8 @@ Requirements for Global Advisory Sources Expansion. Each maps to roadmap phases.
 ### Normalization & Scoring
 
 - [x] **NORM-01**: All new sources normalize to unified 1-4 advisory level scale
-- [ ] **NORM-02**: Scoring engine weights updated to include all new advisory sources in Conflict pillar
-- [ ] **NORM-03**: Source-tiers.json updated with all new sources as signal tier
+- [x] **NORM-02**: Scoring engine weights updated to include all new advisory sources in Conflict pillar
+- [x] **NORM-03**: Source-tiers.json updated with all new sources as signal tier
 
 ### Cleanup
 
@@ -138,8 +138,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CPLX-11 | Phase 33 | Complete |
 | CPLX-12 | Phase 33 | Complete |
 | CPLX-13 | Phase 33 | Complete |
-| NORM-02 | Phase 34 | Pending |
-| NORM-03 | Phase 34 | Pending |
+| NORM-02 | Phase 34 | Complete |
+| NORM-03 | Phase 34 | Complete |
 | CI-01 | Phase 35 | Pending |
 | CI-02 | Phase 35 | Pending |
 | CI-03 | Phase 35 | Pending |
