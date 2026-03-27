@@ -417,8 +417,8 @@ Plans:
 **Plans**: 2 plans
 
 Plans:
-- [ ] 37-01-PLAN.md
-- [ ] 37-02-PLAN.md
+- [ ] 37-01-PLAN.md — Reference score dataset from GPI/INFORM/WB and deviation report (CAL-01, CAL-02)
+- [ ] 37-02-PLAN.md — Bias analysis by region/tier/bloc and weight adjustment proposals (CAL-03, CAL-04)
 
 ## Progress
 
