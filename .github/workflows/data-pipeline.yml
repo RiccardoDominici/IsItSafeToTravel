@@ -87,8 +87,20 @@ jobs:
             echo "Pipeline produced output"
             COUNTRY_COUNT=$(node -e "const d=JSON.parse(require('fs').readFileSync('data/scores/latest.json','utf8')); console.log(d.countries.length)")
             echo "Countries scored: $COUNTRY_COUNT"
+
+            # Write job summary
+            echo "## Daily Pipeline Results" >> $GITHUB_STEP_SUMMARY
+            echo "- **Date:** $(date -u +%Y-%m-%d)" >> $GITHUB_STEP_SUMMARY
+            echo "- **Countries scored:** $COUNTRY_COUNT" >> $GITHUB_STEP_SUMMARY
+
+            if [ "$COUNTRY_COUNT" -lt 100 ]; then
+              echo "::warning::Only $COUNTRY_COUNT countries scored (expected 180+)"
+              echo "- **Warning:** Low country count — some sources may have failed" >> $GITHUB_STEP_SUMMARY
+            fi
           else
-            echo "::warning::Pipeline did not produce output"
+            echo "::error::Pipeline did not produce output"
+            echo "## Daily Pipeline Results" >> $GITHUB_STEP_SUMMARY
+            echo "- **Status:** FAILED — no output produced" >> $GITHUB_STEP_SUMMARY
             exit 1
           fi
 
