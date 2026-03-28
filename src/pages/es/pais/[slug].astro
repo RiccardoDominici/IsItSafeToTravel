@@ -65,7 +65,7 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
   name: t(`country.advisory.${key}` as any),
 }));
 ---
-<Base lang={lang} title={`${country.name[lang]} - ${t('country.score_label')}`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`Es Seguro Viajar a ${country.name[lang]}? ${country.score.toFixed(1)}/10 (2026)`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

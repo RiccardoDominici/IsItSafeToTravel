@@ -50,11 +50,11 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
 
   const roundedScore = score.toFixed(1);
   const templates: Record<Lang, string> = {
-    en: `${name} safety score: ${roundedScore}/10. ${riskLevel} destination. Strongest: ${strongestLabel} (${strongestScore}). Top concern: ${weakestLabel} (${weakestScore}). Updated daily from ${sourceCount}+ public sources.`,
-    it: `Punteggio di sicurezza ${name}: ${roundedScore}/10. Destinazione a ${riskLevel}. Punto forte: ${strongestLabel} (${strongestScore}). Principale preoccupazione: ${weakestLabel} (${weakestScore}). Aggiornato quotidianamente da ${sourceCount}+ fonti pubbliche.`,
-    es: `Puntuacion de seguridad de ${name}: ${roundedScore}/10. Destino de ${riskLevel}. Punto fuerte: ${strongestLabel} (${strongestScore}). Principal preocupacion: ${weakestLabel} (${weakestScore}). Actualizado diariamente de ${sourceCount}+ fuentes publicas.`,
-    fr: `Score de securite de ${name} : ${roundedScore}/10. Destination a ${riskLevel}. Point fort : ${strongestLabel} (${strongestScore}). Principale preoccupation : ${weakestLabel} (${weakestScore}). Mis a jour quotidiennement a partir de ${sourceCount}+ sources publiques.`,
-    pt: `Pontuacao de seguranca de ${name}: ${roundedScore}/10. Destino de ${riskLevel}. Ponto forte: ${strongestLabel} (${strongestScore}). Principal preocupacao: ${weakestLabel} (${weakestScore}). Atualizado diariamente de ${sourceCount}+ fontes publicas.`,
+    en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}). Best: ${strongestLabel} (${strongestScore}). Free data from ${sourceCount}+ sources, updated daily. Check before you travel.`,
+    it: `Punteggio sicurezza ${name}: ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}). Punto forte: ${strongestLabel} (${strongestScore}). Dati gratuiti da ${sourceCount}+ fonti, aggiornati ogni giorno. Verifica prima di partire.`,
+    es: `Seguridad de ${name}: ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}). Punto fuerte: ${strongestLabel} (${strongestScore}). Datos gratuitos de ${sourceCount}+ fuentes, actualizados diariamente. Verifica antes de viajar.`,
+    fr: `Securite de ${name} : ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}). Point fort : ${strongestLabel} (${strongestScore}). Donnees gratuites de ${sourceCount}+ sources, mises a jour chaque jour. Verifiez avant de partir.`,
+    pt: `Seguranca de ${name}: ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}). Ponto forte: ${strongestLabel} (${strongestScore}). Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente. Verifique antes de viajar.`,
   };
   return templates[lang];
 }
