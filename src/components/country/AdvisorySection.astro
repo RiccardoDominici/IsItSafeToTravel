@@ -7,9 +7,10 @@ import AdvisoryCard from './AdvisoryCard.astro';
 interface Props {
   advisories: ScoredCountry['advisories'];
   lang: Lang;
+  advisorySources?: { key: string; name: string }[];
 }
 
-const { advisories, lang } = Astro.props;
+const { advisories, lang, advisorySources = [] } = Astro.props;
 const t = useTranslations(lang);
 
 const ADVISORY_KEYS = [
@@ -42,13 +43,41 @@ const showLessText = t('country.advisory.show_less' as any);
 ---
 
 <section class="py-6 px-4 max-w-2xl mx-auto">
-  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
-    {t('country.advisories_title')}
-  </h2>
+  <div class="flex items-center justify-between mb-4">
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100">
+      {t('country.advisories_title')}
+    </h2>
+
+    {hasAny && advisorySources.length > 1 && (
+      <div id="advisory-filter-wrapper" class="relative" data-advisory-sources={JSON.stringify(advisorySources)} data-all-sources-label={t('filter.all_sources')}>
+        <button
+          id="advisory-filter-toggle"
+          class="flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg text-xs font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer transition-colors"
+          type="button"
+        >
+          <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 4h14M5 8h10M7 12h6M9 16h2" stroke-linecap="round" />
+          </svg>
+          <span>{t('filter.sources')}</span>
+          <svg class="w-2.5 h-2.5 opacity-50" viewBox="0 0 12 12" fill="currentColor">
+            <path d="M3 5l3 3 3-3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+        <div id="advisory-filter-dropdown" class="hidden absolute top-full right-0 mt-1 p-1.5 bg-sand-50/95 dark:bg-sand-800/95 backdrop-blur-sm border border-sand-300 dark:border-sand-600 rounded-lg shadow-lg min-w-[220px] z-20">
+          <div class="text-[10px] font-medium text-sand-500 dark:text-sand-400 px-1 mb-1">
+            {t('filter.sources')} ({advisorySources.length})
+          </div>
+          <div class="flex flex-col gap-0 max-h-[200px] overflow-y-auto" id="advisory-source-filter-list">
+            <!-- Populated dynamically -->
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
 
   {hasAny ? (
     <div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="primary-advisories-grid">
         {primaryAdvisories.map(({ key, advisory }) => (
           <div data-advisory-source={key}>
             <AdvisoryCard
@@ -94,6 +123,7 @@ const showLessText = t('country.advisory.show_less' as any);
 </section>
 
 <script>
+  // Toggle additional advisories
   document.getElementById('toggle-advisories')?.addEventListener('click', () => {
     const el = document.getElementById('additional-advisories');
     const btn = document.getElementById('toggle-advisories');
@@ -104,4 +134,108 @@ const showLessText = t('country.advisory.show_less' as any);
         : btn.dataset.showLess || '';
     }
   });
+
+  // Source filter
+  const filterWrapper = document.getElementById('advisory-filter-wrapper');
+  const filterList = document.getElementById('advisory-source-filter-list');
+  const filterToggle = document.getElementById('advisory-filter-toggle');
+  const filterDropdown = document.getElementById('advisory-filter-dropdown');
+
+  if (filterWrapper && filterList) {
+    const advSources: { key: string; name: string }[] = JSON.parse(filterWrapper.dataset.advisorySources || '[]');
+
+    if (advSources.length > 0) {
+      const enabledSources = new Set<string>(advSources.map(s => s.key));
+
+      // "All sources" toggle
+      const allLabel = document.createElement('label');
+      allLabel.className = 'flex items-center gap-2 px-2 py-1 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer font-medium';
+      const allSourcesText = filterWrapper.dataset.allSourcesLabel || 'All sources';
+      allLabel.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3" id="advisory-source-all-toggle" /><span class="text-sand-600 dark:text-sand-300">${allSourcesText}</span>`;
+      filterList.appendChild(allLabel);
+
+      // Individual checkboxes
+      for (const src of advSources) {
+        const label = document.createElement('label');
+        label.className = 'flex items-center gap-2 px-2 py-0.5 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer';
+        label.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3 advisory-source-checkbox" data-source="${src.key}" /><span class="text-sand-600 dark:text-sand-300 truncate">${src.name}</span>`;
+        filterList.appendChild(label);
+      }
+
+      function applySourceFilter() {
+        document.querySelectorAll('[data-advisory-source]').forEach((el) => {
+          const src = (el as HTMLElement).dataset.advisorySource;
+          if (src) {
+            (el as HTMLElement).classList.toggle('hidden', !enabledSources.has(src));
+          }
+        });
+        // Handle additional advisories container visibility
+        const additionalContainer = document.getElementById('additional-advisories');
+        if (additionalContainer) {
+          const hasVisibleChild = additionalContainer.querySelector('[data-advisory-source]:not(.hidden)');
+          const toggleBtn = document.getElementById('toggle-advisories');
+          if (hasVisibleChild && additionalContainer.classList.contains('hidden')) {
+            // If filtering reveals a card inside collapsed section, expand it
+            additionalContainer.classList.remove('hidden');
+            if (toggleBtn) toggleBtn.textContent = toggleBtn.dataset.showLess || '';
+          } else if (!hasVisibleChild && !additionalContainer.classList.contains('hidden')) {
+            // If all cards in expanded section are hidden, collapse it
+            additionalContainer.classList.add('hidden');
+            if (toggleBtn) toggleBtn.textContent = toggleBtn.dataset.showMore || '';
+          }
+        }
+      }
+
+      // Toggle dropdown
+      filterToggle?.addEventListener('click', () => {
+        filterDropdown?.classList.toggle('hidden');
+      });
+
+      // Close on outside click
+      document.addEventListener('click', (e) => {
+        if (filterWrapper && !filterWrapper.contains(e.target as Node)) {
+          filterDropdown?.classList.add('hidden');
+        }
+      });
+
+      // Prevent dropdown close on filter list click
+      filterList.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+
+      // All toggle handler
+      const allToggle = document.getElementById('advisory-source-all-toggle') as HTMLInputElement | null;
+      allToggle?.addEventListener('change', () => {
+        const checked = allToggle.checked;
+        document.querySelectorAll('.advisory-source-checkbox').forEach((cb) => {
+          const input = cb as HTMLInputElement;
+          input.checked = checked;
+          const s = input.dataset.source;
+          if (s) {
+            if (checked) enabledSources.add(s);
+            else enabledSources.delete(s);
+          }
+        });
+        applySourceFilter();
+      });
+
+      // Individual checkbox handlers
+      filterList.addEventListener('change', (e) => {
+        const target = e.target as HTMLInputElement;
+        if (!target.classList.contains('advisory-source-checkbox')) return;
+        const s = target.dataset.source;
+        if (!s) return;
+        if (target.checked) enabledSources.add(s);
+        else enabledSources.delete(s);
+
+        const allCbs = document.querySelectorAll('.advisory-source-checkbox') as NodeListOf<HTMLInputElement>;
+        const checkedCount = [...allCbs].filter(cb => cb.checked).length;
+        if (allToggle) {
+          allToggle.checked = checkedCount === allCbs.length;
+          allToggle.indeterminate = checkedCount > 0 && checkedCount < allCbs.length;
+        }
+        applySourceFilter();
+      });
+    }
+  }
 </script>

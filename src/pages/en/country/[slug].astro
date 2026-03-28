@@ -76,8 +76,8 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
     <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
-    <AdvisorySection advisories={country.advisories} lang={lang} />
-    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} advisorySources={advisorySources} />
+    <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
+    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
     <PillarDetailTable pillars={country.pillars} lang={lang} />

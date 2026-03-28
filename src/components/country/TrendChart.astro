@@ -8,10 +8,9 @@ interface Props {
   data: HistoryPoint[];
   pillarData?: Record<string, HistoryPoint[]> | null;
   lang: Lang;
-  advisorySources?: { key: string; name: string }[];
 }
 
-const { data, pillarData, lang, advisorySources = [] } = Astro.props;
+const { data, pillarData, lang } = Astro.props;
 const t = useTranslations(lang);
 
 const uniqueScores = new Set(data.map(d => d.score));
@@ -43,7 +42,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
   {showChartSection ? (
     <div>
       {hasPillarData && (
-        <div id="trend-filter-wrapper" class="relative inline-block mb-3" data-advisory-sources={JSON.stringify(advisorySources)} data-all-sources-label={t('filter.all_sources')}>
+        <div id="trend-filter-wrapper" class="relative inline-block mb-3">
           <button
             id="trend-filter-toggle"
             class="flex items-center gap-1.5 px-3 py-1.5 bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg text-xs font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer transition-colors"
@@ -69,17 +68,6 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
                 </button>
               ))}
             </div>
-            {advisorySources.length > 0 && (
-              <Fragment>
-                <div class="border-t border-sand-200 dark:border-sand-700 my-2"></div>
-                <div class="text-[10px] font-medium text-sand-500 dark:text-sand-400 px-1 mb-1" id="trend-source-filter-header">
-                  {t('filter.sources')} ({advisorySources.length})
-                </div>
-                <div class="flex flex-col gap-0 max-h-[200px] overflow-y-auto" id="trend-source-filter-list">
-                  <!-- Populated dynamically -->
-                </div>
-              </Fragment>
-            )}
           </div>
         </div>
       )}
@@ -477,87 +465,6 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           trendFilterDropdown?.classList.add('hidden');
         });
       });
-
-      // Source filter for advisory cards
-      const trendFilterWrapper = document.getElementById('trend-filter-wrapper');
-      const trendSourceFilterList = document.getElementById('trend-source-filter-list');
-      if (trendFilterWrapper && trendSourceFilterList) {
-        const advSources: { key: string; name: string }[] = JSON.parse(trendFilterWrapper.dataset.advisorySources || '[]');
-        if (advSources.length > 0) {
-          const trendEnabledSources = new Set<string>(advSources.map(s => s.key));
-
-          // "All sources" toggle
-          const allLabel = document.createElement('label');
-          allLabel.className = 'flex items-center gap-2 px-2 py-1 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer font-medium';
-          const allSourcesText = trendFilterWrapper.dataset.allSourcesLabel || 'All sources';
-          allLabel.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3" id="trend-source-all-toggle" /><span class="text-sand-600 dark:text-sand-300">${allSourcesText}</span>`;
-          trendSourceFilterList.appendChild(allLabel);
-
-          // Individual checkboxes
-          for (const src of advSources) {
-            const label = document.createElement('label');
-            label.className = 'flex items-center gap-2 px-2 py-0.5 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer';
-            label.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3 trend-source-checkbox" data-source="${src.key}" /><span class="text-sand-600 dark:text-sand-300 truncate">${src.name}</span>`;
-            trendSourceFilterList.appendChild(label);
-          }
-
-          function applyTrendSourceFilter() {
-            document.querySelectorAll('[data-advisory-source]').forEach((el) => {
-              const src = (el as HTMLElement).dataset.advisorySource;
-              if (src) {
-                (el as HTMLElement).classList.toggle('hidden', !trendEnabledSources.has(src));
-              }
-            });
-            // Expand additional advisories container if any visible cards inside
-            const additionalContainer = document.getElementById('additional-advisories');
-            if (additionalContainer) {
-              const hasVisibleChild = additionalContainer.querySelector('[data-advisory-source]:not(.hidden)');
-              if (hasVisibleChild) {
-                additionalContainer.classList.remove('hidden');
-              }
-            }
-          }
-
-          // Prevent dropdown close
-          trendSourceFilterList.addEventListener('click', (e) => {
-            e.stopPropagation();
-          });
-
-          // All toggle
-          const trendAllToggle = document.getElementById('trend-source-all-toggle') as HTMLInputElement | null;
-          trendAllToggle?.addEventListener('change', () => {
-            const checked = trendAllToggle.checked;
-            document.querySelectorAll('.trend-source-checkbox').forEach((cb) => {
-              const input = cb as HTMLInputElement;
-              input.checked = checked;
-              const s = input.dataset.source;
-              if (s) {
-                if (checked) trendEnabledSources.add(s);
-                else trendEnabledSources.delete(s);
-              }
-            });
-            applyTrendSourceFilter();
-          });
-
-          // Individual handlers
-          trendSourceFilterList.addEventListener('change', (e) => {
-            const target = e.target as HTMLInputElement;
-            if (!target.classList.contains('trend-source-checkbox')) return;
-            const s = target.dataset.source;
-            if (!s) return;
-            if (target.checked) trendEnabledSources.add(s);
-            else trendEnabledSources.delete(s);
-
-            const allCbs = document.querySelectorAll('.trend-source-checkbox') as NodeListOf<HTMLInputElement>;
-            const checkedCount = [...allCbs].filter(cb => cb.checked).length;
-            if (trendAllToggle) {
-              trendAllToggle.checked = checkedCount === allCbs.length;
-              trendAllToggle.indeterminate = checkedCount > 0 && checkedCount < allCbs.length;
-            }
-            applyTrendSourceFilter();
-          });
-        }
-      }
 
       // Tooltip
       const svgRect = () => svg.getBoundingClientRect();
