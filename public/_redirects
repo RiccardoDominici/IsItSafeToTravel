@@ -1,2 +1,5 @@
+# www → non-www redirect (fixes duplicate content in Google index)
+https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
+
 # Root redirect handled by functions/index.ts (Accept-Language based)
 /sitemap.xml /sitemap-index.xml 301
