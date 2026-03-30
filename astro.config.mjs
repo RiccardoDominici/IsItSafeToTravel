@@ -6,6 +6,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://isitsafetotravel.org',
   outDir: './dist/client',
+  trailingSlash: 'always',
 
   integrations: [
     sitemap({
@@ -18,6 +19,10 @@ export default defineConfig({
           fr: 'fr',
           pt: 'pt',
         },
+      },
+      filter(page) {
+        // Exclude root URL (it's a 302 redirect handled by Cloudflare Function)
+        return page !== 'https://isitsafetotravel.org/';
       },
       serialize(item) {
         // Set lastmod to today's date (site rebuilds daily with fresh scores)

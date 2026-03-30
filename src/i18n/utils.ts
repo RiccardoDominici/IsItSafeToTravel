@@ -42,7 +42,9 @@ export function getLocalizedPath(path: string, targetLang: Lang): string {
     return part;
   });
 
-  return `/${targetLang}/${translatedParts.join('/')}`;
+  const result = `/${targetLang}/${translatedParts.join('/')}`;
+  // Ensure trailing slash for consistent URLs (matches trailingSlash: 'always')
+  return result.endsWith('/') ? result : `${result}/`;
 }
 
 export function getAlternateLinks(
