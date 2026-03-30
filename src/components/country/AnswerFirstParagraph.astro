@@ -1,0 +1,59 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  country: ScoredCountry;
+  lang: Lang;
+}
+
+const { country, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
+const pillarLabels: Record<Lang, Record<string, string>> = {
+  en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
+  it: { conflict: 'conflitto', crime: 'criminalita', health: 'salute', governance: 'governance', environment: 'ambiente' },
+  es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
+  fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
+  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
+};
+
+const riskLevels: Record<Lang, [string, string, string]> = {
+  en: ['Low risk', 'Moderate risk', 'High risk'],
+  it: ['rischio basso', 'rischio moderato', 'rischio alto'],
+  es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
+  fr: ['risque faible', 'risque modere', 'risque eleve'],
+  pt: ['risco baixo', 'risco moderado', 'risco alto'],
+};
+
+const score = country.score;
+const [low, moderate, high] = riskLevels[lang];
+const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
+
+let strongest = country.pillars[0];
+let weakest = country.pillars[0];
+for (const p of country.pillars) {
+  if (p.score > strongest.score) strongest = p;
+  if (p.score < weakest.score) weakest = p;
+}
+
+const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
+const sourceCount = country.sources.length || 3;
+
+const text = t('country.answer_first' as any)
+  .replace('{name}', country.name[lang])
+  .replace('{score}', score.toFixed(1))
+  .replace('{date}', dateStr)
+  .replace('{riskLevel}', riskLevel)
+  .replace('{weakestPillar}', pillarLabels[lang][weakest.name])
+  .replace('{weakestScore}', (weakest.score * 10).toFixed(1))
+  .replace('{strongestPillar}', pillarLabels[lang][strongest.name])
+  .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
+  .replace('{sourceCount}', String(sourceCount));
+---
+
+<p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed max-w-2xl mx-auto text-center px-4">
+  {text}
+</p>

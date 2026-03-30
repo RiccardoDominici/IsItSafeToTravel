@@ -1,0 +1,46 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { getCountryFaqData } from '../../lib/seo';
+
+interface Props {
+  country: ScoredCountry;
+  lang: Lang;
+}
+
+const { country, lang } = Astro.props;
+const t = useTranslations(lang);
+const faqData = getCountryFaqData(country, lang);
+
+/** Split answer text into ~2-sentence paragraphs at period boundaries. */
+function splitIntoParagraphs(text: string): string[] {
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const paragraphs: string[] = [];
+  for (let i = 0; i < sentences.length; i += 2) {
+    const chunk = sentences.slice(i, i + 2).join('').trim();
+    if (chunk) paragraphs.push(chunk);
+  }
+  return paragraphs;
+}
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-5">
+    {t('country.faq_title' as any)}
+  </h2>
+  <div class="space-y-3">
+    {faqData.map((qa) => (
+      <details class="border border-sand-200 dark:border-sand-700 rounded-lg">
+        <summary class="px-4 py-3 cursor-pointer font-medium text-sand-800 dark:text-sand-100 hover:bg-sand-50 dark:hover:bg-sand-800 rounded-lg select-none">
+          {qa.question}
+        </summary>
+        <div class="px-4 pb-4 pt-1 text-sm text-sand-700 dark:text-sand-300 space-y-2">
+          {splitIntoParagraphs(qa.answer).map((p) => (
+            <p>{p}</p>
+          ))}
+        </div>
+      </details>
+    ))}
+  </div>
+</section>

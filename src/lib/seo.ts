@@ -253,10 +253,10 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
 }
 
 /**
- * Build FAQPage JSON-LD for a country page with 3 dynamic FAQ items.
- * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ * Get raw FAQ question/answer pairs for a country page.
+ * Used by both the JSON-LD builder and the visible FaqSection component.
  */
-export function buildCountryFaqJsonLd(country: ScoredCountry, lang: Lang): Record<string, unknown> {
+export function getCountryFaqData(country: ScoredCountry, lang: Lang): { question: string; answer: string }[] {
   const name = country.name[lang];
   const score = country.score;
   const roundedScore = score.toFixed(1);
@@ -330,13 +330,26 @@ export function buildCountryFaqJsonLd(country: ScoredCountry, lang: Lang): Recor
     pt: `O seguro de viagem e fortemente recomendado para qualquer viagem internacional, incluindo visitas a ${name}. Uma apolice abrangente deve cobrir emergencias medicas, cancelamentos de viagem e evacuacao. Isso e especialmente importante dado que os riscos relacionados a saude podem mudar rapidamente.`,
   };
 
+  return [
+    { question: q1[lang], answer: a1[lang] },
+    { question: q2[lang], answer: a2[lang] },
+    { question: q3[lang], answer: a3[lang] },
+  ];
+}
+
+/**
+ * Build FAQPage JSON-LD for a country page with 3 dynamic FAQ items.
+ * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ */
+export function buildCountryFaqJsonLd(country: ScoredCountry, lang: Lang): Record<string, unknown> {
+  const faqData = getCountryFaqData(country, lang);
   return {
     '@type': 'FAQPage',
-    mainEntity: [
-      { '@type': 'Question', name: q1[lang], acceptedAnswer: { '@type': 'Answer', text: a1[lang] } },
-      { '@type': 'Question', name: q2[lang], acceptedAnswer: { '@type': 'Answer', text: a2[lang] } },
-      { '@type': 'Question', name: q3[lang], acceptedAnswer: { '@type': 'Answer', text: a3[lang] } },
-    ],
+    mainEntity: faqData.map((qa) => ({
+      '@type': 'Question',
+      name: qa.question,
+      acceptedAnswer: { '@type': 'Answer', text: qa.answer },
+    })),
   };
 }
 
