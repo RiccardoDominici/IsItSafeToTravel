@@ -3,6 +3,3 @@ https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
 
 # Root redirect handled by functions/index.ts (Accept-Language based)
 /sitemap.xml /sitemap-index.xml 301
-
-# Yandex verification (CF Pages strips .html extension)
-/yandex_d3ec07bc73fe3dcf.html /yandex_d3ec07bc73fe3dcf 301
