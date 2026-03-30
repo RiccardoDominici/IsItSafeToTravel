@@ -15,6 +15,9 @@ import SourcesList from '../../../components/country/SourcesList.astro';
 import RelatedCountries from '../../../components/country/RelatedCountries.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import StatsSummary from '../../../components/country/StatsSummary.astro';
+import FaqSection from '../../../components/country/FaqSection.astro';
+import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
+import ComparisonTable from '../../../components/country/ComparisonTable.astro';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
@@ -72,15 +75,24 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
       { label: t('nav.countries'), href: `/${lang}/` },
       { label: country.name[lang], href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
     ]} />
-    <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
-      &#8635; Donn&eacute;es mises &agrave; jour quotidiennement &mdash; Derni&egrave;re mise &agrave; jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
-    </p>
+    <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
+      <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">
+        Derniere mise a jour : {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+        <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/></svg>
+        {t('country.updated_daily_badge' as any)}
+      </span>
+    </div>
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <AnswerFirstParagraph country={country} lang={lang} />
     <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
+    <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
+    <FaqSection country={country} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
     <PillarDetailTable pillars={country.pillars} lang={lang} />
   </div>

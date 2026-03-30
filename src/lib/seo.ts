@@ -97,6 +97,15 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
         temporalCoverage: '2025/..',
         creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org' },
+        variableMeasured: [
+          { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
+          { '@type': 'PropertyValue', name: 'Conflict Risk', description: 'Armed conflict and political violence risk assessment' },
+          { '@type': 'PropertyValue', name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
+          { '@type': 'PropertyValue', name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
+          { '@type': 'PropertyValue', name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
+          { '@type': 'PropertyValue', name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
+        ],
+        measurementTechnique: 'Weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, and GPI indices',
       },
     ],
   };
@@ -366,7 +375,47 @@ export function buildDatasetJsonLd(): Record<string, unknown> {
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
     temporalCoverage: '2025/..',
     spatialCoverage: 'Global',
-    creator: { '@type': 'Organization', name: 'Is It Safe to Travel' },
+    creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org' },
+    variableMeasured: [
+      { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
+      { '@type': 'PropertyValue', name: 'Conflict Risk', description: 'Armed conflict and political violence risk assessment' },
+      { '@type': 'PropertyValue', name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
+      { '@type': 'PropertyValue', name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
+      { '@type': 'PropertyValue', name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
+      { '@type': 'PropertyValue', name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
+    ],
+    measurementTechnique: 'Weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, and GPI indices',
+    distribution: {
+      '@type': 'DataDownload',
+      encodingFormat: 'application/json',
+      contentUrl: 'https://isitsafetotravel.org/scores.json',
+    },
+  };
+}
+
+/**
+ * Build Dataset JSON-LD for methodology pages.
+ * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ */
+export function buildMethodologyDatasetJsonLd(): Record<string, unknown> {
+  return {
+    '@type': 'Dataset',
+    name: 'IsItSafeToTravel Global Safety Scores',
+    description: 'Daily updated composite safety scores for 240+ countries, aggregating 40+ public data sources.',
+    url: 'https://isitsafetotravel.org',
+    license: 'https://creativecommons.org/licenses/by-nc/4.0/',
+    temporalCoverage: '2025/..',
+    spatialCoverage: { '@type': 'Place', name: 'Global' },
+    creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org' },
+    variableMeasured: [
+      { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
+      { '@type': 'PropertyValue', name: 'Conflict Risk' },
+      { '@type': 'PropertyValue', name: 'Crime Risk' },
+      { '@type': 'PropertyValue', name: 'Health Risk' },
+      { '@type': 'PropertyValue', name: 'Governance Quality' },
+      { '@type': 'PropertyValue', name: 'Environment Risk' },
+    ],
+    measurementTechnique: 'Weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, and GPI indices',
     distribution: {
       '@type': 'DataDownload',
       encodingFormat: 'application/json',

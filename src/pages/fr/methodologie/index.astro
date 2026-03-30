@@ -5,7 +5,7 @@ import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
-import { buildWebPageJsonLd, buildFaqPageJsonLd } from '../../../lib/seo';
+import { buildWebPageJsonLd, buildFaqPageJsonLd, buildMethodologyDatasetJsonLd } from '../../../lib/seo';
 import weightsConfig from '../../../pipeline/config/weights.json';
 
 const lang: Lang = 'fr';
@@ -22,11 +22,13 @@ const faqQuestions = [
   { question: 'Que mesure la categorie Environnement dans le score de securite ?', answer: t('methodology.pillar.environment.description' as any) },
 ];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
+const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd();
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     { ...webPageJsonLd, '@context': undefined },
     { ...faqJsonLd, '@context': undefined },
+    methodologyDatasetJsonLd,
   ],
 };
 
