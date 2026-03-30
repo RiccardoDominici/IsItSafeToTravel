@@ -15,13 +15,5 @@ export const onRequest: PagesFunction = async (context) => {
     });
   }
 
-  // Yandex Webmaster verification — must serve at exact .html URL (no redirect)
-  if (url.pathname === '/yandex_d3ec07bc73fe3dcf.html') {
-    return new Response(
-      '<html>\n    <head>\n        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">\n    </head>\n    <body>Verification: d3ec07bc73fe3dcf</body>\n</html>',
-      { headers: { 'Content-Type': 'text/html; charset=utf-8' } },
-    );
-  }
-
   return context.next();
 };
