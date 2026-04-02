@@ -541,7 +541,7 @@ const countryRoute = routes[lang].country;
     // Navigation helper
     function navigateToCountry(iso3: string) {
       if (!scoreMap.has(iso3)) return;
-      window.location.href = `/${lang}/${countryRoute}/${iso3.toLowerCase()}`;
+      window.location.href = `/${lang}/${countryRoute}/${iso3.toLowerCase()}/`;
     }
 
     // Load topojson and render
