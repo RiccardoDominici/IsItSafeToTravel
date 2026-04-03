@@ -1,0 +1,37 @@
+---
+export const prerender = true;
+import HubPageLayout from '../../../components/hub/HubPageLayout.astro';
+import { loadLatestScores } from '../../../lib/scores';
+import { getSafestForSoloTravelers } from '../../../lib/hub-data';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'it';
+const t = useTranslations(lang);
+const countries = loadLatestScores();
+const ranked = getSafestForSoloTravelers(countries, 20);
+const title = t('hub.solo_travelers.title' as any);
+const description = t('hub.solo_travelers.description' as any);
+const intro = t('hub.solo_travelers.intro' as any);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  description,
+  numberOfItems: ranked.length,
+  itemListElement: ranked.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name[lang],
+  })),
+};
+---
+<HubPageLayout
+  lang={lang}
+  title={title}
+  description={description}
+  intro={intro}
+  jsonLd={jsonLd}
+  countries={ranked}
+/>

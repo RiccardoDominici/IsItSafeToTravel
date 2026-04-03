@@ -1,0 +1,37 @@
+---
+export const prerender = true;
+import HubPageLayout from '../../../../components/hub/HubPageLayout.astro';
+import { loadLatestScores } from '../../../../lib/scores';
+import { getCountriesByRegion } from '../../../../lib/hub-data';
+import { useTranslations } from '../../../../i18n/utils';
+import type { Lang } from '../../../../i18n/ui';
+
+const lang: Lang = 'es';
+const t = useTranslations(lang);
+const countries = loadLatestScores();
+const ranked = getCountriesByRegion(countries, 'americas');
+const title = t('hub.region.americas.title' as any);
+const description = t('hub.region.americas.description' as any);
+const intro = t('hub.region.americas.intro' as any);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: title,
+  description,
+  numberOfItems: ranked.length,
+  itemListElement: ranked.map((c, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    name: c.name[lang],
+  })),
+};
+---
+<HubPageLayout
+  lang={lang}
+  title={title}
+  description={description}
+  intro={intro}
+  jsonLd={jsonLd}
+  countries={ranked}
+/>
