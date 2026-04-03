@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 Phase: 37
 Plan: Not started
 Status: Executing Phase 37
-Last activity: 2026-03-27
+Last activity: 2026-04-03 - Completed quick task 260403-o7a: SEO improvements
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -92,6 +92,7 @@ None yet.
 | Phase 32 P01 | 82s | 2 tasks | 4 files |
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
 | 260330-h6z | Perplexity AI optimization: visible FAQ, answer-first paragraphs, timestamps, comparison tables, question H2s, Dataset schema | 2026-03-30 | da7c4aa | [260330-h6z-perplexity-ai-optimization-visible-faq-a](./quick/260330-h6z-perplexity-ai-optimization-visible-faq-a/) |
+| 260403-o7a | SEO improvements: title freshness, neighbor comparison, 65 hub pages, embeddable badge | 2026-04-03 | 1b5fa07 | [260403-o7a-seo-improvements-title-freshness-neighbo](./quick/260403-o7a-seo-improvements-title-freshness-neighbo/) |
 
 ## Session Continuity
 
