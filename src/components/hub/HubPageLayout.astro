@@ -1,0 +1,90 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+import CountryRankRow from './CountryRankRow.astro';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  intro: string;
+  jsonLd: Record<string, unknown>;
+  countries: ScoredCountry[];
+  showDelta?: boolean;
+  deltas?: Map<string, number>;
+  breadcrumbItems?: Array<{ label: string; href: string }>;
+}
+
+const { lang, title, description, intro, jsonLd, countries, showDelta = false, deltas, breadcrumbItems } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const dateStr = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'it' ? 'it-IT' : lang === 'es' ? 'es-ES' : lang === 'fr' ? 'fr-FR' : 'pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+
+const defaultBreadcrumb = [
+  { label: t('nav.home'), href: `/${lang}/` },
+  { label: t('nav.rankings' as any) || 'Rankings', href: `/${lang}/${r['safest-countries'] || 'safest-countries'}/` },
+  { label: title, href: '' },
+];
+const crumbs = breadcrumbItems || defaultBreadcrumb;
+
+// Hub page cross-links
+const hubLinks: Array<{ key: string; route: string }> = [
+  { key: 'hub.safest_countries.title', route: r['safest-countries'] || 'safest-countries' },
+  { key: 'hub.dangerous_countries.title', route: r['most-dangerous-countries'] || 'most-dangerous-countries' },
+  { key: 'hub.solo_travelers.title', route: r['safest-for-solo-travelers'] || 'safest-for-solo-travelers' },
+  { key: 'hub.families.title', route: r['safest-for-families'] || 'safest-for-families' },
+  { key: 'hub.countries_to_avoid.title', route: r['countries-to-avoid'] || 'countries-to-avoid' },
+];
+---
+
+<Base lang={lang} title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={crumbs} />
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {title}
+      </h1>
+      <p class="text-sm text-sand-500 dark:text-sand-400">
+        {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', '40') || 'Rankings updated daily from 40+ data sources'}
+      </p>
+    </header>
+
+    <p class="text-base text-sand-700 dark:text-sand-300 max-w-2xl mx-auto text-center leading-relaxed">
+      {intro}
+    </p>
+
+    <div class="space-y-2">
+      {countries.map((country, i) => (
+        <CountryRankRow
+          rank={i + 1}
+          country={country}
+          lang={lang}
+          showDelta={showDelta}
+          delta={deltas?.get(country.iso3) ?? 0}
+        />
+      ))}
+    </div>
+
+    {/* See Also cross-links */}
+    <section class="pt-8 border-t border-sand-200 dark:border-sand-700">
+      <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+        {t('hub.see_also' as any) || 'See Also'}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
+        {hubLinks.map(({ key, route }) => (
+          <a
+            href={`/${lang}/${route}/`}
+            class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500"
+          >
+            {t(key as any) || key}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</Base>
