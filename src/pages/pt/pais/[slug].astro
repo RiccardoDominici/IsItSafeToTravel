@@ -13,6 +13,7 @@ import TrendChart from '../../../components/country/TrendChart.astro';
 
 import SourcesList from '../../../components/country/SourcesList.astro';
 import RelatedCountries from '../../../components/country/RelatedCountries.astro';
+import NeighborComparison from '../../../components/country/NeighborComparison.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import StatsSummary from '../../../components/country/StatsSummary.astro';
 import FaqSection from '../../../components/country/FaqSection.astro';
@@ -91,6 +92,7 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
     <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
     <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <FaqSection country={country} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />

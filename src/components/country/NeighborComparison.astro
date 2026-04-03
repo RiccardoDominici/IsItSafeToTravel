@@ -1,0 +1,66 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { getNeighbors } from '../../lib/neighbors';
+
+interface Props {
+  country: ScoredCountry;
+  allCountries: ScoredCountry[];
+  lang: Lang;
+}
+
+const { country, allCountries, lang } = Astro.props;
+const t = useTranslations(lang);
+const neighbors = getNeighbors(country.iso3, allCountries);
+const r = routes[lang];
+
+function countryUrl(iso3: string): string {
+  return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
+}
+
+function getScoreBadgeClasses(score: number): string {
+  if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
+  if (score >= 4) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+  return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+}
+
+// Build heading with country name
+const heading = t('country.compare_title' as any).replace('{name}', country.name[lang]);
+---
+
+{neighbors.length > 0 && (
+  <section class="py-6 px-4 max-w-2xl mx-auto">
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-5">
+      {heading}
+    </h2>
+    <div class="flex flex-wrap gap-3 justify-center">
+      {/* Current country highlighted */}
+      <div
+        class="flex items-center gap-2 rounded-lg border-2 border-terracotta-400 dark:border-terracotta-500 bg-white dark:bg-sand-800 px-4 py-3"
+      >
+        <span class="text-sm font-bold text-sand-800 dark:text-sand-100 truncate">
+          {country.name[lang]}
+        </span>
+        <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(country.score)}`}>
+          {country.score.toFixed(1)}
+        </span>
+      </div>
+      {/* Neighbor cards */}
+      {neighbors.map((c) => (
+        <a
+          href={countryUrl(c.iso3)}
+          class="flex items-center gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+        >
+          <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate">
+            {c.name[lang]}
+          </span>
+          <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
+            {c.score.toFixed(1)}
+          </span>
+        </a>
+      ))}
+    </div>
+  </section>
+)}
