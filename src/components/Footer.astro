@@ -23,6 +23,24 @@ const currentYear = new Date().getFullYear();
     <!-- Links -->
     <div class="flex flex-wrap gap-6 mb-6">
       <a
+        href={`/${lang}/${r['safest-countries']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('hub.safest_countries.title' as any)}
+      </a>
+      <a
+        href={`/${lang}/${r['most-dangerous-countries']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('hub.dangerous_countries.title' as any)}
+      </a>
+      <a
+        href={`/${lang}/${r['embed-badge']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('badge.title' as any)}
+      </a>
+      <a
         href={`/${lang}/${r.methodology}/`}
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >

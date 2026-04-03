@@ -46,6 +46,42 @@ const r = routes[lang];
       >
         {t('nav.compare')}
       </a>
+      {/* Rankings dropdown */}
+      <div class="relative group">
+        <button
+          class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2 gap-1"
+        >
+          {t('nav.rankings' as any)}
+          <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"></path></svg>
+        </button>
+        <div class="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
+          <div class="w-56 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-2">
+            <a href={`/${lang}/${r['safest-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.safest_countries.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['most-dangerous-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.dangerous_countries.title' as any)}
+            </a>
+            <hr class="my-1 border-sand-200 dark:border-sand-700" />
+            <a href={`/${lang}/${r['regions']}/europe/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.europe.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['regions']}/asia/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.asia.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['regions']}/africa/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.africa.title' as any)}
+            </a>
+            <hr class="my-1 border-sand-200 dark:border-sand-700" />
+            <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.solo_travelers.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['safest-for-families']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.families.title' as any)}
+            </a>
+          </div>
+        </div>
+      </div>
       <a
         href={`/${lang}/${r.about}/`}
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
@@ -92,6 +128,18 @@ const r = routes[lang];
           >
             {t('nav.compare')}
           </a>
+          <hr class="my-1 border-sand-200 dark:border-sand-700" />
+          <span class="block px-4 py-1 text-xs font-semibold text-sand-400 dark:text-sand-500 uppercase">{t('nav.rankings' as any)}</span>
+          <a href={`/${lang}/${r['safest-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            {t('hub.safest_countries.title' as any)}
+          </a>
+          <a href={`/${lang}/${r['most-dangerous-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            {t('hub.dangerous_countries.title' as any)}
+          </a>
+          <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            {t('hub.solo_travelers.title' as any)}
+          </a>
+          <hr class="my-1 border-sand-200 dark:border-sand-700" />
           <a
             href={`/${lang}/${r.about}/`}
             class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
