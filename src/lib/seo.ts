@@ -135,7 +135,7 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/${lang}/country/{search_term_string}`,
+        urlTemplate: `${siteUrl}/${lang}/country/{search_term_string}/`,
       },
       'query-input': 'required name=search_term_string',
     },

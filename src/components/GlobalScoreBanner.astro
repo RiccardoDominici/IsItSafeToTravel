@@ -15,7 +15,7 @@ const t = useTranslations(lang);
 const snapshot = loadLatestSnapshot();
 const globalScore = snapshot?.globalScore ?? 0;
 const bgColor = scoreToColor(globalScore);
-const href = `/${lang}/${routes[lang]['global-safety']}`;
+const href = `/${lang}/${routes[lang]['global-safety']}/`;
 ---
 
 {snapshot && globalScore > 0 && (
