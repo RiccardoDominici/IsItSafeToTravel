@@ -3,6 +3,7 @@ export const prerender = true;
 import Base from '../../layouts/Base.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
 import { loadLatestSnapshot, loadGlobalHistory } from '../../lib/scores';
 import { buildGlobalSafetyJsonLd } from '../../lib/seo';
 import { scoreToColor } from '../../lib/colors';
@@ -82,7 +83,7 @@ const showChart = globalHistory.length >= 2;
         {t('global.methodology_text')}
       </p>
       <p class="mt-4">
-        <a href={`/${lang}/methodology/`} class="text-terracotta-500 hover:text-terracotta-600 underline">
+        <a href={`/${lang}/${routes[lang].methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 underline">
           {t('global.methodology_link')}
         </a>
       </p>

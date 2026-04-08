@@ -15,7 +15,7 @@ interface Props {
 const { lang, items } = Astro.props;
 
 // Build JSON-LD items with full URLs
-const siteUrl = Astro.site?.href.replace(/\/$/, '') || 'https://isitsafetotravel.org';
+const siteUrl = (Astro.site?.href || 'https://isitsafetotravel.org/').replace(/\/$/, '');
 const jsonLdItems = items.map((item) => ({
   name: item.label,
   url: item.href.startsWith('http') ? item.href : `${siteUrl}${item.href}`,

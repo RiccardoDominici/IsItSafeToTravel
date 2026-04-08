@@ -41,6 +41,7 @@ const jsonLd = buildWebPageJsonLd(title, description, canonicalUrl, lang);
         </label>
         <select
           id="badge-country"
+          data-country-route={r.country}
           class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-800 text-sand-800 dark:text-sand-100 focus:ring-2 focus:ring-terracotta-400"
         >
           {countries.map(c => (
@@ -105,10 +106,11 @@ const jsonLd = buildWebPageJsonLd(title, description, canonicalUrl, lang);
     const option = select.selectedOptions[0];
     const name = option?.dataset.name || '';
     const lang = document.documentElement.lang || 'en';
+    const countryRoute = select.dataset.countryRoute || 'country';
 
     preview.src = `/badge/${iso3}.svg`;
-    htmlArea.value = `<a href="https://isitsafetotravel.org/${lang}/country/${iso3}/"><img src="https://isitsafetotravel.org/badge/${iso3}.svg" alt="${name} Safety Score" width="300" height="80"></a>`;
-    mdArea.value = `[![${name} Safety Score](https://isitsafetotravel.org/badge/${iso3}.svg)](https://isitsafetotravel.org/${lang}/country/${iso3}/)`;
+    htmlArea.value = `<a href="https://isitsafetotravel.org/${lang}/${countryRoute}/${iso3}/"><img src="https://isitsafetotravel.org/badge/${iso3}.svg" alt="${name} Safety Score" width="300" height="80"></a>`;
+    mdArea.value = `[![${name} Safety Score](https://isitsafetotravel.org/badge/${iso3}.svg)](https://isitsafetotravel.org/${lang}/${countryRoute}/${iso3}/)`;
   }
 
   select?.addEventListener('change', updateBadge);
