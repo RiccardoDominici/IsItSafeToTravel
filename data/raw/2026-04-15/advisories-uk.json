@@ -28,6 +28,125 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/pakistan",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/pakistan",
+        "base_path": "/foreign-travel-advice/pakistan",
+        "content_id": "ea339677-8843-4a8a-b5ad-dff327d70ce3",
+        "details": {
+          "change_description": "FCDO no longer advises against all but essential travel to Gilgit-Baltistan. Updated information about regional tensions and upcoming elections in Gilgit-Baltistan region ('Warnings and insurance' and ‘Regional risks’ pages).\r\n\r\n",
+          "country": {
+            "name": "Pakistan",
+            "slug": "pakistan",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-04-15T14:30:41Z",
+        "schema_name": "travel_advice",
+        "title": "Pakistan travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/pakistan",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/algeria",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/algeria",
+        "base_path": "/foreign-travel-advice/algeria",
+        "content_id": "b5c8e64b-3461-4447-9144-1588e4a84fe6",
+        "details": {
+          "change_description": "Removal of information following reports of an explosion in the town of Blida (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Algeria",
+            "slug": "algeria",
+            "synonyms": [
+              "Sahel"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-04-15T13:50:05Z",
+        "schema_name": "travel_advice",
+        "title": "Algeria travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/algeria",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/maldives",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/maldives",
+        "base_path": "/foreign-travel-advice/maldives",
+        "content_id": "99e0a892-9daa-443c-b96c-97ba9e28a2c8",
+        "details": {
+          "change_description": "Updated information on Ramadan and swimming safety (see 'Laws and cultural differences' and 'Outdoor activities and adventure tourism' on the 'Safety and security' page).",
+          "country": {
+            "name": "Maldives",
+            "slug": "maldives",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-04-15T11:09:01Z",
+        "schema_name": "travel_advice",
+        "title": "Maldives travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/maldives",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/qatar",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/qatar",
         "base_path": "/foreign-travel-advice/qatar",
@@ -421,47 +540,6 @@
         "schema_name": "travel_advice",
         "title": "Hungary travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/hungary",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/algeria",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/algeria",
-        "base_path": "/foreign-travel-advice/algeria",
-        "content_id": "b5c8e64b-3461-4447-9144-1588e4a84fe6",
-        "details": {
-          "change_description": "Updated with information following an explosion in the town of Blida (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "Algeria",
-            "slug": "algeria",
-            "synonyms": [
-              "Sahel"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-04-13T16:00:46Z",
-        "schema_name": "travel_advice",
-        "title": "Algeria travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/algeria",
         "withdrawn": false
       },
       {
@@ -2430,45 +2508,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/pakistan",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/pakistan",
-        "base_path": "/foreign-travel-advice/pakistan",
-        "content_id": "ea339677-8843-4a8a-b5ad-dff327d70ce3",
-        "details": {
-          "change_description": "Updated information about regional escalation, including  possible fuel shortages and transport disruption ('Warnings and insurance' page).",
-          "country": {
-            "name": "Pakistan",
-            "slug": "pakistan",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-14T11:01:10Z",
-        "schema_name": "travel_advice",
-        "title": "Pakistan travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/pakistan",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/dominican-republic",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/dominican-republic",
         "base_path": "/foreign-travel-advice/dominican-republic",
@@ -4163,45 +4202,6 @@
         "schema_name": "travel_advice",
         "title": "Tajikistan travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/tajikistan",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/maldives",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/maldives",
-        "base_path": "/foreign-travel-advice/maldives",
-        "content_id": "99e0a892-9daa-443c-b96c-97ba9e28a2c8",
-        "details": {
-          "change_description": "Updated information about global travel impacts due to escalation in the Middle East (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "Maldives",
-            "slug": "maldives",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-19T14:04:16Z",
-        "schema_name": "travel_advice",
-        "title": "Maldives travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/maldives",
         "withdrawn": false
       },
       {
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-04-14T16:34:22+01:00",
+  "updated_at": "2026-04-15T15:31:03+01:00",
   "withdrawn_notice": {}
 }

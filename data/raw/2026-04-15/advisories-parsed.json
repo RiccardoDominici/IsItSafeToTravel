@@ -1,6 +1,6 @@
 {
   "source": "advisories",
-  "fetchedAt": "2026-04-15T07:48:23.968Z",
+  "fetchedAt": "2026-04-15T17:15:58.919Z",
   "indicators": [
     {
       "countryIso3": "AFG",
@@ -1389,21 +1389,14 @@
       "source": "advisories_us"
     },
     {
-      "countryIso3": "QAT",
+      "countryIso3": "PSE",
       "indicatorName": "advisory_level_uk",
-      "value": 3,
+      "value": 4,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "CHE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MLI",
+      "countryIso3": "RUS",
       "indicatorName": "advisory_level_uk",
       "value": 4,
       "year": 2026,
@@ -1417,7 +1410,70 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "MDV",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "DZA",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BHR",
       "indicatorName": "advisory_level_uk",
       "value": 3,
       "year": 2026,
@@ -1438,34 +1494,6 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "SAU",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "CRI",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ARE",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SWE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
       "countryIso3": "KWT",
       "indicatorName": "advisory_level_uk",
       "value": 3,
@@ -1473,56 +1501,21 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "PSE",
+      "countryIso3": "FRA",
       "indicatorName": "advisory_level_uk",
-      "value": 4,
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
       "countryIso3": "ITA",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ISR",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "RUS",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "DEU",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "FIN",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "DNK",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "EST",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1543,14 +1536,70 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "SVK",
+      "countryIso3": "PAK",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ROU",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "ROU",
+      "countryIso3": "DEU",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "DNK",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1564,6 +1613,20 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "ESP",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "SVN",
       "indicatorName": "advisory_level_uk",
       "value": 1,
@@ -1571,7 +1634,14 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "NLD",
+      "countryIso3": "SVK",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "PRT",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1592,7 +1662,21 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "LUX",
+      "countryIso3": "NLD",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LKA",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1600,6 +1684,20 @@
     },
     {
       "countryIso3": "LTU",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LIE",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1620,7 +1718,21 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "LKA",
+      "countryIso3": "SLB",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "FJI",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1634,121 +1746,9 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "AFG",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
       "countryIso3": "IND",
       "indicatorName": "advisory_level_uk",
       "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "FRA",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "JOR",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BHR",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GRC",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ECU",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "IRN",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "AUT",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ETH",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "DJI",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PNG",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SLB",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "COL",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "THA",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PAK",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "DOM",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -1767,14 +1767,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "ESP",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BGR",
+      "countryIso3": "TTO",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1788,7 +1781,84 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "PRT",
+      "countryIso3": "COD",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "DOM",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1802,69 +1872,6 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "TZA",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ATG",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "NPL",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "CUB",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PHL",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "LIE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "UZB",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ZAF",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "KHM",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
       "countryIso3": "BDI",
       "indicatorName": "advisory_level_uk",
       "value": 3,
@@ -1872,7 +1879,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "VNM",
+      "countryIso3": "KAZ",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -1893,16 +1900,23 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "MWI",
+      "countryIso3": "BOL",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ATG",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "MRT",
+      "countryIso3": "SEN",
       "indicatorName": "advisory_level_uk",
-      "value": 3,
+      "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -1914,72 +1928,23 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "FJI",
+      "countryIso3": "TKM",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "BLR",
+      "countryIso3": "NPL",
       "indicatorName": "advisory_level_uk",
-      "value": 4,
+      "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "LAO",
+      "countryIso3": "KHM",
       "indicatorName": "advisory_level_uk",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "NZL",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SGP",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "AUS",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TTO",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "COD",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "KAZ",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "IDN",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -1991,28 +1956,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "JPN",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GEO",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MYS",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TJK",
+      "countryIso3": "SGP",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2026,14 +1970,14 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "MDV",
+      "countryIso3": "PHL",
       "indicatorName": "advisory_level_uk",
-      "value": 1,
+      "value": 3,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "NRU",
+      "countryIso3": "TUV",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2047,6 +1991,27 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "AUS",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "AND",
       "indicatorName": "advisory_level_uk",
       "value": 1,
@@ -2054,7 +2019,42 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "WSM",
+      "countryIso3": "JPN",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BWA",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2068,9 +2068,9 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "KIR",
+      "countryIso3": "LAO",
       "indicatorName": "advisory_level_uk",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -2082,9 +2082,30 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "BOL",
+      "countryIso3": "NZL",
       "indicatorName": "advisory_level_uk",
-      "value": 2,
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -2103,13 +2124,6 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "SEN",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
       "countryIso3": "TUR",
       "indicatorName": "advisory_level_uk",
       "value": 3,
@@ -2117,35 +2131,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "TUV",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TKM",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BGD",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MOZ",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BRN",
+      "countryIso3": "KGZ",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2159,6 +2145,55 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "GEO",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "NRU",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "IRL",
       "indicatorName": "advisory_level_uk",
       "value": 1,
@@ -2166,21 +2201,14 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "TUN",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "DMA",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MDG",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MAR",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2194,9 +2222,37 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "MDG",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "GTM",
       "indicatorName": "advisory_level_uk",
       "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -2215,13 +2271,6 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "CMR",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
       "countryIso3": "BIH",
       "indicatorName": "advisory_level_uk",
       "value": 1,
@@ -2229,14 +2278,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "TON",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BWA",
+      "countryIso3": "MNE",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2250,58 +2292,16 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "ERI",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "CHL",
       "indicatorName": "advisory_level_uk",
       "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SOM",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "VEN",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "YEM",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SYC",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PRY",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "CYP",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "AZE",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
       "year": 2026,
       "source": "advisories_uk"
     },
@@ -2313,224 +2313,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "KGZ",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TUN",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ZWE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SLV",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "LBY",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "NIC",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GUY",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BHS",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "NER",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BEN",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MKD",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "RWA",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TGO",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MMR",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ERI",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MNE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GRD",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MCO",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "ALB",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MDA",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MYT",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "COM",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SLE",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SSD",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MUS",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "TCD",
-      "indicatorName": "advisory_level_uk",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MTQ",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "HND",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "PYF",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "MNG",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GNQ",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GUF",
+      "countryIso3": "PRY",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2544,14 +2327,133 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "PAN",
+      "countryIso3": "SOM",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SYC",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "SWZ",
+      "countryIso3": "SLE",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BHS",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2565,56 +2467,7 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "NCL",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "XKX",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "GNB",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "CAN",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "JAM",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BFA",
-      "indicatorName": "advisory_level_uk",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "LSO",
-      "indicatorName": "advisory_level_uk",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "BLZ",
+      "countryIso3": "MCO",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2628,35 +2481,91 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "ARG",
+      "countryIso3": "GRD",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "AGO",
-      "indicatorName": "advisory_level_uk",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_uk"
-    },
-    {
-      "countryIso3": "SUR",
+      "countryIso3": "HND",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "COG",
+      "countryIso3": "TCD",
       "indicatorName": "advisory_level_uk",
       "value": 3,
       "year": 2026,
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "MYT",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MTQ",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "GAB",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "PYF",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SWZ",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2677,7 +2586,14 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "NAM",
+      "countryIso3": "NCL",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "PAN",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2691,7 +2607,42 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "MDA",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "advisory_level_uk",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "BTN",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "MUS",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2712,7 +2663,21 @@
       "source": "advisories_uk"
     },
     {
-      "countryIso3": "ABW",
+      "countryIso3": "COG",
+      "indicatorName": "advisory_level_uk",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "SUR",
       "indicatorName": "advisory_level_uk",
       "value": 1,
       "year": 2026,
@@ -2740,6 +2705,41 @@
       "source": "advisories_uk"
     },
     {
+      "countryIso3": "AGO",
+      "indicatorName": "advisory_level_uk",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "GUF",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "advisory_level_uk",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_uk"
+    },
+    {
       "countryIso3": "ALB",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -2754,7 +2754,42 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "AIA",
+      "countryIso3": "BLZ",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ARM",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -2768,34 +2803,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "AGO",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ARM",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ASM",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "AND",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "BHS",
       "indicatorName": "advisory_level_ca",
       "value": 2,
@@ -2803,7 +2810,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "DZA",
+      "countryIso3": "BGD",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -2817,23 +2824,37 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "AZE",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ABW",
+      "countryIso3": "AND",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "BEL",
+      "countryIso3": "AGO",
       "indicatorName": "advisory_level_ca",
       "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "AIA",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -2852,6 +2873,13 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "DZA",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "AUS",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -2859,77 +2887,14 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "BHR",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ARG",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BEN",
+      "countryIso3": "AZE",
       "indicatorName": "advisory_level_ca",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BLZ",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BGD",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BLR",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
       "countryIso3": "BTN",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BOL",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BIH",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BWA",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "VGB",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -2950,14 +2915,49 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "CPV",
+      "countryIso3": "BIH",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "CMR",
+      "countryIso3": "BEN",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "advisory_level_ca",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "CPV",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -2971,30 +2971,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "BDI",
-      "indicatorName": "advisory_level_ca",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "KHM",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "CYM",
+      "countryIso3": "VGB",
       "indicatorName": "advisory_level_ca",
       "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "BFA",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3013,20 +2992,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "COL",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "COM",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "CHN",
       "indicatorName": "advisory_level_ca",
       "value": 2,
@@ -3034,7 +2999,28 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "CRI",
+      "countryIso3": "CYM",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "COM",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3055,14 +3041,21 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "DNK",
+      "countryIso3": "COL",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "DMA",
+      "countryIso3": "CRI",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "HRV",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3076,9 +3069,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "HRV",
+      "countryIso3": "DNK",
       "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3104,65 +3097,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "EGY",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "SLV",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ECU",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "EST",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ERI",
-      "indicatorName": "advisory_level_ca",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "GNQ",
       "indicatorName": "advisory_level_ca",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "SWZ",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "FIN",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "FLK",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3174,7 +3111,35 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "FRA",
+      "countryIso3": "DMA",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "FLK",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "SLV",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3188,21 +3153,14 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GEO",
+      "countryIso3": "ERI",
       "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 3,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GAB",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "PYF",
+      "countryIso3": "FIN",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3216,14 +3174,35 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "DEU",
+      "countryIso3": "PYF",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "SWZ",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GHA",
+      "countryIso3": "GAB",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "FRA",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3237,9 +3216,37 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "DEU",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "GRL",
       "indicatorName": "advisory_level_ca",
       "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "GLP",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3258,28 +3265,21 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GLP",
+      "countryIso3": "GEO",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GUY",
+      "countryIso3": "GIN",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GUM",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "GTM",
+      "countryIso3": "GUY",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3293,23 +3293,16 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GIN",
+      "countryIso3": "GTM",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "HTI",
+      "countryIso3": "HKG",
       "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "ISL",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3321,7 +3314,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "IND",
+      "countryIso3": "IDN",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3335,23 +3328,23 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "IRN",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "IDN",
+      "countryIso3": "IND",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "IRL",
+      "countryIso3": "ISL",
       "indicatorName": "advisory_level_ca",
       "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3363,9 +3356,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "JOR",
+      "countryIso3": "IRL",
       "indicatorName": "advisory_level_ca",
-      "value": 3,
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3373,6 +3366,13 @@
       "countryIso3": "ITA",
       "indicatorName": "advisory_level_ca",
       "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3391,6 +3391,13 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "KIR",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "KAZ",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -3398,16 +3405,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "KEN",
+      "countryIso3": "JOR",
       "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "KIR",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 3,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3419,13 +3419,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "LAO",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "KGZ",
       "indicatorName": "advisory_level_ca",
       "value": 2,
@@ -3433,9 +3426,16 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "KWT",
+      "countryIso3": "LAO",
       "indicatorName": "advisory_level_ca",
-      "value": 4,
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3447,7 +3447,21 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "LVA",
+      "countryIso3": "KWT",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "LTU",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3468,6 +3482,13 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "LBY",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "LIE",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -3478,20 +3499,6 @@
       "countryIso3": "MDG",
       "indicatorName": "advisory_level_ca",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "LBY",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "LTU",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3510,13 +3517,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MYS",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "MWI",
       "indicatorName": "advisory_level_ca",
       "value": 2,
@@ -3524,14 +3524,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MLI",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "MLT",
+      "countryIso3": "MYS",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3545,14 +3538,28 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MTQ",
+      "countryIso3": "MLI",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MHL",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MHL",
+      "countryIso3": "MLT",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MTQ",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3566,20 +3573,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MUS",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "MEX",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "MCO",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -3587,7 +3580,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MNG",
+      "countryIso3": "MUS",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3601,9 +3594,37 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MDA",
+      "countryIso3": "MNG",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MEX",
       "indicatorName": "advisory_level_ca",
       "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3615,16 +3636,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "NAM",
+      "countryIso3": "MDA",
       "indicatorName": "advisory_level_ca",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "MNE",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3643,14 +3657,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MOZ",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "MAR",
+      "countryIso3": "NAM",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3658,6 +3665,13 @@
     },
     {
       "countryIso3": "NPL",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "NCL",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3678,37 +3692,23 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "NIU",
+      "countryIso3": "MKD",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "NCL",
+      "countryIso3": "PAK",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "PRK",
+      "countryIso3": "PNG",
       "indicatorName": "advisory_level_ca",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "NIC",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "NER",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
+      "value": 3,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3720,7 +3720,21 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MKD",
+      "countryIso3": "NER",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "advisory_level_ca",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "NIU",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3734,6 +3748,20 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "NIC",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "PLW",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -3741,35 +3769,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "HKG",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "PAK",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "OMN",
-      "indicatorName": "advisory_level_ca",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "PNG",
-      "indicatorName": "advisory_level_ca",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "PER",
+      "countryIso3": "PHL",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -3790,16 +3790,16 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "POL",
+      "countryIso3": "PRK",
       "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "PHL",
+      "countryIso3": "POL",
       "indicatorName": "advisory_level_ca",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3811,16 +3811,16 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "QAT",
+      "countryIso3": "PRT",
       "indicatorName": "advisory_level_ca",
-      "value": 4,
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "PRT",
+      "countryIso3": "QAT",
       "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3846,14 +3846,14 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "KNA",
+      "countryIso3": "LCA",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "LCA",
+      "countryIso3": "KNA",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3867,7 +3867,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "MAF",
+      "countryIso3": "WSM",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3881,21 +3881,14 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "WSM",
+      "countryIso3": "MAF",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "SAU",
-      "indicatorName": "advisory_level_ca",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "SXM",
+      "countryIso3": "SVK",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -3909,16 +3902,16 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "SRB",
+      "countryIso3": "SAU",
       "indicatorName": "advisory_level_ca",
-      "value": 1,
+      "value": 3,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "SLE",
+      "countryIso3": "SVN",
       "indicatorName": "advisory_level_ca",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3937,20 +3930,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "SGP",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "SVK",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "SOM",
       "indicatorName": "advisory_level_ca",
       "value": 4,
@@ -3958,16 +3937,37 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "ESP",
+      "countryIso3": "SRB",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "SLE",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "SVN",
+      "countryIso3": "SGP",
       "indicatorName": "advisory_level_ca",
       "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "SXM",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -3986,28 +3986,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "ZAF",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "LKA",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "CHE",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "SWE",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -4028,9 +4007,51 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "ESP",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "TWN",
       "indicatorName": "advisory_level_ca",
       "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "advisory_level_ca",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -4049,27 +4070,6 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "TUN",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "TON",
-      "indicatorName": "advisory_level_ca",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "THA",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
       "countryIso3": "TCA",
       "indicatorName": "advisory_level_ca",
       "value": 2,
@@ -4077,7 +4077,7 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "TGO",
+      "countryIso3": "TUN",
       "indicatorName": "advisory_level_ca",
       "value": 2,
       "year": 2026,
@@ -4087,20 +4087,6 @@
       "countryIso3": "TKL",
       "indicatorName": "advisory_level_ca",
       "value": 1,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "TZA",
-      "indicatorName": "advisory_level_ca",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "UKR",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -4119,14 +4105,14 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "TUV",
+      "countryIso3": "TON",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "UZB",
+      "countryIso3": "TUV",
       "indicatorName": "advisory_level_ca",
       "value": 1,
       "year": 2026,
@@ -4140,9 +4126,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "GBR",
+      "countryIso3": "UKR",
       "indicatorName": "advisory_level_ca",
-      "value": 2,
+      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -4150,6 +4136,13 @@
       "countryIso3": "ARE",
       "indicatorName": "advisory_level_ca",
       "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -4168,9 +4161,9 @@
       "source": "advisories_ca"
     },
     {
-      "countryIso3": "VNM",
+      "countryIso3": "UZB",
       "indicatorName": "advisory_level_ca",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_ca"
     },
@@ -4189,6 +4182,20 @@
       "source": "advisories_ca"
     },
     {
+      "countryIso3": "VNM",
+      "indicatorName": "advisory_level_ca",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "advisory_level_ca",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_ca"
+    },
+    {
       "countryIso3": "ZMB",
       "indicatorName": "advisory_level_ca",
       "value": 1,
@@ -4199,13 +4206,6 @@
       "countryIso3": "ZWE",
       "indicatorName": "advisory_level_ca",
       "value": 2,
-      "year": 2026,
-      "source": "advisories_ca"
-    },
-    {
-      "countryIso3": "YEM",
-      "indicatorName": "advisory_level_ca",
-      "value": 4,
       "year": 2026,
       "source": "advisories_ca"
     },
