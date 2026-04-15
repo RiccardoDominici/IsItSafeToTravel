@@ -114,6 +114,25 @@ export async function fetchWorldBank(date: string): Promise<FetchResult> {
       }
     }
 
+    // Partial failure: merge cached data for failed indicators
+    const succeededNames = new Set(allIndicators.map((ind) => ind.indicatorName));
+    const failedIndicators = INDICATORS.filter((ind) => !succeededNames.has(ind.name));
+
+    if (failedIndicators.length > 0 && allIndicators.length > 0) {
+      const cached = findLatestCached('worldbank-parsed.json');
+      if (cached) {
+        const cachedData = readJson<RawSourceData>(cached);
+        if (cachedData) {
+          const failedNames = new Set(failedIndicators.map((ind) => ind.name));
+          const cachedFill = cachedData.indicators.filter((ind) => failedNames.has(ind.indicatorName));
+          if (cachedFill.length > 0) {
+            allIndicators.push(...cachedFill);
+            console.log(`[WORLDBANK] Merged cached data for failed indicators: ${[...failedNames].join(', ')} (${cachedFill.length} data points)`);
+          }
+        }
+      }
+    }
+
     if (allIndicators.length === 0) {
       throw new Error(`All indicators failed: ${errors.join('; ')}`);
     }

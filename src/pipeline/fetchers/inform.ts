@@ -8,20 +8,6 @@ import * as XLSX from 'xlsx';
 const INFORM_EXCEL_URL =
   'https://drmkc.jrc.ec.europa.eu/inform-index/Portals/0/InfoRM/2025/INFORM_Risk_Mid_2025_v071.xlsx';
 
-/**
- * Map INFORM column headers to our indicator names.
- * INFORM Excel has columns like "INFORM Risk", "Hazard & Exposure", "Natural", "Human", etc.
- */
-const COLUMN_MAP: Record<string, string> = {
-  'natural': 'inform_natural',
-  'human': 'inform_health',
-  'epidemic': 'inform_epidemic',
-  'governance': 'inform_governance',
-  'institutional': 'inform_governance',
-  'flood': 'inform_climate',
-  'physical exposure to flood': 'inform_climate',
-};
-
 export async function fetchInform(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
@@ -126,8 +112,8 @@ function parseInformExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
     'Natural': 'inform_natural',
     'Epidemic': 'inform_epidemic',
     'Human': 'inform_health',
-    'Projected Conflict Probability': 'inform_governance',
-    'Current Conflict Intensity': 'inform_natural', // reuse for conflict signal
+    'Governance': 'inform_governance',
+    'Institutional': 'inform_governance', // fallback if Governance column missing
     'River Flood': 'inform_climate',
   };
 
