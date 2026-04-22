@@ -1,0 +1,3366 @@
+{
+  "source": "gpi",
+  "fetchedAt": "2026-04-21T07:52:26.009Z",
+  "indicators": [
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_overall",
+      "value": 3.448,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_overall",
+      "value": 2.02,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_overall",
+      "value": 1.745,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_overall",
+      "value": 1.979,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_overall",
+      "value": 1.837,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_overall",
+      "value": 1.929,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_overall",
+      "value": 1.525,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_overall",
+      "value": 1.316,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_overall",
+      "value": 2.09,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_overall",
+      "value": 2.393,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_overall",
+      "value": 1.523,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.177,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_overall",
+      "value": 2.868,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_overall",
+      "value": 2.051,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_overall",
+      "value": 1.643,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_overall",
+      "value": 2.145,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_overall",
+      "value": 1.892,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_overall",
+      "value": 2.248,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_overall",
+      "value": 2.001,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_overall",
+      "value": 2.462,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_overall",
+      "value": 1.496,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_overall",
+      "value": 1.762,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_overall",
+      "value": 2.934,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_overall",
+      "value": 1.35,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_overall",
+      "value": 1.339,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_overall",
+      "value": 1.874,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_overall",
+      "value": 2.009,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_overall",
+      "value": 2.66,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_overall",
+      "value": 3.214,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_overall",
+      "value": 2.21,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_overall",
+      "value": 2.693,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_overall",
+      "value": 1.731,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_overall",
+      "value": 2.103,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_overall",
+      "value": 1.904,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_overall",
+      "value": 1.379,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_overall",
+      "value": 1.456,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_overall",
+      "value": 2.196,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_overall",
+      "value": 1.31,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_overall",
+      "value": 2.019,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_overall",
+      "value": 2.094,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_overall",
+      "value": 2.095,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_overall",
+      "value": 2.267,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_overall",
+      "value": 2.505,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_overall",
+      "value": 1.649,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_overall",
+      "value": 1.563,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_overall",
+      "value": 2.872,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_overall",
+      "value": 1.399,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_overall",
+      "value": 1.939,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_overall",
+      "value": 2.068,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_overall",
+      "value": 1.693,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_overall",
+      "value": 2.071,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_overall",
+      "value": 1.799,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_overall",
+      "value": 2.359,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_overall",
+      "value": 2.045,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_overall",
+      "value": 2.013,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_overall",
+      "value": 1.89,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_overall",
+      "value": 2.13,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_overall",
+      "value": 2.134,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_overall",
+      "value": 2.265,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_overall",
+      "value": 1.45,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_overall",
+      "value": 2.395,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_overall",
+      "value": 1.508,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_overall",
+      "value": 1.829,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_overall",
+      "value": 2.314,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_overall",
+      "value": 1.312,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_overall",
+      "value": 2.8,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_overall",
+      "value": 3.006,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_overall",
+      "value": 1.124,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_overall",
+      "value": 2.706,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_overall",
+      "value": 1.662,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_overall",
+      "value": 1.986,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.895,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_overall",
+      "value": 1.336,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_overall",
+      "value": 1.98,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.254,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_overall",
+      "value": 1.947,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.763,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "gpi_overall",
+      "value": 1.946,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_overall",
+      "value": 1.669,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_overall",
+      "value": 1.779,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_overall",
+      "value": 2.581,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_overall",
+      "value": 1.946,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_overall",
+      "value": 2.605,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_overall",
+      "value": 2.136,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_overall",
+      "value": 2.191,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_overall",
+      "value": 1.671,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_overall",
+      "value": 1.582,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_overall",
+      "value": 2.02,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_overall",
+      "value": 1.873,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_overall",
+      "value": 1.846,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_overall",
+      "value": 2.599,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_overall",
+      "value": 1.713,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_overall",
+      "value": 2.963,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_overall",
+      "value": 2.741,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_overall",
+      "value": 1.772,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_overall",
+      "value": 1.765,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_overall",
+      "value": 2.259,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_overall",
+      "value": 2.228,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_overall",
+      "value": 1.546,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_overall",
+      "value": 1.97,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_overall",
+      "value": 1.513,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_overall",
+      "value": 1.859,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_overall",
+      "value": 2.625,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_overall",
+      "value": 2.713,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_overall",
+      "value": 2.294,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_overall",
+      "value": 1.49,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.55,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_overall",
+      "value": 2.006,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_overall",
+      "value": 1.313,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_overall",
+      "value": 1.794,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_overall",
+      "value": 2.745,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_overall",
+      "value": 1.942,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_overall",
+      "value": 2.13,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_overall",
+      "value": 2.229,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_overall",
+      "value": 2.095,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_overall",
+      "value": 1.634,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_overall",
+      "value": 2.848,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_overall",
+      "value": 1.333,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_overall",
+      "value": 1.942,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_overall",
+      "value": 2.538,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_overall",
+      "value": 1.524,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_overall",
+      "value": 1.649,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_overall",
+      "value": 3.142,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_overall",
+      "value": 2.051,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_overall",
+      "value": 2.26,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_overall",
+      "value": 3.023,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_overall",
+      "value": 1.827,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_overall",
+      "value": 1.332,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_overall",
+      "value": 1.792,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_overall",
+      "value": 2.279,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_overall",
+      "value": 3.036,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_overall",
+      "value": 1.921,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_overall",
+      "value": 3.221,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_overall",
+      "value": 1.578,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_overall",
+      "value": 1.334,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_overall",
+      "value": 1.625,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_overall",
+      "value": 2.168,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_overall",
+      "value": 3.294,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_overall",
+      "value": 2.699,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_overall",
+      "value": 2.13,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_overall",
+      "value": 2.061,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_overall",
+      "value": 2.114,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_overall",
+      "value": 2.107,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_overall",
+      "value": 1.796,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_overall",
+      "value": 1.946,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_overall",
+      "value": 2.01,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_overall",
+      "value": 2.8,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_overall",
+      "value": 1.649,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_overall",
+      "value": 2.058,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_overall",
+      "value": 2.3,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_overall",
+      "value": 3.043,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_overall",
+      "value": 1.798,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_overall",
+      "value": 2.448,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_overall",
+      "value": 2.033,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.693,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_overall",
+      "value": 1.745,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_overall",
+      "value": 3.35,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_overall",
+      "value": 2.405,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_overall",
+      "value": 1.898,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_overall",
+      "value": 2.3,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_safety_security",
+      "value": 4.136,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.423,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.078,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.85,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.519,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.987,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.606,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.51,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.339,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.878,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.802,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.682,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.253,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.435,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.008,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.364,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.144,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.495,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.555,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.319,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.608,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.376,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.532,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.537,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.31,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.332,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.07,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.974,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.749,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.788,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.584,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.231,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.701,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.281,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.526,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.628,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.531,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.305,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.535,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.423,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.571,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.467,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.428,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.836,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.657,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.087,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.251,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.872,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.537,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.723,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.452,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.057,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.659,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.412,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.448,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.857,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.83,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.909,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.046,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.581,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.944,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.736,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.104,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.346,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.548,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.907,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.577,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.282,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.349,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.93,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.785,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.125,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.272,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.291,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.639,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.176,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.485,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.275,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.693,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.088,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.815,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.441,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.155,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.442,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.7,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.753,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.741,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.256,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.125,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.347,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.133,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.915,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.539,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.211,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.172,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.442,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.789,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.78,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.106,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.25,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.092,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.504,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.85,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.057,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.881,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.519,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.301,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.541,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.594,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.863,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.767,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.638,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.729,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.6,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.592,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.71,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.96,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.546,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.479,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.769,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.439,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.745,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.838,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.407,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.137,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.25,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.174,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.3,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.244,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.048,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.641,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.003,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.835,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.721,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.339,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.528,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.746,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.842,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.03,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.495,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.599,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.365,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.55,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.182,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.622,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.417,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.077,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.638,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.367,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.914,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.12,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.528,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.438,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.361,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.544,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.053,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.9,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.112,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.38,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.781,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.3,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.847,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.67,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.633,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.547,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.061,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.772,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.328,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.986,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.716,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.672,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.901,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.052,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.465,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.619,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.951,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.496,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.907,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.873,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.824,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.368,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.735,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.052,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.466,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.808,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.776,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.03,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.793,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.063,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.911,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.924,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.608,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.46,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.55,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.279,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.73,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.971,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.403,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.687,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.925,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.876,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.831,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.709,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.751,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.545,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.826,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.585,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.769,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.788,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.452,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.745,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.625,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.183,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.069,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.817,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.114,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.621,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.499,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.825,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.575,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.721,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.191,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.457,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.388,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.301,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.234,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.174,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.015,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.783,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.07,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.713,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.898,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.333,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.759,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.633,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.88,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.182,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.597,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.062,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.805,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.384,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.798,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.947,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.156,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.838,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.835,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.471,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.644,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.234,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.449,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.707,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.835,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.872,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.921,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.606,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.336,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.592,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.966,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.319,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.734,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.18,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.665,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.853,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.99,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.709,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.079,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.165,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.664,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.236,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.282,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.516,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.476,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.696,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.68,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.933,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.542,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_militarisation",
+      "value": 3,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.211,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.814,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.991,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.104,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.624,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.187,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.504,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.694,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.318,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.625,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.897,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.406,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.082,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.857,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.846,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.347,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.271,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.23,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.864,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.688,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.116,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.233,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.749,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.454,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.663,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.088,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.682,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.84,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.694,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.917,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.703,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.741,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.835,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.349,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.634,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.081,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.812,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.073,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.672,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.235,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.648,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.503,
+      "year": 2023,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.912,
+      "year": 2023,
+      "source": "gpi"
+    }
+  ]
+}
