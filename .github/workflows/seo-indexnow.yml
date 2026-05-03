@@ -35,15 +35,38 @@ jobs:
 
       - name: Extract URLs from sitemap and submit to IndexNow
         run: |
-          SITEMAP_FILE="dist/client/sitemap-0.xml"
+          SITEMAP_INDEX="dist/client/sitemap-index.xml"
 
-          if [ ! -f "$SITEMAP_FILE" ]; then
-            echo "::error::Sitemap not found at $SITEMAP_FILE"
+          if [ ! -f "$SITEMAP_INDEX" ]; then
+            echo "::error::Sitemap index not found at $SITEMAP_INDEX"
             exit 1
           fi
 
-          # Extract all <loc> URLs from the sitemap
-          URLS=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_FILE")
+          # Read per-language sitemap filenames from the sitemap index
+          SITEMAP_FILES=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_INDEX" | sed 's|https://isitsafetotravel.org/|dist/client/|')
+
+          if [ -z "$SITEMAP_FILES" ]; then
+            echo "::error::No sitemaps found in $SITEMAP_INDEX"
+            exit 1
+          fi
+
+          echo "Found $(echo "$SITEMAP_FILES" | wc -l | tr -d ' ') sitemap files in index"
+          echo "$SITEMAP_FILES"
+
+          # Extract <loc> URLs from every per-language sitemap and concatenate
+          ALL_URLS_FILE=$(mktemp)
+          while IFS= read -r SITEMAP_FILE; do
+            [ -z "$SITEMAP_FILE" ] && continue
+            if [ ! -f "$SITEMAP_FILE" ]; then
+              echo "::warning::Sitemap referenced but missing: $SITEMAP_FILE"
+              continue
+            fi
+            FILE_COUNT=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_FILE" | tee -a "$ALL_URLS_FILE" | wc -l | tr -d ' ')
+            echo "  $SITEMAP_FILE: $FILE_COUNT URLs"
+          done <<< "$SITEMAP_FILES"
+
+          URLS=$(sed '/^$/d' "$ALL_URLS_FILE")
+          rm -f "$ALL_URLS_FILE"
           URL_COUNT=$(echo "$URLS" | wc -l | tr -d ' ')
 
           echo "Found $URL_COUNT URLs in sitemap"
