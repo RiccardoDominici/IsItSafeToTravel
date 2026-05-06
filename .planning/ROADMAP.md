@@ -464,3 +464,21 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 | 35. CI/CD Automation | v4.0 | 1/2 | Complete    | 2026-03-27 |
 | 36. Documentation | v4.0 | 2/2 | Complete    | 2026-03-27 |
 | 37. Calibration & Validation | v4.0 | 1/2 | Complete    | 2026-03-27 |
+
+### Phase 38: i18n zh+de support and Travelpayouts affiliate replacing Ko-fi
+
+**Goal:** Site supports 7 languages (en, it, es, fr, pt, zh, de) with full UI translations, localized routes, hreflang, and sitemap entries; Ko-fi donation widget and pages are replaced with a Travelpayouts affiliate CTA whose marker is configurable for the user to fill in
+**Requirements**: I18N-ZH, I18N-DE, MONETIZATION-TP
+**Depends on:** Phase 37
+**Plans:** 0 plans
+
+**Success Criteria:**
+1. `src/i18n/ui.ts` `languages` map includes `zh` and `de`; both blocks contain every key present in the `en` block (no fallbacks for nav/footer/hero/methodology core keys)
+2. `src/pages/zh/` and `src/pages/de/` directories exist mirroring the existing locale page set; visiting `/zh/` and `/de/` renders localized pages with proper `<html lang>` attribute
+3. Sitemap and hreflang alternate links include both new locales
+4. Ko-fi floating widget removed from `src/layouts/Base.astro`; no `kofiWidgetOverlay` references remain in shipping code; `donate.kofi_*` keys removed
+5. Travelpayouts affiliate CTA is present (footer link or dedicated `/deals` page) with a documented placeholder marker the user can swap to a real Travelpayouts partner ID via single-line config change
+6. `bun run build` succeeds with no missing-key warnings; no broken internal links
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 38 to break down)
