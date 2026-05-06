@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
+import { buildAffiliateUrl } from '../config/affiliate';
 
 interface Props {
   lang: Lang;
@@ -11,6 +12,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
 const currentYear = new Date().getFullYear();
+const affiliateUrl = buildAffiliateUrl();
 ---
 
 <footer class="bg-sand-100 dark:bg-sand-800 border-t border-sand-200 dark:border-sand-700 mt-auto">
@@ -69,6 +71,14 @@ const currentYear = new Date().getFullYear();
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >
         {t('footer.sources')}
+      </a>
+      <a
+        href={affiliateUrl}
+        target="_blank"
+        rel="noopener noreferrer sponsored"
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('donate.travelpayouts_btn' as any)}
       </a>
     </div>
 
