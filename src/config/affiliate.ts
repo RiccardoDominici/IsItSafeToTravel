@@ -11,8 +11,7 @@
  * No other code changes needed — every consumer reads from this file.
  */
 
-// TODO: replace with real Travelpayouts marker (6-digit string from dashboard)
-export const TRAVELPAYOUTS_MARKER = '000000';
+export const TRAVELPAYOUTS_MARKER = '526093';
 
 /** Default landing page when no specific URL is provided. */
 export const TRAVELPAYOUTS_DEFAULT_TARGET = 'https://search.travelpayouts.com/';
