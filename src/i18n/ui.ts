@@ -12,10 +12,10 @@ export const defaultLang = 'en' as const;
 export type Lang = keyof typeof languages;
 
 // Languages whose full page tree has been built and is reachable.
-// zh and de translations exist in `ui` and `routes`, but pages live in plan 02.
-// `getAlternateLinks` should only emit hreflang for published languages so
+// `getAlternateLinks` only emits hreflang for published languages so
 // post-build SEO validation does not fail on links to non-existent pages.
-export const publishedLanguages = ['en', 'it', 'es', 'fr', 'pt'] as const;
+// Plan 38-02 added /zh/ and /de/ page trees; both are now reachable.
+export const publishedLanguages = ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'] as const;
 export type PublishedLang = (typeof publishedLanguages)[number];
 
 export const ui = {
