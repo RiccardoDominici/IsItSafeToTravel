@@ -1,0 +1,99 @@
+---
+export const prerender = true;
+
+import type { GetStaticPaths } from 'astro';
+import type { ScoredCountry } from '../../../pipeline/types';
+import type { HistoryPoint, PillarHistoryData } from '../../../lib/scores';
+import Base from '../../../layouts/Base.astro';
+import ScoreHero from '../../../components/country/ScoreHero.astro';
+import PillarBreakdown from '../../../components/country/PillarBreakdown.astro';
+import PillarDetailTable from '../../../components/country/PillarDetailTable.astro';
+import AdvisorySection from '../../../components/country/AdvisorySection.astro';
+import TrendChart from '../../../components/country/TrendChart.astro';
+
+import SourcesList from '../../../components/country/SourcesList.astro';
+import RelatedCountries from '../../../components/country/RelatedCountries.astro';
+import NeighborComparison from '../../../components/country/NeighborComparison.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import StatsSummary from '../../../components/country/StatsSummary.astro';
+import FaqSection from '../../../components/country/FaqSection.astro';
+import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
+import ComparisonTable from '../../../components/country/ComparisonTable.astro';
+import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
+import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
+import { useTranslations } from '../../../i18n/utils';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'zh';
+const t = useTranslations(lang);
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const countries = loadLatestScores();
+  const history = loadHistoricalScores();
+  const sorted = [...countries].sort((a, b) => b.score - a.score);
+  const rankMap = new Map(sorted.map((c, i) => [c.iso3, i + 1]));
+
+  return countries.map((country) => ({
+    params: { slug: country.iso3.toLowerCase() },
+    props: {
+      country,
+      allCountries: countries,
+      trend: history.get(country.iso3) ?? [],
+      pillarTrend: loadPillarHistory(country.iso3),
+      scoreDelta: getScoreDelta(country.iso3, history),
+      rank: rankMap.get(country.iso3) ?? 0,
+      totalCountries: countries.length,
+    },
+  }));
+};
+
+interface Props {
+  country: ScoredCountry;
+  allCountries: ScoredCountry[];
+  trend: HistoryPoint[];
+  pillarTrend: PillarHistoryData | null;
+  scoreDelta: { delta: number; period: string } | null;
+  rank: number;
+  totalCountries: number;
+}
+
+const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries } = Astro.props;
+const description = buildCountryMetaDescription(country, lang);
+const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
+const dateModified = new Date().toISOString().split('T')[0];
+const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
+const advisorySources = Object.keys(country.advisories || {}).map(key => ({
+  key,
+  name: t(`country.advisory.${key}` as any),
+}));
+---
+<Base lang={lang} title={`Is ${getLocalizedCountryName(country, lang)} Safe? ${country.score.toFixed(1)}/10 Safety Score (2026)`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: t('nav.countries'), href: `/${lang}/` },
+      { label: getLocalizedCountryName(country, lang), href: `/${lang}/country/${country.iso3.toLowerCase()}/` },
+    ]} />
+    <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
+      <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">
+        Last update: {new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+      </p>
+      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
+        <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/></svg>
+        {t('country.updated_daily_badge' as any)}
+      </span>
+    </div>
+    <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <AnswerFirstParagraph country={country} lang={lang} />
+    <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
+    <PillarBreakdown pillars={country.pillars} lang={lang} />
+    <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
+    <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
+    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
+    <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
+    <FaqSection country={country} lang={lang} />
+    <SourcesList sources={country.sources} lang={lang} />
+    <PillarDetailTable pillars={country.pillars} lang={lang} />
+  </div>
+</Base>
