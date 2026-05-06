@@ -13,7 +13,7 @@ const ranked = getCountriesByRegion(countries, 'oceania');
 const title = t('hub.region.oceania.title' as any);
 const description = t('hub.region.oceania.description' as any);
 const intro = t('hub.region.oceania.intro' as any);
-const canonicalUrl = 'https://isitsafetotravel.org/en/regions/oceania/';
+const canonicalUrl = 'https://isitsafetotravel.org/de/regionen/ozeanien/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: i + 1,
     name: getLocalizedCountryName(c, lang),
-    url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
+    url: `https://isitsafetotravel.org/de/land/${c.iso3.toLowerCase()}/`,
   })),
 };
 ---

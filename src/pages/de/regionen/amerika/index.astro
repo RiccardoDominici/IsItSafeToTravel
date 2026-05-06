@@ -13,7 +13,7 @@ const ranked = getCountriesByRegion(countries, 'americas');
 const title = t('hub.region.americas.title' as any);
 const description = t('hub.region.americas.description' as any);
 const intro = t('hub.region.americas.intro' as any);
-const canonicalUrl = 'https://isitsafetotravel.org/en/regions/americas/';
+const canonicalUrl = 'https://isitsafetotravel.org/de/regionen/amerika/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: i + 1,
     name: getLocalizedCountryName(c, lang),
-    url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
+    url: `https://isitsafetotravel.org/de/land/${c.iso3.toLowerCase()}/`,
   })),
 };
 ---

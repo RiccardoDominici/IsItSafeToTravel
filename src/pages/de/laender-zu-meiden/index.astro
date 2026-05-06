@@ -13,7 +13,7 @@ const ranked = getCountriesToAvoid(countries);
 const title = t('hub.countries_to_avoid.title' as any);
 const description = t('hub.countries_to_avoid.description' as any);
 const intro = t('hub.countries_to_avoid.intro' as any);
-const canonicalUrl = 'https://isitsafetotravel.org/en/countries-to-avoid/';
+const canonicalUrl = 'https://isitsafetotravel.org/de/laender-zu-meiden/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: i + 1,
     name: getLocalizedCountryName(c, lang),
-    url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
+    url: `https://isitsafetotravel.org/de/land/${c.iso3.toLowerCase()}/`,
   })),
 };
 ---

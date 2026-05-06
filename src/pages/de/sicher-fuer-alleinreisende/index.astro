@@ -13,7 +13,7 @@ const ranked = getSafestForSoloTravelers(countries, 20);
 const title = t('hub.solo_travelers.title' as any);
 const description = t('hub.solo_travelers.description' as any);
 const intro = t('hub.solo_travelers.intro' as any);
-const canonicalUrl = 'https://isitsafetotravel.org/en/safest-for-solo-travelers/';
+const canonicalUrl = 'https://isitsafetotravel.org/de/sicher-fuer-alleinreisende/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -26,7 +26,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: i + 1,
     name: getLocalizedCountryName(c, lang),
-    url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
+    url: `https://isitsafetotravel.org/de/land/${c.iso3.toLowerCase()}/`,
   })),
 };
 ---

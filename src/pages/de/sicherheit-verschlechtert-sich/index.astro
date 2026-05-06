@@ -15,7 +15,7 @@ const deltas = new Map(ranked.map(c => [c.iso3, c.delta]));
 const title = t('hub.declining.title' as any);
 const description = t('hub.declining.description' as any);
 const intro = t('hub.declining.intro' as any);
-const canonicalUrl = 'https://isitsafetotravel.org/en/declining-safety/';
+const canonicalUrl = 'https://isitsafetotravel.org/de/sicherheit-verschlechtert-sich/';
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -28,7 +28,7 @@ const jsonLd = {
     '@type': 'ListItem',
     position: i + 1,
     name: getLocalizedCountryName(c, lang),
-    url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
+    url: `https://isitsafetotravel.org/de/land/${c.iso3.toLowerCase()}/`,
   })),
 };
 ---
