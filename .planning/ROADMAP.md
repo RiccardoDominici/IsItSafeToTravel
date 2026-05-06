@@ -470,7 +470,7 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 **Goal:** Site supports 7 languages (en, it, es, fr, pt, zh, de) with full UI translations, localized routes, hreflang, and sitemap entries; Ko-fi donation widget and pages are replaced with a Travelpayouts affiliate CTA whose marker is configurable for the user to fill in
 **Requirements**: I18N-ZH, I18N-DE, MONETIZATION-TP
 **Depends on:** Phase 37
-**Plans:** 3 plans
+**Plans:** 3/3 plans complete
 
 **Success Criteria:**
 1. `src/i18n/ui.ts` `languages` map includes `zh` and `de`; both blocks contain every key present in the `en` block (no fallbacks for nav/footer/hero/methodology core keys)
@@ -481,6 +481,6 @@ Phases execute in numeric order: 28 → 29 → 30 → 31 → 32 → 33 → 34 �
 6. `bun run build` succeeds with no missing-key warnings; no broken internal links
 
 Plans:
-- [ ] 38-01-PLAN.md — Add zh and de translation blocks to src/i18n/ui.ts (languages map, ui.zh, ui.de, routes.zh, routes.de)
-- [ ] 38-02-PLAN.md — Wire zh and de pages, sitemap, hreflang, country-name fallback, root redirect, validation scripts
-- [ ] 38-03-PLAN.md — Replace Ko-fi widget and donate.kofi_* keys with Travelpayouts affiliate CTA, footer link, and FUNDING.yml cleanup
+- [x] 38-01-PLAN.md — Add zh and de translation blocks to src/i18n/ui.ts (languages map, ui.zh, ui.de, routes.zh, routes.de)
+- [x] 38-02-PLAN.md — Wire zh and de pages, sitemap, hreflang, country-name fallback, root redirect, validation scripts
+- [x] 38-03-PLAN.md — Replace Ko-fi widget and donate.kofi_* keys with Travelpayouts affiliate CTA, footer link, and FUNDING.yml cleanup

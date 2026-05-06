@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
 status: executing
-stopped_at: Completed 32-02-PLAN.md
-last_updated: "2026-03-27T11:55:46.469Z"
-last_activity: 2026-03-27
+stopped_at: Completed quick task 260415-qon
+last_updated: "2026-05-06T13:54:59.939Z"
+last_activity: "2026-04-03 - Completed quick task 260403-o7a: SEO improvements"
 progress:
-  total_phases: 22
-  completed_phases: 18
-  total_plans: 38
-  completed_plans: 42
-  percent: 0
+  total_phases: 23
+  completed_phases: 19
+  total_plans: 41
+  completed_plans: 45
+  percent: 100
 ---
 
 # Project State
@@ -30,7 +30,7 @@ Plan: Not started
 Status: Executing Phase 37
 Last activity: 2026-04-03 - Completed quick task 260403-o7a: SEO improvements
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██████████] 100%
 
 ## Performance Metrics
 
@@ -63,6 +63,13 @@ Recent decisions affecting current work:
 - [Phase 32]: Chinese normalization matches characters directly without toLowerCase; Korean maps 1:1 to unified scale
 - [Phase 32]: Used HTML scraping for South Korea instead of API (avoids API key registration)
 - [Phase 32]: Created local Korean/Chinese country name mapping tables in fetcher file (not in shared countries.ts)
+- [Phase ?]: Plan 38-02: introduced getLocalizedCountryName helper with en fallback for snapshot data lacking new locales
+- [Phase ?]: Plan 38-02: publishedLanguages flipped to 7 entries enabling hreflang for /zh/ and /de/ sitewide
+- [Phase ?]: Plan 38-02: bulk-migrated 80+ files from country.name[lang] to getLocalizedCountryName helper
+
+### Roadmap Evolution
+
+- Phase 38 added: i18n zh+de support and Travelpayouts affiliate replacing Ko-fi (2026-05-03)
 
 ### Pending Todos
 
@@ -93,10 +100,12 @@ None yet.
 | Phase 32 P02 | 354s | 2 tasks | 3 files |
 | 260330-h6z | Perplexity AI optimization: visible FAQ, answer-first paragraphs, timestamps, comparison tables, question H2s, Dataset schema | 2026-03-30 | da7c4aa | [260330-h6z-perplexity-ai-optimization-visible-faq-a](./quick/260330-h6z-perplexity-ai-optimization-visible-faq-a/) |
 | 260403-o7a | SEO improvements: title freshness, neighbor comparison, 65 hub pages, embeddable badge | 2026-04-03 | 1b5fa07 | [260403-o7a-seo-improvements-title-freshness-neighbo](./quick/260403-o7a-seo-improvements-title-freshness-neighbo/) |
+| 260415-qon | Fix INFORM governance mapping, WB partial fallback, regenerate scores | 2026-04-15 | b2ef9ad, 3bce773 | [260415-qon-fix-inform-governance-column-mapping-fix](./quick/260415-qon-fix-inform-governance-column-mapping-fix/) |
+| Phase 38 P02 | 1850 | 3 tasks | 130 files |
 
 ## Session Continuity
 
-Last activity: 2026-03-30 - Completed quick task 260330-h6z: Perplexity AI optimization
-Last session: 2026-03-30T10:51:00.000Z
-Stopped at: Completed 32-02-PLAN.md
+Last activity: 2026-04-15 - Completed quick task 260415-qon: Fix INFORM governance column mapping
+Last session: 2026-05-06T13:54:43.509Z
+Stopped at: Completed quick task 260415-qon
 Resume file: None
