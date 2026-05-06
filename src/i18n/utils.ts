@@ -1,4 +1,4 @@
-import { ui, defaultLang, type Lang, languages, routes } from './ui';
+import { ui, defaultLang, type Lang, languages, routes, publishedLanguages } from './ui';
 
 export function getLangFromUrl(url: URL): Lang {
   const [, lang] = url.pathname.split('/');
@@ -50,7 +50,11 @@ export function getLocalizedPath(path: string, targetLang: Lang): string {
 export function getAlternateLinks(
   currentPath: string,
 ): Array<{ lang: Lang; href: string }> {
-  return (Object.keys(languages) as Lang[]).map((lang) => ({
+  // Only emit hreflang for languages whose page tree has been built.
+  // Translations for newly-added languages (zh, de) live in `ui`/`routes`
+  // already, but their pages are added in a follow-up plan; emitting hreflang
+  // for non-existent URLs would break post-build SEO validation.
+  return publishedLanguages.map((lang) => ({
     lang,
     href: getLocalizedPath(currentPath, lang),
   }));

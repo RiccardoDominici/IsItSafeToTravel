@@ -11,6 +11,13 @@ export const languages = {
 export const defaultLang = 'en' as const;
 export type Lang = keyof typeof languages;
 
+// Languages whose full page tree has been built and is reachable.
+// zh and de translations exist in `ui` and `routes`, but pages live in plan 02.
+// `getAlternateLinks` should only emit hreflang for published languages so
+// post-build SEO validation does not fail on links to non-existent pages.
+export const publishedLanguages = ['en', 'it', 'es', 'fr', 'pt'] as const;
+export type PublishedLang = (typeof publishedLanguages)[number];
+
 export const ui = {
   en: {
     'site.title': 'Is It Safe to Travel? — Safety Scores for 240+ Countries [2026]',
@@ -3366,5 +3373,57 @@ export const routes = {
     'americas': 'americas',
     'oceania': 'oceania',
     'middle-east': 'oriente-medio',
+  },
+  zh: {
+    country: 'country',
+    about: 'about',
+    methodology: 'methodology',
+    legal: 'legal',
+    'global-safety': 'global-safety',
+    compare: 'compare',
+    donate: 'donate',
+    feedback: 'feedback',
+    sources: 'sources',
+    'safest-countries': 'safest-countries',
+    'most-dangerous-countries': 'most-dangerous-countries',
+    'regions': 'regions',
+    'safest-for-solo-travelers': 'safest-for-solo-travelers',
+    'safest-for-families': 'safest-for-families',
+    'countries-to-avoid': 'countries-to-avoid',
+    'improving-safety': 'improving-safety',
+    'declining-safety': 'declining-safety',
+    'embed-badge': 'embed-badge',
+    'europe': 'europe',
+    'asia': 'asia',
+    'africa': 'africa',
+    'americas': 'americas',
+    'oceania': 'oceania',
+    'middle-east': 'middle-east',
+  },
+  de: {
+    country: 'land',
+    about: 'ueber-uns',
+    methodology: 'methodik',
+    legal: 'impressum',
+    'global-safety': 'globale-sicherheit',
+    compare: 'vergleichen',
+    donate: 'spenden',
+    feedback: 'feedback',
+    sources: 'quellen',
+    'safest-countries': 'sicherste-laender',
+    'most-dangerous-countries': 'gefaehrlichste-laender',
+    'regions': 'regionen',
+    'safest-for-solo-travelers': 'sicher-fuer-alleinreisende',
+    'safest-for-families': 'sicher-fuer-familien',
+    'countries-to-avoid': 'laender-zu-meiden',
+    'improving-safety': 'sicherheit-verbessert-sich',
+    'declining-safety': 'sicherheit-verschlechtert-sich',
+    'embed-badge': 'einbettbares-abzeichen',
+    'europe': 'europa',
+    'asia': 'asien',
+    'africa': 'afrika',
+    'americas': 'amerika',
+    'oceania': 'ozeanien',
+    'middle-east': 'naher-osten',
   },
 } as const;
