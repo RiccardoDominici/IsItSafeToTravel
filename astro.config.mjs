@@ -63,7 +63,7 @@ function buildLastmodMap() {
 const lastmodMap = buildLastmodMap();
 
 // Country route slugs per language (to extract ISO3 from URLs)
-const countryRouteSlugs = ['country', 'paese', 'pais', 'pays'];
+const countryRouteSlugs = ['country', 'paese', 'pais', 'pays', 'land'];
 
 function getCountryIso3FromUrl(url) {
   const urlPath = new URL(url).pathname;
@@ -91,6 +91,8 @@ export default defineConfig({
           es: 'es',
           fr: 'fr',
           pt: 'pt',
+          zh: 'zh',
+          de: 'de',
         },
       },
       filter(page) {
@@ -115,6 +117,8 @@ export default defineConfig({
         es: (item) => item.url.includes('/es/') ? item : undefined,
         fr: (item) => item.url.includes('/fr/') ? item : undefined,
         pt: (item) => item.url.includes('/pt/') ? item : undefined,
+        zh: (item) => item.url.includes('/zh/') ? item : undefined,
+        de: (item) => item.url.includes('/de/') ? item : undefined,
       },
     }),
   ],
@@ -125,7 +129,7 @@ export default defineConfig({
 
   i18n: {
     defaultLocale: 'en',
-    locales: ['en', 'it', 'es', 'fr', 'pt'],
+    locales: ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'],
     routing: {
       prefixDefaultLocale: true,
     },

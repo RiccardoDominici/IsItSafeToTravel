@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { getNeighbors } from '../../lib/neighbors';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
@@ -27,7 +28,7 @@ function getScoreBadgeClasses(score: number): string {
 }
 
 // Build heading with country name
-const heading = t('country.compare_title' as any).replace('{name}', country.name[lang]);
+const heading = t('country.compare_title' as any).replace('{name}', getLocalizedCountryName(country, lang));
 ---
 
 {neighbors.length > 0 && (
@@ -41,7 +42,7 @@ const heading = t('country.compare_title' as any).replace('{name}', country.name
         class="flex items-center gap-2 rounded-lg border-2 border-terracotta-400 dark:border-terracotta-500 bg-white dark:bg-sand-800 px-4 py-3"
       >
         <span class="text-sm font-bold text-sand-800 dark:text-sand-100 truncate">
-          {country.name[lang]}
+          {getLocalizedCountryName(country, lang)}
         </span>
         <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(country.score)}`}>
           {country.score.toFixed(1)}
@@ -54,7 +55,7 @@ const heading = t('country.compare_title' as any).replace('{name}', country.name
           class="flex items-center gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
         >
           <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate">
-            {c.name[lang]}
+            {getLocalizedCountryName(c, lang)}
           </span>
           <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
             {c.score.toFixed(1)}

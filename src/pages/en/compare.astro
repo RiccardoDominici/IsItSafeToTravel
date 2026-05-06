@@ -3,7 +3,7 @@ export const prerender = true;
 
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { loadLatestScores, loadHistoricalScores } from '../../lib/scores';
+import { loadLatestScores, loadHistoricalScores, getLocalizedCountryName } from '../../lib/scores';
 import type { HistoryPoint } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
 import { useTranslations } from '../../i18n/utils';
@@ -17,7 +17,7 @@ const history = loadHistoricalScores();
 
 const countryData = scores.map(country => ({
   iso3: country.iso3,
-  name: country.name[lang],
+  name: getLocalizedCountryName(country, lang),
   score: country.score,
   scoreDisplay: country.scoreDisplay,
   pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),

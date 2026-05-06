@@ -28,7 +28,7 @@ interface PillarScore {
 
 interface ScoredCountry {
   iso3: string;
-  name: { en: string; it: string; es: string; fr: string; pt: string };
+  name: { en: string; it: string; es: string; fr: string; pt: string; zh?: string; de?: string };
   score: number; // 1–10
   scoreDisplay: number;
   pillars: PillarScore[];
@@ -145,7 +145,7 @@ function main() {
   // Site Overview (embed current llms.txt content inline)
   lines.push("## Site Overview");
   lines.push("");
-  lines.push("IsItSafeToTravel.org is a free, open-source travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 5 languages (English, Italian, Spanish, French, Portuguese).");
+  lines.push("IsItSafeToTravel.org is a free, open-source travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).");
   lines.push("");
   lines.push("### Main Pages");
   lines.push("");
@@ -262,7 +262,7 @@ function main() {
   // ────── build llms.txt ──────
   const llms = `# IsItSafeToTravel.org
 
-> Free, open-source travel safety platform providing composite safety scores for ${countries.length} countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 5 languages (English, Italian, Spanish, French, Portuguese).
+> Free, open-source travel safety platform providing composite safety scores for ${countries.length} countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
 
 ## Main Pages
 

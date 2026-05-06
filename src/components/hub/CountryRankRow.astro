@@ -2,6 +2,7 @@
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   rank: number;
@@ -36,7 +37,7 @@ function getDeltaClasses(d: number): string {
     {rank}
   </span>
   <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate flex-1">
-    {country.name[lang]}
+    {getLocalizedCountryName(country, lang)}
   </span>
   {showDelta && delta !== 0 && (
     <span class={`text-xs font-semibold shrink-0 ${getDeltaClasses(delta)}`}>

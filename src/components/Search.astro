@@ -3,7 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
 import { COUNTRIES } from '../pipeline/config/countries';
-import { loadLatestScores } from '../lib/scores';
+import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
 import { scoreToColor } from '../lib/colors';
 
 interface Props {
@@ -20,7 +20,7 @@ const searchData = COUNTRIES.map(c => {
   const scored = scoreMap.get(c.iso3);
   return {
     iso3: c.iso3,
-    name: c.name[lang],
+    name: getLocalizedCountryName(c, lang),
     score: scored?.scoreDisplay ?? null,
     color: scored ? scoreToColor(scored.score) : null,
   };

@@ -1,7 +1,7 @@
 ---
 export const prerender = true;
 import HubPageLayout from '../../../components/hub/HubPageLayout.astro';
-import { loadLatestScores } from '../../../lib/scores';
+import { loadLatestScores, getLocalizedCountryName } from '../../../lib/scores';
 import { getSafestForSoloTravelers } from '../../../lib/hub-data';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
@@ -25,7 +25,7 @@ const jsonLd = {
   itemListElement: ranked.map((c, i) => ({
     '@type': 'ListItem',
     position: i + 1,
-    name: c.name[lang],
+    name: getLocalizedCountryName(c, lang),
     url: `https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`,
   })),
 };

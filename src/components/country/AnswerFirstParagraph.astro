@@ -2,6 +2,7 @@
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
@@ -11,13 +12,15 @@ interface Props {
 const { country, lang } = Astro.props;
 const t = useTranslations(lang);
 
-const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 const pillarLabels: Record<Lang, Record<string, string>> = {
   en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
   it: { conflict: 'conflitto', crime: 'criminalita', health: 'salute', governance: 'governance', environment: 'ambiente' },
   es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
   fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
   pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
+  zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '环境' },
+  de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
 };
 
 const riskLevels: Record<Lang, [string, string, string]> = {
@@ -26,6 +29,8 @@ const riskLevels: Record<Lang, [string, string, string]> = {
   es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
   fr: ['risque faible', 'risque modere', 'risque eleve'],
   pt: ['risco baixo', 'risco moderado', 'risco alto'],
+  zh: ['低风险', '中等风险', '高风险'],
+  de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
 };
 
 const score = country.score;
@@ -43,7 +48,7 @@ const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric'
 const sourceCount = country.sources.length || 3;
 
 const text = t('country.answer_first' as any)
-  .replace('{name}', country.name[lang])
+  .replace('{name}', getLocalizedCountryName(country, lang))
   .replace('{score}', score.toFixed(1))
   .replace('{date}', dateStr)
   .replace('{riskLevel}', riskLevel)

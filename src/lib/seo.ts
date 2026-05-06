@@ -1,8 +1,9 @@
 import type { ScoredCountry, PillarName } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
+import { getLocalizedCountryName } from './scores';
 
-// Locale maps for consistent 3-language handling
-const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
+// Locale maps for consistent 7-language handling
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 
 // Pillar name translations for meta descriptions
 const pillarLabels: Record<Lang, Record<PillarName, string>> = {
@@ -11,6 +12,8 @@ const pillarLabels: Record<Lang, Record<PillarName, string>> = {
   es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
   fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
   pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
+  zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '环境' },
+  de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
 };
 
 /**
@@ -28,6 +31,8 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
     fr: ['risque faible', 'risque modere', 'risque eleve'],
     pt: ['risco baixo', 'risco moderado', 'risco alto'],
+    zh: ['低风险', '中等风险', '高风险'],
+    de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
   };
   const [low, moderate, high] = riskLevels[lang];
   const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
@@ -46,7 +51,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const strongestLabel = pillarLabels[lang][strongest.name];
   const weakestLabel = pillarLabels[lang][weakest.name];
   const sourceCount = country.sources.length || 3; // fallback: pipeline uses 3 public sources
-  const name = country.name[lang];
+  const name = getLocalizedCountryName(country, lang);
 
   const roundedScore = score.toFixed(1);
   const templates: Record<Lang, string> = {
@@ -55,6 +60,8 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     es: `Seguridad de ${name}: ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}). Punto fuerte: ${strongestLabel} (${strongestScore}). Datos gratuitos de ${sourceCount}+ fuentes, actualizados diariamente. Verifica antes de viajar.`,
     fr: `Securite de ${name} : ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}). Point fort : ${strongestLabel} (${strongestScore}). Donnees gratuites de ${sourceCount}+ sources, mises a jour chaque jour. Verifiez avant de partir.`,
     pt: `Seguranca de ${name}: ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}). Ponto forte: ${strongestLabel} (${strongestScore}). Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente. Verifique antes de viajar.`,
+    zh: `${name} 安全评分：${roundedScore}/10（${riskLevel}）。主要关注：${weakestLabel}（${weakestScore}）。最佳类别：${strongestLabel}（${strongestScore}）。来自 ${sourceCount}+ 个来源的免费数据，每日更新。出行前请查阅。`,
+    de: `Sicherheits-Score für ${name}: ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}). Stärkste Kategorie: ${strongestLabel} (${strongestScore}). Kostenlose Daten aus ${sourceCount}+ Quellen, täglich aktualisiert. Vor der Reise prüfen.`,
   };
   return templates[lang];
 }
@@ -64,6 +71,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
  * Uses @graph with WebPage and Place nodes.
  */
 export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string, dateModified?: string): Record<string, unknown> {
+  const countryName = getLocalizedCountryName(country, lang);
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -71,28 +79,28 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         '@type': 'WebPage',
         '@id': canonicalUrl,
         url: canonicalUrl,
-        name: `${country.name[lang]} Safety Score`,
+        name: `${countryName} Safety Score`,
         description: buildCountryMetaDescription(country, lang),
         inLanguage: localeMap[lang],
         ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
       },
       {
         '@type': 'Place',
-        name: country.name[lang],
-        description: `Safety information for ${country.name[lang]}`,
+        name: countryName,
+        description: `Safety information for ${countryName}`,
       },
       buildCountryFaqJsonLd(country, lang),
       {
         '@type': 'TouristDestination',
-        name: country.name[lang],
-        description: `Travel safety information for ${country.name[lang]}. Safety score: ${country.score.toFixed(1)}/10 (${country.score >= 7 ? 'Low risk' : country.score >= 4 ? 'Moderate risk' : 'High risk'}). Data from IsItSafeToTravel.org, updated daily.`,
+        name: countryName,
+        description: `Travel safety information for ${countryName}. Safety score: ${country.score.toFixed(1)}/10 (${country.score >= 7 ? 'Low risk' : country.score >= 4 ? 'Moderate risk' : 'High risk'}). Data from IsItSafeToTravel.org, updated daily.`,
         touristType: country.score >= 7 ? 'All travelers including families' : country.score >= 4 ? 'General travelers' : 'Adventure travelers',
         url: canonicalUrl,
       },
       {
         '@type': 'Dataset',
-        name: `${country.name[lang]} Travel Safety Data ${new Date().getFullYear()}`,
-        description: `Daily updated safety scores for ${country.name[lang]}, covering conflict, crime, health, governance, and environment.`,
+        name: `${countryName} Travel Safety Data ${new Date().getFullYear()}`,
+        description: `Daily updated safety scores for ${countryName}, covering conflict, crime, health, governance, and environment.`,
         url: canonicalUrl,
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
         temporalCoverage: '2025/..',
@@ -122,6 +130,8 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
     es: 'Descubre que tan seguro es tu destino de viaje',
     fr: 'Decouvrez si votre destination de voyage est sure',
     pt: 'Descubra se seu destino de viagem e seguro',
+    zh: '了解您的旅行目的地有多安全',
+    de: 'Erfahren Sie, wie sicher Ihr Reiseziel ist',
   };
 
   return {
@@ -159,6 +169,8 @@ export function buildGlobalSafetyJsonLd(
     es: 'Puntuacion de Seguridad Global',
     fr: 'Score de Securite Mondial',
     pt: 'Pontuacao de Seguranca Global',
+    zh: '全球安全评分',
+    de: 'Globaler Sicherheits-Score',
   };
 
   const descriptions: Record<Lang, string> = {
@@ -167,6 +179,8 @@ export function buildGlobalSafetyJsonLd(
     es: `Puntuacion de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
     fr: `Score de securite mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de securite mondiale.`,
     pt: `Pontuacao de seguranca global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de seguranca mundial.`,
+    zh: `当前全球安全评分：${globalScore.toFixed(1)}/10。跟踪全球安全趋势变化。`,
+    de: `Aktueller globaler Sicherheits-Score: ${globalScore.toFixed(1)}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
   };
 
   return {
@@ -266,7 +280,7 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
  * Used by both the JSON-LD builder and the visible FaqSection component.
  */
 export function getCountryFaqData(country: ScoredCountry, lang: Lang): { question: string; answer: string }[] {
-  const name = country.name[lang];
+  const name = getLocalizedCountryName(country, lang);
   const score = country.score;
   const roundedScore = score.toFixed(1);
   const year = new Date().getFullYear().toString();
@@ -278,6 +292,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
     fr: ['risque faible', 'risque modere', 'risque eleve'],
     pt: ['risco baixo', 'risco moderado', 'risco alto'],
+    zh: ['低风险', '中等风险', '高风险'],
+    de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
   };
   const [low, moderate, high] = riskLevels[lang];
   const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
@@ -298,6 +314,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `Es seguro viajar a ${name} en ${year}?`,
     fr: `Est-il sur de voyager au/en ${name} en ${year} ?`,
     pt: `E seguro viajar para ${name} em ${year}?`,
+    zh: `${year} 年前往 ${name} 旅行安全吗？`,
+    de: `Ist es ${year} sicher, nach ${name} zu reisen?`,
   };
   const a1: Record<Lang, string> = {
     en: `${name} has a safety score of ${roundedScore}/10, classified as ${riskLevel}. This score is updated daily using data from ${country.sources.length || 3}+ public sources including government advisories, health data, and conflict indicators.`,
@@ -305,6 +323,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `${name} tiene una puntuacion de seguridad de ${roundedScore}/10, clasificado como ${riskLevel}. Esta puntuacion se actualiza diariamente utilizando datos de ${country.sources.length || 3}+ fuentes publicas que incluyen avisos gubernamentales, datos de salud e indicadores de conflicto.`,
     fr: `${name} a un score de securite de ${roundedScore}/10, classe comme ${riskLevel}. Ce score est mis a jour quotidiennement a partir de ${country.sources.length || 3}+ sources publiques incluant les avis gouvernementaux, les donnees sanitaires et les indicateurs de conflit.`,
     pt: `${name} tem uma pontuacao de seguranca de ${roundedScore}/10, classificado como ${riskLevel}. Esta pontuacao e atualizada diariamente usando dados de ${country.sources.length || 3}+ fontes publicas incluindo avisos governamentais, dados de saude e indicadores de conflito.`,
+    zh: `${name} 的安全评分为 ${roundedScore}/10，归类为${riskLevel}。该评分每日更新，数据来自 ${country.sources.length || 3}+ 个公开来源，包括政府旅行警告、健康数据和冲突指标。`,
+    de: `${name} hat einen Sicherheits-Score von ${roundedScore}/10 und ist als ${riskLevel} eingestuft. Der Score wird täglich aktualisiert auf Basis von ${country.sources.length || 3}+ öffentlichen Quellen, darunter Regierungs-Reisehinweise, Gesundheitsdaten und Konfliktindikatoren.`,
   };
 
   // FAQ 2: What is the biggest risk when traveling to {country}?
@@ -314,6 +334,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `Cual es el mayor riesgo al viajar a ${name}?`,
     fr: `Quel est le plus grand risque en voyageant au/en ${name} ?`,
     pt: `Qual e o maior risco ao viajar para ${name}?`,
+    zh: `前往 ${name} 旅行的最大风险是什么？`,
+    de: `Was ist das größte Risiko bei einer Reise nach ${name}?`,
   };
   const a2: Record<Lang, string> = {
     en: `The area of greatest concern for ${name} is ${weakestLabel}, with a score of ${weakestScore}/10. Travelers should pay particular attention to this aspect when planning their trip. Check the full pillar breakdown on this page for detailed insights.`,
@@ -321,6 +343,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `El area de mayor preocupacion para ${name} es ${weakestLabel}, con una puntuacion de ${weakestScore}/10. Los viajeros deben prestar especial atencion a este aspecto al planificar su viaje. Consulta el desglose completo de pilares en esta pagina para obtener informacion detallada.`,
     fr: `Le domaine de plus grande preoccupation pour ${name} est ${weakestLabel}, avec un score de ${weakestScore}/10. Les voyageurs doivent accorder une attention particuliere a cet aspect lors de la planification de leur voyage. Consultez la repartition complete des piliers sur cette page pour des informations detaillees.`,
     pt: `A area de maior preocupacao para ${name} e ${weakestLabel}, com uma pontuacao de ${weakestScore}/10. Os viajantes devem prestar atencao especial a este aspecto ao planejar sua viagem. Consulte a divisao completa dos pilares nesta pagina para informacoes detalhadas.`,
+    zh: `${name} 最值得关注的领域是${weakestLabel}，评分为 ${weakestScore}/10。旅行者在规划行程时应特别注意这一方面。请查看本页面完整的支柱细分以获取详细信息。`,
+    de: `Der Bereich mit den größten Bedenken für ${name} ist ${weakestLabel} mit einem Score von ${weakestScore}/10. Reisende sollten diesem Aspekt bei der Reiseplanung besondere Aufmerksamkeit schenken. Die vollständige Säulenaufschlüsselung auf dieser Seite bietet detaillierte Einblicke.`,
   };
 
   // FAQ 3: Do I need travel insurance for {country}?
@@ -330,6 +354,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `Necesito seguro de viaje para ${name}?`,
     fr: `Ai-je besoin d'une assurance voyage pour ${name} ?`,
     pt: `Preciso de seguro de viagem para ${name}?`,
+    zh: `前往 ${name} 需要旅行保险吗？`,
+    de: `Brauche ich eine Reiseversicherung für ${name}?`,
   };
   const a3: Record<Lang, string> = {
     en: `Travel insurance is strongly recommended for any international trip, including visits to ${name}. A comprehensive policy should cover medical emergencies, trip cancellations, and evacuation. This is especially important given that health-related risks can change rapidly.`,
@@ -337,6 +363,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     es: `El seguro de viaje es altamente recomendable para cualquier viaje internacional, incluyendo visitas a ${name}. Una poliza integral debe cubrir emergencias medicas, cancelaciones de viaje y evacuacion. Esto es especialmente importante dado que los riesgos relacionados con la salud pueden cambiar rapidamente.`,
     fr: `L'assurance voyage est fortement recommandee pour tout voyage international, y compris les visites au/en ${name}. Une police complete devrait couvrir les urgences medicales, les annulations de voyage et l'evacuation. C'est particulierement important car les risques lies a la sante peuvent evoluer rapidement.`,
     pt: `O seguro de viagem e fortemente recomendado para qualquer viagem internacional, incluindo visitas a ${name}. Uma apolice abrangente deve cobrir emergencias medicas, cancelamentos de viagem e evacuacao. Isso e especialmente importante dado que os riscos relacionados a saude podem mudar rapidamente.`,
+    zh: `强烈建议为任何国际旅行（包括前往 ${name}）购买旅行保险。一份全面的保单应涵盖医疗紧急情况、行程取消和撤离。鉴于健康相关风险可能迅速变化，这一点尤为重要。`,
+    de: `Eine Reiseversicherung wird für jede internationale Reise, einschließlich Besuche in ${name}, dringend empfohlen. Eine umfassende Police sollte medizinische Notfälle, Reiserücktritte und Evakuierungen abdecken. Dies ist besonders wichtig, da gesundheitsbezogene Risiken sich rasch ändern können.`,
   };
 
   return [

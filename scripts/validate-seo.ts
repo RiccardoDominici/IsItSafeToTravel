@@ -11,7 +11,7 @@ import path from "node:path";
 
 const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
-const LANGUAGES = ["en", "it", "es", "fr", "pt"] as const;
+const LANGUAGES = ["en", "it", "es", "fr", "pt", "zh", "de"] as const;
 
 // Language-specific path segments for "country"
 const COUNTRY_SEGMENT: Record<string, string> = {
@@ -20,6 +20,8 @@ const COUNTRY_SEGMENT: Record<string, string> = {
   es: "pais",
   fr: "pays",
   pt: "pais",
+  zh: "country",
+  de: "land",
 };
 
 // ---- helpers ----
@@ -112,7 +114,7 @@ function validateHreflangPage(filePath: string, label: string) {
     }
   }
 
-  // Check all 5 languages are present
+  // Check all 7 languages are present
   for (const lang of LANGUAGES) {
     check(
       `hreflang(${label}): has ${lang}`,

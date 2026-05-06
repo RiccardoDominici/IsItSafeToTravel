@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { getRegion } from '../../lib/regions';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
@@ -32,7 +33,7 @@ const regionCountries = allCountries
 // Build table rows: include current country, sort all by score desc
 const tableRows = [...regionCountries, country].sort((a, b) => b.score - a.score);
 
-const heading = t('country.compare_title' as any).replace('{name}', country.name[lang]);
+const heading = t('country.compare_title' as any).replace('{name}', getLocalizedCountryName(country, lang));
 
 // Pillar order matching ScoredCountry.pillars standard order
 const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] as const;
@@ -63,7 +64,7 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
               <tr class:list={['border-b border-sand-200 dark:border-sand-700', rowClass]}>
                 <td class="py-2 pr-3 font-medium text-sand-800 dark:text-sand-100">
                   <a href={`/${lang}/${r.country}/${c.iso3.toLowerCase()}/`} class="hover:text-terracotta-500 dark:hover:text-terracotta-400">
-                    {c.name[lang]}
+                    {getLocalizedCountryName(c, lang)}
                   </a>
                 </td>
                 <td class:list={['py-2 pr-3 font-bold', getScoreColor(c.score)]}>

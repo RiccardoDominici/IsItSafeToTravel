@@ -19,7 +19,7 @@ import StatsSummary from '../../../components/country/StatsSummary.astro';
 import FaqSection from '../../../components/country/FaqSection.astro';
 import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
 import ComparisonTable from '../../../components/country/ComparisonTable.astro';
-import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta } from '../../../lib/scores';
+import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
@@ -69,12 +69,12 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
   name: t(`country.advisory.${key}` as any),
 }));
 ---
-<Base lang={lang} title={`${country.name[lang]} e Sicura? Punteggio ${country.score.toFixed(1)}/10 (2026)`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`${getLocalizedCountryName(country, lang)} e Sicura? Punteggio ${country.score.toFixed(1)}/10 (2026)`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
       { label: t('nav.countries'), href: `/${lang}/` },
-      { label: country.name[lang], href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
+      { label: getLocalizedCountryName(country, lang), href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
     ]} />
     <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
       <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">

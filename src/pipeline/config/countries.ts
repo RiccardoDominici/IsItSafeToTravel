@@ -275,7 +275,8 @@ export function getCountryByName(name: string): CountryEntry | undefined {
   return nameMap.get(name.toLowerCase());
 }
 
-export function getCountryName(iso3: string, lang: 'en' | 'it' | 'es' | 'fr' | 'pt' = 'en'): string {
+export function getCountryName(iso3: string, lang: 'en' | 'it' | 'es' | 'fr' | 'pt' | 'zh' | 'de' = 'en'): string {
   const entry = iso3Map.get(iso3.toUpperCase());
-  return entry?.name[lang] ?? iso3;
+  // Pipeline data only has en/it/es/fr/pt; zh/de fall back to en safely.
+  return entry?.name[lang as 'en'] ?? entry?.name.en ?? iso3;
 }

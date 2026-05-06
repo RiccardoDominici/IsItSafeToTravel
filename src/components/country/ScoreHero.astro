@@ -3,6 +3,7 @@ import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
@@ -16,34 +17,34 @@ const t = useTranslations(lang);
 const bgColor = scoreToColor(country.score);
 
 // Travel verdict based on score
-const verdicts: Record<string, { emoji: string; text: Record<Lang, string>; bg: string; border: string }> = {
+const verdicts: Record<string, { emoji: string; text: Partial<Record<Lang, string>>; bg: string; border: string }> = {
   excellent: {
     emoji: '\u2705',
-    text: { en: 'Yes, safe to travel', it: 'S\u00ec, sicuro per viaggiare', es: 'S\u00ed, seguro para viajar' },
+    text: { en: 'Yes, safe to travel', it: 'S\u00ec, sicuro per viaggiare', es: 'S\u00ed, seguro para viajar', fr: 'Oui, s\u00fbr pour voyager', pt: 'Sim, seguro para viajar', zh: '\u662f\uff0c\u53ef\u4ee5\u5b89\u5168\u51fa\u884c', de: 'Ja, sicher zu bereisen' },
     bg: 'bg-emerald-50 dark:bg-emerald-950/30',
     border: 'border-emerald-300 dark:border-emerald-700',
   },
   good: {
     emoji: '\u{1F7E2}',
-    text: { en: 'Generally safe', it: 'Generalmente sicuro', es: 'Generalmente seguro' },
+    text: { en: 'Generally safe', it: 'Generalmente sicuro', es: 'Generalmente seguro', fr: 'G\u00e9n\u00e9ralement s\u00fbr', pt: 'Geralmente seguro', zh: '\u603b\u4f53\u5b89\u5168', de: 'Allgemein sicher' },
     bg: 'bg-lime-50 dark:bg-lime-950/30',
     border: 'border-lime-300 dark:border-lime-700',
   },
   caution: {
     emoji: '\u26A0\uFE0F',
-    text: { en: 'Exercise caution', it: 'Prestare attenzione', es: 'Tener precauci\u00f3n' },
+    text: { en: 'Exercise caution', it: 'Prestare attenzione', es: 'Tener precauci\u00f3n', fr: 'Faire preuve de prudence', pt: 'Tenha cautela', zh: '\u8bf7\u4fdd\u6301\u8c28\u614e', de: 'Vorsicht geboten' },
     bg: 'bg-amber-50 dark:bg-amber-950/30',
     border: 'border-amber-300 dark:border-amber-700',
   },
   risky: {
     emoji: '\u{1F7E0}',
-    text: { en: 'Only for experienced travelers', it: 'Solo per viaggiatori esperti', es: 'Solo para viajeros expertos' },
+    text: { en: 'Only for experienced travelers', it: 'Solo per viaggiatori esperti', es: 'Solo para viajeros expertos', fr: 'Uniquement pour voyageurs exp\u00e9riment\u00e9s', pt: 'Apenas para viajantes experientes', zh: '\u4ec5\u9650\u7ecf\u9a8c\u4e30\u5bcc\u7684\u65c5\u884c\u8005', de: 'Nur f\u00fcr erfahrene Reisende' },
     bg: 'bg-orange-50 dark:bg-orange-950/30',
     border: 'border-orange-300 dark:border-orange-700',
   },
   danger: {
     emoji: '\u274C',
-    text: { en: 'Not recommended', it: 'Non raccomandato', es: 'No recomendado' },
+    text: { en: 'Not recommended', it: 'Non raccomandato', es: 'No recomendado', fr: 'Non recommand\u00e9', pt: 'N\u00e3o recomendado', zh: '\u4e0d\u63a8\u8350', de: 'Nicht empfohlen' },
     bg: 'bg-red-50 dark:bg-red-950/30',
     border: 'border-red-300 dark:border-red-700',
   },
@@ -63,7 +64,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
 
 <section class="text-center py-8 md:py-12 px-4">
   <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
-    {country.name[lang]}
+    {getLocalizedCountryName(country, lang)}
   </h1>
 
   <div
@@ -83,7 +84,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
   </p>
 
   <p class="mt-1 text-sm text-sand-500 dark:text-sand-400 italic">
-    {verdict.text[lang]}
+    {verdict.text[lang] ?? verdict.text.en}
   </p>
 
   {scoreDelta && scoreDelta.delta !== 0 && (

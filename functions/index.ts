@@ -2,7 +2,7 @@
 // Reads Accept-Language header to serve the correct language version.
 // Googlebot gets /en/ (no Accept-Language match) which aligns with x-default hreflang.
 
-const SUPPORTED_LANGS = ['it', 'es', 'fr', 'pt', 'en'] as const;
+const SUPPORTED_LANGS = ['it', 'es', 'fr', 'pt', 'en', 'zh', 'de'] as const;
 const DEFAULT_LANG = 'en';
 
 function getPreferredLang(acceptLanguage: string | null): string {

@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { DailySnapshot, PillarName, ScoredCountry } from '../pipeline/types';
+import type { Lang } from '../i18n/ui';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'scores');
 const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
@@ -141,4 +142,17 @@ function loadFromIndividualSnapshots(days?: number): Map<string, HistoryPoint[]>
     }
   }
   return history;
+}
+
+/**
+ * Get a country's display name in the requested language, falling back to English
+ * if the snapshot data was generated before that locale was added to the pipeline.
+ * Snapshot files (data/scores/*.json) currently contain en/it/es/fr/pt names only;
+ * zh and de fall back to en until the pipeline is regenerated to emit those keys.
+ */
+export function getLocalizedCountryName(
+  country: { name: Record<string, string> },
+  lang: Lang,
+): string {
+  return country.name[lang] ?? country.name.en ?? '';
 }

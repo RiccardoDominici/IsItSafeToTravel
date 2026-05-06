@@ -7,11 +7,11 @@ import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { buildHomepageJsonLd, buildOrganizationJsonLd, buildDatasetJsonLd } from '../../lib/seo';
-import { loadLatestScores } from '../../lib/scores';
+import { loadLatestScores, getLocalizedCountryName } from '../../lib/scores';
 
 const lang: Lang = 'it';
 const t = useTranslations(lang);
-const countries = loadLatestScores().sort((a, b) => a.name[lang].localeCompare(b.name[lang]));
+const countries = loadLatestScores().sort((a, b) => getLocalizedCountryName(a, lang).localeCompare(getLocalizedCountryName(b, lang)));
 
 const siteUrl = 'https://isitsafetotravel.org';
 const dateModified = new Date().toISOString().split('T')[0];
@@ -65,7 +65,7 @@ const jsonLd = {
       {countries.map(c => (
         <a href={`/${lang}/${routes[lang].country}/${c.iso3.toLowerCase()}/`}
            class="block text-sm text-sand-600 dark:text-sand-400 hover:text-terracotta-500 dark:hover:text-terracotta-400 py-0.5">
-          {c.name[lang]}
+          {getLocalizedCountryName(c, lang)}
         </a>
       ))}
     </div>

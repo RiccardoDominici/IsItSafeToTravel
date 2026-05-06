@@ -2,6 +2,7 @@
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
+import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
@@ -34,7 +35,7 @@ const formattedDate = new Intl.DateTimeFormat(lang, {
 
 // Build summary text from template parts
 let summary = t('country.summary')
-  .replace('{name}', country.name[lang])
+  .replace('{name}', getLocalizedCountryName(country, lang))
   .replace('{score}', country.score.toFixed(1));
 
 // Strongest pillar
