@@ -4,9 +4,11 @@ import Base from '../../../layouts/Base.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
 
 const lang: Lang = 'de';
+const r = routes[lang];
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
@@ -68,7 +70,7 @@ const signalSources = [
   <div class="max-w-4xl mx-auto px-4 py-12">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
-      { label: t('nav.sources'), href: `/${lang}/sources/` },
+      { label: t('nav.sources'), href: `/${lang}/${r.sources}/` },
     ]} />
     <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('sources.heading')}</h1>
 

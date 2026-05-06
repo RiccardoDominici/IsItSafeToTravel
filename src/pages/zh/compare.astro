@@ -8,8 +8,10 @@ import type { HistoryPoint } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
 
 const lang: Lang = 'zh';
+const r = routes[lang];
 const t = useTranslations(lang);
 
 const scores = loadLatestScores();
@@ -34,7 +36,7 @@ for (const [iso3, points] of history.entries()) {
   <div class="max-w-6xl mx-auto px-4 py-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
-      { label: t('nav.compare'), href: `/${lang}/compare/` },
+      { label: t('nav.compare'), href: `/${lang}/${r.compare}/` },
     ]} />
     <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
       {t('compare.title')}
@@ -60,6 +62,11 @@ for (const [iso3, points] of history.entries()) {
         pillar_health: t('country.pillar.health'),
         pillar_governance: t('country.pillar.governance'),
         pillar_environment: t('country.pillar.environment'),
+        example_btn_1: t('compare.example_btn_1' as any),
+        example_btn_2: t('compare.example_btn_2' as any),
+        history_accumulating: t('compare.history_accumulating' as any),
+        chart_reset: t('chart.reset' as any),
+        chart_time_range_label: t('chart.time_range_label' as any),
       })}
     >
       <!-- Country Selector -->
@@ -304,8 +311,8 @@ for (const [iso3, points] of history.entries()) {
           <p class="text-lg mb-3">${t.empty_title}</p>
           <p class="text-sm mb-4">${t.empty_suggestion}</p>
           <div class="flex justify-center gap-3">
-            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">Italy vs France</button>
-            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">Japan vs Australia</button>
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">${t.example_btn_1}</button>
+            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">${t.example_btn_2}</button>
           </div>
         </div>
       `;
@@ -426,7 +433,7 @@ for (const [iso3, points] of history.entries()) {
       section.appendChild(heading);
       const msg = document.createElement('p');
       msg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
-      msg.textContent = 'Historical data is still accumulating. Check back soon.';
+      msg.textContent = t.history_accumulating;
       section.appendChild(msg);
       return;
     }
@@ -435,12 +442,12 @@ for (const [iso3, points] of history.entries()) {
     const resetBtn = document.createElement('button');
     resetBtn.className = 'hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700';
     resetBtn.type = 'button';
-    resetBtn.textContent = 'Reset';
+    resetBtn.textContent = t.chart_reset;
 
     const timeRangeDiv = document.createElement('div');
     timeRangeDiv.className = 'time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5';
     timeRangeDiv.setAttribute('role', 'group');
-    timeRangeDiv.setAttribute('aria-label', 'Time range');
+    timeRangeDiv.setAttribute('aria-label', t.chart_time_range_label);
     const ranges = [
       { key: '1m', label: '1M' },
       { key: '6m', label: '6M' },
@@ -720,7 +727,7 @@ for (const [iso3, points] of history.entries()) {
 
       function positionTooltip(entry: typeof currentTooltipDates[0]): void {
         const d = entry.date;
-        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR' };
+        const localeMap: Record<string, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
         const dateStr = d.toLocaleDateString(
           localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }

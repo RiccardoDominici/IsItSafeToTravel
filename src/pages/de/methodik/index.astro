@@ -4,10 +4,12 @@ import Base from '../../../layouts/Base.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
+import { routes } from '../../../i18n/ui';
 import { buildWebPageJsonLd, buildFaqPageJsonLd, buildMethodologyDatasetJsonLd } from '../../../lib/seo';
 import weightsConfig from '../../../pipeline/config/weights.json';
 
 const lang: Lang = 'de';
+const r = routes[lang];
 const t = useTranslations(lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
@@ -101,7 +103,7 @@ const advisorySources = [
   <div class="max-w-4xl mx-auto px-4 py-12">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
-      { label: t('nav.methodology'), href: `/${lang}/methodology/` },
+      { label: t('nav.methodology'), href: `/${lang}/${r.methodology}/` },
     ]} />
     <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('methodology.title')}</h1>
 
