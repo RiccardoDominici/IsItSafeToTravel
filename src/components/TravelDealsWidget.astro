@@ -14,7 +14,16 @@ interface Props {
 const { lang, destinationIata, destinationCityName, countryName, mode = 'home' } = Astro.props;
 const t = useTranslations(lang);
 
-const aviasalesLocale = lang === 'en' ? 'en-us' : lang === 'zh' ? 'zh-cn' : lang;
+// Aviasales only supports a fixed set of locales: en, en-us, en-gb, ru, de, es, fr, pl.
+// For unsupported langs (it, pt, zh) we omit the locale param so Aviasales falls back
+// to the user's browser Accept-Language instead of showing a random language.
+const aviasalesLocaleMap: Partial<Record<Lang, string>> = {
+  en: 'en',
+  de: 'de',
+  es: 'es',
+  fr: 'fr',
+};
+const aviasalesLocale = aviasalesLocaleMap[lang];
 
 const departDate = new Date();
 departDate.setDate(departDate.getDate() + 30);
@@ -25,20 +34,33 @@ const heading = mode === 'country' && countryName
   : t('deals.widget.cta_home');
 
 const formId = `td-${Math.random().toString(36).slice(2, 8)}`;
+
+// On home mode there's no specific destination, so the form is just a CTA — opens
+// Aviasales home where the user picks their own search. On country mode the form
+// pre-fills destination_iata + depart_date so the search results page opens directly.
+const action = mode === 'country'
+  ? 'https://search.aviasales.com/flights/'
+  : 'https://www.aviasales.com/';
 ---
 
 <form
   id={formId}
-  action="https://search.aviasales.com/flights/"
+  action={action}
   method="GET"
   target="_blank"
   rel="noopener noreferrer sponsored"
   class="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-900 text-sm"
 >
   <input type="hidden" name="marker" value={TRAVELPAYOUTS_MARKER} />
-  <input type="hidden" name="locale" value={aviasalesLocale} />
-  <input type="hidden" name="adults" value="1" />
-  <input type="hidden" name="depart_date" value={defaultDepartDate} />
+  {aviasalesLocale && <input type="hidden" name="locale" value={aviasalesLocale} />}
+
+  {mode === 'country' && (
+    <>
+      <input type="hidden" name="adults" value="1" />
+      <input type="hidden" name="depart_date" value={defaultDepartDate} />
+      {destinationIata && <input type="hidden" name="destination_iata" value={destinationIata} />}
+    </>
+  )}
 
   <svg class="w-4 h-4 shrink-0 text-terracotta-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
@@ -47,21 +69,6 @@ const formId = `td-${Math.random().toString(36).slice(2, 8)}`;
   <span class="flex-1 min-w-0 truncate text-sand-800 dark:text-sand-100 font-medium">
     {heading}{destinationCityName && destinationIata ? <span class="text-sand-500 dark:text-sand-400 font-normal"> · {destinationCityName} ({destinationIata})</span> : null}
   </span>
-
-  {destinationIata ? (
-    <input type="hidden" name="destination_iata" value={destinationIata} />
-  ) : (
-    <input
-      type="text"
-      name="destination_iata"
-      placeholder="IATA"
-      maxlength="3"
-      pattern="[A-Za-z]{3}"
-      required
-      aria-label={t('deals.widget.destination')}
-      class="hidden sm:block w-20 uppercase rounded-md border border-sand-200 dark:border-sand-700 bg-sand-50 dark:bg-sand-800 px-2 py-1 text-center text-sand-800 dark:text-sand-100 focus:outline-none focus:ring-1 focus:ring-terracotta-400"
-    />
-  )}
 
   <button
     type="submit"
