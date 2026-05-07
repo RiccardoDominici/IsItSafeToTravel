@@ -90,6 +90,10 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
       </span>
     </div>
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <AnswerFirstParagraph country={country} lang={lang} />
+    <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
+    <PillarBreakdown pillars={country.pillars} lang={lang} />
+    <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
     <TravelDealsWidget
       lang={lang}
       destinationIata={iata ?? undefined}
@@ -97,10 +101,6 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
       countryName={getLocalizedCountryName(country, lang)}
       mode="country"
     />
-    <AnswerFirstParagraph country={country} lang={lang} />
-    <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
-    <PillarBreakdown pillars={country.pillars} lang={lang} />
-    <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
     <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
     <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
