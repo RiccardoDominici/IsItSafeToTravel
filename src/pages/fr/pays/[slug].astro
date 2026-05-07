@@ -19,6 +19,8 @@ import StatsSummary from '../../../components/country/StatsSummary.astro';
 import FaqSection from '../../../components/country/FaqSection.astro';
 import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
 import ComparisonTable from '../../../components/country/ComparisonTable.astro';
+import TravelDealsWidget from '../../../components/TravelDealsWidget.astro';
+import { getMainCityIata, getMainCityName } from '../../../lib/iata-cities';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { useTranslations } from '../../../i18n/utils';
@@ -68,6 +70,8 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
   key,
   name: t(`country.advisory.${key}` as any),
 }));
+const iata = getMainCityIata(country.iso3);
+const cityName = iata ? getMainCityName(country.iso3, lang) : null;
 ---
 <Base lang={lang} title={`${getLocalizedCountryName(country, lang)} Est-il Sur? Score ${country.score.toFixed(1)}/10 (2026)`} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -86,6 +90,13 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
       </span>
     </div>
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+    <TravelDealsWidget
+      lang={lang}
+      destinationIata={iata ?? undefined}
+      destinationCityName={cityName ?? undefined}
+      countryName={getLocalizedCountryName(country, lang)}
+      mode="country"
+    />
     <AnswerFirstParagraph country={country} lang={lang} />
     <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />

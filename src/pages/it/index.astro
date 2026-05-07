@@ -3,6 +3,7 @@ export const prerender = true;
 import Base from '../../layouts/Base.astro';
 import SafetyMap from '../../components/SafetyMap.astro';
 import GlobalScoreBanner from '../../components/GlobalScoreBanner.astro';
+import TravelDealsWidget from '../../components/TravelDealsWidget.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
@@ -39,6 +40,9 @@ const jsonLd = {
     <div class="flex-1 min-h-0 overflow-hidden">
       <SafetyMap lang={lang} />
     </div>
+  </section>
+  <section class="px-4 py-6 max-w-4xl mx-auto">
+    <TravelDealsWidget lang={lang} mode="home" />
   </section>
   <section class="max-w-6xl mx-auto px-4 py-8">
     <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">{t('nav.rankings' as any)}</h2>
