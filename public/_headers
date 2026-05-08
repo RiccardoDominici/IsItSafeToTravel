@@ -4,7 +4,7 @@
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=86400; includeSubDomains
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com tp-em.com tp.media tpwidg.com tpwdt.com; style-src 'self' 'unsafe-inline' tpwidg.com tpwdt.com; img-src 'self' data: tp.media tp-em.com tpwidg.com tpwdt.com; font-src 'self' data: tpwidg.com tpwdt.com; connect-src 'self' tp-em.com tp.media tpwidg.com tpwdt.com; frame-src tpwidg.com tpwdt.com tp.media; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com tp-em.com *.tp-em.com tp.media tpwidg.com tpwdt.com clarity.ms www.clarity.ms *.klook.com; script-src-elem 'self' 'unsafe-inline' static.cloudflareinsights.com tp-em.com *.tp-em.com tp.media tpwidg.com tpwdt.com clarity.ms www.clarity.ms *.klook.com; style-src 'self' 'unsafe-inline' tpwidg.com tpwdt.com tp-em.com *.tp-em.com fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' tpwidg.com tpwdt.com tp-em.com *.tp-em.com fonts.googleapis.com; img-src 'self' data: tp.media tp-em.com *.tp-em.com tpwidg.com tpwdt.com img.avs.io *.avs.io *.klook.com; font-src 'self' data: fonts.gstatic.com tpwidg.com tpwdt.com tp-em.com *.tp-em.com; connect-src 'self' tp-em.com *.tp-em.com tp.media tpwidg.com tpwdt.com sentry.avs.io *.avs.io clarity.ms www.clarity.ms *.klook.com; frame-src tpwidg.com tpwdt.com tp.media tp-em.com *.tp-em.com *.klook.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
 
 /*.js
   Cache-Control: public, max-age=31536000, immutable
