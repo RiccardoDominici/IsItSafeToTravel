@@ -1,0 +1,87 @@
+---
+interface Props {
+  text: string;
+}
+
+const { text } = Astro.props;
+---
+
+<span class="pillar-coverage-tip relative inline-block align-baseline">
+  <button
+    type="button"
+    class="pillar-coverage-tip-trigger text-amber-600 dark:text-amber-400 hover:text-amber-700 dark:hover:text-amber-300 cursor-help focus:outline-none focus:ring-1 focus:ring-amber-500 rounded-sm leading-none"
+    aria-label={text}
+    aria-expanded="false"
+    aria-haspopup="true"
+  >*</button>
+  <span
+    class="pillar-coverage-tip-content invisible opacity-0 absolute z-30 right-0 bottom-full mb-1.5 w-56 max-w-[80vw] text-xs leading-snug text-left font-normal normal-case bg-sand-900 dark:bg-sand-100 text-sand-100 dark:text-sand-900 rounded-md shadow-lg p-2.5 transition-opacity duration-150"
+    role="tooltip"
+  >
+    {text}
+    <span
+      class="absolute top-full right-2 -mt-px border-[5px] border-transparent border-t-sand-900 dark:border-t-sand-100"
+      aria-hidden="true"
+    ></span>
+  </span>
+</span>
+
+<style>
+  .pillar-coverage-tip:hover > .pillar-coverage-tip-content,
+  .pillar-coverage-tip:focus-within > .pillar-coverage-tip-content,
+  .pillar-coverage-tip-content.is-open {
+    visibility: visible;
+    opacity: 1;
+  }
+</style>
+
+<script>
+  function initPillarCoverageTips() {
+    const tips = document.querySelectorAll<HTMLElement>('.pillar-coverage-tip');
+    tips.forEach((tip) => {
+      if (tip.dataset.tipReady === '1') return;
+      tip.dataset.tipReady = '1';
+
+      const trigger = tip.querySelector<HTMLButtonElement>('.pillar-coverage-tip-trigger');
+      const content = tip.querySelector<HTMLElement>('.pillar-coverage-tip-content');
+      if (!trigger || !content) return;
+
+      trigger.addEventListener('click', (event) => {
+        event.stopPropagation();
+        const willOpen = !content.classList.contains('is-open');
+        document.querySelectorAll<HTMLElement>('.pillar-coverage-tip-content.is-open').forEach((other) => {
+          if (other !== content) {
+            other.classList.remove('is-open');
+            const otherTrigger = other.parentElement?.querySelector<HTMLButtonElement>('.pillar-coverage-tip-trigger');
+            otherTrigger?.setAttribute('aria-expanded', 'false');
+          }
+        });
+        content.classList.toggle('is-open', willOpen);
+        trigger.setAttribute('aria-expanded', String(willOpen));
+      });
+    });
+  }
+
+  function closeAllPillarCoverageTips() {
+    document.querySelectorAll<HTMLElement>('.pillar-coverage-tip-content.is-open').forEach((c) => {
+      c.classList.remove('is-open');
+      const trigger = c.parentElement?.querySelector<HTMLButtonElement>('.pillar-coverage-tip-trigger');
+      trigger?.setAttribute('aria-expanded', 'false');
+    });
+  }
+
+  document.addEventListener('click', (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest('.pillar-coverage-tip')) closeAllPillarCoverageTips();
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeAllPillarCoverageTips();
+  });
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPillarCoverageTips);
+  } else {
+    initPillarCoverageTips();
+  }
+</script>

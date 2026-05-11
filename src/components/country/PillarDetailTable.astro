@@ -3,6 +3,7 @@ import type { PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../../pipeline/scoring/engine';
+import PillarCoverageTip from './PillarCoverageTip.astro';
 
 interface Props {
   pillars: PillarScore[];
@@ -42,7 +43,7 @@ const pillarKeys: Record<string, string> = {
           {label}
           <span class="ml-2 font-normal text-sand-500 dark:text-sand-400">
             {displayScore}/10{lowCoverage && (
-              <span class="text-amber-600 dark:text-amber-400" title={t('country.pillar_low_coverage_note')} aria-label={t('country.pillar_low_coverage_note')}>*</span>
+              <PillarCoverageTip text={t('country.pillar_low_coverage_note')} />
             )} · {riskLevel} · {t('country.pillar_coverage')}: {coveragePercent}%
           </span>
         </h3>
