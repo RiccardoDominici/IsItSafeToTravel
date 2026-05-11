@@ -54,9 +54,10 @@ const advisorySources = [
 ];
 
 const baselineSources = [
-  { name: 'World Bank Governance Indicators', measures: 'Political Stability, Rule of Law, Government Effectiveness, Corruption Control', frequency: 'Annual', url: 'https://info.worldbank.org/governance/wgi/' },
-  { name: 'Global Peace Index (IEP)', measures: 'Overall peace, Safety & Security, Militarisation', frequency: 'Annual', url: 'https://www.visionofhumanity.org/maps/' },
-  { name: 'INFORM Risk Index', measures: 'Health, Epidemic, Governance, Natural Hazard, Climate Risk', frequency: 'Quarterly', url: 'https://drmkc.jrc.ec.europa.eu/inform-index/' },
+  { name: 'World Bank Development Indicators', measures: 'Child Mortality, PM2.5 Air Pollution', frequency: 'Annual', url: 'https://data.worldbank.org/', citation: '' },
+  { name: 'V-Dem Institute (v16)', measures: 'Rule of Law, Political Corruption, Public Administration Quality', frequency: 'Annual', url: 'https://www.v-dem.net/data/the-v-dem-dataset/', citation: 'Coppedge et al. — V-Dem Country-Year Dataset v16, DOI 10.23696/vdemds26, CC-BY-SA 4.0' },
+  { name: 'Global Peace Index (IEP)', measures: 'Overall peace, Safety & Security, Militarisation', frequency: 'Annual', url: 'https://www.visionofhumanity.org/maps/', citation: '' },
+  { name: 'INFORM Risk Index', measures: 'Health, Epidemic, Governance, Natural Hazard, Climate Risk', frequency: 'Quarterly', url: 'https://drmkc.jrc.ec.europa.eu/inform-index/', citation: '' },
 ];
 
 const signalSources = [
@@ -91,7 +92,12 @@ const signalSources = [
           <tbody>
             {baselineSources.map(src => (
               <tr class="border-b border-sand-200 dark:border-sand-700">
-                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{src.name}</td>
+                <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">
+                  {src.name}
+                  {src.citation && (
+                    <div class="text-xs text-sand-500 dark:text-sand-400 mt-1 font-normal">{src.citation}</div>
+                  )}
+                </td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.measures}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.frequency}</td>
                 <td class="py-3"><a href={src.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">Visit</a></td>
@@ -100,6 +106,9 @@ const signalSources = [
           </tbody>
         </table>
       </div>
+      <p class="text-xs text-sand-500 dark:text-sand-400 mt-3 italic">
+        V-Dem data: Coppedge et al., V-Dem Country-Year Dataset v16, V-Dem Institute (DOI 10.23696/vdemds26). Distributed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" class="underline">CC-BY-SA 4.0</a>.
+      </p>
     </section>
 
     <!-- Signal Data Sources -->
