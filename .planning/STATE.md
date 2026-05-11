@@ -102,10 +102,11 @@ None yet.
 | 260403-o7a | SEO improvements: title freshness, neighbor comparison, 65 hub pages, embeddable badge | 2026-04-03 | 1b5fa07 | [260403-o7a-seo-improvements-title-freshness-neighbo](./quick/260403-o7a-seo-improvements-title-freshness-neighbo/) |
 | 260415-qon | Fix INFORM governance mapping, WB partial fallback, regenerate scores | 2026-04-15 | b2ef9ad, 3bce773 | [260415-qon-fix-inform-governance-column-mapping-fix](./quick/260415-qon-fix-inform-governance-column-mapping-fix/) |
 | Phase 38 P02 | 1850 | 3 tasks | 130 files |
+| 260511-gpu | Pillar coverage threshold gating + UI note (exclude <30%, asterisk <50%) | 2026-05-11 | 1298654, c24fe07 | [260511-gpu-pillar-coverage-threshold-gating-ui-note](./quick/260511-gpu-pillar-coverage-threshold-gating-ui-note/) |
 
 ## Session Continuity
 
-Last activity: 2026-04-15 - Completed quick task 260415-qon: Fix INFORM governance column mapping
+Last activity: 2026-05-11 - Completed quick task 260511-gpu: Pillar coverage threshold gating + UI note
 Last session: 2026-05-06T13:54:43.509Z
 Stopped at: Completed quick task 260415-qon
 Resume file: None
