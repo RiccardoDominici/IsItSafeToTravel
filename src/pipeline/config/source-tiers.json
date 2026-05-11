@@ -3,6 +3,7 @@
   "maxDailyScoreChange": 0.3,
   "sources": {
     "worldbank": { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
+    "vdem":      { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "gpi":       { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "inform":    { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
 
