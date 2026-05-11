@@ -103,10 +103,11 @@ None yet.
 | 260415-qon | Fix INFORM governance mapping, WB partial fallback, regenerate scores | 2026-04-15 | b2ef9ad, 3bce773 | [260415-qon-fix-inform-governance-column-mapping-fix](./quick/260415-qon-fix-inform-governance-column-mapping-fix/) |
 | Phase 38 P02 | 1850 | 3 tasks | 130 files |
 | 260511-gpu | Pillar coverage threshold gating + UI note (exclude <30%, asterisk <50%) | 2026-05-11 | 1298654, c24fe07 | [260511-gpu-pillar-coverage-threshold-gating-ui-note](./quick/260511-gpu-pillar-coverage-threshold-gating-ui-note/) |
+| 260511-k2m | Replace retired WB WGI with V-Dem Institute v16 (rule_of_law, gov_effectiveness, corruption_control), drop wb_political_stability, redistribute conflict weights, rename wb_* → vdem_*, backfill 611 historical snapshots, UI updates 7 locales with CC-BY-SA attribution. Verified 16/16 must_haves. | 2026-05-11 | 950910c, 7b4bc17, 82bdd88, b074a14 | [260511-k2m-replace-retired-wb-wgi-with-v-dem-instit](./quick/260511-k2m-replace-retired-wb-wgi-with-v-dem-instit/) |
 
 ## Session Continuity
 
-Last activity: 2026-05-11 - Completed quick task 260511-gpu: Pillar coverage threshold gating + UI note
+Last activity: 2026-05-11 - Completed quick task 260511-k2m: V-Dem migration (replaces retired WB WGI) + 611-snapshot historical backfill
 Last session: 2026-05-06T13:54:43.509Z
 Stopped at: Completed quick task 260415-qon
 Resume file: None
