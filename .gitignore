@@ -33,6 +33,8 @@ npm-debug.log*
 # Pipeline raw data temp files
 data/raw/**/*.tmp
 data/raw/**/*.partial
+# V-Dem raw CSV downloads (we cache parsed JSON only; never commit raw CSV)
+data/raw/**/*.csv
 
 # Legal research (local only, not published)
 .legal-research/

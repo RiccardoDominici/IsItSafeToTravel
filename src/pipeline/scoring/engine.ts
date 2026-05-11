@@ -226,13 +226,12 @@ export function computeCountryScore(
  * This is used to determine expected signal count from config, not from
  * available data, preventing score spikes when a fetch temporarily fails.
  */
-const INDICATOR_SOURCE_MAP: Record<string, string> = {
-  wb_political_stability: 'worldbank',
-  wb_rule_of_law: 'worldbank',
-  wb_gov_effectiveness: 'worldbank',
-  wb_corruption_control: 'worldbank',
+export const INDICATOR_SOURCE_MAP: Record<string, string> = {
   wb_child_mortality: 'worldbank',
   wb_air_pollution: 'worldbank',
+  vdem_rule_of_law: 'vdem',
+  vdem_gov_effectiveness: 'vdem',
+  vdem_corruption_control: 'vdem',
   gpi_overall: 'gpi',
   gpi_safety_security: 'gpi',
   gpi_militarisation: 'gpi',
@@ -379,10 +378,14 @@ function computeTieredPillarScore(
 }
 
 /** Metadata for known data sources used in scoring. */
-const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
+export const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   worldbank: {
     url: 'https://data.worldbank.org/',
-    description: 'World Bank Development Indicators -- governance, health, and environment data',
+    description: 'World Bank Development Indicators -- child mortality and PM2.5 air pollution',
+  },
+  vdem: {
+    url: 'https://www.v-dem.net/data/the-v-dem-dataset/',
+    description: 'V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- Rule of Law, Political Corruption, and Public Administration indices (Coppedge et al., DOI 10.23696/vdemds26)',
   },
   advisories: {
     url: 'https://travel.state.gov/',

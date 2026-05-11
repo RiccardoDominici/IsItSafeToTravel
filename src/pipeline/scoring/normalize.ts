@@ -21,16 +21,17 @@ export function normalizeInverse(value: number, min: number, max: number): numbe
  * Known min/max ranges and direction for each indicator.
  * inverse=true means lower raw value = safer (higher normalized score).
  *
- * World Bank WGI indicators: -2.5 to 2.5 (higher = better governance/stability)
+ * Governance indicators come from V-Dem v16 via OWID CSV mirrors (CC-BY-SA 4.0),
+ * replacing the four retired World Bank Worldwide Governance Indicators.
+ *
+ * World Bank health & environment: lower raw = better (inverse=true)
  * Advisory levels: 1 to 4 (lower = safer)
- * Health/environment: lower = better
  */
 const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: boolean }> = {
-  // World Bank Worldwide Governance Indicators (higher = better)
-  wb_political_stability: { min: -2.5, max: 2.5, inverse: false },
-  wb_rule_of_law: { min: -2.5, max: 2.5, inverse: false },
-  wb_gov_effectiveness: { min: -2.5, max: 2.5, inverse: false },
-  wb_corruption_control: { min: -2.5, max: 2.5, inverse: false },
+  // V-Dem v16 governance indicators (CC-BY-SA, fetched from OWID grapher CSVs)
+  vdem_rule_of_law: { min: 0, max: 1, inverse: false },
+  vdem_gov_effectiveness: { min: -3.5, max: 3.5, inverse: false },
+  vdem_corruption_control: { min: 0, max: 1, inverse: true },
 
   // World Bank health & environment (lower = better)
   wb_child_mortality: { min: 0, max: 200, inverse: true },
@@ -129,3 +130,10 @@ export function normalizeIndicators(indicators: RawIndicator[]): IndicatorScore[
 
   return results;
 }
+
+/**
+ * Test-only re-export of INDICATOR_RANGES so unit tests can assert the dictionary
+ * contract (which keys exist, ranges, inverse flag). Not part of the public API —
+ * do not import outside __tests__.
+ */
+export const __INDICATOR_RANGES_FOR_TESTS = INDICATOR_RANGES;

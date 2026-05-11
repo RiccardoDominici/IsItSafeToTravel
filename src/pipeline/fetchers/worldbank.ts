@@ -7,16 +7,14 @@ const WB_BASE_URL = 'https://api.worldbank.org/v2/country/all/indicator';
 
 /**
  * World Bank indicators to fetch.
- * These replace the defunct INFORM and GPI APIs with reliable, free data.
  *
- * WGI indicators range from -2.5 to 2.5 (higher = better).
- * Health/environment indicators are raw values (lower = better, handled by normalizer).
+ * As of v8.1.0, the four retired Worldwide Governance Indicators (PV.EST, RL.EST,
+ * GE.EST, CC.EST) are replaced by V-Dem v16 indicators — see src/pipeline/fetchers/vdem.ts.
+ * The World Bank API still serves child mortality (SH.DYN.MORT) and PM2.5 air pollution
+ * (EN.ATM.PM25.MC.M3), so this fetcher continues to provide those two indicators for the
+ * Health and Environment pillars.
  */
 const INDICATORS: Array<{ wbCode: string; name: string; description: string }> = [
-  { wbCode: 'PV.EST', name: 'wb_political_stability', description: 'Political Stability & Absence of Violence' },
-  { wbCode: 'RL.EST', name: 'wb_rule_of_law', description: 'Rule of Law' },
-  { wbCode: 'GE.EST', name: 'wb_gov_effectiveness', description: 'Government Effectiveness' },
-  { wbCode: 'CC.EST', name: 'wb_corruption_control', description: 'Control of Corruption' },
   { wbCode: 'SH.DYN.MORT', name: 'wb_child_mortality', description: 'Under-5 Mortality Rate (per 1,000)' },
   { wbCode: 'EN.ATM.PM25.MC.M3', name: 'wb_air_pollution', description: 'PM2.5 Air Pollution (µg/m³)' },
 ];
