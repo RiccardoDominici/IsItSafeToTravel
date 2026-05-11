@@ -1,7 +1,9 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { normalize, normalizeInverse, normalizeIndicators } from '../normalize.js';
-import { computeCountryScore, computeAllScores, MIN_PILLAR_COVERAGE } from '../engine.js';
+import { computeCountryScore, computeAllScores, MIN_PILLAR_COVERAGE, INDICATOR_SOURCE_MAP, SOURCE_CATALOG } from '../engine.js';
 import type {
   RawIndicator,
   WeightsConfig,
@@ -614,5 +616,83 @@ describe('pillar-coverage threshold gating', () => {
       assert.equal(pillar.dataCompleteness, 0,
         `Pillar ${pillar.name} coverage should be 0 in this fallback case`);
     }
+  });
+});
+
+// --- V-Dem migration: weights.json + engine.ts contract (quick-260511-k2m) ---
+
+describe('V-Dem migration: weights.json structure', () => {
+  const weightsPath = join(process.cwd(), 'src/pipeline/config/weights.json');
+  const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig & { version: string };
+
+  it('version is "8.1.0"', () => {
+    assert.equal(weightsJson.version, '8.1.0');
+  });
+
+  it('conflict pillar indicators do NOT contain wb_political_stability', () => {
+    const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
+    assert.ok(conflict, 'conflict pillar must exist');
+    assert.equal(conflict.indicators.includes('wb_political_stability'), false,
+      'conflict.indicators must not contain wb_political_stability');
+  });
+
+  it('conflict pillar contains all 37 advisory_level_* entries + 3 gpi_* entries', () => {
+    const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
+    const advisoryCount = conflict.indicators.filter((n) => n.startsWith('advisory_level_')).length;
+    const gpiCount = conflict.indicators.filter((n) => n.startsWith('gpi_')).length;
+    assert.equal(advisoryCount, 37, `Expected 37 advisory_level_* entries, got ${advisoryCount}`);
+    assert.equal(gpiCount, 3, `Expected 3 gpi_* entries, got ${gpiCount}`);
+  });
+
+  it('conflict pillar indicatorWeights sum to exactly 1.0 (within 1e-9)', () => {
+    const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
+    assert.ok(conflict.indicatorWeights, 'conflict.indicatorWeights must exist');
+    const sum = Object.values(conflict.indicatorWeights!).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9,
+      `conflict.indicatorWeights must sum to exactly 1.0, got ${sum} (diff=${sum - 1.0})`);
+  });
+
+  it('crime pillar indicators equals ["vdem_rule_of_law"] exactly', () => {
+    const crime = weightsJson.pillars.find((p) => p.name === 'crime')!;
+    assert.ok(crime, 'crime pillar must exist');
+    assert.deepEqual(crime.indicators, ['vdem_rule_of_law']);
+  });
+
+  it('governance pillar indicators is set-equal to [vdem_gov_effectiveness, vdem_corruption_control, inform_governance]', () => {
+    const gov = weightsJson.pillars.find((p) => p.name === 'governance')!;
+    assert.ok(gov, 'governance pillar must exist');
+    const expected = new Set(['vdem_gov_effectiveness', 'vdem_corruption_control', 'inform_governance']);
+    const actual = new Set(gov.indicators);
+    assert.equal(actual.size, expected.size, `governance indicators size mismatch: ${gov.indicators.join(',')}`);
+    for (const name of expected) {
+      assert.ok(actual.has(name), `governance.indicators must contain ${name}`);
+    }
+  });
+});
+
+describe('V-Dem migration: engine.ts INDICATOR_SOURCE_MAP + SOURCE_CATALOG', () => {
+  it('INDICATOR_SOURCE_MAP maps the three vdem_* keys to "vdem"', () => {
+    assert.equal(INDICATOR_SOURCE_MAP['vdem_rule_of_law'], 'vdem');
+    assert.equal(INDICATOR_SOURCE_MAP['vdem_gov_effectiveness'], 'vdem');
+    assert.equal(INDICATOR_SOURCE_MAP['vdem_corruption_control'], 'vdem');
+  });
+
+  it('INDICATOR_SOURCE_MAP does NOT contain the four retired wb_* WGI keys', () => {
+    assert.equal(INDICATOR_SOURCE_MAP['wb_political_stability'], undefined);
+    assert.equal(INDICATOR_SOURCE_MAP['wb_rule_of_law'], undefined);
+    assert.equal(INDICATOR_SOURCE_MAP['wb_gov_effectiveness'], undefined);
+    assert.equal(INDICATOR_SOURCE_MAP['wb_corruption_control'], undefined);
+  });
+
+  it('SOURCE_CATALOG.vdem has v-dem.net URL and CC-BY-SA + Coppedge + DOI in description', () => {
+    const vdem = SOURCE_CATALOG['vdem'];
+    assert.ok(vdem, 'SOURCE_CATALOG.vdem must exist');
+    assert.ok(vdem.url.includes('v-dem.net'), `vdem.url must include v-dem.net, got ${vdem.url}`);
+    assert.ok(vdem.description.includes('CC-BY-SA'),
+      `vdem.description must mention CC-BY-SA, got: ${vdem.description}`);
+    assert.ok(vdem.description.includes('Coppedge'),
+      `vdem.description must mention Coppedge, got: ${vdem.description}`);
+    assert.ok(vdem.description.includes('10.23696/vdemds26'),
+      `vdem.description must mention DOI 10.23696/vdemds26, got: ${vdem.description}`);
   });
 });
