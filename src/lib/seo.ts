@@ -50,7 +50,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const weakestScore = (weakest.score * 10).toFixed(1);
   const strongestLabel = pillarLabels[lang][strongest.name];
   const weakestLabel = pillarLabels[lang][weakest.name];
-  const sourceCount = country.sources.length || 3; // fallback: pipeline uses 3 public sources
+  const sourceCount = country.sources.length || 7;
   const name = getLocalizedCountryName(country, lang);
 
   const roundedScore = score.toFixed(1);
@@ -318,13 +318,13 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     de: `Ist es ${year} sicher, nach ${name} zu reisen?`,
   };
   const a1: Record<Lang, string> = {
-    en: `${name} has a safety score of ${roundedScore}/10, classified as ${riskLevel}. This score is updated daily using data from ${country.sources.length || 3}+ public sources including government advisories, health data, and conflict indicators.`,
-    it: `${name} ha un punteggio di sicurezza di ${roundedScore}/10, classificato come ${riskLevel}. Questo punteggio viene aggiornato quotidianamente utilizzando dati da ${country.sources.length || 3}+ fonti pubbliche tra cui avvisi governativi, dati sanitari e indicatori di conflitto.`,
-    es: `${name} tiene una puntuacion de seguridad de ${roundedScore}/10, clasificado como ${riskLevel}. Esta puntuacion se actualiza diariamente utilizando datos de ${country.sources.length || 3}+ fuentes publicas que incluyen avisos gubernamentales, datos de salud e indicadores de conflicto.`,
-    fr: `${name} a un score de securite de ${roundedScore}/10, classe comme ${riskLevel}. Ce score est mis a jour quotidiennement a partir de ${country.sources.length || 3}+ sources publiques incluant les avis gouvernementaux, les donnees sanitaires et les indicateurs de conflit.`,
-    pt: `${name} tem uma pontuacao de seguranca de ${roundedScore}/10, classificado como ${riskLevel}. Esta pontuacao e atualizada diariamente usando dados de ${country.sources.length || 3}+ fontes publicas incluindo avisos governamentais, dados de saude e indicadores de conflito.`,
-    zh: `${name} 的安全评分为 ${roundedScore}/10，归类为${riskLevel}。该评分每日更新，数据来自 ${country.sources.length || 3}+ 个公开来源，包括政府旅行警告、健康数据和冲突指标。`,
-    de: `${name} hat einen Sicherheits-Score von ${roundedScore}/10 und ist als ${riskLevel} eingestuft. Der Score wird täglich aktualisiert auf Basis von ${country.sources.length || 3}+ öffentlichen Quellen, darunter Regierungs-Reisehinweise, Gesundheitsdaten und Konfliktindikatoren.`,
+    en: `${name} has a safety score of ${roundedScore}/10, classified as ${riskLevel}. This score is updated daily using data from ${country.sources.length || 7}+ public sources including government advisories, health data, and conflict indicators.`,
+    it: `${name} ha un punteggio di sicurezza di ${roundedScore}/10, classificato come ${riskLevel}. Questo punteggio viene aggiornato quotidianamente utilizzando dati da ${country.sources.length || 7}+ fonti pubbliche tra cui avvisi governativi, dati sanitari e indicatori di conflitto.`,
+    es: `${name} tiene una puntuacion de seguridad de ${roundedScore}/10, clasificado como ${riskLevel}. Esta puntuacion se actualiza diariamente utilizando datos de ${country.sources.length || 7}+ fuentes publicas que incluyen avisos gubernamentales, datos de salud e indicadores de conflicto.`,
+    fr: `${name} a un score de securite de ${roundedScore}/10, classe comme ${riskLevel}. Ce score est mis a jour quotidiennement a partir de ${country.sources.length || 7}+ sources publiques incluant les avis gouvernementaux, les donnees sanitaires et les indicateurs de conflit.`,
+    pt: `${name} tem uma pontuacao de seguranca de ${roundedScore}/10, classificado como ${riskLevel}. Esta pontuacao e atualizada diariamente usando dados de ${country.sources.length || 7}+ fontes publicas incluindo avisos governamentais, dados de saude e indicadores de conflito.`,
+    zh: `${name} 的安全评分为 ${roundedScore}/10，归类为${riskLevel}。该评分每日更新，数据来自 ${country.sources.length || 7}+ 个公开来源，包括政府旅行警告、健康数据和冲突指标。`,
+    de: `${name} hat einen Sicherheits-Score von ${roundedScore}/10 und ist als ${riskLevel} eingestuft. Der Score wird täglich aktualisiert auf Basis von ${country.sources.length || 7}+ öffentlichen Quellen, darunter Regierungs-Reisehinweise, Gesundheitsdaten und Konfliktindikatoren.`,
   };
 
   // FAQ 2: What is the biggest risk when traveling to {country}?

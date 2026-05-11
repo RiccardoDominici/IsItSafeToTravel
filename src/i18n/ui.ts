@@ -21,7 +21,7 @@ export type PublishedLang = (typeof publishedLanguages)[number];
 export const ui = {
   en: {
     'site.title': 'Is It Safe to Travel? — Safety Scores for 240+ Countries [2026]',
-    'site.description': 'Free daily-updated safety scores for 240+ countries. Compare conflict, crime, health & environment risks from 8+ government sources. Check before you travel.',
+    'site.description': 'Free daily-updated safety scores for 240+ countries. Compare conflict, crime, health & environment risks from 37+ government sources. Check before you travel.',
     'nav.home': 'Home',
     'nav.about': 'About',
     'nav.methodology': 'Methodology',
@@ -500,7 +500,7 @@ export const ui = {
   },
   it: {
     'site.title': 'Si Puo Viaggiare in Sicurezza? — Punteggi per 240+ Paesi [2026]',
-    'site.description': 'Punteggi di sicurezza gratuiti e aggiornati ogni giorno per 240+ paesi. Confronta rischi di conflitto, criminalita, salute e ambiente da 8+ fonti governative. Verifica prima di partire.',
+    'site.description': 'Punteggi di sicurezza gratuiti e aggiornati ogni giorno per 240+ paesi. Confronta rischi di conflitto, criminalita, salute e ambiente da 37+ fonti governative. Verifica prima di partire.',
     'nav.home': 'Home',
     'nav.about': 'Chi Siamo',
     'nav.methodology': 'Metodologia',
@@ -977,7 +977,7 @@ export const ui = {
   },
   es: {
     'site.title': 'Es Seguro Viajar? — Puntuaciones para 240+ Paises [2026]',
-    'site.description': 'Puntuaciones de seguridad gratuitas y actualizadas diariamente para 240+ paises. Compara riesgos de conflicto, crimen, salud y medio ambiente de 8+ fuentes gubernamentales. Verifica antes de viajar.',
+    'site.description': 'Puntuaciones de seguridad gratuitas y actualizadas diariamente para 240+ paises. Compara riesgos de conflicto, crimen, salud y medio ambiente de 37+ fuentes gubernamentales. Verifica antes de viajar.',
     'nav.home': 'Inicio',
     'nav.about': 'Acerca de',
     'nav.methodology': 'Metodologia',
@@ -1454,7 +1454,7 @@ export const ui = {
   },
   fr: {
     'site.title': 'Est-il Sur de Voyager ? — Scores pour 240+ Pays [2026]',
-    'site.description': 'Scores de securite gratuits et mis a jour chaque jour pour 240+ pays. Comparez les risques de conflit, criminalite, sante et environnement de 8+ sources gouvernementales. Verifiez avant de partir.',
+    'site.description': 'Scores de securite gratuits et mis a jour chaque jour pour 240+ pays. Comparez les risques de conflit, criminalite, sante et environnement de 37+ sources gouvernementales. Verifiez avant de partir.',
     'nav.home': 'Accueil',
     'nav.about': 'A propos',
     'nav.methodology': 'Methodologie',
@@ -1931,7 +1931,7 @@ export const ui = {
   },
   pt: {
     'site.title': 'E Seguro Viajar? — Pontuacoes para 240+ Paises [2026]',
-    'site.description': 'Pontuacoes de seguranca gratuitas e atualizadas diariamente para 240+ paises. Compare riscos de conflito, crime, saude e meio ambiente de 8+ fontes governamentais. Verifique antes de viajar.',
+    'site.description': 'Pontuacoes de seguranca gratuitas e atualizadas diariamente para 240+ paises. Compare riscos de conflito, crime, saude e meio ambiente de 37+ fontes governamentais. Verifique antes de viajar.',
     'nav.home': 'Inicio',
     'nav.about': 'Sobre',
     'nav.methodology': 'Metodologia',
@@ -2408,7 +2408,7 @@ export const ui = {
   },
   zh: {
     'site.title': '旅行安全吗？— 240+ 国家安全评分 [2026]',
-    'site.description': '每日更新的 240+ 国家免费安全评分。比较来自 8+ 个政府来源的冲突、犯罪、健康和环境风险。出行前先查询。',
+    'site.description': '每日更新的 240+ 国家免费安全评分。比较来自 37+ 个政府来源的冲突、犯罪、健康和环境风险。出行前先查询。',
     'nav.home': '首页',
     'nav.about': '关于我们',
     'nav.methodology': '方法论',
@@ -2881,7 +2881,7 @@ export const ui = {
   },
   de: {
     'site.title': 'Ist es sicher zu reisen? — Sicherheitsbewertungen für 240+ Länder [2026]',
-    'site.description': 'Kostenlose, täglich aktualisierte Sicherheitsbewertungen für 240+ Länder. Vergleichen Sie Konflikt-, Kriminalitäts-, Gesundheits- und Umweltrisiken aus 8+ Regierungsquellen. Prüfen Sie vor Ihrer Reise.',
+    'site.description': 'Kostenlose, täglich aktualisierte Sicherheitsbewertungen für 240+ Länder. Vergleichen Sie Konflikt-, Kriminalitäts-, Gesundheits- und Umweltrisiken aus 37+ Regierungsquellen. Prüfen Sie vor Ihrer Reise.',
     'nav.home': 'Startseite',
     'nav.about': 'Über uns',
     'nav.methodology': 'Methodik',

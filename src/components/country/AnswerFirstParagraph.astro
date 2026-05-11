@@ -45,7 +45,7 @@ for (const p of country.pillars) {
 }
 
 const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
-const sourceCount = country.sources.length || 3;
+const sourceCount = country.sources.length || 7;
 
 const text = t('country.answer_first' as any)
   .replace('{name}', getLocalizedCountryName(country, lang))
