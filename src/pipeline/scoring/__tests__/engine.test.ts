@@ -1,7 +1,7 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
 import { normalize, normalizeInverse, normalizeIndicators } from '../normalize.js';
-import { computeCountryScore, computeAllScores } from '../engine.js';
+import { computeCountryScore, computeAllScores, MIN_PILLAR_COVERAGE } from '../engine.js';
 import type {
   RawIndicator,
   WeightsConfig,
@@ -450,5 +450,169 @@ describe('stale signal data is discounted', () => {
     // Allow small tolerance for floating point
     const scoreDiff = Math.abs(baselineResult.score - staleResult.score);
     assert.ok(scoreDiff < 0.5, `Stale signal should have negligible effect: baseline=${baselineResult.score}, stale=${staleResult.score}, diff=${scoreDiff}`);
+  });
+});
+
+// --- Pillar-coverage threshold gating tests (quick-260511-gpu) ---
+
+describe('pillar-coverage threshold gating', () => {
+  // Anchor: the gate value the engine must use.
+  assert.equal(MIN_PILLAR_COVERAGE, 0.30, 'MIN_PILLAR_COVERAGE must be 0.30');
+
+  // Configs designed to give us deterministic per-pillar coverage values:
+  //   - conflict pillar has 1 indicator (provide it → coverage 1.0; omit → 0.0)
+  //   - crime pillar has 5 advisory indicators (provide 1 → coverage 0.20, below the 0.30 gate)
+  //   - health, governance, environment receive 1-of-2 indicators (coverage 0.5)
+  const COVERAGE_GATE_WEIGHTS: WeightsConfig = {
+    version: '1.0.0',
+    pillars: [
+      { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
+      {
+        name: 'crime',
+        weight: 0.50,
+        indicators: [
+          'advisory_level_us',
+          'advisory_level_uk',
+          'advisory_level_ca',
+          'advisory_level_au',
+          'advisory_level_de',
+        ],
+      },
+      { name: 'health', weight: 0.00, indicators: ['inform_health', 'inform_epidemic'] },
+      { name: 'governance', weight: 0.00, indicators: ['inform_governance', 'gpi_militarisation'] },
+      { name: 'environment', weight: 0.00, indicators: ['inform_natural', 'inform_climate'] },
+    ],
+  };
+
+  it('excludes pillars below MIN_PILLAR_COVERAGE from composite score', () => {
+    // conflict pillar: full coverage (1/1), GREAT score (gpi value=1 → normalized=1.0)
+    // crime pillar:    20% coverage (1/5), TERRIBLE score (advisory_level_us=4 → normalized=0.0)
+    //
+    // If the sub-30% crime pillar were included, the geometric mean would be
+    // dragged toward log(GEOMETRIC_MEAN_FLOOR)=log(0.01)≈-4.6, producing a
+    // composite well below 5/10. The gate must exclude it so the conflict
+    // pillar's 1.0 normalized score dominates → composite ≥ 7/10.
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1, year: 2025, source: 'gpi' },
+      // Only 1 of 5 advisory indicators → crime coverage = 0.20
+      { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 4, year: 2025, source: 'state' },
+    ];
+
+    const result = computeCountryScore('TST', indicators, COVERAGE_GATE_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
+
+    const conflict = result.pillars.find((p) => p.name === 'conflict')!;
+    const crime = result.pillars.find((p) => p.name === 'crime')!;
+    assert.equal(conflict.dataCompleteness, 1.0, 'conflict pillar must have full coverage');
+    assert.ok(crime.dataCompleteness < MIN_PILLAR_COVERAGE,
+      `crime coverage (${crime.dataCompleteness}) must be below the gate`);
+
+    // Composite is dominated by the high-coverage pillar → score ≥ 7/10.
+    assert.ok(result.score >= 7,
+      `Composite score should be dominated by the eligible (conflict) pillar; got ${result.score}`);
+  });
+
+  it('renormalizes remaining pillar weights when one is gated', () => {
+    // Config (A): two pillars each weight 0.5, both with full data and identical pillar scores ~0.7.
+    // Config (B): same two pillars PLUS a third pillar (env) at weight 0.5, coverage 0.10, score ~0.1.
+    // The third pillar in (B) must be excluded by the coverage gate so (B) ≈ (A).
+    //
+    // Key design: env's indicator list in (B) contains 10 names, exactly ONE of which is
+    // ever provided in the raw indicators, AND none of those names appear in the conflict
+    // or crime pillar lists (so the engine's per-pillar `includes` filter doesn't double-count).
+    const configA: WeightsConfig = {
+      version: '1.0.0',
+      pillars: [
+        // conflict: gpi_overall inverse min=1,max=4. value=1.9 → norm=(1.9-1)/3=0.30 → inverse=0.70
+        { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
+        // crime: gpi_safety_security inverse min=1,max=5. value=2.2 → norm=(2.2-1)/4=0.30 → inverse=0.70
+        { name: 'crime', weight: 0.50, indicators: ['gpi_safety_security'] },
+        // The remaining pillars are weight=0 with no data; engine still iterates them
+        // but their score=0.5 neutral default × weight=0 contributes log-weighted zero.
+        { name: 'health', weight: 0.00, indicators: ['inform_health'] },
+        { name: 'governance', weight: 0.00, indicators: ['inform_governance'] },
+        { name: 'environment', weight: 0.00, indicators: ['inform_natural'] },
+      ],
+    };
+
+    // Config B: identical except environment pillar carries weight 0.50 with 10 indicator
+    // slots — and we only provide 1 of them → coverage 0.10, below MIN_PILLAR_COVERAGE.
+    // All 10 slot names are DISJOINT from conflict/crime indicators above so they cannot
+    // double-count via the `pillarDef.indicators.includes(ns.name)` filter.
+    const envIndicators = [
+      'inform_natural', 'inform_climate', 'inform_health', 'inform_epidemic',
+      'inform_governance', 'gpi_militarisation', 'wb_air_pollution', 'wb_child_mortality',
+      'wb_political_stability', 'wb_rule_of_law',
+    ];
+    const configB: WeightsConfig = {
+      version: '1.0.0',
+      pillars: [
+        { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
+        { name: 'crime', weight: 0.50, indicators: ['gpi_safety_security'] },
+        // Use placeholder indicator names for the zero-weight pillars that do NOT overlap
+        // with the env list — so when env's only provided indicator (gpi_militarisation) is
+        // normalized, it doesn't accidentally also satisfy the governance pillar slot.
+        { name: 'health', weight: 0.00, indicators: ['advisory_level_us'] },
+        { name: 'governance', weight: 0.00, indicators: ['advisory_level_uk'] },
+        { name: 'environment', weight: 0.50, indicators: envIndicators },
+      ],
+    };
+
+    // Indicators that exist in both runs.
+    const sharedIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.9, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 2.2, year: 2025, source: 'gpi' },
+    ];
+
+    // For configB, also provide ONE environment indicator with a very low (bad) score.
+    // gpi_militarisation: inverse, min=1, max=5. value=5 → norm=(5-1)/4=1.0 → inverse=0.0 (worst).
+    // gpi_militarisation is NOT in conflict/crime/health/governance indicator lists of configB,
+    // so it lands only in env → env coverage = 1/10 = 0.10.
+    const configBIndicators: RawIndicator[] = [
+      ...sharedIndicators,
+      { countryIso3: 'TST', indicatorName: 'gpi_militarisation', value: 5, year: 2025, source: 'gpi' },
+    ];
+
+    const resultA = computeCountryScore('TST', sharedIndicators, configA, TEST_COUNTRY, {}, TEST_SOURCES);
+    const resultB = computeCountryScore('TST', configBIndicators, configB, TEST_COUNTRY, {}, TEST_SOURCES);
+
+    // Sanity: the env pillar in B should be at coverage 0.10, below the 0.30 gate.
+    const envB = resultB.pillars.find((p) => p.name === 'environment')!;
+    assert.ok(envB.dataCompleteness < MIN_PILLAR_COVERAGE,
+      `env coverage in B (${envB.dataCompleteness}) must be below the gate`);
+    assert.ok(envB.score < 0.2,
+      `env pillar score in B (${envB.score}) must be deliberately bad to prove the gate matters`);
+
+    // With the env pillar gated out, remaining weights (conflict=0.5, crime=0.5) renormalize
+    // naturally to 1.0 across the eligible pillars — so A ≈ B (within 0.05/10).
+    const diff = Math.abs(resultA.score - resultB.score);
+    assert.ok(diff < 0.05,
+      `Gated low-coverage pillar must not affect composite. A=${resultA.score}, B=${resultB.score}, diff=${diff}`);
+  });
+
+  it('falls back to all pillars when none meet MIN_PILLAR_COVERAGE', () => {
+    // Every declared pillar has at least 2 indicator slots; we provide ZERO indicators →
+    // every pillar's dataCompleteness=0, below the gate. The engine must NOT throw and
+    // must return a finite numeric score (fallback to the all-pillars path).
+    const pillaredWeights: WeightsConfig = {
+      version: '1.0.0',
+      pillars: [
+        { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'gpi_militarisation'] },
+        { name: 'crime', weight: 0.20, indicators: ['advisory_level_us', 'advisory_level_uk'] },
+        { name: 'health', weight: 0.20, indicators: ['inform_health', 'inform_epidemic'] },
+        { name: 'governance', weight: 0.20, indicators: ['inform_governance', 'gpi_safety_security'] },
+        { name: 'environment', weight: 0.20, indicators: ['inform_natural', 'inform_climate'] },
+      ],
+    };
+
+    // No indicators at all → every pillar coverage = 0.
+    const result = computeCountryScore('TST', [], pillaredWeights, TEST_COUNTRY, {}, TEST_SOURCES);
+
+    assert.ok(Number.isFinite(result.score), `Fallback score must be finite, got ${result.score}`);
+    assert.ok(result.score >= 1 && result.score <= 10,
+      `Fallback score must be in [1,10] range, got ${result.score}`);
+    for (const pillar of result.pillars) {
+      assert.equal(pillar.dataCompleteness, 0,
+        `Pillar ${pillar.name} coverage should be 0 in this fallback case`);
+    }
   });
 });

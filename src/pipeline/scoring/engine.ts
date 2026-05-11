@@ -40,6 +40,22 @@ const ADVISORY_HARD_CAP_MAJORITY = true; // require majority of advisory sources
 const ADVISORY_HARD_CAP_BASE = 2;       // base hard cap score
 const GEOMETRIC_MEAN_FLOOR = 0.01;      // floor for pillar scores in geometric mean (avoid log(0))
 const LOW_DATA_THRESHOLD = 0.3;         // overall dataCompleteness below which advisory blending kicks in
+
+/**
+ * Hard gate: pillars with dataCompleteness below this threshold are excluded
+ * from the composite geometric mean AND from the critical-floor calculation.
+ * Remaining pillar weights renormalize naturally via the weighted-log-mean denominator.
+ */
+export const MIN_PILLAR_COVERAGE = 0.30;
+
+/**
+ * Soft flag: pillars with dataCompleteness below this threshold should be flagged
+ * in the UI (asterisk + tooltip) so users know the displayed pillar number is
+ * based on thin data. The engine does NOT use this constant directly — it is
+ * exported so UI components import a single source of truth.
+ */
+export const LOW_COVERAGE_FLAG_THRESHOLD = 0.50;
+
 export function computeCountryScore(
   iso3: string,
   allIndicators: RawIndicator[],
@@ -130,8 +146,19 @@ export function computeCountryScore(
     : null;
 
   // --- Composite score: weighted geometric mean ---
-  const totalWeight = pillars.reduce((acc, p) => acc + p.weight, 0);
-  const weightedLogSum = pillars.reduce((acc, p) => {
+  // Exclude pillars whose data coverage is below MIN_PILLAR_COVERAGE so that
+  // sparse pillars don't silently distort the composite. The remaining pillar
+  // weights renormalize naturally through the weighted-log-mean denominator
+  // (totalWeight = sum of eligible weights only).
+  const eligiblePillars = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
+  const compositePillars = eligiblePillars.length > 0 ? eligiblePillars : pillars;
+  if (eligiblePillars.length === 0 && pillars.length > 0) {
+    console.warn(
+      `  ${iso3}: no pillar meets MIN_PILLAR_COVERAGE=${MIN_PILLAR_COVERAGE}; falling back to all pillars for composite score`,
+    );
+  }
+  const totalWeight = compositePillars.reduce((acc, p) => acc + p.weight, 0);
+  const weightedLogSum = compositePillars.reduce((acc, p) => {
     const clampedScore = Math.max(GEOMETRIC_MEAN_FLOOR, p.score);
     return acc + p.weight * Math.log(clampedScore);
   }, 0);
@@ -150,8 +177,10 @@ export function computeCountryScore(
     compositeScore = compositeScore * (1 - advisoryBlend) + advisoryScore * advisoryBlend;
   }
 
-  // --- Critical floor: if any pillar with real data is below threshold ---
-  const pillarsWithData = pillars.filter((p) => p.dataCompleteness > 0);
+  // --- Critical floor: if any pillar with sufficient data is below threshold ---
+  // Use the same MIN_PILLAR_COVERAGE gate as the composite — sub-30%-coverage
+  // pillars must not drive the floor.
+  const pillarsWithData = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
   if (pillarsWithData.length > 0) {
     const minPillarScore = Math.min(...pillarsWithData.map((p) => p.score));
     if (minPillarScore < CRITICAL_PILLAR_THRESHOLD) {
