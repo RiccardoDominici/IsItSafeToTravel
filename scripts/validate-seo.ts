@@ -296,15 +296,20 @@ function validateMeta() {
 
   const countryCodes = getAllCountryCodes();
   const sample = sampleArray(countryCodes, 12);
-  const descriptions = new Map<string, string>(); // description -> page label
+  // Per-language duplicate maps so a coincidental cross-language lowercase
+  // collision (e.g. when zh/de fall back to the English country name) does
+  // not flag pages that legitimately render different localized templates.
+  const descriptionsByLang = new Map<string, Map<string, string>>();
+  for (const lang of LANGUAGES) descriptionsByLang.set(lang, new Map());
 
   // Collect pages to check: homepages + country samples
-  const pages: Array<{ path: string; label: string }> = [];
+  const pages: Array<{ path: string; label: string; lang: string }> = [];
 
   for (const lang of LANGUAGES) {
     pages.push({
       path: path.join(DIST, lang, "index.html"),
       label: `${lang}/index.html`,
+      lang,
     });
   }
 
@@ -314,6 +319,7 @@ function validateMeta() {
       pages.push({
         path: path.join(DIST, lang, seg, code, "index.html"),
         label: `${lang}/${seg}/${code}`,
+        lang,
       });
     }
   }
@@ -344,17 +350,17 @@ function validateMeta() {
         "empty description"
       );
 
-      // Check for duplicates (only within same language to be fair)
+      const langDescriptions = descriptionsByLang.get(page.lang)!;
       const key = desc.toLowerCase();
-      if (descriptions.has(key)) {
+      if (langDescriptions.has(key)) {
         check(
           `meta(${page.label}): unique description`,
           false,
-          `duplicate of ${descriptions.get(key)}`
+          `duplicate of ${langDescriptions.get(key)}`
         );
       } else {
         check(`meta(${page.label}): unique description`, true);
-        descriptions.set(key, page.label);
+        langDescriptions.set(key, page.label);
       }
     }
 
