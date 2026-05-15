@@ -124,14 +124,33 @@ const resolvedOgType = ogType || 'website';
         document.head.appendChild(s);
       })();
     </script>
-    <script src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js" is:inline></script>
+    <script id="kofi-overlay-script" src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js" is:inline></script>
     <script is:inline define:vars={{ donateButtonText: t('nav.donate') }}>
-      kofiWidgetOverlay.draw('isitsafetotravel', {
-        'type': 'floating-chat',
-        'floating-chat.donateButton.text': donateButtonText,
-        'floating-chat.donateButton.background-color': '#ffffff',
-        'floating-chat.donateButton.text-color': '#323842'
-      });
+      (function () {
+        var scriptEl = document.getElementById('kofi-overlay-script');
+        function initKofi() {
+          if (typeof kofiWidgetOverlay !== 'undefined' && typeof kofiWidgetOverlay.draw === 'function') {
+            try {
+              kofiWidgetOverlay.draw('isitsafetotravel', {
+                'type': 'floating-chat',
+                'floating-chat.donateButton.text': donateButtonText,
+                'floating-chat.donateButton.background-color': '#ffffff',
+                'floating-chat.donateButton.text-color': '#323842'
+              });
+            } catch (_) {
+              /* no-op: ko-fi widget failed to initialize */
+            }
+          }
+        }
+        if (scriptEl) {
+          scriptEl.addEventListener('load', initKofi);
+          scriptEl.addEventListener('error', function () {
+            /* silent no-op: ko-fi CDN blocked or failed to load */
+          });
+        }
+        // Race-safety: script may already be loaded when this inline runs.
+        initKofi();
+      })();
     </script>
     <script>
       import '../scripts/pillar-coverage-tip';
