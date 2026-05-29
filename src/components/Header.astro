@@ -14,6 +14,7 @@ interface Props {
 const { lang, currentPath } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
+const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
 ---
 
 <header class="bg-sand-50/80 dark:bg-sand-900/80 backdrop-blur-sm border-b border-sand-200 dark:border-sand-700 sticky top-0 z-50">
@@ -63,14 +64,26 @@ const r = routes[lang];
               {t('hub.dangerous_countries.title' as any)}
             </a>
             <hr class="my-1 border-sand-200 dark:border-sand-700" />
-            <a href={`/${lang}/${r['regions']}/europe/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            <a href={`/${lang}/${r['regions']}/`} class="block px-4 py-2 text-sm font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {regionsLabel}
+            </a>
+            <a href={`/${lang}/${r['regions']}/${r['europe']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
               {t('hub.region.europe.title' as any)}
             </a>
-            <a href={`/${lang}/${r['regions']}/asia/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            <a href={`/${lang}/${r['regions']}/${r['asia']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
               {t('hub.region.asia.title' as any)}
             </a>
-            <a href={`/${lang}/${r['regions']}/africa/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            <a href={`/${lang}/${r['regions']}/${r['africa']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
               {t('hub.region.africa.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['regions']}/${r['americas']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.americas.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['regions']}/${r['oceania']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.oceania.title' as any)}
+            </a>
+            <a href={`/${lang}/${r['regions']}/${r['middle-east']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {t('hub.region.middle_east.title' as any)}
             </a>
             <hr class="my-1 border-sand-200 dark:border-sand-700" />
             <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
@@ -138,6 +151,9 @@ const r = routes[lang];
           </a>
           <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
             {t('hub.solo_travelers.title' as any)}
+          </a>
+          <a href={`/${lang}/${r['regions']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            {regionsLabel}
           </a>
           <hr class="my-1 border-sand-200 dark:border-sand-700" />
           <a

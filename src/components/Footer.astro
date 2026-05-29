@@ -11,6 +11,7 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
+const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
 const currentYear = new Date().getFullYear();
 const affiliateUrl = buildAffiliateUrl();
 ---
@@ -35,6 +36,12 @@ const affiliateUrl = buildAffiliateUrl();
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >
         {t('hub.dangerous_countries.title' as any)}
+      </a>
+      <a
+        href={`/${lang}/${r['regions']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {regionsLabel}
       </a>
       <a
         href={`/${lang}/${r['embed-badge']}/`}

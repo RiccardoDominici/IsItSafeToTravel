@@ -1,0 +1,150 @@
+---
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { loadLatestScores } from '../../lib/scores';
+import { getCountriesByRegion } from '../../lib/hub-data';
+import type { Region } from '../../lib/regions';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const allCountries = loadLatestScores();
+
+// region.type -> getCountriesByRegion (Region enum, underscore)
+// region.slug -> routes key for the localized URL segment (hyphen for middle-east)
+const REGIONS = [
+  { type: 'europe', slug: 'europe', titleKey: 'hub.region.europe.title' },
+  { type: 'asia', slug: 'asia', titleKey: 'hub.region.asia.title' },
+  { type: 'africa', slug: 'africa', titleKey: 'hub.region.africa.title' },
+  { type: 'americas', slug: 'americas', titleKey: 'hub.region.americas.title' },
+  { type: 'oceania', slug: 'oceania', titleKey: 'hub.region.oceania.title' },
+  { type: 'middle_east', slug: 'middle-east', titleKey: 'hub.region.middle_east.title' },
+] as const;
+
+function badgeClasses(score: number): string {
+  if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
+  if (score >= 4) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
+  return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
+}
+
+const regionCards = REGIONS.map((rg) => {
+  const list = getCountriesByRegion(allCountries, rg.type as Region);
+  const avg = list.length ? list.reduce((s, c) => s + c.score, 0) / list.length : 0;
+  return {
+    title: t(rg.titleKey as any),
+    href: `/${lang}/${r['regions']}/${(r as Record<string, string>)[rg.slug]}/`,
+    count: list.length,
+    avg,
+  };
+});
+
+// Page copy is inlined per-language (same pattern as RelatedCountries/StatsSummary)
+// to avoid threading three more keys through the large i18n/ui.ts table.
+const copy: Record<Lang, { title: string; description: string; intro: string }> = {
+  en: {
+    title: 'Travel Safety by Region (2026)',
+    description: 'Browse travel safety scores for every country, organized by world region.',
+    intro: 'Explore safety scores by world region. Each region ranks all of its countries by composite safety score, updated daily.',
+  },
+  it: {
+    title: 'Sicurezza di Viaggio per Regione (2026)',
+    description: 'Esplora i punteggi di sicurezza di viaggio di ogni paese, organizzati per regione del mondo.',
+    intro: 'Esplora i punteggi di sicurezza per regione del mondo. Ogni regione classifica tutti i suoi paesi per punteggio composito, aggiornato ogni giorno.',
+  },
+  es: {
+    title: 'Seguridad de Viaje por Región (2026)',
+    description: 'Explora las puntuaciones de seguridad de viaje de cada país, organizadas por región del mundo.',
+    intro: 'Explora las puntuaciones de seguridad por región del mundo. Cada región clasifica todos sus países por puntuación compuesta, actualizada a diario.',
+  },
+  fr: {
+    title: 'Sécurité de Voyage par Région (2026)',
+    description: 'Parcourez les scores de sécurité de voyage de chaque pays, organisés par région du monde.',
+    intro: 'Explorez les scores de sécurité par région du monde. Chaque région classe tous ses pays par score composite, mis à jour chaque jour.',
+  },
+  pt: {
+    title: 'Segurança de Viagem por Região (2026)',
+    description: 'Explore as pontuações de segurança de viagem de cada país, organizadas por região do mundo.',
+    intro: 'Explore as pontuações de segurança por região do mundo. Cada região classifica todos os seus países por pontuação composta, atualizada diariamente.',
+  },
+  zh: {
+    title: '按地区划分的旅行安全 (2026)',
+    description: '按世界地区浏览每个国家的旅行安全评分。',
+    intro: '按世界地区探索安全评分。每个地区按综合安全评分对其所有国家进行排名，每日更新。',
+  },
+  de: {
+    title: 'Reisesicherheit nach Region (2026)',
+    description: 'Durchsuchen Sie die Reisesicherheits-Scores für jedes Land, geordnet nach Weltregion.',
+    intro: 'Entdecken Sie Sicherheits-Scores nach Weltregion. Jede Region ordnet alle ihre Länder nach zusammengesetztem Sicherheits-Score, täglich aktualisiert.',
+  },
+};
+const { title, description, intro } = copy[lang];
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['regions']}/`;
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'CollectionPage',
+      '@id': canonicalUrl,
+      url: canonicalUrl,
+      name: title,
+      description,
+      inLanguage: localeMap[lang],
+    },
+    {
+      '@type': 'ItemList',
+      itemListElement: regionCards.map((c, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: c.title,
+        url: `https://isitsafetotravel.org${c.href}`,
+      })),
+    },
+  ],
+};
+---
+
+<Base lang={lang} title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: title, href: '' },
+    ]} />
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {title}
+      </h1>
+      <p class="text-base text-sand-700 dark:text-sand-300 max-w-2xl mx-auto leading-relaxed">
+        {intro}
+      </p>
+    </header>
+
+    <ul class="grid grid-cols-1 sm:grid-cols-2 gap-4 list-none p-0 m-0">
+      {regionCards.map((c) => (
+        <li>
+          <a
+            href={c.href}
+            class="flex items-center justify-between gap-3 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-5 py-4 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+          >
+            <span class="text-base font-medium text-sand-800 dark:text-sand-100">{c.title}</span>
+            <span class="flex items-center gap-2 shrink-0">
+              <span class="text-xs text-sand-400 dark:text-sand-500 tabular-nums">{c.count}</span>
+              <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${badgeClasses(c.avg)}`}>
+                {c.avg.toFixed(1)}
+              </span>
+            </span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</Base>
