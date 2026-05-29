@@ -58,6 +58,15 @@ function buildLastmodMap() {
     }
   }
 
+  // Nothing on the live site predates launch (2026-03-19). A placeholder page whose
+  // displayed content matches all the way back through the historical backfill would
+  // otherwise resolve to a 2012 lastmod — a false staleness signal in the sitemap.
+  // Clamp every resolved date up to the launch floor.
+  const SITE_LAUNCH = '2026-03-19';
+  for (const iso3 of Object.keys(countryLastmod)) {
+    if (countryLastmod[iso3] < SITE_LAUNCH) countryLastmod[iso3] = SITE_LAUNCH;
+  }
+
   return { countries: countryLastmod, snapshotDate };
 }
 
