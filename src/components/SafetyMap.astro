@@ -176,7 +176,7 @@ const countryRoute = routes[lang].country;
     const sourceCounts = new Map<string, number>();
     const advisoryMap = new Map<string, Record<string, any>>();
     try {
-      const res = await fetch('/scores.json');
+      const res = await fetch('/map-data.json');
       if (res.ok) {
         const snapshot = await res.json();
         scores = (snapshot.countries || []).map((c: any) => ({
