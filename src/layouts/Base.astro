@@ -95,8 +95,6 @@ const resolvedOgType = ogType || 'website';
 
     <!-- Resource hints: warm up DNS for deferred third-party origins -->
     <link rel="dns-prefetch" href="https://www.clarity.ms" />
-    <link rel="dns-prefetch" href="https://tp-em.com" />
-    <link rel="dns-prefetch" href="https://tp.media" />
     <link rel="dns-prefetch" href="https://storage.ko-fi.com" />
 
     <!-- Preload critical assets -->
@@ -131,9 +129,13 @@ const resolvedOgType = ogType || 'website';
     </main>
     <Footer lang={lang} />
     <!--
-      Deferred third-party loader: Microsoft Clarity, Travelpayouts, Ko-fi.
+      Deferred third-party loader: Microsoft Clarity + Ko-fi.
       Fires on the first user interaction OR when the main thread goes idle
-      (whichever comes first), keeping all three off the critical render path.
+      (whichever comes first), keeping both off the critical render path.
+      NOTE: the Travelpayouts sitewide script (tp-em.com) was intentionally
+      removed — it injected a dashboard-controlled floating "cheap flights"
+      promo banner we don't want. Affiliate attribution still works via the
+      ?marker= param on every link (see src/config/affiliate.ts).
     -->
     <script is:inline define:vars={{ donateButtonText: t('nav.donate') }}>
       (function () {
@@ -148,12 +150,6 @@ const resolvedOgType = ogType || 'website';
             t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
             y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
           })(window, document, "clarity", "script", "w2va23mnes");
-
-          // Travelpayouts
-          var tp = document.createElement('script');
-          tp.async = 1;
-          tp.src = 'https://tp-em.com/NTI2MDkz.js?t=526093';
-          document.head.appendChild(tp);
 
           // Ko-fi floating donate button (defensive guard against blocked CDN)
           var kofi = document.createElement('script');

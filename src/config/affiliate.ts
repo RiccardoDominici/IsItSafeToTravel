@@ -1,10 +1,11 @@
 /**
  * Travelpayouts affiliate configuration.
  *
- * Marker (partner ID) from the Travelpayouts dashboard. The sitewide tp-em.com
- * tracker script in Base.astro handles attribution automatically — links just
- * need to point to a Travelpayouts partner brand (aviasales, hotellook, kiwi,
- * etc.) with the marker as a query param.
+ * Marker (partner ID) from the Travelpayouts dashboard. Attribution is handled
+ * entirely by the ?marker= query param on each affiliate link — links just need
+ * to point to a Travelpayouts partner brand (aviasales, hotellook, kiwi, etc.)
+ * with the marker attached. (No sitewide tracker script: the tp-em.com one was
+ * removed because it injected an unwanted floating "cheap flights" promo banner.)
  */
 
 export const TRAVELPAYOUTS_MARKER = '526093';
