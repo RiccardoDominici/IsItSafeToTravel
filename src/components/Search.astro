@@ -72,7 +72,7 @@ const searchData = COUNTRIES.map(c => {
 </div>
 
 <script>
-  import Fuse from 'fuse.js';
+  import type FuseType from 'fuse.js';
 
   interface SearchItem {
     iso3: string;
@@ -88,13 +88,25 @@ const searchData = COUNTRIES.map(c => {
     const routeSegment = container.dataset.routeSegment!;
     const noResultsText = container.dataset.noResults!;
 
-    const fuse = new Fuse(searchData, {
-      keys: ['name'],
-      threshold: 0.3,
-      minMatchCharLength: 2,
-      includeScore: true,
-      limit: 10,
-    });
+    // Lazy-load fuse.js (~18KB) only when the user actually opens search,
+    // keeping it out of the initial JS bundle shipped on every page.
+    let fuse: FuseType<SearchItem> | null = null;
+    let fusePromise: Promise<FuseType<SearchItem>> | null = null;
+    function ensureFuse(): Promise<FuseType<SearchItem>> {
+      if (fuse) return Promise.resolve(fuse);
+      if (!fusePromise) {
+        fusePromise = import('fuse.js').then(({ default: Fuse }) => {
+          fuse = new Fuse(searchData, {
+            keys: ['name'],
+            threshold: 0.3,
+            minMatchCharLength: 2,
+            includeScore: true,
+          });
+          return fuse;
+        });
+      }
+      return fusePromise;
+    }
 
     const toggle = document.getElementById('search-toggle')!;
     const panel = document.getElementById('search-panel')!;
@@ -161,17 +173,30 @@ const searchData = COUNTRIES.map(c => {
     }
 
     toggle.addEventListener('click', () => {
-      panel.classList.contains('hidden') ? open() : close();
+      if (panel.classList.contains('hidden')) {
+        ensureFuse(); // warm the fuse.js chunk as soon as search opens
+        open();
+      } else {
+        close();
+      }
     });
 
-    input.addEventListener('input', () => {
+    input.addEventListener('input', async () => {
       const query = input.value.trim();
       if (query.length < 2) {
         listbox.innerHTML = '';
         currentResults = [];
         return;
       }
-      const results = fuse.search(query).map((r) => r.item);
+      const f = await ensureFuse();
+      // Re-read the value — it may have changed while fuse.js was loading.
+      const q = input.value.trim();
+      if (q.length < 2) {
+        listbox.innerHTML = '';
+        currentResults = [];
+        return;
+      }
+      const results = f.search(q, { limit: 10 }).map((r) => r.item);
       renderResults(results);
     });
 

@@ -292,7 +292,7 @@ function main() {
 
 ## Languages
 
-Available in: [English](/en/), [Italian](/it/), [Spanish](/es/), [French](/fr/), [Portuguese](/pt/)
+Available in: [English](/en/), [Italian](/it/), [Spanish](/es/), [French](/fr/), [Portuguese](/pt/), [Chinese](/zh/), [German](/de/)
 
 ## Open Source
 
