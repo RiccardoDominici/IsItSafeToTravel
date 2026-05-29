@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run build:*)",
+      "Bash(npm run validate:seo:*)",
+      "Bash(npm run generate:llms:*)",
+      "Bash(npm run generate:og:*)",
+      "Bash(npm run pipeline:*)",
+      "Bash(npx astro build:*)",
+      "Bash(npx astro sync:*)",
+      "Bash(npx astro check:*)",
+      "Bash(npx tsx:*)",
+      "Bash(git status:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(ls:*)",
+      "Bash(find:*)",
+      "Bash(node:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/.claude/hooks/block-generated.sh\""
+          }
+        ]
+      }
+    ]
+  }
+}

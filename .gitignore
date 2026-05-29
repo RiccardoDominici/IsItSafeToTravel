@@ -38,10 +38,15 @@ data/raw/**/*.csv
 
 # Legal research (local only, not published)
 .legal-research/
+
+# Claude Code: share settings.json + hooks, keep local/runtime state out
 .claude/worktrees/
+.claude/scheduled_tasks.lock
+.claude/settings.local.json
 
 # Generated OG images (built at deploy time)
 public/og/
 
-# Google Search Console debug data (local only)
-INDICIZZAZIONE BUG DA FIXARE/
+# Search engine indexing debug data (local only)
+Indicizzazione Google/
+Indicizzazione Bing/
