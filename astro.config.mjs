@@ -4,6 +4,7 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import fs from 'node:fs';
 import path from 'node:path';
+import { getAlternateLinks, getLocalizedPath } from './src/i18n/utils';
 
 // --- Smart lastmod: only update when displayed content actually changes ---
 function buildLastmodMap() {
@@ -108,6 +109,19 @@ export default defineConfig({
           // Non-country pages (homepage, about, etc.): use latest data snapshot date
           item.lastmod = new Date(lastmodMap.snapshotDate + 'T00:00:00Z').toISOString();
         }
+        // Slug-aware hreflang alternates. Astro's built-in i18n matcher groups URLs by
+        // their literal de-localed path, which fails for translated slugs (/country/ vs
+        // /paese/ vs /pays/ vs /land/) — leaving the it/fr/de sitemaps with almost no
+        // alternates. Rebuild links from the same route map the HTML <head> uses so
+        // every page advertises all 7 localized URLs + x-default.
+        const pathname = new URL(item.url).pathname;
+        item.links = [
+          ...getAlternateLinks(pathname).map(({ lang, href }) => ({
+            lang,
+            url: new URL(href, 'https://isitsafetotravel.org').href,
+          })),
+          { lang: 'x-default', url: new URL(getLocalizedPath(pathname, 'en'), 'https://isitsafetotravel.org').href },
+        ];
         return item;
       },
       // Split sitemap by language for better crawl efficiency
