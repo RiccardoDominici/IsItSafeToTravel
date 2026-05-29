@@ -38,7 +38,8 @@ const resolvedOgType = ogType || 'website';
     <link rel="icon" href="/favicon.ico" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <meta name="theme-color" content="#1a1a2e" />
+    <meta name="theme-color" content="#f8f5ef" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#1a1a2e" media="(prefers-color-scheme: dark)" />
     <meta name="yandex-verification" content="d3ec07bc73fe3dcf" />
     <meta name="generator" content={Astro.generator} />
 
@@ -62,6 +63,10 @@ const resolvedOgType = ogType || 'website';
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     {resolvedOgImage && <meta property="og:image" content={resolvedOgImage} />}
+    {resolvedOgImage && <meta property="og:image:width" content="1200" />}
+    {resolvedOgImage && <meta property="og:image:height" content="630" />}
+    {resolvedOgImage && <meta property="og:image:type" content="image/png" />}
+    {resolvedOgImage && <meta property="og:image:alt" content={pageTitle} />}
     <meta property="og:url" content={canonicalUrl.href} />
     <meta property="og:type" content={resolvedOgType} />
     <meta property="og:locale" content={{ en: 'en_US', it: 'it_IT', es: 'es_ES', fr: 'fr_FR', pt: 'pt_BR', zh: 'zh_CN', de: 'de_DE' }[lang]} />
@@ -72,6 +77,7 @@ const resolvedOgType = ogType || 'website';
     <meta name="twitter:title" content={pageTitle} />
     <meta name="twitter:description" content={pageDescription} />
     {resolvedOgImage && <meta name="twitter:image" content={resolvedOgImage} />}
+    {resolvedOgImage && <meta name="twitter:image:alt" content={pageTitle} />}
 
     <!-- Search engine directives -->
     <meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
@@ -79,19 +85,17 @@ const resolvedOgType = ogType || 'website';
     <!-- Preload critical assets -->
     <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
 
+    <!-- Resource hints: warm DNS for third-party origins that are loaded lazily
+         (analytics, monetization, donate widget) without blocking the critical path -->
+    <link rel="dns-prefetch" href="https://www.clarity.ms" />
+    <link rel="dns-prefetch" href="https://tp-em.com" />
+    <link rel="dns-prefetch" href="https://tp.media" />
+    <link rel="dns-prefetch" href="https://storage.ko-fi.com" />
+
     <!-- JSON-LD Structured Data -->
     {jsonLd && (
       <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
     )}
-
-    <!-- Microsoft Clarity analytics -->
-    <script is:inline>
-      (function(c,l,a,r,i,t,y){
-        c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-        t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-        y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-      })(window, document, "clarity", "script", "w2va23mnes");
-    </script>
 
     <!-- Dark mode detection (inline to prevent FOUC) -->
     <script is:inline>
@@ -116,40 +120,67 @@ const resolvedOgType = ogType || 'website';
       <slot />
     </main>
     <Footer lang={lang} />
-    <script is:inline>
-      (function () {
-        var s = document.createElement('script');
-        s.async = 1;
-        s.src = 'https://tp-em.com/NTI2MDkz.js?t=526093';
-        document.head.appendChild(s);
-      })();
-    </script>
-    <script id="kofi-overlay-script" src="https://storage.ko-fi.com/cdn/scripts/overlay-widget.js" is:inline></script>
+    <!-- Deferred third-party scripts (analytics + monetization + donate widget).
+         Loaded on browser idle or first user interaction — whichever comes first —
+         to keep them off the critical rendering path and protect Core Web Vitals. -->
     <script is:inline define:vars={{ donateButtonText: t('nav.donate') }}>
       (function () {
-        var scriptEl = document.getElementById('kofi-overlay-script');
-        function initKofi() {
-          if (typeof kofiWidgetOverlay !== 'undefined' && typeof kofiWidgetOverlay.draw === 'function') {
-            try {
-              kofiWidgetOverlay.draw('isitsafetotravel', {
-                'type': 'floating-chat',
-                'floating-chat.donateButton.text': donateButtonText,
-                'floating-chat.donateButton.background-color': '#ffffff',
-                'floating-chat.donateButton.text-color': '#323842'
-              });
-            } catch (_) {
-              /* no-op: ko-fi widget failed to initialize */
+        var loaded = false;
+        function loadThirdParty() {
+          if (loaded) return;
+          loaded = true;
+
+          // Microsoft Clarity analytics
+          (function(c,l,a,r,i,t,y){
+            c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+            t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+            y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+          })(window, document, "clarity", "script", "w2va23mnes");
+
+          // Travelpayouts
+          var tp = document.createElement('script');
+          tp.async = 1;
+          tp.src = 'https://tp-em.com/NTI2MDkz.js?t=526093';
+          document.head.appendChild(tp);
+
+          // Ko-fi floating donate widget (guarded against blocked/failed CDN load)
+          var kofi = document.createElement('script');
+          kofi.async = 1;
+          kofi.src = 'https://storage.ko-fi.com/cdn/scripts/overlay-widget.js';
+          kofi.addEventListener('load', function () {
+            if (typeof kofiWidgetOverlay !== 'undefined' && typeof kofiWidgetOverlay.draw === 'function') {
+              try {
+                kofiWidgetOverlay.draw('isitsafetotravel', {
+                  'type': 'floating-chat',
+                  'floating-chat.donateButton.text': donateButtonText,
+                  'floating-chat.donateButton.background-color': '#ffffff',
+                  'floating-chat.donateButton.text-color': '#323842'
+                });
+              } catch (_) {
+                /* no-op: ko-fi widget failed to initialize */
+              }
             }
-          }
-        }
-        if (scriptEl) {
-          scriptEl.addEventListener('load', initKofi);
-          scriptEl.addEventListener('error', function () {
+          });
+          kofi.addEventListener('error', function () {
             /* silent no-op: ko-fi CDN blocked or failed to load */
           });
+          document.head.appendChild(kofi);
         }
-        // Race-safety: script may already be loaded when this inline runs.
-        initKofi();
+
+        // Trigger on first interaction (whichever event fires first)...
+        var events = ['scroll', 'pointerdown', 'keydown', 'touchstart'];
+        function onInteraction() {
+          loadThirdParty();
+          events.forEach(function (e) { window.removeEventListener(e, onInteraction); });
+        }
+        events.forEach(function (e) { window.addEventListener(e, onInteraction, { passive: true }); });
+
+        // ...or when the browser goes idle, with a safety-net timeout.
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(loadThirdParty, { timeout: 5000 });
+        } else {
+          setTimeout(loadThirdParty, 3000);
+        }
       })();
     </script>
     <script>
