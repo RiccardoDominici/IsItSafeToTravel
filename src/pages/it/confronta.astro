@@ -3,8 +3,7 @@ export const prerender = true;
 
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import { loadLatestScores, loadHistoricalScores, getLocalizedCountryName } from '../../lib/scores';
-import type { HistoryPoint } from '../../lib/scores';
+import { loadLatestScores, getLocalizedCountryName } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
@@ -15,7 +14,6 @@ const r = routes[lang];
 const t = useTranslations(lang);
 
 const scores = loadLatestScores();
-const history = loadHistoricalScores();
 
 const countryData = scores.map(country => ({
   iso3: country.iso3,
@@ -25,11 +23,6 @@ const countryData = scores.map(country => ({
   pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),
   color: scoreToColor(country.score),
 }));
-
-const historyData: Record<string, HistoryPoint[]> = {};
-for (const [iso3, points] of history.entries()) {
-  historyData[iso3] = points;
-}
 ---
 
 <Base lang={lang} title={t('compare.title')} description={t('compare.description')} ogImage="/og/default.png">
@@ -44,7 +37,6 @@ for (const [iso3, points] of history.entries()) {
 
     <div id="compare-app"
       data-countries={JSON.stringify(countryData)}
-      data-history={JSON.stringify(historyData)}
       data-lang={lang}
       data-t={JSON.stringify({
         select_prompt: t('compare.select_prompt'),
@@ -131,7 +123,18 @@ for (const [iso3, points] of history.entries()) {
   let selectedCountries: CountryItem[] = [];
   const app = document.getElementById('compare-app')!;
   const allCountries: CountryItem[] = JSON.parse(app.dataset.countries!);
-  const allHistory: Record<string, HistoryPoint[]> = JSON.parse(app.dataset.history!);
+  const historyCache: Record<string, HistoryPoint[]> = {};
+  async function ensureHistories(isos: string[]): Promise<void> {
+    await Promise.all(isos.map(async (iso) => {
+      if (historyCache[iso]) return;
+      try {
+        const res = await fetch(`/history/${iso.toLowerCase()}.json`);
+        historyCache[iso] = res.ok ? await res.json() : [];
+      } catch {
+        historyCache[iso] = [];
+      }
+    }));
+  }
   const t = JSON.parse(app.dataset.t!);
   const lang = app.dataset.lang!;
 
@@ -413,7 +416,7 @@ for (const [iso3, points] of history.entries()) {
     if (selectedCountries.length === 0) return;
 
     const fullCountriesWithHistory = selectedCountries.filter(c => {
-      const hist = allHistory[c.iso3];
+      const hist = historyCache[c.iso3];
       return hist && hist.length >= 2;
     });
 
@@ -516,7 +519,7 @@ for (const [iso3, points] of history.entries()) {
       const filteredHistories: Map<string, HistoryPoint[]> = new Map();
 
       fullCountriesWithHistory.forEach(c => {
-        const hist = allHistory[c.iso3];
+        const hist = historyCache[c.iso3];
         if (!hist) return;
         let filtered = hist;
         if (dateRange) {
@@ -743,7 +746,7 @@ for (const [iso3, points] of history.entries()) {
           const d1 = currentX.invert(x1);
           let totalPoints = 0;
           fullCountriesWithHistory.forEach(c => {
-            const hist = allHistory[c.iso3] || [];
+            const hist = historyCache[c.iso3] || [];
             totalPoints += hist.filter(p => {
               const d = new Date(p.date + 'T00:00:00Z');
               return d >= d0 && d <= d1;
@@ -807,10 +810,11 @@ for (const [iso3, points] of history.entries()) {
     renderInner(getTimeRangeDates('1m'));
   }
 
-  function render(): void {
+  async function render(): Promise<void> {
     renderSelector();
     renderScoreCards();
     renderPillarBars();
+    await ensureHistories(selectedCountries.map((c) => c.iso3));
     renderTrendChart();
   }
 
