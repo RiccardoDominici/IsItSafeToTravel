@@ -72,7 +72,10 @@ const searchData = COUNTRIES.map(c => {
 </div>
 
 <script>
-  import Fuse from 'fuse.js';
+  // Type-only import (erased at compile time — no runtime/bundle cost). The
+  // actual fuse.js module is loaded lazily via dynamic import() the first time
+  // the user opens the search panel, keeping it out of the initial JS bundle.
+  import type Fuse from 'fuse.js';
 
   interface SearchItem {
     iso3: string;
@@ -88,13 +91,22 @@ const searchData = COUNTRIES.map(c => {
     const routeSegment = container.dataset.routeSegment!;
     const noResultsText = container.dataset.noResults!;
 
-    const fuse = new Fuse(searchData, {
-      keys: ['name'],
-      threshold: 0.3,
-      minMatchCharLength: 2,
-      includeScore: true,
-      limit: 10,
-    });
+    let fuse: Fuse<SearchItem> | null = null;
+    let fusePromise: Promise<void> | null = null;
+
+    // Load fuse.js on demand and build the index once.
+    function ensureFuse(): Promise<void> {
+      if (fusePromise) return fusePromise;
+      fusePromise = import('fuse.js').then(({ default: FuseCtor }) => {
+        fuse = new FuseCtor(searchData, {
+          keys: ['name'],
+          threshold: 0.3,
+          minMatchCharLength: 2,
+          includeScore: true,
+        });
+      });
+      return fusePromise;
+    }
 
     const toggle = document.getElementById('search-toggle')!;
     const panel = document.getElementById('search-panel')!;
@@ -108,6 +120,8 @@ const searchData = COUNTRIES.map(c => {
       toggle.setAttribute('aria-expanded', 'true');
       panel.setAttribute('aria-expanded', 'true');
       input.focus();
+      // Warm up the search index as soon as the panel opens.
+      void ensureFuse();
     }
 
     function close() {
@@ -164,14 +178,17 @@ const searchData = COUNTRIES.map(c => {
       panel.classList.contains('hidden') ? open() : close();
     });
 
-    input.addEventListener('input', () => {
+    input.addEventListener('input', async () => {
       const query = input.value.trim();
       if (query.length < 2) {
         listbox.innerHTML = '';
         currentResults = [];
         return;
       }
-      const results = fuse.search(query).map((r) => r.item);
+      await ensureFuse();
+      // Guard against a stale query: only render if the input still matches.
+      if (!fuse || input.value.trim() !== query) return;
+      const results = fuse.search(query, { limit: 10 }).map((r) => r.item);
       renderResults(results);
     });
 
