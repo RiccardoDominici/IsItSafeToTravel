@@ -1,9 +1,20 @@
 import type { ScoredCountry, PillarName } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
+import { getRegion } from './regions';
 
 // Locale maps for consistent 7-language handling
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+
+// Human-readable region names for Place.containedInPlace (schema.org)
+const regionDisplayNames: Record<string, string> = {
+  europe: 'Europe',
+  asia: 'Asia',
+  africa: 'Africa',
+  americas: 'Americas',
+  oceania: 'Oceania',
+  middle_east: 'Middle East',
+};
 
 // Pillar name translations for meta descriptions
 const pillarLabels: Record<Lang, Record<PillarName, string>> = {
@@ -72,6 +83,14 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
  */
 export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string, dateModified?: string): Record<string, unknown> {
   const countryName = getLocalizedCountryName(country, lang);
+  const regionName = regionDisplayNames[getRegion(country.iso3)];
+  const aggregateRating = {
+    '@type': 'AggregateRating',
+    ratingValue: country.score.toFixed(1),
+    bestRating: 10,
+    worstRating: 1,
+    ratingCount: country.sources.length || 7,
+  };
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -86,8 +105,11 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
       },
       {
         '@type': 'Place',
+        '@id': `${canonicalUrl}#place`,
         name: countryName,
         description: `Safety information for ${countryName}`,
+        ...(regionName && { containedInPlace: { '@type': 'Place', name: regionName } }),
+        aggregateRating,
       },
       buildCountryFaqJsonLd(country, lang),
       {

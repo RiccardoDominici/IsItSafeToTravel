@@ -34,6 +34,7 @@ interface ScoredCountry {
   pillars: PillarScore[];
   advisories: Record<string, unknown>;
   sources?: unknown[];
+  dataCompleteness?: number;
 }
 
 interface LatestData {
@@ -118,6 +119,11 @@ function main() {
 
   const today = date || new Date().toISOString().slice(0, 10);
 
+  // Real pillar weights (read from data so they track the versioned weights config)
+  const weightByPillar: Record<string, number> = {};
+  for (const p of countries[0].pillars) weightByPillar[p.name] = p.weight;
+  const wpct = (name: string) => `${Math.round((weightByPillar[name] ?? 0) * 100)}%`;
+
   // Sort countries alphabetically for the full listing
   const sorted = [...countries].sort((a, b) =>
     a.name.en.localeCompare(b.name.en)
@@ -154,18 +160,26 @@ function main() {
   lines.push("- [Country Comparison](https://isitsafetotravel.org/en/compare/): Side-by-side safety comparison of multiple countries");
   lines.push("- [Methodology](https://isitsafetotravel.org/en/methodology/): Scoring formula, data sources, weights, and pillar explanations");
   lines.push("");
+  lines.push("### Rankings & Guides");
+  lines.push("");
+  lines.push("- [Safest Countries](https://isitsafetotravel.org/en/safest-countries/): Ranked list of the safest countries to travel right now");
+  lines.push("- [Most Dangerous Countries](https://isitsafetotravel.org/en/most-dangerous-countries/): Ranked list of the highest-risk countries");
+  lines.push("- [Safest Countries for Families](https://isitsafetotravel.org/en/safest-for-families/): Family-friendly safe destinations");
+  lines.push("- [Safest Countries for Solo Travelers](https://isitsafetotravel.org/en/safest-for-solo-travelers/): Best-rated destinations for solo travel");
+  lines.push("- [Countries to Avoid](https://isitsafetotravel.org/en/countries-to-avoid/): Destinations with active 'Do Not Travel' advisories");
+  lines.push("");
 
   // Methodology
   lines.push("## Methodology");
   lines.push("");
-  lines.push("IsItSafeToTravel.org calculates composite safety scores using 5 pillars:");
-  lines.push("- **Conflict** (weight: varies) — Armed conflict, political violence, terrorism risk");
-  lines.push("- **Crime** (weight: varies) — Violent crime rates, theft, organized crime");
-  lines.push("- **Health** (weight: varies) — Disease risk, healthcare quality, pandemic preparedness");
-  lines.push("- **Governance** (weight: varies) — Political stability, rule of law, corruption");
-  lines.push("- **Environment** (weight: varies) — Natural disaster risk, climate hazards");
+  lines.push("IsItSafeToTravel.org calculates composite safety scores using 5 weighted pillars:");
+  lines.push(`- **Conflict** (weight: ${wpct("conflict")}) — Armed conflict, political violence, terrorism risk`);
+  lines.push(`- **Crime** (weight: ${wpct("crime")}) — Violent crime rates, theft, organized crime`);
+  lines.push(`- **Health** (weight: ${wpct("health")}) — Disease risk, healthcare quality, pandemic preparedness`);
+  lines.push(`- **Governance** (weight: ${wpct("governance")}) — Political stability, rule of law, corruption`);
+  lines.push(`- **Environment** (weight: ${wpct("environment")}) — Natural disaster risk, climate hazards`);
   lines.push("");
-  lines.push("Scores range from 0 (least safe) to 10 (safest). Updated daily from 4+ government advisory sources.");
+  lines.push('The overall score is a **weighted geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would. Two safeguards then apply: a **hard cap** forces the overall score to 2/10 or below when a government issues a Level 4 "Do Not Travel" advisory (confirmed by multiple sources), and a **critical floor** caps the score when any well-measured pillar drops below 2.5/10. Scores range from 0 (least safe) to 10 (safest) and are recomputed daily.');
   lines.push("");
 
   // Global Safety Score
@@ -189,7 +203,16 @@ function main() {
 
     const sourceCount = c.pillars.reduce((sum, p) => sum + p.indicators.length, 0);
 
+    const verdict = c.score >= 7
+      ? "is generally considered safe to travel"
+      : c.score >= 4
+        ? "is moderately safe to travel — check current government advisories first"
+        : "carries significant travel-safety risks";
+
     lines.push(`### ${c.name.en} (${c.iso3})`);
+    lines.push(
+      `${c.name.en} ${verdict} as of ${today} (safety score ${fmt(c.score)}/10, ${riskLabel(c.score)} risk). Strongest area: ${strongest.name} (${pillarDisplay(strongest.score)}/10); main concern: ${weakest.name} (${pillarDisplay(weakest.score)}/10).`
+    );
     lines.push(`- **Safety Score:** ${fmt(c.score)}/10 (${riskLabel(c.score)} risk)`);
     lines.push(
       `- **Conflict:** ${pillarDisplay(pillarMap.conflict ?? 0.5)}/10 | **Crime:** ${pillarDisplay(pillarMap.crime ?? 0.5)}/10 | **Health:** ${pillarDisplay(pillarMap.health ?? 0.5)}/10 | **Governance:** ${pillarDisplay(pillarMap.governance ?? 0.5)}/10 | **Environment:** ${pillarDisplay(pillarMap.environment ?? 0.5)}/10`
@@ -197,25 +220,45 @@ function main() {
     lines.push(
       `- **Strongest pillar:** ${strongest.name} (${pillarDisplay(strongest.score)}/10) | **Weakest pillar:** ${weakest.name} (${pillarDisplay(weakest.score)}/10)`
     );
+    const advParts: string[] = [];
+    const advObj = (c.advisories || {}) as Record<string, any>;
+    for (const code of ["us", "uk", "ca", "au", "de", "nz"]) {
+      const a = advObj[code];
+      if (a && a.level !== undefined && a.level !== null && a.level !== "") {
+        const lvl = typeof a.level === "number" ? `Level ${a.level}` : String(a.level);
+        const upd = a.updatedAt ? ` (as of ${String(a.updatedAt).slice(0, 10)})` : "";
+        advParts.push(`${code.toUpperCase()} ${lvl}${upd}`);
+      }
+    }
+    if (advParts.length) {
+      lines.push(`- **Government advisories:** ${advParts.join("; ")}`);
+    }
     lines.push(`- **Data sources:** ${sourceCount} public sources, updated daily`);
     lines.push(`- **More info:** https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`);
     lines.push("");
   }
 
-  // Rankings
-  const byScore = [...countries].sort((a, b) => b.score - a.score);
+  // Rankings — apply a data-coverage floor so 1-source micro-territories
+  // (which default to optimistic ~9.9 scores) do not crowd out real countries.
+  // Keep MIN_RANKING_SOURCES in sync with the on-site ranking pages (hub-data.ts).
+  const MIN_RANKING_SOURCES = 4;
+  const ranked = [...countries]
+    .filter((c) => (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES)
+    .sort((a, b) => b.score - a.score);
 
   lines.push("## Top 10 Safest Countries");
   lines.push("");
-  for (let i = 0; i < Math.min(10, byScore.length); i++) {
-    const c = byScore[i];
+  lines.push(`*Rankings include only countries with sufficient data coverage (${MIN_RANKING_SOURCES}+ independent sources); micro-territories with minimal data are excluded.*`);
+  lines.push("");
+  for (let i = 0; i < Math.min(10, ranked.length); i++) {
+    const c = ranked[i];
     lines.push(`${i + 1}. **${c.name.en}** — ${fmt(c.score)}/10`);
   }
   lines.push("");
 
   lines.push("## Top 10 Most Dangerous Countries");
   lines.push("");
-  const bottom = byScore.slice(-10).reverse();
+  const bottom = ranked.slice(-10).reverse();
   for (let i = 0; i < bottom.length; i++) {
     const c = bottom[i];
     lines.push(`${i + 1}. **${c.name.en}** — ${fmt(c.score)}/10`);
@@ -270,6 +313,14 @@ function main() {
 - [Global Safety Score](https://isitsafetotravel.org/en/global-safety/): Worldwide average safety score with historical trend chart
 - [Country Comparison](https://isitsafetotravel.org/en/compare/): Side-by-side safety comparison of multiple countries
 - [Methodology](https://isitsafetotravel.org/en/methodology/): Scoring formula, data sources, weights, and pillar explanations
+
+## Rankings & Guides
+
+- [Safest Countries](https://isitsafetotravel.org/en/safest-countries/): Ranked safest countries to travel right now
+- [Most Dangerous Countries](https://isitsafetotravel.org/en/most-dangerous-countries/): Ranked highest-risk countries
+- [Safest for Families](https://isitsafetotravel.org/en/safest-for-families/): Family-friendly safe destinations
+- [Safest for Solo Travelers](https://isitsafetotravel.org/en/safest-for-solo-travelers/): Best-rated destinations for solo travel
+- [Countries to Avoid](https://isitsafetotravel.org/en/countries-to-avoid/): Destinations with active "Do Not Travel" advisories
 
 ## Sample Country Pages
 
