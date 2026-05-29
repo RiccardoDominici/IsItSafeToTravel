@@ -3,19 +3,30 @@ import type { HistoryPoint } from './scores';
 import { getCountriesByRegion } from './regions';
 import type { Region } from './regions';
 
-/** Returns top N countries sorted by score descending */
-export function getSafestCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries].sort((a, b) => b.score - a.score).slice(0, n);
+// Data-coverage floor: micro-territories with only 1-3 reporting sources receive
+// sparse, optimistic default scores that pollute rankings (e.g. uninhabited
+// Pitcairn / Falklands ranking as "safest"). Require enough independent sources
+// before a country is eligible for a score-based ranking.
+// Keep MIN_RANKING_SOURCES in sync with scripts/generate-llms-full.ts.
+const MIN_RANKING_SOURCES = 4;
+export function hasSufficientData(c: ScoredCountry): boolean {
+  return (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
 }
 
-/** Returns bottom N countries sorted by score ascending */
+/** Returns top N countries (with sufficient data) sorted by score descending */
+export function getSafestCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
+  return [...countries].filter(hasSufficientData).sort((a, b) => b.score - a.score).slice(0, n);
+}
+
+/** Returns bottom N countries (with sufficient data) sorted by score ascending */
 export function getMostDangerousCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries].sort((a, b) => a.score - b.score).slice(0, n);
+  return [...countries].filter(hasSufficientData).sort((a, b) => a.score - b.score).slice(0, n);
 }
 
 /** For solo travelers: weighted by crime (40%) + governance (40%) + overall (20%) */
 export function getSafestForSoloTravelers(countries: ScoredCountry[], n: number): ScoredCountry[] {
   return [...countries]
+    .filter(hasSufficientData)
     .map(c => {
       const crime = c.pillars.find(p => p.name === 'crime')?.score ?? 0;
       const governance = c.pillars.find(p => p.name === 'governance')?.score ?? 0;
@@ -30,6 +41,7 @@ export function getSafestForSoloTravelers(countries: ScoredCountry[], n: number)
 /** For families: weighted by health (35%) + governance (35%) + crime (20%) + overall (10%) */
 export function getSafestForFamilies(countries: ScoredCountry[], n: number): ScoredCountry[] {
   return [...countries]
+    .filter(hasSufficientData)
     .map(c => {
       const health = c.pillars.find(p => p.name === 'health')?.score ?? 0;
       const governance = c.pillars.find(p => p.name === 'governance')?.score ?? 0;

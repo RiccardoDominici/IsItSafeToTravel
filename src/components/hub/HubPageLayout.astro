@@ -38,6 +38,8 @@ const hubLinks: Array<{ key: string; route: string }> = [
   { key: 'hub.solo_travelers.title', route: r['safest-for-solo-travelers'] || 'safest-for-solo-travelers' },
   { key: 'hub.families.title', route: r['safest-for-families'] || 'safest-for-families' },
   { key: 'hub.countries_to_avoid.title', route: r['countries-to-avoid'] || 'countries-to-avoid' },
+  { key: 'hub.improving.title', route: r['improving-safety'] || 'improving-safety' },
+  { key: 'hub.declining.title', route: r['declining-safety'] || 'declining-safety' },
 ];
 ---
 
@@ -58,7 +60,7 @@ const hubLinks: Array<{ key: string; route: string }> = [
       {intro}
     </p>
 
-    <div class="space-y-2">
+    <ol class="space-y-2 list-none p-0 m-0">
       {countries.map((country, i) => (
         <CountryRankRow
           rank={i + 1}
@@ -68,7 +70,7 @@ const hubLinks: Array<{ key: string; route: string }> = [
           delta={deltas?.get(country.iso3) ?? 0}
         />
       ))}
-    </div>
+    </ol>
 
     {/* See Also cross-links */}
     <section class="pt-8 border-t border-sand-200 dark:border-sand-700">

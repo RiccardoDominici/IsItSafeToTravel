@@ -13,14 +13,14 @@ interface Props {
 
 const { country, allCountries, lang } = Astro.props;
 
-const titles: Record<Lang, { heading: string; region: string; similar: string }> = {
-  en: { heading: 'Related Countries', region: 'In the same region', similar: 'Similar safety scores' },
-  it: { heading: 'Paesi correlati', region: 'Nella stessa regione', similar: 'Punteggi simili' },
-  es: { heading: 'Pa\u00edses relacionados', region: 'En la misma regi\u00f3n', similar: 'Puntuaciones similares' },
-  fr: { heading: 'Pays similaires', region: 'Dans la m\u00eame r\u00e9gion', similar: 'Scores similaires' },
-  pt: { heading: 'Pa\u00edses relacionados', region: 'Na mesma regi\u00e3o', similar: 'Pontua\u00e7\u00f5es similares' },
-  zh: { heading: '\u76f8\u5173\u56fd\u5bb6', region: '\u540c\u4e00\u5730\u533a', similar: '\u76f8\u4f3c\u5b89\u5168\u8bc4\u5206' },
-  de: { heading: 'Verwandte L\u00e4nder', region: 'In derselben Region', similar: '\u00c4hnliche Sicherheitsbewertungen' },
+const titles: Record<Lang, { heading: string; region: string; similar: string; seeAll: string }> = {
+  en: { heading: 'Related Countries', region: 'In the same region', similar: 'Similar safety scores', seeAll: 'See all countries in this region' },
+  it: { heading: 'Paesi correlati', region: 'Nella stessa regione', similar: 'Punteggi simili', seeAll: 'Vedi tutti i paesi della regione' },
+  es: { heading: 'Pa\u00edses relacionados', region: 'En la misma regi\u00f3n', similar: 'Puntuaciones similares', seeAll: 'Ver todos los pa\u00edses de la regi\u00f3n' },
+  fr: { heading: 'Pays similaires', region: 'Dans la m\u00eame r\u00e9gion', similar: 'Scores similaires', seeAll: 'Voir tous les pays de la r\u00e9gion' },
+  pt: { heading: 'Pa\u00edses relacionados', region: 'Na mesma regi\u00e3o', similar: 'Pontua\u00e7\u00f5es similares', seeAll: 'Ver todos os pa\u00edses da regi\u00e3o' },
+  zh: { heading: '\u76f8\u5173\u56fd\u5bb6', region: '\u540c\u4e00\u5730\u533a', similar: '\u76f8\u4f3c\u5b89\u5168\u8bc4\u5206', seeAll: '\u67e5\u770b\u8be5\u5730\u533a\u7684\u6240\u6709\u56fd\u5bb6' },
+  de: { heading: 'Verwandte L\u00e4nder', region: 'In derselben Region', similar: '\u00c4hnliche Sicherheitsbewertungen', seeAll: 'Alle L\u00e4nder dieser Region ansehen' },
 };
 
 const t = titles[lang];
@@ -52,6 +52,10 @@ const r = routes[lang];
 function countryUrl(iso3: string): string {
   return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
 }
+
+// Link to the region hub for this country's region (internal-linking + crawl depth)
+const regionSlug = currentRegion !== 'other' ? currentRegion.replace('_', '-') : null;
+const regionUrl = regionSlug ? `/${lang}/${(r as any)['regions'] || 'regions'}/${regionSlug}/` : null;
 ---
 
 {(sameRegion.length > 0 || similarScore.length > 0) && (
@@ -80,6 +84,15 @@ function countryUrl(iso3: string): string {
             </a>
           ))}
         </div>
+        {regionUrl && (
+          <a
+            href={regionUrl}
+            class="inline-flex items-center gap-1 mt-3 text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline"
+          >
+            {t.seeAll}
+            <span aria-hidden="true">&rarr;</span>
+          </a>
+        )}
       </div>
     )}
 
