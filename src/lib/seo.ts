@@ -84,13 +84,6 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
 export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string, dateModified?: string): Record<string, unknown> {
   const countryName = getLocalizedCountryName(country, lang);
   const regionName = regionDisplayNames[getRegion(country.iso3)];
-  const aggregateRating = {
-    '@type': 'AggregateRating',
-    ratingValue: country.score.toFixed(1),
-    bestRating: 10,
-    worstRating: 1,
-    ratingCount: country.sources.length || 7,
-  };
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -104,12 +97,15 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
       },
       {
+        // NOTE: do NOT add aggregateRating/Review here. Google rejects review snippets
+        // on a Place node ("Invalid object type for field <parent_node>"), and a computed
+        // safety score is not user reviews. Removed twice now — see git a2491daf (Mar 2026)
+        // and the May 2026 GSC regression caused by re-adding it in ca86a406.
         '@type': 'Place',
         '@id': `${canonicalUrl}#place`,
         name: countryName,
         description: `Safety information for ${countryName}`,
         ...(regionName && { containedInPlace: { '@type': 'Place', name: regionName } }),
-        aggregateRating,
       },
       buildCountryFaqJsonLd(country, lang),
       {
@@ -177,7 +173,7 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
 
 /**
  * Build JSON-LD structured data for the global safety page.
- * Uses WebPage schema with aggregateRating for the global score.
+ * Uses a plain WebPage schema (no aggregateRating — Google rejects review snippets here).
  */
 export function buildGlobalSafetyJsonLd(
   globalScore: number,
