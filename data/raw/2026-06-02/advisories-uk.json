@@ -28,6 +28,84 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/congo",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/congo",
+        "base_path": "/foreign-travel-advice/congo",
+        "content_id": "438a3cd3-5936-462d-b7ed-fff0ea485af1",
+        "details": {
+          "change_description": "New information about Ebola screening when arriving in country (‘Entry requirements’ page).",
+          "country": {
+            "name": "Congo",
+            "slug": "congo",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-06-02T10:16:18Z",
+        "schema_name": "travel_advice",
+        "title": "Congo travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/congo",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/malta",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malta",
+        "base_path": "/foreign-travel-advice/malta",
+        "content_id": "0b04ef72-ed4f-427c-82fb-851004d9a4d9",
+        "details": {
+          "change_description": "New information following an explosion at a fireworks manufacturing facility in the Magħtab/Mosta area ('Warnings and insurance' page). ",
+          "country": {
+            "name": "Malta",
+            "slug": "malta",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-06-01T08:54:12Z",
+        "schema_name": "travel_advice",
+        "title": "Malta travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/malta",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/zambia",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/zambia",
         "base_path": "/foreign-travel-advice/zambia",
@@ -304,45 +382,6 @@
         "schema_name": "travel_advice",
         "title": "South Korea travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/south-korea",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/malta",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malta",
-        "base_path": "/foreign-travel-advice/malta",
-        "content_id": "0b04ef72-ed4f-427c-82fb-851004d9a4d9",
-        "details": {
-          "change_description": "New information following an explosion at a fireworks manufacturing facility in the Magħtab/Mosta area ('Warnings and insurance' page). ",
-          "country": {
-            "name": "Malta",
-            "slug": "malta",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-06-01T08:54:12Z",
-        "schema_name": "travel_advice",
-        "title": "Malta travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/malta",
         "withdrawn": false
       },
       {
@@ -7450,45 +7489,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/congo",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/congo",
-        "base_path": "/foreign-travel-advice/congo",
-        "content_id": "438a3cd3-5936-462d-b7ed-fff0ea485af1",
-        "details": {
-          "change_description": "New information about dual nationals returning to the UK (‘Entry requirements’ page).",
-          "country": {
-            "name": "Congo",
-            "slug": "congo",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2025-12-10T13:43:17Z",
-        "schema_name": "travel_advice",
-        "title": "Congo travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/congo",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/mayotte",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mayotte",
         "base_path": "/foreign-travel-advice/mayotte",
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-06-01T14:58:35+01:00",
+  "updated_at": "2026-06-02T11:16:19+01:00",
   "withdrawn_notice": {}
 }
