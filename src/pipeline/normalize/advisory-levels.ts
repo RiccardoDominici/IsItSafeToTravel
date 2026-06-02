@@ -21,8 +21,11 @@ export function normalizeDeLevel(flags: {
   situationPartWarning: boolean;
 }): UnifiedLevel {
   if (flags.warning) return 4;
-  if (flags.partialWarning) return 3;
-  if (flags.situationWarning || flags.situationPartWarning) return 2;
+  // Teilreisewarnung (partialWarning) flags a sub-region only (e.g. Fukushima
+  // exclusion zone for Japan). At country level this is closer to "increased
+  // caution" than "avoid travel", and mapping it to 3 misleadingly tags
+  // otherwise-safe countries as orange.
+  if (flags.partialWarning || flags.situationWarning || flags.situationPartWarning) return 2;
   return 1;
 }
 

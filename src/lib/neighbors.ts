@@ -82,7 +82,7 @@ export const borderMap: Record<string, string[]> = {
   CHN: ['RUS', 'MNG', 'PRK', 'VNM', 'LAO', 'MMR', 'IND', 'BTN', 'NPL', 'PAK', 'AFG', 'TJK', 'KGZ', 'KAZ'],
   IND: ['PAK', 'CHN', 'NPL', 'BTN', 'BGD', 'MMR', 'LKA'],
   IDN: ['MYS', 'PNG', 'TLS'],
-  JPN: ['KOR', 'CHN', 'RUS'],
+  JPN: ['KOR', 'PRK', 'CHN', 'TWN', 'RUS', 'PHL'],
   KAZ: ['RUS', 'CHN', 'KGZ', 'UZB', 'TKM'],
   KGZ: ['KAZ', 'CHN', 'TJK', 'UZB'],
   LAO: ['CHN', 'VNM', 'KHM', 'THA', 'MMR'],

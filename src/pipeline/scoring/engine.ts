@@ -421,6 +421,12 @@ function buildSourcesForCountry(
   const upperIso3 = iso3.toUpperCase();
 
   for (const [, sourceData] of rawDataBySource) {
+    // Skip tiered advisory aggregates: the single 'advisories' SOURCE_CATALOG
+    // entry already describes all 37 governments. Without this skip these
+    // entries render as broken anchors (`<a href="">advisories_tier1</a>`)
+    // because SOURCE_CATALOG has no per-tier metadata.
+    if (sourceData.source.startsWith('advisories_tier')) continue;
+
     const hasDataForCountry = sourceData.indicators.some(
       (ind) => ind.countryIso3.toUpperCase() === upperIso3,
     );

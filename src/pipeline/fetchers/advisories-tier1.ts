@@ -318,23 +318,26 @@ async function fetchNlAdvisories(
 
         const xml = await r.text();
 
-        // Find ALL color mentions in the introduction to handle multi-region entries
-        const allColors = xml.match(/(?:kleurcode|reisadvies)[^.]*?(rood|oranje|geel|groen)/gi);
-        let maxLevel = 0;
+        // Country-level color from the <introduction> summary only. The NL
+        // advisory describes sub-regional warnings alongside the country
+        // baseline (e.g. for Japan: "kleurcode rood voor het zuidoosten van
+        // Fukushima" AND "voor de rest van Japan geldt kleurcode groen"). The
+        // country baseline is always the LEAST-severe color mentioned in the
+        // introduction summary — sub-regional warnings can only escalate
+        // above it, never below. Taking MIN prevents Fukushima-style
+        // sub-region warnings from promoting the whole country to Level 4.
+        const introMatch = xml.match(/<introduction>([\s\S]*?)<\/introduction>/i);
+        if (!introMatch) return; // No introduction summary — skip
+        const introScope = introMatch[1];
+        const colorMatches = introScope.match(/(rood|oranje|geel|groen)/gi);
+        if (!colorMatches || colorMatches.length === 0) return;
 
-        if (allColors && allColors.length > 0) {
-          for (const colorMatch of allColors) {
-            const colorWord = colorMatch.match(/(rood|oranje|geel|groen)/i);
-            if (colorWord) {
-              const level = normalizeNlColor(colorWord[1]);
-              if (level > maxLevel) maxLevel = level;
-            }
-          }
+        let minLevel: 1 | 2 | 3 | 4 = 4;
+        for (const c of colorMatches) {
+          const lvl = normalizeNlColor(c);
+          if (lvl < minLevel) minLevel = lvl as 1 | 2 | 3 | 4;
         }
-
-        if (maxLevel === 0) return; // No color found, skip
-
-        const level = maxLevel as 1 | 2 | 3 | 4;
+        const level = minLevel;
 
         indicators.push({
           countryIso3: country.iso3,

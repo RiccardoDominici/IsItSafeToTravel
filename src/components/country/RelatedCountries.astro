@@ -53,9 +53,13 @@ function countryUrl(iso3: string): string {
   return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
 }
 
-// Link to the region hub for this country's region (internal-linking + crawl depth)
-const regionSlug = currentRegion !== 'other' ? currentRegion.replace('_', '-') : null;
-const regionUrl = regionSlug ? `/${lang}/${(r as any)['regions'] || 'regions'}/${regionSlug}/` : null;
+// Link to the region hub for this country's region (internal-linking + crawl depth).
+// Use the locale-specific region leaf from routes (fr: 'asie', de: 'asien', etc.).
+// routes uses 'middle-east' as the lookup key, but getRegion returns 'middle_east'.
+const regionLookupKey = currentRegion === 'middle_east' ? 'middle-east' : currentRegion;
+const regionLeaf = currentRegion !== 'other' ? (r as Record<string, string>)[regionLookupKey] : null;
+const regionsParent = (r as Record<string, string>).regions ?? 'regions';
+const regionUrl = regionLeaf ? `/${lang}/${regionsParent}/${regionLeaf}/` : null;
 ---
 
 {(sameRegion.length > 0 || similarScore.length > 0) && (

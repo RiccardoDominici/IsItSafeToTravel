@@ -62,14 +62,18 @@ const freshnessKeys: Record<FreshnessLevel, string> = {
         return (
           <li class="pt-3 first:pt-0">
             <div class="flex items-center gap-2 flex-wrap">
-              <a
-                href={source.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-terracotta-500 hover:text-terracotta-600 underline font-medium"
-              >
-                {source.name}
-              </a>
+              {source.url ? (
+                <a
+                  href={source.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-terracotta-500 hover:text-terracotta-600 underline font-medium"
+                >
+                  {source.name}
+                </a>
+              ) : (
+                <span class="font-medium text-sand-800 dark:text-sand-100">{source.name}</span>
+              )}
               <span
                 class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${freshnessStyles[freshness]}`}
                 title={fetchedDate ? t('country.source_fetched').replace('{date}', fetchedDate) : ''}
