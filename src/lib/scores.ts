@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import type { DailySnapshot, PillarName, ScoredCountry } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
+import { COUNTRIES } from '../pipeline/config/countries';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'scores');
 const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
@@ -144,15 +145,64 @@ function loadFromIndividualSnapshots(days?: number): Map<string, HistoryPoint[]>
   return history;
 }
 
+// iso3 → iso2 map for Intl.DisplayNames lookup (region codes are alpha-2).
+const ISO3_TO_ISO2: Record<string, string> = Object.fromEntries(
+  COUNTRIES.map(c => [c.iso3, c.iso2]),
+);
+
+// Lang → Intl.DisplayNames BCP-47 locale tag.
+const DISPLAY_NAMES_LOCALE: Record<Lang, string> = {
+  en: 'en-US',
+  it: 'it-IT',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  zh: 'zh-CN',
+  de: 'de-DE',
+};
+
+// Cache one Intl.DisplayNames instance per locale; construction is expensive.
+const _displayNamesCache: Partial<Record<Lang, Intl.DisplayNames>> = {};
+function getDisplayNames(lang: Lang): Intl.DisplayNames | null {
+  if (_displayNamesCache[lang]) return _displayNamesCache[lang]!;
+  try {
+    const instance = new Intl.DisplayNames([DISPLAY_NAMES_LOCALE[lang]], { type: 'region' });
+    _displayNamesCache[lang] = instance;
+    return instance;
+  } catch {
+    return null;
+  }
+}
+
 /**
- * Get a country's display name in the requested language, falling back to English
- * if the snapshot data was generated before that locale was added to the pipeline.
- * Snapshot files (data/scores/*.json) currently contain en/it/es/fr/pt names only;
- * zh and de fall back to en until the pipeline is regenerated to emit those keys.
+ * Get a country's display name in the requested language.
+ *
+ * Resolution order:
+ *  1. Use \`country.name[lang]\` when the snapshot supplied a translation.
+ *  2. Otherwise, fall back to \`Intl.DisplayNames\` (built-in ICU country
+ *     names) keyed by the country's ISO-3166 alpha-2 code. This makes
+ *     zh / de display correctly (e.g. JPN → 日本 / Japan) even when the
+ *     snapshot was generated before those locales were added to the
+ *     pipeline.
+ *  3. Final fallback: English name from the snapshot.
  */
 export function getLocalizedCountryName(
-  country: { name: Record<string, string> },
+  country: { iso3?: string; name: Record<string, string> },
   lang: Lang,
 ): string {
-  return country.name[lang] ?? country.name.en ?? '';
+  const fromSnapshot = country.name[lang];
+  if (fromSnapshot) return fromSnapshot;
+
+  if (country.iso3) {
+    const iso2 = ISO3_TO_ISO2[country.iso3];
+    const dn = getDisplayNames(lang);
+    if (iso2 && dn) {
+      const localized = dn.of(iso2);
+      // Intl.DisplayNames returns the input code if it cannot resolve;
+      // treat that as a non-result so we fall through to English.
+      if (localized && localized !== iso2) return localized;
+    }
+  }
+
+  return country.name.en ?? '';
 }

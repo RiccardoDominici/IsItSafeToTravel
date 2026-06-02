@@ -22,7 +22,16 @@ interface Props {
 const { lang, title, description, intro, jsonLd, countries, showDelta = false, deltas, breadcrumbItems } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
-const dateStr = new Date().toLocaleDateString(lang === 'en' ? 'en-US' : lang === 'it' ? 'it-IT' : lang === 'es' ? 'es-ES' : lang === 'fr' ? 'fr-FR' : 'pt-BR', { year: 'numeric', month: 'long', day: 'numeric' });
+const dateLocaleMap: Record<Lang, string> = {
+  en: 'en-US',
+  it: 'it-IT',
+  es: 'es-ES',
+  fr: 'fr-FR',
+  pt: 'pt-BR',
+  zh: 'zh-CN',
+  de: 'de-DE',
+};
+const dateStr = new Date().toLocaleDateString(dateLocaleMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
 
 const defaultBreadcrumb = [
   { label: t('nav.home'), href: `/${lang}/` },

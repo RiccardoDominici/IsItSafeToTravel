@@ -1,19 +1,21 @@
 import type { ScoredCountry, PillarName } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
 
 // Locale maps for consistent 7-language handling
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 
-// Human-readable region names for Place.containedInPlace (schema.org)
-const regionDisplayNames: Record<string, string> = {
-  europe: 'Europe',
-  asia: 'Asia',
-  africa: 'Africa',
-  americas: 'Americas',
-  oceania: 'Oceania',
-  middle_east: 'Middle East',
+// Human-readable region names for Place.containedInPlace (schema.org), per locale.
+// Keep all 7 langs covered for every region key so non-EN pages don't leak English text.
+const regionDisplayNames: Record<string, Record<Lang, string>> = {
+  europe: { en: 'Europe', it: 'Europa', es: 'Europa', fr: 'Europe', pt: 'Europa', zh: '欧洲', de: 'Europa' },
+  asia: { en: 'Asia', it: 'Asia', es: 'Asia', fr: 'Asie', pt: 'Ásia', zh: '亚洲', de: 'Asien' },
+  africa: { en: 'Africa', it: 'Africa', es: 'África', fr: 'Afrique', pt: 'África', zh: '非洲', de: 'Afrika' },
+  americas: { en: 'Americas', it: 'Americhe', es: 'América', fr: 'Amériques', pt: 'Américas', zh: '美洲', de: 'Amerika' },
+  oceania: { en: 'Oceania', it: 'Oceania', es: 'Oceanía', fr: 'Océanie', pt: 'Oceania', zh: '大洋洲', de: 'Ozeanien' },
+  middle_east: { en: 'Middle East', it: 'Medio Oriente', es: 'Oriente Medio', fr: 'Moyen-Orient', pt: 'Oriente Médio', zh: '中东', de: 'Naher Osten' },
 };
 
 // Pillar name translations for meta descriptions
@@ -81,9 +83,166 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
  * Build JSON-LD structured data for a country detail page.
  * Uses @graph with WebPage and Place nodes.
  */
+// ---------- per-Lang JSON-LD string tables (country page) ----------
+
+// WebPage.name (suffix appended to the country name, e.g. "Japan Safety Score")
+const webPageNameTemplates: Record<Lang, (name: string) => string> = {
+  en: (n) => `${n} Safety Score`,
+  it: (n) => `Punteggio di sicurezza ${n}`,
+  es: (n) => `Puntuación de seguridad de ${n}`,
+  fr: (n) => `Score de sécurité ${n}`,
+  pt: (n) => `Pontuação de segurança de ${n}`,
+  zh: (n) => `${n} 安全评分`,
+  de: (n) => `Sicherheits-Score ${n}`,
+};
+
+// Place.description
+const placeDescriptions: Record<Lang, (name: string) => string> = {
+  en: (n) => `Safety information for ${n}`,
+  it: (n) => `Informazioni di sicurezza per ${n}`,
+  es: (n) => `Información de seguridad para ${n}`,
+  fr: (n) => `Informations de sécurité pour ${n}`,
+  pt: (n) => `Informações de segurança sobre ${n}`,
+  zh: (n) => `${n} 的安全信息`,
+  de: (n) => `Sicherheitsinformationen zu ${n}`,
+};
+
+// Risk bands used in TouristDestination.description (Low / Moderate / High risk)
+const riskBands: Record<Lang, [string, string, string]> = {
+  en: ['Low risk', 'Moderate risk', 'High risk'],
+  it: ['rischio basso', 'rischio moderato', 'rischio alto'],
+  es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
+  fr: ['risque faible', 'risque modéré', 'risque élevé'],
+  pt: ['risco baixo', 'risco moderado', 'risco alto'],
+  zh: ['低风险', '中等风险', '高风险'],
+  de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
+};
+
+// TouristDestination.touristType (segment of travellers)
+const touristTypes: Record<Lang, [string, string, string]> = {
+  en: ['All travelers including families', 'General travelers', 'Adventure travelers'],
+  it: ['Tutti i viaggiatori incluse le famiglie', 'Viaggiatori in generale', 'Viaggiatori avventurosi'],
+  es: ['Todos los viajeros incluidas las familias', 'Viajeros en general', 'Viajeros de aventura'],
+  fr: ['Tous les voyageurs y compris les familles', 'Voyageurs en général', "Voyageurs d'aventure"],
+  pt: ['Todos os viajantes incluindo famílias', 'Viajantes em geral', 'Viajantes de aventura'],
+  zh: ['所有旅行者（包括家庭）', '普通旅行者', '冒险旅行者'],
+  de: ['Alle Reisenden einschließlich Familien', 'Allgemeine Reisende', 'Abenteuerreisende'],
+};
+
+// TouristDestination.description
+const touristDescriptions: Record<Lang, (name: string, score: string, band: string) => string> = {
+  en: (n, s, b) => `Travel safety information for ${n}. Safety score: ${s}/10 (${b}). Data from IsItSafeToTravel.org, updated daily.`,
+  it: (n, s, b) => `Informazioni sulla sicurezza dei viaggi per ${n}. Punteggio di sicurezza: ${s}/10 (${b}). Dati da IsItSafeToTravel.org, aggiornati ogni giorno.`,
+  es: (n, s, b) => `Información de seguridad de viaje para ${n}. Puntuación de seguridad: ${s}/10 (${b}). Datos de IsItSafeToTravel.org, actualizados a diario.`,
+  fr: (n, s, b) => `Informations de sécurité voyage pour ${n}. Score de sécurité : ${s}/10 (${b}). Données de IsItSafeToTravel.org, mises à jour quotidiennement.`,
+  pt: (n, s, b) => `Informações de segurança de viagem para ${n}. Pontuação de segurança: ${s}/10 (${b}). Dados de IsItSafeToTravel.org, atualizados diariamente.`,
+  zh: (n, s, b) => `${n} 旅行安全信息。安全评分：${s}/10（${b}）。数据来自 IsItSafeToTravel.org，每日更新。`,
+  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheits-Score: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, täglich aktualisiert.`,
+};
+
+// Dataset.name (year is appended)
+const datasetNames: Record<Lang, (name: string, year: number) => string> = {
+  en: (n, y) => `${n} Travel Safety Data ${y}`,
+  it: (n, y) => `Dati sulla sicurezza di viaggio ${n} ${y}`,
+  es: (n, y) => `Datos de seguridad de viaje ${n} ${y}`,
+  fr: (n, y) => `Données de sécurité voyage ${n} ${y}`,
+  pt: (n, y) => `Dados de segurança de viagem ${n} ${y}`,
+  zh: (n, y) => `${n} 旅行安全数据 ${y}`,
+  de: (n, y) => `Reise-Sicherheitsdaten ${n} ${y}`,
+};
+
+// Dataset.description
+const datasetDescriptions: Record<Lang, (name: string) => string> = {
+  en: (n) => `Daily updated safety scores for ${n}, covering conflict, crime, health, governance, and environment.`,
+  it: (n) => `Punteggi di sicurezza aggiornati ogni giorno per ${n}, che coprono conflitto, criminalità, salute, governance e ambiente.`,
+  es: (n) => `Puntuaciones de seguridad actualizadas diariamente para ${n}, que cubren conflicto, criminalidad, salud, gobernanza y medio ambiente.`,
+  fr: (n) => `Scores de sécurité mis à jour quotidiennement pour ${n}, couvrant conflit, criminalité, santé, gouvernance et environnement.`,
+  pt: (n) => `Pontuações de segurança atualizadas diariamente para ${n}, cobrindo conflito, criminalidade, saúde, governança e meio ambiente.`,
+  zh: (n) => `${n} 每日更新的安全评分，涵盖冲突、犯罪、健康、治理和环境。`,
+  de: (n) => `Täglich aktualisierte Sicherheits-Scores für ${n}, die Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt abdecken.`,
+};
+
+// Dataset.measurementTechnique
+const measurementTechniqueByLang: Record<Lang, string> = {
+  en: 'Weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, and GPI indices',
+  it: 'Media geometrica ponderata di 5 punteggi di categoria da oltre 40 fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e indici GPI',
+  es: 'Media geométrica ponderada de 5 puntuaciones por categoría de más de 40 fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM e índices GPI',
+  fr: 'Moyenne géométrique pondérée de 5 scores de catégorie provenant de plus de 40 sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM et les indices GPI',
+  pt: 'Média geométrica ponderada de 5 pontuações de categoria provenientes de mais de 40 fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM e índices GPI',
+  zh: '基于来自 40 多个公开来源（包括政府旅行警告、世界银行、INFORM 和 GPI 指数）的 5 个类别评分的加权几何平均值',
+  de: 'Gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus über 40 öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM und GPI-Indizes',
+};
+
+// Dataset.variableMeasured entries (PropertyValue name + description)
+const datasetVariablesByLang: Record<Lang, { name: string; description: string; unitText?: string }[]> = {
+  en: [
+    { name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
+    { name: 'Conflict Risk', description: 'Armed conflict and political violence risk assessment' },
+    { name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
+    { name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
+    { name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
+    { name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
+  ],
+  it: [
+    { name: 'Punteggio di sicurezza', description: 'Punteggio di sicurezza composito su scala 1-10', unitText: 'score' },
+    { name: 'Rischio di conflitto', description: 'Valutazione del rischio di conflitto armato e violenza politica' },
+    { name: 'Rischio criminalità', description: 'Valutazione del rischio di criminalità e sicurezza personale' },
+    { name: 'Rischio sanitario', description: 'Valutazione del rischio sanitario e delle infrastrutture mediche' },
+    { name: 'Governance', description: 'Stato di diritto, corruzione e stabilità istituzionale' },
+    { name: 'Rischio ambientale', description: 'Rischio di disastri naturali e pericoli climatici' },
+  ],
+  es: [
+    { name: 'Puntuación de seguridad', description: 'Puntuación de seguridad compuesta en escala 1-10', unitText: 'score' },
+    { name: 'Riesgo de conflicto', description: 'Evaluación del riesgo de conflicto armado y violencia política' },
+    { name: 'Riesgo de criminalidad', description: 'Evaluación del riesgo de criminalidad y seguridad personal' },
+    { name: 'Riesgo sanitario', description: 'Evaluación del riesgo sanitario y de la infraestructura médica' },
+    { name: 'Gobernanza', description: 'Estado de derecho, corrupción y estabilidad institucional' },
+    { name: 'Riesgo ambiental', description: 'Riesgo de desastres naturales y peligros climáticos' },
+  ],
+  fr: [
+    { name: 'Score de sécurité', description: 'Score de sécurité composite sur une échelle de 1 à 10', unitText: 'score' },
+    { name: 'Risque de conflit', description: 'Évaluation du risque de conflit armé et de violence politique' },
+    { name: 'Risque de criminalité', description: 'Évaluation du risque de criminalité et de sécurité personnelle' },
+    { name: 'Risque sanitaire', description: "Évaluation du risque sanitaire et de l'infrastructure médicale" },
+    { name: 'Gouvernance', description: 'État de droit, corruption et stabilité institutionnelle' },
+    { name: 'Risque environnemental', description: 'Risque de catastrophes naturelles et de dangers climatiques' },
+  ],
+  pt: [
+    { name: 'Pontuação de segurança', description: 'Pontuação de segurança composta na escala de 1 a 10', unitText: 'score' },
+    { name: 'Risco de conflito', description: 'Avaliação do risco de conflito armado e violência política' },
+    { name: 'Risco de criminalidade', description: 'Avaliação do risco de criminalidade e segurança pessoal' },
+    { name: 'Risco sanitário', description: 'Avaliação do risco sanitário e da infraestrutura médica' },
+    { name: 'Governança', description: 'Estado de direito, corrupção e estabilidade institucional' },
+    { name: 'Risco ambiental', description: 'Risco de desastres naturais e perigos climáticos' },
+  ],
+  zh: [
+    { name: '安全评分', description: '1-10 分制的综合安全评分', unitText: 'score' },
+    { name: '冲突风险', description: '武装冲突与政治暴力风险评估' },
+    { name: '犯罪风险', description: '人身犯罪与安全风险评估' },
+    { name: '健康风险', description: '医疗基础设施与疾病风险评估' },
+    { name: '治理', description: '法治、腐败与制度稳定性' },
+    { name: '环境风险', description: '自然灾害与气候危害风险' },
+  ],
+  de: [
+    { name: 'Sicherheits-Score', description: 'Zusammengesetzter Sicherheits-Score auf einer Skala von 1 bis 10', unitText: 'score' },
+    { name: 'Konfliktrisiko', description: 'Bewertung des Risikos bewaffneter Konflikte und politischer Gewalt' },
+    { name: 'Kriminalitätsrisiko', description: 'Bewertung des Risikos persönlicher Kriminalität und Sicherheit' },
+    { name: 'Gesundheitsrisiko', description: 'Bewertung von Gesundheitsinfrastruktur und Krankheitsrisiko' },
+    { name: 'Regierungsführung', description: 'Rechtsstaatlichkeit, Korruption und institutionelle Stabilität' },
+    { name: 'Umweltrisiko', description: 'Risiko von Naturkatastrophen und klimatischen Gefahren' },
+  ],
+};
+
 export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonicalUrl: string, dateModified?: string): Record<string, unknown> {
   const countryName = getLocalizedCountryName(country, lang);
-  const regionName = regionDisplayNames[getRegion(country.iso3)];
+  const regionKey = getRegion(country.iso3);
+  const regionName = regionDisplayNames[regionKey]?.[lang];
+  const scoreStr = country.score.toFixed(1);
+  const bandIdx = country.score >= 7 ? 0 : country.score >= 4 ? 1 : 2;
+  const band = riskBands[lang][bandIdx];
+  const tourType = touristTypes[lang][bandIdx];
+  const year = new Date().getFullYear();
+
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -91,7 +250,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         '@type': 'WebPage',
         '@id': canonicalUrl,
         url: canonicalUrl,
-        name: `${countryName} Safety Score`,
+        name: webPageNameTemplates[lang](countryName),
         description: buildCountryMetaDescription(country, lang),
         inLanguage: localeMap[lang],
         ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
@@ -104,34 +263,32 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         '@type': 'Place',
         '@id': `${canonicalUrl}#place`,
         name: countryName,
-        description: `Safety information for ${countryName}`,
+        description: placeDescriptions[lang](countryName),
         ...(regionName && { containedInPlace: { '@type': 'Place', name: regionName } }),
       },
       buildCountryFaqJsonLd(country, lang),
       {
         '@type': 'TouristDestination',
         name: countryName,
-        description: `Travel safety information for ${countryName}. Safety score: ${country.score.toFixed(1)}/10 (${country.score >= 7 ? 'Low risk' : country.score >= 4 ? 'Moderate risk' : 'High risk'}). Data from IsItSafeToTravel.org, updated daily.`,
-        touristType: country.score >= 7 ? 'All travelers including families' : country.score >= 4 ? 'General travelers' : 'Adventure travelers',
+        description: touristDescriptions[lang](countryName, scoreStr, band),
+        touristType: tourType,
         url: canonicalUrl,
       },
       {
         '@type': 'Dataset',
-        name: `${countryName} Travel Safety Data ${new Date().getFullYear()}`,
-        description: `Daily updated safety scores for ${countryName}, covering conflict, crime, health, governance, and environment.`,
+        name: datasetNames[lang](countryName, year),
+        description: datasetDescriptions[lang](countryName),
         url: canonicalUrl,
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
         temporalCoverage: '2025/..',
         creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
-        variableMeasured: [
-          { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
-          { '@type': 'PropertyValue', name: 'Conflict Risk', description: 'Armed conflict and political violence risk assessment' },
-          { '@type': 'PropertyValue', name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
-          { '@type': 'PropertyValue', name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
-          { '@type': 'PropertyValue', name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
-          { '@type': 'PropertyValue', name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
-        ],
-        measurementTechnique: 'Weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, and GPI indices',
+        variableMeasured: datasetVariablesByLang[lang].map((v) => ({
+          '@type': 'PropertyValue',
+          name: v.name,
+          description: v.description,
+          ...(v.unitText && { unitText: v.unitText }),
+        })),
+        measurementTechnique: measurementTechniqueByLang[lang],
       },
     ],
   };
@@ -163,7 +320,7 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/${lang}/country/{search_term_string}/`,
+        urlTemplate: `${siteUrl}/${lang}/${routes[lang].country}/{search_term_string}/`,
       },
       'query-input': 'required name=search_term_string',
     },
@@ -330,7 +487,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     en: `Is it safe to travel to ${name} in ${year}?`,
     it: `E sicuro viaggiare in ${name} nel ${year}?`,
     es: `Es seguro viajar a ${name} en ${year}?`,
-    fr: `Est-il sur de voyager au/en ${name} en ${year} ?`,
+    fr: `${name} : est-ce sûr d'y voyager en ${year} ?`,
     pt: `E seguro viajar para ${name} em ${year}?`,
     zh: `${year} 年前往 ${name} 旅行安全吗？`,
     de: `Ist es ${year} sicher, nach ${name} zu reisen?`,
@@ -350,7 +507,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     en: `What is the biggest risk when traveling to ${name}?`,
     it: `Qual e il rischio maggiore viaggiando in ${name}?`,
     es: `Cual es el mayor riesgo al viajar a ${name}?`,
-    fr: `Quel est le plus grand risque en voyageant au/en ${name} ?`,
+    fr: `${name} : quel est le plus grand risque pour les voyageurs ?`,
     pt: `Qual e o maior risco ao viajar para ${name}?`,
     zh: `前往 ${name} 旅行的最大风险是什么？`,
     de: `Was ist das größte Risiko bei einer Reise nach ${name}?`,
@@ -379,7 +536,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     en: `Travel insurance is strongly recommended for any international trip, including visits to ${name}. A comprehensive policy should cover medical emergencies, trip cancellations, and evacuation. This is especially important given that health-related risks can change rapidly.`,
     it: `L'assicurazione di viaggio e fortemente raccomandata per qualsiasi viaggio internazionale, incluse le visite in ${name}. Una polizza completa dovrebbe coprire emergenze mediche, cancellazioni del viaggio ed evacuazione. Questo e particolarmente importante dato che i rischi legati alla salute possono cambiare rapidamente.`,
     es: `El seguro de viaje es altamente recomendable para cualquier viaje internacional, incluyendo visitas a ${name}. Una poliza integral debe cubrir emergencias medicas, cancelaciones de viaje y evacuacion. Esto es especialmente importante dado que los riesgos relacionados con la salud pueden cambiar rapidamente.`,
-    fr: `L'assurance voyage est fortement recommandee pour tout voyage international, y compris les visites au/en ${name}. Une police complete devrait couvrir les urgences medicales, les annulations de voyage et l'evacuation. C'est particulierement important car les risques lies a la sante peuvent evoluer rapidement.`,
+    fr: `L'assurance voyage est fortement recommandée pour tout voyage international, y compris pour un séjour à destination de ${name}. Une police complète devrait couvrir les urgences médicales, les annulations de voyage et l'évacuation. C'est particulièrement important car les risques liés à la santé peuvent évoluer rapidement.`,
     pt: `O seguro de viagem e fortemente recomendado para qualquer viagem internacional, incluindo visitas a ${name}. Uma apolice abrangente deve cobrir emergencias medicas, cancelamentos de viagem e evacuacao. Isso e especialmente importante dado que os riscos relacionados a saude podem mudar rapidamente.`,
     zh: `强烈建议为任何国际旅行（包括前往 ${name}）购买旅行保险。一份全面的保单应涵盖医疗紧急情况、行程取消和撤离。鉴于健康相关风险可能迅速变化，这一点尤为重要。`,
     de: `Eine Reiseversicherung wird für jede internationale Reise, einschließlich Besuche in ${name}, dringend empfohlen. Eine umfassende Police sollte medizinische Notfälle, Reiserücktritte und Evakuierungen abdecken. Dies ist besonders wichtig, da gesundheitsbezogene Risiken sich rasch ändern können.`,

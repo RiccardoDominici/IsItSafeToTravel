@@ -352,12 +352,21 @@ async function fetchNlAdvisories(
         const lastModMatch = xml.match(/<lastmodified>([^<]+)<\/lastmodified>/);
         const updatedAt = lastModMatch ? lastModMatch[1] : fetchedAt;
 
+        // Prefer the structured <canonical> URL from the XML — guessing the
+        // slug from the English name (e.g. "ivory-coast") frequently 404s on
+        // nederlandwereldwijd.nl. Fall back to the slug guess only if the
+        // canonical is missing.
+        const canonicalMatch = xml.match(/<canonical>([^<]+)<\/canonical>/i);
+        const canonicalUrl = canonicalMatch
+          ? canonicalMatch[1].trim()
+          : `https://www.nederlandwereldwijd.nl/reisadvies/${country.name.en.toLowerCase().replace(/\s+/g, '-')}`;
+
         if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
         advisoryInfo[country.iso3].nl = {
           level,
           text: NL_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Netherlands Ministry of Foreign Affairs',
-          url: `https://www.nederlandwereldwijd.nl/reisadvies/${country.name.en.toLowerCase().replace(/\s+/g, '-')}`,
+          url: canonicalUrl,
           updatedAt,
         };
 

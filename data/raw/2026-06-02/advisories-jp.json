@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-06-02T10:25:20.210Z",
+  "fetchedAt": "2026-06-02T10:56:25.862Z",
   "totalMappings": 132,
   "countriesWithData": 89,
   "pageResults": {
@@ -175,28 +175,24 @@
       "iso3": "CHN",
       "level": 4
     },
-    "003": {
-      "iso3": "TWN",
+    "004": {
+      "iso3": "MNG",
       "level": 4
     },
     "005": {
       "iso3": "PHL",
       "level": 4
     },
-    "004": {
-      "iso3": "MNG",
-      "level": 4
-    },
-    "007": {
-      "iso3": "IDN",
+    "003": {
+      "iso3": "TWN",
       "level": 4
     },
     "008": {
       "iso3": "MYS",
       "level": 4
     },
-    "009": {
-      "iso3": "SGP",
+    "007": {
+      "iso3": "IDN",
       "level": 4
     },
     "010": {
@@ -207,16 +203,16 @@
       "iso3": "VNM",
       "level": 4
     },
-    "012": {
-      "iso3": "MMR",
+    "009": {
+      "iso3": "SGP",
       "level": 4
     },
     "013": {
       "iso3": "KHM",
       "level": 4
     },
-    "015": {
-      "iso3": "LAO",
+    "012": {
+      "iso3": "MMR",
       "level": 4
     },
     "018": {
@@ -225,6 +221,10 @@
     },
     "019": {
       "iso3": "NPL",
+      "level": 4
+    },
+    "015": {
+      "iso3": "LAO",
       "level": 4
     },
     "020": {
@@ -243,6 +243,10 @@
       "iso3": "YEM",
       "level": 4
     },
+    "044": {
+      "iso3": "MEX",
+      "level": 4
+    },
     "041": {
       "iso3": "USA",
       "level": 4
@@ -251,32 +255,24 @@
       "iso3": "CAN",
       "level": 4
     },
-    "044": {
-      "iso3": "MEX",
+    "046": {
+      "iso3": "BLZ",
       "level": 4
     },
     "045": {
       "iso3": "GTM",
       "level": 4
     },
-    "046": {
-      "iso3": "BLZ",
-      "level": 4
-    },
     "047": {
       "iso3": "SLV",
-      "level": 4
-    },
-    "048": {
-      "iso3": "HND",
       "level": 4
     },
     "049": {
       "iso3": "NIC",
       "level": 4
     },
-    "050": {
-      "iso3": "CRI",
+    "048": {
+      "iso3": "HND",
       "level": 4
     },
     "051": {
@@ -285,6 +281,10 @@
     },
     "052": {
       "iso3": "CUB",
+      "level": 4
+    },
+    "050": {
+      "iso3": "CRI",
       "level": 4
     },
     "053": {
@@ -335,12 +335,12 @@
       "iso3": "CZE",
       "level": 4
     },
-    "093": {
-      "iso3": "SVK",
-      "level": 4
-    },
     "094": {
       "iso3": "HUN",
+      "level": 4
+    },
+    "093": {
+      "iso3": "SVK",
       "level": 4
     },
     "095": {

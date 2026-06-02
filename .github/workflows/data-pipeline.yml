@@ -108,6 +108,87 @@ jobs:
       - name: Copy scores to public
         run: cp data/scores/latest.json public/scores.json
 
+      - name: Verify data quality (regression guards)
+        id: quality
+        run: |
+          set -e
+          SNAP="public/scores.json"
+
+          fail() { echo "::error::DATA QUALITY: $1"; FAILURES="${FAILURES}\n- $1"; }
+          warn() { echo "::warning::DATA QUALITY: $1"; WARNINGS="${WARNINGS}\n- $1"; }
+
+          FAILURES=""
+          WARNINGS=""
+
+          # Country count
+          N=$(jq '.countries | length' "$SNAP")
+          if [ "$N" -lt 200 ]; then fail "country count $N < 200"; fi
+
+          # JPN must have US/UK/CA/AU advisories (US silently broke 2026-05-27)
+          for src in us uk ca au; do
+            present=$(jq ".countries[] | select(.iso3==\"JPN\") | .advisories.${src} != null" "$SNAP")
+            if [ "$present" != "true" ]; then fail "JPN.advisories.${src} is null (fetcher regression)"; fi
+          done
+
+          # JPN must NOT be flagged Level 4 by NL (Fukushima sub-region promotion regression)
+          jpn_nl=$(jq '.countries[] | select(.iso3=="JPN") | .advisories.nl.level // 0' "$SNAP")
+          if [ "$jpn_nl" -gt 2 ]; then fail "JPN NL advisory level=$jpn_nl > 2 (NL parser regression)"; fi
+
+          # JPN must NOT be flagged Level 3+ by DE (Teilreisewarnung sub-region promotion regression)
+          jpn_de=$(jq '.countries[] | select(.iso3=="JPN") | .advisories.de.level // 0' "$SNAP")
+          if [ "$jpn_de" -gt 2 ]; then fail "JPN DE advisory level=$jpn_de > 2 (DE partialWarning regression)"; fi
+
+          # Per-source floors: each of US/UK/CA/AU should cover ≥150 countries
+          for src in us uk ca au; do
+            count=$(jq "[.countries[] | select(.advisories.${src} != null)] | length" "$SNAP")
+            if [ "$count" -lt 150 ]; then fail "${src^^} advisory count $count < 150 (likely fetcher regression)"; fi
+          done
+
+          # No tier source aggregates should leak into the sources list
+          tier_leak=$(jq '[.countries[] | .sources[] | select(.name | startswith("advisories_tier"))] | length' "$SNAP")
+          if [ "$tier_leak" -gt 0 ]; then fail "tier source aggregates leaked into sources list ($tier_leak entries)"; fi
+
+          # No source should have an empty url
+          empty_url=$(jq '[.countries[] | .sources[] | select(.url == "")] | length' "$SNAP")
+          if [ "$empty_url" -gt 0 ]; then fail "$empty_url source entries have empty url (anchor-rendering regression)"; fi
+
+          # NL Level 4 false positive guard (was 62 across the world; should be <30 — only truly dangerous countries)
+          nl_l4=$(jq '[.countries[] | select(.advisories.nl.level==4)] | length' "$SNAP")
+          if [ "$nl_l4" -gt 30 ]; then warn "$nl_l4 countries flagged NL Level 4 — verify NL regex (typical baseline ≤30)"; fi
+
+          # DE Level 3 false positive guard (was 27; should be ~0 after partialWarning fix)
+          de_l3=$(jq '[.countries[] | select(.advisories.de.level==3)] | length' "$SNAP")
+          if [ "$de_l3" -gt 5 ]; then warn "$de_l3 countries flagged DE Level 3 — verify partialWarning mapping"; fi
+
+          # Echo to step summary
+          {
+            echo "## Data Quality Checks"
+            echo ""
+            echo "- Countries scored: **$N**"
+            echo "- JPN advisories: US/UK/CA/AU present, NL=L${jpn_nl}, DE=L${jpn_de}"
+            for src in us uk ca au; do
+              c=$(jq "[.countries[] | select(.advisories.${src} != null)] | length" "$SNAP")
+              echo "- ${src^^} advisory coverage: **$c countries**"
+            done
+            echo "- NL Level 4 countries (global): **$nl_l4**"
+            echo "- DE Level 3 countries (global): **$de_l3**"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          if [ -n "$FAILURES" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### ❌ Quality failures" >> "$GITHUB_STEP_SUMMARY"
+            printf "$FAILURES\n" >> "$GITHUB_STEP_SUMMARY"
+            echo "quality_status=fail" >> "$GITHUB_OUTPUT"
+            printf "failures<<EOF\n%s\nEOF\n" "$(printf "$FAILURES")" >> "$GITHUB_OUTPUT"
+            exit 1
+          fi
+          if [ -n "$WARNINGS" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### ⚠️ Quality warnings" >> "$GITHUB_STEP_SUMMARY"
+            printf "$WARNINGS\n" >> "$GITHUB_STEP_SUMMARY"
+          fi
+          echo "quality_status=ok" >> "$GITHUB_OUTPUT"
+
       - name: Commit and push data
         run: |
           git config user.name "github-actions[bot]"
@@ -130,6 +211,47 @@ jobs:
         run: gh workflow run deploy.yml
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Notify via ntfy
+        if: always()
+        env:
+          QUALITY_STATUS: ${{ steps.quality.outputs.quality_status }}
+          QUALITY_FAILURES: ${{ steps.quality.outputs.failures }}
+          PIPELINE_OUTCOME: ${{ steps.pipeline.outcome }}
+          JOB_STATUS: ${{ job.status }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          DATE=$(date -u +%Y-%m-%d)
+          COUNTRY_COUNT="?"
+          if [ -f "public/scores.json" ]; then
+            COUNTRY_COUNT=$(jq '.countries | length' public/scores.json 2>/dev/null || echo "?")
+          fi
+
+          if [ "$JOB_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "ok" ]; then
+            TITLE="✅ Daily pipeline OK — $DATE"
+            BODY="Pipeline ran, ${COUNTRY_COUNT} countries scored, all data-quality checks passed. Deploy triggered. ${RUN_URL}"
+            PRIORITY="default"
+            TAGS="white_check_mark,isitsafetotravel"
+          elif [ "$QUALITY_STATUS" = "fail" ]; then
+            TITLE="❌ Daily pipeline DATA REGRESSION — $DATE"
+            BODY="Pipeline ran but data-quality checks failed:${QUALITY_FAILURES}\n\n${COUNTRY_COUNT} countries scored. ${RUN_URL}"
+            PRIORITY="high"
+            TAGS="x,warning,isitsafetotravel"
+          else
+            TITLE="💥 Daily pipeline FAILED — $DATE"
+            BODY="Pipeline workflow did not complete cleanly (status=$JOB_STATUS, pipeline-step=$PIPELINE_OUTCOME). Check the run log. ${RUN_URL}"
+            PRIORITY="high"
+            TAGS="boom,isitsafetotravel"
+          fi
+
+          # ntfy.sh push notification (per project memory: riccardo-claude topic)
+          curl -fsS -X POST "https://ntfy.sh/riccardo-claude" \
+            -H "Title: ${TITLE}" \
+            -H "Priority: ${PRIORITY}" \
+            -H "Tags: ${TAGS}" \
+            -H "Click: ${RUN_URL}" \
+            -d "$(printf '%b' "$BODY")" \
+            || echo "::warning::ntfy notification failed (non-blocking)"
 
       - name: Cleanup
         if: always()

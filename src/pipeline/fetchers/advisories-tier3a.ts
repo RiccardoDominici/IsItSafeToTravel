@@ -618,10 +618,11 @@ async function fetchCnAdvisories(
 ): Promise<FetcherResult> {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
+  const LANDING_URL = 'https://cs.mfa.gov.cn/gyls/lsgz/lsyj/';
 
   try {
     const response = await fetch(
-      'https://cs.mfa.gov.cn/gyls/lsgz/lsyj/',
+      LANDING_URL,
       {
         signal: AbortSignal.timeout(30_000),
         headers: {
@@ -643,39 +644,61 @@ async function fetchCnAdvisories(
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - 180);
 
-    // Track which countries we've seen (keep most recent)
-    const countryLevels = new Map<string, { level: UnifiedLevel; date: string }>();
+    // Track which countries we've seen (keep most recent) along with per-advisory href.
+    const countryLevels = new Map<
+      string,
+      { level: UnifiedLevel; date: string; url: string }
+    >();
 
-    $('a, li, .listul a, .fl a').each((_, el) => {
-      const text = $(el).text().trim();
+    // Each advisory is rendered as <li class="pt1"><span>[YYYY-MM-DD]</span><p><a href="...">title</a></p></li>.
+    // We iterate those entries directly so we can capture the per-advisory deep link.
+    $('li.pt1').each((_, el) => {
+      const $el = $(el);
+      const text = $el.text().trim();
       if (!text || text.length < 5) return;
 
-      // Try to extract date from the text or sibling elements
+      const anchor = $el.find('a[href]').first();
+      const rawHref = anchor.attr('href')?.trim() || '';
+      const linkText = anchor.attr('title')?.trim() || anchor.text().trim();
+      // Prefer the anchor title/text for country matching; fall back to the full <li> text.
+      const matchText = linkText || text;
+
+      // Try to extract date from the surrounding <span>[YYYY-MM-DD]</span> (or the text).
       const dateMatch = text.match(/(\d{4})[.-](\d{2})[.-](\d{2})/);
       if (dateMatch) {
         const advisoryDate = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);
         if (advisoryDate < cutoffDate) return; // Skip old advisories
       }
 
-      // Extract Chinese country name from advisory title
-      for (const [cnName, iso3] of Object.entries(CHINESE_COUNTRY_NAMES)) {
-        if (!text.includes(cnName)) continue;
+      // Resolve the per-advisory URL to an absolute string; fall back to the landing page.
+      let absUrl = LANDING_URL;
+      if (rawHref) {
+        try {
+          absUrl = new URL(rawHref, LANDING_URL).href;
+        } catch {
+          absUrl = LANDING_URL;
+        }
+      }
 
-        const level = normalizeCnLevel(text);
+      // Extract Chinese country name from advisory title.
+      for (const [cnName, iso3] of Object.entries(CHINESE_COUNTRY_NAMES)) {
+        if (!matchText.includes(cnName)) continue;
+
+        const level = normalizeCnLevel(matchText);
         if (level === 1) continue; // Skip "no advisory" level, not meaningful from alert text
 
-        // Only keep most recent advisory per country
+        // Only keep most recent advisory per country.
         const existing = countryLevels.get(iso3);
         const dateStr = dateMatch ? `${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}` : '';
         if (existing && existing.date > dateStr) continue;
 
-        countryLevels.set(iso3, { level, date: dateStr });
+        countryLevels.set(iso3, { level, date: dateStr, url: absUrl });
         break;
       }
     });
 
     // Convert to indicators
-    for (const [iso3, { level }] of countryLevels) {
+    for (const [iso3, { level, url }] of countryLevels) {
       const country = getCountryByIso3(iso3);
       if (!country) continue;
 
@@ -693,7 +716,7 @@ async function fetchCnAdvisories(
         level,
         text: CN_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'China MFA',
-        url: 'https://cs.mfa.gov.cn/gyls/lsgz/lsyj/',
+        url: url || LANDING_URL,
         updatedAt: fetchedAt,
       };
     }

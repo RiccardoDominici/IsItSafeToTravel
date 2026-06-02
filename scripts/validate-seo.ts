@@ -417,6 +417,128 @@ function validateLlmsFullTxt() {
 }
 
 // =====================================================================
+// 5. ADVISORY COVERAGE VALIDATION
+// =====================================================================
+// Catches regressions like the 2026-05-27 → 2026-06-02 incident where the
+// US State Department HTML structure changed (level-badge-N → level-title-N)
+// and the per-source fetcher silently returned 0 countries for ~6 days.
+// Using JPN as a canary because all four tier-1 sources cover Japan.
+
+function validateAdvisoryCoverage() {
+  console.log("\n--- Advisory Coverage Validation ---");
+
+  const scoresPath = path.join(DIST, "scores.json");
+  if (!fs.existsSync(scoresPath)) {
+    check("advisories: scores.json present in dist", false, scoresPath);
+    return;
+  }
+
+  let scores: { countries?: Array<{ iso3: string; advisories?: Record<string, unknown> }> };
+  try {
+    scores = JSON.parse(fs.readFileSync(scoresPath, "utf-8"));
+  } catch (err) {
+    check("advisories: scores.json parses", false, String(err));
+    return;
+  }
+
+  const countries = scores.countries ?? [];
+  const jpn = countries.find((c) => c.iso3 === "JPN");
+
+  check(
+    "advisories: JPN entry exists in scores.json",
+    !!jpn,
+    "no country with iso3=JPN found"
+  );
+  if (!jpn) return;
+
+  const adv = jpn.advisories ?? {};
+  for (const src of ["us", "uk", "ca", "au"] as const) {
+    check(
+      `advisories: JPN.${src} is non-null (per-source canary)`,
+      adv[src] != null,
+      `JPN.${src} = ${JSON.stringify(adv[src])}`
+    );
+  }
+
+  // Per-column coverage floor — same idea, broader.
+  let usCovered = 0, ukCovered = 0, caCovered = 0, auCovered = 0;
+  for (const c of countries) {
+    const a = (c.advisories ?? {}) as Record<string, unknown>;
+    if (a.us != null) usCovered++;
+    if (a.uk != null) ukCovered++;
+    if (a.ca != null) caCovered++;
+    if (a.au != null) auCovered++;
+  }
+  const FLOOR = 150;
+  check(`advisories: US column has >= ${FLOOR} countries`, usCovered >= FLOOR, `${usCovered} countries`);
+  check(`advisories: UK column has >= ${FLOOR} countries`, ukCovered >= FLOOR, `${ukCovered} countries`);
+  check(`advisories: CA column has >= ${FLOOR} countries`, caCovered >= FLOOR, `${caCovered} countries`);
+  check(`advisories: AU column has >= ${FLOOR} countries`, auCovered >= FLOOR, `${auCovered} countries`);
+
+  console.log(
+    `  (advisory coverage: US=${usCovered} UK=${ukCovered} CA=${caCovered} AU=${auCovered})`
+  );
+}
+
+// =====================================================================
+// 6. ADVISORY LEVEL + SOURCE INTEGRITY (regression guards)
+// =====================================================================
+// Additional invariants tied to the prior 11-bug investigation:
+//  - JPN NL advisory level ≤ 2 (Fukushima sub-region promotion regression)
+//  - JPN DE advisory level ≤ 2 (Teilreisewarnung promotion regression)
+//  - No source entries with empty url (broken-anchor regression)
+//  - No tier-source aggregates leak into sources list
+
+function validateAdvisoryIntegrity() {
+  console.log("\n--- Advisory Integrity ---");
+  const scoresPath = path.join(DIST, "scores.json");
+  if (!fs.existsSync(scoresPath)) return; // already reported in validateAdvisoryCoverage
+
+  const data = JSON.parse(fs.readFileSync(scoresPath, "utf-8")) as {
+    countries: Array<{
+      iso3: string;
+      advisories?: Record<string, { level?: number } | null>;
+      sources?: Array<{ name: string; url: string }>;
+    }>;
+  };
+
+  const jpn = data.countries.find((c) => c.iso3 === "JPN");
+  if (jpn) {
+    const nl = jpn.advisories?.nl?.level ?? 0;
+    check(
+      "advisories: JPN NL advisory level <= 2",
+      nl <= 2,
+      nl > 2 ? `got level=${nl} (Fukushima sub-region promotion regression)` : undefined,
+    );
+    const de = jpn.advisories?.de?.level ?? 0;
+    check(
+      "advisories: JPN DE advisory level <= 2",
+      de <= 2,
+      de > 2 ? `got level=${de} (Teilreisewarnung promotion regression)` : undefined,
+    );
+  }
+
+  let emptyUrls = 0;
+  let tierLeak = 0;
+  for (const c of data.countries) {
+    for (const s of c.sources ?? []) {
+      if (!s.url) emptyUrls++;
+      if (s.name && s.name.startsWith("advisories_tier")) tierLeak++;
+    }
+  }
+  check(
+    "advisories: no source entries with empty url",
+    emptyUrls === 0,
+    emptyUrls > 0 ? `${emptyUrls} entries with empty url (broken anchors)` : undefined,
+  );
+  check(
+    "advisories: no tier-source aggregates leak into sources",
+    tierLeak === 0,
+    tierLeak > 0 ? `${tierLeak} aggregates leaked (engine.ts skip filter regression)` : undefined,
+  );
+}
+
+// =====================================================================
 // MAIN
 // =====================================================================
 
@@ -433,6 +555,8 @@ function main() {
   validateJsonLd();
   validateMeta();
   validateLlmsFullTxt();
+  validateAdvisoryCoverage();
+  validateAdvisoryIntegrity();
 
   // Summary
   console.log("\n========================================");

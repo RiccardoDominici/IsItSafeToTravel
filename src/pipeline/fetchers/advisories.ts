@@ -2,6 +2,17 @@ import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, COUNTRIES } from '../config/countries.js';
 import { join } from 'node:path';
+import { existsSync, readdirSync } from 'node:fs';
+import * as cheerio from 'cheerio';
+
+/**
+ * Minimum per-source country count expected from each tier-1 fetcher.
+ * If a fetcher produces fewer, we treat it as a regression and fall back to
+ * the most recent cached info for THAT specific source.
+ * Picked at ~150 because the US/UK/CA/AU each cover 200+ destinations in
+ * normal operation, but allow some slack for legitimate transient drops.
+ */
+const PER_SOURCE_FLOOR = 150;
 
 const US_ADVISORIES_URL =
   'https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html';
@@ -94,61 +105,35 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
   const errors: string[] = [];
   let totalCountries = 0;
 
-  // Fetch US advisories
-  try {
-    console.log('[ADVISORIES] Fetching US State Department advisories...');
-    const result = await fetchUsAdvisories(rawDir, fetchedAt, currentYear);
-    allIndicators.push(...result.indicators);
-    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
-    const usCountries = new Set(result.indicators.map((i) => i.countryIso3));
-    console.log(`[ADVISORIES] US: ${usCountries.size} countries`);
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.warn(`[ADVISORIES] US fetch failed: ${msg}`);
-    errors.push(`US: ${msg}`);
-  }
+  // Run each tier-1 sub-fetcher with a per-source floor + per-source cache fallback.
+  // This prevents future silent regressions where one source (e.g. US) breaks but
+  // the others keep returning data, masking the failure.
+  const sourceKey = {
+    US: 'us' as const,
+    UK: 'uk' as const,
+    CA: 'ca' as const,
+    AU: 'au' as const,
+  };
 
-  // Fetch UK FCDO advisories
-  try {
-    console.log('[ADVISORIES] Fetching UK FCDO advisories...');
-    const result = await fetchUkAdvisories(rawDir, fetchedAt, currentYear);
-    allIndicators.push(...result.indicators);
-    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
-    const ukCountries = new Set(result.indicators.map((i) => i.countryIso3));
-    console.log(`[ADVISORIES] UK: ${ukCountries.size} countries`);
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.warn(`[ADVISORIES] UK fetch failed: ${msg}`);
-    errors.push(`UK: ${msg}`);
-  }
+  const usResult = await runWithFloor('US', sourceKey.US, () =>
+    fetchUsAdvisories(rawDir, fetchedAt, currentYear), errors);
+  allIndicators.push(...usResult.indicators);
+  mergeAdvisoryInfo(combinedAdvisoryInfo, usResult.advisoryInfo);
 
-  // Fetch Canada advisories
-  try {
-    console.log('[ADVISORIES] Fetching Canada travel advisories...');
-    const result = await fetchCaAdvisories(rawDir, fetchedAt, currentYear);
-    allIndicators.push(...result.indicators);
-    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
-    const caCountries = new Set(result.indicators.map((i) => i.countryIso3));
-    console.log(`[ADVISORIES] CA: ${caCountries.size} countries`);
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.warn(`[ADVISORIES] CA fetch failed: ${msg}`);
-    errors.push(`CA: ${msg}`);
-  }
+  const ukResult = await runWithFloor('UK', sourceKey.UK, () =>
+    fetchUkAdvisories(rawDir, fetchedAt, currentYear), errors);
+  allIndicators.push(...ukResult.indicators);
+  mergeAdvisoryInfo(combinedAdvisoryInfo, ukResult.advisoryInfo);
 
-  // Fetch Australia advisories
-  try {
-    console.log('[ADVISORIES] Fetching Australia Smartraveller advisories...');
-    const result = await fetchAuAdvisories(rawDir, fetchedAt, currentYear);
-    allIndicators.push(...result.indicators);
-    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
-    const auCountries = new Set(result.indicators.map((i) => i.countryIso3));
-    console.log(`[ADVISORIES] AU: ${auCountries.size} countries`);
-  } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    console.warn(`[ADVISORIES] AU fetch failed: ${msg}`);
-    errors.push(`AU: ${msg}`);
-  }
+  const caResult = await runWithFloor('CA', sourceKey.CA, () =>
+    fetchCaAdvisories(rawDir, fetchedAt, currentYear), errors);
+  allIndicators.push(...caResult.indicators);
+  mergeAdvisoryInfo(combinedAdvisoryInfo, caResult.advisoryInfo);
+
+  const auResult = await runWithFloor('AU', sourceKey.AU, () =>
+    fetchAuAdvisories(rawDir, fetchedAt, currentYear), errors);
+  allIndicators.push(...auResult.indicators);
+  mergeAdvisoryInfo(combinedAdvisoryInfo, auResult.advisoryInfo);
 
   // If all failed, try cached data
   if (allIndicators.length === 0) {
@@ -218,6 +203,136 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
 }
 
 /**
+ * Run a sub-fetcher with a per-source floor check.
+ *
+ * If the fetcher throws OR returns fewer than PER_SOURCE_FLOOR countries, we
+ * log loudly and try to recover by loading the most-recent cached
+ * `advisories-info.json` that actually contains data for this source. This way
+ * a single-source HTML-structure regression (like the US one that ran silently
+ * 2026-05-27 → 2026-06-02) cannot drop the column to all-null again.
+ */
+type AdvisorySourceKey = 'us' | 'uk' | 'ca' | 'au';
+
+async function runWithFloor(
+  label: string,
+  sourceKey: AdvisorySourceKey,
+  fn: () => Promise<FetcherResult>,
+  errors: string[],
+): Promise<FetcherResult> {
+  console.log(`[ADVISORIES] Fetching ${label} advisories...`);
+  let result: FetcherResult = { indicators: [], advisoryInfo: {} };
+  try {
+    result = await fn();
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn(`[ADVISORIES] ${label} fetch failed: ${msg}`);
+    errors.push(`${label}: ${msg}`);
+  }
+
+  const countries = new Set(result.indicators.map((i) => i.countryIso3));
+  console.log(`[ADVISORIES] ${label}: ${countries.size} countries`);
+
+  if (countries.size < PER_SOURCE_FLOOR) {
+    console.error(
+      `[ADVISORIES] ${label} below per-source floor ` +
+        `(${countries.size} < ${PER_SOURCE_FLOOR}) — attempting per-source cache fallback`,
+    );
+    errors.push(`${label}: below floor (${countries.size} < ${PER_SOURCE_FLOOR})`);
+
+    const cached = findLatestCachedSourceInfo(sourceKey);
+    if (cached) {
+      console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
+      const restored = restoreFromCachedInfo(cached.data, sourceKey);
+      // Merge: keep any indicators we did get (better than nothing), and
+      // overlay the cached ones for countries we missed.
+      const have = new Set(result.indicators.map((i) => i.countryIso3));
+      for (const ind of restored.indicators) {
+        if (!have.has(ind.countryIso3)) result.indicators.push(ind);
+      }
+      for (const [iso3, info] of Object.entries(restored.advisoryInfo)) {
+        if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
+        // Only fill in this specific source if missing
+        if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
+          result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
+        }
+      }
+      const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
+      console.warn(
+        `[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`,
+      );
+    } else {
+      console.error(`[ADVISORIES] ${label}: no cached info available for fallback`);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Find the most recent cached `advisories-info.json` (across data/raw/YYYY-MM-DD/)
+ * that actually contains non-null data for the given source key. We skip
+ * cached files that already have all-null for this source — otherwise we'd
+ * happily "restore" a broken cache.
+ */
+function findLatestCachedSourceInfo(
+  sourceKey: AdvisorySourceKey,
+): { path: string; data: AdvisoryInfoMap } | null {
+  const rawBase = join(process.cwd(), 'data', 'raw');
+  // Scan in date order ourselves — `findLatestCached` would stop at the most
+  // recent file, but we want the most recent file whose data for THIS source
+  // is non-empty (skipping cached snapshots that already had the regression).
+  if (!existsSync(rawBase)) return null;
+  const dateDirs = readdirSync(rawBase)
+    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    .sort()
+    .reverse();
+  for (const dateDir of dateDirs) {
+    const p = join(rawBase, dateDir, 'advisories-info.json');
+    if (!existsSync(p)) continue;
+    const data = readJson<AdvisoryInfoMap>(p);
+    if (!data) continue;
+    // Does this file have meaningful data for the source we're trying to restore?
+    let nonNull = 0;
+    for (const info of Object.values(data)) {
+      if (info && info[sourceKey]) nonNull++;
+    }
+    if (nonNull >= PER_SOURCE_FLOOR) {
+      return { path: p, data };
+    }
+  }
+  return null;
+}
+
+/**
+ * Rebuild a partial FetcherResult (indicators + advisoryInfo restricted to the
+ * given source) from a cached AdvisoryInfoMap.
+ */
+function restoreFromCachedInfo(
+  cached: AdvisoryInfoMap,
+  sourceKey: AdvisorySourceKey,
+): FetcherResult {
+  const indicators: RawIndicator[] = [];
+  const advisoryInfo: AdvisoryInfoMap = {};
+  const indicatorName = `advisory_level_${sourceKey}` as const;
+  const sourceTag = `advisories_${sourceKey}`;
+  const year = new Date().getFullYear();
+
+  for (const [iso3, info] of Object.entries(cached)) {
+    const entry = info?.[sourceKey];
+    if (!entry || typeof entry.level !== 'number') continue;
+    indicators.push({
+      countryIso3: iso3,
+      indicatorName,
+      value: entry.level,
+      year,
+      source: sourceTag,
+    });
+    advisoryInfo[iso3] = { [sourceKey]: entry } as AdvisoryInfoMap[string];
+  }
+  return { indicators, advisoryInfo };
+}
+
+/**
  * Fetch US State Department travel advisories.
  * Parses HTML to extract country advisory levels (1-4).
  * Stores RAW level values (1-4) -- normalization is handled by the scoring engine.
@@ -250,23 +365,57 @@ async function fetchUsAdvisories(
     type: 'html',
   });
 
-  // Parse HTML table rows directly — much more reliable than plain text regex.
-  // Each row: <tr>...<th><a>CountryName</a></th>...<td>level-badge-N</td>...MM/DD/YYYY...</tr>
-  const rowPattern = /<tr>[\s\S]*?<th[^>]*>[\s\S]*?<a[^>]*>([^<]+)<\/a>[\s\S]*?level-badge-(\d)[\s\S]*?(\d{2}\/\d{2}\/\d{4})[\s\S]*?<\/tr>/gi;
-
+  // travel.state.gov changed its HTML around 2026-05: the old `level-badge-N`
+  // CSS classes were renamed to `level-title-N`, which silently broke our regex
+  // and produced an all-null US column for ~6 days. We now parse with cheerio
+  // and are tolerant of either class scheme.
+  //
+  // Each <tr> in the advisories table looks like:
+  //   <th data-label="Destination"><a href="...">CountryName</a></th>
+  //   <td data-label="Level"><p class="level-title level-title-N">Level N: ...</p></td>
+  //   <td data-label="Risk Indicators">...</td>
+  //   <td data-label="Date Issued"><p>MM/DD/YYYY</p></td>
+  const $ = cheerio.load(html);
   const seen = new Set<string>();
-  let match;
-  while ((match = rowPattern.exec(html)) !== null) {
-    const countryName = match[1].trim();
-    const level = parseInt(match[2]);
-    const dateStr = match[3];
 
-    if (level < 1 || level > 4) continue;
-    if (countryName.length < 3) continue;
+  // Find every destination row by its TH cell, then walk siblings.
+  const destinationCells = $('th[data-label="Destination"]');
+
+  destinationCells.each((_, th) => {
+    const $th = $(th);
+    const countryName = $th.find('a').first().text().trim() || $th.text().trim();
+    if (!countryName || countryName.length < 2) return;
+
+    const $row = $th.closest('tr');
+
+    // Level: prefer class-based detection (level-title-N OR legacy level-badge-N),
+    // then fall back to parsing the visible text "Level N: ...".
+    let level = 0;
+    const $levelCell = $row.find('[data-label="Level"]');
+    const levelHtml = $levelCell.html() ?? '';
+    const classMatch = levelHtml.match(/level-(?:title|badge)-(\d)/i);
+    if (classMatch) {
+      level = parseInt(classMatch[1], 10);
+    } else {
+      const textMatch = $levelCell.text().match(/Level\s+(\d)/i);
+      if (textMatch) level = parseInt(textMatch[1], 10);
+    }
+    if (level < 1 || level > 4) return;
+
+    // Date: prefer the "Date Issued" cell, fall back to scanning the row.
+    let dateStr: string | null = null;
+    const dateText = $row.find('[data-label="Date Issued"]').text();
+    const dateInCell = dateText.match(/(\d{2}\/\d{2}\/\d{4})/);
+    if (dateInCell) {
+      dateStr = dateInCell[1];
+    } else {
+      const dateInRow = $row.text().match(/(\d{2}\/\d{2}\/\d{4})/);
+      if (dateInRow) dateStr = dateInRow[1];
+    }
 
     const country = getCountryByName(countryName);
-    if (!country) continue;
-    if (seen.has(country.iso3)) continue;
+    if (!country) return;
+    if (seen.has(country.iso3)) return;
     seen.add(country.iso3);
 
     indicators.push({
@@ -294,6 +443,12 @@ async function fetchUsAdvisories(
       url: US_ADVISORIES_URL,
       updatedAt,
     };
+  });
+
+  if (indicators.length === 0) {
+    console.warn(
+      '[ADVISORIES] US: HTML parser matched 0 countries — page format may have changed again',
+    );
   }
 
   return { indicators, advisoryInfo };
