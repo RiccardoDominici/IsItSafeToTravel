@@ -481,6 +481,66 @@ function validateAdvisoryCoverage() {
 }
 
 // =====================================================================
+// 5b. DATASET DESCRIPTION LENGTH (Google Dataset rich-result spec)
+// =====================================================================
+// Google's Dataset structured data spec requires description in [50, 5000]
+// characters. A too-short description (e.g. the original zh template that
+// only rendered ~30 chars for short country names) triggers the GSC
+// "Lunghezza stringa non valida nel campo 'description'" alert and the
+// page falls out of dataset rich results. Canary on JPN (its locale-zh
+// page was the original regression).
+
+function validateDatasetDescriptionLength() {
+  console.log("\n--- Dataset Description Length ---");
+  const MIN = 50;
+  const MAX = 5000;
+  const LOCALE_TO_COUNTRY_PATH: Record<string, string> = {
+    en: "country", it: "paese", es: "pais", fr: "pays",
+    pt: "pais", zh: "country", de: "land",
+  };
+
+  for (const lang of LANGUAGES) {
+    const seg = LOCALE_TO_COUNTRY_PATH[lang];
+    const filePath = path.join(DIST, lang, seg, "jpn", "index.html");
+    if (!fs.existsSync(filePath)) {
+      check(`dataset(${lang}): JPN file exists`, false, filePath);
+      continue;
+    }
+    const html = readHtml(filePath);
+    const jsonLdRe = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    let foundDataset = false;
+    let m: RegExpExecArray | null;
+    while ((m = jsonLdRe.exec(html)) !== null) {
+      let parsed: { "@graph"?: Array<{ "@type"?: string | string[]; description?: string }> };
+      try {
+        parsed = JSON.parse(m[1]);
+      } catch {
+        continue;
+      }
+      const graph = parsed["@graph"] ?? [];
+      for (const node of graph) {
+        const t = node["@type"];
+        const isDataset = t === "Dataset" || (Array.isArray(t) && t.includes("Dataset"));
+        if (!isDataset) continue;
+        foundDataset = true;
+        const desc = typeof node.description === "string" ? node.description : "";
+        const ok = desc.length >= MIN && desc.length <= MAX;
+        check(
+          `dataset(${lang}/JPN): description length ${desc.length} in [${MIN}, ${MAX}]`,
+          ok,
+          ok ? undefined : `description="${desc}" (length ${desc.length})`,
+        );
+      }
+    }
+    check(
+      `dataset(${lang}/JPN): Dataset graph node present`,
+      foundDataset,
+      foundDataset ? undefined : "no Dataset node found in any JSON-LD block",
+    );
+  }
+}
+
+// =====================================================================
 // 6. ADVISORY LEVEL + SOURCE INTEGRITY (regression guards)
 // =====================================================================
 // Additional invariants tied to the prior 11-bug investigation:
@@ -557,6 +617,7 @@ function main() {
   validateLlmsFullTxt();
   validateAdvisoryCoverage();
   validateAdvisoryIntegrity();
+  validateDatasetDescriptionLength();
 
   // Summary
   console.log("\n========================================");
