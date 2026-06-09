@@ -1,0 +1,432 @@
+---
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { loadLatestScores } from '../lib/scores';
+import { getLastmodMap } from '../lib/lastmod';
+import { buildDatasetJsonLd } from '../lib/seo';
+import Base from '../layouts/Base.astro';
+import Breadcrumb from './Breadcrumb.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const countryCount = loadLatestScores().length;
+const snapshotDate = getLastmodMap().snapshotDate;
+
+// Page copy is inlined per-language (same pattern as RegionsIndex) to avoid
+// threading ~30 more keys through the large i18n/ui.ts table. Technical
+// identifiers (endpoint paths, JSON field names) intentionally stay in English.
+const copy: Record<
+  Lang,
+  {
+    title: string;
+    description: string;
+    intro: string;
+    noAuth: string;
+    endpointsHeading: string;
+    thEndpoint: string;
+    thDescription: string;
+    thSize: string;
+    epScores: string;
+    epMapData: string;
+    epHistory: string;
+    epTrend: string;
+    epBadge: string;
+    epLlms: string;
+    exampleHeading: string;
+    exampleCaption: string;
+    fieldsHeading: string;
+    fieldsIntro: string;
+    thField: string;
+    fIso3: string;
+    fName: string;
+    fScore: string;
+    fScoreDisplay: string;
+    fPillars: string;
+    fAdvisories: string;
+    fSources: string;
+    freshness: string;
+    licenseHeading: string;
+    licenseText: string;
+    attributionText: string;
+  }
+> = {
+  en: {
+    title: 'Free Travel Safety Data & API',
+    description: `Download daily-updated travel safety scores for ${countryCount} countries as free JSON. No API key, no rate limits — open data under CC BY-NC 4.0.`,
+    intro: `Every number on this site comes from an open dataset you can download. Safety scores for ${countryCount} countries — recomputed daily from 40+ public sources — are published as static JSON files on a global CDN.`,
+    noAuth: 'No API key, no registration, no request limits. All endpoints support cross-origin requests (CORS), so you can fetch them directly from a browser.',
+    endpointsHeading: 'Endpoints',
+    thEndpoint: 'Endpoint',
+    thDescription: 'Description',
+    thSize: 'Approx. size',
+    epScores: `Full daily dataset: all ${countryCount} countries with composite score, the 5 pillar scores including every underlying indicator, government advisory levels, and source metadata.`,
+    epMapData: 'Slim per-country dataset: ISO3 code, localized names, composite score, pillar scores, and advisory levels. Ideal for maps and overviews.',
+    epHistory: 'Daily composite-score history for one country (lowercase ISO3 code), as an array of {date, score} points.',
+    epTrend: 'Composite plus per-pillar score history for one country, as {history, pillars}.',
+    epBadge: 'Embeddable SVG badge with the current safety score of a country.',
+    epLlms: 'AI-readable Markdown summary of the whole site (llms.txt) and the complete per-country dataset (llms-full.txt).',
+    exampleHeading: 'Example',
+    exampleCaption: 'Fetch the full dataset and read the score of a single country:',
+    fieldsHeading: 'Country fields in scores.json',
+    fieldsIntro: 'Each entry in the countries array contains:',
+    thField: 'Field',
+    fIso3: 'ISO 3166-1 alpha-3 country code (e.g. "ITA").',
+    fName: 'Country name localized in the supported languages.',
+    fScore: 'Composite safety score, 1–10 scale (10 = safest). Weighted geometric mean of the 5 pillars.',
+    fScoreDisplay: 'Score rounded for display.',
+    fPillars: 'The 5 risk pillars (conflict, crime, health, governance, environment) with score, weight, and underlying indicators.',
+    fAdvisories: 'Government travel advisory levels per issuing country (US, UK, CA, AU, and 33 more).',
+    fSources: 'The public data sources used for this country, with fetch dates.',
+    freshness: `Data is regenerated daily at ~06:00 UTC. Current snapshot: ${snapshotDate}.`,
+    licenseHeading: 'License & attribution',
+    licenseText: 'All data is licensed under Creative Commons BY-NC 4.0: free to use, share, and adapt for non-commercial purposes.',
+    attributionText: 'Please credit "IsItSafeToTravel.org" with a link when you use the data. The full pipeline and site are open source on GitHub.',
+  },
+  it: {
+    title: 'Dati e API gratuiti sulla sicurezza di viaggio',
+    description: `Scarica i punteggi di sicurezza di viaggio aggiornati ogni giorno per ${countryCount} paesi in JSON gratuito. Nessuna API key, nessun limite — open data CC BY-NC 4.0.`,
+    intro: `Ogni numero su questo sito proviene da un dataset aperto che puoi scaricare. I punteggi di sicurezza di ${countryCount} paesi — ricalcolati ogni giorno da 40+ fonti pubbliche — sono pubblicati come file JSON statici su una CDN globale.`,
+    noAuth: 'Nessuna API key, nessuna registrazione, nessun limite di richieste. Tutti gli endpoint supportano richieste cross-origin (CORS), quindi puoi interrogarli direttamente dal browser.',
+    endpointsHeading: 'Endpoint',
+    thEndpoint: 'Endpoint',
+    thDescription: 'Descrizione',
+    thSize: 'Dimensione',
+    epScores: `Dataset giornaliero completo: tutti i ${countryCount} paesi con punteggio composito, i 5 pilastri con ogni indicatore sottostante, i livelli degli avvisi governativi e i metadati delle fonti.`,
+    epMapData: 'Dataset ridotto per paese: codice ISO3, nomi localizzati, punteggio composito, punteggi dei pilastri e livelli degli avvisi. Ideale per mappe e panoramiche.',
+    epHistory: 'Storico giornaliero del punteggio composito di un paese (codice ISO3 minuscolo), come array di punti {date, score}.',
+    epTrend: 'Storico del punteggio composito e per pilastro di un paese, come {history, pillars}.',
+    epBadge: 'Badge SVG incorporabile con il punteggio di sicurezza attuale di un paese.',
+    epLlms: 'Riepilogo Markdown leggibile dalle AI dell’intero sito (llms.txt) e dataset completo per paese (llms-full.txt).',
+    exampleHeading: 'Esempio',
+    exampleCaption: 'Scarica il dataset completo e leggi il punteggio di un singolo paese:',
+    fieldsHeading: 'Campi paese in scores.json',
+    fieldsIntro: 'Ogni elemento dell’array countries contiene:',
+    thField: 'Campo',
+    fIso3: 'Codice paese ISO 3166-1 alpha-3 (es. "ITA").',
+    fName: 'Nome del paese localizzato nelle lingue supportate.',
+    fScore: 'Punteggio di sicurezza composito, scala 1–10 (10 = più sicuro). Media geometrica ponderata dei 5 pilastri.',
+    fScoreDisplay: 'Punteggio arrotondato per la visualizzazione.',
+    fPillars: 'I 5 pilastri di rischio (conflitti, criminalità, salute, governance, ambiente) con punteggio, peso e indicatori sottostanti.',
+    fAdvisories: 'Livelli degli avvisi di viaggio governativi per paese emittente (US, UK, CA, AU e altri 33).',
+    fSources: 'Le fonti pubbliche usate per questo paese, con date di acquisizione.',
+    freshness: `I dati vengono rigenerati ogni giorno alle ~06:00 UTC. Snapshot attuale: ${snapshotDate}.`,
+    licenseHeading: 'Licenza e attribuzione',
+    licenseText: 'Tutti i dati sono rilasciati con licenza Creative Commons BY-NC 4.0: liberi da usare, condividere e adattare per scopi non commerciali.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un link quando usi i dati. La pipeline completa e il sito sono open source su GitHub.',
+  },
+  es: {
+    title: 'Datos y API gratuitos de seguridad de viaje',
+    description: `Descarga puntuaciones de seguridad de viaje actualizadas a diario para ${countryCount} países en JSON gratuito. Sin API key, sin límites — datos abiertos CC BY-NC 4.0.`,
+    intro: `Cada número de este sitio proviene de un dataset abierto que puedes descargar. Las puntuaciones de seguridad de ${countryCount} países — recalculadas a diario a partir de 40+ fuentes públicas — se publican como archivos JSON estáticos en una CDN global.`,
+    noAuth: 'Sin API key, sin registro, sin límites de peticiones. Todos los endpoints admiten peticiones cross-origin (CORS), así que puedes consultarlos directamente desde el navegador.',
+    endpointsHeading: 'Endpoints',
+    thEndpoint: 'Endpoint',
+    thDescription: 'Descripción',
+    thSize: 'Tamaño aprox.',
+    epScores: `Dataset diario completo: los ${countryCount} países con puntuación compuesta, los 5 pilares con cada indicador subyacente, niveles de avisos gubernamentales y metadatos de fuentes.`,
+    epMapData: 'Dataset reducido por país: código ISO3, nombres localizados, puntuación compuesta, puntuaciones de pilares y niveles de avisos. Ideal para mapas y vistas generales.',
+    epHistory: 'Histórico diario de la puntuación compuesta de un país (código ISO3 en minúsculas), como array de puntos {date, score}.',
+    epTrend: 'Histórico de la puntuación compuesta y por pilar de un país, como {history, pillars}.',
+    epBadge: 'Insignia SVG incrustable con la puntuación de seguridad actual de un país.',
+    epLlms: 'Resumen Markdown legible por IA de todo el sitio (llms.txt) y dataset completo por país (llms-full.txt).',
+    exampleHeading: 'Ejemplo',
+    exampleCaption: 'Descarga el dataset completo y lee la puntuación de un país:',
+    fieldsHeading: 'Campos de país en scores.json',
+    fieldsIntro: 'Cada elemento del array countries contiene:',
+    thField: 'Campo',
+    fIso3: 'Código de país ISO 3166-1 alpha-3 (p. ej. "ITA").',
+    fName: 'Nombre del país localizado en los idiomas soportados.',
+    fScore: 'Puntuación de seguridad compuesta, escala 1–10 (10 = más seguro). Media geométrica ponderada de los 5 pilares.',
+    fScoreDisplay: 'Puntuación redondeada para visualización.',
+    fPillars: 'Los 5 pilares de riesgo (conflicto, crimen, salud, gobernanza, medio ambiente) con puntuación, peso e indicadores subyacentes.',
+    fAdvisories: 'Niveles de avisos de viaje gubernamentales por país emisor (US, UK, CA, AU y 33 más).',
+    fSources: 'Las fuentes públicas usadas para este país, con fechas de obtención.',
+    freshness: `Los datos se regeneran a diario a las ~06:00 UTC. Snapshot actual: ${snapshotDate}.`,
+    licenseHeading: 'Licencia y atribución',
+    licenseText: 'Todos los datos están bajo licencia Creative Commons BY-NC 4.0: libres para usar, compartir y adaptar con fines no comerciales.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un enlace cuando uses los datos. La pipeline completa y el sitio son open source en GitHub.',
+  },
+  fr: {
+    title: 'Données et API gratuites de sécurité de voyage',
+    description: `Téléchargez les scores de sécurité de voyage mis à jour quotidiennement pour ${countryCount} pays en JSON gratuit. Pas de clé API, pas de limites — open data CC BY-NC 4.0.`,
+    intro: `Chaque chiffre de ce site provient d'un jeu de données ouvert que vous pouvez télécharger. Les scores de sécurité de ${countryCount} pays — recalculés chaque jour à partir de 40+ sources publiques — sont publiés sous forme de fichiers JSON statiques sur un CDN mondial.`,
+    noAuth: 'Pas de clé API, pas d’inscription, pas de limite de requêtes. Tous les endpoints acceptent les requêtes cross-origin (CORS) : vous pouvez les interroger directement depuis un navigateur.',
+    endpointsHeading: 'Endpoints',
+    thEndpoint: 'Endpoint',
+    thDescription: 'Description',
+    thSize: 'Taille approx.',
+    epScores: `Jeu de données quotidien complet : les ${countryCount} pays avec score composite, les 5 piliers avec chaque indicateur sous-jacent, les niveaux d'avis gouvernementaux et les métadonnées des sources.`,
+    epMapData: 'Jeu de données allégé par pays : code ISO3, noms localisés, score composite, scores des piliers et niveaux d’avis. Idéal pour les cartes et vues d’ensemble.',
+    epHistory: 'Historique quotidien du score composite d’un pays (code ISO3 en minuscules), sous forme de tableau de points {date, score}.',
+    epTrend: 'Historique du score composite et par pilier d’un pays, sous forme {history, pillars}.',
+    epBadge: 'Badge SVG intégrable avec le score de sécurité actuel d’un pays.',
+    epLlms: 'Résumé Markdown lisible par les IA de tout le site (llms.txt) et jeu de données complet par pays (llms-full.txt).',
+    exampleHeading: 'Exemple',
+    exampleCaption: 'Téléchargez le jeu de données complet et lisez le score d’un pays :',
+    fieldsHeading: 'Champs pays dans scores.json',
+    fieldsIntro: 'Chaque élément du tableau countries contient :',
+    thField: 'Champ',
+    fIso3: 'Code pays ISO 3166-1 alpha-3 (ex. "ITA").',
+    fName: 'Nom du pays localisé dans les langues prises en charge.',
+    fScore: 'Score de sécurité composite, échelle 1–10 (10 = le plus sûr). Moyenne géométrique pondérée des 5 piliers.',
+    fScoreDisplay: 'Score arrondi pour l’affichage.',
+    fPillars: 'Les 5 piliers de risque (conflit, criminalité, santé, gouvernance, environnement) avec score, poids et indicateurs sous-jacents.',
+    fAdvisories: 'Niveaux d’avis aux voyageurs gouvernementaux par pays émetteur (US, UK, CA, AU et 33 autres).',
+    fSources: 'Les sources publiques utilisées pour ce pays, avec dates de collecte.',
+    freshness: `Les données sont régénérées chaque jour vers 06:00 UTC. Snapshot actuel : ${snapshotDate}.`,
+    licenseHeading: 'Licence et attribution',
+    licenseText: 'Toutes les données sont sous licence Creative Commons BY-NC 4.0 : libres d’utilisation, de partage et d’adaptation à des fins non commerciales.',
+    attributionText: 'Merci de créditer « IsItSafeToTravel.org » avec un lien lorsque vous utilisez les données. La pipeline complète et le site sont open source sur GitHub.',
+  },
+  pt: {
+    title: 'Dados e API gratuitos de segurança de viagem',
+    description: `Baixe pontuações de segurança de viagem atualizadas diariamente para ${countryCount} países em JSON gratuito. Sem API key, sem limites — dados abertos CC BY-NC 4.0.`,
+    intro: `Cada número deste site vem de um dataset aberto que você pode baixar. As pontuações de segurança de ${countryCount} países — recalculadas diariamente a partir de 40+ fontes públicas — são publicadas como arquivos JSON estáticos em uma CDN global.`,
+    noAuth: 'Sem API key, sem cadastro, sem limites de requisições. Todos os endpoints aceitam requisições cross-origin (CORS), então você pode consultá-los diretamente do navegador.',
+    endpointsHeading: 'Endpoints',
+    thEndpoint: 'Endpoint',
+    thDescription: 'Descrição',
+    thSize: 'Tamanho aprox.',
+    epScores: `Dataset diário completo: todos os ${countryCount} países com pontuação composta, os 5 pilares com cada indicador subjacente, níveis de avisos governamentais e metadados das fontes.`,
+    epMapData: 'Dataset reduzido por país: código ISO3, nomes localizados, pontuação composta, pontuações dos pilares e níveis de avisos. Ideal para mapas e visões gerais.',
+    epHistory: 'Histórico diário da pontuação composta de um país (código ISO3 em minúsculas), como array de pontos {date, score}.',
+    epTrend: 'Histórico da pontuação composta e por pilar de um país, como {history, pillars}.',
+    epBadge: 'Badge SVG incorporável com a pontuação de segurança atual de um país.',
+    epLlms: 'Resumo Markdown legível por IA de todo o site (llms.txt) e dataset completo por país (llms-full.txt).',
+    exampleHeading: 'Exemplo',
+    exampleCaption: 'Baixe o dataset completo e leia a pontuação de um país:',
+    fieldsHeading: 'Campos de país em scores.json',
+    fieldsIntro: 'Cada item do array countries contém:',
+    thField: 'Campo',
+    fIso3: 'Código de país ISO 3166-1 alpha-3 (ex. "ITA").',
+    fName: 'Nome do país localizado nos idiomas suportados.',
+    fScore: 'Pontuação de segurança composta, escala 1–10 (10 = mais seguro). Média geométrica ponderada dos 5 pilares.',
+    fScoreDisplay: 'Pontuação arredondada para exibição.',
+    fPillars: 'Os 5 pilares de risco (conflito, crime, saúde, governança, ambiente) com pontuação, peso e indicadores subjacentes.',
+    fAdvisories: 'Níveis de avisos de viagem governamentais por país emissor (US, UK, CA, AU e mais 33).',
+    fSources: 'As fontes públicas usadas para este país, com datas de coleta.',
+    freshness: `Os dados são regenerados diariamente às ~06:00 UTC. Snapshot atual: ${snapshotDate}.`,
+    licenseHeading: 'Licença e atribuição',
+    licenseText: 'Todos os dados estão licenciados sob Creative Commons BY-NC 4.0: livres para usar, compartilhar e adaptar para fins não comerciais.',
+    attributionText: 'Credite "IsItSafeToTravel.org" com um link ao usar os dados. A pipeline completa e o site são open source no GitHub.',
+  },
+  zh: {
+    title: '免费旅行安全数据与 API',
+    description: `以免费 JSON 格式下载每日更新的 ${countryCount} 个国家旅行安全评分。无需 API 密钥，无速率限制 — CC BY-NC 4.0 开放数据。`,
+    intro: `本站的每一个数字都来自一个可下载的开放数据集。${countryCount} 个国家的安全评分 — 每天根据 40+ 个公开来源重新计算 — 以静态 JSON 文件形式发布在全球 CDN 上。`,
+    noAuth: '无需 API 密钥，无需注册，没有请求限制。所有端点均支持跨域请求（CORS），可以直接从浏览器获取。',
+    endpointsHeading: '端点',
+    thEndpoint: '端点',
+    thDescription: '说明',
+    thSize: '大约大小',
+    epScores: `完整每日数据集：全部 ${countryCount} 个国家，包含综合评分、5 个支柱评分及每个底层指标、政府旅行警告等级和来源元数据。`,
+    epMapData: '精简版每国数据集：ISO3 代码、本地化名称、综合评分、支柱评分和警告等级。适合地图和概览。',
+    epHistory: '单个国家（小写 ISO3 代码）的每日综合评分历史，格式为 {date, score} 点数组。',
+    epTrend: '单个国家的综合评分及各支柱评分历史，格式为 {history, pillars}。',
+    epBadge: '可嵌入的 SVG 徽章，显示一个国家当前的安全评分。',
+    epLlms: '面向 AI 的全站 Markdown 摘要（llms.txt）和完整的每国数据集（llms-full.txt）。',
+    exampleHeading: '示例',
+    exampleCaption: '获取完整数据集并读取单个国家的评分：',
+    fieldsHeading: 'scores.json 中的国家字段',
+    fieldsIntro: 'countries 数组中的每个条目包含：',
+    thField: '字段',
+    fIso3: 'ISO 3166-1 alpha-3 国家代码（例如 "ITA"）。',
+    fName: '以支持的语言本地化的国家名称。',
+    fScore: '综合安全评分，1–10 分制（10 = 最安全）。5 个支柱的加权几何平均值。',
+    fScoreDisplay: '用于显示的四舍五入评分。',
+    fPillars: '5 个风险支柱（冲突、犯罪、健康、治理、环境），包含评分、权重和底层指标。',
+    fAdvisories: '按发布国划分的政府旅行警告等级（美国、英国、加拿大、澳大利亚及其他 33 个）。',
+    fSources: '该国家使用的公开数据来源及获取日期。',
+    freshness: `数据每天约 06:00 UTC 重新生成。当前快照：${snapshotDate}。`,
+    licenseHeading: '许可与署名',
+    licenseText: '所有数据均采用 Creative Commons BY-NC 4.0 许可：可自由使用、分享和改编，仅限非商业用途。',
+    attributionText: '使用数据时请注明 "IsItSafeToTravel.org" 并附上链接。完整的数据管道和网站在 GitHub 上开源。',
+  },
+  de: {
+    title: 'Kostenlose Reisesicherheits-Daten & API',
+    description: `Laden Sie täglich aktualisierte Reisesicherheits-Scores für ${countryCount} Länder als kostenloses JSON herunter. Kein API-Key, keine Limits — Open Data unter CC BY-NC 4.0.`,
+    intro: `Jede Zahl auf dieser Website stammt aus einem offenen Datensatz, den Sie herunterladen können. Die Sicherheits-Scores von ${countryCount} Ländern — täglich aus 40+ öffentlichen Quellen neu berechnet — werden als statische JSON-Dateien über ein globales CDN veröffentlicht.`,
+    noAuth: 'Kein API-Key, keine Registrierung, keine Anfragelimits. Alle Endpunkte unterstützen Cross-Origin-Anfragen (CORS) und können direkt aus dem Browser abgerufen werden.',
+    endpointsHeading: 'Endpunkte',
+    thEndpoint: 'Endpunkt',
+    thDescription: 'Beschreibung',
+    thSize: 'Ca. Größe',
+    epScores: `Vollständiger täglicher Datensatz: alle ${countryCount} Länder mit zusammengesetztem Score, den 5 Säulen-Scores inkl. aller zugrunde liegenden Indikatoren, Reisewarnstufen der Regierungen und Quellen-Metadaten.`,
+    epMapData: 'Schlanker Datensatz pro Land: ISO3-Code, lokalisierte Namen, zusammengesetzter Score, Säulen-Scores und Warnstufen. Ideal für Karten und Übersichten.',
+    epHistory: 'Tägliche Historie des zusammengesetzten Scores eines Landes (ISO3-Code kleingeschrieben), als Array von {date, score}-Punkten.',
+    epTrend: 'Historie des zusammengesetzten Scores und der Säulen-Scores eines Landes, als {history, pillars}.',
+    epBadge: 'Einbettbares SVG-Abzeichen mit dem aktuellen Sicherheits-Score eines Landes.',
+    epLlms: 'KI-lesbare Markdown-Zusammenfassung der gesamten Website (llms.txt) und vollständiger Datensatz pro Land (llms-full.txt).',
+    exampleHeading: 'Beispiel',
+    exampleCaption: 'Den vollständigen Datensatz laden und den Score eines Landes lesen:',
+    fieldsHeading: 'Länderfelder in scores.json',
+    fieldsIntro: 'Jeder Eintrag im countries-Array enthält:',
+    thField: 'Feld',
+    fIso3: 'ISO 3166-1 alpha-3 Ländercode (z. B. "ITA").',
+    fName: 'Ländername, lokalisiert in den unterstützten Sprachen.',
+    fScore: 'Zusammengesetzter Sicherheits-Score, Skala 1–10 (10 = am sichersten). Gewichtetes geometrisches Mittel der 5 Säulen.',
+    fScoreDisplay: 'Gerundeter Score für die Anzeige.',
+    fPillars: 'Die 5 Risikosäulen (Konflikt, Kriminalität, Gesundheit, Governance, Umwelt) mit Score, Gewicht und zugrunde liegenden Indikatoren.',
+    fAdvisories: 'Reisewarnstufen der Regierungen nach ausstellendem Land (US, UK, CA, AU und 33 weitere).',
+    fSources: 'Die für dieses Land verwendeten öffentlichen Quellen mit Abrufdaten.',
+    freshness: `Die Daten werden täglich gegen 06:00 UTC neu generiert. Aktueller Snapshot: ${snapshotDate}.`,
+    licenseHeading: 'Lizenz & Namensnennung',
+    licenseText: 'Alle Daten stehen unter der Lizenz Creative Commons BY-NC 4.0: frei nutzbar, teilbar und anpassbar für nicht-kommerzielle Zwecke.',
+    attributionText: 'Bitte nennen Sie "IsItSafeToTravel.org" mit Link, wenn Sie die Daten verwenden. Pipeline und Website sind Open Source auf GitHub.',
+  },
+};
+
+const c = copy[lang];
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['api']}/`;
+const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+
+const endpoints = [
+  { path: '/scores.json', href: '/scores.json', desc: c.epScores, size: '~1.4 MB' },
+  { path: '/map-data.json', href: '/map-data.json', desc: c.epMapData, size: '~130 KB' },
+  { path: '/history/{iso3}.json', href: '/history/ita.json', desc: c.epHistory, size: '~5 KB' },
+  { path: '/trend/{iso3}.json', href: '/trend/ita.json', desc: c.epTrend, size: '~20 KB' },
+  { path: '/badge/{iso3}.svg', href: '/badge/ita.svg', desc: c.epBadge, size: '~2 KB' },
+  { path: '/llms-full.txt', href: '/llms-full.txt', desc: c.epLlms, size: '~250 KB' },
+];
+
+const fields = [
+  { name: 'iso3', desc: c.fIso3 },
+  { name: 'name', desc: c.fName },
+  { name: 'score', desc: c.fScore },
+  { name: 'scoreDisplay', desc: c.fScoreDisplay },
+  { name: 'pillars', desc: c.fPillars },
+  { name: 'advisories', desc: c.fAdvisories },
+  { name: 'sources', desc: c.fSources },
+];
+
+const exampleCode = `const res = await fetch('https://isitsafetotravel.org/scores.json');
+const { date, globalScore, countries } = await res.json();
+
+const italy = countries.find((c) => c.iso3 === 'ITA');
+console.log(italy.score); // composite safety score, 1-10`;
+
+// WebPage + Dataset + BreadcrumbList in one @graph. The Dataset node mirrors the
+// homepage Dataset (buildDatasetJsonLd) but points at this page, which is the
+// canonical human-readable documentation of the downloadable distribution.
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    {
+      '@type': 'WebPage',
+      '@id': canonicalUrl,
+      url: canonicalUrl,
+      name: c.title,
+      description: c.description,
+      inLanguage: localeMap[lang],
+      datePublished: '2026-06-10',
+      dateModified: snapshotDate,
+    },
+    {
+      ...buildDatasetJsonLd(),
+      url: canonicalUrl,
+      dateModified: snapshotDate,
+    },
+    {
+      '@type': 'BreadcrumbList',
+      itemListElement: [
+        { '@type': 'ListItem', position: 1, name: t('nav.home'), item: `https://isitsafetotravel.org/${lang}/` },
+        { '@type': 'ListItem', position: 2, name: c.title, item: canonicalUrl },
+      ],
+    },
+  ],
+};
+---
+
+<Base lang={lang} title={c.title} description={c.description} jsonLd={jsonLd} ogImage="/og/default.png">
+  <div class="max-w-4xl mx-auto px-4 py-12">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: c.title, href: '' },
+    ]} />
+
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-6">{c.title}</h1>
+
+    <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{c.intro}</p>
+    <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-2">{c.noAuth}</p>
+    <p class="text-sm text-sand-500 dark:text-sand-400 mb-10">{c.freshness}</p>
+
+    <!-- Endpoints -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-4">{c.endpointsHeading}</h2>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{c.thEndpoint}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{c.thDescription}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium whitespace-nowrap">{c.thSize}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {endpoints.map((ep) => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 align-top">
+                  <a href={ep.href} class="font-mono text-xs text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline whitespace-nowrap">{ep.path}</a>
+                </td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{ep.desc}</td>
+                <td class="py-3 text-sand-600 dark:text-sand-300 whitespace-nowrap align-top">{ep.size}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Example -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{c.exampleHeading}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{c.exampleCaption}</p>
+      <pre class="rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-800 text-sand-800 dark:text-sand-100 font-mono text-xs px-4 py-3 overflow-x-auto"><code>{exampleCode}</code></pre>
+    </section>
+
+    <!-- Field reference -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{c.fieldsHeading}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{c.fieldsIntro}</p>
+      <div class="overflow-x-auto">
+        <table class="w-full text-sm border-collapse">
+          <thead>
+            <tr class="border-b border-sand-300 dark:border-sand-600">
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{c.thField}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{c.thDescription}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {fields.map((f) => (
+              <tr class="border-b border-sand-200 dark:border-sand-700">
+                <td class="py-3 pr-4 font-mono text-xs text-sand-800 dark:text-sand-100 align-top">{f.name}</td>
+                <td class="py-3 text-sand-600 dark:text-sand-300">{f.desc}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- License & attribution -->
+    <section class="mb-4">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{c.licenseHeading}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-2">
+        {c.licenseText}
+        {' '}
+        <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">CC BY-NC 4.0</a>
+      </p>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">
+        {c.attributionText}
+        {' '}
+        <a href="https://github.com/RiccardoDominici/IsItSafeToTravel" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">GitHub</a>
+      </p>
+    </section>
+  </div>
+</Base>

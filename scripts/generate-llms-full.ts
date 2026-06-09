@@ -396,10 +396,12 @@ function main() {
 
 ## Data
 
+- [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
+- [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — updated daily
 - Scores updated daily via automated GitHub Actions pipeline
 - Sources: Global Peace Index (GPI), INFORM Risk Index, ReliefWeb, GDACS, US/UK/CA/AU government travel advisories
 - Composite scoring uses weighted average across 5 safety pillars
-- All data is from publicly available sources
+- All data is from publicly available sources, licensed CC BY-NC 4.0
 
 ## Full Content
 

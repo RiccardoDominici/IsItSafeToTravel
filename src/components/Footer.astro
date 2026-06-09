@@ -12,6 +12,7 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
 const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
+const apiLabel = ({ en: 'Data & API', it: 'Dati e API', es: 'Datos y API', fr: 'Données et API', pt: 'Dados e API', zh: '数据与 API', de: 'Daten & API' } as Record<Lang, string>)[lang];
 const currentYear = new Date().getFullYear();
 const affiliateUrl = buildAffiliateUrl();
 ---
@@ -78,6 +79,12 @@ const affiliateUrl = buildAffiliateUrl();
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >
         {t('footer.sources')}
+      </a>
+      <a
+        href={`/${lang}/${r['api']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {apiLabel}
       </a>
       <a
         href={affiliateUrl}

@@ -23,6 +23,7 @@
 
 /*.json
   Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
 
 /*.html
   Cache-Control: public, max-age=600, must-revalidate
