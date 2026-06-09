@@ -23,6 +23,7 @@ import TravelDealsWidget from '../../../components/TravelDealsWidget.astro';
 import { getMainCityIata, getMainCityName } from '../../../lib/iata-cities';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
+import { getLastmodMap } from '../../../lib/lastmod';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
@@ -64,7 +65,8 @@ interface Props {
 const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries } = Astro.props;
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const dateModified = new Date().toISOString().split('T')[0];
+const lm = getLastmodMap();
+const dateModified = lm.countries[country.iso3] ?? lm.snapshotDate.slice(0, 10);
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
 const advisorySources = Object.keys(country.advisories || {}).map(key => ({
   key,
@@ -82,7 +84,7 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
     ]} />
     <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
       <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">
-        Ultima actualizacion: {new Date().toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric' })}
+        Ultima actualizacion: {new Date(lm.snapshotDate).toLocaleDateString('es-ES', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
       </p>
       <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
         <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/></svg>
