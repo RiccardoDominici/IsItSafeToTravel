@@ -10,6 +10,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { regionMap as libRegionMap } from "../src/lib/regions.js";
 
 // ── paths ────────────────────────────────────────────────────────────────────
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -129,6 +130,22 @@ function main() {
     a.name.en.localeCompare(b.name.en)
   );
 
+  // Data-coverage floor for rankings — keep MIN_RANKING_SOURCES in sync with
+  // the on-site ranking pages (hub-data.ts hasSufficientData).
+  const MIN_RANKING_SOURCES = 4;
+  const hasSufficientData = (c: ScoredCountry) =>
+    (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+
+  // Global rank (all countries, score desc) + percentile + global average
+  const totalCountries = countries.length;
+  const byScoreDesc = [...countries].sort((a, b) => b.score - a.score);
+  const rankByIso3: Record<string, number> = {};
+  byScoreDesc.forEach((c, i) => {
+    rankByIso3[c.iso3] = i + 1;
+  });
+  const globalAvg =
+    countries.reduce((sum, c) => sum + c.score, 0) / totalCountries;
+
   // ────── build llms-full.txt ──────
   const lines: string[] = [];
 
@@ -137,6 +154,8 @@ function main() {
   lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." Data is updated daily and licensed under CC BY-NC 4.0.`);
   lines.push("");
   lines.push(`> **Source:** IsItSafeToTravel.org — Free, open-source travel safety platform. Data updated daily from government advisories (US, UK, Canada, Australia), Global Peace Index, INFORM Risk Index, ReliefWeb, and GDACS.`);
+  lines.push("");
+  lines.push(`> **Data snapshot:** ${today}. Scores refresh daily at 06:00 UTC from 40+ public sources.`);
   lines.push("");
 
   // How to Cite
@@ -209,9 +228,18 @@ function main() {
         ? "is moderately safe to travel — check current government advisories first"
         : "carries significant travel-safety risks";
 
+    const rank = rankByIso3[c.iso3];
+    const pct = Math.max(1, Math.ceil((rank / totalCountries) * 100));
+    const pctLabel =
+      pct <= 50
+        ? `top ${pct}% worldwide`
+        : `bottom ${Math.max(1, Math.ceil(((totalCountries - rank + 1) / totalCountries) * 100))}% worldwide`;
+    const limited = hasSufficientData(c) ? "" : " (limited data)";
+    const rankSentence = `Ranked #${rank} of ${totalCountries} countries by safety score${limited} (${pctLabel}; global average ${fmt(globalAvg)}/10).`;
+
     lines.push(`### ${c.name.en} (${c.iso3})`);
     lines.push(
-      `${c.name.en} ${verdict} as of ${today} (safety score ${fmt(c.score)}/10, ${riskLabel(c.score)} risk). Strongest area: ${strongest.name} (${pillarDisplay(strongest.score)}/10); main concern: ${weakest.name} (${pillarDisplay(weakest.score)}/10).`
+      `${c.name.en} ${verdict} as of ${today} (safety score ${fmt(c.score)}/10, ${riskLabel(c.score)} risk). ${rankSentence} Strongest area: ${strongest.name} (${pillarDisplay(strongest.score)}/10); main concern: ${weakest.name} (${pillarDisplay(weakest.score)}/10).`
     );
     lines.push(`- **Safety Score:** ${fmt(c.score)}/10 (${riskLabel(c.score)} risk)`);
     lines.push(
@@ -240,10 +268,8 @@ function main() {
 
   // Rankings — apply a data-coverage floor so 1-source micro-territories
   // (which default to optimistic ~9.9 scores) do not crowd out real countries.
-  // Keep MIN_RANKING_SOURCES in sync with the on-site ranking pages (hub-data.ts).
-  const MIN_RANKING_SOURCES = 4;
   const ranked = [...countries]
-    .filter((c) => (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES)
+    .filter(hasSufficientData)
     .sort((a, b) => b.score - a.score);
 
   lines.push("## Top 10 Safest Countries");
@@ -262,6 +288,44 @@ function main() {
   for (let i = 0; i < bottom.length; i++) {
     const c = bottom[i];
     lines.push(`${i + 1}. **${c.name.en}** — ${fmt(c.score)}/10`);
+  }
+  lines.push("");
+
+  // Regional Safety Comparison — uses the shared region map (src/lib/regions.ts).
+  // Safest/Lowest apply the same data-coverage floor as the rankings above.
+  const REGION_LABELS: Record<string, string> = {
+    europe: "Europe",
+    asia: "Asia",
+    americas: "Americas",
+    oceania: "Oceania",
+    middle_east: "Middle East",
+    africa: "Africa",
+    other: "Other",
+  };
+  const regionGroups: Record<string, ScoredCountry[]> = {};
+  for (const c of countries) {
+    const key = libRegionMap[c.iso3] ?? "other";
+    (regionGroups[key] ??= []).push(c);
+  }
+
+  lines.push("## Regional Safety Comparison");
+  lines.push("");
+  lines.push(`*Safest/Lowest consider only countries with sufficient data coverage (${MIN_RANKING_SOURCES}+ independent sources).*`);
+  lines.push("");
+  lines.push("| Region | Avg score | Countries | Safest | Lowest |");
+  lines.push("|---|---|---|---|---|");
+  for (const key of ["europe", "asia", "americas", "oceania", "middle_east", "africa", "other"]) {
+    const group = regionGroups[key];
+    if (!group || group.length === 0) continue;
+    const avg = group.reduce((sum, c) => sum + c.score, 0) / group.length;
+    const eligible = group.filter(hasSufficientData).sort((a, b) => b.score - a.score);
+    const safest = eligible.length
+      ? `${eligible[0].name.en} (${fmt(eligible[0].score)}/10)`
+      : "—";
+    const lowest = eligible.length
+      ? `${eligible[eligible.length - 1].name.en} (${fmt(eligible[eligible.length - 1].score)}/10)`
+      : "—";
+    lines.push(`| ${REGION_LABELS[key]} | ${fmt(avg)}/10 | ${group.length} | ${safest} | ${lowest} |`);
   }
   lines.push("");
 
