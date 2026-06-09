@@ -10,7 +10,7 @@ const lang: Lang = 'pt';
 const t = useTranslations(lang);
 const countries = loadLatestScores();
 const history = loadHistoricalScores();
-const ranked = getImprovingSafety(countries, history, 20);
+const ranked = getImprovingSafety(countries, history, 50);
 const deltas = new Map(ranked.map(c => [c.iso3, c.delta]));
 const title = t('hub.improving.title' as any);
 const description = t('hub.improving.description' as any);

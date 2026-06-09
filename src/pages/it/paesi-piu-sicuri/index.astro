@@ -9,7 +9,7 @@ import type { Lang } from '../../../i18n/ui';
 const lang: Lang = 'it';
 const t = useTranslations(lang);
 const countries = loadLatestScores();
-const ranked = getSafestCountries(countries, 20);
+const ranked = getSafestCountries(countries, 50);
 const title = t('hub.safest_countries.title' as any);
 const description = t('hub.safest_countries.description' as any);
 const intro = t('hub.safest_countries.intro' as any);

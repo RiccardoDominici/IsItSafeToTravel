@@ -9,7 +9,7 @@ import type { Lang } from '../../../i18n/ui';
 const lang: Lang = 'pt';
 const t = useTranslations(lang);
 const countries = loadLatestScores();
-const ranked = getSafestForSoloTravelers(countries, 20);
+const ranked = getSafestForSoloTravelers(countries, 50);
 const title = t('hub.solo_travelers.title' as any);
 const description = t('hub.solo_travelers.description' as any);
 const intro = t('hub.solo_travelers.intro' as any);
