@@ -42,6 +42,10 @@ const legendDanger = t('map.legend.danger');
 const countryRoute = routes[lang].country;
 ---
 
+<!-- Start downloading map data while the module graph is still loading.
+     crossorigin matches the default fetch() init so the preload is reused. -->
+<link rel="preload" href="/map-data.json" as="fetch" crossorigin="anonymous" />
+<link rel="preload" href="/world-topo.json" as="fetch" crossorigin="anonymous" />
 <div
   id="safety-map-container"
   class="relative w-full h-full overflow-hidden"

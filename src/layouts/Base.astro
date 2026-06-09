@@ -5,6 +5,8 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/dm-sans';
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import dmSansLatinWoff2 from '@fontsource-variable/dm-sans/files/dm-sans-latin-wght-normal.woff2?url';
 import '../styles/global.css';
 
 interface Props {
@@ -26,7 +28,8 @@ const currentPath = Astro.url.pathname;
 const alternateLinks = getAlternateLinks(currentPath);
 const canonicalUrl = new URL(currentPath, Astro.site);
 const xDefaultHref = new URL(getLocalizedPath(currentPath, 'en'), Astro.site);
-const resolvedOgImage = ogImage ? new URL(ogImage, Astro.site).href : null;
+// Every page gets a social card: explicit per-page image, or the branded default.
+const resolvedOgImage = new URL(ogImage || '/og/default.png', Astro.site).href;
 const resolvedOgType = ogType || 'website';
 ---
 
@@ -97,8 +100,10 @@ const resolvedOgType = ogType || 'website';
     <link rel="dns-prefetch" href="https://www.clarity.ms" />
     <link rel="dns-prefetch" href="https://storage.ko-fi.com" />
 
-    <!-- Preload critical assets -->
-    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+    <!-- Preload critical assets: latin variable fonts used by body (Inter) and headings (DM Sans).
+         Without these the browser discovers fonts only after CSS parse → late text paint. -->
+    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={dmSansLatinWoff2} as="font" type="font/woff2" crossorigin />
 
     <!-- JSON-LD Structured Data -->
     {jsonLd && (

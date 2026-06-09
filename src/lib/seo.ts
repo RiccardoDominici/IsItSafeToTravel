@@ -425,7 +425,7 @@ export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown
     name: 'IsItSafeToTravel',
     url: siteUrl,
     description: 'Free travel safety platform providing transparent, data-driven safety scores for 200+ countries worldwide.',
-    logo: `${siteUrl}/favicon.svg`,
+    logo: `${siteUrl}/icon-512.png`,
     sameAs: ['https://github.com/RiccardoDominici/IsItSafeToTravel'],
     foundingDate: '2026',
   };

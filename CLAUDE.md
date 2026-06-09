@@ -10,7 +10,8 @@ AI answer engines.
 | Command | What |
 |---|---|
 | `npm run dev` | Astro dev server |
-| `npm run build` | `generate:og` → `generate:llms` → `astro build` → `validate:seo`. **Slow (~400s)** — the OG step regenerates 248 images. To iterate faster, run `npx astro build` directly (OG/llms already on disk) then `npm run validate:seo`. |
+| `npm run build` | `generate:og` → `generate:llms` → `astro build` → `optimize:preload` → `validate:seo`. **Slow (~400s)** — the OG step regenerates 248 images. To iterate faster, run `npx astro build` directly (OG/llms already on disk) then `npm run optimize:preload && npm run validate:seo`. |
+| `npm run optimize:preload` | Inject `<link rel="modulepreload">` into `dist/client` HTML for each page's static JS import graph (`scripts/inject-modulepreload.ts`). Idempotent; must run after `astro build`. |
 | `npm run validate:seo` | Post-build SEO gate (`scripts/validate-seo.ts`) against `dist/client`. **Must stay all-pass** before committing SEO/schema changes. |
 | `npm run generate:llms` | Regenerate `public/llms.txt` + `public/llms-full.txt` (fast). |
 | `npm run pipeline` / `npx tsx src/pipeline/run.ts [YYYY-MM-DD]` | Run the data pipeline (fetch → score → snapshot). |

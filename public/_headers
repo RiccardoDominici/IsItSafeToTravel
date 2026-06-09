@@ -3,8 +3,8 @@
   X-Frame-Options: DENY
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Strict-Transport-Security: max-age=86400; includeSubDomains
-  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com storage.ko-fi.com ko-fi.com; style-src 'self' 'unsafe-inline' storage.ko-fi.com ko-fi.com; img-src 'self' data: storage.ko-fi.com ko-fi.com; font-src 'self' data:; connect-src 'self' ko-fi.com storage.ko-fi.com; frame-src ko-fi.com storage.ko-fi.com www.aviasales.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' www.aviasales.com
+  Strict-Transport-Security: max-age=31536000; includeSubDomains
+  Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com storage.ko-fi.com ko-fi.com www.clarity.ms; style-src 'self' 'unsafe-inline' storage.ko-fi.com ko-fi.com; img-src 'self' data: storage.ko-fi.com ko-fi.com www.clarity.ms; font-src 'self' data:; connect-src 'self' ko-fi.com storage.ko-fi.com www.clarity.ms *.clarity.ms c.bing.com; frame-src ko-fi.com storage.ko-fi.com www.aviasales.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' www.aviasales.com
 
 /*.js
   Cache-Control: public, max-age=31536000, immutable
@@ -15,14 +15,29 @@
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
+# Hashed build assets (JS, CSS, woff2 fonts) — filenames change on content change
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /*.ico
   Cache-Control: public, max-age=86400
 
 /*.svg
   Cache-Control: public, max-age=86400
 
+/*.png
+  Cache-Control: public, max-age=86400
+
+# OG/social card images — regenerated daily with fresh scores
+/og/*
+  Cache-Control: public, max-age=86400
+
 /*.json
   Cache-Control: public, max-age=3600
+
+# Country borders topojson — static geometry, changes ~never
+/world-topo.json
+  Cache-Control: public, max-age=604800
 
 /*.html
   Cache-Control: public, max-age=600, must-revalidate
