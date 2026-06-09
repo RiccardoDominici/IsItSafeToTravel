@@ -6,6 +6,9 @@ import { useTranslations } from '../../i18n/utils';
 import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../Breadcrumb.astro';
 import CountryRankRow from './CountryRankRow.astro';
+import HubFaq from './HubFaq.astro';
+import { getHubFaq, type HubType } from '../../lib/hub-faq';
+import { buildFaqPageJsonLd } from '../../lib/seo';
 
 interface Props {
   lang: Lang;
@@ -14,12 +17,26 @@ interface Props {
   intro: string;
   jsonLd: Record<string, unknown>;
   countries: ScoredCountry[];
+  /** When set, renders a visible FAQ section and merges a FAQPage node into the JSON-LD @graph. */
+  hubType?: HubType;
   showDelta?: boolean;
   deltas?: Map<string, number>;
   breadcrumbItems?: Array<{ label: string; href: string }>;
 }
 
-const { lang, title, description, intro, jsonLd, countries, showDelta = false, deltas, breadcrumbItems } = Astro.props;
+const { lang, title, description, intro, jsonLd, countries, hubType, showDelta = false, deltas, breadcrumbItems } = Astro.props;
+
+// FAQ: visible section + FAQPage JSON-LD merged with the page's ItemList in a single @graph
+const faqData = hubType ? getHubFaq(hubType, lang) : null;
+let finalJsonLd = jsonLd;
+if (faqData) {
+  const { '@context': _ctx1, ...itemListNode } = jsonLd;
+  const { '@context': _ctx2, ...faqPageNode } = buildFaqPageJsonLd(faqData);
+  finalJsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [itemListNode, faqPageNode],
+  };
+}
 const t = useTranslations(lang);
 const r = routes[lang];
 const dateLocaleMap: Record<Lang, string> = {
@@ -52,7 +69,7 @@ const hubLinks: Array<{ key: string; route: string }> = [
 ];
 ---
 
-<Base lang={lang} title={title} description={description} jsonLd={jsonLd}>
+<Base lang={lang} title={title} description={description} jsonLd={finalJsonLd}>
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={crumbs} />
 
@@ -80,6 +97,9 @@ const hubLinks: Array<{ key: string; route: string }> = [
         />
       ))}
     </ol>
+
+    {/* FAQ (visible counterpart of the FAQPage JSON-LD node) */}
+    {faqData && <HubFaq lang={lang} faqData={faqData} />}
 
     {/* See Also cross-links */}
     <section class="pt-8 border-t border-sand-200 dark:border-sand-700">
