@@ -102,7 +102,7 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
       mode="country"
     />
     <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
-    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} />
+    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} />
     <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <FaqSection country={country} lang={lang} />

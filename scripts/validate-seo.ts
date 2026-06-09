@@ -13,6 +13,20 @@ const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
 const LANGUAGES = ["en", "it", "es", "fr", "pt", "zh", "de"] as const;
 
+// ISO3 → Wikidata/Wikipedia entity mapping used for Place.sameAs grounding.
+// Loaded leniently: if the file is missing, the sameAs checks are skipped.
+const WIKIDATA_MAP_PATH = path.resolve(
+  import.meta.dirname ?? ".",
+  "../src/data/countries-wikidata.json"
+);
+const WIKIDATA_MAP: Record<string, { qid?: string; wikipedia?: string }> = (() => {
+  try {
+    return JSON.parse(fs.readFileSync(WIKIDATA_MAP_PATH, "utf-8"));
+  } catch {
+    return {};
+  }
+})();
+
 // Language-specific path segments for "country"
 const COUNTRY_SEGMENT: Record<string, string> = {
   en: "country",

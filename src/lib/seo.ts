@@ -3,6 +3,11 @@ import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
+import wikidataMapJson from '../data/countries-wikidata.json';
+
+// ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
+// (helps AI answer engines and Google disambiguate the country entity).
+const wikidataMap = wikidataMapJson as Record<string, { qid?: string; wikipedia?: string }>;
 
 // Locale maps for consistent 7-language handling
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
@@ -243,6 +248,15 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   const tourType = touristTypes[lang][bandIdx];
   const year = new Date().getFullYear();
 
+  // Entity grounding: link the Place node to Wikidata/Wikipedia when we have a mapping.
+  const wikidataEntry = wikidataMap[country.iso3];
+  const sameAs = wikidataEntry
+    ? [
+        wikidataEntry.qid && `https://www.wikidata.org/wiki/${wikidataEntry.qid}`,
+        wikidataEntry.wikipedia,
+      ].filter(Boolean)
+    : [];
+
   return {
     '@context': 'https://schema.org',
     '@graph': [
@@ -264,6 +278,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         '@id': `${canonicalUrl}#place`,
         name: countryName,
         description: placeDescriptions[lang](countryName),
+        ...(sameAs.length > 0 && { sameAs }),
         ...(regionName && { containedInPlace: { '@type': 'Place', name: regionName } }),
       },
       buildCountryFaqJsonLd(country, lang),

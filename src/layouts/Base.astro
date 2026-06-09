@@ -3,9 +3,9 @@ import type { Lang } from '../i18n/ui';
 import { useTranslations, getAlternateLinks, getLocalizedPath } from '../i18n/utils';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
-import '@fontsource-variable/inter';
-import '@fontsource-variable/dm-sans';
+import '../styles/fonts.css';
 import '../styles/global.css';
+import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
   lang: Lang;
@@ -99,6 +99,7 @@ const resolvedOgType = ogType || 'website';
 
     <!-- Preload critical assets -->
     <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+    <link rel="preload" href={interLatinWoff2} as="font" type="font/woff2" crossorigin />
 
     <!-- JSON-LD Structured Data -->
     {jsonLd && (
@@ -118,6 +119,9 @@ const resolvedOgType = ogType || 'website';
         }
       })();
     </script>
+
+    <!-- Speculation Rules: prefetch internal links on hover/pointerdown (Chrome-only progressive enhancement) -->
+    <script type="speculationrules" is:inline set:html={JSON.stringify({ prefetch: [{ where: { and: [{ href_matches: '/*' }] }, eagerness: 'moderate' }] })} />
   </head>
   <body class="bg-sand-50 text-sand-900 dark:bg-sand-900 dark:text-sand-50 font-sans min-h-screen flex flex-col">
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-terracotta-500 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-semibold">

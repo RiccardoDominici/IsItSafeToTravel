@@ -8,9 +8,10 @@ interface Props {
   data: HistoryPoint[];
   pillarData?: Record<string, HistoryPoint[]> | null;
   lang: Lang;
+  iso3: string;
 }
 
-const { data, pillarData, lang } = Astro.props;
+const { data, pillarData, lang, iso3 } = Astro.props;
 const t = useTranslations(lang);
 
 const uniqueScores = new Set(data.map(d => d.score));
@@ -71,7 +72,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           </div>
         </div>
       )}
-      <div id="trend-chart-container" class="relative" data-history={JSON.stringify(data)} data-pillar-history={pillarData ? JSON.stringify(pillarData) : ''} data-lang={lang}>
+      <div id="trend-chart-container" class="relative" data-iso3={iso3.toLowerCase()} data-lang={lang}>
         <div id="trend-chart-placeholder" class="flex items-center justify-center w-full bg-sand-50 dark:bg-sand-900 rounded" style="aspect-ratio: 800/240;">
           <span class="text-sm text-sand-400 dark:text-sand-500 animate-pulse">Loading chart...</span>
         </div>
@@ -113,8 +114,16 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
   import { scoreToColor } from '../../lib/colors';
 
   function initTrendChart(): void {
-    // Dynamic import of D3 — only loaded when chart is in view
-    import('d3').then(({ scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut }) => {
+    const container = document.getElementById('trend-chart-container');
+    if (!container) return;
+
+    // Dynamic import of D3 + on-demand trend data fetch — only when chart is in view
+    Promise.all([
+      import('d3'),
+      fetch('/trend/' + container.dataset.iso3 + '.json')
+        .then(r => r.ok ? r.json() : { history: [], pillars: null }),
+    ]).then(([d3module, trendJson]) => {
+    const { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } = d3module;
 
     function smartDateFormat(dates: Date[]): (d: Date) => string {
       const first = dates[0], last = dates[dates.length - 1];
@@ -127,7 +136,6 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       }
     }
 
-    const container = document.getElementById('trend-chart-container');
     if (container) {
       // Remove placeholder and show SVG
       const placeholder = document.getElementById('trend-chart-placeholder');
@@ -140,11 +148,10 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
     const lang = container.dataset.lang || 'en';
 
     interface HistoryPoint { date: string; score: number; dc?: number; }
-    const fullData: HistoryPoint[] = JSON.parse(container.dataset.history || '[]');
+    const fullData: HistoryPoint[] = trendJson.history || [];
 
-    // Parse pillar history data
-    const pillarHistoryRaw = container.dataset.pillarHistory;
-    const pillarHistory: Record<string, HistoryPoint[]> | null = pillarHistoryRaw ? JSON.parse(pillarHistoryRaw) : null;
+    // Pillar history data (fetched alongside composite history)
+    const pillarHistory: Record<string, HistoryPoint[]> | null = trendJson.pillars || null;
 
     // Track current pillar filter (null = overall/composite)
     let currentPillar: string | null = null;
@@ -664,7 +671,10 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
     }
     } // end if (container)
 
-    }); // end import('d3').then()
+    }).catch(() => {
+      // Trend data or D3 failed to load — hide placeholder, fail silently
+      document.getElementById('trend-chart-placeholder')?.remove();
+    }); // end Promise.all().then()
   } // end initTrendChart
 
   // Lazy load: only initialize when chart scrolls into view
