@@ -58,6 +58,22 @@ Allow: /
 User-agent: CCBot
 Allow: /
 
+# ByteDance
+User-agent: Bytespider
+Allow: /
+
+# You.com
+User-agent: YouBot
+Allow: /
+
+# Mistral
+User-agent: MistralAI-User
+Allow: /
+
+# Timpi
+User-agent: TimpiBot
+Allow: /
+
 # LLM-readable site description
 # See: /llms.txt
 
