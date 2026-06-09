@@ -267,6 +267,12 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         name: webPageNameTemplates[lang](countryName),
         description: buildCountryMetaDescription(country, lang),
         inLanguage: localeMap[lang],
+        author: {
+          '@type': 'Person',
+          name: 'Riccardo Dominici',
+          url: `https://isitsafetotravel.org/${lang}/${routes[lang].about}/`,
+        },
+        publisher: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
         ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
       },
       {
@@ -440,7 +446,9 @@ export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown
     name: 'IsItSafeToTravel',
     url: siteUrl,
     description: 'Free travel safety platform providing transparent, data-driven safety scores for 200+ countries worldwide.',
-    logo: `${siteUrl}/favicon.svg`,
+    // Google requires a raster logo >= 112x112px; icon-512.png is the largest PNG we ship.
+    logo: `${siteUrl}/icon-512.png`,
+    founder: { '@type': 'Person', name: 'Riccardo Dominici', url: 'https://github.com/RiccardoDominici' },
     sameAs: ['https://github.com/RiccardoDominici/IsItSafeToTravel'],
     foundingDate: '2026',
   };

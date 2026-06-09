@@ -17,6 +17,7 @@ const intro = t('hub.solo_travelers.intro' as any);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
+  itemListOrder: 'https://schema.org/ItemListOrderDescending',
   name: title,
   description,
   numberOfItems: ranked.length,

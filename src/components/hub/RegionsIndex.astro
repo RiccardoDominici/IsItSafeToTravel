@@ -101,6 +101,7 @@ const jsonLd = {
     },
     {
       '@type': 'ItemList',
+      numberOfItems: regionCards.length,
       itemListElement: regionCards.map((c, i) => ({
         '@type': 'ListItem',
         position: i + 1,

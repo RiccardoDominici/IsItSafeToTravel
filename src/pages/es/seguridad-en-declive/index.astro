@@ -19,6 +19,7 @@ const intro = t('hub.declining.intro' as any);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
   name: title,
   description,
   numberOfItems: ranked.length,

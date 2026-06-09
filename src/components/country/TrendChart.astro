@@ -35,7 +35,7 @@ const hasPillarData = pillarData && Object.keys(pillarData).length > 0;
 const showChartSection = showChart || (hasPillarData && data.length >= 2);
 ---
 
-<section class="py-6 px-4 max-w-2xl mx-auto">
+<section id="trend" class="py-6 px-4 max-w-2xl mx-auto">
   <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
     {t('country.trend_title')}
   </h2>

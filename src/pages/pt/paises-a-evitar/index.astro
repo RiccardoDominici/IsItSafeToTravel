@@ -17,6 +17,7 @@ const intro = t('hub.countries_to_avoid.intro' as any);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
   name: title,
   description,
   numberOfItems: ranked.length,
