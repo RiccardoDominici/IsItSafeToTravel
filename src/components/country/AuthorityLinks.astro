@@ -1,0 +1,177 @@
+---
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { getLocalizedCountryName } from '../../lib/scores';
+
+interface Props {
+  country: ScoredCountry;
+  lang: Lang;
+  canonicalUrl: string;
+}
+
+const { country, lang, canonicalUrl } = Astro.props;
+
+// Build ranking + embed URLs by reading the localized slugs from routes[lang].
+// Never hardcode slug strings — the routes map is the single source of truth.
+const r = routes[lang];
+const safestUrl = `/${lang}/${r['safest-countries']}/`;
+const dangerousUrl = `/${lang}/${r['most-dangerous-countries']}/`;
+const embedUrl = `/${lang}/${r['embed-badge']}/`;
+
+interface AuthorityLabels {
+  rankingsHeading: string;
+  safest: string;
+  dangerous: string;
+  citeHeading: string;
+  embedCta: string;
+  copy: string;
+  copied: string;
+}
+
+// Full label set for all 7 langs — no fallbacks, no missing keys.
+const labels: Record<Lang, AuthorityLabels> = {
+  en: {
+    rankingsHeading: 'Rankings',
+    safest: 'Safest countries 2026',
+    dangerous: 'Most dangerous countries 2026',
+    citeHeading: 'Cite this data',
+    embedCta: 'Embed the safety badge',
+    copy: 'Copy',
+    copied: 'Copied!',
+  },
+  it: {
+    rankingsHeading: 'Classifiche',
+    safest: 'Paesi più sicuri 2026',
+    dangerous: 'Paesi più pericolosi 2026',
+    citeHeading: 'Cita questi dati',
+    embedCta: 'Incorpora il badge di sicurezza',
+    copy: 'Copia',
+    copied: 'Copiato!',
+  },
+  es: {
+    rankingsHeading: 'Clasificaciones',
+    safest: 'Países más seguros 2026',
+    dangerous: 'Países más peligrosos 2026',
+    citeHeading: 'Cita estos datos',
+    embedCta: 'Incrusta la insignia de seguridad',
+    copy: 'Copiar',
+    copied: '¡Copiado!',
+  },
+  fr: {
+    rankingsHeading: 'Classements',
+    safest: 'Pays les plus sûrs 2026',
+    dangerous: 'Pays les plus dangereux 2026',
+    citeHeading: 'Citer ces données',
+    embedCta: 'Intégrer le badge de sécurité',
+    copy: 'Copier',
+    copied: 'Copié !',
+  },
+  pt: {
+    rankingsHeading: 'Classificações',
+    safest: 'Países mais seguros 2026',
+    dangerous: 'Países mais perigosos 2026',
+    citeHeading: 'Cite estes dados',
+    embedCta: 'Incorpore o badge de segurança',
+    copy: 'Copiar',
+    copied: 'Copiado!',
+  },
+  zh: {
+    rankingsHeading: '排行榜',
+    safest: '2026 最安全的国家',
+    dangerous: '2026 最危险的国家',
+    citeHeading: '引用此数据',
+    embedCta: '嵌入安全徽章',
+    copy: '复制',
+    copied: '已复制！',
+  },
+  de: {
+    rankingsHeading: 'Ranglisten',
+    safest: 'Sicherste Länder 2026',
+    dangerous: 'Gefährlichste Länder 2026',
+    citeHeading: 'Diese Daten zitieren',
+    embedCta: 'Sicherheitsabzeichen einbetten',
+    copy: 'Kopieren',
+    copied: 'Kopiert!',
+  },
+};
+
+const L = labels[lang];
+
+// Band-matching order: safest-first for high scorers, dangerous-first otherwise.
+const safestFirst = country.score >= 6;
+const rankLinks = safestFirst
+  ? [
+      { href: safestUrl, label: L.safest },
+      { href: dangerousUrl, label: L.dangerous },
+    ]
+  : [
+      { href: dangerousUrl, label: L.dangerous },
+      { href: safestUrl, label: L.safest },
+    ];
+
+// Copy-paste citation line for external attribution / backlinks.
+const citation = `${getLocalizedCountryName(country, lang)} safety score — isitsafetotravel.org — ${canonicalUrl} — updated daily`;
+---
+
+<section class="py-6 px-4 max-w-2xl mx-auto">
+  <div>
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-5">
+      {L.rankingsHeading}
+    </h2>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {rankLinks.map((link) => (
+        <a
+          href={link.href}
+          class="flex items-center justify-between gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+        >
+          <span class="text-sm font-medium text-sand-800 dark:text-sand-100">
+            {link.label}
+          </span>
+          <span aria-hidden="true" class="text-terracotta-500 dark:text-terracotta-400">&rarr;</span>
+        </a>
+      ))}
+    </div>
+  </div>
+
+  <div class="mt-6">
+    <h3 class="text-sm font-semibold text-sand-500 dark:text-sand-400 uppercase tracking-wide mb-3">
+      {L.citeHeading}
+    </h3>
+    <code
+      id="cite-line"
+      class="block text-xs text-sand-700 dark:text-sand-300 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded px-3 py-2 break-all"
+    >{citation}</code>
+    <button
+      type="button"
+      data-cite-copy
+      data-copied={L.copied}
+      class="mt-2 px-3 py-1 text-xs font-medium rounded bg-terracotta-500 text-white hover:bg-terracotta-600 transition-colors"
+    >{L.copy}</button>
+    <div>
+      <a
+        href={embedUrl}
+        class="inline-flex items-center gap-1 mt-3 text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline"
+      >
+        {L.embedCta}
+        <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<script>
+  const btn = document.querySelector('[data-cite-copy]');
+  const line = document.getElementById('cite-line');
+  btn?.addEventListener('click', async () => {
+    if (!line) return;
+    try {
+      await navigator.clipboard.writeText(line.textContent || '');
+      const original = btn.textContent;
+      btn.textContent = btn.getAttribute('data-copied') || 'Copied!';
+      setTimeout(() => {
+        btn.textContent = original;
+      }, 1500);
+    } catch {}
+  });
+</script>
