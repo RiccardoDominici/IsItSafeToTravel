@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v4.0
 milestone_name: Global Advisory Sources Expansion
-status: executing
-stopped_at: Completed Phase 38 (autonomous)
-last_updated: "2026-05-06T20:00:00.000Z"
-last_activity: "2026-05-06 - Completed Phase 38: i18n zh+de + Travelpayouts affiliate (autonomous run)"
+status: completed
+stopped_at: context exhaustion at 75% (2026-06-09)
+last_updated: "2026-06-09T21:28:44.458Z"
+last_activity: "2026-05-06 - Phase 38 autonomous execution: 7 languages live (added zh, de), Ko-fi replaced with Travelpayouts CTA, 5 critical + 3 high review fixes applied, all pushed to origin/master"
 progress:
   total_phases: 23
-  completed_phases: 20
-  total_plans: 44
-  completed_plans: 48
-  percent: 100
+  completed_phases: 19
+  total_plans: 41
+  completed_plans: 45
+  percent: 83
 ---
 
 # Project State
@@ -106,10 +106,11 @@ None yet.
 | 260511-k2m | Replace retired WB WGI with V-Dem Institute v16 (rule_of_law, gov_effectiveness, corruption_control), drop wb_political_stability, redistribute conflict weights, rename wb_* → vdem_*, backfill 611 historical snapshots, UI updates 7 locales with CC-BY-SA attribution. Verified 16/16 must_haves. | 2026-05-11 | 950910c, 7b4bc17, 82bdd88, b074a14 | [260511-k2m-replace-retired-wb-wgi-with-v-dem-instit](./quick/260511-k2m-replace-retired-wb-wgi-with-v-dem-instit/) |
 | 260515-k5y | Guard kofiWidgetOverlay against blocked/failed CDN load (defensive typeof guard + load/error listeners on overlay-widget.js script tag in Base.astro) — complete | 2026-05-15 | 3d0f47a | [260515-k5y-fix-kofiwidgetoverlay-javascript-error-o](./quick/260515-k5y-fix-kofiwidgetoverlay-javascript-error-o/) |
 | 260603-csf | Fix Dataset JSON-LD description field length (GSC alert WNC-10030322) — zh template was 30 chars (under Google's 50-char floor for short country names like 日本); extended to 53+ chars; added validate-seo guard (2199→2213 checks). | 2026-06-03 | b633e2f8 | [260603-csf-fix-dataset-json-ld-description-field-le](./quick/260603-csf-fix-dataset-json-ld-description-field-le/) |
+| 260623-wd6 | On-site SEO authority concentration: new AuthorityLinks component on all 7-locale country pages — ranking up-links (safest/most-dangerous hubs, band-matching order, localized slugs from routes) + "Cite this data" copy snippet & embed-badge CTA. Motivated by 2026-06-23 GSC data audit (indexing ~98% solved; real bottleneck = domain authority/ranking). Build 1906 pages OK, validate:seo 2213/2213 pass. | 2026-06-23 | 1a441ab2 | [260623-wd6-on-site-seo-authority-concentration-rank](./quick/260623-wd6-on-site-seo-authority-concentration-rank/) |
 
 ## Session Continuity
 
-Last activity: 2026-06-03 - Completed quick task 260603-csf: Dataset.description length fix + validate-seo guard
-Last session: 2026-06-03T07:25:00Z
-Stopped at: Completed quick task 260603-csf
+Last activity: 2026-06-23 - Completed quick task 260623-wd6: on-site SEO authority concentration (AuthorityLinks on 7-locale country pages). Preceded by a data-driven GSC audit (installed claude-seo skill; configured GSC/Indexing API) — indexing is ~98% solved; the real bottleneck is domain authority/ranking. See SEO-AUDIT-2026-06.md (local) + SEO-BACKLINK-KIT.md (local, off-page plan).
+Last session: 2026-06-09T21:28:44.451Z
+Stopped at: context exhaustion at 75% (2026-06-09)
 Resume file: None
