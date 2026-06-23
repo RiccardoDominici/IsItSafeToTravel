@@ -13,6 +13,7 @@ import TrendChart from '../../../components/country/TrendChart.astro';
 
 import SourcesList from '../../../components/country/SourcesList.astro';
 import RelatedCountries from '../../../components/country/RelatedCountries.astro';
+import AuthorityLinks from '../../../components/country/AuthorityLinks.astro';
 import NeighborComparison from '../../../components/country/NeighborComparison.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import StatsSummary from '../../../components/country/StatsSummary.astro';
@@ -105,6 +106,7 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} />
     <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
+    <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
     <FaqSection country={country} lang={lang} />
     <SourcesList sources={country.sources} lang={lang} />
     <PillarDetailTable pillars={country.pillars} lang={lang} />
