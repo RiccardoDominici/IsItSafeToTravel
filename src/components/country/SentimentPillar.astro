@@ -1,0 +1,81 @@
+---
+import type { SentimentEntry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { pillarToColor } from '../../lib/colors';
+import { MIN_VOTE_FLOOR } from '../../lib/sentiment';
+
+interface Props {
+  sentiment: SentimentEntry | null;
+  official: number;
+  lang: Lang;
+}
+
+const { sentiment, lang } = Astro.props;
+const t = useTranslations(lang);
+
+const hasEnough = sentiment !== null && sentiment.count >= MIN_VOTE_FLOOR;
+
+/** Format a signed score-point delta, e.g. "+0.4", "−0.7" (never a bare hyphen). */
+function formatSignedDelta(n: number): string {
+  const abs = Math.abs(n).toFixed(1);
+  const sign = n < 0 ? '−' : '+';
+  return `${sign}${abs}`;
+}
+
+const label = t('country.pillar.sentiment');
+const displayScore = hasEnough ? sentiment!.perceived.toFixed(1) : null;
+const barWidth = hasEnough ? Math.max((sentiment!.perceived / 10) * 180, 2) : 0;
+const color = hasEnough ? pillarToColor(sentiment!.perceived / 10) : '';
+const correctionText = hasEnough
+  ? t('sentiment.correction_label').replace('{delta}', formatSignedDelta(sentiment!.correction))
+  : '';
+const voteCountText = hasEnough
+  ? t('sentiment.vote_count').replace('{count}', String(sentiment!.count))
+  : '';
+---
+
+<section class="rounded-lg border border-sand-200 dark:border-sand-700 p-4 bg-white dark:bg-sand-800">
+  <div class="flex flex-wrap items-center gap-2 mb-4">
+    <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100">
+      {label}
+    </h2>
+    <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-sand-100 dark:bg-sand-700 text-sand-700 dark:text-sand-200">
+      {t('sentiment.badge')}
+    </span>
+  </div>
+
+  {hasEnough ? (
+    <div class="space-y-1">
+      <div class="flex items-center gap-3">
+        <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right">
+          {label}
+        </span>
+        <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10 (${t('sentiment.badge')})`}>
+          <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+          <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
+        </svg>
+        <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
+          {displayScore}/10
+        </span>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[calc(7rem+0.75rem)]">
+        <span class="text-xs font-medium text-sand-600 dark:text-sand-400">{correctionText}</span>
+        <span class="text-xs text-sand-500 dark:text-sand-400">{voteCountText}</span>
+      </div>
+    </div>
+  ) : (
+    <div class="space-y-1">
+      <p class="text-sm font-medium text-sand-700 dark:text-sand-300">{t('sentiment.empty_title')}</p>
+      <p class="text-xs text-sand-500 dark:text-sand-400">{t('sentiment.empty_body')}</p>
+    </div>
+  )}
+
+  <p class="text-xs text-sand-500 dark:text-sand-400 mt-3">
+    {t('sentiment.disclaimer')}
+  </p>
+
+  <div class="border-t border-sand-200 dark:border-sand-700 mt-4 pt-4">
+    <slot />
+  </div>
+</section>
