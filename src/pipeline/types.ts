@@ -156,3 +156,28 @@ export interface DailySnapshot {
   countries: ScoredCountry[];
   fetchResults: FetchResult[];
 }
+
+// --- Sentiment (display-only, NOT a scoring pillar) ---
+// IMPORTANT: These types are structurally independent of PillarName / PillarScore /
+// ScoredCountry.pillars. They must NEVER be added to the closed PillarName union or
+// appended to ScoredCountry.pillars — doing so would silently feed sentiment into
+// computeAllScores's weighted geometric mean (violates D-06). See 39-PATTERNS.md.
+export interface VoteRow {
+  iso3: string;
+  delta: number; // -2..+2
+  created_at: number; // unix epoch seconds
+}
+
+export interface SentimentEntry {
+  iso3: string;
+  count: number; // total votes considered
+  avgDelta: number; // recency-weighted mean of deltas (unclamped, for transparency)
+  correction: number; // clamp(avgDelta * SCALE, -CAP, +CAP), score points
+  perceived: number; // clamp(official + correction, 1, 10)
+  official: number; // official score used at aggregation time
+}
+
+export interface SentimentSnapshot {
+  generatedAt: string; // ISO 8601
+  countries: Record<string, SentimentEntry>; // keyed by ISO3, only countries with >= SENTIMENT_MIN_VOTES votes
+}
