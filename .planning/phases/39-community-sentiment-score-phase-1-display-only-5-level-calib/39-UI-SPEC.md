@@ -1,10 +1,12 @@
 ---
 phase: 39
 slug: community-sentiment-score-phase-1-display-only-5-level-calib
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-07-02
+reviewed_at: 2026-07-02
+reviewed_by: gsd-ui-checker (0 BLOCK, 3 FLAG — non-blocking, legitimate design-system reuse)
 ---
 
 # Phase 39 — UI Design Contract

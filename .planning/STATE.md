@@ -70,6 +70,7 @@ Recent decisions affecting current work:
 ### Roadmap Evolution
 
 - Phase 38 added: i18n zh+de support and Travelpayouts affiliate replacing Ko-fi (2026-05-03)
+- Phase 39 added: Community Sentiment Score — Phase 1 display-only: 5-level calibration votes via Cloudflare Pages Function + D1, daily GHA aggregation baking a new translated Sentiment pillar (weight 0), methodology docs in 7 languages (2026-07-02)
 
 ### Pending Todos
 

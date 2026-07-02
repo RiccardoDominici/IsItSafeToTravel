@@ -484,3 +484,13 @@ Plans:
 - [x] 38-01-PLAN.md — Add zh and de translation blocks to src/i18n/ui.ts (languages map, ui.zh, ui.de, routes.zh, routes.de)
 - [x] 38-02-PLAN.md — Wire zh and de pages, sitemap, hreflang, country-name fallback, root redirect, validation scripts
 - [x] 38-03-PLAN.md — Replace Ko-fi widget and donate.kofi_* keys with Travelpayouts affiliate CTA, footer link, and FUNDING.yml cleanup
+
+### Phase 39: Community Sentiment Score — Phase 1 display-only: 5-level calibration votes via Cloudflare Pages Function + D1, daily GHA aggregation baking a new translated Sentiment pillar (weight 0), methodology docs in 7 languages
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 38
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd-plan-phase 39 to break down)
