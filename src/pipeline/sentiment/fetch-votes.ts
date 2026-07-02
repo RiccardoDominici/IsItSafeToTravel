@@ -30,7 +30,9 @@ interface D1QueryResponse {
  */
 export async function fetchVotes(sinceEpochSeconds: number): Promise<{ ok: boolean; rows: VoteRow[] }> {
   const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const token = process.env.CLOUDFLARE_API_TOKEN;
+  // Prefer the dedicated least-privilege D1 token (Account -> D1 -> Edit only);
+  // fall back to the Pages deploy token for setups where it carries D1 scope.
+  const token = process.env.CLOUDFLARE_D1_TOKEN || process.env.CLOUDFLARE_API_TOKEN;
 
   if (!accountId || !token) {
     console.warn('[Sentiment] CF credentials absent — skipping D1 read');
