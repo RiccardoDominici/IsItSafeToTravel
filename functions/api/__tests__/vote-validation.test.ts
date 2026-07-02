@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { isValidDelta, isValidIso3, voterHash } from '../vote.ts';
+import { isValidDelta, isValidIso3, normalizeOfficialScore, voterHash } from '../vote.ts';
 
 describe('isValidDelta', () => {
   it('accepts every valid calibration delta (-2..2)', () => {
@@ -87,5 +87,39 @@ describe('voterHash', () => {
     const h = await voterHash('salt1', ip, 'ITA:100');
     assert.equal(h.includes(ip), false);
     assert.equal(h.includes('203'), false);
+  });
+});
+
+describe('normalizeOfficialScore', () => {
+  it('accepts an in-range number', () => {
+    assert.equal(normalizeOfficialScore(5.5), 5.5);
+  });
+
+  it('accepts the lower bound', () => {
+    assert.equal(normalizeOfficialScore(1), 1);
+  });
+
+  it('accepts the upper bound', () => {
+    assert.equal(normalizeOfficialScore(10), 10);
+  });
+
+  it('nulls out-of-range values', () => {
+    assert.equal(normalizeOfficialScore(0.5), null);
+    assert.equal(normalizeOfficialScore(10.1), null);
+  });
+
+  it('nulls undefined (the real-world contract case)', () => {
+    assert.equal(normalizeOfficialScore(undefined), null);
+  });
+
+  it('nulls non-numeric input', () => {
+    assert.equal(normalizeOfficialScore('7'), null);
+    assert.equal(normalizeOfficialScore(null), null);
+    assert.equal(normalizeOfficialScore({}), null);
+  });
+
+  it('nulls NaN and Infinity', () => {
+    assert.equal(normalizeOfficialScore(NaN), null);
+    assert.equal(normalizeOfficialScore(Infinity), null);
   });
 });
