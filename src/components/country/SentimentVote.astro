@@ -26,28 +26,33 @@ const question = t('sentiment.question').replace('{country}', countryName);
 
 <div class="sentiment-vote">
   <form id="sentiment-vote-form" novalidate>
-    <fieldset class="space-y-1">
-      <legend class="text-base font-semibold text-sand-800 dark:text-sand-100 mb-2">{question}</legend>
+    <fieldset class="space-y-2">
+      <legend class="text-base font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{question}</legend>
 
-      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
-        <input type="radio" name="calibration" value="-2" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
-        <span>{t('sentiment.level_way_high')}</span>
+      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
+        <input type="radio" name="calibration" value="-2" class="peer sr-only" />
+        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
+        <span class="font-medium">{t('sentiment.level_way_high')}</span>
       </label>
-      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
-        <input type="radio" name="calibration" value="-1" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
-        <span>{t('sentiment.level_high')}</span>
+      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
+        <input type="radio" name="calibration" value="-1" class="peer sr-only" />
+        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
+        <span class="font-medium">{t('sentiment.level_high')}</span>
       </label>
-      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
-        <input type="radio" name="calibration" value="0" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
-        <span>{t('sentiment.level_right')}</span>
+      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
+        <input type="radio" name="calibration" value="0" class="peer sr-only" />
+        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
+        <span class="font-medium">{t('sentiment.level_right')}</span>
       </label>
-      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
-        <input type="radio" name="calibration" value="1" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
-        <span>{t('sentiment.level_low')}</span>
+      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
+        <input type="radio" name="calibration" value="1" class="peer sr-only" />
+        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
+        <span class="font-medium">{t('sentiment.level_low')}</span>
       </label>
-      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
-        <input type="radio" name="calibration" value="2" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
-        <span>{t('sentiment.level_way_low')}</span>
+      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
+        <input type="radio" name="calibration" value="2" class="peer sr-only" />
+        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
+        <span class="font-medium">{t('sentiment.level_way_low')}</span>
       </label>
     </fieldset>
 
@@ -61,20 +66,26 @@ const question = t('sentiment.question').replace('{country}', countryName);
       type="submit"
       id="sentiment-vote-submit"
       disabled
-      class="hidden mt-3 bg-terracotta-500 hover:bg-terracotta-600 text-white font-medium rounded-md px-3 py-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+      class="hidden w-full sm:w-auto mt-4 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] font-heading font-semibold text-white bg-terracotta-500 shadow-sm transition-colors hover:bg-terracotta-600 hover:shadow-md disabled:bg-sand-200 dark:disabled:bg-sand-700 disabled:text-sand-500 dark:disabled:text-sand-400 disabled:shadow-none disabled:cursor-not-allowed"
     >
-      {t('sentiment.submit')}
+      <span>{t('sentiment.submit')}</span>
+      <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0"><path d="M3 10a1 1 0 0 1 1-1h9.586l-3.293-3.293a1 1 0 1 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414-1.414L13.586 11H4a1 1 0 0 1-1-1Z"/></svg>
     </button>
   </form>
 
   <div aria-live="polite">
-    <div id="sentiment-vote-thanks" class="hidden mt-3 text-sm">
-      <p class="font-medium text-sand-800 dark:text-sand-100">{t('sentiment.thanks_title')}</p>
-      <p class="text-sand-600 dark:text-sand-400">{t('sentiment.thanks_body')}</p>
+    <div id="sentiment-vote-thanks" class="hidden mt-4 rounded-lg border border-terracotta-500/30 bg-terracotta-500/10 dark:bg-terracotta-500/15 p-4">
+      <div class="flex items-start gap-2.5">
+        <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 mt-0.5 text-terracotta-600 dark:text-terracotta-400"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z" clip-rule="evenodd"/></svg>
+        <div>
+          <p class="text-sm font-semibold text-sand-800 dark:text-sand-100">{t('sentiment.thanks_title')}</p>
+          <p class="text-sm text-sand-600 dark:text-sand-400">{t('sentiment.thanks_body')}</p>
+        </div>
+      </div>
     </div>
     <!-- Muted, informational only — deliberately no alert-role semantics (would steal
          focus / conflict with silent degradation, per UI-SPEC Accessibility + T-39-22). -->
-    <p id="sentiment-vote-error" class="hidden mt-3 text-xs text-sand-500">
+    <p id="sentiment-vote-error" class="hidden mt-3 text-xs text-sand-500 dark:text-sand-400">
       {t('sentiment.error')}
     </p>
   </div>
@@ -93,7 +104,6 @@ const question = t('sentiment.question').replace('{country}', countryName);
     if (!form || !submitBtn || !thanksEl || !errorEl) return;
 
     const storageKey = 'sentiment-voted-' + iso3;
-    const options = form.querySelectorAll('.sentiment-vote-option');
     const radios = form.querySelectorAll('input[name="calibration"]');
 
     function showThanks() {
@@ -121,14 +131,6 @@ const question = t('sentiment.question').replace('{country}', countryName);
     radios.forEach((radio) => {
       radio.addEventListener('change', () => {
         submitBtn.disabled = false;
-        options.forEach((opt) => {
-          const input = opt.querySelector('input[name="calibration"]');
-          const selected = !!(input && input.checked);
-          opt.classList.toggle('bg-sand-100', selected);
-          opt.classList.toggle('dark:bg-sand-700', selected);
-          opt.classList.toggle('rounded-md', selected);
-          opt.classList.toggle('font-medium', selected);
-        });
       });
     });
 
