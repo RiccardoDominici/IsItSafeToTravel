@@ -1,0 +1,744 @@
+---
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
+import { getLastmodMap } from '../lib/lastmod';
+import { buildCitePageJsonLd } from '../lib/seo';
+import Base from '../layouts/Base.astro';
+import Breadcrumb from './Breadcrumb.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const countries = loadLatestScores().sort((a, b) =>
+  getLocalizedCountryName(a, lang).localeCompare(getLocalizedCountryName(b, lang)),
+);
+const snapshotDate = getLastmodMap().snapshotDate;
+const parsedSnapshotYear = new Date(`${snapshotDate}T00:00:00Z`).getFullYear();
+const snapshotYear = String(Number.isNaN(parsedSnapshotYear) ? new Date().getFullYear() : parsedSnapshotYear);
+
+// Academic citation styles (APA/MLA/BibTeX) are English-language standards and the
+// dataset name is the English "IsItSafeToTravel" — these three templates (plus the
+// badge HTML snippet) are intentionally IDENTICAL across all 7 languages; only
+// {name}/{url}/{date}/{year}/{iso} vary. Defined once and referenced per-language
+// below so the copy Record<Lang,...> still carries the field for every locale.
+const apaTemplate = 'IsItSafeToTravel. ({year}). {name} travel safety score [Data set]. IsItSafeToTravel.org. Retrieved {date}, from {url}';
+const mlaTemplate = '"{name} Travel Safety Score." IsItSafeToTravel.org, {url}. Accessed {date}.';
+// BibTeX field values are double-braced ({{...}}) to protect capitalization, a
+// common BibTeX/BibLaTeX convention. \\url renders as a single backslash + "url"
+// (a literal LaTeX \url{} command) at runtime.
+const bibtexTemplate = `@misc{isafe_{iso}_{year},
+  title  = {{{name} Travel Safety Score}},
+  author = {{IsItSafeToTravel.org}},
+  year   = {{{year}}},
+  howpublished = {\\url{{url}}},
+  note   = {Data set, updated daily. Accessed {date}}
+}`;
+const badgeHtmlTemplate = '<a href="{url}"><img src="https://isitsafetotravel.org/badge/{iso}.svg" alt="{name} Safety Score" width="300" height="80"></a>';
+
+// Whole-dataset ("global") citations get their own templates instead of reusing the
+// per-country ones with a substituted subject — composing "{name} travel-safety score"
+// with a subject that already contains the word "scores" reads as a duplicated phrase
+// in every language. Academic formats stay shared English, like their per-country twins.
+const globalApaTemplate = 'IsItSafeToTravel. ({year}). Global travel safety scores [Data set]. IsItSafeToTravel.org. Retrieved {date}, from {url}';
+const globalMlaTemplate = '"Global Travel Safety Scores." IsItSafeToTravel.org, {url}. Accessed {date}.';
+const globalBibtexTemplate = `@misc{isafe_global_{year},
+  title  = {{Global Travel Safety Scores}},
+  author = {{IsItSafeToTravel.org}},
+  year   = {{{year}}},
+  howpublished = {\\url{{url}}},
+  note   = {Data set, updated daily. Accessed {date}}
+}`;
+
+// Page copy is inlined per-language (same pattern as ApiDocs.astro / RegionsIndex)
+// to avoid threading ~35 more keys through the large i18n/ui.ts table. A shared
+// component reads its copy once, so there is no duplication cost.
+interface CiteCopy {
+  title: string;
+  description: string;
+  intro: string;
+  whatHeading: string;
+  whatText: string;
+  globalOption: string;
+  globalPlainTemplate: string;
+  globalMarkdownTemplate: string;
+  globalHtmlTemplate: string;
+  accessedNote: string;
+  howHeading: string;
+  fmtPlain: string;
+  fmtHtml: string;
+  fmtMarkdown: string;
+  fmtApa: string;
+  fmtMla: string;
+  fmtBibtex: string;
+  fmtBadge: string;
+  badgeCta: string;
+  ctaApiLabel: string;
+  licenseHeading: string;
+  licenseText: string;
+  attributionText: string;
+  faqHeading: string;
+  faqQ1: string;
+  faqA1: string;
+  faqA1Lead: string;
+  faqA1Commercial: string;
+  faqQ2: string;
+  faqA2: string;
+  faqQ3: string;
+  faqA3: string;
+  faqQ4: string;
+  faqA4: string;
+  plainTemplate: string;
+  markdownTemplate: string;
+  htmlTemplate: string;
+  apaTemplate: string;
+  mlaTemplate: string;
+  bibtexTemplate: string;
+  badgeHtmlTemplate: string;
+}
+
+const copy: Record<Lang, CiteCopy> = {
+  en: {
+    title: 'How to Cite This Data',
+    description: "Cite or link IsItSafeToTravel's daily travel-safety scores for 240+ countries. Ready-made attribution in plain text, HTML, Markdown, APA, MLA and BibTeX. Free, CC BY-NC 4.0.",
+    intro: 'Journalists, researchers, teachers and bloggers cite our travel-safety data every day. Pick a country (or the whole dataset), then copy a ready-made citation — plain text, a website link, Markdown, or an academic format.',
+    whatHeading: "What you're citing",
+    whatText: 'Every score here comes from an open dataset: daily-updated safety scores for 240+ countries, aggregated from 40+ public sources including government advisories, the World Bank, INFORM and the Global Peace Index. Free under Creative Commons BY-NC 4.0. Because it updates daily, always include the date you accessed it.',
+    globalOption: '— Whole dataset (all countries) —',
+    globalPlainTemplate: 'Global travel-safety scores for 240+ countries. IsItSafeToTravel.org, accessed {date}. {url}',
+    globalMarkdownTemplate: '[Global travel-safety scores for 240+ countries — IsItSafeToTravel.org]({url}) (accessed {date})',
+    globalHtmlTemplate: '<a href="{url}">Global travel-safety scores for 240+ countries — IsItSafeToTravel.org</a>',
+    accessedNote: 'The access date updates automatically to today.',
+    howHeading: 'How to cite',
+    fmtPlain: 'Plain text (attribution line)',
+    fmtHtml: 'HTML link (for your website)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Visual badge',
+    badgeCta: 'Full badge tool (sizes & Markdown) →',
+    ctaApiLabel: 'Get the raw data (API) →',
+    licenseHeading: 'License & attribution',
+    licenseText: 'All data is licensed under Creative Commons BY-NC 4.0: free to use, share, and adapt for non-commercial purposes.',
+    attributionText: 'Please credit "IsItSafeToTravel.org" with a link when you use the data. The full pipeline and site are open source on GitHub.',
+    faqHeading: 'Frequently asked questions',
+    faqQ1: 'Can I use this data commercially?',
+    faqA1Lead: 'The data is licensed CC BY-NC 4.0: free for non-commercial use with attribution and a link back.',
+    faqA1Commercial: 'Commercial use requires separate permission.',
+    faqA1: 'The data is licensed CC BY-NC 4.0: free for non-commercial use with attribution and a link back. Commercial use requires separate permission.',
+    faqQ2: 'How often is it updated, and which date should I cite?',
+    faqA2: 'Scores are recomputed every day. Always cite the date you accessed the page — it is filled in automatically above.',
+    faqQ3: "How do I cite a single country's score?",
+    faqA3: "Select the country in the dropdown above and copy the plain-text or academic format; its URL points to that country's page.",
+    faqQ4: 'Can I republish the badge?',
+    faqA4: 'Yes, under the same CC BY-NC 4.0 license with attribution. Use the full badge tool for other sizes and a Markdown snippet.',
+    plainTemplate: '{name} travel-safety score: {score}/10. IsItSafeToTravel.org, accessed {date}. {url}',
+    markdownTemplate: '[{name} travel-safety score: {score}/10 — IsItSafeToTravel.org]({url}) (accessed {date})',
+    htmlTemplate: '<a href="{url}">{name} travel-safety score ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  it: {
+    title: 'Come Citare Questi Dati',
+    description: 'Cita o collega i punteggi di sicurezza di viaggio giornalieri di IsItSafeToTravel per 240+ paesi. Attribuzione pronta in testo, HTML, Markdown, APA, MLA e BibTeX. Gratis, CC BY-NC 4.0.',
+    intro: "Giornalisti, ricercatori, insegnanti e blogger citano i nostri dati ogni giorno. Scegli un paese (o l'intero dataset), poi copia una citazione pronta — testo semplice, un link al sito, Markdown o un formato accademico.",
+    whatHeading: 'Cosa stai citando',
+    whatText: 'Ogni punteggio proviene da un dataset aperto: punteggi di sicurezza aggiornati ogni giorno per 240+ paesi, da 40+ fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e Global Peace Index. Gratis con licenza Creative Commons BY-NC 4.0. Poiché si aggiorna ogni giorno, indica sempre la data di consultazione.',
+    globalOption: '— Intero dataset (tutti i paesi) —',
+    globalPlainTemplate: 'Punteggi di sicurezza di viaggio globali per oltre 240 paesi. IsItSafeToTravel.org, consultato il {date}. {url}',
+    globalMarkdownTemplate: '[Punteggi di sicurezza di viaggio globali per oltre 240 paesi — IsItSafeToTravel.org]({url}) (consultato il {date})',
+    globalHtmlTemplate: '<a href="{url}">Punteggi di sicurezza di viaggio globali per oltre 240 paesi — IsItSafeToTravel.org</a>',
+    accessedNote: 'La data di accesso si aggiorna automaticamente a oggi.',
+    howHeading: 'Come citare',
+    fmtPlain: 'Testo semplice (riga di attribuzione)',
+    fmtHtml: 'Link HTML (per il tuo sito)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Badge visivo',
+    badgeCta: 'Strumento badge completo (dimensioni e Markdown) →',
+    ctaApiLabel: 'Ottieni i dati grezzi (API) →',
+    licenseHeading: 'Licenza e attribuzione',
+    licenseText: 'Tutti i dati sono rilasciati con licenza Creative Commons BY-NC 4.0: liberi da usare, condividere e adattare per scopi non commerciali.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un link quando usi i dati. La pipeline completa e il sito sono open source su GitHub.',
+    faqHeading: 'Domande frequenti',
+    faqQ1: 'Posso usare questi dati a fini commerciali?',
+    faqA1Lead: 'I dati sono rilasciati con licenza CC BY-NC 4.0: liberi per uso non commerciale con attribuzione e link di rimando.',
+    faqA1Commercial: "L'uso commerciale richiede un'autorizzazione separata.",
+    faqA1: "I dati sono rilasciati con licenza CC BY-NC 4.0: liberi per uso non commerciale con attribuzione e link di rimando. L'uso commerciale richiede un'autorizzazione separata.",
+    faqQ2: 'Con quale frequenza vengono aggiornati i dati e quale data devo citare?',
+    faqA2: 'I punteggi vengono ricalcolati ogni giorno. Cita sempre la data in cui hai consultato la pagina — viene compilata automaticamente qui sopra.',
+    faqQ3: 'Come cito il punteggio di un singolo paese?',
+    faqA3: "Seleziona il paese nel menu a tendina qui sopra e copia il formato testo semplice o accademico; l'URL punta alla pagina di quel paese.",
+    faqQ4: 'Posso ripubblicare il badge?',
+    faqA4: 'Sì, con la stessa licenza CC BY-NC 4.0 e attribuzione. Usa lo strumento badge completo per altre dimensioni e per lo snippet Markdown.',
+    plainTemplate: 'Punteggio di sicurezza di viaggio {name}: {score}/10. IsItSafeToTravel.org, consultato il {date}. {url}',
+    markdownTemplate: '[Punteggio di sicurezza di viaggio {name}: {score}/10 — IsItSafeToTravel.org]({url}) (consultato il {date})',
+    htmlTemplate: '<a href="{url}">Punteggio di sicurezza di viaggio {name} ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  es: {
+    title: 'Cómo Citar Estos Datos',
+    description: 'Cita o enlaza las puntuaciones diarias de seguridad de viaje de IsItSafeToTravel para 240+ países. Atribución lista en texto, HTML, Markdown, APA, MLA y BibTeX. Gratis, CC BY-NC 4.0.',
+    intro: 'Periodistas, investigadores, docentes y blogueros citan nuestros datos cada día. Elige un país (o todo el conjunto de datos) y copia una cita lista — texto simple, un enlace, Markdown o un formato académico.',
+    whatHeading: 'Qué estás citando',
+    whatText: 'Cada puntuación proviene de un dataset abierto: puntuaciones actualizadas a diario para 240+ países, de 40+ fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM y el Global Peace Index. Gratis bajo Creative Commons BY-NC 4.0. Como se actualiza a diario, incluye siempre la fecha de consulta.',
+    globalOption: '— Todo el conjunto de datos (todos los países) —',
+    globalPlainTemplate: 'Puntuaciones globales de seguridad de viaje para más de 240 países. IsItSafeToTravel.org, consultado el {date}. {url}',
+    globalMarkdownTemplate: '[Puntuaciones globales de seguridad de viaje para más de 240 países — IsItSafeToTravel.org]({url}) (consultado el {date})',
+    globalHtmlTemplate: '<a href="{url}">Puntuaciones globales de seguridad de viaje para más de 240 países — IsItSafeToTravel.org</a>',
+    accessedNote: 'La fecha de acceso se actualiza automáticamente a hoy.',
+    howHeading: 'Cómo citar',
+    fmtPlain: 'Texto simple (línea de atribución)',
+    fmtHtml: 'Enlace HTML (para tu sitio)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Insignia visual',
+    badgeCta: 'Herramienta de insignia completa (tamaños y Markdown) →',
+    ctaApiLabel: 'Obtén los datos sin procesar (API) →',
+    licenseHeading: 'Licencia y atribución',
+    licenseText: 'Todos los datos están bajo licencia Creative Commons BY-NC 4.0: libres para usar, compartir y adaptar con fines no comerciales.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un enlace cuando uses los datos. La pipeline completa y el sitio son open source en GitHub.',
+    faqHeading: 'Preguntas frecuentes',
+    faqQ1: '¿Puedo usar estos datos con fines comerciales?',
+    faqA1Lead: 'Los datos están bajo licencia CC BY-NC 4.0: libres para uso no comercial con atribución y enlace de vuelta.',
+    faqA1Commercial: 'El uso comercial requiere un permiso independiente.',
+    faqA1: 'Los datos están bajo licencia CC BY-NC 4.0: libres para uso no comercial con atribución y enlace de vuelta. El uso comercial requiere un permiso independiente.',
+    faqQ2: '¿Con qué frecuencia se actualiza y qué fecha debo citar?',
+    faqA2: 'Las puntuaciones se recalculan cada día. Cita siempre la fecha en la que consultaste la página — se completa automáticamente arriba.',
+    faqQ3: '¿Cómo cito la puntuación de un país en particular?',
+    faqA3: 'Selecciona el país en el menú desplegable de arriba y copia el formato de texto simple o académico; su URL apunta a la página de ese país.',
+    faqQ4: '¿Puedo republicar la insignia?',
+    faqA4: 'Sí, bajo la misma licencia CC BY-NC 4.0 con atribución. Usa la herramienta de insignia completa para otros tamaños y un snippet de Markdown.',
+    plainTemplate: 'Puntuación de seguridad de viaje de {name}: {score}/10. IsItSafeToTravel.org, consultado el {date}. {url}',
+    markdownTemplate: '[Puntuación de seguridad de viaje de {name}: {score}/10 — IsItSafeToTravel.org]({url}) (consultado el {date})',
+    htmlTemplate: '<a href="{url}">Puntuación de seguridad de viaje de {name} ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  fr: {
+    title: 'Comment Citer Ces Données',
+    description: "Citez ou liez les scores quotidiens de sécurité voyage d'IsItSafeToTravel pour 240+ pays. Attribution prête en texte, HTML, Markdown, APA, MLA et BibTeX. Gratuit, CC BY-NC 4.0.",
+    intro: 'Journalistes, chercheurs, enseignants et blogueurs citent nos données chaque jour. Choisissez un pays (ou le jeu de données complet), puis copiez une citation prête — texte brut, un lien, Markdown ou un format académique.',
+    whatHeading: 'Ce que vous citez',
+    whatText: "Chaque score provient d'un jeu de données ouvert : scores mis à jour chaque jour pour 240+ pays, à partir de 40+ sources publiques dont les avis gouvernementaux, la Banque mondiale, INFORM et le Global Peace Index. Gratuit sous Creative Commons BY-NC 4.0. Comme il change chaque jour, indiquez toujours votre date de consultation.",
+    globalOption: '— Jeu de données complet (tous les pays) —',
+    globalPlainTemplate: 'Scores mondiaux de sécurité voyage pour plus de 240 pays. IsItSafeToTravel.org, consulté le {date}. {url}',
+    globalMarkdownTemplate: '[Scores mondiaux de sécurité voyage pour plus de 240 pays — IsItSafeToTravel.org]({url}) (consulté le {date})',
+    globalHtmlTemplate: '<a href="{url}">Scores mondiaux de sécurité voyage pour plus de 240 pays — IsItSafeToTravel.org</a>',
+    accessedNote: "La date de consultation se met à jour automatiquement à aujourd'hui.",
+    howHeading: 'Comment citer',
+    fmtPlain: "Texte brut (ligne d'attribution)",
+    fmtHtml: 'Lien HTML (pour votre site)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Badge visuel',
+    badgeCta: 'Outil badge complet (tailles et Markdown) →',
+    ctaApiLabel: 'Obtenir les données brutes (API) →',
+    licenseHeading: 'Licence et attribution',
+    licenseText: 'Toutes les données sont sous licence Creative Commons BY-NC 4.0 : libres d’utilisation, de partage et d’adaptation à des fins non commerciales.',
+    attributionText: 'Merci de créditer « IsItSafeToTravel.org » avec un lien lorsque vous utilisez les données. La pipeline complète et le site sont open source sur GitHub.',
+    faqHeading: 'Questions fréquentes',
+    faqQ1: 'Puis-je utiliser ces données à des fins commerciales ?',
+    faqA1Lead: "Les données sont sous licence CC BY-NC 4.0 : libres d'utilisation non commerciale avec attribution et lien retour.",
+    faqA1Commercial: "L'usage commercial nécessite une autorisation distincte.",
+    faqA1: "Les données sont sous licence CC BY-NC 4.0 : libres d'utilisation non commerciale avec attribution et lien retour. L'usage commercial nécessite une autorisation distincte.",
+    faqQ2: 'À quelle fréquence les données sont-elles mises à jour, et quelle date dois-je citer ?',
+    faqA2: 'Les scores sont recalculés chaque jour. Citez toujours la date à laquelle vous avez consulté la page — elle est renseignée automatiquement ci-dessus.',
+    faqQ3: "Comment citer le score d'un seul pays ?",
+    faqA3: 'Sélectionnez le pays dans le menu déroulant ci-dessus et copiez le format texte brut ou académique ; son URL pointe vers la page de ce pays.',
+    faqQ4: 'Puis-je republier le badge ?',
+    faqA4: "Oui, sous la même licence CC BY-NC 4.0 avec attribution. Utilisez l'outil badge complet pour d'autres tailles et un extrait Markdown.",
+    plainTemplate: 'Score de sécurité voyage {name} : {score}/10. IsItSafeToTravel.org, consulté le {date}. {url}',
+    markdownTemplate: '[Score de sécurité voyage {name} : {score}/10 — IsItSafeToTravel.org]({url}) (consulté le {date})',
+    htmlTemplate: '<a href="{url}">Score de sécurité voyage {name} ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  pt: {
+    title: 'Como Citar Estes Dados',
+    description: 'Cite ou vincule as pontuações diárias de segurança de viagem do IsItSafeToTravel para 240+ países. Atribuição pronta em texto, HTML, Markdown, APA, MLA e BibTeX. Grátis, CC BY-NC 4.0.',
+    intro: 'Jornalistas, pesquisadores, professores e blogueiros citam nossos dados todos os dias. Escolha um país (ou todo o conjunto de dados) e copie uma citação pronta — texto simples, um link, Markdown ou um formato acadêmico.',
+    whatHeading: 'O que você está citando',
+    whatText: 'Cada pontuação vem de um dataset aberto: pontuações atualizadas diariamente para 240+ países, de 40+ fontes públicas incluindo avisos governamentais, Banco Mundial, INFORM e o Global Peace Index. Grátis sob Creative Commons BY-NC 4.0. Como é atualizado diariamente, inclua sempre a data de acesso.',
+    globalOption: '— Conjunto de dados completo (todos os países) —',
+    globalPlainTemplate: 'Pontuações globais de segurança de viagem para mais de 240 países. IsItSafeToTravel.org, acessado em {date}. {url}',
+    globalMarkdownTemplate: '[Pontuações globais de segurança de viagem para mais de 240 países — IsItSafeToTravel.org]({url}) (acessado em {date})',
+    globalHtmlTemplate: '<a href="{url}">Pontuações globais de segurança de viagem para mais de 240 países — IsItSafeToTravel.org</a>',
+    accessedNote: 'A data de acesso é atualizada automaticamente para hoje.',
+    howHeading: 'Como citar',
+    fmtPlain: 'Texto simples (linha de atribuição)',
+    fmtHtml: 'Link HTML (para o seu site)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Badge visual',
+    badgeCta: 'Ferramenta de badge completa (tamanhos e Markdown) →',
+    ctaApiLabel: 'Obtenha os dados brutos (API) →',
+    licenseHeading: 'Licença e atribuição',
+    licenseText: 'Todos os dados estão licenciados sob Creative Commons BY-NC 4.0: livres para usar, compartilhar e adaptar para fins não comerciais.',
+    attributionText: 'Credite "IsItSafeToTravel.org" com um link ao usar os dados. A pipeline completa e o site são open source no GitHub.',
+    faqHeading: 'Perguntas frequentes',
+    faqQ1: 'Posso usar estes dados comercialmente?',
+    faqA1Lead: 'Os dados são licenciados sob CC BY-NC 4.0: livres para uso não comercial com atribuição e link de volta.',
+    faqA1Commercial: 'O uso comercial requer permissão separada.',
+    faqA1: 'Os dados são licenciados sob CC BY-NC 4.0: livres para uso não comercial com atribuição e link de volta. O uso comercial requer permissão separada.',
+    faqQ2: 'Com que frequência os dados são atualizados e qual data devo citar?',
+    faqA2: 'As pontuações são recalculadas todos os dias. Cite sempre a data em que você acessou a página — ela é preenchida automaticamente acima.',
+    faqQ3: 'Como cito a pontuação de um único país?',
+    faqA3: 'Selecione o país no menu suspenso acima e copie o formato de texto simples ou acadêmico; a URL aponta para a página desse país.',
+    faqQ4: 'Posso republicar o badge?',
+    faqA4: 'Sim, sob a mesma licença CC BY-NC 4.0 com atribuição. Use a ferramenta de badge completa para outros tamanhos e um snippet em Markdown.',
+    plainTemplate: 'Pontuação de segurança de viagem de {name}: {score}/10. IsItSafeToTravel.org, acessado em {date}. {url}',
+    markdownTemplate: '[Pontuação de segurança de viagem de {name}: {score}/10 — IsItSafeToTravel.org]({url}) (acessado em {date})',
+    htmlTemplate: '<a href="{url}">Pontuação de segurança de viagem de {name} ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  zh: {
+    title: '如何引用此数据',
+    description: '引用或链接 IsItSafeToTravel 每日更新的 240+ 国家旅行安全评分。提供纯文本、HTML、Markdown、APA、MLA 和 BibTeX 现成署名。免费，CC BY-NC 4.0。',
+    intro: '记者、研究人员、教师和博主每天都在引用我们的旅行安全数据。选择一个国家（或整个数据集），然后复制现成的引用——纯文本、网站链接、Markdown 或学术格式。',
+    whatHeading: '您引用的内容',
+    whatText: '每个评分都来自一个开放数据集：240+ 国家每日更新的安全评分，汇总自 40+ 个公开来源，包括政府旅行警告、世界银行、INFORM 和全球和平指数。采用 Creative Commons BY-NC 4.0 免费授权。由于每日更新，请始终注明访问日期。',
+    globalOption: '— 整个数据集（所有国家）—',
+    globalPlainTemplate: '全球旅行安全评分（240+ 个国家和地区）。IsItSafeToTravel.org，访问于 {date}。{url}',
+    globalMarkdownTemplate: '[全球旅行安全评分（240+ 个国家和地区）— IsItSafeToTravel.org]({url})（访问于 {date}）',
+    globalHtmlTemplate: '<a href="{url}">全球旅行安全评分（240+ 个国家和地区）— IsItSafeToTravel.org</a>',
+    accessedNote: '访问日期会自动更新为今天。',
+    howHeading: '如何引用',
+    fmtPlain: '纯文本（署名行）',
+    fmtHtml: 'HTML 链接（用于您的网站）',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: '可视徽章',
+    badgeCta: '完整徽章工具（尺寸和 Markdown）→',
+    ctaApiLabel: '获取原始数据（API）→',
+    licenseHeading: '许可与署名',
+    licenseText: '所有数据均采用 Creative Commons BY-NC 4.0 许可：可自由使用、分享和改编，仅限非商业用途。',
+    attributionText: '使用数据时请注明 "IsItSafeToTravel.org" 并附上链接。完整的数据管道和网站在 GitHub 上开源。',
+    faqHeading: '常见问题',
+    faqQ1: '我可以将这些数据用于商业用途吗？',
+    faqA1Lead: '数据采用 CC BY-NC 4.0 许可：可免费用于非商业用途，但需注明出处并附带链接。',
+    faqA1Commercial: '商业用途需另行获得许可。',
+    faqA1: '数据采用 CC BY-NC 4.0 许可：可免费用于非商业用途，但需注明出处并附带链接。商业用途需另行获得许可。',
+    faqQ2: '数据多久更新一次？应该引用哪个日期？',
+    faqA2: '评分每天重新计算。请始终注明您访问该页面的日期——上方已自动填写。',
+    faqQ3: '如何引用单个国家的评分？',
+    faqA3: '在上方的下拉菜单中选择该国家，然后复制纯文本或学术格式；其链接将指向该国家的页面。',
+    faqQ4: '我可以转载该徽章吗？',
+    faqA4: '可以，须遵守相同的 CC BY-NC 4.0 许可并注明出处。使用完整徽章工具可获取其他尺寸和 Markdown 代码片段。',
+    plainTemplate: '{name} 旅行安全评分：{score}/10。IsItSafeToTravel.org，访问于 {date}。{url}',
+    markdownTemplate: '[{name} 旅行安全评分：{score}/10 — IsItSafeToTravel.org]({url})（访问于 {date}）',
+    htmlTemplate: '<a href="{url}">{name} 旅行安全评分（{score}/10）— IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+  de: {
+    title: 'Diese Daten zitieren',
+    description: 'Zitieren oder verlinken Sie die täglichen Reise-Sicherheits-Scores von IsItSafeToTravel für 240+ Länder. Fertige Namensnennung in Text, HTML, Markdown, APA, MLA und BibTeX. Kostenlos, CC BY-NC 4.0.',
+    intro: 'Journalisten, Forschende, Lehrkräfte und Blogger zitieren unsere Daten täglich. Wählen Sie ein Land (oder den gesamten Datensatz) und kopieren Sie eine fertige Zitation — Klartext, einen Website-Link, Markdown oder ein akademisches Format.',
+    whatHeading: 'Was Sie zitieren',
+    whatText: 'Jeder Score stammt aus einem offenen Datensatz: täglich aktualisierte Sicherheits-Scores für 240+ Länder aus 40+ öffentlichen Quellen, darunter Regierungshinweise, Weltbank, INFORM und Global Peace Index. Kostenlos unter Creative Commons BY-NC 4.0. Da er sich täglich ändert, geben Sie stets Ihr Zugriffsdatum an.',
+    globalOption: '— Gesamter Datensatz (alle Länder) —',
+    globalPlainTemplate: 'Globale Reise-Sicherheits-Scores für über 240 Länder. IsItSafeToTravel.org, abgerufen am {date}. {url}',
+    globalMarkdownTemplate: '[Globale Reise-Sicherheits-Scores für über 240 Länder — IsItSafeToTravel.org]({url}) (abgerufen am {date})',
+    globalHtmlTemplate: '<a href="{url}">Globale Reise-Sicherheits-Scores für über 240 Länder — IsItSafeToTravel.org</a>',
+    accessedNote: 'Das Zugriffsdatum wird automatisch auf heute aktualisiert.',
+    howHeading: 'Wie zitieren',
+    fmtPlain: 'Klartext (Namensnennung)',
+    fmtHtml: 'HTML-Link (für Ihre Website)',
+    fmtMarkdown: 'Markdown',
+    fmtApa: 'APA 7',
+    fmtMla: 'MLA 9',
+    fmtBibtex: 'BibTeX',
+    fmtBadge: 'Visuelles Abzeichen',
+    badgeCta: 'Vollständiges Abzeichen-Tool (Größen & Markdown) →',
+    ctaApiLabel: 'Rohdaten abrufen (API) →',
+    licenseHeading: 'Lizenz & Namensnennung',
+    licenseText: 'Alle Daten stehen unter der Lizenz Creative Commons BY-NC 4.0: frei nutzbar, teilbar und anpassbar für nicht-kommerzielle Zwecke.',
+    attributionText: 'Bitte nennen Sie "IsItSafeToTravel.org" mit Link, wenn Sie die Daten verwenden. Pipeline und Website sind Open Source auf GitHub.',
+    faqHeading: 'Häufige Fragen',
+    faqQ1: 'Darf ich diese Daten kommerziell nutzen?',
+    faqA1Lead: 'Die Daten stehen unter der Lizenz CC BY-NC 4.0: frei nutzbar für nicht-kommerzielle Zwecke mit Namensnennung und Rücklink.',
+    faqA1Commercial: 'Für kommerzielle Nutzung ist eine gesonderte Genehmigung erforderlich.',
+    faqA1: 'Die Daten stehen unter der Lizenz CC BY-NC 4.0: frei nutzbar für nicht-kommerzielle Zwecke mit Namensnennung und Rücklink. Für kommerzielle Nutzung ist eine gesonderte Genehmigung erforderlich.',
+    faqQ2: 'Wie oft werden die Daten aktualisiert, und welches Datum sollte ich zitieren?',
+    faqA2: 'Die Scores werden täglich neu berechnet. Zitieren Sie stets das Datum, an dem Sie die Seite aufgerufen haben — es wird oben automatisch eingetragen.',
+    faqQ3: 'Wie zitiere ich den Score eines einzelnen Landes?',
+    faqA3: 'Wählen Sie das Land im Dropdown-Menü oben aus und kopieren Sie das Klartext- oder akademische Format; die URL verweist auf die Seite dieses Landes.',
+    faqQ4: 'Darf ich das Abzeichen weiterverbreiten?',
+    faqA4: 'Ja, unter derselben CC BY-NC 4.0-Lizenz mit Namensnennung. Nutzen Sie das vollständige Abzeichen-Tool für weitere Größen und einen Markdown-Schnipsel.',
+    plainTemplate: 'Reise-Sicherheits-Score {name}: {score}/10. IsItSafeToTravel.org, abgerufen am {date}. {url}',
+    markdownTemplate: '[Reise-Sicherheits-Score {name}: {score}/10 — IsItSafeToTravel.org]({url}) (abgerufen am {date})',
+    htmlTemplate: '<a href="{url}">Reise-Sicherheits-Score {name} ({score}/10) — IsItSafeToTravel.org</a>',
+    apaTemplate,
+    mlaTemplate,
+    bibtexTemplate,
+    badgeHtmlTemplate,
+  },
+};
+
+const c = copy[lang];
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r.cite}/`;
+
+const breadcrumbItems = [
+  { name: t('nav.home'), url: `https://isitsafetotravel.org/${lang}/` },
+  { name: c.title, url: canonicalUrl },
+];
+
+const faqItems = [
+  { question: c.faqQ1, answer: c.faqA1 },
+  { question: c.faqQ2, answer: c.faqA2 },
+  { question: c.faqQ3, answer: c.faqA3 },
+  { question: c.faqQ4, answer: c.faqA4 },
+];
+
+const jsonLd = buildCitePageJsonLd(c.title, c.description, canonicalUrl, lang, breadcrumbItems, faqItems);
+
+// Simple {token} interpolation shared by the SSR no-JS fallback below. The client
+// script implements the same regex independently (it receives raw templates via
+// the JSON island, not this function).
+function interpolate(tmpl: string, vars: Record<string, string>): string {
+  return tmpl.replace(/\{(\w+)\}/g, (_match, key: string) => (key in vars ? vars[key] : `{${key}}`));
+}
+
+// SSR fallback: interpolate every citation format for the first (alphabetical)
+// country using the snapshot date, so crawlers and no-JS users see complete,
+// valid citation strings. The <select> below marks this same country `selected`
+// so the visible dropdown matches what's already rendered here.
+const firstCountry = countries[0];
+const firstIso = firstCountry?.iso3.toLowerCase() ?? '';
+const firstName = firstCountry ? getLocalizedCountryName(firstCountry, lang) : '';
+const firstScore = firstCountry ? firstCountry.score.toFixed(1) : '';
+const firstUrl = `https://isitsafetotravel.org/${lang}/${r.country}/${firstIso}/`;
+
+const initialVars: Record<string, string> = {
+  name: firstName,
+  score: firstScore,
+  url: firstUrl,
+  date: snapshotDate,
+  year: snapshotYear,
+  iso: firstIso,
+};
+
+const initialPlain = interpolate(c.plainTemplate, initialVars);
+const initialHtml = interpolate(c.htmlTemplate, initialVars);
+const initialMarkdown = interpolate(c.markdownTemplate, initialVars);
+const initialApa = interpolate(c.apaTemplate, initialVars);
+const initialMla = interpolate(c.mlaTemplate, initialVars);
+const initialBibtex = interpolate(c.bibtexTemplate, initialVars);
+const initialBadgeHtml = interpolate(c.badgeHtmlTemplate, initialVars);
+
+// Templates handed to the client as data (not code) — the client script parses
+// this JSON and interpolates it itself, so there is no hand-written escaped JS
+// duplicating the tricky BibTeX/HTML strings above.
+const tmplIsland = {
+  plainTemplate: c.plainTemplate,
+  markdownTemplate: c.markdownTemplate,
+  htmlTemplate: c.htmlTemplate,
+  apaTemplate: c.apaTemplate,
+  mlaTemplate: c.mlaTemplate,
+  bibtexTemplate: c.bibtexTemplate,
+  badgeHtmlTemplate: c.badgeHtmlTemplate,
+  globalPlainTemplate: c.globalPlainTemplate,
+  globalMarkdownTemplate: c.globalMarkdownTemplate,
+  globalHtmlTemplate: c.globalHtmlTemplate,
+  globalApaTemplate,
+  globalMlaTemplate,
+  globalBibtexTemplate,
+};
+
+const outputFieldClass = 'w-full px-4 py-3 pr-20 rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-800 text-sand-800 dark:text-sand-100 font-mono text-xs';
+const copyBtnClass = 'absolute top-2 right-2 px-3 py-1 text-xs font-medium rounded bg-terracotta-500 text-white hover:bg-terracotta-600 transition-colors';
+const linkClass = 'text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline';
+const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline';
+---
+
+<Base lang={lang} title={c.title} description={c.description} jsonLd={jsonLd}>
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: c.title, href: '' },
+    ]} />
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {c.title}
+      </h1>
+      <p class="text-base text-sand-600 dark:text-sand-400 max-w-2xl mx-auto">
+        {c.intro}
+      </p>
+    </header>
+
+    <!-- What you're citing -->
+    <section>
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{c.whatHeading}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-2">{c.whatText}</p>
+      <p class="text-sm text-sand-500 dark:text-sand-400">
+        <a href={`/${lang}/${r.methodology}/`} class={linkClass}>{t('nav.methodology')}</a>
+        {' · '}
+        <a href={`/${lang}/${r.sources}/`} class={linkClass}>{t('nav.sources')}</a>
+        {' · '}
+        <a href={`/${lang}/${r.api}/`} class={linkClass}>API</a>
+      </p>
+    </section>
+
+    <div class="max-w-xl mx-auto space-y-6">
+      <!-- Control bar -->
+      <section>
+        <label for="cite-country" class="block text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">
+          {t('badge.select_country')}
+        </label>
+        <select
+          id="cite-country"
+          data-country-route={r.country}
+          class="w-full px-4 py-3 rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-800 text-sand-800 dark:text-sand-100 focus:ring-2 focus:ring-terracotta-400"
+        >
+          <option value="__global__">{c.globalOption}</option>
+          {countries.map((country, idx) => {
+            const iso = country.iso3.toLowerCase();
+            const name = getLocalizedCountryName(country, lang);
+            return (
+              <option value={iso} data-name={name} data-score={country.score.toFixed(1)} data-iso={iso} selected={idx === 0}>
+                {name} ({country.score.toFixed(1)}/10)
+              </option>
+            );
+          })}
+        </select>
+        <p class="mt-2 text-xs text-sand-500 dark:text-sand-400">{c.accessedNote}</p>
+      </section>
+
+      <!-- Visual badge preview (light; hidden when the whole dataset is selected) -->
+      <section id="cite-badge-wrap">
+        <h2 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{t('badge.preview')}</h2>
+        <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-sand-50 dark:bg-sand-900 p-6 flex items-center justify-center">
+          <img id="cite-badge-preview" src={`/badge/${firstIso}.svg`} alt="Safety Badge Preview" width="300" height="80" />
+        </div>
+      </section>
+
+      <!-- How to cite -->
+      <section>
+        <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-4">{c.howHeading}</h2>
+        <div class="space-y-5">
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtPlain}</h3>
+            <div class="relative">
+              <textarea id="cite-plain" readonly rows="2" class={outputFieldClass}>{initialPlain}</textarea>
+              <button type="button" data-copy="cite-plain" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtHtml}</h3>
+            <div class="relative">
+              <textarea id="cite-html" readonly rows="3" class={outputFieldClass}>{initialHtml}</textarea>
+              <button type="button" data-copy="cite-html" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtMarkdown}</h3>
+            <div class="relative">
+              <textarea id="cite-md" readonly rows="2" class={outputFieldClass}>{initialMarkdown}</textarea>
+              <button type="button" data-copy="cite-md" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtApa}</h3>
+            <div class="relative">
+              <textarea id="cite-apa" readonly rows="3" class={outputFieldClass}>{initialApa}</textarea>
+              <button type="button" data-copy="cite-apa" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtMla}</h3>
+            <div class="relative">
+              <textarea id="cite-mla" readonly rows="2" class={outputFieldClass}>{initialMla}</textarea>
+              <button type="button" data-copy="cite-mla" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtBibtex}</h3>
+            <div class="relative">
+              <textarea id="cite-bibtex" readonly rows="7" class={outputFieldClass}>{initialBibtex}</textarea>
+              <button type="button" data-copy="cite-bibtex" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+          </div>
+
+          <div id="cite-badge-html-wrap">
+            <h3 class="text-sm font-medium text-sand-700 dark:text-sand-300 mb-2">{c.fmtBadge}</h3>
+            <div class="relative">
+              <textarea id="cite-badge-html" readonly rows="3" class={outputFieldClass}>{initialBadgeHtml}</textarea>
+              <button type="button" data-copy="cite-badge-html" data-copied-label={t('badge.copied')} class={copyBtnClass}>{t('badge.copy')}</button>
+            </div>
+            <a href={`/${lang}/${r['embed-badge']}/`} class={`${ctaLinkClass} mt-3`}>
+              {c.badgeCta}
+            </a>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- FAQ (visible mirror of the FAQPage JSON-LD) -->
+    <section>
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-4">{c.faqHeading}</h2>
+      <div class="space-y-4">
+        <div>
+          <h3 class="font-semibold text-sand-800 dark:text-sand-100 mb-1">{c.faqQ1}</h3>
+          <p class="text-sand-700 dark:text-sand-300 leading-relaxed">
+            {c.faqA1Lead}
+            {' '}
+            <a href={`/${lang}/${r.feedback}/`} class={linkClass}>{c.faqA1Commercial}</a>
+          </p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-sand-800 dark:text-sand-100 mb-1">{c.faqQ2}</h3>
+          <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{c.faqA2}</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-sand-800 dark:text-sand-100 mb-1">{c.faqQ3}</h3>
+          <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{c.faqA3}</p>
+        </div>
+        <div>
+          <h3 class="font-semibold text-sand-800 dark:text-sand-100 mb-1">{c.faqQ4}</h3>
+          <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{c.faqA4}</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- License & attribution -->
+    <section>
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{c.licenseHeading}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-2">
+        {c.licenseText}
+        {' '}
+        <a href="https://creativecommons.org/licenses/by-nc/4.0/" target="_blank" rel="noopener noreferrer" class={linkClass}>CC BY-NC 4.0</a>
+      </p>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">
+        {c.attributionText}
+        {' '}
+        <a href={`/${lang}/${r.legal}/`} class={linkClass}>{t('footer.legal')}</a>
+      </p>
+    </section>
+
+    <!-- Closing CTA row -->
+    <div class="flex flex-wrap gap-x-6 gap-y-2 justify-center pt-2">
+      <a href={`/${lang}/${r.api}/`} class={ctaLinkClass}>{c.ctaApiLabel}</a>
+      <a href={`/${lang}/${r['embed-badge']}/`} class={ctaLinkClass}>{c.badgeCta}</a>
+    </div>
+  </div>
+</Base>
+
+<script type="application/json" id="cite-tmpl" set:html={JSON.stringify(tmplIsland)} />
+
+<script>
+  const tmplEl = document.getElementById('cite-tmpl');
+  const tmpl: Record<string, string> = tmplEl ? JSON.parse(tmplEl.textContent || '{}') : {};
+
+  const select = document.getElementById('cite-country') as HTMLSelectElement | null;
+  const badgeWrap = document.getElementById('cite-badge-wrap');
+  const badgePreview = document.getElementById('cite-badge-preview') as HTMLImageElement | null;
+  const badgeHtmlWrap = document.getElementById('cite-badge-html-wrap');
+
+  function interpolate(str: string, vars: Record<string, string>): string {
+    return str.replace(/\{(\w+)\}/g, (_match, key: string) => (key in vars ? vars[key] : `{${key}}`));
+  }
+
+  function setOutput(id: string, value: string) {
+    const el = document.getElementById(id) as HTMLTextAreaElement | null;
+    if (el) el.value = value;
+  }
+
+  function updateCite() {
+    if (!select) return;
+    const isGlobal = select.value === '__global__';
+    const option = select.selectedOptions[0];
+    const iso = isGlobal ? 'global' : select.value;
+    const name = isGlobal ? '' : option?.dataset.name || '';
+    const score = isGlobal ? '' : option?.dataset.score || '';
+    const docLang = document.documentElement.lang || 'en';
+    const countryRoute = select.dataset.countryRoute || 'country';
+    const url = isGlobal
+      ? 'https://isitsafetotravel.org/'
+      : `https://isitsafetotravel.org/${docLang}/${countryRoute}/${iso}/`;
+    const date = new Date().toISOString().slice(0, 10);
+    const year = String(new Date().getFullYear());
+
+    const vars: Record<string, string> = { name, score, url, date, year, iso };
+
+    // Whole-dataset citations use their own templates (no subject substitution).
+    setOutput('cite-plain', interpolate((isGlobal ? tmpl.globalPlainTemplate : tmpl.plainTemplate) || '', vars));
+    setOutput('cite-html', interpolate((isGlobal ? tmpl.globalHtmlTemplate : tmpl.htmlTemplate) || '', vars));
+    setOutput('cite-md', interpolate((isGlobal ? tmpl.globalMarkdownTemplate : tmpl.markdownTemplate) || '', vars));
+    setOutput('cite-apa', interpolate((isGlobal ? tmpl.globalApaTemplate : tmpl.apaTemplate) || '', vars));
+    setOutput('cite-mla', interpolate((isGlobal ? tmpl.globalMlaTemplate : tmpl.mlaTemplate) || '', vars));
+    setOutput('cite-bibtex', interpolate((isGlobal ? tmpl.globalBibtexTemplate : tmpl.bibtexTemplate) || '', vars));
+
+    if (badgeWrap) (badgeWrap as HTMLElement).hidden = isGlobal;
+    if (badgeHtmlWrap) (badgeHtmlWrap as HTMLElement).hidden = isGlobal;
+    if (!isGlobal) {
+      if (badgePreview) badgePreview.src = `/badge/${iso}.svg`;
+      setOutput('cite-badge-html', interpolate(tmpl.badgeHtmlTemplate || '', vars));
+    }
+  }
+
+  // Deep-link: #c=<iso3> pre-selects a country if it exists in the list;
+  // an unknown/absent hash silently falls back to the default selection.
+  if (select) {
+    const hashIso = location.hash.replace('#c=', '').toLowerCase();
+    if (hashIso && Array.from(select.options).some((o) => o.value === hashIso)) {
+      select.value = hashIso;
+    }
+    select.addEventListener('change', updateCite);
+  }
+
+  updateCite();
+
+  // Copy buttons (reuses embed-badge's [data-copy] pattern).
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const targetId = (btn as HTMLElement).dataset.copy!;
+      const textarea = document.getElementById(targetId) as HTMLTextAreaElement | null;
+      if (!textarea) return;
+      try {
+        await navigator.clipboard.writeText(textarea.value);
+        const original = btn.textContent;
+        btn.textContent = (btn as HTMLElement).dataset.copiedLabel || 'Copied!';
+        setTimeout(() => { btn.textContent = original; }, 2000);
+      } catch {
+        textarea.select();
+      }
+    });
+  });
+</script>

@@ -620,6 +620,53 @@ export function buildDatasetJsonLd(): Record<string, unknown> {
 }
 
 /**
+ * Build JSON-LD structured data for the "Cite this data" page.
+ * @graph = WebPage + Dataset (reused from buildDatasetJsonLd, as-is) + FAQPage + BreadcrumbList.
+ * Inner nodes carry no @context of their own. Deliberately omits HowTo (Google
+ * dropped HowTo rich results in 2023).
+ */
+export function buildCitePageJsonLd(
+  title: string,
+  description: string,
+  canonicalUrl: string,
+  lang: Lang,
+  breadcrumbItems: { name: string; url: string }[],
+  faqItems: { question: string; answer: string }[],
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+        url: canonicalUrl,
+        name: title,
+        description,
+        inLanguage: localeMap[lang],
+      },
+      buildDatasetJsonLd(),
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((qa) => ({
+          '@type': 'Question',
+          name: qa.question,
+          acceptedAnswer: { '@type': 'Answer', text: qa.answer },
+        })),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbItems.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          item: item.url,
+        })),
+      },
+    ],
+  };
+}
+
+/**
  * Build Dataset JSON-LD for methodology pages.
  * Returns an object WITHOUT @context so it can be added to an existing @graph.
  */
