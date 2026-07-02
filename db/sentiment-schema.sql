@@ -22,3 +22,8 @@ CREATE INDEX IF NOT EXISTS idx_votes_dedupe ON votes (iso3, voter_hash, created_
 
 -- Per-visitor daily volume cap check (Task 2 step 7)
 CREATE INDEX IF NOT EXISTS idx_votes_daycap ON votes (day_hash, created_at);
+
+-- Atomic dedupe: voter_hash already encodes iso3:weekBucket, so this UNIQUE index enforces
+-- exactly one vote per IP per country per week bucket at the DB level (WR-01) — the
+-- check-then-insert above is a cheap pre-check only, this constraint is authoritative.
+CREATE UNIQUE INDEX IF NOT EXISTS idx_votes_unique_voter ON votes (iso3, voter_hash);

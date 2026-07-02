@@ -149,12 +149,17 @@ export async function onRequestPost(context: any) {
     // (8) Single parameterized INSERT — never string-concatenate SQL (T-39-01).
     // officialScore is never part of the POST contract ({iso3, delta, token?}), so it is
     // always explicitly nulled here; D1 .bind() throws D1_TYPE_ERROR on undefined.
-    await db
+    // INSERT OR IGNORE + the UNIQUE index on (iso3, voter_hash) is the authoritative dedupe
+    // (WR-01); the step-6 SELECT above is just a cheap pre-check that saves a write.
+    const res = await db
       .prepare(
-        'INSERT INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at) VALUES (?, ?, ?, ?, ?, ?)'
       )
       .bind(iso3, delta, body.officialScore ?? null, voter_hash, day_hash, nowSec)
       .run();
+    if (res.meta?.changes === 0) {
+      return json({ ok: true, deduped: true }, 200);
+    }
 
     // (9)
     return json({ ok: true }, 200);
