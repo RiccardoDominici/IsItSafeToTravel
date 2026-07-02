@@ -109,3 +109,7 @@ None.
 ---
 *Phase: 39-community-sentiment-score-phase-1-display-only-5-level-calib*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+All created files verified present on disk; all 4 commit hashes (`2fb7c957`, `a36aec1c`, `5ad9b3ef`, `445c38f1`) verified present in git log.
