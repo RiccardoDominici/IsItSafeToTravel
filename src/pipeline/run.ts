@@ -3,9 +3,15 @@ import { computeAllScores } from './scoring/engine.js';
 import { writeSnapshot } from './scoring/snapshot.js';
 import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
+import { aggregateVotes } from './sentiment/aggregate.js';
+import { fetchVotes } from './sentiment/fetch-votes.js';
+import { writeSentimentSnapshot, writeSentimentHistoryIndex, getSentimentDir } from './sentiment/snapshot.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+
+/** Only aggregate votes newer than this window (Pitfall 8: D1 free-tier rows-read budget). */
+const SENTIMENT_WINDOW_DAYS = 180;
 
 export interface PipelineResult {
   success: boolean;
@@ -84,6 +90,39 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // Stage 5: History Index
   console.log('\n--- Stage 5: History Index ---');
   writeHistoryIndex();
+
+  // Stage 6: Sentiment
+  // Display-only community sentiment (D-06/D-14): wrapped so ANY failure here
+  // (missing CF credentials, D1 unreachable, unexpected error) only warns and
+  // never changes PipelineResult.success or aborts the run.
+  console.log('\n--- Stage 6: Sentiment ---');
+  try {
+    const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
+    const { ok, rows } = await fetchVotes(cutoff);
+    const officialScores = new Map(scoredCountries.map((c) => [c.iso3, c.score]));
+
+    if (ok) {
+      const sentimentSnapshot = aggregateVotes(rows, officialScores, Date.now());
+      writeSentimentSnapshot(date, sentimentSnapshot);
+      writeSentimentHistoryIndex();
+      console.log(
+        `[Sentiment] Aggregated ${Object.keys(sentimentSnapshot.countries).length} countries from ${rows.length} vote(s)`,
+      );
+    } else {
+      const latestPath = join(getSentimentDir(), 'latest.json');
+      if (existsSync(latestPath)) {
+        console.warn('[Sentiment] D1 read unavailable — keeping last-known data/sentiment/latest.json');
+      } else {
+        writeSentimentSnapshot(date, { generatedAt: new Date().toISOString(), countries: {} });
+        console.warn(
+          '[Sentiment] D1 read unavailable and no prior snapshot — wrote empty-but-valid data/sentiment/latest.json',
+        );
+      }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[Sentiment] Stage 6 failed unexpectedly (non-fatal): ${message}`);
+  }
 
   console.log(
     `\n=== Pipeline complete: ${scoredCountries.length} countries scored, ${sourcesSucceeded}/${sourcesTotal} sources succeeded ===`,
