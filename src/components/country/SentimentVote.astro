@@ -1,0 +1,175 @@
+---
+// Phase 39 (39-06): 5-level calibration vote widget — the interactive half of the
+// Sentiment surface (lives inside SentimentPillar's <slot/>, composed by 39-08).
+// No-framework, progressive-enhancement pattern matching src/pages/en/feedback/index.astro
+// (define:vars + fetch POST + hidden/classList state-swap) and the localStorage precedent in
+// src/components/DarkModeToggle.astro (direct get/set, re-init on astro:after-swap).
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+
+interface Props {
+  iso3: string;
+  officialScore: number;
+  countryName?: string;
+  lang: Lang;
+}
+
+const { iso3, countryName = '', lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Astro exposes PUBLIC_-prefixed env vars to the client bundle at build time (RESEARCH A3).
+// D-12: absent -> no Turnstile widget rendered, POST still works (verification skipped server-side).
+const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY;
+
+const question = t('sentiment.question').replace('{country}', countryName);
+---
+
+<div class="sentiment-vote">
+  <form id="sentiment-vote-form" novalidate>
+    <fieldset class="space-y-1">
+      <legend class="text-base font-semibold text-sand-800 dark:text-sand-100 mb-2">{question}</legend>
+
+      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
+        <input type="radio" name="calibration" value="-2" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
+        <span>{t('sentiment.level_way_high')}</span>
+      </label>
+      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
+        <input type="radio" name="calibration" value="-1" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
+        <span>{t('sentiment.level_high')}</span>
+      </label>
+      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
+        <input type="radio" name="calibration" value="0" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
+        <span>{t('sentiment.level_right')}</span>
+      </label>
+      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
+        <input type="radio" name="calibration" value="1" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
+        <span>{t('sentiment.level_low')}</span>
+      </label>
+      <label class="sentiment-vote-option flex items-center gap-2 min-h-[44px] text-sm px-2 rounded-md cursor-pointer text-sand-700 dark:text-sand-200">
+        <input type="radio" name="calibration" value="2" class="accent-[var(--color-terracotta-500)] w-4 h-4 shrink-0" />
+        <span>{t('sentiment.level_way_low')}</span>
+      </label>
+    </fieldset>
+
+    {turnstileSitekey && (
+      <div class="cf-turnstile mt-3" data-sitekey={turnstileSitekey}></div>
+    )}
+
+    <!-- JS-gated (D-18): stays hidden until the inline script reveals it on init, so a
+         no-JS visitor never sees a half-working submit control (silent degradation). -->
+    <button
+      type="submit"
+      id="sentiment-vote-submit"
+      disabled
+      class="hidden mt-3 bg-terracotta-500 hover:bg-terracotta-600 text-white font-medium rounded-md px-3 py-1.5 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px]"
+    >
+      {t('sentiment.submit')}
+    </button>
+  </form>
+
+  <div aria-live="polite">
+    <div id="sentiment-vote-thanks" class="hidden mt-3 text-sm">
+      <p class="font-medium text-sand-800 dark:text-sand-100">{t('sentiment.thanks_title')}</p>
+      <p class="text-sand-600 dark:text-sand-400">{t('sentiment.thanks_body')}</p>
+    </div>
+    <!-- Muted, informational only — deliberately no alert-role semantics (would steal
+         focus / conflict with silent degradation, per UI-SPEC Accessibility + T-39-22). -->
+    <p id="sentiment-vote-error" class="hidden mt-3 text-xs text-sand-500">
+      {t('sentiment.error')}
+    </p>
+  </div>
+</div>
+
+{turnstileSitekey && (
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+)}
+
+<script define:vars={{ iso3 }}>
+  function initSentimentVote() {
+    const form = document.getElementById('sentiment-vote-form');
+    const submitBtn = document.getElementById('sentiment-vote-submit');
+    const thanksEl = document.getElementById('sentiment-vote-thanks');
+    const errorEl = document.getElementById('sentiment-vote-error');
+    if (!form || !submitBtn || !thanksEl || !errorEl) return;
+
+    const storageKey = 'sentiment-voted-' + iso3;
+    const options = form.querySelectorAll('.sentiment-vote-option');
+    const radios = form.querySelectorAll('input[name="calibration"]');
+
+    function showThanks() {
+      form.classList.add('hidden');
+      thanksEl.classList.remove('hidden');
+      errorEl.classList.add('hidden');
+    }
+
+    // Soft dedupe (D-17): a returning voter sees thank-you, not the prompt. Client-only —
+    // not authoritative (server salted-hash dedupe is the source of truth, T-39-20).
+    let alreadyVoted = false;
+    try {
+      alreadyVoted = !!localStorage.getItem(storageKey);
+    } catch {
+      alreadyVoted = false;
+    }
+    if (alreadyVoted) {
+      showThanks();
+      return;
+    }
+
+    // Reveal the submit control only once JS has run (D-18).
+    submitBtn.classList.remove('hidden');
+
+    radios.forEach((radio) => {
+      radio.addEventListener('change', () => {
+        submitBtn.disabled = false;
+        options.forEach((opt) => {
+          const input = opt.querySelector('input[name="calibration"]');
+          const selected = !!(input && input.checked);
+          opt.classList.toggle('bg-sand-100', selected);
+          opt.classList.toggle('dark:bg-sand-700', selected);
+          opt.classList.toggle('rounded-md', selected);
+          opt.classList.toggle('font-medium', selected);
+        });
+      });
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const checked = form.querySelector('input[name="calibration"]:checked');
+      if (!checked) return;
+
+      const delta = Number(checked.value);
+      const tokenInput = form.querySelector('input[name="cf-turnstile-response"]');
+      const token = tokenInput ? tokenInput.value : undefined;
+
+      submitBtn.disabled = true;
+      errorEl.classList.add('hidden');
+
+      try {
+        const res = await fetch('/api/vote', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ iso3, delta, token }),
+        });
+
+        if (res.ok) {
+          try {
+            localStorage.setItem(storageKey, '1');
+          } catch {
+            // localStorage unavailable — soft dedupe just won't persist; not fatal.
+          }
+          showThanks();
+        } else {
+          // Muted, non-blocking error — options remain selectable (silent degradation, D-18).
+          errorEl.classList.remove('hidden');
+          submitBtn.disabled = false;
+        }
+      } catch {
+        errorEl.classList.remove('hidden');
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  initSentimentVote();
+  document.addEventListener('astro:after-swap', initSentimentVote);
+</script>
