@@ -101,3 +101,10 @@ None - no external service configuration required. This plan only touches static
 ---
 *Phase: 39-community-sentiment-score-phase-1-display-only-5-level-calib*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+- FOUND: `.planning/phases/39-community-sentiment-score-phase-1-display-only-5-level-calib/39-03-SUMMARY.md`
+- FOUND: commit `cdd9c21a` (Task 1)
+- FOUND: commit `5456f846` (Task 2)
+- FOUND: commit `6dcaa7f9` (SUMMARY.md)
