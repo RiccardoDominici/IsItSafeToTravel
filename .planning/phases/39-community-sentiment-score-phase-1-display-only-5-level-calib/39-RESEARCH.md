@@ -521,19 +521,22 @@ export function loadSentiment(iso3: string) {
 | A4 | Vote volume stays far below 100k writes/day and full-table reads stay within 5M/day | D-16, Pitfall 8 | Only at implausibly high traffic; index + window mitigate |
 | A5 | Turnstile test keys (`1x…AA` / `1x…0AA`) are current | Pattern 3 | Only affects local/CI testing; verify on the CF testing page |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the existing deploy API token already have D1 permissions, or is a new/expanded token needed?**
    - Known: `deploy.yml` uses `CLOUDFLARE_API_TOKEN` + `CLOUDFLARE_ACCOUNT_ID`; both exist as repo secrets.
    - Unclear: whether that token's scope includes D1 read (needed by the pipeline).
    - Recommendation: plan for graceful degradation (D-14) and list "grant token D1 read" as the manual user step (already deferred). The vote-write path uses the D1 *binding*, not the token, so ingestion works regardless.
+   - **RESOLVED:** adopted — pipeline degrades gracefully (39-04 fetchVotes returns {ok:false,rows:[]} on auth failure); granting the token D1 read is a deferred manual/orchestrator step (39-VALIDATION Post-Phase Actions).
 
 2. **One D1 database for prod, or separate preview DB?**
    - Known: master→production only; no preview-branch writes today.
    - Recommendation: single top-level `[[d1_databases]]` binding (production). Add `[[env.preview.d1_databases]]` only if preview branches must accept votes.
+   - **RESOLVED:** adopted — single top-level `[[d1_databases]]` binding in wrangler.toml (39-01 Task 1); no preview DB (master→production only).
 
 3. **Where does the pipeline read `database_id` from?**
    - Recommendation: read it from `wrangler.toml` (parse) or define it as a shared constant in `src/pipeline/sentiment/`. Committing it in `wrangler.toml` per D-15 makes the toml the single source; a tiny TOML read or a duplicated constant both work.
+   - **RESOLVED:** adopted — database_id `83acaffe-32ff-43fc-b68f-5343d01000d5` is hardcoded as a committed constant in both `wrangler.toml` (39-01) and `SENTIMENT_D1_DATABASE_ID` in fetch-votes.ts (39-04).
 
 ## Environment Availability
 
