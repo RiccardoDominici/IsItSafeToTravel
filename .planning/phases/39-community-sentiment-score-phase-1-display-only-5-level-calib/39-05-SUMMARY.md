@@ -101,3 +101,13 @@ None - no external service configuration required.
 ---
 *Phase: 39-community-sentiment-score-phase-1-display-only-5-level-calib*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+- FOUND: src/lib/sentiment.ts
+- FOUND: src/lib/__tests__/sentiment.test.ts
+- FOUND: src/components/country/SentimentPillar.astro
+- FOUND: .planning/phases/39-community-sentiment-score-phase-1-display-only-5-level-calib/39-05-SUMMARY.md
+- FOUND commit: 4680989a (Task 1)
+- FOUND commit: 6e2334e8 (Task 2)
+- FOUND commit: 6d6a87ac (docs: SUMMARY)
