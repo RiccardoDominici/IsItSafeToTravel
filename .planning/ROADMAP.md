@@ -487,10 +487,17 @@ Plans:
 
 ### Phase 39: Community Sentiment Score — Phase 1 display-only: 5-level calibration votes via Cloudflare Pages Function + D1, daily GHA aggregation baking a new translated Sentiment pillar (weight 0), methodology docs in 7 languages
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Visitors on any country page (all 7 languages) can calibrate the official 1–10 safety score with a 5-level community vote; votes are ingested live by a Cloudflare Pages Function into D1, aggregated daily by the existing GHA pipeline, and surfaced as a NEW display-only "Sentiment" pillar (weight 0 — the total score is unchanged), with methodology + privacy docs updated in all 7 languages.
+**Requirements**: CONTEXT decisions D-01..D-22 (no formal REQ-IDs; postdates the v4.0 requirement set)
 **Depends on:** Phase 38
-**Plans:** 0 plans
+**Plans:** 8 plans
 
 Plans:
-- [ ] TBD (run /gsd-plan-phase 39 to break down)
+- [ ] 39-01-PLAN.md — Vote ingestion backend: wrangler D1 binding + schema + /api/vote Pages Function
+- [ ] 39-02-PLAN.md — Sentiment types + recency-weighted aggregation math (TDD) + score-invariance guard
+- [ ] 39-03-PLAN.md — i18n: sentiment.* + methodology/privacy keys across all 7 locales
+- [ ] 39-04-PLAN.md — Daily pipeline sentiment stage: D1 fetch + snapshot/history bake + workflow wiring
+- [ ] 39-05-PLAN.md — Build-time sentiment loader + SentimentPillar display card
+- [ ] 39-06-PLAN.md — SentimentVote widget (5-level, progressive enhancement, env-gated Turnstile) + CSP
+- [ ] 39-07-PLAN.md — Methodology + privacy documentation for Sentiment (7 locales)
+- [ ] 39-08-PLAN.md — Wire SentimentPillar + SentimentVote into all 7 country pages + SEO gate
