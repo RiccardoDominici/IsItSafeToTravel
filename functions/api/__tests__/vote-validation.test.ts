@@ -1,6 +1,13 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { isValidDelta, isValidIso3, normalizeOfficialScore, voterHash } from '../vote.ts';
+import {
+  isValidDelta,
+  isValidIso3,
+  isJsonContentType,
+  isSameOriginOrAbsent,
+  normalizeOfficialScore,
+  voterHash,
+} from '../vote.ts';
 
 describe('isValidDelta', () => {
   it('accepts every valid calibration delta (-2..2)', () => {
@@ -121,5 +128,59 @@ describe('normalizeOfficialScore', () => {
   it('nulls NaN and Infinity', () => {
     assert.equal(normalizeOfficialScore(NaN), null);
     assert.equal(normalizeOfficialScore(Infinity), null);
+  });
+});
+
+describe('isJsonContentType', () => {
+  it('accepts a bare application/json', () => {
+    assert.equal(isJsonContentType('application/json'), true);
+  });
+
+  it('accepts application/json with a charset parameter', () => {
+    assert.equal(isJsonContentType('application/json; charset=utf-8'), true);
+  });
+
+  it('accepts mismatched case', () => {
+    assert.equal(isJsonContentType('Application/JSON'), true);
+  });
+
+  it('rejects text/plain', () => {
+    assert.equal(isJsonContentType('text/plain'), false);
+  });
+
+  it('rejects a form-encoded type', () => {
+    assert.equal(isJsonContentType('application/x-www-form-urlencoded'), false);
+  });
+
+  it('rejects a missing header', () => {
+    assert.equal(isJsonContentType(null), false);
+  });
+
+  it('rejects an empty string', () => {
+    assert.equal(isJsonContentType(''), false);
+  });
+});
+
+describe('isSameOriginOrAbsent', () => {
+  const requestUrl = 'https://isitsafetotravel.org/api/vote';
+
+  it('allows an absent Origin header', () => {
+    assert.equal(isSameOriginOrAbsent(null, requestUrl), true);
+  });
+
+  it('allows a matching origin', () => {
+    assert.equal(isSameOriginOrAbsent('https://isitsafetotravel.org', requestUrl), true);
+  });
+
+  it('rejects a cross-origin mismatch', () => {
+    assert.equal(isSameOriginOrAbsent('https://evil.example', requestUrl), false);
+  });
+
+  it('rejects a scheme mismatch (http vs https)', () => {
+    assert.equal(isSameOriginOrAbsent('http://isitsafetotravel.org', requestUrl), false);
+  });
+
+  it('rejects a malformed origin value', () => {
+    assert.equal(isSameOriginOrAbsent('not-a-url', requestUrl), false);
   });
 });

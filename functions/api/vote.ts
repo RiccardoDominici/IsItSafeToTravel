@@ -65,6 +65,26 @@ export function normalizeOfficialScore(x: unknown): number | null {
   return typeof x === 'number' && Number.isFinite(x) && x >= 1 && x <= 10 ? x : null;
 }
 
+/** True only when the Content-Type header (ignoring charset/params) is exactly application/json. */
+export function isJsonContentType(contentType: string | null): boolean {
+  if (!contentType) return false;
+  return contentType.split(';')[0].trim().toLowerCase() === 'application/json';
+}
+
+/**
+ * True when `origin` is absent (no Origin header — curl, or same-origin fetches in browsers
+ * that omit it) or when it matches `requestUrl`'s own origin. False only on an explicit
+ * cross-origin mismatch.
+ */
+export function isSameOriginOrAbsent(origin: string | null, requestUrl: string): boolean {
+  if (!origin) return true;
+  try {
+    return new URL(origin).origin === new URL(requestUrl).origin;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * SHA-256 hex digest of `salt:ip:scope` via Web Crypto (crypto.subtle) — NOT Node's built-in
  * crypto module, so this runs regardless of the nodejs_compat flag. Never store or log the raw ip.
@@ -77,6 +97,16 @@ export async function voterHash(salt: string, ip: string, scope: string): Promis
 
 export async function onRequestPost(context: any) {
   try {
+    // (0) Content-Type + same-origin guard for this state-changing endpoint (WR-03). Absent
+    // Origin (curl, same-origin fetch in some browsers) stays allowed; an explicit
+    // cross-origin mismatch is rejected. No CORS headers are added for cross-origin requests.
+    if (!isJsonContentType(context.request.headers.get('Content-Type'))) {
+      return json({ ok: false, reason: 'unsupported_media_type' }, 415);
+    }
+    if (!isSameOriginOrAbsent(context.request.headers.get('Origin'), context.request.url)) {
+      return json({ ok: false, reason: 'origin_mismatch' }, 403);
+    }
+
     // (1) Body-size cap — read as text first so we can measure before parsing/trusting fields.
     const rawBody = await context.request.text();
     if (new TextEncoder().encode(rawBody).length > MAX_BODY_BYTES) {
