@@ -579,7 +579,7 @@ Plans:
 **Goal:** Visitors on any country page (all 7 languages) can calibrate the official 1–10 safety score with a 5-level community vote; votes are ingested live by a Cloudflare Pages Function into D1, aggregated daily by the existing GHA pipeline, and surfaced as a NEW display-only "Sentiment" pillar (weight 0 — the total score is unchanged), with methodology + privacy docs updated in all 7 languages.
 **Requirements**: CONTEXT decisions D-01..D-22 (no formal REQ-IDs; postdates the v4.0 requirement set)
 **Depends on:** Phase 38
-**Plans:** 7/8 plans executed
+**Plans:** 8/8 plans complete
 
 Plans:
 **Wave 1**
@@ -597,4 +597,4 @@ Plans:
 
 **Wave 3** *(blocked on Wave 2 completion)*
 
-- [ ] 39-08-PLAN.md — Wire SentimentPillar + SentimentVote into all 7 country pages + SEO gate
+- [x] 39-08-PLAN.md — Wire SentimentPillar + SentimentVote into all 7 country pages + SEO gate
