@@ -20,7 +20,7 @@ AI answer engines.
 | Generated output | Edit instead |
 |---|---|
 | `public/llms.txt`, `public/llms-full.txt` | `scripts/generate-llms-full.ts` |
-| `public/scores.json`, `data/scores/**`, `data/raw/**`, `data/history/**` | the pipeline (`src/pipeline/run.ts`) |
+| `public/scores.json`, `data/scores/**`, `data/raw/**`, `data/history/**`, `data/sentiment/**` | the pipeline (`src/pipeline/run.ts`) |
 | `public/og/**` | `scripts/generate-og-images.ts` |
 | `dist/**` | `npm run build` |
 
