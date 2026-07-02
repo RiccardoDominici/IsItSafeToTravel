@@ -113,3 +113,16 @@ This is the final wave (wave 3) of Phase 39. The Community Sentiment feature (Ph
 ---
 *Phase: 39-community-sentiment-score-phase-1-display-only-5-level-calib*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+- FOUND: src/pages/en/country/[slug].astro
+- FOUND: src/pages/it/paese/[slug].astro
+- FOUND: src/pages/es/pais/[slug].astro
+- FOUND: src/pages/fr/pays/[slug].astro
+- FOUND: src/pages/pt/pais/[slug].astro
+- FOUND: src/pages/zh/country/[slug].astro
+- FOUND: src/pages/de/land/[slug].astro
+- FOUND: .planning/phases/39-community-sentiment-score-phase-1-display-only-5-level-calib/39-08-SUMMARY.md
+- FOUND commit: 76c1c2b3 (Task 1)
+- FOUND commit: c5c06147 (docs: summary)
