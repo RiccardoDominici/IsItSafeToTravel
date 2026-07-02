@@ -1,3 +1,9 @@
 name = "isitsafetotravel"
+pages_build_output_dir = "dist/client"
 compatibility_date = "2026-03-01"
 compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "isitsafetotravel-sentiment"
+database_id = "83acaffe-32ff-43fc-b68f-5343d01000d5"
