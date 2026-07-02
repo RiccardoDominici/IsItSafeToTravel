@@ -4,7 +4,7 @@ plan: 01
 type: execute
 wave: 1
 depends_on: [quick-260702-cpr]
-status: PENDING OWNER APPROVAL — plan produced and presented 2026-07-02; execution not started
+status: COMPLETED — approved and executed 2026-07-02 (commit 71594c13); commercial-use question resolved: route to feedback page
 files_modified:
   - src/i18n/ui.ts
   - src/lib/seo.ts

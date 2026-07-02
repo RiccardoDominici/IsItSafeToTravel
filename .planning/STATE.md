@@ -5,7 +5,7 @@ milestone_name: Global Advisory Sources Expansion
 status: milestone_complete
 stopped_at: Milestone complete (Phase 39 was final phase)
 last_updated: 2026-07-02T14:30:00.000Z
-last_activity: 2026-07-02 -- Quick tasks 260702-svw (sentiment widget restyle) + 260702-cpr (country page section restructure) shipped
+last_activity: 2026-07-02 -- Quick tasks 260702-svw (sentiment restyle) + 260702-cpr (section restructure) + 260702-ctd (cite-this-data page) shipped
 progress:
   total_phases: 24
   completed_phases: 19
@@ -110,6 +110,7 @@ None yet.
 | 260623-wd6 | On-site SEO authority concentration: new AuthorityLinks component on all 7-locale country pages — ranking up-links (safest/most-dangerous hubs, band-matching order, localized slugs from routes) + "Cite this data" copy snippet & embed-badge CTA. Motivated by 2026-06-23 GSC data audit (indexing ~98% solved; real bottleneck = domain authority/ranking). Build 1906 pages OK, validate:seo 2213/2213 pass. | 2026-06-23 | 1a441ab2 | [260623-wd6-on-site-seo-authority-concentration-rank](./quick/260623-wd6-on-site-seo-authority-concentration-rank/) |
 | 260702-svw | Restyle Community Sentiment vote widget (Phase-39 form): 5 radios → bordered calibration cards (CSS has-[:checked], sr-only radios + focus-visible ring), terracotta CTA with sand disabled state, branded thanks panel, Community badge retint. Zero i18n strings added, JS contract intact, validate:seo 2213/2213. Multi-agent: Opus designs+judges, Sonnet executes. | 2026-07-02 | 10401d96 | [260702-svw-restyle-sentiment-vote-widget](./quick/260702-svw-restyle-sentiment-vote-widget/) |
 | 260702-cpr | Country page section restructure (15→13 blocks, citability-first): PillarDetailTable folded into PillarBreakdown as native <details> (new key country.pillars_detail_toggle ×7 langs), FAQ up after advisories (answer cluster contiguous for AI), TrendChart down to evidence tail, comparison/related/authority links grouped — identical order across 7 locales. Deferred: ComparisonTable⊕NeighborComparison merge (render-guard risk). validate:seo 2213/2213. | 2026-07-02 | a62ee02a | [260702-cpr-country-page-section-restructure](./quick/260702-cpr-country-page-section-restructure/) |
+| 260702-ctd | Dedicated "Cite this data" page ×7 locales (shared CitePage.astro, ApiDocs pattern): country/whole-dataset selector, live badge preview, 6 citation formats (plain/HTML/Markdown/APA/MLA/BibTeX) with auto access date, FAQ+FAQPage schema, license w/ commercial→feedback routing. Country pages decluttered: AuthorityLinks cite sub-block removed (Rankings kept), deep-linked #c=iso3 text link + site-wide Footer link. New 'cite' routes slugs ×7 → hreflang+sitemap automatic. validate:seo 2213/2213 + manual hreflang grep on all 7 built pages. | 2026-07-02 | 71594c13 | [260702-ctd-cite-this-data-page](./quick/260702-ctd-cite-this-data-page/) |
 
 ## Session Continuity
 
