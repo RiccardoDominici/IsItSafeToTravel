@@ -93,3 +93,12 @@ None - no external service configuration required by this plan. (Turnstile widge
 ---
 *Phase: 39-community-sentiment-score-phase-1-display-only-5-level-calib*
 *Completed: 2026-07-02*
+
+## Self-Check: PASSED
+
+- FOUND: src/components/country/SentimentVote.astro
+- FOUND: public/_headers
+- FOUND: .planning/phases/39-community-sentiment-score-phase-1-display-only-5-level-calib/39-06-SUMMARY.md
+- FOUND commit: d6963d2d (Task 1)
+- FOUND commit: 21d0a1c7 (Task 2)
+- FOUND commit: 8de27086 (docs: summary)
