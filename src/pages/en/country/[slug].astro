@@ -18,7 +18,6 @@ import RelatedCountries from '../../../components/country/RelatedCountries.astro
 import AuthorityLinks from '../../../components/country/AuthorityLinks.astro';
 import NeighborComparison from '../../../components/country/NeighborComparison.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
-import StatsSummary from '../../../components/country/StatsSummary.astro';
 import FaqSection from '../../../components/country/FaqSection.astro';
 import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
 import ComparisonTable from '../../../components/country/ComparisonTable.astro';
@@ -96,8 +95,7 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
       </span>
     </div>
     <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
-    <AnswerFirstParagraph country={country} lang={lang} />
-    <StatsSummary country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
+    <AnswerFirstParagraph country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
     <PillarBreakdown pillars={country.pillars} lang={lang} />
     <SentimentPillar sentiment={sentiment} official={country.score} lang={lang}>
       <SentimentVote iso3={country.iso3} officialScore={country.score} countryName={getLocalizedCountryName(country, lang)} lang={lang} />

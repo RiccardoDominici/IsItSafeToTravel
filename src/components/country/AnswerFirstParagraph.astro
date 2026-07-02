@@ -6,11 +6,27 @@ import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
   country: ScoredCountry;
+  rank: number;
+  totalCountries: number;
   lang: Lang;
 }
 
-const { country, lang } = Astro.props;
+const { country, rank, totalCountries, lang } = Astro.props;
 const t = useTranslations(lang);
+
+// Per-language ordinal for the global ranking (en 78th, it 78°, fr 78e, pt 78º;
+// es/de/zh read naturally with the plain number given the sentence templates)
+function ordinal(n: number, l: Lang): string {
+  if (l === 'en') {
+    const s = ['th', 'st', 'nd', 'rd'];
+    const v = n % 100;
+    return n + (s[(v - 20) % 10] || s[v] || s[0]);
+  }
+  if (l === 'fr') return n + (n === 1 ? 'er' : 'e');
+  if (l === 'it') return n + '°';
+  if (l === 'pt') return n + 'º';
+  return String(n);
+}
 
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 const pillarLabels: Record<Lang, Record<string, string>> = {
@@ -52,6 +68,8 @@ const text = t('country.answer_first' as any)
   .replace('{score}', score.toFixed(1))
   .replace('{date}', dateStr)
   .replace('{riskLevel}', riskLevel)
+  .replace('{rank}', ordinal(rank, lang))
+  .replace('{total}', String(totalCountries))
   .replace('{weakestPillar}', pillarLabels[lang][weakest.name])
   .replace('{weakestScore}', (weakest.score * 10).toFixed(1))
   .replace('{strongestPillar}', pillarLabels[lang][strongest.name])
