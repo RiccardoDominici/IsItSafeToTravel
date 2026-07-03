@@ -224,11 +224,45 @@ jobs:
           PIPELINE_OUTCOME: ${{ steps.pipeline.outcome }}
           JOB_STATUS: ${{ job.status }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_TOKEN }}
         run: |
           DATE=$(date -u +%Y-%m-%d)
           COUNTRY_COUNT="?"
           if [ -f "public/scores.json" ]; then
             COUNTRY_COUNT=$(jq '.countries | length' public/scores.json 2>/dev/null || echo "?")
+          fi
+
+          # Community-vote daily report, appended to whichever notification fires.
+          # Reads the sentiment D1 directly (same HTTP API + token fallback as
+          # src/pipeline/sentiment/fetch-votes.ts) because the pipeline snapshot
+          # only surfaces countries above the 5-vote floor. Non-blocking: any
+          # failure leaves VOTES_LINE empty and the notification unchanged.
+          VOTES_LINE=""
+          D1_TOKEN="${CLOUDFLARE_D1_TOKEN:-$CLOUDFLARE_API_TOKEN}"
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$D1_TOKEN" ]; then
+            read -r -d '' VOTES_SQL <<'SQL' || true
+          SELECT (SELECT COUNT(*) FROM votes) AS total,
+                 (SELECT COUNT(*) FROM votes WHERE created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS last24h,
+                 (SELECT COUNT(DISTINCT iso3) FROM votes) AS countries,
+                 (SELECT GROUP_CONCAT(x, ', ') FROM (SELECT iso3 || ':' || COUNT(*) AS x FROM votes GROUP BY iso3 ORDER BY COUNT(*) DESC, iso3 LIMIT 10)) AS breakdown
+          SQL
+            VOTES_JSON=$(jq -n --arg sql "$VOTES_SQL" '{sql: $sql}' \
+              | curl -fsS -m 30 -X POST \
+                  "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database/83acaffe-32ff-43fc-b68f-5343d01000d5/query" \
+                  -H "Authorization: Bearer ${D1_TOKEN}" \
+                  -H "Content-Type: application/json" \
+                  --data @- 2>/dev/null) || VOTES_JSON=""
+            V_TOTAL=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].total // empty' 2>/dev/null)
+            if [ -n "$V_TOTAL" ]; then
+              V_24H=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].last24h // 0')
+              V_COUNTRIES=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].countries // 0')
+              V_BREAKDOWN=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].breakdown // "-"')
+              VOTES_LINE="🗳 Community votes: ${V_TOTAL} total (+${V_24H} last 24h) across ${V_COUNTRIES} countries — ${V_BREAKDOWN}"
+            else
+              echo "::warning::vote report query failed (non-blocking)"
+            fi
           fi
 
           if [ "$JOB_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "ok" ]; then
@@ -246,6 +280,10 @@ jobs:
             BODY="Pipeline workflow did not complete cleanly (status=$JOB_STATUS, pipeline-step=$PIPELINE_OUTCOME). Check the run log. ${RUN_URL}"
             PRIORITY="high"
             TAGS="boom,isitsafetotravel"
+          fi
+
+          if [ -n "$VOTES_LINE" ]; then
+            BODY="${BODY}\n\n${VOTES_LINE}"
           fi
 
           # ntfy.sh push notification (per project memory: riccardo-claude topic)
