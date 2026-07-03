@@ -28,6 +28,123 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/bolivia",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/bolivia",
+        "base_path": "/foreign-travel-advice/bolivia",
+        "content_id": "2f6708c2-9a26-4949-8eb7-824e601ee377",
+        "details": {
+          "change_description": "FCDO no longer advises against all but essential travel to the department of La Paz, including the city of La Paz ('Warnings and insurance' page). ",
+          "country": {
+            "name": "Bolivia",
+            "slug": "bolivia",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-03T11:47:30Z",
+        "schema_name": "travel_advice",
+        "title": "Bolivia travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/bolivia",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/mexico",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mexico",
+        "base_path": "/foreign-travel-advice/mexico",
+        "content_id": "34dafa2b-24e5-4625-b542-bf5e0bb8cd80",
+        "details": {
+          "change_description": "New information relevant to the upcoming match between England and Mexico which will be played at the Estadio Cuidad de Mexico (Mexico City Stadium) (‘Warnings and insurance’ page).",
+          "country": {
+            "name": "Mexico",
+            "slug": "mexico",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-01T19:14:01Z",
+        "schema_name": "travel_advice",
+        "title": "Mexico travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/mexico",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/malawi",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malawi",
+        "base_path": "/foreign-travel-advice/malawi",
+        "content_id": "5911a0b5-1d96-49c5-9e83-3ed20a815995",
+        "details": {
+          "change_description": "New information about Traveller Health Check form ('Entry requirements' page).",
+          "country": {
+            "name": "Malawi",
+            "slug": "malawi",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-03T09:59:53Z",
+        "schema_name": "travel_advice",
+        "title": "Malawi travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/malawi",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/russia",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/russia",
         "base_path": "/foreign-travel-advice/russia",
@@ -192,45 +309,6 @@
         "schema_name": "travel_advice",
         "title": "Ghana travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/ghana",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/mexico",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mexico",
-        "base_path": "/foreign-travel-advice/mexico",
-        "content_id": "34dafa2b-24e5-4625-b542-bf5e0bb8cd80",
-        "details": {
-          "change_description": "New information relevant to the upcoming match between England and Mexico which will be played at the Estadio Cuidad de Mexico (Mexico City Stadium) (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "Mexico",
-            "slug": "mexico",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-07-01T19:14:01Z",
-        "schema_name": "travel_advice",
-        "title": "Mexico travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/mexico",
         "withdrawn": false
       },
       {
@@ -807,45 +885,6 @@
         "schema_name": "travel_advice",
         "title": "Vietnam travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/vietnam",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/bolivia",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/bolivia",
-        "base_path": "/foreign-travel-advice/bolivia",
-        "content_id": "2f6708c2-9a26-4949-8eb7-824e601ee377",
-        "details": {
-          "change_description": "Updated information about State of Emergency in Bolivia (‘Warnings and insurance’ page).",
-          "country": {
-            "name": "Bolivia",
-            "slug": "bolivia",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-06-25T12:08:29Z",
-        "schema_name": "travel_advice",
-        "title": "Bolivia travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/bolivia",
         "withdrawn": false
       },
       {
@@ -6261,45 +6300,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/malawi",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/malawi",
-        "base_path": "/foreign-travel-advice/malawi",
-        "content_id": "5911a0b5-1d96-49c5-9e83-3ed20a815995",
-        "details": {
-          "change_description": "New information about visa requirements when visiting Malawi (‘Entry requirements’ page). ",
-          "country": {
-            "name": "Malawi",
-            "slug": "malawi",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-01-05T15:34:05Z",
-        "schema_name": "travel_advice",
-        "title": "Malawi travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/malawi",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/mauritania",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/mauritania",
         "base_path": "/foreign-travel-advice/mauritania",
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-07-03T09:40:34+01:00",
+  "updated_at": "2026-07-03T12:47:31+01:00",
   "withdrawn_notice": {}
 }
