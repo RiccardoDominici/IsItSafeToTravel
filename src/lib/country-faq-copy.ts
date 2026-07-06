@@ -255,12 +255,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "What do government travel advisories say about {name}?",
     "a1Verdict": {
       "low": "Yes — {name} is considered a safe destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}.",
-      "moderate": "{name} is moderately safe: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel} — most trips are trouble-free, but some risks deserve attention.",
-      "high": "{name} is currently a high-risk destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}, and travel requires serious caution."
+      "moderate": "Yes, but with caution — {name} is moderately safe: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}. Most trips are trouble-free, but some risks deserve attention.",
+      "high": "No — {name} is currently a high-risk destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}, and travel requires serious caution."
     },
     "a1Formula": "The score is a weighted geometric mean of five pillars — conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%) — so a weak pillar drags the overall score down more than a strong one lifts it.",
     "a1Drivers": {
-      "normal": "{name}'s result is shaped mainly by its weakest areas, {weakest} ({weakestScore}/10) and {second} ({secondScore}/10), while {strongest} ({strongestScore}/10) is its strongest pillar. {meaning}",
+      "normal": "{strongest} ({strongestScore}/10) is {name}'s strongest pillar, while the score is pulled down by {second} ({secondScore}/10) and above all by {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "All five pillars score well for {name}: even the weakest, {weakest} ({weakestScore}/10), sits in the low-risk band, with {strongest} ({strongestScore}/10) leading."
     },
     "a1Provenance": "It is recalculated every day from public sources including government travel advisories, the Global Peace Index, the INFORM Risk Index and World Bank indicators.",
@@ -300,12 +300,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "Cosa dicono gli avvisi di viaggio governativi su {name}?",
     "a1Verdict": {
       "low": "Sì — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}.",
-      "moderate": "{name} è una destinazione moderatamente sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel} — la maggior parte dei viaggi si svolge senza problemi, ma alcuni rischi meritano attenzione.",
-      "high": "{name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
+      "moderate": "Sì, ma con cautela — {name} è una destinazione moderatamente sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. La maggior parte dei viaggi si svolge senza problemi, ma alcuni rischi meritano attenzione.",
+      "high": "No — {name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
     },
     "a1Formula": "Il punteggio è una media geometrica ponderata di cinque pilastri — conflitto (30%), criminalità (25%), salute (20%), governance (15%) e ambiente (10%) — per cui un pilastro debole trascina verso il basso il punteggio complessivo più di quanto uno forte riesca a sollevarlo.",
     "a1Drivers": {
-      "normal": "Il risultato di {name} è determinato soprattutto dalle sue aree più deboli, {weakest} ({weakestScore}/10) e {second} ({secondScore}/10), mentre il pilastro più solido è {strongest} ({strongestScore}/10). {meaning}",
+      "normal": "Il pilastro più solido di {name} è {strongest} ({strongestScore}/10), mentre a pesare sul punteggio sono {second} ({secondScore}/10) e, più di tutto, {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Tutti e cinque i pilastri ottengono buoni punteggi per {name}: anche il più debole, {weakest} ({weakestScore}/10), rientra nella fascia di rischio basso, con {strongest} ({strongestScore}/10) in testa."
     },
     "a1Provenance": "Viene ricalcolato ogni giorno a partire da fonti pubbliche, tra cui avvisi di viaggio governativi, il Global Peace Index, l'INFORM Risk Index e indicatori della Banca Mondiale.",
@@ -345,12 +345,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "¿Qué dicen los avisos de viaje gubernamentales sobre {name}?",
     "a1Verdict": {
       "low": "Sí — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}.",
-      "moderate": "{name} es un destino moderadamente seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel} — la mayoría de los viajes transcurren sin incidentes, pero algunos riesgos merecen atención.",
-      "high": "{name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
+      "moderate": "Sí, pero con precaución — {name} es un destino moderadamente seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. La mayoría de los viajes transcurren sin incidentes, pero algunos riesgos merecen atención.",
+      "high": "No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
     },
     "a1Formula": "La puntuación es una media geométrica ponderada de cinco pilares (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), de modo que un pilar débil lastra la puntuación global más de lo que un pilar fuerte la eleva.",
     "a1Drivers": {
-      "normal": "El resultado de {name} se explica sobre todo por sus áreas más débiles, {weakest} ({weakestScore}/10) y {second} ({secondScore}/10), mientras que su pilar más fuerte es {strongest} ({strongestScore}/10). {meaning}",
+      "normal": "El pilar más fuerte de {name} es {strongest} ({strongestScore}/10), mientras que la puntuación se ve lastrada por {second} ({secondScore}/10) y, sobre todo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Los cinco pilares de {name} obtienen buenas puntuaciones: incluso el más débil, {weakest} ({weakestScore}/10), se sitúa en la franja de riesgo bajo, con {strongest} ({strongestScore}/10) a la cabeza."
     },
     "a1Provenance": "Se recalcula cada día a partir de fuentes públicas, entre ellas los avisos de viaje gubernamentales, el Global Peace Index, el INFORM Risk Index e indicadores del Banco Mundial.",
@@ -390,12 +390,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "Que disent les avis aux voyageurs officiels concernant {name} ?",
     "a1Verdict": {
       "low": "Oui — {name} est une destination considérée comme sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ».",
-      "moderate": "{name} est une destination modérément sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} » — la plupart des voyages se déroulent sans encombre, mais certains risques méritent une attention particulière.",
-      "high": "{name} est actuellement une destination à haut risque : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} », et tout voyage exige une grande prudence."
+      "moderate": "Oui, mais avec prudence — {name} est une destination modérément sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ». La plupart des voyages se déroulent sans encombre, mais certains risques méritent une attention particulière.",
+      "high": "Non — {name} est actuellement une destination à haut risque : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} », et tout voyage exige une grande prudence."
     },
     "a1Formula": "Le score est une moyenne géométrique pondérée de cinq piliers — conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %) — de sorte qu'un pilier faible tire le score global vers le bas plus qu'un pilier fort ne le relève.",
     "a1Drivers": {
-      "normal": "{name} doit surtout son résultat à ses domaines les plus faibles, les piliers {weakest} ({weakestScore}/10) et {second} ({secondScore}/10), tandis que le pilier {strongest} ({strongestScore}/10) reste son point le plus solide. {meaning}",
+      "normal": "Le pilier le plus solide de {name} est {strongest} ({strongestScore}/10), tandis que le score est tiré vers le bas par {second} ({secondScore}/10) et surtout par {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "{name} affiche de bons scores sur les cinq piliers : même le plus faible, le pilier {weakest} ({weakestScore}/10), reste dans la zone de faible risque, le pilier {strongest} ({strongestScore}/10) arrivant en tête."
     },
     "a1Provenance": "Il est recalculé chaque jour à partir de sources publiques, dont les avis aux voyageurs gouvernementaux, le Global Peace Index, l'indice de risque INFORM et des indicateurs de la Banque mondiale.",
@@ -435,12 +435,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "O que dizem os avisos de viagem governamentais sobre {name}?",
     "a1Verdict": {
       "low": "Sim — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}.",
-      "moderate": "{name} é um destino moderadamente seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel} — a maioria das viagens transcorre sem problemas, mas alguns riscos merecem atenção.",
-      "high": "{name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
+      "moderate": "Sim, mas com cautela — {name} é um destino moderadamente seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. A maioria das viagens transcorre sem problemas, mas alguns riscos merecem atenção.",
+      "high": "Não — {name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
     },
     "a1Formula": "A pontuação é uma média geométrica ponderada de cinco pilares — conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%) —, de modo que um pilar fraco puxa a pontuação geral para baixo mais do que um pilar forte a eleva.",
     "a1Drivers": {
-      "normal": "O resultado de {name} é determinado principalmente por suas áreas mais fracas, {weakest} ({weakestScore}/10) e {second} ({secondScore}/10), enquanto o pilar de {strongest} ({strongestScore}/10) é o mais forte. {meaning}",
+      "normal": "O pilar mais forte de {name} é {strongest} ({strongestScore}/10), enquanto a pontuação é puxada para baixo por {second} ({secondScore}/10) e, sobretudo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Os cinco pilares de {name} apresentam boas pontuações: até o mais fraco, {weakest} ({weakestScore}/10), fica na faixa de risco baixo, com {strongest} ({strongestScore}/10) na liderança."
     },
     "a1Provenance": "Ela é recalculada todos os dias a partir de fontes públicas, incluindo avisos de viagem governamentais, o Global Peace Index, o INFORM Risk Index e indicadores do Banco Mundial.",
@@ -480,12 +480,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "各国政府的旅行警告对 {name} 有何评价？",
     "a1Verdict": {
       "low": "是的——{name}被认为是一个安全的旅行目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。",
-      "moderate": "{name}的安全状况处于中等水平：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}——大多数行程都能顺利完成，但部分风险值得留意。",
-      "high": "{name}目前属于高风险目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}，前往旅行需要格外谨慎。"
+      "moderate": "可以，但需保持警惕——{name}的安全状况处于中等水平：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。大多数行程都能顺利完成，但部分风险值得留意。",
+      "high": "不安全——{name}目前属于高风险目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}，前往旅行需要格外谨慎。"
     },
     "a1Formula": "该评分是五大支柱——冲突（30%）、犯罪（25%）、健康（20%）、治理（15%）和环境（10%）——的加权几何平均数，因此薄弱支柱对总分的拉低作用大于强势支柱的提升作用。",
     "a1Drivers": {
-      "normal": "{name}的评分主要受其两个最薄弱领域的影响，即{weakest}（{weakestScore}/10）和{second}（{secondScore}/10），而{strongest}（{strongestScore}/10）则是其表现最强的支柱。{meaning}",
+      "normal": "{strongest}（{strongestScore}/10）是{name}表现最强的支柱，而拉低总分的主要是{second}（{secondScore}/10），尤其是{weakest}（{weakestScore}/10）。{meaning}",
       "allStrong": "{name}的五大支柱均表现良好：即使是得分最低的{weakest}（{weakestScore}/10）也处于低风险区间，其中以{strongest}（{strongestScore}/10）表现最为突出。"
     },
     "a1Provenance": "评分每天都会根据公开数据源重新计算，其中包括各国政府旅行警告、全球和平指数（Global Peace Index）、INFORM 风险指数（INFORM Risk Index）以及世界银行指标。",
@@ -525,12 +525,12 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "Was sagen staatliche Reisehinweise über {name}?",
     "a1Verdict": {
       "low": "Ja — {name} gilt als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
-      "moderate": "{name} ist moderat sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft — die meisten Reisen verlaufen problemlos, einige Risiken verdienen jedoch Aufmerksamkeit.",
-      "high": "{name} ist derzeit ein Hochrisiko-Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
+      "moderate": "Ja, aber mit Vorsicht — {name} ist moderat sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen problemlos, einige Risiken verdienen jedoch Aufmerksamkeit.",
+      "high": "Nein — {name} ist derzeit ein Hochrisiko-Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
     },
     "a1Formula": "Der Wert ist ein gewichtetes geometrisches Mittel aus fünf Säulen — Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %) —, sodass eine schwache Säule den Gesamtwert stärker nach unten zieht, als eine starke ihn anhebt.",
     "a1Drivers": {
-      "normal": "{name} verdankt dieses Ergebnis vor allem den schwächsten Bereichen — {weakest} ({weakestScore}/10) und {second} ({secondScore}/10) —, während {strongest} ({strongestScore}/10) die stärkste Säule des Landes bildet. {meaning}",
+      "normal": "Die stärkste Säule von {name} ist {strongest} ({strongestScore}/10), während {second} ({secondScore}/10) und vor allem {weakest} ({weakestScore}/10) den Wert nach unten ziehen. {meaning}",
       "allStrong": "{name} schneidet in allen fünf Säulen gut ab: Selbst die schwächste Säule, {weakest} ({weakestScore}/10), liegt im risikoarmen Bereich, während {strongest} ({strongestScore}/10) an der Spitze steht."
     },
     "a1Provenance": "Der Wert wird jeden Tag aus öffentlichen Quellen neu berechnet, darunter staatliche Reisehinweise, der Global Peace Index, der INFORM Risk Index und Indikatoren der Weltbank.",
