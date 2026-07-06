@@ -3,7 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
-import { countryFaqCopy, faqPillarLabels } from './country-faq-copy';
+import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
 import wikidataMapJson from '../data/countries-wikidata.json';
 
@@ -48,6 +48,44 @@ export function selectEligiblePillars(pillars: PillarScore[]): PillarScore[] {
   const eligible = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
   return eligible.length > 0 ? eligible : pillars;
 }
+
+/**
+ * Name the 1-2 lowest-scoring indicators driving a weak pillar, for Q2.
+ * All advisory_level_* indicators collapse to the single 'advisory_group'
+ * label (counted once, represented by their lowest normalizedValue). Entries
+ * are sorted ascending by normalizedValue (lower = bigger drag) and the lowest
+ * distinct labels are returned. Returns [] when the pillar yields no usable
+ * labels, so the caller can omit the driver clause entirely.
+ */
+function selectPillarDriverLabels(pillar: PillarScore, lang: Lang): string[] {
+  const labelMap = indicatorLabels[lang];
+  const entries: { key: string; nv: number }[] = [];
+  let advisoryMin: number | null = null;
+  for (const ind of pillar.indicators) {
+    if (ind.name.startsWith('advisory_level_')) {
+      advisoryMin = advisoryMin === null ? ind.normalizedValue : Math.min(advisoryMin, ind.normalizedValue);
+    } else if (labelMap[ind.name]) {
+      entries.push({ key: ind.name, nv: ind.normalizedValue });
+    }
+  }
+  if (advisoryMin !== null) entries.push({ key: 'advisory_group', nv: advisoryMin });
+  entries.sort((a, b) => a.nv - b.nv);
+  const labels: string[] = [];
+  for (const e of entries) {
+    const lbl = labelMap[e.key];
+    if (lbl && !labels.includes(lbl)) labels.push(lbl);
+    if (labels.length === 2) break;
+  }
+  return labels;
+}
+
+// Priority order for naming governments in Q3 (major advisory issuers first),
+// used to pick a stable 1-2 names among those at the highest present level.
+const ADVISORY_GOV_PRIORITY = [
+  'us', 'uk', 'ca', 'au', 'de', 'fr', 'nl', 'nz', 'jp', 'at', 'ch', 'be', 'ie',
+  'es', 'it', 'dk', 'se', 'no', 'fi', 'pl', 'cz', 'hu', 'pt', 'ro', 'sg', 'hk',
+  'ee', 'hr', 'rs', 'sk', 'cn', 'in', 'br', 'ar', 'ph',
+];
 
 /**
  * Generate a unique meta description for a country page based on score data.
@@ -531,8 +569,18 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const weakest10 = weakest.score * 10;
   const labels = faqPillarLabels[lang];
 
-  const health = country.pillars.find((p) => p.name === 'health');
-  const health10 = (health?.score ?? 0.5) * 10;
+  // Practical meaning of the weakest pillar, and the indicator-driven clause
+  // naming the actual signals behind its low score (both feed Q1 and Q2).
+  const weakestBand: 'critical' | 'mid' | 'strong' = weakest10 < 4 ? 'critical' : weakest10 < 7 ? 'mid' : 'strong';
+  let driverClause = '';
+  if (weakestBand !== 'strong') {
+    const driverLabels = selectPillarDriverLabels(weakest, lang);
+    if (driverLabels.length === 1) {
+      driverClause = copy.a2DriverClause.one.replace('{labels}', driverLabels[0]);
+    } else if (driverLabels.length >= 2) {
+      driverClause = copy.a2DriverClause.two.replace('{labels}', driverLabels.slice(0, 2).join(listConnector[lang]));
+    }
+  }
 
   const slots: Record<string, string> = {
     name,
@@ -546,27 +594,80 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     secondScore: (second.score * 10).toFixed(1),
     strongest: labels[strongest.name],
     strongestScore: (strongest.score * 10).toFixed(1),
-    healthScore: health10.toFixed(1),
+    meaning: copy.pillarMeaning[weakest.name],
+    drivers: driverClause,
   };
   const fill = (tpl: string) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
   const joiner = lang === 'zh' ? '' : ' ';
+  // Collapse any double ASCII spaces left when the {drivers} clause is empty.
+  const tidy = (s: string) => s.replace(/ {2,}/g, ' ').trim();
 
-  // A1 — verdict, how the score works, why this country's number, provenance.
+  // A1 — verdict, how the score works, why this country's number (drag pillars
+  // + what the weakest one means), provenance.
   const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
-  const a1 = [copy.a1Verdict[riskBand], copy.a1Formula, drivers, copy.a1Provenance].map(fill).join(joiner);
+  const a1 = tidy([copy.a1Verdict[riskBand], copy.a1Formula, drivers, copy.a1Provenance].map(fill).join(joiner));
 
   // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only
   // when the pillar is genuinely weak, so top scorers don't read as alarmist.
-  const weakestBand: 'critical' | 'mid' | 'strong' = weakest10 < 4 ? 'critical' : weakest10 < 7 ? 'mid' : 'strong';
-  const a2 = fill(copy.a2[weakestBand].replace('{meaning}', () => copy.pillarMeaning[weakest.name]));
+  // critical/mid carry the pillar meaning + the indicator-driven {drivers} clause.
+  const a2 = tidy(fill(copy.a2[weakestBand]));
 
-  // A3 — insurance advice graded by the health pillar, plus an exclusions
-  // warning when any tracked government advisory is at level 3 or above.
-  const healthBand: 'strong' | 'mixed' | 'weak' = health10 >= 7.5 ? 'strong' : health10 >= 5 ? 'mixed' : 'weak';
-  const hasElevatedAdvisory = Object.values(country.advisories ?? {}).some((a) => Number(a?.level) >= 3);
-  const a3Parts = [copy.a3Opening, copy.a3Health[healthBand]];
-  if (hasElevatedAdvisory) a3Parts.push(copy.a3Advisory);
-  const a3 = a3Parts.map(fill).join(joiner);
+  // A3 — government-advisory summary built from country.advisories: count,
+  // consensus band, named governments, majority-Level-4 score cap, or a
+  // distinct zero-advisory sentence for micro-territories.
+  const advisories = country.advisories ?? {};
+  const presentAdvisories = (Object.entries(advisories) as [string, { level: number | string; source?: string }][])
+    .map(([key, info]) => ({ key, level: Number(info?.level) }))
+    .filter((a) => Number.isFinite(a.level) && a.level >= 1 && a.level <= 4);
+
+  let a3: string;
+  if (presentAdvisories.length === 0) {
+    a3 = tidy(fill(copy.a3None));
+  } else {
+    const n = presentAdvisories.length;
+    // Consensus (modal) level; ties resolve to the higher (more cautious) level.
+    const counts = [0, 0, 0, 0, 0];
+    for (const a of presentAdvisories) counts[a.level]++;
+    let modal = 1;
+    for (let l = 1; l <= 4; l++) if (counts[l] >= counts[modal]) modal = l;
+    const band: 'normal' | 'caution' | 'reconsider' | 'avoid' =
+      modal === 1 ? 'normal' : modal === 2 ? 'caution' : modal === 3 ? 'reconsider' : 'avoid';
+
+    // Name the 1-2 governments issuing the strongest (highest-level) warning.
+    const maxLevel = Math.max(...presentAdvisories.map((a) => a.level));
+    const topKeys = presentAdvisories
+      .filter((a) => a.level === maxLevel)
+      .map((a) => a.key)
+      .sort((x, y) => {
+        const ix = ADVISORY_GOV_PRIORITY.indexOf(x);
+        const iy = ADVISORY_GOV_PRIORITY.indexOf(y);
+        return (ix === -1 ? 999 : ix) - (iy === -1 ? 999 : iy);
+      })
+      .slice(0, 2);
+    const region = new Intl.DisplayNames([localeMap[lang]], { type: 'region' });
+    const govNames = topKeys.map((key) => {
+      const code = key === 'uk' ? 'GB' : key.toUpperCase();
+      let display: string | undefined;
+      try {
+        display = region.of(code);
+      } catch {
+        display = undefined;
+      }
+      if (!display || display === code) {
+        display = (advisories as Record<string, { source?: string }>)[key]?.source ?? code;
+      }
+      return display;
+    });
+    slots.governments = govNames.length <= 1 ? govNames[0] ?? '' : govNames.join(listConnector[lang]);
+    slots.govLevel = advisoryLevelWords[lang][maxLevel - 1];
+    slots.advisoryCount = n === 1 ? copy.advisoryCountNoun.one : copy.advisoryCountNoun.other.replace('{n}', String(n));
+
+    const a3Parts = [copy.a3Intro, copy.a3Consensus[band]];
+    // Level-4 hard cap fires only on a strict MAJORITY of Level-4 advisories
+    // (mirrors engine.ts: level4Count >= ceil(N/2 + 0.1)).
+    if (counts[4] >= Math.ceil(n / 2 + 0.1)) a3Parts.push(copy.a3Cap);
+    a3 = tidy(a3Parts.map(fill).join(joiner));
+  }
 
   return [
     { question: fill(copy.q1), answer: a1 },
