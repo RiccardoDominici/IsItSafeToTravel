@@ -3,6 +3,7 @@ import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { MIN_PILLAR_COVERAGE } from '../../pipeline/scoring/engine';
 
 interface Props {
   country: ScoredCountry;
@@ -53,15 +54,21 @@ const score = country.score;
 const [low, moderate, high] = riskLevels[lang];
 const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
 
-let strongest = country.pillars[0];
-let weakest = country.pillars[0];
-for (const p of country.pillars) {
+// Only pillars with sufficient data coverage are eligible to be named best/worst,
+// so a zero-data pillar (e.g. Monaco's crime/governance/environment) never surfaces.
+// Falls back to all pillars when none clear the threshold (mirrors seo.ts + engine.ts).
+const eligiblePillars = country.pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
+const pillarPool = eligiblePillars.length > 0 ? eligiblePillars : country.pillars;
+let strongest = pillarPool[0];
+let weakest = pillarPool[0];
+for (const p of pillarPool) {
   if (p.score > strongest.score) strongest = p;
   if (p.score < weakest.score) weakest = p;
 }
 
 const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
-const sourceCount = country.sources.length || 7;
+// Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
+const sourceCount = 40;
 
 const text = t('country.answer_first' as any)
   .replace('{name}', getLocalizedCountryName(country, lang))

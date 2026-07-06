@@ -1,9 +1,10 @@
-import type { ScoredCountry, PillarName } from '../pipeline/types';
+import type { ScoredCountry, PillarName, PillarScore } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels } from './country-faq-copy';
+import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
 import wikidataMapJson from '../data/countries-wikidata.json';
 
 // ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
@@ -36,6 +37,19 @@ const pillarLabels: Record<Lang, Record<PillarName, string>> = {
 };
 
 /**
+ * Pick the pillar set eligible to be named as weakest/strongest.
+ * Mirrors the engine's own composite-score gate (engine.ts lines 153-157):
+ * keep only pillars whose dataCompleteness clears MIN_PILLAR_COVERAGE, but if
+ * none clear it fall back to all pillars. This stops sparse micro-territories
+ * (e.g. Monaco, whose crime/governance/environment pillars have zero data) from
+ * naming a zero-data pillar as their weakest or strongest area.
+ */
+export function selectEligiblePillars(pillars: PillarScore[]): PillarScore[] {
+  const eligible = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
+  return eligible.length > 0 ? eligible : pillars;
+}
+
+/**
  * Generate a unique meta description for a country page based on score data.
  * Each country gets a differentiated description using its score, risk level,
  * strongest pillar, and weakest pillar.
@@ -56,8 +70,10 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const [low, moderate, high] = riskLevels[lang];
   const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
 
-  // Find strongest and weakest pillars (score is 0-1, display as x10 for /10 scale)
-  const pillars = country.pillars;
+  // Find strongest and weakest pillars (score is 0-1, display as x10 for /10 scale).
+  // Only pillars with sufficient data coverage are eligible, so a zero-data pillar
+  // (e.g. Monaco's crime/governance/environment) is never named as best or worst.
+  const pillars = selectEligiblePillars(country.pillars);
   let strongest = pillars[0];
   let weakest = pillars[0];
   for (const p of pillars) {
@@ -69,7 +85,8 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const weakestScore = (weakest.score * 10).toFixed(1);
   const strongestLabel = pillarLabels[lang][strongest.name];
   const weakestLabel = pillarLabels[lang][weakest.name];
-  const sourceCount = country.sources.length || 7;
+  // Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
+  const sourceCount = 40;
   const name = getLocalizedCountryName(country, lang);
 
   const roundedScore = score.toFixed(1);
@@ -504,10 +521,12 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const riskBand: 'low' | 'moderate' | 'high' = score >= 7 ? 'low' : score >= 4 ? 'moderate' : 'high';
   const riskLevel = riskBand === 'low' ? low : riskBand === 'moderate' ? moderate : high;
 
-  // Sort pillars weakest-first so answers can name the score's actual drivers.
-  const sorted = [...country.pillars].sort((a, b) => a.score - b.score);
+  // Sort ELIGIBLE pillars weakest-first so answers name the score's actual
+  // drivers and never a zero-data pillar (Monaco fix). When only one pillar is
+  // eligible, `second` falls back to the weakest so slots never render "undefined".
+  const sorted = [...selectEligiblePillars(country.pillars)].sort((a, b) => a.score - b.score);
   const weakest = sorted[0];
-  const second = sorted[1];
+  const second = sorted[1] ?? weakest;
   const strongest = sorted[sorted.length - 1];
   const weakest10 = weakest.score * 10;
   const labels = faqPillarLabels[lang];
