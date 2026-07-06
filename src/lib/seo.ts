@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
+import { countryFaqCopy, faqPillarLabels } from './country-faq-copy';
 import wikidataMapJson from '../data/countries-wikidata.json';
 
 // ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
@@ -476,99 +477,82 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
 /**
  * Get raw FAQ question/answer pairs for a country page.
  * Used by both the JSON-LD builder and the visible FaqSection component.
+ * Questions are stable (they match long-standing search queries); answers are
+ * assembled from banded templates in src/lib/country-faq-copy.ts filled with
+ * per-country data, so every page gets a self-contained, citable answer
+ * instead of boilerplate that defers to other sections.
  */
 export function getCountryFaqData(country: ScoredCountry, lang: Lang): { question: string; answer: string }[] {
+  const copy = countryFaqCopy[lang];
   const name = getLocalizedCountryName(country, lang);
   const score = country.score;
-  const roundedScore = score.toFixed(1);
-  const year = new Date().getFullYear().toString();
+  const now = new Date();
+  const year = now.getFullYear().toString();
+  const monthYear = now.toLocaleDateString(localeMap[lang], { month: 'long', year: 'numeric' });
 
   // Determine risk level
   const riskLevels: Record<Lang, [string, string, string]> = {
     en: ['Low risk', 'Moderate risk', 'High risk'],
     it: ['rischio basso', 'rischio moderato', 'rischio alto'],
     es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-    fr: ['risque faible', 'risque modere', 'risque eleve'],
+    fr: ['risque faible', 'risque modéré', 'risque élevé'],
     pt: ['risco baixo', 'risco moderado', 'risco alto'],
     zh: ['低风险', '中等风险', '高风险'],
     de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
   };
   const [low, moderate, high] = riskLevels[lang];
-  const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
+  const riskBand: 'low' | 'moderate' | 'high' = score >= 7 ? 'low' : score >= 4 ? 'moderate' : 'high';
+  const riskLevel = riskBand === 'low' ? low : riskBand === 'moderate' ? moderate : high;
 
-  // Find weakest pillar
-  const pillars = country.pillars;
-  let weakest = pillars[0];
-  for (const p of pillars) {
-    if (p.score < weakest.score) weakest = p;
-  }
-  const weakestLabel = pillarLabels[lang][weakest.name];
-  const weakestScore = (weakest.score * 10).toFixed(1);
+  // Sort pillars weakest-first so answers can name the score's actual drivers.
+  const sorted = [...country.pillars].sort((a, b) => a.score - b.score);
+  const weakest = sorted[0];
+  const second = sorted[1];
+  const strongest = sorted[sorted.length - 1];
+  const weakest10 = weakest.score * 10;
+  const labels = faqPillarLabels[lang];
 
-  // FAQ 1: Is it safe to travel to {country} in {year}?
-  const q1: Record<Lang, string> = {
-    en: `Is it safe to travel to ${name} in ${year}?`,
-    it: `E sicuro viaggiare in ${name} nel ${year}?`,
-    es: `Es seguro viajar a ${name} en ${year}?`,
-    fr: `${name} : est-ce sûr d'y voyager en ${year} ?`,
-    pt: `E seguro viajar para ${name} em ${year}?`,
-    zh: `${year} 年前往 ${name} 旅行安全吗？`,
-    de: `Ist es ${year} sicher, nach ${name} zu reisen?`,
-  };
-  const a1: Record<Lang, string> = {
-    en: `${name} has a safety score of ${roundedScore}/10, classified as ${riskLevel}. This score is updated daily using data from ${country.sources.length || 7}+ public sources including government advisories, health data, and conflict indicators.`,
-    it: `${name} ha un punteggio di sicurezza di ${roundedScore}/10, classificato come ${riskLevel}. Questo punteggio viene aggiornato quotidianamente utilizzando dati da ${country.sources.length || 7}+ fonti pubbliche tra cui avvisi governativi, dati sanitari e indicatori di conflitto.`,
-    es: `${name} tiene una puntuacion de seguridad de ${roundedScore}/10, clasificado como ${riskLevel}. Esta puntuacion se actualiza diariamente utilizando datos de ${country.sources.length || 7}+ fuentes publicas que incluyen avisos gubernamentales, datos de salud e indicadores de conflicto.`,
-    fr: `${name} a un score de securite de ${roundedScore}/10, classe comme ${riskLevel}. Ce score est mis a jour quotidiennement a partir de ${country.sources.length || 7}+ sources publiques incluant les avis gouvernementaux, les donnees sanitaires et les indicateurs de conflit.`,
-    pt: `${name} tem uma pontuacao de seguranca de ${roundedScore}/10, classificado como ${riskLevel}. Esta pontuacao e atualizada diariamente usando dados de ${country.sources.length || 7}+ fontes publicas incluindo avisos governamentais, dados de saude e indicadores de conflito.`,
-    zh: `${name} 的安全评分为 ${roundedScore}/10，归类为${riskLevel}。该评分每日更新，数据来自 ${country.sources.length || 7}+ 个公开来源，包括政府旅行警告、健康数据和冲突指标。`,
-    de: `${name} hat einen Sicherheits-Score von ${roundedScore}/10 und ist als ${riskLevel} eingestuft. Der Score wird täglich aktualisiert auf Basis von ${country.sources.length || 7}+ öffentlichen Quellen, darunter Regierungs-Reisehinweise, Gesundheitsdaten und Konfliktindikatoren.`,
-  };
+  const health = country.pillars.find((p) => p.name === 'health');
+  const health10 = (health?.score ?? 0.5) * 10;
 
-  // FAQ 2: What is the biggest risk when traveling to {country}?
-  const q2: Record<Lang, string> = {
-    en: `What is the biggest risk when traveling to ${name}?`,
-    it: `Qual e il rischio maggiore viaggiando in ${name}?`,
-    es: `Cual es el mayor riesgo al viajar a ${name}?`,
-    fr: `${name} : quel est le plus grand risque pour les voyageurs ?`,
-    pt: `Qual e o maior risco ao viajar para ${name}?`,
-    zh: `前往 ${name} 旅行的最大风险是什么？`,
-    de: `Was ist das größte Risiko bei einer Reise nach ${name}?`,
+  const slots: Record<string, string> = {
+    name,
+    year,
+    monthYear,
+    score: score.toFixed(1),
+    riskLevel,
+    weakest: labels[weakest.name],
+    weakestScore: weakest10.toFixed(1),
+    second: labels[second.name],
+    secondScore: (second.score * 10).toFixed(1),
+    strongest: labels[strongest.name],
+    strongestScore: (strongest.score * 10).toFixed(1),
+    healthScore: health10.toFixed(1),
   };
-  const a2: Record<Lang, string> = {
-    en: `The area of greatest concern for ${name} is ${weakestLabel}, with a score of ${weakestScore}/10. Travelers should pay particular attention to this aspect when planning their trip. Check the full pillar breakdown on this page for detailed insights.`,
-    it: `L'area di maggiore preoccupazione per ${name} e ${weakestLabel}, con un punteggio di ${weakestScore}/10. I viaggiatori dovrebbero prestare particolare attenzione a questo aspetto quando pianificano il viaggio. Consulta la ripartizione completa dei pilastri in questa pagina per approfondimenti dettagliati.`,
-    es: `El area de mayor preocupacion para ${name} es ${weakestLabel}, con una puntuacion de ${weakestScore}/10. Los viajeros deben prestar especial atencion a este aspecto al planificar su viaje. Consulta el desglose completo de pilares en esta pagina para obtener informacion detallada.`,
-    fr: `Le domaine de plus grande preoccupation pour ${name} est ${weakestLabel}, avec un score de ${weakestScore}/10. Les voyageurs doivent accorder une attention particuliere a cet aspect lors de la planification de leur voyage. Consultez la repartition complete des piliers sur cette page pour des informations detaillees.`,
-    pt: `A area de maior preocupacao para ${name} e ${weakestLabel}, com uma pontuacao de ${weakestScore}/10. Os viajantes devem prestar atencao especial a este aspecto ao planejar sua viagem. Consulte a divisao completa dos pilares nesta pagina para informacoes detalhadas.`,
-    zh: `${name} 最值得关注的领域是${weakestLabel}，评分为 ${weakestScore}/10。旅行者在规划行程时应特别注意这一方面。请查看本页面完整的支柱细分以获取详细信息。`,
-    de: `Der Bereich mit den größten Bedenken für ${name} ist ${weakestLabel} mit einem Score von ${weakestScore}/10. Reisende sollten diesem Aspekt bei der Reiseplanung besondere Aufmerksamkeit schenken. Die vollständige Säulenaufschlüsselung auf dieser Seite bietet detaillierte Einblicke.`,
-  };
+  const fill = (tpl: string) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
+  const joiner = lang === 'zh' ? '' : ' ';
 
-  // FAQ 3: Do I need travel insurance for {country}?
-  const q3: Record<Lang, string> = {
-    en: `Do I need travel insurance for ${name}?`,
-    it: `Ho bisogno di un'assicurazione di viaggio per ${name}?`,
-    es: `Necesito seguro de viaje para ${name}?`,
-    fr: `Ai-je besoin d'une assurance voyage pour ${name} ?`,
-    pt: `Preciso de seguro de viagem para ${name}?`,
-    zh: `前往 ${name} 需要旅行保险吗？`,
-    de: `Brauche ich eine Reiseversicherung für ${name}?`,
-  };
-  const a3: Record<Lang, string> = {
-    en: `Travel insurance is strongly recommended for any international trip, including visits to ${name}. A comprehensive policy should cover medical emergencies, trip cancellations, and evacuation. This is especially important given that health-related risks can change rapidly.`,
-    it: `L'assicurazione di viaggio e fortemente raccomandata per qualsiasi viaggio internazionale, incluse le visite in ${name}. Una polizza completa dovrebbe coprire emergenze mediche, cancellazioni del viaggio ed evacuazione. Questo e particolarmente importante dato che i rischi legati alla salute possono cambiare rapidamente.`,
-    es: `El seguro de viaje es altamente recomendable para cualquier viaje internacional, incluyendo visitas a ${name}. Una poliza integral debe cubrir emergencias medicas, cancelaciones de viaje y evacuacion. Esto es especialmente importante dado que los riesgos relacionados con la salud pueden cambiar rapidamente.`,
-    fr: `L'assurance voyage est fortement recommandée pour tout voyage international, y compris pour un séjour à destination de ${name}. Une police complète devrait couvrir les urgences médicales, les annulations de voyage et l'évacuation. C'est particulièrement important car les risques liés à la santé peuvent évoluer rapidement.`,
-    pt: `O seguro de viagem e fortemente recomendado para qualquer viagem internacional, incluindo visitas a ${name}. Uma apolice abrangente deve cobrir emergencias medicas, cancelamentos de viagem e evacuacao. Isso e especialmente importante dado que os riscos relacionados a saude podem mudar rapidamente.`,
-    zh: `强烈建议为任何国际旅行（包括前往 ${name}）购买旅行保险。一份全面的保单应涵盖医疗紧急情况、行程取消和撤离。鉴于健康相关风险可能迅速变化，这一点尤为重要。`,
-    de: `Eine Reiseversicherung wird für jede internationale Reise, einschließlich Besuche in ${name}, dringend empfohlen. Eine umfassende Police sollte medizinische Notfälle, Reiserücktritte und Evakuierungen abdecken. Dies ist besonders wichtig, da gesundheitsbezogene Risiken sich rasch ändern können.`,
-  };
+  // A1 — verdict, how the score works, why this country's number, provenance.
+  const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
+  const a1 = [copy.a1Verdict[riskBand], copy.a1Formula, drivers, copy.a1Provenance].map(fill).join(joiner);
+
+  // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only
+  // when the pillar is genuinely weak, so top scorers don't read as alarmist.
+  const weakestBand: 'critical' | 'mid' | 'strong' = weakest10 < 4 ? 'critical' : weakest10 < 7 ? 'mid' : 'strong';
+  const a2 = fill(copy.a2[weakestBand].replace('{meaning}', () => copy.pillarMeaning[weakest.name]));
+
+  // A3 — insurance advice graded by the health pillar, plus an exclusions
+  // warning when any tracked government advisory is at level 3 or above.
+  const healthBand: 'strong' | 'mixed' | 'weak' = health10 >= 7.5 ? 'strong' : health10 >= 5 ? 'mixed' : 'weak';
+  const hasElevatedAdvisory = Object.values(country.advisories ?? {}).some((a) => Number(a?.level) >= 3);
+  const a3Parts = [copy.a3Opening, copy.a3Health[healthBand]];
+  if (hasElevatedAdvisory) a3Parts.push(copy.a3Advisory);
+  const a3 = a3Parts.map(fill).join(joiner);
 
   return [
-    { question: q1[lang], answer: a1[lang] },
-    { question: q2[lang], answer: a2[lang] },
-    { question: q3[lang], answer: a3[lang] },
+    { question: fill(copy.q1), answer: a1 },
+    { question: fill(copy.q2), answer: a2 },
+    { question: fill(copy.q3), answer: a3 },
   ];
 }
 

@@ -13,9 +13,12 @@ const { country, lang } = Astro.props;
 const t = useTranslations(lang);
 const faqData = getCountryFaqData(country, lang);
 
-/** Split answer text into ~2-sentence paragraphs at period boundaries. */
+/** Split answer text into ~2-sentence paragraphs. A boundary is .!? followed
+ * by whitespace/end (so decimals like "8.7/10" don't split) or CJK 。！？ */
 function splitIntoParagraphs(text: string): string[] {
-  const sentences = text.match(/[^.!?]+[.!?]+/g) || [text];
+  const matched = text.match(/[^]+?(?:[.!?](?=\s|$)|[。！？])/g) || [];
+  const rest = text.slice(matched.join('').length).trim();
+  const sentences = matched.length ? (rest ? [...matched, rest] : matched) : [text];
   const paragraphs: string[] = [];
   for (let i = 0; i < sentences.length; i += 2) {
     const chunk = sentences.slice(i, i + 2).join('').trim();
