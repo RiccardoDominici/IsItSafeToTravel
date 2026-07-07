@@ -11,9 +11,10 @@
 import { computeAllScores } from './scoring/engine.js';
 import { writeSnapshot } from './scoring/snapshot.js';
 import { writeHistoryIndex } from './scoring/history.js';
-import { readJson, getRawDir, getScoresDir } from './utils/fs.js';
-import type { WeightsConfig, RawSourceData, FetchResult } from './types.js';
-import { readdirSync, existsSync } from 'node:fs';
+import { readJson, getRawDir, getScoresDir, findLatestCached } from './utils/fs.js';
+import { parseGpiExcelAllYears, selectGpiIndicatorsForYear } from './fetchers/gpi.js';
+import type { WeightsConfig, RawSourceData, FetchResult, RawIndicator } from './types.js';
+import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 
 interface BackfillResult {
@@ -40,6 +41,17 @@ function isFetchedAtConsistent(fetchedAt: string, directoryDate: string, toleran
   return diffDays <= toleranceDays;
 }
 
+// Sources whose raw files carry true per-year vintages (the indicators' own `year`
+// field matches the directory date), as opposed to sources that only ever hold
+// CURRENT data (advisories, INFORM). worldbank has always been year-based; vdem's
+// historical raw files (data/raw/<date>/vdem-parsed.json for each backfilled date)
+// are ALSO vintage-per-file (quick-260706-x81 SHIP-SPEC 1.3) but were previously
+// skipped here because their fetchedAt (when the vdem backfill ran) doesn't match
+// the directory date — fixed by adding 'vdem' below. GPI is handled separately by
+// injectGpiForDate() (per-year selection from the workbook's full history), so it
+// is intentionally NOT in this set.
+const YEAR_BASED_SOURCES = new Set(['worldbank', 'vdem']);
+
 function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
   const rawDir = getRawDir(date);
   if (!existsSync(rawDir)) return null;
@@ -51,12 +63,11 @@ function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
     const filePath = join(rawDir, file);
     const data = readJson<RawSourceData>(filePath);
     if (data) {
-      // Only worldbank data is truly historical — its indicators have per-year
-      // values (year field matches the directory date). All other sources
-      // (INFORM, advisories, GPI, etc.) in historical directories
+      // Only worldbank/vdem data is truly historical — their indicators have
+      // per-year values (year field matches the directory date). All other
+      // sources (INFORM, advisories, GPI, etc.) in historical directories
       // contain CURRENT data fetched recently and must be skipped if fetchedAt
       // doesn't match the directory date.
-      const YEAR_BASED_SOURCES = new Set(['worldbank']);
       const isYearBased = YEAR_BASED_SOURCES.has(data.source);
 
       if (!isYearBased && data.fetchedAt && !isFetchedAtConsistent(data.fetchedAt, date)) {
@@ -66,7 +77,53 @@ function loadRawDataForDate(date: string): Map<string, RawSourceData> | null {
     }
   }
 
+  injectGpiForDate(date, rawDataMap);
+
   return rawDataMap.size > 0 ? rawDataMap : null;
+}
+
+// Cache parsed {year -> indicators} maps per gpi.xlsx path — there are only ~27
+// distinct workbook files across 668 snapshot dates, and every one holds the
+// FULL 2008-2023 history, so parsing each file once and reusing it is safe and
+// avoids re-parsing the same workbook hundreds of times during a full backfill.
+const gpiByYearCache = new Map<string, Map<number, RawIndicator[]>>();
+
+function loadGpiByYear(xlsxPath: string): Map<number, RawIndicator[]> {
+  let cached = gpiByYearCache.get(xlsxPath);
+  if (!cached) {
+    cached = parseGpiExcelAllYears(readFileSync(xlsxPath));
+    gpiByYearCache.set(xlsxPath, cached);
+  }
+  return cached;
+}
+
+/**
+ * Inject GPI (gpi_overall / gpi_safety_security / gpi_militarisation) indicators
+ * for a snapshot date into rawDataMap, selecting the historically-correct vintage
+ * (SHIP-SPEC 1.3): year = min(snapshotYear, latest year in the workbook), sourced
+ * from the date's OWN gpi.xlsx when present, else deterministically the NEWEST
+ * gpi.xlsx across all data/raw dirs (every published workbook carries the full history,
+ * so the choice of file only affects availability, never which year is selected).
+ * Replaces whatever 'gpi' entry loadRawDataForDate already loaded (which for most
+ * historical dates is nothing, and for a handful of recent dates may be a stale
+ * cached copy) with this deterministic, year-appropriate one — preserving the
+ * one-value-per-indicator-per-country contract.
+ */
+function injectGpiForDate(date: string, rawDataMap: Map<string, RawSourceData>): void {
+  const ownXlsxPath = join(getRawDir(date), 'gpi.xlsx');
+  const xlsxPath = existsSync(ownXlsxPath) ? ownXlsxPath : findLatestCached('gpi.xlsx');
+  if (!xlsxPath) return; // no gpi.xlsx anywhere yet — leave rawDataMap as-is
+
+  const byYear = loadGpiByYear(xlsxPath);
+  const snapshotYear = parseInt(date.slice(0, 4), 10);
+  const indicators = selectGpiIndicatorsForYear(byYear, snapshotYear);
+  if (indicators.length === 0) return;
+
+  rawDataMap.set('gpi', {
+    source: 'gpi',
+    fetchedAt: new Date(`${date}T00:00:00.000Z`).toISOString(),
+    indicators,
+  });
 }
 
 /**

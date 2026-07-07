@@ -3,10 +3,18 @@ import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { normalize, normalizeInverse, normalizeIndicators } from '../normalize.js';
-import { computeCountryScore, computeAllScores, MIN_PILLAR_COVERAGE, INDICATOR_SOURCE_MAP, SOURCE_CATALOG } from '../engine.js';
+import {
+  computeCountryScore,
+  computeAllScores,
+  MIN_PILLAR_COVERAGE,
+  INDICATOR_SOURCE_MAP,
+  SOURCE_CATALOG,
+  DEFAULT_FORMULA_V9,
+} from '../engine.js';
 import type {
   RawIndicator,
   WeightsConfig,
+  FormulaV9Config,
   CountryEntry,
   AdvisoryInfo,
   SourceMeta,
@@ -14,7 +22,7 @@ import type {
   SourcesConfig,
 } from '../../types.js';
 
-// --- Normalization tests ---
+// --- Normalization tests (unchanged by Formula v9 — normalize.ts is UNCHANGED) ---
 
 describe('normalize', () => {
   it('returns 0.5 for midpoint', () => {
@@ -79,7 +87,363 @@ describe('normalizeIndicators', () => {
   });
 });
 
-// --- Scoring engine tests ---
+// --- Formula v9 scoring engine tests (quick-260706-x81) ---
+//
+// computeCountryScore no longer applies eligibility gates, neutral-0.5 pillar
+// defaults, a low-data advisory blend, a critical floor, or a majority-L4 hard
+// cap. It instead uses per-pillar Bayesian shrinkage toward a conservative,
+// region-anchored prior (mu), a weighted geometric mean + down-only acute
+// soft-min over conflict/crime, and a count-damped severe-advisory modifier.
+// These tests exercise those v9 mechanisms directly (synthetic-config style).
+
+const TEST_COUNTRY: CountryEntry = {
+  iso3: 'TST',
+  iso2: 'TS',
+  name: { en: 'Testland', it: 'Testlandia', es: 'Testlandia', fr: 'Testlande', pt: 'Testlandia' },
+};
+
+const TEST_SOURCES: SourceMeta[] = [];
+const NO_ADVISORIES = {};
+
+/** Small v9-shaped formula config: same constants as production, tiers limited to a few test codes. */
+function makeFormulaV9(overrides: Partial<FormulaV9Config> = {}): FormulaV9Config {
+  return {
+    ...DEFAULT_FORMULA_V9,
+    advisoryTiers: { us: 4, uk: 4, ca: 4, au: 4, fr: 3 },
+    frozenExcludedSources: [],
+    advisoryRebase: [],
+    regionOffset: { americas: -0.02, europe: 0.05, other: 0 },
+    ...overrides,
+  };
+}
+
+/** Minimal single-indicator-per-pillar v9 weights config for isolated mechanism testing. */
+function makeWeightsV9(overrides: Partial<FormulaV9Config> = {}): WeightsConfig {
+  return {
+    version: '9.0.0-test',
+    pillars: [
+      {
+        name: 'conflict',
+        weight: 0.30,
+        indicators: ['gpi_overall', 'A'],
+        indicatorWeights: { gpi_overall: 0.60, A: 0.40 },
+        indicatorPrecision: { gpi_overall: 2.0 },
+      },
+      {
+        name: 'crime',
+        weight: 0.25,
+        indicators: ['gpi_safety_security'],
+        indicatorWeights: { gpi_safety_security: 1.0 },
+        indicatorPrecision: { gpi_safety_security: 2.5 },
+      },
+      {
+        name: 'health',
+        weight: 0.20,
+        indicators: ['inform_health'],
+        indicatorWeights: { inform_health: 1.0 },
+        indicatorPrecision: { inform_health: 1 },
+      },
+      {
+        name: 'governance',
+        weight: 0.15,
+        indicators: ['inform_governance'],
+        indicatorWeights: { inform_governance: 1.0 },
+        indicatorPrecision: { inform_governance: 1 },
+      },
+      {
+        name: 'environment',
+        weight: 0.10,
+        indicators: ['inform_natural'],
+        indicatorWeights: { inform_natural: 1.0 },
+        indicatorPrecision: { inform_natural: 1 },
+      },
+    ],
+    formulaV9: makeFormulaV9(overrides),
+  };
+}
+
+describe('computeCountryScore — Formula v9: prior collapse', () => {
+  it('collapses every pillar to mu when zero indicators and zero advisories are present', () => {
+    const weights = makeWeightsV9();
+    // USA -> region 'americas' (real regions.ts mapping) -> regionOffset -0.02
+    const result = computeCountryScore('USA', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const expectedMu = weights.formulaV9!.muBase + weights.formulaV9!.regionOffset.americas;
+    for (const pillar of result.pillars) {
+      assert.ok(
+        Math.abs(pillar.score - expectedMu) < 1e-9,
+        `Pillar ${pillar.name} should collapse to mu=${expectedMu}, got ${pillar.score}`,
+      );
+      assert.equal(pillar.dataCompleteness, 0);
+    }
+    assert.ok(result.score >= 1 && result.score <= 10);
+    assert.equal(result.confidence, 0, 'confidence must be 0 with zero precision everywhere');
+  });
+
+  it('mu differs by region (europe +0.05 vs americas -0.02) with identical zero-data inputs', () => {
+    const weights = makeWeightsV9();
+    const usa = computeCountryScore('USA', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES); // americas
+    const deu = computeCountryScore('DEU', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES); // europe
+
+    assert.ok(deu.score > usa.score, `Europe prior (${deu.score}) should exceed Americas prior (${usa.score})`);
+  });
+});
+
+describe('computeCountryScore — Formula v9: Bayesian shrinkage monotonicity', () => {
+  it('higher precision (rho) pulls the pillar value further from mu toward the evidence', () => {
+    const goodIndicator: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.0, year: 2025, source: 'gpi' }, // normalized 1.0 (best)
+    ];
+
+    const lowPrecisionWeights = makeWeightsV9();
+    lowPrecisionWeights.pillars[0].indicatorPrecision = { gpi_overall: 0.5 };
+    const highPrecisionWeights = makeWeightsV9();
+    highPrecisionWeights.pillars[0].indicatorPrecision = { gpi_overall: 20 };
+
+    const low = computeCountryScore('TST', goodIndicator, lowPrecisionWeights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const high = computeCountryScore('TST', goodIndicator, highPrecisionWeights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const lowConflict = low.pillars.find((p) => p.name === 'conflict')!.score;
+    const highConflict = high.pillars.find((p) => p.name === 'conflict')!.score;
+
+    assert.ok(
+      highConflict > lowConflict,
+      `Higher precision (${highConflict}) should shrink less toward mu than low precision (${lowConflict}) for good evidence`,
+    );
+  });
+
+  it('good evidence raises the score above the zero-data baseline; bad evidence lowers it', () => {
+    const weights = makeWeightsV9();
+    const baseline = computeCountryScore('TST', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const goodIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.0, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1.0, year: 2025, source: 'gpi' },
+    ];
+    const badIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 4.0, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 5.0, year: 2025, source: 'gpi' },
+    ];
+
+    const good = computeCountryScore('TST', goodIndicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const bad = computeCountryScore('TST', badIndicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    assert.ok(good.score > baseline.score, `Good evidence (${good.score}) should exceed the zero-data baseline (${baseline.score})`);
+    assert.ok(bad.score < baseline.score, `Bad evidence (${bad.score}) should be below the zero-data baseline (${baseline.score})`);
+  });
+
+  it('freshness-decayed (stale) data shrinks precision toward zero, collapsing back toward the mu baseline', () => {
+    const sourcesConfig: SourcesConfig = {
+      maxSignalInfluence: 0.30,
+      maxDailyScoreChange: 0.3,
+      sources: {
+        gpi: { tier: 'baseline', maxAgeDays: 30, decayHalfLifeDays: 7 },
+      },
+    };
+    const weights = makeWeightsV9();
+    const baseline = computeCountryScore('TST', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const now = new Date().toISOString();
+    const staleDate = new Date(Date.now() - 90 * 86_400_000).toISOString(); // past maxAgeDays=30
+
+    const freshIndicator: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.0, year: 2025, source: 'gpi', fetchedAt: now },
+    ];
+    const staleIndicator: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.0, year: 2025, source: 'gpi', fetchedAt: staleDate },
+    ];
+
+    const fresh = computeCountryScore('TST', freshIndicator, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES, sourcesConfig);
+    const stale = computeCountryScore('TST', staleIndicator, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES, sourcesConfig);
+
+    const freshConflict = fresh.pillars.find((p) => p.name === 'conflict')!.score;
+    const staleConflict = stale.pillars.find((p) => p.name === 'conflict')!.score;
+    const baselineConflict = baseline.pillars.find((p) => p.name === 'conflict')!.score;
+
+    assert.ok(
+      Math.abs(staleConflict - baselineConflict) < Math.abs(freshConflict - baselineConflict),
+      `Stale data (${staleConflict}) should sit closer to the zero-data baseline (${baselineConflict}) than fresh data (${freshConflict})`,
+    );
+  });
+});
+
+describe('computeCountryScore — Formula v9: severe advisory modifier', () => {
+  it('is bounded: composite/score never drop out of [1,10] even at maximum severity', () => {
+    const weights = makeWeightsV9();
+    const advisories: Record<string, AdvisoryInfo> = {};
+    for (const code of ['us', 'uk', 'ca', 'au'] as const) {
+      advisories[code] = { level: 4, text: 'Do not travel', source: code, url: '', updatedAt: '2026-01-01' };
+    }
+    const result = computeCountryScore('TST', [], weights, TEST_COUNTRY, advisories, TEST_SOURCES);
+    assert.ok(result.score >= 1 && result.score <= 10, `Score ${result.score} must stay in [1,10]`);
+  });
+
+  it('is count-damped: a broad multi-government L4 consensus sinks the score more than a single thin L4 record', () => {
+    const weights = makeWeightsV9();
+    const sharedIndicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 2.0, year: 2025, source: 'gpi' },
+    ];
+
+    const thinAdvisory: Record<string, AdvisoryInfo> = {
+      us: { level: 4, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+    };
+    const broadAdvisory: Record<string, AdvisoryInfo> = {
+      us: { level: 4, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+      uk: { level: 4, text: '', source: 'uk', url: '', updatedAt: '2026-01-01' },
+      ca: { level: 4, text: '', source: 'ca', url: '', updatedAt: '2026-01-01' },
+      au: { level: 4, text: '', source: 'au', url: '', updatedAt: '2026-01-01' },
+    };
+
+    const thin = computeCountryScore('TST', sharedIndicators, weights, TEST_COUNTRY, thinAdvisory, TEST_SOURCES);
+    const broad = computeCountryScore('TST', sharedIndicators, weights, TEST_COUNTRY, broadAdvisory, TEST_SOURCES);
+
+    assert.ok(
+      broad.score < thin.score,
+      `Broad L4 consensus (${broad.score}) should sink the score more than a single thin L4 record (${thin.score})`,
+    );
+  });
+
+  it('continuity: a single advisory-level step changes the score by less than 0.5 on a sparse country', () => {
+    const weights = makeWeightsV9();
+    // Sparse: no other data at all, exactly one advisory source, stepping L3 -> L4.
+    const levelThree: Record<string, AdvisoryInfo> = {
+      us: { level: 3, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+    };
+    const levelFour: Record<string, AdvisoryInfo> = {
+      us: { level: 4, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+    };
+
+    const before = computeCountryScore('TST', [], weights, TEST_COUNTRY, levelThree, TEST_SOURCES);
+    const after = computeCountryScore('TST', [], weights, TEST_COUNTRY, levelFour, TEST_SOURCES);
+
+    const delta = Math.abs(after.score - before.score);
+    assert.ok(delta < 0.5, `Single advisory-level step should change the score by < 0.5, got ${delta.toFixed(3)}`);
+  });
+});
+
+describe('computeCountryScore — Formula v9: acute term is down-only', () => {
+  it('capping acute at G (acuteDownOnly=1) never scores higher than leaving it uncapped, when conflict/crime are the STRONGEST pillars', () => {
+    // Build a country where conflict/crime are excellent (normalized ~1.0) and the
+    // other 3 pillars are only middling (~0.5) — so acuteRaw > G. Toggle the
+    // formulaV9.acuteDownOnly flag (same frozen constant, isolated) to prove the
+    // down-only cap can only ever drag the composite DOWN toward G, never inflate
+    // it above what an uncapped acute soft-min would produce.
+    const makeWeightsWithCap = (acuteDownOnly: 0 | 1): WeightsConfig => ({
+      version: '9.0.0-test',
+      pillars: [
+        { name: 'conflict', weight: 0.30, indicators: ['gpi_overall'], indicatorWeights: { gpi_overall: 1.0 }, indicatorPrecision: { gpi_overall: 5 } },
+        { name: 'crime', weight: 0.25, indicators: ['gpi_safety_security'], indicatorWeights: { gpi_safety_security: 1.0 }, indicatorPrecision: { gpi_safety_security: 5 } },
+        { name: 'health', weight: 0.20, indicators: ['inform_health'], indicatorWeights: { inform_health: 1.0 }, indicatorPrecision: { inform_health: 5 } },
+        { name: 'governance', weight: 0.15, indicators: ['inform_governance'], indicatorWeights: { inform_governance: 1.0 }, indicatorPrecision: { inform_governance: 5 } },
+        { name: 'environment', weight: 0.10, indicators: ['inform_natural'], indicatorWeights: { inform_natural: 1.0 }, indicatorPrecision: { inform_natural: 5 } },
+      ],
+      formulaV9: { ...DEFAULT_FORMULA_V9, acuteDownOnly, regionOffset: {} },
+    });
+
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1, year: 2025, source: 'gpi' }, // normalized 1.0
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1, year: 2025, source: 'gpi' }, // normalized 1.0
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 5, year: 2025, source: 'inform' }, // normalized 0.5
+      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 5, year: 2025, source: 'inform' }, // normalized 0.5
+      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 5, year: 2025, source: 'inform' }, // normalized 0.5
+    ];
+
+    const capped = computeCountryScore('TST', indicators, makeWeightsWithCap(1), TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const uncapped = computeCountryScore('TST', indicators, makeWeightsWithCap(0), TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    assert.ok(
+      capped.score < uncapped.score,
+      `Down-only cap should score no higher than the uncapped acute blend: capped=${capped.score}, uncapped=${uncapped.score}`,
+    );
+  });
+});
+
+describe('computeCountryScore — Formula v9: score bounds + advisory pass-through', () => {
+  it('never produces a score outside [1,10] across a spread of synthetic inputs', () => {
+    const weights = makeWeightsV9();
+    const scenarios: RawIndicator[][] = [
+      [],
+      [{ countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1, year: 2025, source: 'gpi' }],
+      [{ countryIso3: 'TST', indicatorName: 'gpi_overall', value: 4, year: 2025, source: 'gpi' }],
+      [
+        { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1, year: 2025, source: 'gpi' },
+        { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1, year: 2025, source: 'gpi' },
+        { countryIso3: 'TST', indicatorName: 'inform_health', value: 0, year: 2025, source: 'inform' },
+        { countryIso3: 'TST', indicatorName: 'inform_governance', value: 0, year: 2025, source: 'inform' },
+        { countryIso3: 'TST', indicatorName: 'inform_natural', value: 0, year: 2025, source: 'inform' },
+      ],
+      [
+        { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 4, year: 2025, source: 'gpi' },
+        { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 5, year: 2025, source: 'gpi' },
+        { countryIso3: 'TST', indicatorName: 'inform_health', value: 10, year: 2025, source: 'inform' },
+        { countryIso3: 'TST', indicatorName: 'inform_governance', value: 10, year: 2025, source: 'inform' },
+        { countryIso3: 'TST', indicatorName: 'inform_natural', value: 10, year: 2025, source: 'inform' },
+      ],
+    ];
+
+    for (const indicators of scenarios) {
+      const result = computeCountryScore('TST', indicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+      assert.ok(result.score >= 1 && result.score <= 10, `Score ${result.score} out of [1,10] for scenario with ${indicators.length} indicators`);
+      assert.ok(result.scoreDisplay >= 1 && result.scoreDisplay <= 10);
+      assert.ok(result.confidence >= 0 && result.confidence <= 1, `confidence ${result.confidence} out of [0,1]`);
+    }
+  });
+
+  it('confidence increases as more high-precision indicators become available', () => {
+    const weights = makeWeightsV9();
+    const zero = computeCountryScore('TST', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const some: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2, year: 2025, source: 'gpi' },
+    ];
+    const partial = computeCountryScore('TST', some, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const full: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 2, year: 2025, source: 'gpi' },
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 5, year: 2025, source: 'inform' },
+      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 5, year: 2025, source: 'inform' },
+      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 5, year: 2025, source: 'inform' },
+    ];
+    const fullResult = computeCountryScore('TST', full, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    assert.equal(zero.confidence, 0);
+    assert.ok(partial.confidence > zero.confidence, `Partial confidence (${partial.confidence}) should exceed zero (${zero.confidence})`);
+    assert.ok(fullResult.confidence > partial.confidence, `Full confidence (${fullResult.confidence}) should exceed partial (${partial.confidence})`);
+  });
+
+  it('includes advisory info when provided (pass-through, unaffected by v9 shrinkage)', () => {
+    const usAdvisory: AdvisoryInfo = {
+      level: 2,
+      text: 'Exercise increased caution',
+      source: 'US State Dept',
+      url: 'https://example.com',
+      updatedAt: '2025-01-01',
+    };
+    const weights = makeWeightsV9();
+    const result = computeCountryScore('TST', [], weights, TEST_COUNTRY, { us: usAdvisory }, TEST_SOURCES);
+    assert.deepEqual(result.advisories.us, usAdvisory);
+  });
+
+  it('dataCompleteness reflects found/expected indicators per pillar (full / partial / missing)', () => {
+    const weights = makeWeightsV9();
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2, year: 2025, source: 'gpi' }, // conflict: 1 real indicator present (of 2 slots incl. 'A')
+      { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform' }, // health: fully present (1/1)
+    ];
+    const result = computeCountryScore('TST', indicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const conflict = result.pillars.find((p) => p.name === 'conflict')!;
+    const health = result.pillars.find((p) => p.name === 'health')!;
+    const governance = result.pillars.find((p) => p.name === 'governance')!;
+
+    // conflict has 2 slots (gpi_overall + synthetic A); only gpi_overall present, A absent (no advisories) => 0.5
+    assert.equal(conflict.dataCompleteness, 0.5);
+    assert.equal(health.dataCompleteness, 1.0);
+    assert.equal(governance.dataCompleteness, 0);
+  });
+});
+
+// --- computeAllScores (generic contract, unaffected by the v9 rewrite) ---
 
 const TEST_WEIGHTS: WeightsConfig = {
   version: '1.0.0',
@@ -91,102 +455,6 @@ const TEST_WEIGHTS: WeightsConfig = {
     { name: 'environment', weight: 0.20, indicators: ['inform_natural', 'inform_climate'] },
   ],
 };
-
-const TEST_COUNTRY: CountryEntry = {
-  iso3: 'TST',
-  iso2: 'TS',
-  name: { en: 'Testland', it: 'Testlandia', es: 'Testlandia', fr: 'Testlande', pt: 'Testlandia' },
-};
-
-const TEST_SOURCES: SourceMeta[] = [];
-
-describe('computeCountryScore', () => {
-  it('computes correct score when all indicators at 0.8 normalized', () => {
-    // Create indicators that will normalize to ~0.8
-    // gpi_overall: inverse, min=1, max=4 => value=1.6 => norm = (1.6-1)/(4-1)=0.2 => inverse=0.8
-    // gpi_safety_security: inverse, min=1, max=5 => value=1.8 => norm=(1.8-1)/(5-1)=0.2 => inverse=0.8
-    // advisory_level_us: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
-    // advisory_level_uk: inverse, min=1, max=4 => value=1.6 => norm=0.2 => inverse=0.8
-    // inform_health: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
-    // inform_epidemic: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
-    // inform_governance: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
-    // gpi_militarisation: inverse, min=1, max=5 => value=1.8 => norm=0.2 => inverse=0.8
-    // inform_natural: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
-    // inform_climate: inverse, min=0, max=10 => value=2 => norm=0.2 => inverse=0.8
-    const indicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 1.8, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state' },
-      { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo' },
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform' },
-      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 2, year: 2025, source: 'inform' },
-      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform' },
-      { countryIso3: 'TST', indicatorName: 'gpi_militarisation', value: 1.8, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform' },
-      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform' },
-    ];
-
-    const result = computeCountryScore('TST', indicators, TEST_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    // All pillars should be 0.8, weighted sum = 0.8
-    // Score = Math.round((0.8 * 9 + 1) * 10) / 10 = Math.round(82) / 10 = 8.2
-    assert.equal(result.score, 8.2);
-    assert.equal(result.scoreDisplay, 8);
-    assert.equal(result.dataCompleteness, 1.0);
-    assert.equal(result.pillars.length, 5);
-    for (const pillar of result.pillars) {
-      assert.ok(Math.abs(pillar.score - 0.8) < 0.001, `Pillar ${pillar.name} should be ~0.8, got ${pillar.score}`);
-      assert.equal(pillar.dataCompleteness, 1.0);
-    }
-  });
-
-  it('handles missing indicators with reduced dataCompleteness', () => {
-    // Only provide one conflict indicator and one health indicator, leave others empty
-    const indicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform' },
-    ];
-
-    const result = computeCountryScore('TST', indicators, TEST_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    assert.ok(result.dataCompleteness < 1.0, 'dataCompleteness should be less than 1.0');
-    assert.ok(result.score >= 1 && result.score <= 10, 'Score should be in 1-10 range');
-    // Conflict pillar: 1 of 1 indicator = complete
-    const conflict = result.pillars.find((p) => p.name === 'conflict')!;
-    assert.ok(conflict.dataCompleteness > 0);
-    assert.equal(conflict.dataCompleteness, 1.0);
-    // Health pillar: 1 of 2 indicators = partial
-    const health = result.pillars.find((p) => p.name === 'health')!;
-    assert.ok(health.dataCompleteness > 0);
-    assert.ok(health.dataCompleteness < 1.0);
-    // Governance pillar: 0 of 2 indicators
-    const governance = result.pillars.find((p) => p.name === 'governance')!;
-    assert.equal(governance.dataCompleteness, 0);
-    assert.equal(governance.score, 0.5); // neutral default
-  });
-
-  it('produces neutral score 5.0 with zero indicators', () => {
-    const result = computeCountryScore('TST', [], TEST_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    assert.equal(result.score, 5.5);
-    assert.equal(result.scoreDisplay, 6);
-    assert.equal(result.dataCompleteness, 0);
-  });
-
-  it('includes advisory info when provided', () => {
-    const usAdvisory: AdvisoryInfo = {
-      level: 2,
-      text: 'Exercise increased caution',
-      source: 'US State Dept',
-      url: 'https://example.com',
-      updatedAt: '2025-01-01',
-    };
-
-    const result = computeCountryScore('TST', [], TEST_WEIGHTS, TEST_COUNTRY, { us: usAdvisory }, TEST_SOURCES);
-
-    assert.deepEqual(result.advisories.us, usAdvisory);
-  });
-});
 
 describe('computeAllScores', () => {
   it('produces ScoredCountry array sorted by iso3', () => {
@@ -214,463 +482,94 @@ describe('computeAllScores', () => {
     assert.ok(afg, 'AFG should be in results');
     // USA (lower GPI = safer) should score higher than AFG
     assert.ok(usa!.score > afg!.score, 'USA should have higher safety score than AFG');
-  });
-});
-
-// --- Tiered baseline+signal scoring tests ---
-
-const TEST_SOURCES_CONFIG: SourcesConfig = {
-  maxSignalInfluence: 0.30,
-  maxDailyScoreChange: 0.3,
-  sources: {
-    gpi: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
-    worldbank: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
-    inform: { tier: 'baseline', maxAgeDays: 730, decayHalfLifeDays: 365 },
-    advisories: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
-    state: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
-    fcdo: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
-    reliefweb: { tier: 'signal', maxAgeDays: 60, decayHalfLifeDays: 14 },
-    gdacs: { tier: 'signal', maxAgeDays: 30, decayHalfLifeDays: 7 },
-  },
-};
-
-// Weights with explicit sub-weights for tiered tests
-const TIERED_WEIGHTS: WeightsConfig = {
-  version: '5.0.0',
-  pillars: [
-    {
-      name: 'conflict',
-      weight: 0.30,
-      indicators: ['gpi_overall'],
-      indicatorWeights: { gpi_overall: 1.0 },
-    },
-    {
-      name: 'crime',
-      weight: 0.25,
-      indicators: ['advisory_level_us', 'advisory_level_uk'],
-      indicatorWeights: { advisory_level_us: 0.50, advisory_level_uk: 0.50 },
-    },
-    {
-      name: 'health',
-      weight: 0.20,
-      indicators: ['inform_health', 'inform_epidemic'],
-      indicatorWeights: { inform_health: 0.50, inform_epidemic: 0.50 },
-    },
-    {
-      name: 'governance',
-      weight: 0.15,
-      indicators: ['inform_governance'],
-      indicatorWeights: { inform_governance: 1.0 },
-    },
-    {
-      name: 'environment',
-      weight: 0.10,
-      indicators: ['inform_natural', 'inform_climate'],
-      indicatorWeights: { inform_natural: 0.50, inform_climate: 0.50 },
-    },
-  ],
-};
-
-const freshTimestamp = new Date().toISOString();
-
-describe('tiered scoring with sourcesConfig', () => {
-  it('blends baseline and signal tiers when both have data', () => {
-    // Baseline indicators (gpi) and signal indicators (advisories) for conflict/crime pillars
-    const indicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.6, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 1.6, year: 2025, source: 'state', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'advisory_level_uk', value: 1.6, year: 2025, source: 'fcdo', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-    ];
-
-    const withTiers = computeCountryScore('TST', indicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-    const withoutTiers = computeCountryScore('TST', indicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    // Both should produce valid scores in range
-    assert.ok(withTiers.score >= 1 && withTiers.score <= 10, `Tiered score ${withTiers.score} out of range`);
-    assert.ok(withoutTiers.score >= 1 && withoutTiers.score <= 10, `Legacy score ${withoutTiers.score} out of range`);
-    // Tiered and legacy should produce different scores (because sub-weights and blending differ)
-    // At minimum the engine ran without error
-  });
-});
-
-describe('graceful degradation — baseline only', () => {
-  it('produces same score as baseline-only when no signal data is present', () => {
-    // Only baseline indicators (gpi, inform) — no signal data
-    const baselineOnlyIndicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 4, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-    ];
-
-    const tieredResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-
-    // With no signal data, effectiveSignalInfluence should be 0,
-    // so score should equal pure baseline score
-    assert.ok(tieredResult.score >= 1 && tieredResult.score <= 10);
-
-    // Conflict pillar: only gpi_overall (baseline), no signal indicators
-    // So signal completeness = 0 for conflict pillar => pure baseline
-    const conflict = tieredResult.pillars.find((p) => p.name === 'conflict')!;
-    assert.ok(conflict.score > 0, 'Conflict pillar should have a non-zero score from baseline GPI data');
-
-    // Verify the score is valid and the engine did not crash
-    assert.equal(tieredResult.pillars.length, 5);
-  });
-});
-
-describe('per-indicator sub-weights', () => {
-  it('produces different scores when sub-weights differ', () => {
-    const indicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-    ];
-
-    // Weights with health heavily weighted
-    const weightsA: WeightsConfig = {
-      version: '1.0.0',
-      pillars: [
-        { name: 'conflict', weight: 0.2, indicators: [] },
-        { name: 'crime', weight: 0.2, indicators: [] },
-        {
-          name: 'health',
-          weight: 0.20,
-          indicators: ['inform_health', 'inform_epidemic'],
-          indicatorWeights: { inform_health: 0.90, inform_epidemic: 0.10 },
-        },
-        { name: 'governance', weight: 0.2, indicators: [] },
-        { name: 'environment', weight: 0.2, indicators: [] },
-      ],
-    };
-
-    // Weights with epidemic heavily weighted
-    const weightsB: WeightsConfig = {
-      version: '1.0.0',
-      pillars: [
-        { name: 'conflict', weight: 0.2, indicators: [] },
-        { name: 'crime', weight: 0.2, indicators: [] },
-        {
-          name: 'health',
-          weight: 0.20,
-          indicators: ['inform_health', 'inform_epidemic'],
-          indicatorWeights: { inform_health: 0.10, inform_epidemic: 0.90 },
-        },
-        { name: 'governance', weight: 0.2, indicators: [] },
-        { name: 'environment', weight: 0.2, indicators: [] },
-      ],
-    };
-
-    const scoreA = computeCountryScore('TST', indicators, weightsA, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-    const scoreB = computeCountryScore('TST', indicators, weightsB, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-
-    // inform_health=2 (inverse, safer) vs inform_epidemic=8 (inverse, less safe)
-    // When health is weighted higher, score should be better (higher)
-    // When epidemic is weighted higher, score should be worse (lower)
-    assert.ok(scoreA.score !== scoreB.score, `Sub-weights should produce different scores: A=${scoreA.score}, B=${scoreB.score}`);
-    assert.ok(scoreA.score > scoreB.score, `Health-heavy weight (${scoreA.score}) should score higher than epidemic-heavy (${scoreB.score})`);
-  });
-});
-
-describe('tiered scoring integration', () => {
-  it('produces valid scores for all countries with real data structure', () => {
-    // Create a realistic rawDataBySource map mimicking real pipeline data
-    const rawData = new Map<string, RawSourceData>();
-
-    // Baseline source: worldbank (fresh)
-    rawData.set('gpi', {
-      source: 'gpi',
-      fetchedAt: freshTimestamp,
-      indicators: [
-        { countryIso3: 'USA', indicatorName: 'gpi_overall', value: 1.3, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'gpi_overall', value: 3.5, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      ],
-    });
-
-    // Baseline source: inform
-    rawData.set('inform', {
-      source: 'inform',
-      fetchedAt: freshTimestamp,
-      indicators: [
-        { countryIso3: 'USA', indicatorName: 'inform_health', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'USA', indicatorName: 'inform_epidemic', value: 1.5, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'USA', indicatorName: 'inform_governance', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'USA', indicatorName: 'inform_natural', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'USA', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'inform_health', value: 7, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'inform_epidemic', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'inform_governance', value: 8, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'inform_natural', value: 7, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-        { countryIso3: 'AFG', indicatorName: 'inform_climate', value: 6, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      ],
-    });
-
-    const results = computeAllScores(rawData, TIERED_WEIGHTS);
-
-    const usa = results.find(r => r.iso3 === 'USA');
-    const afg = results.find(r => r.iso3 === 'AFG');
-
-    assert.ok(usa, 'USA should be scored');
-    assert.ok(afg, 'AFG should be scored');
-    assert.ok(usa!.score >= 1 && usa!.score <= 10, `USA score ${usa!.score} in valid range`);
-    assert.ok(afg!.score >= 1 && afg!.score <= 10, `AFG score ${afg!.score} in valid range`);
-    assert.ok(usa!.score > afg!.score, `USA (${usa!.score}) should score higher than AFG (${afg!.score})`);
-  });
-});
-
-describe('stale signal data is discounted', () => {
-  it('stale signal data produces nearly identical score to baseline-only', () => {
-    // Stale signal timestamp: 90 days ago (past reliefweb maxAgeDays=60)
-    const staleDate = new Date(Date.now() - 90 * 86_400_000).toISOString();
-
-    const baselineOnlyIndicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 2.0, year: 2025, source: 'gpi', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_health', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_epidemic', value: 4, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_governance', value: 3, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_natural', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-      { countryIso3: 'TST', indicatorName: 'inform_climate', value: 2, year: 2025, source: 'inform', fetchedAt: freshTimestamp },
-    ];
-
-    const withStaleSignal: RawIndicator[] = [
-      ...baselineOnlyIndicators,
-      // Stale signal data: past maxAgeDays for reliefweb (60 days), should get weight 0
-      { countryIso3: 'TST', indicatorName: 'reliefweb_active_disasters', value: 8, year: 2025, source: 'reliefweb', fetchedAt: staleDate },
-    ];
-
-    const baselineResult = computeCountryScore('TST', baselineOnlyIndicators, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-    const staleResult = computeCountryScore('TST', withStaleSignal, TIERED_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES, TEST_SOURCES_CONFIG);
-
-    // Stale signal data (past maxAge) should have freshness weight = 0,
-    // so the result should be very close to baseline-only
-    // Allow small tolerance for floating point
-    const scoreDiff = Math.abs(baselineResult.score - staleResult.score);
-    assert.ok(scoreDiff < 0.5, `Stale signal should have negligible effect: baseline=${baselineResult.score}, stale=${staleResult.score}, diff=${scoreDiff}`);
-  });
-});
-
-// --- Pillar-coverage threshold gating tests (quick-260511-gpu) ---
-
-describe('pillar-coverage threshold gating', () => {
-  // Anchor: the gate value the engine must use.
-  assert.equal(MIN_PILLAR_COVERAGE, 0.30, 'MIN_PILLAR_COVERAGE must be 0.30');
-
-  // Configs designed to give us deterministic per-pillar coverage values:
-  //   - conflict pillar has 1 indicator (provide it → coverage 1.0; omit → 0.0)
-  //   - crime pillar has 5 advisory indicators (provide 1 → coverage 0.20, below the 0.30 gate)
-  //   - health, governance, environment receive 1-of-2 indicators (coverage 0.5)
-  const COVERAGE_GATE_WEIGHTS: WeightsConfig = {
-    version: '1.0.0',
-    pillars: [
-      { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
-      {
-        name: 'crime',
-        weight: 0.50,
-        indicators: [
-          'advisory_level_us',
-          'advisory_level_uk',
-          'advisory_level_ca',
-          'advisory_level_au',
-          'advisory_level_de',
-        ],
-      },
-      { name: 'health', weight: 0.00, indicators: ['inform_health', 'inform_epidemic'] },
-      { name: 'governance', weight: 0.00, indicators: ['inform_governance', 'gpi_militarisation'] },
-      { name: 'environment', weight: 0.00, indicators: ['inform_natural', 'inform_climate'] },
-    ],
-  };
-
-  it('excludes pillars below MIN_PILLAR_COVERAGE from composite score', () => {
-    // conflict pillar: full coverage (1/1), GREAT score (gpi value=1 → normalized=1.0)
-    // crime pillar:    20% coverage (1/5), TERRIBLE score (advisory_level_us=4 → normalized=0.0)
-    //
-    // If the sub-30% crime pillar were included, the geometric mean would be
-    // dragged toward log(GEOMETRIC_MEAN_FLOOR)=log(0.01)≈-4.6, producing a
-    // composite well below 5/10. The gate must exclude it so the conflict
-    // pillar's 1.0 normalized score dominates → composite ≥ 7/10.
-    const indicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1, year: 2025, source: 'gpi' },
-      // Only 1 of 5 advisory indicators → crime coverage = 0.20
-      { countryIso3: 'TST', indicatorName: 'advisory_level_us', value: 4, year: 2025, source: 'state' },
-    ];
-
-    const result = computeCountryScore('TST', indicators, COVERAGE_GATE_WEIGHTS, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    const conflict = result.pillars.find((p) => p.name === 'conflict')!;
-    const crime = result.pillars.find((p) => p.name === 'crime')!;
-    assert.equal(conflict.dataCompleteness, 1.0, 'conflict pillar must have full coverage');
-    assert.ok(crime.dataCompleteness < MIN_PILLAR_COVERAGE,
-      `crime coverage (${crime.dataCompleteness}) must be below the gate`);
-
-    // Composite is dominated by the high-coverage pillar → score ≥ 7/10.
-    assert.ok(result.score >= 7,
-      `Composite score should be dominated by the eligible (conflict) pillar; got ${result.score}`);
-  });
-
-  it('renormalizes remaining pillar weights when one is gated', () => {
-    // Config (A): two pillars each weight 0.5, both with full data and identical pillar scores ~0.7.
-    // Config (B): same two pillars PLUS a third pillar (env) at weight 0.5, coverage 0.10, score ~0.1.
-    // The third pillar in (B) must be excluded by the coverage gate so (B) ≈ (A).
-    //
-    // Key design: env's indicator list in (B) contains 10 names, exactly ONE of which is
-    // ever provided in the raw indicators, AND none of those names appear in the conflict
-    // or crime pillar lists (so the engine's per-pillar `includes` filter doesn't double-count).
-    const configA: WeightsConfig = {
-      version: '1.0.0',
-      pillars: [
-        // conflict: gpi_overall inverse min=1,max=4. value=1.9 → norm=(1.9-1)/3=0.30 → inverse=0.70
-        { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
-        // crime: gpi_safety_security inverse min=1,max=5. value=2.2 → norm=(2.2-1)/4=0.30 → inverse=0.70
-        { name: 'crime', weight: 0.50, indicators: ['gpi_safety_security'] },
-        // The remaining pillars are weight=0 with no data; engine still iterates them
-        // but their score=0.5 neutral default × weight=0 contributes log-weighted zero.
-        { name: 'health', weight: 0.00, indicators: ['inform_health'] },
-        { name: 'governance', weight: 0.00, indicators: ['inform_governance'] },
-        { name: 'environment', weight: 0.00, indicators: ['inform_natural'] },
-      ],
-    };
-
-    // Config B: identical except environment pillar carries weight 0.50 with 10 indicator
-    // slots — and we only provide 1 of them → coverage 0.10, below MIN_PILLAR_COVERAGE.
-    // All 10 slot names are DISJOINT from conflict/crime indicators above so they cannot
-    // double-count via the `pillarDef.indicators.includes(ns.name)` filter.
-    const envIndicators = [
-      'inform_natural', 'inform_climate', 'inform_health', 'inform_epidemic',
-      'inform_governance', 'gpi_militarisation', 'wb_air_pollution', 'wb_child_mortality',
-      'wb_political_stability', 'wb_rule_of_law',
-    ];
-    const configB: WeightsConfig = {
-      version: '1.0.0',
-      pillars: [
-        { name: 'conflict', weight: 0.50, indicators: ['gpi_overall'] },
-        { name: 'crime', weight: 0.50, indicators: ['gpi_safety_security'] },
-        // Use placeholder indicator names for the zero-weight pillars that do NOT overlap
-        // with the env list — so when env's only provided indicator (gpi_militarisation) is
-        // normalized, it doesn't accidentally also satisfy the governance pillar slot.
-        { name: 'health', weight: 0.00, indicators: ['advisory_level_us'] },
-        { name: 'governance', weight: 0.00, indicators: ['advisory_level_uk'] },
-        { name: 'environment', weight: 0.50, indicators: envIndicators },
-      ],
-    };
-
-    // Indicators that exist in both runs.
-    const sharedIndicators: RawIndicator[] = [
-      { countryIso3: 'TST', indicatorName: 'gpi_overall', value: 1.9, year: 2025, source: 'gpi' },
-      { countryIso3: 'TST', indicatorName: 'gpi_safety_security', value: 2.2, year: 2025, source: 'gpi' },
-    ];
-
-    // For configB, also provide ONE environment indicator with a very low (bad) score.
-    // gpi_militarisation: inverse, min=1, max=5. value=5 → norm=(5-1)/4=1.0 → inverse=0.0 (worst).
-    // gpi_militarisation is NOT in conflict/crime/health/governance indicator lists of configB,
-    // so it lands only in env → env coverage = 1/10 = 0.10.
-    const configBIndicators: RawIndicator[] = [
-      ...sharedIndicators,
-      { countryIso3: 'TST', indicatorName: 'gpi_militarisation', value: 5, year: 2025, source: 'gpi' },
-    ];
-
-    const resultA = computeCountryScore('TST', sharedIndicators, configA, TEST_COUNTRY, {}, TEST_SOURCES);
-    const resultB = computeCountryScore('TST', configBIndicators, configB, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    // Sanity: the env pillar in B should be at coverage 0.10, below the 0.30 gate.
-    const envB = resultB.pillars.find((p) => p.name === 'environment')!;
-    assert.ok(envB.dataCompleteness < MIN_PILLAR_COVERAGE,
-      `env coverage in B (${envB.dataCompleteness}) must be below the gate`);
-    assert.ok(envB.score < 0.2,
-      `env pillar score in B (${envB.score}) must be deliberately bad to prove the gate matters`);
-
-    // With the env pillar gated out, remaining weights (conflict=0.5, crime=0.5) renormalize
-    // naturally to 1.0 across the eligible pillars — so A ≈ B (within 0.05/10).
-    const diff = Math.abs(resultA.score - resultB.score);
-    assert.ok(diff < 0.05,
-      `Gated low-coverage pillar must not affect composite. A=${resultA.score}, B=${resultB.score}, diff=${diff}`);
-  });
-
-  it('falls back to all pillars when none meet MIN_PILLAR_COVERAGE', () => {
-    // Every declared pillar has at least 2 indicator slots; we provide ZERO indicators →
-    // every pillar's dataCompleteness=0, below the gate. The engine must NOT throw and
-    // must return a finite numeric score (fallback to the all-pillars path).
-    const pillaredWeights: WeightsConfig = {
-      version: '1.0.0',
-      pillars: [
-        { name: 'conflict', weight: 0.20, indicators: ['gpi_overall', 'gpi_militarisation'] },
-        { name: 'crime', weight: 0.20, indicators: ['advisory_level_us', 'advisory_level_uk'] },
-        { name: 'health', weight: 0.20, indicators: ['inform_health', 'inform_epidemic'] },
-        { name: 'governance', weight: 0.20, indicators: ['inform_governance', 'gpi_safety_security'] },
-        { name: 'environment', weight: 0.20, indicators: ['inform_natural', 'inform_climate'] },
-      ],
-    };
-
-    // No indicators at all → every pillar coverage = 0.
-    const result = computeCountryScore('TST', [], pillaredWeights, TEST_COUNTRY, {}, TEST_SOURCES);
-
-    assert.ok(Number.isFinite(result.score), `Fallback score must be finite, got ${result.score}`);
-    assert.ok(result.score >= 1 && result.score <= 10,
-      `Fallback score must be in [1,10] range, got ${result.score}`);
-    for (const pillar of result.pillars) {
-      assert.equal(pillar.dataCompleteness, 0,
-        `Pillar ${pillar.name} coverage should be 0 in this fallback case`);
+    // Every scored country carries a numeric confidence
+    for (const r of results) {
+      assert.equal(typeof r.confidence, 'number');
     }
   });
 });
 
-// --- V-Dem migration: weights.json + engine.ts contract (quick-260511-k2m) ---
+// --- MIN_PILLAR_COVERAGE: retained export, no longer used for score gating ---
 
-describe('V-Dem migration: weights.json structure', () => {
+describe('MIN_PILLAR_COVERAGE (legacy export, display-layer only)', () => {
+  it('is still exported at 0.30 for UI/FAQ pillar-eligibility filtering (src/lib/seo.ts)', () => {
+    assert.equal(MIN_PILLAR_COVERAGE, 0.30);
+  });
+});
+
+// --- Formula v9: weights.json structure (quick-260706-x81) ---
+
+describe('Formula v9: weights.json structure', () => {
   const weightsPath = join(process.cwd(), 'src/pipeline/config/weights.json');
-  const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig & { version: string };
+  const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig;
 
-  it('version is "8.1.0"', () => {
-    assert.equal(weightsJson.version, '8.1.0');
+  it('version is "9.0.0"', () => {
+    assert.equal(weightsJson.version, '9.0.0');
   });
 
-  it('conflict pillar indicators do NOT contain wb_political_stability', () => {
+  it('pillar weights are still 30/25/20/15/10 and sum to 1.0', () => {
+    const byName = new Map(weightsJson.pillars.map((p) => [p.name, p.weight]));
+    assert.equal(byName.get('conflict'), 0.30);
+    assert.equal(byName.get('crime'), 0.25);
+    assert.equal(byName.get('health'), 0.20);
+    assert.equal(byName.get('governance'), 0.15);
+    assert.equal(byName.get('environment'), 0.10);
+    const sum = weightsJson.pillars.reduce((acc, p) => acc + p.weight, 0);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9);
+  });
+
+  it('conflict pillar is [gpi_overall, gpi_militarisation, A] — no advisory_level_* entries', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict, 'conflict pillar must exist');
-    assert.equal(conflict.indicators.includes('wb_political_stability'), false,
-      'conflict.indicators must not contain wb_political_stability');
-  });
-
-  it('conflict pillar contains all 37 advisory_level_* entries + 3 gpi_* entries', () => {
-    const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     const advisoryCount = conflict.indicators.filter((n) => n.startsWith('advisory_level_')).length;
-    const gpiCount = conflict.indicators.filter((n) => n.startsWith('gpi_')).length;
-    assert.equal(advisoryCount, 37, `Expected 37 advisory_level_* entries, got ${advisoryCount}`);
-    assert.equal(gpiCount, 3, `Expected 3 gpi_* entries, got ${gpiCount}`);
+    assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries in v9');
+    assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_militarisation', 'gpi_overall']);
   });
 
-  it('conflict pillar indicatorWeights sum to exactly 1.0 (within 1e-9)', () => {
+  it('conflict pillar subweights (gpi_overall .45 / gpi_militarisation .15 / A .40) sum to 1.0', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
-    assert.ok(conflict.indicatorWeights, 'conflict.indicatorWeights must exist');
+    assert.ok(conflict.indicatorWeights);
+    assert.equal(conflict.indicatorWeights!.gpi_overall, 0.45);
+    assert.equal(conflict.indicatorWeights!.gpi_militarisation, 0.15);
+    assert.equal(conflict.indicatorWeights!.A, 0.40);
     const sum = Object.values(conflict.indicatorWeights!).reduce((a, b) => a + b, 0);
-    assert.ok(Math.abs(sum - 1.0) < 1e-9,
-      `conflict.indicatorWeights must sum to exactly 1.0, got ${sum} (diff=${sum - 1.0})`);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9);
   });
 
-  it('crime pillar indicators equals ["vdem_rule_of_law"] exactly', () => {
+  it('crime pillar indicators equals ["gpi_safety_security"] exactly (moved from conflict)', () => {
     const crime = weightsJson.pillars.find((p) => p.name === 'crime')!;
     assert.ok(crime, 'crime pillar must exist');
-    assert.deepEqual(crime.indicators, ['vdem_rule_of_law']);
+    assert.deepEqual(crime.indicators, ['gpi_safety_security']);
   });
 
-  it('governance pillar indicators is set-equal to [vdem_gov_effectiveness, vdem_corruption_control, inform_governance]', () => {
+  it('governance pillar includes vdem_rule_of_law (moved from crime) alongside the original 3', () => {
     const gov = weightsJson.pillars.find((p) => p.name === 'governance')!;
     assert.ok(gov, 'governance pillar must exist');
-    const expected = new Set(['vdem_gov_effectiveness', 'vdem_corruption_control', 'inform_governance']);
+    const expected = new Set(['vdem_rule_of_law', 'vdem_gov_effectiveness', 'vdem_corruption_control', 'inform_governance']);
     const actual = new Set(gov.indicators);
     assert.equal(actual.size, expected.size, `governance indicators size mismatch: ${gov.indicators.join(',')}`);
     for (const name of expected) {
       assert.ok(actual.has(name), `governance.indicators must contain ${name}`);
     }
   });
+
+  it('has a formulaV9 constants section with the frozen tunables', () => {
+    const f9 = weightsJson.formulaV9;
+    assert.ok(f9, 'formulaV9 section must exist');
+    assert.equal(f9!.K, 1.0);
+    assert.equal(f9!.lambda, 0.25);
+    assert.equal(f9!.q, 3);
+    assert.equal(f9!.gamma, 0.79);
+    assert.equal(f9!.S_MAX, 0.25);
+    assert.equal(f9!.N_SEV, 6);
+    assert.ok(f9!.frozenExcludedSources.includes('jp'));
+    assert.ok(f9!.advisoryRebase.includes('at') && f9!.advisoryRebase.includes('nz'));
+    assert.equal(f9!.regionOffset.europe, 0.05);
+    assert.equal(f9!.regionOffset.middle_east, -0.05);
+  });
 });
 
-describe('V-Dem migration: engine.ts INDICATOR_SOURCE_MAP + SOURCE_CATALOG', () => {
+describe('Formula v9: engine.ts INDICATOR_SOURCE_MAP + SOURCE_CATALOG', () => {
   it('INDICATOR_SOURCE_MAP maps the three vdem_* keys to "vdem"', () => {
     assert.equal(INDICATOR_SOURCE_MAP['vdem_rule_of_law'], 'vdem');
     assert.equal(INDICATOR_SOURCE_MAP['vdem_gov_effectiveness'], 'vdem');

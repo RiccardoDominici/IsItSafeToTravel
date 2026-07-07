@@ -228,15 +228,14 @@ function parseGpiSheet(
   return { indicators, latestYear };
 }
 
-function parseGpiExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
-  const indicators: RawIndicator[] = [];
-  const workbook = XLSX.read(buffer, { type: 'buffer' });
-  const sheetNames = workbook.SheetNames;
-  console.log(`[GPI] Found sheets: ${sheetNames.join(', ')}`);
-
-  // Map sheet names to indicator names
+/**
+ * Map GPI workbook sheet names to their indicator name, by matching on
+ * substrings (case-insensitive) — the same rule used by the live latest-year
+ * parser and the historical per-year parser below, so both stay consistent.
+ */
+function resolveGpiSheetMap(workbook: XLSX.WorkBook): [string, string][] {
   const sheetMap: [string, string][] = [];
-  for (const name of sheetNames) {
+  for (const name of workbook.SheetNames) {
     const lower = name.toLowerCase();
     if (lower.includes('overall') || lower.includes('score')) {
       sheetMap.push([name, 'gpi_overall']);
@@ -246,11 +245,135 @@ function parseGpiExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
       sheetMap.push([name, 'gpi_militarisation']);
     }
   }
+  return sheetMap;
+}
 
+function parseGpiExcel(buffer: Buffer, fetchedAt: string): RawIndicator[] {
+  const indicators: RawIndicator[] = [];
+  const workbook = XLSX.read(buffer, { type: 'buffer' });
+  console.log(`[GPI] Found sheets: ${workbook.SheetNames.join(', ')}`);
+
+  const sheetMap = resolveGpiSheetMap(workbook);
   for (const [sheetName, indicatorName] of sheetMap) {
     const result = parseGpiSheet(workbook, sheetName, indicatorName, fetchedAt);
     indicators.push(...result.indicators);
   }
 
   return indicators;
+}
+
+/**
+ * Parse ONE GPI sheet's data for EVERY year column present (2008-2023 as of the
+ * GPI-2023 release), grouped by year. Historical-backfill helper (SHIP-SPEC 1.3):
+ * gpi.xlsx carries the full Overall Scores / Safety and Security / Militarisation
+ * history across all published years in a single file, so backfill can select the
+ * correct vintage per historical snapshot date instead of only ever seeing the
+ * latest year (which is all fetchGpi's live path emits — UNCHANGED, see
+ * parseGpiExcel/fetchGpi above).
+ */
+function parseGpiSheetAllYears(
+  workbook: XLSX.WorkBook,
+  sheetName: string,
+  indicatorName: string,
+): Map<number, RawIndicator[]> {
+  const byYear = new Map<number, RawIndicator[]>();
+  const sheet = workbook.Sheets[sheetName];
+  if (!sheet) return byYear;
+
+  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(sheet, { defval: '' });
+  if (rows.length < 2) return byYear;
+
+  const headerRow = rows.find(
+    (r) => String(r['__EMPTY'] || '').toLowerCase() === 'country'
+  );
+  if (!headerRow) return byYear;
+
+  const colKeys = Object.keys(headerRow);
+  const yearCols = new Map<string, number>(); // column key -> year
+  for (const col of colKeys) {
+    const val = headerRow[col];
+    const num = typeof val === 'number' ? val : parseInt(String(val));
+    if (num >= 2000 && num <= 2100) yearCols.set(col, num);
+  }
+  if (yearCols.size === 0) return byYear;
+
+  const countryCol = colKeys.find(
+    (c) => String(headerRow[c] || '').toLowerCase() === 'country'
+  ) || '__EMPTY';
+  const iso3Col = colKeys.find(
+    (c) => String(headerRow[c] || '').toLowerCase() === 'iso3c'
+  );
+
+  const headerIdx = rows.indexOf(headerRow);
+  for (let i = headerIdx + 1; i < rows.length; i++) {
+    const row = rows[i];
+    const rawCountryName = String(row[countryCol] || '').trim();
+    if (!rawCountryName || rawCountryName.toLowerCase() === 'country') continue;
+
+    let country = iso3Col
+      ? getCountryByName(String(row[iso3Col] || '').trim())
+      : null;
+    if (!country) {
+      const resolvedName = resolveCountryName(rawCountryName);
+      country = getCountryByName(resolvedName) || getCountryByName(rawCountryName);
+    }
+    if (!country) continue;
+
+    for (const [col, year] of yearCols) {
+      const score = parseFloat(String(row[col]));
+      if (isNaN(score)) continue;
+      if (!byYear.has(year)) byYear.set(year, []);
+      byYear.get(year)!.push({
+        countryIso3: country.iso3,
+        indicatorName,
+        value: score,
+        year,
+        source: 'gpi',
+      });
+    }
+  }
+
+  return byYear;
+}
+
+/**
+ * Parse a full GPI workbook into per-year indicator sets across all 3 GPI sheets
+ * (gpi_overall / gpi_safety_security / gpi_militarisation). Exported for backfill.
+ */
+export function parseGpiExcelAllYears(buffer: Buffer): Map<number, RawIndicator[]> {
+  const merged = new Map<number, RawIndicator[]>();
+  const workbook = XLSX.read(buffer, { type: 'buffer' });
+  const sheetMap = resolveGpiSheetMap(workbook);
+
+  for (const [sheetName, indicatorName] of sheetMap) {
+    const byYear = parseGpiSheetAllYears(workbook, sheetName, indicatorName);
+    for (const [year, indicators] of byYear) {
+      if (!merged.has(year)) merged.set(year, []);
+      merged.get(year)!.push(...indicators);
+    }
+  }
+
+  return merged;
+}
+
+/**
+ * Select the GPI indicator set for a given snapshot year: the largest available
+ * year <= snapshotYear (i.e. year = min(snapshotYear, latest available year), per
+ * SHIP-SPEC 1.3). Falls back to the earliest available year if snapshotYear
+ * predates the workbook's coverage. Returns [] if the workbook has no year data.
+ */
+export function selectGpiIndicatorsForYear(
+  byYear: Map<number, RawIndicator[]>,
+  snapshotYear: number,
+): RawIndicator[] {
+  const availableYears = [...byYear.keys()];
+  if (availableYears.length === 0) return [];
+
+  let best: number | null = null;
+  for (const y of availableYears) {
+    if (y <= snapshotYear && (best === null || y > best)) best = y;
+  }
+  if (best === null) best = Math.min(...availableYears);
+
+  return byYear.get(best) ?? [];
 }
