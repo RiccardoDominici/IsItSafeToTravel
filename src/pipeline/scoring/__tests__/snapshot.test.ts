@@ -24,6 +24,7 @@ function makeScoredCountry(iso3: string, score: number): ScoredCountry {
     ],
     advisories: {},
     dataCompleteness: 0,
+    confidence: 0,
     lastUpdated: '2026-01-01T00:00:00Z',
     sources: [],
   };

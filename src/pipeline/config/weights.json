@@ -1,67 +1,30 @@
 {
-  "version": "8.1.0",
+  "version": "9.0.0",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["gpi_overall", "gpi_safety_security", "gpi_militarisation",
-        "advisory_level_us", "advisory_level_uk", "advisory_level_ca", "advisory_level_au",
-        "advisory_level_de", "advisory_level_nl", "advisory_level_jp", "advisory_level_sk",
-        "advisory_level_fr", "advisory_level_nz", "advisory_level_ie", "advisory_level_fi",
-        "advisory_level_hk", "advisory_level_br", "advisory_level_at", "advisory_level_ph",
-        "advisory_level_be", "advisory_level_dk", "advisory_level_sg", "advisory_level_ro",
-        "advisory_level_rs", "advisory_level_ee", "advisory_level_hr", "advisory_level_ar",
-        "advisory_level_it", "advisory_level_es", "advisory_level_kr", "advisory_level_tw",
-        "advisory_level_cn", "advisory_level_in",
-        "advisory_level_ch", "advisory_level_se", "advisory_level_no", "advisory_level_pl",
-        "advisory_level_cz", "advisory_level_hu", "advisory_level_pt"],
+      "indicators": ["gpi_overall", "gpi_militarisation", "A"],
       "indicatorWeights": {
-        "gpi_overall": 0.22,
-        "gpi_safety_security": 0.20,
-        "gpi_militarisation": 0.17,
-        "advisory_level_us": 0.0293,
-        "advisory_level_uk": 0.0285,
-        "advisory_level_ca": 0.0285,
-        "advisory_level_au": 0.0285,
-        "advisory_level_de": 0.0205,
-        "advisory_level_nl": 0.0205,
-        "advisory_level_jp": 0.0205,
-        "advisory_level_sk": 0.0205,
-        "advisory_level_fr": 0.0114,
-        "advisory_level_nz": 0.0114,
-        "advisory_level_ie": 0.0114,
-        "advisory_level_fi": 0.0114,
-        "advisory_level_hk": 0.0114,
-        "advisory_level_br": 0.0114,
-        "advisory_level_at": 0.0114,
-        "advisory_level_ph": 0.0114,
-        "advisory_level_be": 0.0080,
-        "advisory_level_dk": 0.0080,
-        "advisory_level_sg": 0.0080,
-        "advisory_level_ro": 0.0080,
-        "advisory_level_rs": 0.0080,
-        "advisory_level_ee": 0.0080,
-        "advisory_level_hr": 0.0080,
-        "advisory_level_ar": 0.0080,
-        "advisory_level_it": 0.0057,
-        "advisory_level_es": 0.0057,
-        "advisory_level_kr": 0.0057,
-        "advisory_level_tw": 0.0057,
-        "advisory_level_cn": 0.0057,
-        "advisory_level_in": 0.0057,
-        "advisory_level_ch": 0.0034,
-        "advisory_level_se": 0.0034,
-        "advisory_level_no": 0.0034,
-        "advisory_level_pl": 0.0034,
-        "advisory_level_cz": 0.0034,
-        "advisory_level_hu": 0.0034,
-        "advisory_level_pt": 0.0034
+        "gpi_overall": 0.45,
+        "gpi_militarisation": 0.15,
+        "A": 0.40
+      },
+      "indicatorPrecision": {
+        "gpi_overall": 2.0,
+        "gpi_militarisation": 1.0
       }
     },
     {
       "name": "crime",
       "weight": 0.25,
-      "indicators": ["vdem_rule_of_law"]
+      "indicators": ["gpi_safety_security"],
+      "indicatorWeights": {
+        "gpi_safety_security": 1.0
+      },
+      "indicatorPrecision": {
+        "gpi_safety_security": 2.5
+      }
     },
     {
       "name": "health",
@@ -71,17 +34,83 @@
         "wb_child_mortality": 0.38,
         "inform_health": 0.31,
         "inform_epidemic": 0.31
+      },
+      "indicatorPrecision": {
+        "wb_child_mortality": 1,
+        "inform_health": 1,
+        "inform_epidemic": 1
       }
     },
     {
       "name": "governance",
       "weight": 0.15,
-      "indicators": ["vdem_gov_effectiveness", "vdem_corruption_control", "inform_governance"]
+      "indicators": ["vdem_rule_of_law", "vdem_gov_effectiveness", "vdem_corruption_control", "inform_governance"],
+      "indicatorWeights": {
+        "vdem_rule_of_law": 0.25,
+        "vdem_gov_effectiveness": 0.25,
+        "vdem_corruption_control": 0.25,
+        "inform_governance": 0.25
+      },
+      "indicatorPrecision": {
+        "vdem_rule_of_law": 1,
+        "vdem_gov_effectiveness": 1,
+        "vdem_corruption_control": 1,
+        "inform_governance": 1
+      }
     },
     {
       "name": "environment",
       "weight": 0.10,
-      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate", "reliefweb_active_disasters", "gdacs_disaster_alerts"]
+      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate", "reliefweb_active_disasters", "gdacs_disaster_alerts"],
+      "indicatorWeights": {
+        "wb_air_pollution": 0.35,
+        "inform_natural": 0.25,
+        "inform_climate": 0.20,
+        "reliefweb_active_disasters": 0.10,
+        "gdacs_disaster_alerts": 0.10
+      },
+      "indicatorPrecision": {
+        "wb_air_pollution": 1,
+        "inform_natural": 1,
+        "inform_climate": 1,
+        "reliefweb_active_disasters": 0,
+        "gdacs_disaster_alerts": 0
+      }
     }
-  ]
+  ],
+  "formulaV9": {
+    "_comment": "Formula v9 (Bayesian synthesis) frozen constants, ported verbatim from prototype-scorer.mjs DEFAULT_CONST + ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET (final-constants.json). Do not re-tune.",
+    "K": 1.0,
+    "lambda": 0.25,
+    "q": 3,
+    "gamma": 0.79,
+    "S_MAX": 0.25,
+    "N_SEV": 6,
+    "muBase": 0.45,
+    "muClampMin": 0.32,
+    "muClampMax": 0.60,
+    "nudgeScale": 0.35,
+    "nudgeDenom": 5,
+    "rhoADenom": 6,
+    "floorP": 0.02,
+    "acuteDownOnly": 1,
+    "advisoryTiers": {
+      "us": 4, "uk": 4, "ca": 4, "au": 4, "de": 4, "nl": 4, "jp": 4, "sk": 4,
+      "fr": 3, "nz": 3, "ie": 3, "fi": 3, "hk": 3, "br": 3, "at": 3, "ph": 3,
+      "be": 2, "dk": 2, "sg": 2, "ro": 2, "rs": 2, "ee": 2, "hr": 2, "ar": 2,
+      "it": 1, "es": 1, "kr": 1, "tw": 1, "cn": 1, "in": 1, "ch": 1, "se": 1,
+      "no": 1, "pl": 1, "cz": 1, "hu": 1, "pt": 1
+    },
+    "frozenExcludedSources": ["jp", "be", "ie", "ch", "hk", "sk", "es", "ar", "cn"],
+    "advisoryRebase": ["at", "nz"],
+    "regionOffset": {
+      "europe": 0.05,
+      "oceania": 0,
+      "americas": -0.02,
+      "asia": -0.02,
+      "middle_east": -0.05,
+      "africa": -0.05,
+      "other": 0
+    }
+  }
 }

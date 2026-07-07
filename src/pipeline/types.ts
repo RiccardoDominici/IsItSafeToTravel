@@ -46,11 +46,52 @@ export interface PillarWeight {
   weight: number;
   indicators: string[];
   indicatorWeights?: Record<string, number>;  // Per-indicator sub-weight (must sum to 1.0 within pillar)
+  /**
+   * Formula v9: per-indicator precision (rho) — evidence weight contributed to the
+   * pillar's n_i when the indicator is present. rho=0 means "value contributes,
+   * confidence does not" (reliefweb/gdacs). The synthetic advisory-consensus
+   * indicator "A" (conflict pillar) has its precision computed per-country
+   * (rho_A = nAdv/(nAdv+rhoADenom)) and is intentionally absent from this map.
+   */
+  indicatorPrecision?: Record<string, number>;
+}
+
+/**
+ * Formula v9 (Bayesian synthesis) tunable constants + frozen tables. See
+ * SHIP-SPEC.md sections 1.1/1.2 and scripts/../prototype-scorer.mjs DEFAULT_CONST /
+ * ADVISORY_TIER / FROZEN_EXCLUDED_SOURCES / ADVISORY_REBASE / REGION_OFFSET — the
+ * values here MUST equal the frozen prototype exactly (ported, not re-tuned).
+ */
+export interface FormulaV9Config {
+  K: number;              // shrinkage strength
+  lambda: number;         // acute-term blend weight
+  q: number;               // acute soft-min power-mean exponent
+  gamma: number;           // concave 1-10 calibration lift
+  S_MAX: number;           // bounded severe-advisory modifier ceiling
+  N_SEV: number;           // severe-modifier count damping denominator offset
+  muBase: number;          // conservative prior base
+  muClampMin: number;
+  muClampMax: number;
+  nudgeScale: number;      // coefficient on (A-0.5) in the prior's advisory nudge
+  nudgeDenom: number;      // nAdv/(nAdv+nudgeDenom) confidence-weighting of the nudge
+  rhoADenom: number;       // rho_A = nAdv/(nAdv+rhoADenom)
+  floorP: number;          // floor inside ln(max(floorP, phat)) and acute mean
+  acuteDownOnly: number;   // 1 => cap acute at G so it only drags the score down, never inflates
+  /** government code (lowercase, e.g. "us") -> importance tier (4=highest .. 1=lowest) */
+  advisoryTiers: Record<string, number>;
+  /** government codes NEVER entering A/severeShare/nAdv (broken parser or zero-variance) */
+  frozenExcludedSources: string[];
+  /** government codes rebased L -> max(1, L-1) because they never emit Level 1 */
+  advisoryRebase: string[];
+  /** region name -> conservative-prior offset */
+  regionOffset: Record<string, number>;
 }
 
 export interface WeightsConfig {
   version: string;
   pillars: PillarWeight[];
+  /** Formula v9 constants (weights.json v9.0.0+). Absent in older/synthetic test configs. */
+  formulaV9?: FormulaV9Config;
 }
 
 // --- Scored output ---
@@ -128,6 +169,12 @@ export interface ScoredCountry {
     pt?: AdvisoryInfo;
   };
   dataCompleteness: number; // 0-1 overall
+  /**
+   * Formula v9: confidence = sum_i w_i * n_i/(n_i+K) — how much of the composite
+   * score is grounded in actual evidence vs. the conservative prior. 0 = fully
+   * prior-driven (no data), approaches 1 as precision n_i grows per pillar.
+   */
+  confidence: number;
   lastUpdated: string; // ISO 8601
   sources: SourceMeta[];
 }

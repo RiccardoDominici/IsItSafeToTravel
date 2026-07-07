@@ -1,16 +1,18 @@
 import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
-import { readJson, findLatestCached } from '../utils/fs.js';
+import { getRegion } from '../../lib/regions.js';
+import { readJson } from '../utils/fs.js';
 import { join } from 'node:path';
 import type {
   RawIndicator,
   WeightsConfig,
+  FormulaV9Config,
+  PillarWeight,
   CountryEntry,
   AdvisoryInfo,
   SourceMeta,
   PillarScore,
-  PillarWeight,
   ScoredCountry,
   RawSourceData,
   PillarName,
@@ -19,32 +21,36 @@ import type {
 } from '../types.js';
 
 /**
- * Compute safety score for a single country.
+ * Compute safety score for a single country — Formula v9 (Bayesian synthesis).
  *
- * When sourcesConfig is provided, uses tiered baseline+signal blending
- * with freshness decay and per-indicator sub-weights.
- * When sourcesConfig is omitted, falls back to legacy equal-averaging behavior.
+ * Ported faithfully from the frozen reference implementation (prototype-scorer.mjs,
+ * SHIP-SPEC.md section 1.1, quick-260706-x81). Mechanisms, in order:
+ * 1. Advisory consensus (A, nAdv, severeShare, severeEff, rho_A) over the frozen
+ *    excluded-source set, importance tiers, and at/nz rebase.
+ * 2. Per-pillar value p_i (sub-weight-renormalized mean over present indicators)
+ *    and precision n_i = sum(rho * freshnessWeight()) over present indicators.
+ * 3. A conservative region-anchored prior mu, nudged by advisory consensus.
+ * 4. Bayesian shrinkage p_hat_i = (n_i*p_i + K*mu)/(n_i+K) — NO eligibility gates,
+ *    NO neutral-0.5 defaults, NO low-data advisory blend, NO critical floor, NO
+ *    majority-L4 hard cap (all removed; v8.x mechanisms).
+ * 5. Weighted geometric mean G across all 5 shrunk pillars + a down-only acute
+ *    soft-min term (conflict/crime) + a count-damped severe-advisory modifier.
+ * 6. Concave 1-10 calibration: score = 1 + 9*composite^gamma.
+ * 7. confidence = sum w_i * n_i/(n_i+K) (NEW output field).
  *
- * Hybrid scoring strategy (v7.0):
- * 1. Per-pillar: baseline+signal tiered blending (unchanged)
- * 2. Composite: weighted GEOMETRIC mean of pillar scores (penalizes low outliers)
- * 3. Hard cap: if any government advisory is Level 4 "Do Not Travel" → score ≤ 2
- * 4. Critical floor: if any pillar score < CRITICAL_PILLAR_THRESHOLD → score ≤ minPillar * CRITICAL_FLOOR_MULTIPLIER * 9 + 1
+ * All formula constants live in weightsConfig.formulaV9 (single source of truth);
+ * their VALUES are frozen and must equal the prototype exactly — see
+ * DEFAULT_FORMULA_V9 below for the same defaults, used only when a (synthetic/
+ * legacy) WeightsConfig omits the formulaV9 section.
  */
 
-// Scoring strategy constants
-const CRITICAL_PILLAR_THRESHOLD = 0.25; // pillar score (0-1) below which critical floor kicks in
-const CRITICAL_FLOOR_MULTIPLIER = 1.5;  // max score = minPillar * this * 9 + 1
-const ADVISORY_HARD_CAP_LEVEL = 4;      // advisory level that triggers hard cap
-const ADVISORY_HARD_CAP_MAJORITY = true; // require majority of advisory sources at Level 4
-const ADVISORY_HARD_CAP_BASE = 2;       // base hard cap score
-const GEOMETRIC_MEAN_FLOOR = 0.01;      // floor for pillar scores in geometric mean (avoid log(0))
-const LOW_DATA_THRESHOLD = 0.3;         // overall dataCompleteness below which advisory blending kicks in
-
 /**
- * Hard gate: pillars with dataCompleteness below this threshold are excluded
- * from the composite geometric mean AND from the critical-floor calculation.
- * Remaining pillar weights renormalize naturally via the weighted-log-mean denominator.
+ * Legacy v8.x pillar-coverage constants. NO LONGER used by computeCountryScore's
+ * own composite/shrinkage math (Formula v9 replaced hard gating with Bayesian
+ * shrinkage — see module docstring). Kept exported ONLY for backward compatibility
+ * with unrelated UI/FAQ "which pillar is weakest" eligibility filtering
+ * (src/lib/seo.ts selectEligiblePillars, PillarBreakdown.astro, PillarDetailTable.astro,
+ * AnswerFirstParagraph.astro) which is a display-layer concern, not a scoring one.
  */
 export const MIN_PILLAR_COVERAGE = 0.30;
 
@@ -56,6 +62,223 @@ export const MIN_PILLAR_COVERAGE = 0.30;
  */
 export const LOW_COVERAGE_FLAG_THRESHOLD = 0.50;
 
+/**
+ * Default Formula v9 constants (identical to prototype-scorer.mjs DEFAULT_CONST +
+ * ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET).
+ * Used only as a fallback when a WeightsConfig has no formulaV9 section (e.g.
+ * ad-hoc synthetic configs in older tests) — production weights.json v9.0.0+
+ * always carries its own formulaV9 section, which is the real source of truth.
+ */
+export const DEFAULT_FORMULA_V9: FormulaV9Config = {
+  K: 1.0,
+  lambda: 0.25,
+  q: 3,
+  gamma: 0.79,
+  S_MAX: 0.25,
+  N_SEV: 6,
+  muBase: 0.45,
+  muClampMin: 0.32,
+  muClampMax: 0.60,
+  nudgeScale: 0.35,
+  nudgeDenom: 5,
+  rhoADenom: 6,
+  floorP: 0.02,
+  acuteDownOnly: 1,
+  advisoryTiers: {},
+  frozenExcludedSources: [],
+  advisoryRebase: [],
+  regionOffset: {},
+};
+
+/** All government advisory codes ScoredCountry.advisories may carry (37). */
+const ADVISORY_CODES = [
+  'us', 'uk', 'ca', 'au', 'de', 'nl', 'jp', 'sk',
+  'fr', 'nz', 'ie', 'fi', 'hk', 'br', 'at', 'ph',
+  'be', 'dk', 'sg', 'ro', 'rs', 'ee', 'hr', 'ar',
+  'it', 'es', 'kr', 'tw', 'cn', 'in',
+  'ch', 'se', 'no', 'pl', 'cz', 'hu', 'pt',
+] as const;
+
+type AdvisoriesInput = Partial<Record<(typeof ADVISORY_CODES)[number], AdvisoryInfo>>;
+
+function clamp(x: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, x));
+}
+
+/** Extract {code -> numeric level} from the ScoredCountry advisories input, dropping unset/NaN entries. */
+function extractAdvisoryLevels(advisories: AdvisoriesInput): Record<string, number> {
+  const out: Record<string, number> = {};
+  for (const code of ADVISORY_CODES) {
+    const info = advisories[code];
+    if (!info) continue;
+    const level = typeof info.level === 'string' ? parseFloat(info.level) : info.level;
+    if (typeof level === 'number' && !isNaN(level)) out[code] = level;
+  }
+  return out;
+}
+
+interface AdvisoryConsensusResult {
+  A: number | null;
+  severeShare: number;
+  severeEff: number;
+  nAdv: number;
+  rhoA: number;
+}
+
+/**
+ * Advisory consensus A, severeShare/severeEff and rho_A for one country.
+ * FROZEN math (SHIP-SPEC 1.1 item 1 / prototype-scorer.mjs advisoryConsensus()).
+ */
+function advisoryConsensus(advisoryLevels: Record<string, number>, f9: FormulaV9Config): AdvisoryConsensusResult {
+  const excluded = new Set(f9.frozenExcludedSources);
+  const rebase = new Set(f9.advisoryRebase);
+
+  let numA = 0;
+  let denA = 0;
+  let numSevere = 0;
+  let nAdv = 0;
+
+  for (const [code, rawLevel] of Object.entries(advisoryLevels)) {
+    if (excluded.has(code)) continue;
+    const tier = f9.advisoryTiers[code];
+    if (!tier) continue; // unknown/unfrozen source code — ignore defensively
+    let L = rawLevel;
+    if (rebase.has(code)) L = Math.max(1, L - 1);
+    nAdv += 1;
+    denA += tier;
+    numA += (tier * (4 - L)) / 3;
+    if (L === 4) numSevere += tier;
+  }
+
+  const A = denA > 0 ? numA / denA : null;
+  const severeShare = denA > 0 ? numSevere / denA : 0;
+  const severeEff = severeShare * (nAdv / (nAdv + f9.N_SEV));
+  const rhoA = nAdv / (nAdv + f9.rhoADenom);
+
+  return { A, severeShare, severeEff, nAdv, rhoA };
+}
+
+/** Conservative region-anchored prior mu, nudged by advisory consensus. FROZEN math. */
+function computePrior(region: string, A: number | null, nAdv: number, f9: FormulaV9Config): number {
+  const regionOffset = f9.regionOffset[region] ?? 0;
+  let mu: number;
+  if (nAdv > 0 && A !== null) {
+    mu = f9.muBase + regionOffset + (A - 0.5) * f9.nudgeScale * (nAdv / (nAdv + f9.nudgeDenom));
+  } else {
+    mu = f9.muBase + regionOffset;
+  }
+  return clamp(mu, f9.muClampMin, f9.muClampMax);
+}
+
+interface SubIndicator {
+  value: number | null;
+  subweight: number;
+  rho: number;
+}
+
+interface PillarBuildResult {
+  p: number | null;
+  n: number;
+}
+
+/** p_i = sub-weight-renormalized mean over PRESENT indicators; n_i = sum of rho over present indicators. */
+function buildPillar(subIndicators: SubIndicator[]): PillarBuildResult {
+  const present = subIndicators.filter((s) => s.value !== null && s.value !== undefined && !Number.isNaN(s.value));
+  const wSum = present.reduce((s, x) => s + x.subweight, 0);
+  const p = wSum > 0 ? present.reduce((s, x) => s + x.subweight * x.value!, 0) / wSum : null;
+  const n = present.reduce((s, x) => s + (x.rho ?? 0), 0);
+  return { p, n };
+}
+
+/** p_hat = (n*p + K*mu) / (n + K). n=0 (or p absent) collapses cleanly to mu. */
+function shrinkPillar(p: number | null, n: number, mu: number, K: number): number {
+  const pContribution = p === null ? 0 : n * p;
+  return (pContribution + K * mu) / (n + K);
+}
+
+/** Weighted geometric mean over ALL 5 shrunk pillars, using each pillar's config weight. */
+function geometricAggregate(shrunk: Record<PillarName, number>, pillarDefs: PillarWeight[], floorP: number): number {
+  let acc = 0;
+  for (const pd of pillarDefs) {
+    acc += pd.weight * Math.log(Math.max(floorP, shrunk[pd.name]));
+  }
+  return Math.exp(acc);
+}
+
+/** Acute soft-min power mean over conflict & crime only. */
+function acuteMean(shrunk: Record<PillarName, number>, pillarDefs: PillarWeight[], f9: FormulaV9Config): number {
+  const wc = pillarDefs.find((p) => p.name === 'conflict')?.weight ?? 0;
+  const wcr = pillarDefs.find((p) => p.name === 'crime')?.weight ?? 0;
+  const c = Math.max(f9.floorP, shrunk.conflict ?? f9.floorP);
+  const cr = Math.max(f9.floorP, shrunk.crime ?? f9.floorP);
+  if (wc + wcr === 0) return Math.min(c, cr);
+  const inner = (wc * Math.pow(c, -f9.q) + wcr * Math.pow(cr, -f9.q)) / (wc + wcr);
+  return Math.pow(inner, -1 / f9.q);
+}
+
+interface ComposeResult {
+  composite: number;
+  score: number;
+  scoreDisplay: number;
+}
+
+/**
+ * composite -> 1..10 score. DOCUMENTED DEVIATION (carried from the frozen design,
+ * per SHIP-SPEC / final-constants.json "acute-term down-only cap"): the acute term
+ * is capped at G (acuteDownOnly) so it can only ever DRAG a score DOWN, never
+ * inflate it — R5 severe-risk dominance without symmetric mid-band inflation.
+ */
+function composeScore(
+  shrunk: Record<PillarName, number>,
+  severeEff: number,
+  pillarDefs: PillarWeight[],
+  f9: FormulaV9Config,
+): ComposeResult {
+  const G = geometricAggregate(shrunk, pillarDefs, f9.floorP);
+  const acuteRaw = acuteMean(shrunk, pillarDefs, f9);
+  const acute = f9.acuteDownOnly ? Math.min(acuteRaw, G) : acuteRaw;
+  const severeFactor = clamp(1 - f9.S_MAX * severeEff, 0, 1);
+  const composite = Math.pow(G, 1 - f9.lambda) * Math.pow(acute, f9.lambda) * severeFactor;
+  const score = 1 + 9 * Math.pow(Math.max(0, composite), f9.gamma);
+  const scoreDisplay = Math.round(score);
+  return { composite, score, scoreDisplay };
+}
+
+/** confidence = sum_i w_i * n_i/(n_i+K). NEW v9 output field. */
+function computeConfidence(nByPillar: Record<PillarName, number>, pillarDefs: PillarWeight[], K: number): number {
+  let acc = 0;
+  for (const pd of pillarDefs) {
+    const n = nByPillar[pd.name] ?? 0;
+    acc += pd.weight * (n / (n + K));
+  }
+  return acc;
+}
+
+/**
+ * Freshness weight for one indicator, matching the pre-v9 tiered-scoring lookup
+ * exactly: source-tiers.json decay params keyed by the RawIndicator's own
+ * `.source` (e.g. "advisories_us", "gpi"), age from `dataDate ?? fetchedAt`.
+ * Defaults to 1.0 (fresh) when sourcesConfig, the raw record, its source config,
+ * or a usable date is missing — backward-compatible with sources that only stamp
+ * fetchedAt at the RawSourceData level (gpi/vdem/worldbank/inform/base advisories).
+ */
+function computeIndicatorFreshness(
+  indicatorName: string,
+  rawByName: Map<string, RawIndicator>,
+  sourcesConfig: SourcesConfig | undefined,
+  now: number,
+): number {
+  if (!sourcesConfig) return 1.0;
+  const raw = rawByName.get(indicatorName);
+  if (!raw) return 1.0;
+  const sourceConf = sourcesConfig.sources[raw.source];
+  if (!sourceConf) return 1.0;
+  const dateStr = raw.dataDate ?? raw.fetchedAt;
+  if (!dateStr) return 1.0;
+  const ageMs = now - new Date(dateStr).getTime();
+  return freshnessWeight(ageMs, sourceConf.decayHalfLifeDays, sourceConf.maxAgeDays);
+}
+
 export function computeCountryScore(
   iso3: string,
   allIndicators: RawIndicator[],
@@ -65,157 +288,119 @@ export function computeCountryScore(
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
 ): ScoredCountry {
-  const countryIndicators = allIndicators.filter(
-    (ind) => ind.countryIso3.toUpperCase() === iso3.toUpperCase(),
-  );
+  const upperIso3 = iso3.toUpperCase();
+  const countryIndicators = allIndicators.filter((ind) => ind.countryIso3.toUpperCase() === upperIso3);
 
-  // Normalize all indicators for this country at once
+  // Normalize all indicators for this country at once (normalize.ts is UNCHANGED).
   const normalizedAll = normalizeIndicators(countryIndicators);
+  const normalizedByName = new Map<string, IndicatorScore>();
+  for (const ns of normalizedAll) normalizedByName.set(ns.name, ns);
 
-  // Build a lookup from indicator name -> raw indicator (for freshness data)
+  // Lookup for freshness data (one-value-per-indicator contract).
   const rawByName = new Map<string, RawIndicator>();
-  for (const ind of countryIndicators) {
-    rawByName.set(ind.indicatorName, ind);
-  }
+  for (const ind of countryIndicators) rawByName.set(ind.indicatorName, ind);
 
-  // Build pillar scores
-  const pillars: PillarScore[] = weightsConfig.pillars.map((pillarDef) => {
-    // Find normalized indicators that belong to this pillar
-    const pillarIndicators = normalizedAll.filter((ns) =>
-      pillarDef.indicators.includes(ns.name),
-    );
+  const f9 = weightsConfig.formulaV9 ?? DEFAULT_FORMULA_V9;
+  const now = Date.now();
 
-    const expectedCount = pillarDef.indicators.length;
-    const foundCount = pillarIndicators.length;
-    const dataCompleteness = expectedCount > 0 ? foundCount / expectedCount : 0;
+  // --- Advisory consensus (drives the synthetic "A" conflict indicator + prior nudge) ---
+  const advisoryLevels = extractAdvisoryLevels(advisories);
+  const { A, severeShare, severeEff, nAdv, rhoA } = advisoryConsensus(advisoryLevels, f9);
 
-    let score: number;
+  // --- Conservative prior, anchored by region (getRegion is the single source of truth) ---
+  const region = getRegion(upperIso3);
+  const mu = computePrior(region, A, nAdv, f9);
 
-    if (foundCount === 0) {
-      score = 0.5; // neutral default when no data
-    } else if (!sourcesConfig) {
-      // Legacy path: simple equal-weight averaging (backward compatible)
-      const sum = pillarIndicators.reduce((acc, ind) => acc + ind.normalizedValue, 0);
-      score = sum / foundCount;
-    } else {
-      // Tiered path: baseline+signal blending with freshness and sub-weights
-      score = computeTieredPillarScore(pillarDef, pillarIndicators, rawByName, sourcesConfig);
+  // --- Per-pillar value/precision + Bayesian shrinkage ---
+  const rawByPillar: Partial<Record<PillarName, number | null>> = {};
+  const nByPillar: Partial<Record<PillarName, number>> = {};
+  const shrunkByPillar: Partial<Record<PillarName, number>> = {};
+  const presentIndicatorsByPillar: Partial<Record<PillarName, IndicatorScore[]>> = {};
+  const foundCountByPillar: Partial<Record<PillarName, number>> = {};
+
+  for (const pillarDef of weightsConfig.pillars) {
+    const subIndicators: SubIndicator[] = [];
+    const presentIndicators: IndicatorScore[] = [];
+    let foundCount = 0;
+
+    for (const indName of pillarDef.indicators) {
+      const subweight = pillarDef.indicatorWeights?.[indName] ?? 1.0 / pillarDef.indicators.length;
+
+      if (indName === 'A') {
+        // Synthetic advisory-consensus indicator: precision is per-country (rho_A),
+        // never freshness-discounted (it already reflects the current data date).
+        subIndicators.push({ value: A, subweight, rho: rhoA });
+        if (A !== null) foundCount++;
+        continue;
+      }
+
+      const ns = normalizedByName.get(indName);
+      const rhoBase = pillarDef.indicatorPrecision?.[indName] ?? 1;
+      const fw = computeIndicatorFreshness(indName, rawByName, sourcesConfig, now);
+      const rho = rhoBase * fw;
+
+      if (ns) {
+        subIndicators.push({ value: ns.normalizedValue, subweight, rho });
+        presentIndicators.push(ns);
+        foundCount++;
+      } else {
+        subIndicators.push({ value: null, subweight, rho });
+      }
     }
 
+    const built = buildPillar(subIndicators);
+    rawByPillar[pillarDef.name] = built.p;
+    nByPillar[pillarDef.name] = built.n;
+    presentIndicatorsByPillar[pillarDef.name] = presentIndicators;
+    foundCountByPillar[pillarDef.name] = foundCount;
+  }
+
+  for (const pillarDef of weightsConfig.pillars) {
+    shrunkByPillar[pillarDef.name] = shrinkPillar(
+      rawByPillar[pillarDef.name] ?? null,
+      nByPillar[pillarDef.name] ?? 0,
+      mu,
+      f9.K,
+    );
+  }
+
+  const shrunkComplete = shrunkByPillar as Record<PillarName, number>;
+  const nComplete = nByPillar as Record<PillarName, number>;
+
+  const { composite, score, scoreDisplay } = composeScore(shrunkComplete, severeEff, weightsConfig.pillars, f9);
+  const confidence = computeConfidence(nComplete, weightsConfig.pillars, f9.K);
+  void composite; // retained for potential future diagnostics; not part of ScoredCountry today
+
+  // --- Build PillarScore[] output. score = SHRUNK value (v9's calibrated, confidence-
+  // weighted pillar position). dataCompleteness KEEPS the existing presence-ratio
+  // semantics: found/expected across the pillar's listed indicators (the synthetic
+  // "A" slot counts as found iff advisory data was available, i.e. A !== null). ---
+  const pillars: PillarScore[] = weightsConfig.pillars.map((pillarDef) => {
+    const expectedCount = pillarDef.indicators.length;
+    const foundCount = foundCountByPillar[pillarDef.name] ?? 0;
+    const dataCompleteness = expectedCount > 0 ? foundCount / expectedCount : 0;
+
     return {
-      name: pillarDef.name as PillarName,
-      score,
+      name: pillarDef.name,
+      score: shrunkComplete[pillarDef.name],
       weight: pillarDef.weight,
-      indicators: pillarIndicators,
+      indicators: presentIndicatorsByPillar[pillarDef.name] ?? [],
       dataCompleteness,
     };
   });
 
-  // --- Advisory analysis (used in multiple steps below) ---
-  const advisoryLevels = [
-    advisories.us?.level, advisories.uk?.level,
-    advisories.ca?.level, advisories.au?.level,
-    advisories.de?.level, advisories.nl?.level,
-    advisories.jp?.level, advisories.sk?.level,
-    advisories.fr?.level, advisories.nz?.level,
-    advisories.ie?.level, advisories.fi?.level,
-    advisories.hk?.level, advisories.br?.level,
-    advisories.at?.level, advisories.ph?.level,
-    advisories.be?.level, advisories.dk?.level,
-    advisories.sg?.level, advisories.ro?.level,
-    advisories.rs?.level, advisories.ee?.level,
-    advisories.hr?.level, advisories.ar?.level,
-    advisories.it?.level, advisories.es?.level,
-    advisories.kr?.level, advisories.tw?.level,
-    advisories.cn?.level, advisories.in?.level,
-    advisories.ch?.level, advisories.se?.level,
-    advisories.no?.level, advisories.pl?.level,
-    advisories.cz?.level, advisories.hu?.level,
-    advisories.pt?.level,
-  ].filter((l): l is number | string => l !== undefined)
-   .map((l) => typeof l === 'string' ? parseFloat(l) : l)
-   .filter((l) => !isNaN(l));
-
-  const advisoryAvg = advisoryLevels.length > 0
-    ? advisoryLevels.reduce((a, b) => a + b, 0) / advisoryLevels.length
-    : null;
-
-  // Advisory-derived score (0-1): maps avg advisory 1→0.9, 2→0.6, 3→0.35, 4→0.1
-  const advisoryScore = advisoryAvg !== null
-    ? Math.max(0.05, 1.0 - (advisoryAvg - 1) * 0.3)
-    : null;
-
-  // --- Composite score: weighted geometric mean ---
-  // Exclude pillars whose data coverage is below MIN_PILLAR_COVERAGE so that
-  // sparse pillars don't silently distort the composite. The remaining pillar
-  // weights renormalize naturally through the weighted-log-mean denominator
-  // (totalWeight = sum of eligible weights only).
-  const eligiblePillars = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
-  const compositePillars = eligiblePillars.length > 0 ? eligiblePillars : pillars;
-  if (eligiblePillars.length === 0 && pillars.length > 0) {
-    console.warn(
-      `  ${iso3}: no pillar meets MIN_PILLAR_COVERAGE=${MIN_PILLAR_COVERAGE}; falling back to all pillars for composite score`,
-    );
-  }
-  const totalWeight = compositePillars.reduce((acc, p) => acc + p.weight, 0);
-  const weightedLogSum = compositePillars.reduce((acc, p) => {
-    const clampedScore = Math.max(GEOMETRIC_MEAN_FLOOR, p.score);
-    return acc + p.weight * Math.log(clampedScore);
-  }, 0);
-  let compositeScore = Math.exp(weightedLogSum / totalWeight);
-
-  // --- Fix 2+3: blend with advisory score when data is sparse ---
   const overallCompleteness =
-    pillars.length > 0
-      ? pillars.reduce((acc, p) => acc + p.dataCompleteness, 0) / pillars.length
-      : 0;
-
-  if (overallCompleteness < LOW_DATA_THRESHOLD && advisoryScore !== null) {
-    // The less data we have, the more we trust advisories
-    // At dc=0: 100% advisory. At dc=LOW_DATA_THRESHOLD: 0% advisory.
-    const advisoryBlend = 1 - (overallCompleteness / LOW_DATA_THRESHOLD);
-    compositeScore = compositeScore * (1 - advisoryBlend) + advisoryScore * advisoryBlend;
-  }
-
-  // --- Critical floor: if any pillar with sufficient data is below threshold ---
-  // Use the same MIN_PILLAR_COVERAGE gate as the composite — sub-30%-coverage
-  // pillars must not drive the floor.
-  const pillarsWithData = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
-  if (pillarsWithData.length > 0) {
-    const minPillarScore = Math.min(...pillarsWithData.map((p) => p.score));
-    if (minPillarScore < CRITICAL_PILLAR_THRESHOLD) {
-      const criticalCap = minPillarScore * CRITICAL_FLOOR_MULTIPLIER;
-      compositeScore = Math.min(compositeScore, criticalCap);
-    }
-  }
-
-  // Map to 1-10 scale
-  let score = compositeScore * 9 + 1;
-
-  // --- Fix 1+4: advisory hard cap requires consensus (2+ sources) and varies by min pillar ---
-  const level4Count = advisoryLevels.filter((l) => l >= ADVISORY_HARD_CAP_LEVEL).length;
-  const majorityThreshold = Math.ceil(advisoryLevels.length / 2 + 0.1); // >50%: 2/3, 3/4, 2/2
-  if (level4Count >= majorityThreshold && advisoryLevels.length > 0) {
-    // Variable cap: worse countries get lower cap based on their min pillar score
-    // Base cap = 2, but if min pillar is very low, cap is lower (down to 1)
-    const minPillar = pillarsWithData.length > 0
-      ? Math.min(...pillarsWithData.map((p) => p.score))
-      : 0.1;
-    const variableCap = ADVISORY_HARD_CAP_BASE + (minPillar - 0.1) * 2; // range ~1.0 to ~2.8
-    const hardCap = Math.max(1, Math.min(ADVISORY_HARD_CAP_BASE + 1, variableCap));
-    score = Math.min(score, hardCap);
-  }
-
-  const scoreDisplay = Math.round(score);
+    pillars.length > 0 ? pillars.reduce((acc, p) => acc + p.dataCompleteness, 0) / pillars.length : 0;
 
   return {
-    iso3: iso3.toUpperCase(),
+    iso3: upperIso3,
     name: countryEntry.name,
     score,
     scoreDisplay,
     pillars,
     advisories,
     dataCompleteness: Math.round(overallCompleteness * 1000) / 1000,
+    confidence,
     lastUpdated: new Date().toISOString(),
     sources,
   };
@@ -283,99 +468,6 @@ export const INDICATOR_SOURCE_MAP: Record<string, string> = {
   reliefweb_active_disasters: 'reliefweb',
   gdacs_disaster_alerts: 'gdacs',
 };
-
-function indicatorToSource(indicatorName: string): string | undefined {
-  return INDICATOR_SOURCE_MAP[indicatorName];
-}
-
-/**
- * Compute a tiered pillar score using baseline+signal blending.
- *
- * For each indicator:
- * 1. Determine tier (baseline/signal) from sourcesConfig
- * 2. Compute freshness weight from data age
- * 3. Apply per-indicator sub-weight (from indicatorWeights or equal fallback)
- * 4. Weighted average within each tier
- * 5. Blend tiers based on signal completeness
- */
-function computeTieredPillarScore(
-  pillarDef: PillarWeight,
-  pillarIndicators: IndicatorScore[],
-  rawByName: Map<string, RawIndicator>,
-  sourcesConfig: SourcesConfig,
-): number {
-  const now = Date.now();
-
-  // Count expected signal indicators for this pillar based on config, not available data.
-  // This prevents score spikes when a signal source fetch fails temporarily.
-  const expectedSignalCount = pillarDef.indicators.filter((indName) => {
-    const sourceName = indicatorToSource(indName);
-    if (!sourceName) return false;
-    const sourceConf = sourcesConfig.sources[sourceName];
-    return sourceConf?.tier === 'signal';
-  }).length;
-
-  // Separate into baseline and signal with weighted values
-  let baselineWeightedSum = 0;
-  let baselineWeightTotal = 0;
-  let signalWeightedSum = 0;
-  let signalWeightTotal = 0;
-  let signalFoundCount = 0;
-
-  for (const ind of pillarIndicators) {
-    const raw = rawByName.get(ind.name);
-    const sourceName = raw?.source ?? ind.source;
-
-    // Determine tier (default to baseline for unknown sources)
-    const sourceConf = sourcesConfig.sources[sourceName];
-    const tier = sourceConf?.tier ?? 'baseline';
-
-    // Compute freshness weight
-    let fw = 1.0; // default: no timestamp = treat as fresh (backward compat)
-    if (sourceConf && raw) {
-      const dateStr = raw.dataDate ?? raw.fetchedAt;
-      if (dateStr) {
-        const ageMs = now - new Date(dateStr).getTime();
-        fw = freshnessWeight(ageMs, sourceConf.decayHalfLifeDays, sourceConf.maxAgeDays);
-      }
-    }
-
-    // Per-indicator sub-weight (fall back to equal weights)
-    const subWeight = pillarDef.indicatorWeights?.[ind.name]
-      ?? (1.0 / pillarDef.indicators.length);
-
-    const effectiveWeight = subWeight * fw;
-
-    if (tier === 'signal') {
-      signalWeightedSum += ind.normalizedValue * effectiveWeight;
-      signalWeightTotal += effectiveWeight;
-      signalFoundCount++;
-    } else {
-      baselineWeightedSum += ind.normalizedValue * effectiveWeight;
-      baselineWeightTotal += effectiveWeight;
-    }
-  }
-
-  // Compute tier scores (weighted averages)
-  const baselineScore = baselineWeightTotal > 0
-    ? baselineWeightedSum / baselineWeightTotal
-    : 0.5; // neutral if no baseline data
-
-  const signalScore = signalWeightTotal > 0
-    ? signalWeightedSum / signalWeightTotal
-    : 0.5; // neutral if no signal data (won't matter due to completeness=0)
-
-  // Signal completeness: how many of the expected signal indicators are present
-  const signalCompleteness = expectedSignalCount > 0
-    ? Math.min(1, signalFoundCount / expectedSignalCount)
-    : 0;
-
-  // Effective signal influence: capped by maxSignalInfluence, scaled by completeness
-  const effectiveSignalInfluence = sourcesConfig.maxSignalInfluence * signalCompleteness;
-
-  // Blend: when no signal data, effectiveSignalInfluence=0 => pure baseline
-  return baselineScore * (1 - effectiveSignalInfluence) + signalScore * effectiveSignalInfluence;
-}
 
 /** Metadata for known data sources used in scoring. */
 export const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
@@ -454,22 +546,22 @@ function buildSourcesForCountry(
  * COUNTRIES list plus any additional iso3 codes found in the data.
  * Results are sorted by iso3.
  *
- * Automatically loads source-tiers.json for tiered scoring.
- * If the config file is missing, falls back to legacy equal-averaging.
+ * Automatically loads source-tiers.json for freshness decay. If the config file
+ * is missing, freshness weighting defaults to 1.0 (fresh) everywhere.
  */
 export function computeAllScores(
   rawDataBySource: Map<string, RawSourceData>,
   weightsConfig: WeightsConfig,
 ): ScoredCountry[] {
-  // Load sources tier config (optional -- graceful fallback to legacy mode)
+  // Load sources tier config (optional -- graceful fallback: no freshness decay)
   const sourceTiersPath = join(process.cwd(), 'src/pipeline/config/source-tiers.json');
   const sourcesConfig = readJson<SourcesConfig>(sourceTiersPath) ?? undefined;
 
   if (sourcesConfig) {
-    console.log('  Tiered scoring: loaded source-tiers.json (maxSignalInfluence=%d%%)',
-      Math.round(sourcesConfig.maxSignalInfluence * 100));
+    console.log('  Freshness decay: loaded source-tiers.json (%d sources configured)',
+      Object.keys(sourcesConfig.sources).length);
   } else {
-    console.log('  Legacy scoring: source-tiers.json not found, using equal-weight averaging');
+    console.log('  source-tiers.json not found -- freshness weighting defaults to 1.0 everywhere');
   }
 
   // Merge all indicators
@@ -515,7 +607,7 @@ export function computeAllScores(
       advisoryInfoMap = loaded;
       console.log(`  Loaded advisory info for ${Object.keys(advisoryInfoMap).length} countries`);
     } else {
-      console.log(`  No advisories-info.json for ${dataDate} — advisory hard caps will not apply`);
+      console.log(`  No advisories-info.json for ${dataDate} — advisory consensus will not include base tier-1 sources`);
     }
 
     // Also load tier-1 advisory info
@@ -584,26 +676,6 @@ export function computeAllScores(
     const countryAdvisories = advisoryInfoMap[iso3] || {};
     const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, countryAdvisories, sources, sourcesConfig);
     results.push(scored);
-  }
-
-  // Log tier contribution summary
-  if (sourcesConfig) {
-    let baselineContribCount = 0;
-    let signalContribCount = 0;
-    for (const ind of allIndicators) {
-      const sourceConf = sourcesConfig.sources[ind.source];
-      if (sourceConf?.tier === 'signal') {
-        signalContribCount++;
-      } else {
-        baselineContribCount++;
-      }
-    }
-    const total = baselineContribCount + signalContribCount;
-    if (total > 0) {
-      const baselinePct = Math.round((baselineContribCount / total) * 100);
-      const signalPct = Math.round((signalContribCount / total) * 100);
-      console.log(`  Baseline contribution: ${baselinePct}%, Signal contribution: ${signalPct}%`);
-    }
   }
 
   // Sort by iso3
