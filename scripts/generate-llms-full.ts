@@ -100,7 +100,7 @@ function getRegion(iso3: string): string {
 // ── helpers ──────────────────────────────────────────────────────────────────
 function riskLabel(score: number): string {
   if (score >= 7) return "Low";
-  if (score >= 4) return "Moderate";
+  if (score >= 5) return "Moderate";
   return "High";
 }
 
@@ -224,7 +224,7 @@ function main() {
 
     const verdict = c.score >= 7
       ? "is generally considered safe to travel"
-      : c.score >= 4
+      : c.score >= 5
         ? "is moderately safe to travel — check current government advisories first"
         : "carries significant travel-safety risks";
 

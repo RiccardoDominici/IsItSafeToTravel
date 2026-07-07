@@ -27,7 +27,7 @@ const SCORES_PATH = path.join(process.cwd(), 'data', 'scores', 'latest.json');
 
 function scoreColor(score: number): string {
   if (score >= 7) return '#22c55e';
-  if (score >= 4) return '#f59e0b';
+  if (score >= 5) return '#f59e0b';
   return '#ef4444';
 }
 

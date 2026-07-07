@@ -74,7 +74,8 @@ const labels: Record<Lang, AuthorityLabels> = {
 const L = labels[lang];
 
 // Band-matching order: safest-first for high scorers, dangerous-first otherwise.
-const safestFirst = country.score >= 6;
+// Aligned to the v9 "positive" band (>=7) under the new compressed mean (6.75).
+const safestFirst = country.score >= 7;
 const rankLinks = safestFirst
   ? [
       { href: safestUrl, label: L.safest },

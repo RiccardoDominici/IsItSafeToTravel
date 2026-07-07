@@ -51,7 +51,7 @@ const verdicts: Record<string, { emoji: string; text: Partial<Record<Lang, strin
 };
 
 const score = country.score;
-const verdictKey = score >= 8 ? 'excellent' : score >= 6 ? 'good' : score >= 4.5 ? 'caution' : score >= 3 ? 'risky' : 'danger';
+const verdictKey = score >= 8 ? 'excellent' : score >= 7 ? 'good' : score >= 6 ? 'caution' : score >= 5 ? 'risky' : 'danger';
 const verdict = verdicts[verdictKey];
 
 const formattedDate = new Intl.DateTimeFormat(lang, {

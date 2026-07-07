@@ -21,7 +21,7 @@ export const GET: APIRoute = ({ props }) => {
   if (score >= 7) {
     bgColor = '#065f46'; // emerald-800
     accentColor = '#34d399'; // emerald-400
-  } else if (score >= 4) {
+  } else if (score >= 5) {
     bgColor = '#92400e'; // amber-800
     accentColor = '#fbbf24'; // amber-400
   } else {

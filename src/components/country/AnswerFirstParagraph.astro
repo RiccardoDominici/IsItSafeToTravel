@@ -52,7 +52,7 @@ const riskLevels: Record<Lang, [string, string, string]> = {
 
 const score = country.score;
 const [low, moderate, high] = riskLevels[lang];
-const riskLevel = score >= 7 ? low : score >= 4 ? moderate : high;
+const riskLevel = score >= 7 ? low : score >= 5 ? moderate : high;
 
 // Only pillars with sufficient data coverage are eligible to be named best/worst,
 // so a zero-data pillar (e.g. Monaco's crime/governance/environment) never surfaces.
