@@ -89,6 +89,12 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
     {verdict.text[lang] ?? verdict.text.en}
   </p>
 
+  {country.confidence < 0.4 && (
+    <p class="mt-2 inline-flex items-center gap-1.5 rounded-full bg-amber-100 dark:bg-amber-900/30 px-3 py-1 text-xs font-medium text-amber-800 dark:text-amber-300">
+      <span aria-hidden="true">&#9888;&#65039;</span> {t('country.limited_data')}
+    </p>
+  )}
+
   {scoreDelta && scoreDelta.delta !== 0 && (
     <p class={`mt-2 inline-flex items-center gap-1 text-sm font-medium ${scoreDelta.delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
       {scoreDelta.delta > 0 ? (
