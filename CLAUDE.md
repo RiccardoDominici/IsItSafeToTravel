@@ -49,11 +49,19 @@ AI answer engines.
   `src/lib/hub-data.ts`; the same threshold is duplicated in `scripts/generate-llms-full.ts`
   (`MIN_RANKING_SOURCES`). Keep them in sync, or sparse micro-territories pollute the lists.
 
-## Scoring (`src/pipeline/scoring/engine.ts`)
+## Scoring (`src/pipeline/scoring/engine.ts`) — Formula v9
 
-Weighted **geometric** mean of 5 pillars (conflict 30% / crime 25% / health 20% / governance
-15% / environment 10%), with a hard cap (Level-4 "Do Not Travel" advisory → score ≤ 2) and a
-critical floor (any well-measured pillar < 0.25 caps the score). Scores are 1–10.
+Uncertainty-weighted (Bayesian shrinkage) scoring. Per pillar: precision-weighted value shrunk
+toward a conservative advisory/region-informed prior (`p̂ = (n·p + K·μ)/(n + K)`, K=1.0) —
+missing data collapses to the prior, never inflates. Composite = weighted **geometric** mean of
+5 pillars (conflict 30% / crime 25% / health 20% / governance 15% / environment 10%) blended
+with an acute soft-min term over conflict+crime (λ=0.25, down-only), times a count-damped
+severe-advisory modifier (`1 − 0.25·severeShare·nAdv/(nAdv+6)`); `score = 1 + 9·composite^0.79`.
+Crime pillar = GPI Safety & Security (NOT rule of law — that moved to governance). No hard caps,
+floors, or eligibility gates (all removed in v9). Scores ≈ [3.7, 8.9]; bands: <5 danger / 5–6
+high caution / 6–7 moderate / 7–8 good / ≥8 excellent. Constants frozen in `weights.json`
+(`formulaV9`); parity fixture: `scripts/verify-formula-v9-parity.ts`. New `confidence` field
+per country.
 
 ## Known constraints
 
