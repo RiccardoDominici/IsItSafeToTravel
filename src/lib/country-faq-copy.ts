@@ -21,7 +21,7 @@ export interface CountryFaqCopy {
   q1: string;
   q2: string;
   q3: string;
-  /** A1 openers by overall risk band (score >=7 / >=4 / below). */
+  /** A1 openers by overall risk band (score >=7 / >=5 / below). */
   a1Verdict: { low: string; moderate: string; high: string };
   a1Formula: string;
   /** A1 drivers: normal (names drag pillars + {meaning}), or allStrong when even the weakest pillar is >=7/10. */
@@ -37,7 +37,7 @@ export interface CountryFaqCopy {
   a3Intro: string;
   /** A3 consensus sentence by modal advisory band (1 / 2 / 3 / 4). */
   a3Consensus: { normal: string; caution: string; reconsider: string; avoid: string };
-  /** Appended only when a strict MAJORITY of advisories are Level 4 (score-cap explanation). */
+  /** Appended only when a strict MAJORITY of advisories are Level 4 (v9: severe-advisory down-weighting, not a hard cap). */
   a3Cap: string;
   /** Zero-advisory sentence for micro-territories with no advisory on record. */
   a3None: string;
@@ -254,11 +254,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "What is the biggest risk when traveling to {name}?",
     "q3": "What do government travel advisories say about {name}?",
     "a1Verdict": {
-      "low": "Yes — {name} is considered a safe destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}.",
+      "low": "Yes, generally — {name} is considered a safe destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}.",
       "moderate": "Yes, but with caution — {name} is moderately safe: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}. Most trips are trouble-free, but some risks deserve attention.",
       "high": "No — {name} is currently a high-risk destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}, and travel requires serious caution."
     },
-    "a1Formula": "The score is a weighted geometric mean of five pillars — conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%) — so a weak pillar drags the overall score down more than a strong one lifts it.",
+    "a1Formula": "The score is an uncertainty-weighted (Bayesian shrinkage) geometric mean of five pillars — conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%) — combined with a calibrated consensus of government travel advisories, so a weak pillar drags the overall score down more than a strong one lifts it, and thin or stale data pulls a country's score toward a cautious regional baseline rather than guessing.",
     "a1Drivers": {
       "normal": "{strongest} ({strongestScore}/10) is {name}'s strongest pillar, while the score is pulled down by {second} ({secondScore}/10) and above all by {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "All five pillars score well for {name}: even the weakest, {weakest} ({weakestScore}/10), sits in the low-risk band, with {strongest} ({strongestScore}/10) leading."
@@ -287,7 +287,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "The prevailing guidance is to reconsider travel to {name}: the most severe warnings — {govLevel} — have been issued by {governments}.",
       "avoid": "Most governments now advise against all travel to {name}: the highest-level warning — {govLevel} — has been issued by {governments}, among others."
     },
-    "a3Cap": "These warnings are severe enough to trigger our index's safety cap: when a majority of governments issue a do-not-travel advisory, {name}'s overall score is held at or below 2 out of 10, regardless of its other pillars.",
+    "a3Cap": "These warnings are severe enough to weigh heavily on our index: when a majority of governments issue a do-not-travel advisory, {name}'s overall score is pulled sharply toward the low end, on top of whatever its other pillars show.",
     "a3None": "As of {monthYear}, no government in our dataset publishes a travel advisory for {name} — typically the case for very small or remote territories. Base your decision on the pillar scores above and check your own government's latest guidance before you travel.",
     "advisoryCountNoun": {
       "one": "one government travel advisory",
@@ -299,11 +299,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "Qual e il rischio maggiore viaggiando in {name}?",
     "q3": "Cosa dicono gli avvisi di viaggio governativi su {name}?",
     "a1Verdict": {
-      "low": "Sì — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}.",
+      "low": "Sì, in genere — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}.",
       "moderate": "Sì, ma con cautela — {name} è una destinazione moderatamente sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. La maggior parte dei viaggi si svolge senza problemi, ma alcuni rischi meritano attenzione.",
       "high": "No — {name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
     },
-    "a1Formula": "Il punteggio è una media geometrica ponderata di cinque pilastri — conflitto (30%), criminalità (25%), salute (20%), governance (15%) e ambiente (10%) — per cui un pilastro debole trascina verso il basso il punteggio complessivo più di quanto uno forte riesca a sollevarlo.",
+    "a1Formula": "Il punteggio è una media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di cinque pilastri — conflitto (30%), criminalità (25%), salute (20%), governance (15%) e ambiente (10%) — combinata con un consenso calibrato degli avvisi di viaggio governativi, per cui un pilastro debole trascina verso il basso il punteggio complessivo più di quanto uno forte riesca a sollevarlo, e i dati scarsi o datati avvicinano il punteggio di un paese a un valore di riferimento regionale prudente invece di essere stimati a caso.",
     "a1Drivers": {
       "normal": "Il pilastro più solido di {name} è {strongest} ({strongestScore}/10), mentre a pesare sul punteggio sono {second} ({secondScore}/10) e, più di tutto, {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Tutti e cinque i pilastri ottengono buoni punteggi per {name}: anche il più debole, {weakest} ({weakestScore}/10), rientra nella fascia di rischio basso, con {strongest} ({strongestScore}/10) in testa."
@@ -332,7 +332,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "L'indicazione prevalente è di riconsiderare il viaggio in {name}: gli avvisi più severi — {govLevel} — sono stati emessi da {governments}.",
       "avoid": "La maggior parte dei governi sconsiglia ormai del tutto i viaggi in {name}: un avviso di livello massimo — {govLevel} — è stato emesso da {governments}, tra gli altri."
     },
-    "a3Cap": "Questi avvisi sono abbastanza gravi da attivare il limite di sicurezza del nostro indice: quando la maggioranza dei governi emette un avviso di non viaggiare, il punteggio complessivo di {name} viene mantenuto pari o inferiore a 2 su 10, indipendentemente dagli altri pilastri.",
+    "a3Cap": "Questi avvisi sono abbastanza gravi da pesare fortemente sul nostro indice: quando la maggioranza dei governi emette un avviso di non viaggiare, il punteggio complessivo di {name} viene spinto decisamente verso il basso, oltre a quanto già indicato dagli altri pilastri.",
     "a3None": "A {monthYear}, nessun governo presente nel nostro set di dati pubblica un avviso di viaggio per {name}: è il caso tipico di territori molto piccoli o remoti. Basa la tua decisione sui punteggi dei pilastri qui sopra e verifica le indicazioni più recenti del tuo governo prima di partire.",
     "advisoryCountNoun": {
       "one": "un avviso di viaggio governativo",
@@ -344,11 +344,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "Cual es el mayor riesgo al viajar a {name}?",
     "q3": "¿Qué dicen los avisos de viaje gubernamentales sobre {name}?",
     "a1Verdict": {
-      "low": "Sí — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}.",
+      "low": "Sí, en general — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}.",
       "moderate": "Sí, pero con precaución — {name} es un destino moderadamente seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. La mayoría de los viajes transcurren sin incidentes, pero algunos riesgos merecen atención.",
       "high": "No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
     },
-    "a1Formula": "La puntuación es una media geométrica ponderada de cinco pilares (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), de modo que un pilar débil lastra la puntuación global más de lo que un pilar fuerte la eleva.",
+    "a1Formula": "La puntuación es una media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de cinco pilares (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), combinada con un consenso calibrado de los avisos de viaje gubernamentales, de modo que un pilar débil lastra la puntuación global más de lo que un pilar fuerte la eleva, y los datos escasos o desactualizados acercan la puntuación de un país a un valor de referencia regional prudente en lugar de adivinar.",
     "a1Drivers": {
       "normal": "El pilar más fuerte de {name} es {strongest} ({strongestScore}/10), mientras que la puntuación se ve lastrada por {second} ({secondScore}/10) y, sobre todo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Los cinco pilares de {name} obtienen buenas puntuaciones: incluso el más débil, {weakest} ({weakestScore}/10), se sitúa en la franja de riesgo bajo, con {strongest} ({strongestScore}/10) a la cabeza."
@@ -377,7 +377,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "La recomendación predominante es reconsiderar el viaje a {name}: las advertencias más severas — {govLevel} — han sido emitidas por {governments}.",
       "avoid": "La mayoría de los gobiernos desaconsejan ya todo viaje a {name}: la advertencia del nivel más alto — {govLevel} — ha sido emitida por {governments}, entre otros."
     },
-    "a3Cap": "Estas advertencias son lo bastante graves como para activar el límite de seguridad de nuestro índice: cuando la mayoría de los gobiernos emiten un aviso de no viajar, la puntuación global de {name} se mantiene en 2 sobre 10 o por debajo, independientemente de los demás pilares.",
+    "a3Cap": "Estas advertencias son lo bastante graves como para pesar mucho en nuestro índice: cuando la mayoría de los gobiernos emiten un aviso de no viajar, la puntuación global de {name} se empuja marcadamente hacia el extremo bajo, además de lo que ya indiquen sus otros pilares.",
     "a3None": "A fecha de {monthYear}, ningún gobierno de nuestro conjunto de datos publica un aviso de viaje para {name}, algo habitual en territorios muy pequeños o remotos. Basa tu decisión en las puntuaciones de los pilares anteriores y consulta las indicaciones más recientes de tu propio gobierno antes de viajar.",
     "advisoryCountNoun": {
       "one": "un aviso de viaje gubernamental",
@@ -389,11 +389,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "{name} : quel est le plus grand risque pour les voyageurs ?",
     "q3": "Que disent les avis aux voyageurs officiels concernant {name} ?",
     "a1Verdict": {
-      "low": "Oui — {name} est une destination considérée comme sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ».",
+      "low": "Oui, en général — {name} est une destination considérée comme sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ».",
       "moderate": "Oui, mais avec prudence — {name} est une destination modérément sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ». La plupart des voyages se déroulent sans encombre, mais certains risques méritent une attention particulière.",
       "high": "Non — {name} est actuellement une destination à haut risque : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} », et tout voyage exige une grande prudence."
     },
-    "a1Formula": "Le score est une moyenne géométrique pondérée de cinq piliers — conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %) — de sorte qu'un pilier faible tire le score global vers le bas plus qu'un pilier fort ne le relève.",
+    "a1Formula": "Le score est une moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de cinq piliers — conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %) — combinée à un consensus calibré des avis de voyage gouvernementaux, de sorte qu'un pilier faible tire le score global vers le bas plus qu'un pilier fort ne le relève, et que des données rares ou obsolètes rapprochent le score d'un pays d'une référence régionale prudente plutôt que d'être devinées.",
     "a1Drivers": {
       "normal": "Le pilier le plus solide de {name} est {strongest} ({strongestScore}/10), tandis que le score est tiré vers le bas par {second} ({secondScore}/10) et surtout par {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "{name} affiche de bons scores sur les cinq piliers : même le plus faible, le pilier {weakest} ({weakestScore}/10), reste dans la zone de faible risque, le pilier {strongest} ({strongestScore}/10) arrivant en tête."
@@ -422,7 +422,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "La consigne dominante est de reconsidérer tout voyage en {name} : les avertissements les plus sévères — {govLevel} — ont été émis par {governments}.",
       "avoid": "La plupart des gouvernements déconseillent désormais tout voyage en {name} : l'avertissement du niveau le plus élevé — {govLevel} — a été émis par {governments}, entre autres."
     },
-    "a3Cap": "Ces avertissements sont assez graves pour déclencher le plafond de sécurité de notre indice : lorsqu'une majorité de gouvernements émet un avis « ne pas voyager », le score global de {name} est maintenu à 2 sur 10 ou en dessous, quels que soient les autres piliers.",
+    "a3Cap": "Ces avertissements sont assez graves pour peser fortement sur notre indice : lorsqu'une majorité de gouvernements émet un avis « ne pas voyager », le score global de {name} est fortement tiré vers le bas, en plus de ce qu'indiquent déjà ses autres piliers.",
     "a3None": "En {monthYear}, aucun gouvernement de notre jeu de données ne publie d'avis aux voyageurs pour {name}, ce qui est courant pour les territoires très petits ou reculés. Fondez votre décision sur les scores des piliers ci-dessus et vérifiez les dernières recommandations de votre propre gouvernement avant de partir.",
     "advisoryCountNoun": {
       "one": "un avis aux voyageurs officiel",
@@ -434,11 +434,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "Qual e o maior risco ao viajar para {name}?",
     "q3": "O que dizem os avisos de viagem governamentais sobre {name}?",
     "a1Verdict": {
-      "low": "Sim — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}.",
+      "low": "Sim, em geral — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}.",
       "moderate": "Sim, mas com cautela — {name} é um destino moderadamente seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. A maioria das viagens transcorre sem problemas, mas alguns riscos merecem atenção.",
       "high": "Não — {name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
     },
-    "a1Formula": "A pontuação é uma média geométrica ponderada de cinco pilares — conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%) —, de modo que um pilar fraco puxa a pontuação geral para baixo mais do que um pilar forte a eleva.",
+    "a1Formula": "A pontuação é uma média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de cinco pilares — conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%) —, combinada com um consenso calibrado dos avisos de viagem governamentais, de modo que um pilar fraco puxa a pontuação geral para baixo mais do que um pilar forte a eleva, e dados escassos ou desatualizados aproximam a pontuação de um país de um valor de referência regional prudente em vez de serem estimados ao acaso.",
     "a1Drivers": {
       "normal": "O pilar mais forte de {name} é {strongest} ({strongestScore}/10), enquanto a pontuação é puxada para baixo por {second} ({secondScore}/10) e, sobretudo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Os cinco pilares de {name} apresentam boas pontuações: até o mais fraco, {weakest} ({weakestScore}/10), fica na faixa de risco baixo, com {strongest} ({strongestScore}/10) na liderança."
@@ -467,7 +467,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "A orientação predominante é reconsiderar a viagem a {name}: os alertas mais severos — {govLevel} — foram emitidos por {governments}.",
       "avoid": "A maioria dos governos já desaconselha qualquer viagem a {name}: o alerta de nível mais alto — {govLevel} — foi emitido por {governments}, entre outros."
     },
-    "a3Cap": "Esses alertas são graves o suficiente para acionar o teto de segurança do nosso índice: quando a maioria dos governos emite um aviso de não viajar, a pontuação geral de {name} é mantida em 2 de 10 ou abaixo, independentemente dos demais pilares.",
+    "a3Cap": "Esses alertas são graves o suficiente para pesar fortemente em nosso índice: quando a maioria dos governos emite um aviso de não viajar, a pontuação geral de {name} é fortemente puxada para o lado mais baixo, além do que já indicam seus outros pilares.",
     "a3None": "Em {monthYear}, nenhum governo do nosso conjunto de dados publica um aviso de viagem para {name}, o que é comum em territórios muito pequenos ou remotos. Baseie sua decisão nas pontuações dos pilares acima e verifique as orientações mais recentes do seu próprio governo antes de viajar.",
     "advisoryCountNoun": {
       "one": "um aviso de viagem governamental",
@@ -479,11 +479,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "前往 {name} 旅行的最大风险是什么？",
     "q3": "各国政府的旅行警告对 {name} 有何评价？",
     "a1Verdict": {
-      "low": "是的——{name}被认为是一个安全的旅行目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。",
+      "low": "总体而言是的——{name}被认为是一个安全的旅行目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。",
       "moderate": "可以，但需保持警惕——{name}的安全状况处于中等水平：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。大多数行程都能顺利完成，但部分风险值得留意。",
       "high": "不安全——{name}目前属于高风险目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}，前往旅行需要格外谨慎。"
     },
-    "a1Formula": "该评分是五大支柱——冲突（30%）、犯罪（25%）、健康（20%）、治理（15%）和环境（10%）——的加权几何平均数，因此薄弱支柱对总分的拉低作用大于强势支柱的提升作用。",
+    "a1Formula": "该评分是五大支柱——冲突（30%）、犯罪（25%）、健康（20%）、治理（15%）和环境（10%）——经不确定性加权（贝叶斯收缩）的几何平均数，并结合经校准的政府旅行警告共识，因此薄弱支柱对总分的拉低作用大于强势支柱的提升作用，数据稀疏或陈旧的国家，其评分会向审慎的区域基准靠拢，而不是被凭空估计。",
     "a1Drivers": {
       "normal": "{strongest}（{strongestScore}/10）是{name}表现最强的支柱，而拉低总分的主要是{second}（{secondScore}/10），尤其是{weakest}（{weakestScore}/10）。{meaning}",
       "allStrong": "{name}的五大支柱均表现良好：即使是得分最低的{weakest}（{weakestScore}/10）也处于低风险区间，其中以{strongest}（{strongestScore}/10）表现最为突出。"
@@ -512,7 +512,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "主流建议是重新考虑前往 {name} 的行程：最严厉的警告——{govLevel}——由{governments}发布。",
       "avoid": "多数政府目前建议完全避免前往 {name}：最高级别的警告——{govLevel}——已由{governments}等国发布。"
     },
-    "a3Cap": "这些警告严重到足以触发我们指数的安全上限：当多数政府发布切勿前往的警告时，{name}的总分将被限制在 10 分中的 2 分或以下，无论其他支柱表现如何。",
+    "a3Cap": "这些警告严重到足以在我们的指数中占据很大权重：当多数政府发布切勿前往的警告时，{name}的总分会被明显拉低，这还是在其他支柱已有表现的基础之上。",
     "a3None": "截至{monthYear}，我们的数据集中没有任何政府发布针对 {name} 的旅行警告——这在面积很小或偏远的地区很常见。请参考上方各支柱的得分，并在出行前查阅你所在国家政府的最新指引。",
     "advisoryCountNoun": {
       "one": "1 条政府旅行警告",
@@ -524,11 +524,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q2": "Was ist das größte Risiko bei einer Reise nach {name}?",
     "q3": "Was sagen staatliche Reisehinweise über {name}?",
     "a1Verdict": {
-      "low": "Ja — {name} gilt als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
+      "low": "Ja, im Allgemeinen — {name} gilt als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
       "moderate": "Ja, aber mit Vorsicht — {name} ist moderat sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen problemlos, einige Risiken verdienen jedoch Aufmerksamkeit.",
       "high": "Nein — {name} ist derzeit ein Hochrisiko-Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
     },
-    "a1Formula": "Der Wert ist ein gewichtetes geometrisches Mittel aus fünf Säulen — Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %) —, sodass eine schwache Säule den Gesamtwert stärker nach unten zieht, als eine starke ihn anhebt.",
+    "a1Formula": "Der Wert ist ein unsicherheitsgewichtetes (Bayesian Shrinkage) geometrisches Mittel aus fünf Säulen — Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %) —, kombiniert mit einem kalibrierten Konsens staatlicher Reisehinweise, sodass eine schwache Säule den Gesamtwert stärker nach unten zieht, als eine starke ihn anhebt, und spärliche oder veraltete Daten den Wert eines Landes zu einem vorsichtigen regionalen Richtwert hin ziehen, statt geschätzt zu werden.",
     "a1Drivers": {
       "normal": "Die stärkste Säule von {name} ist {strongest} ({strongestScore}/10), während {second} ({secondScore}/10) und vor allem {weakest} ({weakestScore}/10) den Wert nach unten ziehen. {meaning}",
       "allStrong": "{name} schneidet in allen fünf Säulen gut ab: Selbst die schwächste Säule, {weakest} ({weakestScore}/10), liegt im risikoarmen Bereich, während {strongest} ({strongestScore}/10) an der Spitze steht."
@@ -557,7 +557,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "reconsider": "Die vorherrschende Empfehlung lautet, eine Reise nach {name} zu überdenken: Die schwersten Warnungen — {govLevel} — wurden von {governments} ausgesprochen.",
       "avoid": "Die meisten Regierungen raten inzwischen von jeder Reise nach {name} ab: Die Warnung der höchsten Stufe — {govLevel} — wurde unter anderem von {governments} ausgesprochen."
     },
-    "a3Cap": "Diese Warnungen sind schwerwiegend genug, um die Sicherheitsobergrenze unseres Index auszulösen: Wenn eine Mehrheit der Regierungen eine Nicht-reisen-Warnung ausspricht, wird der Gesamtwert von {name} unabhängig von den übrigen Säulen auf höchstens 2 von 10 begrenzt.",
+    "a3Cap": "Diese Warnungen sind schwerwiegend genug, um in unserem Index stark ins Gewicht zu fallen: Wenn eine Mehrheit der Regierungen eine Nicht-reisen-Warnung ausspricht, wird der Gesamtwert von {name} deutlich nach unten gezogen — zusätzlich zu dem, was die übrigen Säulen bereits zeigen.",
     "a3None": "Stand {monthYear} veröffentlicht keine Regierung in unserem Datensatz einen Reisehinweis für {name} — typisch für sehr kleine oder abgelegene Gebiete. Stützen Sie Ihre Entscheidung auf die Säulenwerte oben und prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung.",
     "advisoryCountNoun": {
       "one": "einen staatlichen Reisehinweis",

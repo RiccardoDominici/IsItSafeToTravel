@@ -156,7 +156,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'What does a Level 4 "Do Not Travel" advisory mean?',
         answer:
-          "Level 4 is the highest warning issued by government travel advisories such as the US State Department's, indicating life-threatening risks. In our methodology, a Level 4 advisory caps a country's overall score at 2 out of 10, regardless of the other pillars.",
+          "Level 4 is the highest warning issued by government travel advisories such as the US State Department's, indicating life-threatening risks. In our methodology, a Level 4 advisory weighs heavily toward a low overall score, on top of whatever the other pillars show — there is no fixed cap.",
       },
       {
         question: 'Can you still travel to the most dangerous countries?',
@@ -173,7 +173,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Cosa significa un avviso di Livello 4 "Do Not Travel"?',
         answer:
-          'Il Livello 4 è il massimo grado di allerta emesso dagli avvisi di viaggio governativi, come quelli del Dipartimento di Stato USA, e indica rischi potenzialmente letali. Nella nostra metodologia, un avviso di Livello 4 limita il punteggio complessivo del paese a un massimo di 2 su 10, indipendentemente dagli altri pilastri.',
+          "Il Livello 4 è il massimo grado di allerta emesso dagli avvisi di viaggio governativi, come quelli del Dipartimento di Stato USA, e indica rischi potenzialmente letali. Nella nostra metodologia, un avviso di Livello 4 pesa fortemente verso un punteggio complessivo basso, oltre a quanto già indicato dagli altri pilastri — non esiste un tetto fisso.",
       },
       {
         question: 'Si può comunque viaggiare nei paesi più pericolosi?',
@@ -190,7 +190,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Qué significa un aviso de Nivel 4 "Do Not Travel" (no viajar)?',
         answer:
-          'El Nivel 4 es la advertencia más alta emitida por los avisos de viaje gubernamentales, como los del Departamento de Estado de EE. UU., e indica riesgos potencialmente mortales. En nuestra metodología, un aviso de Nivel 4 limita la puntuación global del país a un máximo de 2 sobre 10, independientemente de los demás pilares.',
+          'El Nivel 4 es la advertencia más alta emitida por los avisos de viaje gubernamentales, como los del Departamento de Estado de EE. UU., e indica riesgos potencialmente mortales. En nuestra metodología, un aviso de Nivel 4 pesa mucho hacia una puntuación global baja, además de lo que ya indiquen los demás pilares — no existe un tope fijo.',
       },
       {
         question: '¿Se puede viajar de todos modos a los países más peligrosos?',
@@ -207,7 +207,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Que signifie un avis de niveau 4 « Do Not Travel » ?',
         answer:
-          "Le niveau 4 est l'alerte la plus élevée émise par les avis aux voyageurs gouvernementaux, comme ceux du Département d'État américain, et signale des risques potentiellement mortels. Dans notre méthodologie, un avis de niveau 4 plafonne le score global du pays à 2 sur 10, quels que soient les autres piliers.",
+          "Le niveau 4 est l'alerte la plus élevée émise par les avis aux voyageurs gouvernementaux, comme ceux du Département d'État américain, et signale des risques potentiellement mortels. Dans notre méthodologie, un avis de niveau 4 pèse fortement vers un score global bas, en plus de ce qu'indiquent déjà les autres piliers — il n'y a pas de plafond fixe.",
       },
       {
         question: 'Peut-on quand même voyager dans les pays les plus dangereux ?',
@@ -224,7 +224,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'O que significa um aviso de Nível 4 "Do Not Travel" (não viaje)?',
         answer:
-          'O Nível 4 é o alerta mais alto emitido pelos avisos de viagem governamentais, como os do Departamento de Estado dos EUA, e indica riscos potencialmente fatais. Na nossa metodologia, um aviso de Nível 4 limita a pontuação geral do país a no máximo 2 em 10, independentemente dos demais pilares.',
+          'O Nível 4 é o alerta mais alto emitido pelos avisos de viagem governamentais, como os do Departamento de Estado dos EUA, e indica riscos potencialmente fatais. Na nossa metodologia, um aviso de Nível 4 pesa fortemente para uma pontuação geral baixa, além do que já indicam os demais pilares — não existe um teto fixo.',
       },
       {
         question: 'Ainda é possível viajar para os países mais perigosos?',
@@ -241,7 +241,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '四级"切勿前往"（Do Not Travel）警告意味着什么？',
         answer:
-          '四级是美国国务院等政府旅行警告体系中的最高级别，表示存在危及生命的风险。在我们的方法论中，四级警告会将该国总分上限压至 10 分中的 2 分，无论其他支柱表现如何。',
+          '四级是美国国务院等政府旅行警告体系中的最高级别，表示存在危及生命的风险。在我们的方法论中，四级警告会使总分明显向低分倾斜，这还是在其他支柱已有表现的基础之上——并不存在固定上限。',
       },
       {
         question: '仍然可以前往最危险的国家旅行吗？',
@@ -258,7 +258,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Was bedeutet eine Stufe-4-Warnung "Do Not Travel"?',
         answer:
-          'Stufe 4 ist die höchste Warnstufe staatlicher Reisehinweise, etwa des US-Außenministeriums, und signalisiert lebensbedrohliche Risiken. In unserer Methodik begrenzt eine Stufe-4-Warnung den Gesamtwert eines Landes auf maximal 2 von 10 Punkten — unabhängig von den übrigen Säulen.',
+          'Stufe 4 ist die höchste Warnstufe staatlicher Reisehinweise, etwa des US-Außenministeriums, und signalisiert lebensbedrohliche Risiken. In unserer Methodik lässt eine Stufe-4-Warnung den Gesamtwert eines Landes stark in Richtung eines niedrigen Werts sinken — zusätzlich zu dem, was die übrigen Säulen bereits zeigen. Es gibt keine feste Obergrenze.',
       },
       {
         question: 'Kann man trotzdem in die gefährlichsten Länder reisen?',
@@ -283,7 +283,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How current is this list of countries to avoid?',
         answer:
-          'It is rebuilt every day from the latest advisory levels and safety scores. A Level 4 "Do Not Travel" advisory automatically caps a country\'s score at 2 on the 1-10 scale, so escalations show up within 24 hours.',
+          'It is rebuilt every day from the latest advisory levels and safety scores. A Level 4 "Do Not Travel" advisory weighs heavily toward a low score rather than capping it at a fixed number, so escalations show up within 24 hours.',
       },
     ],
     it: [
@@ -300,7 +300,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Quanto è aggiornata questa lista di paesi da evitare?',
         answer:
-          'Viene ricostruita ogni giorno a partire dai livelli di avviso e dai punteggi di sicurezza più recenti. Un avviso di Livello 4 "Do Not Travel" limita automaticamente il punteggio di un paese a 2 sulla scala da 1 a 10, quindi gli aggravamenti compaiono entro 24 ore.',
+          'Viene ricostruita ogni giorno a partire dai livelli di avviso e dai punteggi di sicurezza più recenti. Un avviso di Livello 4 "Do Not Travel" pesa fortemente verso un punteggio basso invece di limitarlo a un numero fisso, quindi gli aggravamenti compaiono entro 24 ore.',
       },
     ],
     es: [
@@ -317,7 +317,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Qué tan actualizada está esta lista de países a evitar?',
         answer:
-          'Se reconstruye cada día a partir de los niveles de aviso y las puntuaciones de seguridad más recientes. Un aviso de Nivel 4 "Do Not Travel" limita automáticamente la puntuación de un país a 2 en la escala de 1 a 10, por lo que las escaladas aparecen en menos de 24 horas.',
+          'Se reconstruye cada día a partir de los niveles de aviso y las puntuaciones de seguridad más recientes. Un aviso de Nivel 4 "Do Not Travel" pesa mucho hacia una puntuación baja en lugar de limitarla a un número fijo, por lo que las escaladas aparecen en menos de 24 horas.',
       },
     ],
     fr: [
@@ -334,7 +334,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Cette liste de pays à éviter est-elle à jour ?',
         answer:
-          "Elle est reconstruite chaque jour à partir des niveaux d'avis et des scores de sécurité les plus récents. Un avis de niveau 4 « Do Not Travel » plafonne automatiquement le score d'un pays à 2 sur l'échelle de 1 à 10, de sorte que les aggravations apparaissent sous 24 heures.",
+          "Elle est reconstruite chaque jour à partir des niveaux d'avis et des scores de sécurité les plus récents. Un avis de niveau 4 « Do Not Travel » pèse fortement vers un score bas plutôt que de le plafonner à un nombre fixe, de sorte que les aggravations apparaissent sous 24 heures.",
       },
     ],
     pt: [
@@ -351,7 +351,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Quão atualizada é esta lista de países a evitar?',
         answer:
-          'Ela é reconstruída todos os dias a partir dos níveis de aviso e das pontuações de segurança mais recentes. Um aviso de Nível 4 "Do Not Travel" limita automaticamente a pontuação de um país a 2 na escala de 1 a 10, então os agravamentos aparecem em até 24 horas.',
+          'Ela é reconstruída todos os dias a partir dos níveis de aviso e das pontuações de segurança mais recentes. Um aviso de Nível 4 "Do Not Travel" pesa fortemente para uma pontuação baixa em vez de limitá-la a um número fixo, então os agravamentos aparecem em até 24 horas.',
       },
     ],
     zh: [
@@ -368,7 +368,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '这份应避免前往国家的列表有多新？',
         answer:
-          '列表每天根据最新的警告级别和安全评分重新生成。四级"切勿前往"警告会自动将该国评分上限压至 1-10 分制中的 2 分，因此局势恶化会在 24 小时内体现出来。',
+          '列表每天根据最新的警告级别和安全评分重新生成。四级"切勿前往"警告会使评分明显向低分倾斜，而不是将其限制在某个固定数值，因此局势恶化会在 24 小时内体现出来。',
       },
     ],
     de: [
@@ -385,7 +385,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie aktuell ist diese Liste der zu meidenden Länder?',
         answer:
-          'Sie wird jeden Tag aus den neuesten Warnstufen und Sicherheitswerten neu erstellt. Eine Stufe-4-Warnung "Do Not Travel" begrenzt den Wert eines Landes automatisch auf 2 auf der Skala von 1 bis 10, sodass Verschärfungen innerhalb von 24 Stunden sichtbar werden.',
+          'Sie wird jeden Tag aus den neuesten Warnstufen und Sicherheitswerten neu erstellt. Eine Stufe-4-Warnung "Do Not Travel" lässt den Wert eines Landes stark sinken, statt ihn auf eine feste Zahl zu begrenzen, sodass Verschärfungen innerhalb von 24 Stunden sichtbar werden.',
       },
     ],
   },

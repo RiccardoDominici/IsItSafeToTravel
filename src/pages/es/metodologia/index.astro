@@ -165,9 +165,35 @@ const advisorySources = [
     <section class="mb-10">
       <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.formula_title')}</h2>
       <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{t('methodology.formula_text')}</p>
-      <div class="bg-sand-100 dark:bg-sand-800 rounded-lg p-4 font-mono text-sm text-sand-800 dark:text-sand-200">
-        Pilar<sub>i</sub> = Base<sub>i</sub> x 0.70 + Senal<sub>i</sub> x 0.30 | Compuesto = exp(&Sigma;(w<sub>i</sub> &middot; ln(Pilar<sub>i</sub>))) &mdash; media geometrica ponderada | Puntuacion = Compuesto x 9 + 1
+      <div class="bg-sand-100 dark:bg-sand-800 rounded-lg p-4 font-mono text-sm text-sand-800 dark:text-sand-200 space-y-2">
+        <div>p&#770;<sub>i</sub> = (n<sub>i</sub>&middot;p<sub>i</sub> + K&middot;&mu;) / (n<sub>i</sub> + K) &nbsp;&mdash;&nbsp; shrinkage bayesiano de cada pilar hacia un valor de referencia regional prudente</div>
+        <div>Compuesto = exp(&Sigma;(w<sub>i</sub> &middot; ln(Pilar<sub>i</sub>))) &nbsp;&mdash;&nbsp; media geometrica ponderada</div>
+        <div>Puntuacion = 1 + 9 &middot; Compuesto<sup>0.79</sup> &nbsp;&rarr;&nbsp; escala 1-10</div>
       </div>
+    </section>
+
+    <!-- Bandas de puntuacion -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.band_legend_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.band_legend_text')}</p>
+    </section>
+
+    <!-- Que cambio en la v9 -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.changelog_v9_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.changelog_v9_text')}</p>
+    </section>
+
+    <!-- Confianza -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.confidence_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.confidence_text')}</p>
+    </section>
+
+    <!-- Limitaciones conocidas de la v9 -->
+    <section class="mb-10">
+      <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.limitations_v9_title')}</h2>
+      <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.limitations_v9_text')}</p>
     </section>
 
     <!-- Baseline + Signal Architecture -->
