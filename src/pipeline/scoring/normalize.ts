@@ -37,6 +37,11 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   wb_child_mortality: { min: 0, max: 200, inverse: true },
   wb_air_pollution: { min: 0, max: 100, inverse: true },
 
+  // v9.1 (D1): WB intentional homicides per 100,000 people (lower = safer).
+  // NOTE: wb_homicide's PRECISION (rho) is further population-scaled in
+  // engine.ts (round-2 F1) — this range only controls the raw-value normalization.
+  wb_homicide: { min: 0, max: 60, inverse: true },
+
   // ReliefWeb active disasters (lower = safer)
   reliefweb_active_disasters: { min: 0, max: 10, inverse: true },
 
@@ -105,6 +110,27 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
 };
 
 /**
+ * v9.1 (D2): ucdp_conflict_deaths log-decay knee. KEEP IN SYNC with
+ * weights.json formulaV9.D_MAX (same discipline as MIN_RANKING_SOURCES per
+ * CLAUDE.md — this module has no access to WeightsConfig, so the constant is
+ * duplicated here rather than threaded through as a parameter).
+ */
+const UCDP_D_MAX = 24000;
+
+/**
+ * v9.1 (D2) custom normalization for ucdp_conflict_deaths — NOT a simple
+ * linear/inverse range (see INDICATOR_RANGES above): norm(d) =
+ * clamp(1 - log10(1+d)/log10(1+D_MAX), 0, 1). d=0 -> 1.0 (safest), d=100 ->
+ * ~0.5, d=1000 -> ~0.25, d>=D_MAX -> 0. rawValue stays the death count
+ * (citability) — only normalizedValue uses the log transform.
+ */
+function normalizeUcdpConflictDeaths(deaths: number): number {
+  const d = Math.max(0, deaths);
+  const val = 1 - Math.log10(1 + d) / Math.log10(1 + UCDP_D_MAX);
+  return Math.max(0, Math.min(1, val));
+}
+
+/**
  * Normalize an array of raw indicators into scored indicators.
  * Unknown indicator names are skipped (not in INDICATOR_RANGES).
  */
@@ -112,8 +138,21 @@ export function normalizeIndicators(indicators: RawIndicator[]): IndicatorScore[
   const results: IndicatorScore[] = [];
 
   for (const ind of indicators) {
+    // v9.1 (D2): ucdp_conflict_deaths uses a custom log-decay branch instead
+    // of the standard linear/inverse INDICATOR_RANGES lookup.
+    if (ind.indicatorName === 'ucdp_conflict_deaths') {
+      results.push({
+        name: ind.indicatorName,
+        rawValue: ind.value,
+        normalizedValue: normalizeUcdpConflictDeaths(ind.value),
+        source: ind.source,
+        year: ind.year,
+      });
+      continue;
+    }
+
     const range = INDICATOR_RANGES[ind.indicatorName];
-    if (!range) continue; // Skip unknown indicators
+    if (!range) continue; // Skip unknown indicators (also skips wb_population — intentionally unscored, v9.1 F1 internal input)
 
     const normalizedValue = range.inverse
       ? normalizeInverse(ind.value, range.min, range.max)

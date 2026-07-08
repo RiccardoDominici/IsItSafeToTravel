@@ -73,9 +73,14 @@ export const DEFAULT_FORMULA_V9: FormulaV9Config = {
   K: 1.0,
   lambda: 0.25,
   q: 3,
-  gamma: 0.79,
-  S_MAX: 0.25,
+  gamma: 0.96,
+  S_MAX: 0.32,
   N_SEV: 6,
+  D_MAX: 24000,
+  P_HALF: 200000,
+  nudgeMinNAdv: 1,
+  severeMinNAdv: 2,
+  gateRampWidth: 2.4,
   muBase: 0.45,
   muClampMin: 0.32,
   muClampMax: 0.60,
@@ -126,8 +131,23 @@ interface AdvisoryConsensusResult {
 }
 
 /**
+ * v9.1 (D4) — advisory nudge/severe ramp. rampFactor(nAdv, minNAdv, width) =
+ * clamp((nAdv-(minNAdv-1))/width, 0, 1): 0 at nAdv<=minNAdv-1, 0.5 at
+ * nAdv=minNAdv, 1 at nAdv>=minNAdv+width-1. width<=0 degenerates to a hard step
+ * at nAdv>=minNAdv. Ported verbatim from prototype-scorer-v91.mjs rampFactor().
+ */
+function rampFactor(nAdv: number, minNAdv: number, width: number): number {
+  if (width <= 0) return nAdv >= minNAdv ? 1 : 0;
+  const x = (nAdv - (minNAdv - 1)) / width;
+  return Math.max(0, Math.min(1, x));
+}
+
+/**
  * Advisory consensus A, severeShare/severeEff and rho_A for one country.
- * FROZEN math (SHIP-SPEC 1.1 item 1 / prototype-scorer.mjs advisoryConsensus()).
+ * FROZEN math (SHIP-SPEC 1.1 item 1 / prototype-scorer-v91.mjs advisoryConsensus()).
+ * v9.1 (D4): severeEff is additionally gated by rampFactor(nAdv, severeMinNAdv,
+ * gateRampWidth) — a single spurious/thin (nAdv<=1) L4 record contributes ZERO
+ * severe modifier regardless of N_SEV damping.
  */
 function advisoryConsensus(advisoryLevels: Record<string, number>, f9: FormulaV9Config): AdvisoryConsensusResult {
   const excluded = new Set(f9.frozenExcludedSources);
@@ -152,18 +172,25 @@ function advisoryConsensus(advisoryLevels: Record<string, number>, f9: FormulaV9
 
   const A = denA > 0 ? numA / denA : null;
   const severeShare = denA > 0 ? numSevere / denA : 0;
-  const severeEff = severeShare * (nAdv / (nAdv + f9.N_SEV));
+  const severeEffRaw = severeShare * (nAdv / (nAdv + f9.N_SEV));
+  const severeEff = severeEffRaw * rampFactor(nAdv, f9.severeMinNAdv, f9.gateRampWidth);
   const rhoA = nAdv / (nAdv + f9.rhoADenom);
 
   return { A, severeShare, severeEff, nAdv, rhoA };
 }
 
-/** Conservative region-anchored prior mu, nudged by advisory consensus. FROZEN math. */
+/**
+ * Conservative region-anchored prior mu, nudged by advisory consensus. FROZEN
+ * math. v9.1 (D4): the advisory-nudge term is additionally gated by
+ * rampFactor(nAdv, nudgeMinNAdv, gateRampWidth) — a single-source (nAdv<=1)
+ * country's nudge is suppressed toward zero rather than fully weighted.
+ */
 function computePrior(region: string, A: number | null, nAdv: number, f9: FormulaV9Config): number {
   const regionOffset = f9.regionOffset[region] ?? 0;
   let mu: number;
   if (nAdv > 0 && A !== null) {
-    mu = f9.muBase + regionOffset + (A - 0.5) * f9.nudgeScale * (nAdv / (nAdv + f9.nudgeDenom));
+    const f = rampFactor(nAdv, f9.nudgeMinNAdv, f9.gateRampWidth);
+    mu = f9.muBase + regionOffset + f * (A - 0.5) * f9.nudgeScale * (nAdv / (nAdv + f9.nudgeDenom));
   } else {
     mu = f9.muBase + regionOffset;
   }
@@ -337,7 +364,19 @@ export function computeCountryScore(
       const ns = normalizedByName.get(indName);
       const rhoBase = pillarDef.indicatorPrecision?.[indName] ?? 1;
       const fw = computeIndicatorFreshness(indName, rawByName, sourcesConfig, now);
-      const rho = rhoBase * fw;
+      let rho = rhoBase * fw;
+
+      // v9.1 (round-2 F1) — population-scaled homicide precision: scale ONLY
+      // wb_homicide's rho (evidence weight n_i), NEVER its value, and NEVER any
+      // other indicator. rho_hom_eff = rhoBase * fw * pop/(pop+P_HALF). Missing
+      // population (33/248 project countries, none of which carry wb_homicide
+      // — verified) falls back to factor=1 (LARGE/full precision).
+      if (indName === 'wb_homicide') {
+        const pop = rawByName.get('wb_population')?.value;
+        const factor =
+          typeof pop === 'number' && Number.isFinite(pop) && pop > 0 ? pop / (pop + f9.P_HALF) : 1;
+        rho = rho * factor;
+      }
 
       if (ns) {
         subIndicators.push({ value: ns.normalizedValue, subweight, rho });

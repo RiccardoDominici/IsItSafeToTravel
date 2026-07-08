@@ -1,29 +1,33 @@
 {
-  "version": "9.0.0",
+  "version": "9.1.0",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["gpi_overall", "gpi_militarisation", "A"],
+      "indicators": ["gpi_overall", "gpi_militarisation", "A", "ucdp_conflict_deaths"],
       "indicatorWeights": {
-        "gpi_overall": 0.45,
-        "gpi_militarisation": 0.15,
-        "A": 0.40
+        "gpi_overall": 0.3275,
+        "gpi_militarisation": 0.1125,
+        "A": 0.28,
+        "ucdp_conflict_deaths": 0.28
       },
       "indicatorPrecision": {
         "gpi_overall": 2.0,
-        "gpi_militarisation": 1.0
+        "gpi_militarisation": 1.0,
+        "ucdp_conflict_deaths": 2.5
       }
     },
     {
       "name": "crime",
       "weight": 0.25,
-      "indicators": ["gpi_safety_security"],
+      "indicators": ["gpi_safety_security", "wb_homicide"],
       "indicatorWeights": {
-        "gpi_safety_security": 1.0
+        "gpi_safety_security": 0.67,
+        "wb_homicide": 0.33
       },
       "indicatorPrecision": {
-        "gpi_safety_security": 2.5
+        "gpi_safety_security": 2.5,
+        "wb_homicide": 1.5
       }
     },
     {
@@ -79,13 +83,18 @@
     }
   ],
   "formulaV9": {
-    "_comment": "Formula v9 (Bayesian synthesis) frozen constants, ported verbatim from prototype-scorer.mjs DEFAULT_CONST + ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET (final-constants.json). Do not re-tune.",
+    "_comment": "Formula v9.1 (Bayesian synthesis + D1 homicide/D2 UCDP/D3 GPI-2026/D4 advisory ramp) frozen constants, ported verbatim from prototype-scorer-v91.mjs DEFAULT_CONST + ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET (final-constants-v91.json round-2 section: P_HALF=200000). KEY NAME stays 'formulaV9' — engine.ts reads this key regardless of the formula's own version number. Do not re-tune.",
     "K": 1.0,
     "lambda": 0.25,
     "q": 3,
-    "gamma": 0.79,
-    "S_MAX": 0.25,
+    "gamma": 0.96,
+    "S_MAX": 0.32,
     "N_SEV": 6,
+    "D_MAX": 24000,
+    "P_HALF": 200000,
+    "nudgeMinNAdv": 1,
+    "severeMinNAdv": 2,
+    "gateRampWidth": 2.4,
     "muBase": 0.45,
     "muClampMin": 0.32,
     "muClampMax": 0.60,

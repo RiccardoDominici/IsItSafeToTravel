@@ -69,6 +69,25 @@ export interface FormulaV9Config {
   gamma: number;           // concave 1-10 calibration lift
   S_MAX: number;           // bounded severe-advisory modifier ceiling
   N_SEV: number;           // severe-modifier count damping denominator offset
+  /**
+   * v9.1 (D2): ucdp_conflict_deaths log-decay normalization knee. norm(d) =
+   * clamp(1 - log10(1+d)/log10(1+D_MAX), 0, 1) — see normalize.ts. MUST stay in
+   * sync with normalize.ts's own D_MAX module const (same discipline as
+   * MIN_RANKING_SOURCES per CLAUDE.md).
+   */
+  D_MAX: number;
+  /**
+   * v9.1 (round-2 F1): population half-saturation constant for wb_homicide's
+   * precision — rho_hom_eff = crimeRho_hom * pop/(pop+P_HALF). A country whose
+   * population equals P_HALF keeps half its homicide evidence weight.
+   */
+  P_HALF: number;
+  /** v9.1 (D4): rampFactor(nAdv, minNAdv, width) gate on the prior's advisory-nudge term. */
+  nudgeMinNAdv: number;
+  /** v9.1 (D4): rampFactor(nAdv, minNAdv, width) gate on severeEff. */
+  severeMinNAdv: number;
+  /** v9.1 (D4): shared ramp width for both nudgeMinNAdv and severeMinNAdv gates. */
+  gateRampWidth: number;
   muBase: number;          // conservative prior base
   muClampMin: number;
   muClampMax: number;
