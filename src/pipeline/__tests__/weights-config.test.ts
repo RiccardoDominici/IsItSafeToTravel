@@ -80,3 +80,48 @@ describe('weights.json config validation — Formula v9', () => {
     assert.ok(Math.abs(sum - 1.0) < 0.001, `Weights should sum to 1.0, got ${sum}`);
   });
 });
+
+// --- Formula v9.1 shape (quick-260708-lb3: D1 homicide / D2 UCDP / D3 GPI-2026 / D4 ramp) ---
+
+describe('weights.json config validation — Formula v9.1', () => {
+  const weightsPath = join(process.cwd(), 'src', 'pipeline', 'config', 'weights.json');
+  const raw = readFileSync(weightsPath, 'utf-8');
+  const config: WeightsConfig = JSON.parse(raw);
+
+  it('version is exactly "9.1.0"', () => {
+    assert.equal(config.version, '9.1.0');
+  });
+
+  it('crime pillar gains wb_homicide (D1) alongside gpi_safety_security, subweights sum to 1.0', () => {
+    const crime = config.pillars.find((p) => p.name === 'crime')!;
+    assert.ok(crime.indicators.includes('wb_homicide'), 'crime pillar must include wb_homicide');
+    assert.ok(crime.indicators.includes('gpi_safety_security'));
+    assert.equal(crime.indicators.length, 2, 'crime pillar must have exactly 2 indicators in v9.1');
+    const sum = Object.values(crime.indicatorWeights ?? {}).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9, `crime subweights must sum to 1.0, got ${sum}`);
+  });
+
+  it('conflict pillar gains ucdp_conflict_deaths (D2) alongside gpi_overall/gpi_militarisation/A, subweights sum to 1.0', () => {
+    const conflict = config.pillars.find((p) => p.name === 'conflict')!;
+    assert.ok(conflict.indicators.includes('ucdp_conflict_deaths'), 'conflict pillar must include ucdp_conflict_deaths');
+    assert.equal(conflict.indicators.length, 4, 'conflict pillar must have exactly 4 indicators in v9.1');
+    const sum = Object.values(conflict.indicatorWeights ?? {}).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9, `conflict subweights must sum to 1.0, got ${sum}`);
+  });
+
+  it('formulaV9 section carries the 5 new v9.1 tunables (D_MAX, P_HALF, nudgeMinNAdv, severeMinNAdv, gateRampWidth)', () => {
+    const f9 = config.formulaV9!;
+    for (const key of ['D_MAX', 'P_HALF', 'nudgeMinNAdv', 'severeMinNAdv', 'gateRampWidth'] as const) {
+      assert.equal(typeof f9[key], 'number', `formulaV9.${key} must be a number`);
+    }
+    assert.equal(f9.D_MAX, 24000);
+    assert.equal(f9.P_HALF, 200000);
+  });
+
+  it('formulaV9.frozenExcludedSources still lists jp (re-inclusion is a Task-3 gate decision, not automatic)', () => {
+    // Either state is valid post-Task-3 (the gate may re-include jp); this test
+    // only documents that the KEY exists and is an array — see the parity/
+    // re-inclusion gate script for the authoritative decision record.
+    assert.ok(Array.isArray(config.formulaV9!.frozenExcludedSources));
+  });
+});

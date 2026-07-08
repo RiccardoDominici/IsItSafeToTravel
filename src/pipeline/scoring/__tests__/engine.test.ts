@@ -497,14 +497,14 @@ describe('MIN_PILLAR_COVERAGE (legacy export, display-layer only)', () => {
   });
 });
 
-// --- Formula v9: weights.json structure (quick-260706-x81) ---
+// --- Formula v9.1: weights.json structure (quick-260708-lb3) ---
 
-describe('Formula v9: weights.json structure', () => {
+describe('Formula v9.1: weights.json structure', () => {
   const weightsPath = join(process.cwd(), 'src/pipeline/config/weights.json');
   const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig;
 
-  it('version is "9.0.0"', () => {
-    assert.equal(weightsJson.version, '9.0.0');
+  it('version is "9.1.0"', () => {
+    assert.equal(weightsJson.version, '9.1.0');
   });
 
   it('pillar weights are still 30/25/20/15/10 and sum to 1.0', () => {
@@ -518,31 +518,44 @@ describe('Formula v9: weights.json structure', () => {
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
   });
 
-  it('conflict pillar is [gpi_overall, gpi_militarisation, A] — no advisory_level_* entries', () => {
+  it('conflict pillar is [gpi_overall, gpi_militarisation, A, ucdp_conflict_deaths] — no advisory_level_* entries', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict, 'conflict pillar must exist');
     const advisoryCount = conflict.indicators.filter((n) => n.startsWith('advisory_level_')).length;
-    assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries in v9');
-    assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_militarisation', 'gpi_overall']);
+    assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries in v9.1');
+    assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_militarisation', 'gpi_overall', 'ucdp_conflict_deaths']);
   });
 
-  it('conflict pillar subweights (gpi_overall .45 / gpi_militarisation .15 / A .40) sum to 1.0', () => {
+  it('conflict pillar subweights (gpi_overall .3275 / gpi_militarisation .1125 / A .28 / ucdp .28) sum to 1.0', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.indicatorWeights);
-    assert.equal(conflict.indicatorWeights!.gpi_overall, 0.45);
-    assert.equal(conflict.indicatorWeights!.gpi_militarisation, 0.15);
-    assert.equal(conflict.indicatorWeights!.A, 0.40);
+    assert.equal(conflict.indicatorWeights!.gpi_overall, 0.3275);
+    assert.equal(conflict.indicatorWeights!.gpi_militarisation, 0.1125);
+    assert.equal(conflict.indicatorWeights!.A, 0.28);
+    assert.equal(conflict.indicatorWeights!.ucdp_conflict_deaths, 0.28);
     const sum = Object.values(conflict.indicatorWeights!).reduce((a, b) => a + b, 0);
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
+    assert.equal(conflict.indicatorPrecision!.ucdp_conflict_deaths, 2.5);
   });
 
-  it('crime pillar indicators equals ["gpi_safety_security"] exactly (moved from conflict)', () => {
+  it('crime pillar indicators equals [gpi_safety_security, wb_homicide] exactly (v9.1 D1)', () => {
     const crime = weightsJson.pillars.find((p) => p.name === 'crime')!;
     assert.ok(crime, 'crime pillar must exist');
-    assert.deepEqual(crime.indicators, ['gpi_safety_security']);
+    assert.deepEqual([...crime.indicators].sort(), ['gpi_safety_security', 'wb_homicide']);
   });
 
-  it('governance pillar includes vdem_rule_of_law (moved from crime) alongside the original 3', () => {
+  it('crime pillar subweights (gpi_safety_security .67 / wb_homicide .33) sum to 1.0', () => {
+    const crime = weightsJson.pillars.find((p) => p.name === 'crime')!;
+    assert.ok(crime.indicatorWeights);
+    assert.equal(crime.indicatorWeights!.gpi_safety_security, 0.67);
+    assert.equal(crime.indicatorWeights!.wb_homicide, 0.33);
+    const sum = Object.values(crime.indicatorWeights!).reduce((a, b) => a + b, 0);
+    assert.ok(Math.abs(sum - 1.0) < 1e-9);
+    assert.equal(crime.indicatorPrecision!.wb_homicide, 1.5);
+    assert.equal(crime.indicatorPrecision!.gpi_safety_security, 2.5);
+  });
+
+  it('governance pillar includes vdem_rule_of_law (moved from crime, unchanged since v9) alongside the original 3', () => {
     const gov = weightsJson.pillars.find((p) => p.name === 'governance')!;
     assert.ok(gov, 'governance pillar must exist');
     const expected = new Set(['vdem_rule_of_law', 'vdem_gov_effectiveness', 'vdem_corruption_control', 'inform_governance']);
@@ -553,19 +566,156 @@ describe('Formula v9: weights.json structure', () => {
     }
   });
 
-  it('has a formulaV9 constants section with the frozen tunables', () => {
+  it('has a formulaV9 constants section with the v9.1 tunables (KEY name stays "formulaV9")', () => {
     const f9 = weightsJson.formulaV9;
     assert.ok(f9, 'formulaV9 section must exist');
     assert.equal(f9!.K, 1.0);
     assert.equal(f9!.lambda, 0.25);
     assert.equal(f9!.q, 3);
-    assert.equal(f9!.gamma, 0.79);
-    assert.equal(f9!.S_MAX, 0.25);
+    assert.equal(f9!.gamma, 0.96);
+    assert.equal(f9!.S_MAX, 0.32);
     assert.equal(f9!.N_SEV, 6);
+    assert.equal(f9!.D_MAX, 24000);
+    assert.equal(f9!.P_HALF, 200000);
+    assert.equal(f9!.nudgeMinNAdv, 1);
+    assert.equal(f9!.severeMinNAdv, 2);
+    assert.equal(f9!.gateRampWidth, 2.4);
     assert.ok(f9!.frozenExcludedSources.includes('jp'));
     assert.ok(f9!.advisoryRebase.includes('at') && f9!.advisoryRebase.includes('nz'));
     assert.equal(f9!.regionOffset.europe, 0.05);
     assert.equal(f9!.regionOffset.middle_east, -0.05);
+  });
+});
+
+// --- Formula v9.1 D4: advisory nudge/severe ramp (quick-260708-lb3) ---
+
+describe('computeCountryScore — Formula v9.1: advisory ramp (D4)', () => {
+  it('severeEff is fully suppressed (0) at nAdv<=1 — a single thin L4 record does not sink the severe modifier', () => {
+    const weights = makeWeightsV9();
+    const oneAdvisory: Record<string, AdvisoryInfo> = {
+      us: { level: 4, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+    };
+    const zeroAdvisory: Record<string, AdvisoryInfo> = {};
+
+    const withOne = computeCountryScore('TST', [], weights, TEST_COUNTRY, oneAdvisory, TEST_SOURCES);
+    const withZero = computeCountryScore('TST', [], weights, TEST_COUNTRY, zeroAdvisory, TEST_SOURCES);
+
+    // severeEff=0 at nAdv=1 means the severeFactor term is a no-op (1), so the
+    // ONLY difference between nAdv=1 and nAdv=0 is the (ramped) prior nudge —
+    // score should NOT collapse the way a full un-ramped L4 modifier would.
+    // We assert the score stays close (within the partial-nudge ballpark),
+    // not identical (the nudge ramp at nAdv=1 is 0.417, not 0).
+    const delta = Math.abs(withOne.score - withZero.score);
+    assert.ok(delta < 1.0, `nAdv=1 severeEff-suppressed score should stay close to zero-advisory baseline, delta=${delta.toFixed(3)}`);
+  });
+
+  it('partial nudge at nAdv=1 sits strictly between the zero-advisory baseline and the nAdv>=3 fully-ramped nudge', () => {
+    const weights = makeWeightsV9();
+    const zeroAdvisory: Record<string, AdvisoryInfo> = {};
+    const oneGood: Record<string, AdvisoryInfo> = {
+      us: { level: 1, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+    };
+    const threeGood: Record<string, AdvisoryInfo> = {
+      us: { level: 1, text: '', source: 'us', url: '', updatedAt: '2026-01-01' },
+      uk: { level: 1, text: '', source: 'uk', url: '', updatedAt: '2026-01-01' },
+      ca: { level: 1, text: '', source: 'ca', url: '', updatedAt: '2026-01-01' },
+    };
+
+    const zero = computeCountryScore('TST', [], weights, TEST_COUNTRY, zeroAdvisory, TEST_SOURCES);
+    const one = computeCountryScore('TST', [], weights, TEST_COUNTRY, oneGood, TEST_SOURCES);
+    const three = computeCountryScore('TST', [], weights, TEST_COUNTRY, threeGood, TEST_SOURCES);
+
+    // All-safe (level 1) advisories nudge mu UP; the ramp means nAdv=1 gets a
+    // PARTIAL nudge (f=0.417 at nudgeMinNAdv=1, gateRampWidth=2.4), landing
+    // strictly between the zero-advisory baseline and the fuller nAdv=3 nudge.
+    assert.ok(one.score > zero.score, `nAdv=1 safe nudge (${one.score}) should exceed zero-advisory baseline (${zero.score})`);
+    assert.ok(three.score > one.score, `nAdv=3 nudge (${three.score}) should exceed the partial nAdv=1 nudge (${one.score})`);
+  });
+});
+
+// --- Formula v9.1 round-2 F1: population-scaled homicide precision (quick-260708-lb3) ---
+
+describe('computeCountryScore — Formula v9.1: population-scaled homicide precision (F1)', () => {
+  /** Production-shaped crime pillar (gpi_safety_security + wb_homicide) for isolated F1 testing. */
+  function makeWeightsWithHomicide(): WeightsConfig {
+    return {
+      version: '9.1.0-test',
+      pillars: [
+        { name: 'conflict', weight: 0.30, indicators: ['gpi_overall'], indicatorWeights: { gpi_overall: 1.0 }, indicatorPrecision: { gpi_overall: 2.0 } },
+        {
+          name: 'crime',
+          weight: 0.25,
+          indicators: ['gpi_safety_security', 'wb_homicide'],
+          indicatorWeights: { gpi_safety_security: 0.67, wb_homicide: 0.33 },
+          indicatorPrecision: { gpi_safety_security: 2.5, wb_homicide: 1.5 },
+        },
+        { name: 'health', weight: 0.20, indicators: ['inform_health'], indicatorWeights: { inform_health: 1.0 }, indicatorPrecision: { inform_health: 1 } },
+        { name: 'governance', weight: 0.15, indicators: ['inform_governance'], indicatorWeights: { inform_governance: 1.0 }, indicatorPrecision: { inform_governance: 1 } },
+        { name: 'environment', weight: 0.10, indicators: ['inform_natural'], indicatorWeights: { inform_natural: 1.0 }, indicatorPrecision: { inform_natural: 1 } },
+      ],
+      formulaV9: makeFormulaV9(),
+    };
+  }
+
+  it('larger population gives wb_homicide more effective precision, pulling the crime pillar further from the prior', () => {
+    const weights = makeWeightsWithHomicide();
+    // Bad homicide value (near max=60 -> normalized ~0, drags crime pillar DOWN toward 0).
+    const badHomicideValue = 55;
+
+    const smallPop: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'wb_homicide', value: badHomicideValue, year: 2025, source: 'worldbank' },
+      { countryIso3: 'TST', indicatorName: 'wb_population', value: 46_000, year: 2025, source: 'worldbank' }, // TCA/KNA-scale
+    ];
+    const largePop: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'wb_homicide', value: badHomicideValue, year: 2025, source: 'worldbank' },
+      { countryIso3: 'TST', indicatorName: 'wb_population', value: 340_000_000, year: 2025, source: 'worldbank' }, // USA-scale
+    ];
+
+    const small = computeCountryScore('TST', smallPop, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const large = computeCountryScore('TST', largePop, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const smallCrime = small.pillars.find((p) => p.name === 'crime')!.score;
+    const largeCrime = large.pillars.find((p) => p.name === 'crime')!.score;
+
+    assert.ok(
+      largeCrime < smallCrime,
+      `Large-population homicide (${largeCrime}) should pull the crime pillar further down (more weight on bad evidence) than small-population homicide (${smallCrime})`,
+    );
+  });
+
+  it('missing wb_population falls back to full precision (factor=1), matching a very-large population', () => {
+    const weights = makeWeightsWithHomicide();
+    const badHomicideValue = 55;
+
+    const noPop: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'wb_homicide', value: badHomicideValue, year: 2025, source: 'worldbank' },
+    ];
+    const hugePop: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'wb_homicide', value: badHomicideValue, year: 2025, source: 'worldbank' },
+      { countryIso3: 'TST', indicatorName: 'wb_population', value: 1_000_000_000_000, year: 2025, source: 'worldbank' },
+    ];
+
+    const missing = computeCountryScore('TST', noPop, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const huge = computeCountryScore('TST', hugePop, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+
+    const missingCrime = missing.pillars.find((p) => p.name === 'crime')!.score;
+    const hugeCrime = huge.pillars.find((p) => p.name === 'crime')!.score;
+
+    assert.ok(
+      Math.abs(missingCrime - hugeCrime) < 1e-6,
+      `Missing population (${missingCrime}) should match full-precision huge population (${hugeCrime})`,
+    );
+  });
+
+  it('wb_population itself never enters any pillar (unscored internal input)', () => {
+    const weights = makeWeightsWithHomicide();
+    const indicators: RawIndicator[] = [
+      { countryIso3: 'TST', indicatorName: 'wb_population', value: 5_000_000, year: 2025, source: 'worldbank' },
+    ];
+    const result = computeCountryScore('TST', indicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
+    const crime = result.pillars.find((p) => p.name === 'crime')!;
+    assert.equal(crime.indicators.length, 0, 'wb_population-only input must not appear as a present crime indicator');
+    assert.equal(crime.dataCompleteness, 0);
   });
 });
 

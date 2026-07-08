@@ -10,36 +10,38 @@ import type {
 } from '../types.js';
 
 /**
- * Crisis validation test (Formula v9, quick-260706-x81): verifies the v9
+ * Crisis validation test (Formula v9.1, quick-260708-lb3): verifies the v9.1
  * Bayesian-shrinkage engine still detects known real-world crises correctly
- * under the v9 pillar composition (crime <- gpi_safety_security, governance
- * <- +vdem_rule_of_law, conflict <- +synthetic advisory-consensus "A"; no
- * retired wb_* WGI indicators). For each crisis case we build baseline +
- * crisis-relevant indicators and assert: (1) the score stays in [1,10], (2)
- * the crisis-relevant pillar reflects elevated danger, and (3) active-conflict
- * crises (Sudan, DR Congo) score below a natural-disaster crisis (Turkey) —
- * the severe-advisory modifier and low conflict/crime GPI values sink active
+ * under the v9.1 pillar composition (crime <- gpi_safety_security + wb_homicide
+ * [D1], governance <- +vdem_rule_of_law, conflict <- +synthetic
+ * advisory-consensus "A" + ucdp_conflict_deaths [D2]; no retired wb_* WGI
+ * indicators). For each crisis case we build baseline + crisis-relevant
+ * indicators (including the new homicide/UCDP signals) and assert: (1) the
+ * score stays in [1,10], (2) the crisis-relevant pillar reflects elevated
+ * danger, and (3) active-conflict crises (Sudan, DR Congo) score below a
+ * natural-disaster crisis (Turkey) — the severe-advisory modifier, low
+ * conflict/crime GPI values, AND high UCDP conflict-deaths sink active
  * conflict harder than a single earthquake event.
  */
 
-// --- Shared v9 config matching production weights.json's pillar composition ---
+// --- Shared v9.1 config matching production weights.json's pillar composition ---
 
 const WEIGHTS: WeightsConfig = {
-  version: '9.0.0-test',
+  version: '9.1.0-test',
   pillars: [
     {
       name: 'conflict',
       weight: 0.30,
-      indicators: ['gpi_overall', 'gpi_militarisation', 'A'],
-      indicatorWeights: { gpi_overall: 0.45, gpi_militarisation: 0.15, A: 0.40 },
-      indicatorPrecision: { gpi_overall: 2.0, gpi_militarisation: 1.0 },
+      indicators: ['gpi_overall', 'gpi_militarisation', 'A', 'ucdp_conflict_deaths'],
+      indicatorWeights: { gpi_overall: 0.3275, gpi_militarisation: 0.1125, A: 0.28, ucdp_conflict_deaths: 0.28 },
+      indicatorPrecision: { gpi_overall: 2.0, gpi_militarisation: 1.0, ucdp_conflict_deaths: 2.5 },
     },
     {
       name: 'crime',
       weight: 0.25,
-      indicators: ['gpi_safety_security'],
-      indicatorWeights: { gpi_safety_security: 1.0 },
-      indicatorPrecision: { gpi_safety_security: 2.5 },
+      indicators: ['gpi_safety_security', 'wb_homicide'],
+      indicatorWeights: { gpi_safety_security: 0.67, wb_homicide: 0.33 },
+      indicatorPrecision: { gpi_safety_security: 2.5, wb_homicide: 1.5 },
     },
     {
       name: 'health',
@@ -177,6 +179,10 @@ const CRISIS_CASES: CrisisCase[] = [
       // Signal indicators reflecting earthquake crisis
       makeIndicator('TUR', 'reliefweb_active_disasters', 8, 'reliefweb', { dataDate: now, fetchedAt: now }),
       makeIndicator('TUR', 'gdacs_disaster_alerts', 4, 'gdacs', { dataDate: now, fetchedAt: now }),
+      // v9.1: low homicide, low UCDP conflict-deaths — this is a natural-disaster
+      // crisis, not an active-conflict one.
+      makeIndicator('TUR', 'wb_homicide', 3, 'worldbank'),
+      makeIndicator('TUR', 'ucdp_conflict_deaths', 50, 'ucdp'),
     ],
   },
   {
@@ -201,6 +207,10 @@ const CRISIS_CASES: CrisisCase[] = [
       makeIndicator('SDN', 'inform_governance', 8, 'inform'),
       makeIndicator('SDN', 'advisory_level_us', 4, 'advisories_us', { dataDate: now, fetchedAt: now }),
       makeIndicator('SDN', 'advisory_level_uk', 4, 'advisories_uk', { dataDate: now, fetchedAt: now }),
+      // v9.1: civil war -> elevated homicide + very high UCDP conflict-deaths
+      // (2023-24 Sudan civil war scale, tens of thousands of battle deaths).
+      makeIndicator('SDN', 'wb_homicide', 15, 'worldbank'),
+      makeIndicator('SDN', 'ucdp_conflict_deaths', 20000, 'ucdp'),
     ],
   },
   {
@@ -225,11 +235,15 @@ const CRISIS_CASES: CrisisCase[] = [
       makeIndicator('COD', 'inform_governance', 8, 'inform'),
       makeIndicator('COD', 'advisory_level_us', 4, 'advisories_us', { dataDate: now, fetchedAt: now }),
       makeIndicator('COD', 'advisory_level_uk', 3, 'advisories_uk', { dataDate: now, fetchedAt: now }),
+      // v9.1: ongoing M23/eastern DRC conflict alongside the disease outbreak ->
+      // moderate homicide + elevated (but below Sudan's) UCDP conflict-deaths.
+      makeIndicator('COD', 'wb_homicide', 10, 'worldbank'),
+      makeIndicator('COD', 'ucdp_conflict_deaths', 5000, 'ucdp'),
     ],
   },
 ];
 
-describe('Crisis validation: Formula v9 detects real-world crises', () => {
+describe('Crisis validation: Formula v9.1 detects real-world crises', () => {
   for (const crisis of CRISIS_CASES) {
     it(`${crisis.name}: score stays in [1,10] and the ${crisis.relevantPillar} pillar reflects the crisis`, () => {
       const indicators = crisis.buildIndicators();
