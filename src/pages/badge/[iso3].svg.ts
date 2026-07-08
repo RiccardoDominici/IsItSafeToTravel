@@ -12,8 +12,9 @@ export const getStaticPaths: GetStaticPaths = async () => {
 };
 
 export const GET: APIRoute = ({ props }) => {
-  const { name, score } = props as { name: string; score: number };
-  const roundedScore = score.toFixed(1);
+  const { name, score: rawScore } = props as { name: string; score: number };
+  const roundedScore = rawScore.toFixed(1);
+  const score = Number(roundedScore); // band on the displayed 1-decimal value
 
   // Color based on score
   let bgColor: string;

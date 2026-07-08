@@ -106,7 +106,9 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
   };
   const [low, moderate, high] = riskLevels[lang];
-  const riskLevel = score >= 7 ? low : score >= 5 ? moderate : high;
+  // Band on the displayed 1-decimal value so the label matches the number shown.
+  const s1 = Number(score.toFixed(1));
+  const riskLevel = s1 >= 7 ? low : s1 >= 5 ? moderate : high;
 
   // Find strongest and weakest pillars (score is 0-1, display as x10 for /10 scale).
   // Only pillars with sufficient data coverage are eligible, so a zero-data pillar
@@ -299,7 +301,9 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   const regionKey = getRegion(country.iso3);
   const regionName = regionDisplayNames[regionKey]?.[lang];
   const scoreStr = country.score.toFixed(1);
-  const bandIdx = country.score >= 7 ? 0 : country.score >= 5 ? 1 : 2;
+  // Band on the displayed 1-decimal value so the label matches the number shown.
+  const scoreRounded = Number(scoreStr);
+  const bandIdx = scoreRounded >= 7 ? 0 : scoreRounded >= 5 ? 1 : 2;
   const band = riskBands[lang][bandIdx];
   const tourType = touristTypes[lang][bandIdx];
   const year = new Date().getFullYear();
@@ -556,7 +560,9 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
   };
   const [low, moderate, high] = riskLevels[lang];
-  const riskBand: 'low' | 'moderate' | 'high' = score >= 7 ? 'low' : score >= 5 ? 'moderate' : 'high';
+  // Band on the displayed 1-decimal value so the FAQ verdict matches the number shown.
+  const scoreBanded = Number(score.toFixed(1));
+  const riskBand: 'low' | 'moderate' | 'high' = scoreBanded >= 7 ? 'low' : scoreBanded >= 5 ? 'moderate' : 'high';
   const riskLevel = riskBand === 'low' ? low : riskBand === 'moderate' ? moderate : high;
 
   // Sort ELIGIBLE pillars weakest-first so answers name the score's actual
@@ -613,7 +619,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const a2 = tidy(fill(copy.a2[weakestBand]));
 
   // A3 — government-advisory summary built from country.advisories: count,
-  // consensus band, named governments, majority-Level-4 score cap, or a
+  // consensus band, named governments, majority-Level-4 severe-advisory note, or a
   // distinct zero-advisory sentence for micro-territories.
   const advisories = country.advisories ?? {};
   const presentAdvisories = (Object.entries(advisories) as [string, { level: number | string; source?: string }][])
