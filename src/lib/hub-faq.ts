@@ -34,7 +34,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How often is the safest-countries ranking updated?',
         answer:
-          'Scores are recalculated every day from more than 40 public sources, including government travel advisories, the Global Peace Index and World Bank indicators. The ranking always reflects the most recent daily snapshot.',
+          'Scores are recalculated every day from more than 40 public sources, including government travel advisories, the Global Peace Index, UCDP conflict data and World Bank indicators. The ranking always reflects the most recent daily snapshot.',
       },
       {
         question: 'What makes a country one of the safest to visit?',
@@ -51,7 +51,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Con quale frequenza viene aggiornata la classifica dei paesi più sicuri?',
         answer:
-          "I punteggi vengono ricalcolati ogni giorno a partire da oltre 40 fonti pubbliche, tra cui avvisi di viaggio governativi, il Global Peace Index e indicatori della Banca Mondiale. La classifica riflette sempre l'ultimo aggiornamento giornaliero.",
+          "I punteggi vengono ricalcolati ogni giorno a partire da oltre 40 fonti pubbliche, tra cui avvisi di viaggio governativi, il Global Peace Index, i dati sui conflitti UCDP e indicatori della Banca Mondiale. La classifica riflette sempre l'ultimo aggiornamento giornaliero.",
       },
       {
         question: 'Cosa rende un paese tra i più sicuri da visitare?',
@@ -68,7 +68,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Con qué frecuencia se actualiza la clasificación de los países más seguros?',
         answer:
-          'Las puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas, incluidos los avisos de viaje gubernamentales, el Global Peace Index e indicadores del Banco Mundial. La clasificación refleja siempre la actualización diaria más reciente.',
+          'Las puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas, incluidos los avisos de viaje gubernamentales, el Global Peace Index, los datos de conflictos de la UCDP e indicadores del Banco Mundial. La clasificación refleja siempre la actualización diaria más reciente.',
       },
       {
         question: '¿Qué hace que un país sea uno de los más seguros para visitar?',
@@ -85,7 +85,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'À quelle fréquence le classement des pays les plus sûrs est-il mis à jour ?',
         answer:
-          'Les scores sont recalculés chaque jour à partir de plus de 40 sources publiques, dont les avis aux voyageurs gouvernementaux, le Global Peace Index et des indicateurs de la Banque mondiale. Le classement reflète toujours la mise à jour quotidienne la plus récente.',
+          'Les scores sont recalculés chaque jour à partir de plus de 40 sources publiques, dont les avis aux voyageurs gouvernementaux, le Global Peace Index, les données de conflits de l\'UCDP et des indicateurs de la Banque mondiale. Le classement reflète toujours la mise à jour quotidienne la plus récente.',
       },
       {
         question: "Qu'est-ce qui fait d'un pays l'un des plus sûrs à visiter ?",
@@ -102,7 +102,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Com que frequência o ranking dos países mais seguros é atualizado?',
         answer:
-          'As pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas, incluindo avisos de viagem governamentais, o Global Peace Index e indicadores do Banco Mundial. O ranking reflete sempre a atualização diária mais recente.',
+          'As pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas, incluindo avisos de viagem governamentais, o Global Peace Index, os dados de conflito da UCDP e indicadores do Banco Mundial. O ranking reflete sempre a atualização diária mais recente.',
       },
       {
         question: 'O que torna um país um dos mais seguros para visitar?',
@@ -119,7 +119,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '最安全国家排名多久更新一次？',
         answer:
-          '评分每天根据 40 多个公开数据源重新计算，包括各国政府旅行警告、全球和平指数（Global Peace Index）以及世界银行指标。排名始终反映最新的每日数据快照。',
+          '评分每天根据 40 多个公开数据源重新计算，包括各国政府旅行警告、全球和平指数（Global Peace Index）、UCDP 冲突数据以及世界银行指标。排名始终反映最新的每日数据快照。',
       },
       {
         question: '是什么让一个国家成为最安全的旅行目的地之一？',
@@ -136,7 +136,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie oft wird das Ranking der sichersten Länder aktualisiert?',
         answer:
-          'Die Werte werden täglich aus mehr als 40 öffentlichen Quellen neu berechnet, darunter staatliche Reisehinweise, der Global Peace Index und Indikatoren der Weltbank. Das Ranking spiegelt stets den aktuellsten Tagesstand wider.',
+          'Die Werte werden täglich aus mehr als 40 öffentlichen Quellen neu berechnet, darunter staatliche Reisehinweise, der Global Peace Index, UCDP-Konfliktdaten und Indikatoren der Weltbank. Das Ranking spiegelt stets den aktuellsten Tagesstand wider.',
       },
       {
         question: 'Was macht ein Land zu einem der sichersten Reiseziele?',

@@ -49,19 +49,23 @@ AI answer engines.
   `src/lib/hub-data.ts`; the same threshold is duplicated in `scripts/generate-llms-full.ts`
   (`MIN_RANKING_SOURCES`). Keep them in sync, or sparse micro-territories pollute the lists.
 
-## Scoring (`src/pipeline/scoring/engine.ts`) — Formula v9
+## Scoring (`src/pipeline/scoring/engine.ts`) — Formula v9.1
 
 Uncertainty-weighted (Bayesian shrinkage) scoring. Per pillar: precision-weighted value shrunk
 toward a conservative advisory/region-informed prior (`p̂ = (n·p + K·μ)/(n + K)`, K=1.0) —
 missing data collapses to the prior, never inflates. Composite = weighted **geometric** mean of
-5 pillars (conflict 30% / crime 25% / health 20% / governance 15% / environment 10%) blended
-with an acute soft-min term over conflict+crime (λ=0.25, down-only), times a count-damped
-severe-advisory modifier (`1 − 0.25·severeShare·nAdv/(nAdv+6)`); `score = 1 + 9·composite^0.79`.
-Crime pillar = GPI Safety & Security (NOT rule of law — that moved to governance). No hard caps,
-floors, or eligibility gates (all removed in v9). Scores ≈ [3.7, 8.9]; bands: <5 danger / 5–6
-high caution / 6–7 moderate / 7–8 good / ≥8 excellent. Constants frozen in `weights.json`
-(`formulaV9`); parity fixture: `scripts/verify-formula-v9-parity.ts`. New `confidence` field
-per country.
+5 pillars (conflict 30% / crime 25% / health 20% / governance 15% / environment 10%, UNCHANGED)
+blended with an acute soft-min term over conflict+crime (λ=0.25, down-only), times a count-damped
+severe-advisory modifier (`1 − 0.32·severeShare·nAdv/(nAdv+6)`); `score = 1 + 9·composite^0.96`.
+Crime = GPI Safety & Security (67%) + World Bank intentional-homicide rate (33%, precision scaled
+by population, half-saturation `P_HALF=200000` — small-population homicide rates are damped as
+statistical noise). Conflict = GPI overall (32.75%) + GPI militarisation (11.25%) + advisory
+consensus `A` (28%) + UCDP GED conflict-deaths (28%, log-normalized, `D_MAX=24000`). A continuous
+advisory nudge/severe ramp replaces hard thresholds — no hard caps, floors, or eligibility gates.
+Scores ≈ [3.4, 8.9], mean ~6.60; bands UNCHANGED: <5 danger / 5–6 high caution / 6–7 moderate /
+7–8 good / ≥8 excellent. Constants frozen in `weights.json` (key stays `formulaV9` regardless of
+formula version); parity fixture: `scripts/verify-formula-v91-parity.ts`. `confidence` field per
+country (score-adjacent "limited data" UI flag below 0.4).
 
 ## Known constraints
 

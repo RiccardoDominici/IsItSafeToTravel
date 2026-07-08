@@ -20,19 +20,21 @@ IsItSafeToTravel combines **7 public data sources** -- conflict data, governance
 - **Country detail pages** -- Full score breakdown by pillar, individual indicator analysis, and historical trend chart with drag-to-zoom.
 - **Global safety score** -- Arithmetic mean across all countries, serving as a world benchmark on a dedicated page.
 - **Country comparison** -- Select up to 5 countries for side-by-side cards, pillar bar charts, overlay trend lines, and shareable URLs.
-- **Historical trends** -- 14+ years of data from World Bank WGI with interactive tooltips; daily snapshots accumulate over time.
+- **Historical trends** -- 14+ years of governance data (V-Dem Institute, since v8.1.0) with interactive tooltips; daily snapshots accumulate over time.
 - **Uncertainty-weighted scoring** -- Bayesian shrinkage blends each pillar's raw data toward a conservative regional prior based on how much fresh evidence backs it, with exponential freshness decay.
 - **Search** -- Fuzzy search across all 248 countries powered by Fuse.js.
-- **Multilingual** -- English, Italian, Spanish, French, and Portuguese, with locale-prefixed routing and i18n-aware sitemap.
+- **Multilingual** -- English, Italian, Spanish, French, Portuguese, Chinese, and German, with locale-prefixed routing and i18n-aware sitemap.
 - **SEO optimized** -- JSON-LD structured data, meta tags, and auto-generated sitemap for every page.
 
 ## Data Sources
 
 | Source | Covers | Provider | Tier | Update Frequency |
 |--------|--------|----------|------|-----------------|
-| World Bank WGI | Governance, political stability, rule of law, corruption, health, environment | World Bank | Baseline | Annual |
+| V-Dem Institute v16 | Governance, rule of law, government effectiveness, corruption control | V-Dem Institute | Baseline | Annual |
+| World Bank Development Indicators | Child mortality, air pollution (PM2.5), intentional-homicide rate, population | World Bank | Baseline | Annual |
 | INFORM Risk Index | Natural hazards, epidemics, conflict probability, governance | EU Joint Research Centre (JRC) | Baseline | Quarterly |
 | Global Peace Index | Overall peacefulness, safety & security, militarisation | Institute for Economics & Peace | Baseline | Annual |
+| UCDP / Our World in Data | Battle-related and one-sided conflict-death counts | Uppsala Conflict Data Program | Baseline | Quarterly |
 | US State Department | Travel advisory levels (1--4) | US Department of State | Signal | Varies |
 | UK FCDO | Travel advisory levels | UK Foreign, Commonwealth & Development Office | Signal | Varies |
 | ReliefWeb | Active humanitarian disasters | UN OCHA | Signal | Daily |
@@ -42,12 +44,12 @@ All sources are free and publicly available. The pipeline fetches them in parall
 
 ## Scoring Methodology
 
-Each country's safety score is computed from **5 pillars** (weights from `src/pipeline/config/weights.json` v9.0.0):
+Each country's safety score is computed from **5 pillars** (weights from `src/pipeline/config/weights.json` v9.1.0):
 
 | Pillar | Weight | Key Indicators |
 |--------|--------|----------------|
-| Conflict | 30% | GPI overall peacefulness, GPI militarisation, calibrated advisory consensus |
-| Crime | 25% | GPI Safety & Security -- homicide rate, violent crime, perceived criminality |
+| Conflict | 30% | GPI overall peacefulness, GPI militarisation, calibrated advisory consensus, UCDP conflict-death counts (log-normalized) |
+| Crime | 25% | GPI Safety & Security + World Bank intentional-homicide rate (population-reliability scaled) |
 | Health | 20% | Child mortality, INFORM health & epidemic risk |
 | Governance | 15% | V-Dem rule of law, government effectiveness, corruption control, INFORM governance |
 | Environment | 10% | Air pollution, natural hazard risk, climate risk, ReliefWeb disasters, GDACS alerts |
@@ -66,9 +68,13 @@ The five shrunk pillars are combined with a **weighted geometric mean** -- unlik
 
 Each `ScoredCountry` also carries a `confidence` field (0--1): a precision-weighted measure of how much fresh, present data backs the score across all five pillars. Low confidence means the score sits closer to the conservative regional prior than to hard local evidence.
 
+### Formula v9.1: New Signals
+
+v9.1 adds two new indicators on top of the v9 shrinkage mechanism. Crime now blends GPI Safety & Security (67%) with the World Bank's intentional-homicide rate (33%), whose statistical precision is scaled by population (`rho_eff = rho * pop/(pop + P_HALF)`, `P_HALF = 200,000`) so a handful of homicides in a very small territory is treated as noise rather than a worse-than-war crime signal. Conflict now also incorporates conflict-death counts from the Uppsala Conflict Data Program (UCDP Georeferenced Event Dataset, via the Our World in Data mirror, CC-BY), log-normalized against a `D_MAX` of 24,000 deaths. The Global Peace Index moved to its current 2026 edition (retroactive vintage revisions are standard IEP practice), and territories with very few tracked advisories now receive a smooth advisory-consensus nudge instead of a hard on/off threshold. Weights and band thresholds are unchanged; the practical score range widened slightly to reflect the new signals (see below).
+
 ### Score Bands
 
-Formula v9 compresses the practical score range to roughly **3.7--8.9** (global mean ~6.75), because uncertainty-aware scoring makes fewer extreme claims. Bands: `<5.0` danger, `5.0--6.0` high caution, `6.0--7.0` moderate, `7.0--8.0` good, `>=8.0` excellent.
+Formula v9.1 compresses the practical score range to roughly **3.4--8.9** (global mean ~6.60), because uncertainty-aware scoring makes fewer extreme claims. Bands: `<5.0` danger, `5.0--6.0` high caution, `6.0--7.0` moderate, `7.0--8.0` good, `>=8.0` excellent.
 
 ### Freshness Decay
 
@@ -82,9 +88,9 @@ Each source has a configurable half-life for exponential freshness decay (see `s
 
 ### Per-Indicator Sub-Weights
 
-Indicators within a pillar are not equally averaged. Pillars with `indicatorWeights` in `weights.json` use explicit sub-weights (e.g., Conflict: `gpi_overall` 45%, `gpi_militarisation` 15%, and the synthetic advisory-consensus indicator `A` 40%). Pillars without explicit weights use equal averaging.
+Indicators within a pillar are not equally averaged. Pillars with `indicatorWeights` in `weights.json` use explicit sub-weights (e.g., Conflict: `gpi_overall` 32.75%, `gpi_militarisation` 11.25%, the synthetic advisory-consensus indicator `A` 28%, and `ucdp_conflict_deaths` 28%; Crime: `gpi_safety_security` 67%, `wb_homicide` 33%). Pillars without explicit weights use equal averaging.
 
-Raw indicator values are normalized to a 0--1 scale (higher = safer) using known min/max ranges, then aggregated into the final 1--10 score via `score = 1 + 9 * composite^0.79`.
+Raw indicator values are normalized to a 0--1 scale (higher = safer) using known min/max ranges, then aggregated into the final 1--10 score via `score = 1 + 9 * composite^0.96`.
 
 For full details, see the [Methodology page](https://isitsafetotravels.com/en/methodology/) on the live site.
 

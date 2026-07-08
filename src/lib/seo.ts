@@ -227,13 +227,13 @@ const datasetDescriptions: Record<Lang, (name: string) => string> = {
 
 // Dataset.measurementTechnique
 const measurementTechniqueByLang: Record<Lang, string> = {
-  en: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM and GPI indices',
-  it: "Media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di 5 punteggi di categoria da oltre 40 fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e indici GPI",
-  es: 'Media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de 5 puntuaciones por categoría de más de 40 fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM e índices GPI',
-  fr: "Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de plus de 40 sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM et les indices GPI",
-  pt: 'Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de mais de 40 fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM e índices GPI',
-  zh: '基于来自 40 多个公开来源（包括政府旅行警告、世界银行、INFORM 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值',
-  de: 'Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus über 40 öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM und GPI-Indizes',
+  en: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
+  it: "Media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di 5 punteggi di categoria da oltre 40 fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM, UCDP e indici GPI",
+  es: 'Media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de 5 puntuaciones por categoría de más de 40 fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM, UCDP e índices GPI',
+  fr: "Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de plus de 40 sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM, UCDP et les indices GPI",
+  pt: 'Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de mais de 40 fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM, UCDP e índices GPI',
+  zh: '基于来自 40 多个公开来源（包括政府旅行警告、世界银行、INFORM、UCDP 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值',
+  de: 'Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus über 40 öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes',
 };
 
 // Dataset.variableMeasured entries (PropertyValue name + description)
@@ -723,7 +723,7 @@ export function buildDatasetJsonLd(): Record<string, unknown> {
       { '@type': 'PropertyValue', name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
       { '@type': 'PropertyValue', name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
     ],
-    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM and GPI indices',
+    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
     distribution: {
       '@type': 'DataDownload',
       encodingFormat: 'application/json',
@@ -801,7 +801,7 @@ export function buildMethodologyDatasetJsonLd(): Record<string, unknown> {
       { '@type': 'PropertyValue', name: 'Governance Quality' },
       { '@type': 'PropertyValue', name: 'Environment Risk' },
     ],
-    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM and GPI indices',
+    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
     distribution: {
       '@type': 'DataDownload',
       encodingFormat: 'application/json',
