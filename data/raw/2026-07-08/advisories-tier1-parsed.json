@@ -1,30 +1,1606 @@
 {
   "source": "advisories_tier1",
-  "fetchedAt": "2026-07-08T13:57:03.512Z",
+  "fetchedAt": "2026-07-08T08:30:06.053Z",
   "indicators": [
     {
-      "countryIso3": "AUS",
-      "indicatorName": "advisory_level_nl",
+      "countryIso3": "GNQ",
+      "indicatorName": "advisory_level_de",
       "value": 1,
       "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "ARM",
-      "indicatorName": "advisory_level_nl",
+      "countryIso3": "BHS",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NRU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "advisory_level_de",
       "value": 2,
       "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VAT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MCO",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PLW",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COK",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LCA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "AGO",
-      "indicatorName": "advisory_level_nl",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "advisory_level_de",
       "value": 2,
       "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VUT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NIU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "STP",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SYC",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MDV",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "advisory_level_de",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "advisory_level_de",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "advisory_level_de",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_de",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ARG",
@@ -32,39 +1608,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ALB",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ATG",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "AND",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "AFG",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "DZA",
@@ -72,71 +1616,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "AUT",
+      "countryIso3": "AND",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BHS",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "AZE",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BLR",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BGD",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BEN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BIH",
+      "countryIso3": "ATG",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BEL",
+      "countryIso3": "AFG",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AUS",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "BRB",
@@ -144,31 +1656,47 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BHR",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BOL",
+      "countryIso3": "BHS",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BLZ",
+      "countryIso3": "AUT",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ARM",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "BTN",
@@ -176,63 +1704,55 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BRN",
+      "countryIso3": "BEN",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BWA",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "BFA",
+      "countryIso3": "BHR",
       "indicatorName": "advisory_level_nl",
       "value": 3,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BRA",
+      "countryIso3": "AZE",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "BDI",
+      "countryIso3": "BLR",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BGD",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "KHM",
+      "countryIso3": "ALB",
       "indicatorName": "advisory_level_nl",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "CPV",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "BGR",
@@ -240,39 +1760,47 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CHL",
+      "countryIso3": "BWA",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "TCD",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "CHN",
+      "countryIso3": "BRN",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CAF",
+      "countryIso3": "BLZ",
       "indicatorName": "advisory_level_nl",
-      "value": 4,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "CMR",
@@ -280,7 +1808,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "CAN",
@@ -288,47 +1816,31 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "COM",
+      "countryIso3": "CAF",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BRA",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CIV",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "CUB",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "COD",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "HRV",
+      "countryIso3": "BIH",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "COL",
@@ -336,7 +1848,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "COG",
@@ -344,31 +1872,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CZE",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "DMA",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "DJI",
+      "countryIso3": "BOL",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "CRI",
@@ -376,55 +1896,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "ECU",
+      "countryIso3": "CIV",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "DOM",
+      "countryIso3": "TCD",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CHL",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "EGY",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SLV",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GNQ",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "DNK",
+      "countryIso3": "CZE",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "CYP",
@@ -432,7 +1936,55 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ERI",
@@ -440,7 +1992,39 @@
       "value": 3,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "EST",
@@ -448,63 +2032,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GAB",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GMB",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "FIN",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "FJI",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "DEU",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "FRA",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GHA",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SWZ",
@@ -512,7 +2040,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ETH",
@@ -520,31 +2048,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "GRC",
+      "countryIso3": "CUB",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FIN",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "GRD",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GIN",
+      "countryIso3": "FRA",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "GEO",
@@ -552,71 +2088,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "GTM",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "GUY",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "HTI",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "HUN",
+      "countryIso3": "GRC",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "ISL",
+      "countryIso3": "GHA",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GRD",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "IND",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "IDN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "HND",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "GNB",
@@ -624,47 +2128,95 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "IRL",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "IRQ",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ISR",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "JAM",
+      "countryIso3": "GUY",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "JPN",
+      "countryIso3": "GAB",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HUN",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ITA",
@@ -672,7 +2224,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "JOR",
@@ -680,79 +2240,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "KIR",
+      "countryIso3": "JAM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "JPN",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "IRN",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PRK",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "KOR",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "KGZ",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "KEN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "LVA",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "LAO",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "LSO",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "KAZ",
@@ -760,7 +2264,71 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LBN",
@@ -768,7 +2336,23 @@
       "value": 4,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LBY",
@@ -776,15 +2360,7 @@
       "value": 4,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "KWT",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LIE",
@@ -792,7 +2368,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MDG",
@@ -800,23 +2376,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "LUX",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "MDV",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MYS",
@@ -824,15 +2384,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "LTU",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LBR",
@@ -840,15 +2392,31 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "MLT",
+      "countryIso3": "KEN",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MLI",
@@ -856,39 +2424,39 @@
       "value": 4,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "MUS",
+      "countryIso3": "MDV",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "MHL",
+      "countryIso3": "LUX",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "MRT",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "FSM",
+      "countryIso3": "LTU",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MWI",
@@ -896,7 +2464,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MNG",
@@ -904,47 +2480,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "MCO",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "MAR",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "MNE",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "NAM",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "NPL",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MEX",
@@ -952,7 +2488,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MDA",
@@ -960,7 +2504,31 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MMR",
@@ -968,7 +2536,7 @@
       "value": 3,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MOZ",
@@ -976,23 +2544,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "NZL",
+      "countryIso3": "MRT",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MCO",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "NGA",
+      "countryIso3": "NPL",
       "indicatorName": "advisory_level_nl",
-      "value": 3,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "NRU",
@@ -1000,7 +2584,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "NIC",
@@ -1008,23 +2592,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "NER",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "NOR",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MKD",
@@ -1032,7 +2600,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "PAK",
@@ -1040,95 +2616,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "PLW",
+      "countryIso3": "NOR",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "OMN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PRY",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PAN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PER",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PHL",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "POL",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PSE",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "QAT",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ROU",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "PRT",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "PNG",
@@ -1136,71 +2632,95 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "VCT",
+      "countryIso3": "PLW",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "WSM",
+      "countryIso3": "PER",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "KNA",
+      "countryIso3": "PAN",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "RUS",
+      "countryIso3": "PSE",
       "indicatorName": "advisory_level_nl",
       "value": 3,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "RWA",
+      "countryIso3": "NER",
       "indicatorName": "advisory_level_nl",
-      "value": 2,
+      "value": 4,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SMR",
+      "countryIso3": "NZL",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "STP",
+      "countryIso3": "OMN",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SAU",
+      "countryIso3": "PHL",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LCA",
@@ -1208,7 +2728,71 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SRB",
@@ -1216,7 +2800,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SEN",
@@ -1224,23 +2808,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SVK",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SLE",
+      "countryIso3": "SAU",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SGP",
@@ -1248,15 +2824,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SYC",
+      "countryIso3": "SVK",
       "indicatorName": "advisory_level_nl",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SVN",
@@ -1264,39 +2840,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SLB",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SOM",
-      "indicatorName": "advisory_level_nl",
-      "value": 3,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ESP",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SSD",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ZAF",
@@ -1304,7 +2848,31 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "advisory_level_nl",
+      "value": 3,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "LKA",
@@ -1312,31 +2880,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SWE",
+      "countryIso3": "SYC",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "SYR",
+      "countryIso3": "STP",
       "indicatorName": "advisory_level_nl",
-      "value": 4,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SDN",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SUR",
@@ -1344,23 +2904,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CHE",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "TJK",
+      "countryIso3": "SLE",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TWN",
@@ -1368,7 +2944,23 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TZA",
@@ -1376,15 +2968,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "TON",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TGO",
@@ -1392,7 +2976,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TTO",
@@ -1400,7 +2984,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TLS",
@@ -1408,7 +2992,7 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TKM",
@@ -1416,55 +3000,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "THA",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "TUV",
+      "countryIso3": "CHE",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "TUN",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "UGA",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ARE",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "UKR",
-      "indicatorName": "advisory_level_nl",
-      "value": 4,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TUR",
@@ -1472,7 +3016,39 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "advisory_level_nl",
+      "value": 4,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "GBR",
@@ -1480,23 +3056,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "USA",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "URY",
+      "countryIso3": "ARE",
       "indicatorName": "advisory_level_nl",
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "UZB",
@@ -1504,7 +3072,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "VUT",
@@ -1512,15 +3096,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "VNM",
+      "countryIso3": "USA",
       "indicatorName": "advisory_level_nl",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "VEN",
@@ -1528,31 +3112,7 @@
       "value": 3,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ZMB",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ZWE",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "ABW",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "YEM",
@@ -1560,15 +3120,31 @@
       "value": 4,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "ASM",
+      "countryIso3": "ZWE",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ABW",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "AIA",
@@ -1576,7 +3152,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "ATA",
@@ -1584,7 +3168,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "CYM",
@@ -1592,15 +3184,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "CUW",
+      "countryIso3": "VNM",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "COK",
@@ -1608,15 +3200,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "GUF",
+      "countryIso3": "CUW",
       "indicatorName": "advisory_level_nl",
-      "value": 2,
+      "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "FRO",
@@ -1624,15 +3216,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "PYF",
+      "countryIso3": "GUF",
       "indicatorName": "advisory_level_nl",
-      "value": 1,
+      "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "GRL",
@@ -1640,7 +3232,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "GLP",
@@ -1648,39 +3240,15 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "HKG",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "XKX",
+      "countryIso3": "PYF",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "MAC",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "NCL",
-      "indicatorName": "advisory_level_nl",
-      "value": 2,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MTQ",
@@ -1688,7 +3256,23 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "NCL",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "MSR",
@@ -1696,7 +3280,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "NIU",
@@ -1704,7 +3288,23 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "advisory_level_nl",
+      "value": 2,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "PCN",
@@ -1712,31 +3312,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SXM",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "SJM",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
-    },
-    {
-      "countryIso3": "REU",
-      "indicatorName": "advisory_level_nl",
-      "value": 1,
-      "year": 2026,
-      "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "PRI",
@@ -1744,15 +3320,31 @@
       "value": 2,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
-      "countryIso3": "TCA",
+      "countryIso3": "REU",
       "indicatorName": "advisory_level_nl",
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SXM",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "SJM",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "TKL",
@@ -1760,7 +3352,15 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
+    },
+    {
+      "countryIso3": "TCA",
+      "indicatorName": "advisory_level_nl",
+      "value": 1,
+      "year": 2026,
+      "source": "advisories_nl",
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "VIR",
@@ -1768,7 +3368,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "VGB",
@@ -1776,7 +3376,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "WLF",
@@ -1784,7 +3384,7 @@
       "value": 1,
       "year": 2026,
       "source": "advisories_nl",
-      "fetchedAt": "2026-07-08T13:57:03.512Z"
+      "fetchedAt": "2026-07-08T08:30:06.053Z"
     },
     {
       "countryIso3": "SGP",

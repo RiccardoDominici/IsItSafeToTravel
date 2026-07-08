@@ -3,6 +3,7 @@ import { computeAllScores } from './scoring/engine.js';
 import { writeSnapshot } from './scoring/snapshot.js';
 import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
+import { injectUcdpForDate } from './backfill.js';
 import { aggregateVotes } from './sentiment/aggregate.js';
 import { fetchVotes } from './sentiment/fetch-votes.js';
 import { writeSentimentSnapshot, writeSentimentHistoryIndex, getSentimentDir } from './sentiment/snapshot.js';
@@ -66,6 +67,13 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
     console.error('ERROR: No raw data available — all fetchers failed and no cached data found');
     return { success: false, countriesScored: 0, sourcesSucceeded: 0, sourcesTotal };
   }
+
+  // v9.1 (SHIP-SPEC 1.3): today's ucdp-parsed.json holds ALL years 1989-latest
+  // per country (fetchUcdp always dumps the full consolidated OWID mirror) —
+  // without this injection the engine's rawByName Map.set would keep an
+  // ARBITRARY year's row per country. Select the correct current-year vintage,
+  // mirroring the same injection backfill.ts applies per historical date.
+  injectUcdpForDate(date, rawDataMap);
 
   console.log(`Loaded ${rawDataMap.size} source(s) with raw data`);
 
