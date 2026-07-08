@@ -1,11 +1,15 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { existsSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, rmSync, readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { writeSnapshot, loadSnapshot, listSnapshotDates } from '../scoring/snapshot.js';
 import type { ScoredCountry, FetchResult } from '../types.js';
 
-const SCORES_DIR = join(process.cwd(), 'data', 'scores');
+// Isolate ALL snapshot writes to a temp dir (getScoresDir honors SCORES_DIR):
+// these tests used to corrupt the real data/scores/latest.json.
+const SCORES_DIR = mkdtempSync(join(tmpdir(), 'scores-data05-'));
+process.env.SCORES_DIR = SCORES_DIR;
 
 function makeCountry(iso3: string, score: number): ScoredCountry {
   return {

@@ -538,6 +538,10 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
     url: 'https://www.gdacs.org/',
     description: 'Global Disaster Alerting Coordination System -- natural disaster alerts',
   },
+  ucdp: {
+    url: 'https://ucdp.uu.se/',
+    description: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)',
+  },
 };
 
 /**

@@ -13,7 +13,7 @@
     "generate:llms": "npx tsx scripts/generate-llms-full.ts",
     "preview": "astro preview",
     "astro": "astro",
-    "test": "node --import tsx --test src/pipeline/__tests__/*.test.ts src/pipeline/scoring/__tests__/*.test.ts",
+    "test": "node --import tsx --test --test-concurrency=1 src/pipeline/__tests__/*.test.ts src/pipeline/scoring/__tests__/*.test.ts",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
     "test:freshness": "node --import tsx --test src/pipeline/scoring/__tests__/freshness.test.ts",
     "pipeline": "tsx src/pipeline/run.ts",

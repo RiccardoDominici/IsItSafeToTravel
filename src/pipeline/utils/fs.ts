@@ -20,7 +20,9 @@ export function getRawDir(date: string): string {
 }
 
 export function getScoresDir(): string {
-  return join(process.cwd(), 'data', 'scores');
+  // SCORES_DIR override lets tests write snapshot fixtures to an isolated temp
+  // dir instead of the real data/scores (which they used to corrupt).
+  return process.env.SCORES_DIR ?? join(process.cwd(), 'data', 'scores');
 }
 
 /**

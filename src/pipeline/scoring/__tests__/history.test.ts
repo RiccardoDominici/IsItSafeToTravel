@@ -1,12 +1,16 @@
 import { describe, it, beforeEach, afterEach } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { existsSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, rmSync, readFileSync, writeFileSync, mkdtempSync } from 'node:fs';
 import { join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { writeSnapshot } from '../snapshot.js';
 import { writeHistoryIndex } from '../history.js';
 import type { ScoredCountry, FetchResult } from '../../types.js';
 
-const TEST_SCORES_DIR = join(process.cwd(), 'data', 'scores');
+// Isolate ALL snapshot/history writes to a temp dir (getScoresDir honors
+// SCORES_DIR): these tests used to corrupt the real data/scores files.
+const TEST_SCORES_DIR = mkdtempSync(join(tmpdir(), 'scores-history-'));
+process.env.SCORES_DIR = TEST_SCORES_DIR;
 const HISTORY_INDEX_PATH = join(TEST_SCORES_DIR, 'history-index.json');
 
 // Minimal scored country fixture (same as snapshot tests)
