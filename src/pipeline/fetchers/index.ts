@@ -1,6 +1,7 @@
 import type { FetchResult } from '../types.js';
 import { fetchWorldBank } from './worldbank.js';
 import { fetchVdem } from './vdem.js';
+import { fetchUcdp } from './ucdp.js';
 
 import { fetchAdvisories } from './advisories.js';
 import { fetchGpi } from './gpi.js';
@@ -15,6 +16,7 @@ import { fetchTier3bAdvisories } from './advisories-tier3b.js';
 
 export { fetchWorldBank } from './worldbank.js';
 export { fetchVdem } from './vdem.js';
+export { fetchUcdp } from './ucdp.js';
 
 export { fetchAdvisories } from './advisories.js';
 export { fetchTier1Advisories } from './advisories-tier1.js';
@@ -80,11 +82,12 @@ export async function fetchAllSources(date: string): Promise<FetchResult[]> {
   const allResults: FetchResult[] = [];
 
   // Batch 1: Non-advisory base sources (fetched in parallel)
-  console.log(`\n[PIPELINE] Batch 1/7: Base sources (worldbank, vdem, gpi, inform, reliefweb, gdacs)`);
+  console.log(`\n[PIPELINE] Batch 1/7: Base sources (worldbank, vdem, ucdp, gpi, inform, reliefweb, gdacs)`);
   const batchStart1 = Date.now();
   const batch1 = await settleBatch([
     { name: 'worldbank', fn: () => fetchWorldBank(date) },
     { name: 'vdem', fn: () => fetchVdem(date) },
+    { name: 'ucdp', fn: () => fetchUcdp(date) },
     { name: 'gpi', fn: () => fetchGpi(date) },
     { name: 'inform', fn: () => fetchInform(date) },
     { name: 'reliefweb', fn: () => fetchReliefweb(date) },

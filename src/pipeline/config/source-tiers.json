@@ -1,8 +1,8 @@
 {
+  "_comment_worldbank": "v9.1 (SHIP-SPEC 1.1a gate): 'worldbank' is INTENTIONALLY absent from this sources map. worldbank.ts now stamps RawIndicator.dataDate from each indicator's own vintage year, which would otherwise start decaying wb_child_mortality/wb_air_pollution/wb_homicide freshness (computeIndicatorFreshness falls back to 1.0 only when the source has no entry here). The frozen v9.1 parity fixture (scripts/fixtures/formula-v91-parity.csv) was generated assuming fw=1.0 for all baseline sources; enabling WB decay would move scores for ~199 countries and break the <0.02 parity gate. dataDate is still persisted for citability/documentation — decay is simply not wired to it for this source. Documented follow-up per SHIP-SPEC 1.1a.",
   "maxSignalInfluence": 0.30,
   "maxDailyScoreChange": 0.3,
   "sources": {
-    "worldbank": { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "vdem":      { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "gpi":       { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "inform":    { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },

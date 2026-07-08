@@ -28,6 +28,84 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/honduras",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/honduras",
+        "base_path": "/foreign-travel-advice/honduras",
+        "content_id": "80d80224-d917-4d7a-881e-1122fe1e7799",
+        "details": {
+          "change_description": "Removal of information about Tropical Storm Cristina.",
+          "country": {
+            "name": "Honduras",
+            "slug": "honduras",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-06-17T13:04:18Z",
+        "schema_name": "travel_advice",
+        "title": "Honduras travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/honduras",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/trinidad-and-tobago",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/trinidad-and-tobago",
+        "base_path": "/foreign-travel-advice/trinidad-and-tobago",
+        "content_id": "2cacdc4c-913b-463a-b29e-4a5f45b67e4e",
+        "details": {
+          "change_description": "New information about recent cases of drug-assisted robbery and sexual assault (see ‘Drug assisted robbery and sexual assault’ on the ‘Safety and security’ page).\r\n\r\n",
+          "country": {
+            "name": "Trinidad and Tobago",
+            "slug": "trinidad-and-tobago",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-08T10:37:37Z",
+        "schema_name": "travel_advice",
+        "title": "Trinidad and Tobago travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/trinidad-and-tobago",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/france",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/france",
         "base_path": "/foreign-travel-advice/france",
@@ -2237,45 +2315,6 @@
         "schema_name": "travel_advice",
         "title": "Bahrain travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/bahrain",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/honduras",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/honduras",
-        "base_path": "/foreign-travel-advice/honduras",
-        "content_id": "80d80224-d917-4d7a-881e-1122fe1e7799",
-        "details": {
-          "change_description": "Removal of information about Tropical Storm Cristina.",
-          "country": {
-            "name": "Honduras",
-            "slug": "honduras",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-06-17T13:04:18Z",
-        "schema_name": "travel_advice",
-        "title": "Honduras travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/honduras",
         "withdrawn": false
       },
       {
@@ -6065,45 +6104,6 @@
         "schema_name": "travel_advice",
         "title": "Dominican Republic travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/dominican-republic",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/trinidad-and-tobago",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/trinidad-and-tobago",
-        "base_path": "/foreign-travel-advice/trinidad-and-tobago",
-        "content_id": "2cacdc4c-913b-463a-b29e-4a5f45b67e4e",
-        "details": {
-          "change_description": "Addition of information about State of Emergency and updated with information about the risks from terrorism ('Warnings and security' and ‘Safety and security’ pages).\r\n\r\n",
-          "country": {
-            "name": "Trinidad and Tobago",
-            "slug": "trinidad-and-tobago",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-03-06T10:24:58Z",
-        "schema_name": "travel_advice",
-        "title": "Trinidad and Tobago travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/trinidad-and-tobago",
         "withdrawn": false
       },
       {
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-07-07T16:46:12+01:00",
+  "updated_at": "2026-07-08T14:44:05+01:00",
   "withdrawn_notice": {}
 }

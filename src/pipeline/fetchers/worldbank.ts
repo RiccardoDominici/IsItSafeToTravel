@@ -10,24 +10,40 @@ const WB_BASE_URL = 'https://api.worldbank.org/v2/country/all/indicator';
  *
  * As of v8.1.0, the four retired Worldwide Governance Indicators (PV.EST, RL.EST,
  * GE.EST, CC.EST) are replaced by V-Dem v16 indicators — see src/pipeline/fetchers/vdem.ts.
- * The World Bank API still serves child mortality (SH.DYN.MORT) and PM2.5 air pollution
- * (EN.ATM.PM25.MC.M3), so this fetcher continues to provide those two indicators for the
- * Health and Environment pillars.
+ *
+ * v9.1 (SHIP-SPEC 1.1a): every query below now appends `mrnev=1` ("most recent
+ * non-empty value") instead of a fixed 3-year date window. This is REQUIRED —
+ * verified live: without it, VC.IHR.PSRC.P5 (homicide) returns 0 rows for the
+ * project's countries (most recent homicide data is 1-3 years old and frequently
+ * falls outside a narrow window), and EN.ATM.PM25.MC.M3 (air pollution, latest
+ * vintage 2023) was SILENTLY EMPTY in production because the pipeline always
+ * requested a window ending at the CURRENT year. mrnev=1 fixes both by asking
+ * the API to find each country's own most recent non-null observation, whatever
+ * year that happens to be.
+ *
+ * wb_homicide (VC.IHR.PSRC.P5) is new in v9.1 (crime pillar, D1). wb_population
+ * (SP.POP.TOTL) is also new in v9.1 but is an INTERNAL engine input, NOT a scored
+ * indicator (F1 population-scaled homicide precision) — it is persisted here as
+ * an ordinary RawIndicator named `wb_population`, but normalize.ts intentionally
+ * has NO range entry for it, so normalizeIndicators() silently skips it and it
+ * never enters any pillar.
  */
 const INDICATORS: Array<{ wbCode: string; name: string; description: string }> = [
   { wbCode: 'SH.DYN.MORT', name: 'wb_child_mortality', description: 'Under-5 Mortality Rate (per 1,000)' },
   { wbCode: 'EN.ATM.PM25.MC.M3', name: 'wb_air_pollution', description: 'PM2.5 Air Pollution (µg/m³)' },
+  { wbCode: 'VC.IHR.PSRC.P5', name: 'wb_homicide', description: 'Intentional Homicides (per 100,000 people)' },
+  { wbCode: 'SP.POP.TOTL', name: 'wb_population', description: 'Total Population (internal engine input, not scored)' },
 ];
 
 async function fetchIndicator(
   wbCode: string,
   indicatorName: string,
-  year: number,
 ): Promise<RawIndicator[]> {
-  // Request data for a 3-year window ending at the target year
-  // This ensures we get data even if the exact year is missing (WB data has gaps)
-  const startYear = year - 2;
-  const url = `${WB_BASE_URL}/${wbCode}?format=json&per_page=500&date=${startYear}:${year}`;
+  // mrnev=1 ("most recent non-empty value"): the WB API itself finds each
+  // country's own latest non-null observation, whatever year that is — no
+  // date window needed (verified live: this matches a bare `mrnev=1` query
+  // with no `date=` param, one row per country).
+  const url = `${WB_BASE_URL}/${wbCode}?format=json&per_page=500&mrnev=1`;
 
   const response = await fetch(url, {
     signal: AbortSignal.timeout(60_000),
@@ -48,15 +64,17 @@ async function fetchIndicator(
 
   const entries = json[1] as Array<Record<string, unknown>>;
 
-  // Group by country, keep only the most recent year with data
+  // Group by country, keep only the most recent year with data (defensive —
+  // mrnev=1 should already return a single row per country, but a duplicate
+  // is handled gracefully rather than silently double-counted).
   const byCountry = new Map<string, { value: number; year: number }>();
 
   for (const entry of entries) {
     const iso3 = String(entry.countryiso3code || '').toUpperCase();
     const value = entry.value;
-    const entryYear = Number(entry.date) || year;
+    const entryYear = Number(entry.date);
 
-    if (!iso3 || value === null || value === undefined) continue;
+    if (!iso3 || value === null || value === undefined || !Number.isFinite(entryYear)) continue;
     if (!getCountryByIso3(iso3)) continue;
 
     const numValue = Number(value);
@@ -76,6 +94,14 @@ async function fetchIndicator(
       value: data.value,
       year: data.year,
       source: 'worldbank',
+      // v9.1 (SHIP-SPEC 1.1a) freshness-honesty fix: stamp each indicator with
+      // its OWN vintage year instead of leaving dataDate unset. NOTE: 'worldbank'
+      // is intentionally NOT present in source-tiers.json (see that file's
+      // comment) so this dataDate does NOT feed freshness decay — the frozen
+      // v9.1 parity fixture assumes fw=1.0 for baseline sources, and flipping
+      // decay on here would move scores across ~199 countries relative to it.
+      // dataDate is persisted regardless, for citability/documentation.
+      dataDate: `${data.year}-01-01T00:00:00.000Z`,
     });
   }
 
@@ -85,17 +111,15 @@ async function fetchIndicator(
 export async function fetchWorldBank(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
-  // Use the snapshot date's year to fetch historical data
-  const targetYear = parseInt(date.slice(0, 4), 10);
 
   try {
-    console.log(`[WORLDBANK] Fetching World Bank indicators for year ${targetYear}...`);
+    console.log(`[WORLDBANK] Fetching World Bank indicators (mrnev=1, most-recent-non-empty)...`);
     const allIndicators: RawIndicator[] = [];
     const errors: string[] = [];
 
     // Fetch all indicators in parallel
     const results = await Promise.allSettled(
-      INDICATORS.map((ind) => fetchIndicator(ind.wbCode, ind.name, targetYear)),
+      INDICATORS.map((ind) => fetchIndicator(ind.wbCode, ind.name)),
     );
 
     for (let i = 0; i < results.length; i++) {

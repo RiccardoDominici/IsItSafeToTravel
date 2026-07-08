@@ -1,12 +1,19 @@
 import type { FetchResult, RawSourceData, RawIndicator } from '../types.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName } from '../config/countries.js';
+import { getCountryByName, getCountryByIso3 } from '../config/countries.js';
 import { join } from 'node:path';
 import { writeFileSync } from 'node:fs';
 import * as XLSX from 'xlsx';
 
 const GPI_EXCEL_URL =
   'https://www.visionofhumanity.org/wp-content/uploads/2023/06/GPI-2023-overall-scores-and-domains-2008-2023.xlsx';
+
+// v9.1 (SHIP-SPEC 1.1c, D3): primary GPI source is the IEP's own JSON manifest,
+// which carries the CURRENT (2026) edition across ALL published years — including
+// retroactive revisions the frozen 2023 xlsx snapshot below can never reflect.
+// The xlsx above is kept as a documented fallback (D3 fallback chain).
+const GPI_MANIFEST_URL = 'https://gpi.economicsandpeace.org/data/gpi/manifest.json';
+const GPI_JSON_YEAR_URL = (year: number) => `https://gpi.economicsandpeace.org/data/gpi/${year}.json`;
 
 /**
  * Common country name aliases that differ between GPI and ISO standard names.
@@ -67,35 +74,157 @@ function resolveCountryName(rawName: string): string {
   return NAME_ALIASES[lower] || rawName.trim();
 }
 
+/**
+ * v9.1 (SHIP-SPEC 1.1c, D3) — fetch the IEP GPI JSON manifest + every published
+ * year's JSON (2008 through whatever the manifest's `years` array currently
+ * tops out at, e.g. 2026) into the SAME Map<year, RawIndicator[]> shape as
+ * parseGpiExcelAllYears, so selectGpiIndicatorsForYear() works identically
+ * regardless of which source produced the map.
+ *
+ * Field mapping (per-year JSON entry): iso3 -> countryIso3; overall ->
+ * gpi_overall; safety -> gpi_safety_security; militarisation -> gpi_militarisation.
+ * A year whose fetch fails is skipped (not fatal) — the manifest lists 19 years
+ * as of 2026; losing one still leaves the vintage-selection logic usable.
+ */
+export async function parseGpiJsonAllYears(): Promise<Map<number, RawIndicator[]>> {
+  const manifestRes = await fetch(GPI_MANIFEST_URL, { signal: AbortSignal.timeout(30_000) });
+  if (!manifestRes.ok) {
+    throw new Error(`manifest.json: HTTP ${manifestRes.status}`);
+  }
+  const manifest = (await manifestRes.json()) as { years?: number[] };
+  const years = Array.isArray(manifest.years) ? manifest.years : [];
+  if (years.length === 0) {
+    throw new Error('manifest.json: no years array');
+  }
+
+  const byYear = new Map<number, RawIndicator[]>();
+
+  await Promise.all(
+    years.map(async (year) => {
+      try {
+        const res = await fetch(GPI_JSON_YEAR_URL(year), { signal: AbortSignal.timeout(30_000) });
+        if (!res.ok) {
+          console.warn(`[GPI] JSON ${year}.json: HTTP ${res.status} — skipping this year`);
+          return;
+        }
+        const entries = (await res.json()) as Array<{
+          iso3?: string;
+          overall?: number;
+          safety?: number;
+          militarisation?: number;
+        }>;
+        if (!Array.isArray(entries)) return;
+
+        const indicators: RawIndicator[] = [];
+        for (const entry of entries) {
+          const iso3 = (entry.iso3 || '').toUpperCase();
+          if (!iso3 || !getCountryByIso3(iso3)) continue;
+
+          if (typeof entry.overall === 'number' && !isNaN(entry.overall)) {
+            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_overall', value: entry.overall, year, source: 'gpi' });
+          }
+          if (typeof entry.safety === 'number' && !isNaN(entry.safety)) {
+            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_safety_security', value: entry.safety, year, source: 'gpi' });
+          }
+          if (typeof entry.militarisation === 'number' && !isNaN(entry.militarisation)) {
+            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_militarisation', value: entry.militarisation, year, source: 'gpi' });
+          }
+        }
+        if (indicators.length > 0) byYear.set(year, indicators);
+      } catch (yearError) {
+        const msg = yearError instanceof Error ? yearError.message : String(yearError);
+        console.warn(`[GPI] JSON ${year}.json: fetch failed (${msg}) — skipping this year`);
+      }
+    }),
+  );
+
+  return byYear;
+}
+
+/** Serialize a Map<year, RawIndicator[]> to a plain JSON-friendly object for disk persistence. */
+export function serializeGpiByYear(byYear: Map<number, RawIndicator[]>): Record<string, RawIndicator[]> {
+  const out: Record<string, RawIndicator[]> = {};
+  for (const [year, indicators] of byYear) out[String(year)] = indicators;
+  return out;
+}
+
+/** Inverse of serializeGpiByYear — reconstruct the Map from a persisted JSON file. */
+export function deserializeGpiByYear(obj: Record<string, RawIndicator[]>): Map<number, RawIndicator[]> {
+  const byYear = new Map<number, RawIndicator[]>();
+  for (const [yearStr, indicators] of Object.entries(obj)) {
+    const year = Number(yearStr);
+    if (Number.isFinite(year)) byYear.set(year, indicators);
+  }
+  return byYear;
+}
+
+/**
+ * xlsx fallback path (D3 fallback chain step 2): fetch + parse the frozen 2023
+ * GPI workbook exactly as fetchGpi always did pre-v9.1. Extracted into its own
+ * function so fetchGpi can try the JSON primary source first and fall back here
+ * without duplicating the xlsx parse/persist logic.
+ */
+async function fetchGpiXlsxFallback(rawDir: string, fetchedAt: string): Promise<FetchResult> {
+  console.log('[GPI] Fetching Global Peace Index data (xlsx fallback)...');
+  const response = await fetch(GPI_EXCEL_URL, {
+    signal: AbortSignal.timeout(60_000),
+  });
+
+  if (!response.ok) {
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+  writeFileSync(join(rawDir, 'gpi.xlsx'), buffer);
+
+  const indicators = parseGpiExcel(buffer, fetchedAt);
+  const sourceData: RawSourceData = {
+    source: 'gpi',
+    fetchedAt,
+    indicators,
+  };
+  writeJson(join(rawDir, 'gpi-parsed.json'), sourceData);
+
+  const uniqueCountries = new Set(indicators.map((i) => i.countryIso3));
+  console.log(
+    `[GPI] xlsx fallback: parsed data for ${uniqueCountries.size} countries (${indicators.length} indicators)`
+  );
+
+  return {
+    source: 'gpi',
+    success: true,
+    countriesFound: uniqueCountries.size,
+    fetchedAt,
+  };
+}
+
 export async function fetchGpi(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
+  const errors: string[] = [];
 
+  // Primary (v9.1, D3): IEP GPI JSON manifest — current edition, all published
+  // years, so retroactive revisions to earlier years are picked up too.
   try {
-    console.log('[GPI] Fetching Global Peace Index data...');
-    const response = await fetch(GPI_EXCEL_URL, {
-      signal: AbortSignal.timeout(60_000),
-    });
+    console.log('[GPI] Fetching Global Peace Index data (JSON manifest, primary)...');
+    const byYear = await parseGpiJsonAllYears();
+    if (byYear.size === 0) throw new Error('no years parsed from JSON manifest');
 
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-    }
+    // Persist the FULL all-years table for backfill vintage-selection (mirrors
+    // gpi.xlsx's role for the xlsx path — see backfill.ts injectGpiForDate).
+    writeJson(join(rawDir, 'gpi-json-all-years.json'), serializeGpiByYear(byYear));
 
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    writeFileSync(join(rawDir, 'gpi.xlsx'), buffer);
+    const latestYear = Math.max(...byYear.keys());
+    const indicators = byYear.get(latestYear) ?? [];
+    if (indicators.length === 0) throw new Error(`no indicators for latest year ${latestYear}`);
 
-    const indicators = parseGpiExcel(buffer, fetchedAt);
-    const sourceData: RawSourceData = {
-      source: 'gpi',
-      fetchedAt,
-      indicators,
-    };
+    const sourceData: RawSourceData = { source: 'gpi', fetchedAt, indicators };
     writeJson(join(rawDir, 'gpi-parsed.json'), sourceData);
 
     const uniqueCountries = new Set(indicators.map((i) => i.countryIso3));
     console.log(
-      `[GPI] Successfully parsed data for ${uniqueCountries.size} countries (${indicators.length} indicators)`
+      `[GPI] JSON: ${uniqueCountries.size} countries for ${latestYear} (${byYear.size} years persisted for backfill)`,
     );
 
     return {
@@ -104,36 +233,46 @@ export async function fetchGpi(date: string): Promise<FetchResult> {
       countriesFound: uniqueCountries.size,
       fetchedAt,
     };
-  } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : String(error);
-    console.warn(`[GPI] Fetch failed: ${errorMessage}`);
-
-    // Try fallback to cached data
-    const cached = findLatestCached('gpi-parsed.json');
-    if (cached) {
-      const cachedData = readJson<RawSourceData>(cached);
-      if (cachedData) {
-        console.warn(`[GPI] Using cached data from ${cached}`);
-        writeJson(join(rawDir, 'gpi-parsed.json'), cachedData);
-        const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
-        return {
-          source: 'gpi',
-          success: true,
-          countriesFound: uniqueCountries.size,
-          error: `Used cached data. Original error: ${errorMessage}`,
-          fetchedAt: cachedData.fetchedAt,
-        };
-      }
-    }
-
-    return {
-      source: 'gpi',
-      success: false,
-      countriesFound: 0,
-      error: errorMessage,
-      fetchedAt,
-    };
+  } catch (jsonError) {
+    const msg = jsonError instanceof Error ? jsonError.message : String(jsonError);
+    console.warn(`[GPI] JSON fetch failed: ${msg} — falling back to xlsx`);
+    errors.push(`JSON: ${msg}`);
   }
+
+  // Fallback 1 (D3 fallback chain): existing 2023 xlsx.
+  try {
+    return await fetchGpiXlsxFallback(rawDir, fetchedAt);
+  } catch (xlsxError) {
+    const msg = xlsxError instanceof Error ? xlsxError.message : String(xlsxError);
+    console.warn(`[GPI] xlsx fallback failed: ${msg}`);
+    errors.push(`xlsx: ${msg}`);
+  }
+
+  // Fallback 2: last cached gpi-parsed.json (either source).
+  const cached = findLatestCached('gpi-parsed.json');
+  if (cached) {
+    const cachedData = readJson<RawSourceData>(cached);
+    if (cachedData) {
+      console.warn(`[GPI] Using cached data from ${cached}`);
+      writeJson(join(rawDir, 'gpi-parsed.json'), cachedData);
+      const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
+      return {
+        source: 'gpi',
+        success: true,
+        countriesFound: uniqueCountries.size,
+        error: `Used cached data. Errors: ${errors.join('; ')}`,
+        fetchedAt: cachedData.fetchedAt,
+      };
+    }
+  }
+
+  return {
+    source: 'gpi',
+    success: false,
+    countriesFound: 0,
+    error: errors.join('; '),
+    fetchedAt,
+  };
 }
 
 /**

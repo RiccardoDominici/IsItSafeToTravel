@@ -47,140 +47,87 @@ const SK_LEVEL_TEXT: Record<number, string> = {
   4: 'Do not travel',
 };
 
-// --- Japan MOFA country page ID -> ISO3 mapping ---
-const JP_MOFA_ID_TO_ISO3: Record<string, string> = {
-  '001': 'KOR',
-  '002': 'CHN',
-  '003': 'TWN',
-  '004': 'MNG',
-  '005': 'PHL',
-  '007': 'IDN',
-  '008': 'MYS',
-  '009': 'SGP',
-  '010': 'THA',
-  '011': 'VNM',
-  '012': 'MMR',
-  '013': 'KHM',
-  '015': 'LAO',
-  '018': 'IND',
-  '019': 'NPL',
-  '020': 'LKA',
-  '022': 'PAK',
-  '023': 'BGD',
-  '025': 'AFG',
-  '026': 'TUR',
-  '027': 'IRQ',
-  '028': 'IRN',
-  '029': 'SYR',
-  '030': 'LBN',
-  '031': 'JOR',
-  '032': 'ISR',
-  '033': 'SAU',
-  '034': 'ARE',
-  '035': 'QAT',
-  '036': 'KWT',
-  '037': 'BHR',
-  '038': 'OMN',
-  '039': 'YEM',
-  '040': 'EGY',
-  '041': 'USA',
-  '043': 'CAN',
-  '044': 'MEX',
-  '045': 'GTM',
-  '046': 'BLZ',
-  '047': 'SLV',
-  '048': 'HND',
-  '049': 'NIC',
-  '050': 'CRI',
-  '051': 'PAN',
-  '052': 'CUB',
-  '053': 'JAM',
-  '054': 'HTI',
-  '055': 'DOM',
-  '060': 'COL',
-  '061': 'VEN',
-  '062': 'ECU',
-  '063': 'PER',
-  '064': 'BOL',
-  '065': 'BRA',
-  '066': 'ARG',
-  '067': 'CHL',
-  '068': 'PRY',
-  '069': 'URY',
-  '070': 'GBR',
-  '071': 'IRL',
-  '072': 'FRA',
-  '074': 'NLD',
-  '075': 'BEL',
-  '076': 'LUX',
-  '077': 'DEU',
-  '078': 'AUT',
-  '079': 'CHE',
-  '080': 'ITA',
-  '082': 'ESP',
-  '083': 'PRT',
-  '084': 'GRC',
-  '086': 'SWE',
-  '087': 'NOR',
-  '088': 'DNK',
-  '089': 'FIN',
-  '090': 'ISL',
-  '091': 'POL',
-  '092': 'CZE',
-  '093': 'SVK',
-  '094': 'HUN',
-  '095': 'ROU',
-  '096': 'BGR',
-  '098': 'HRV',
-  '099': 'SVN',
-  '100': 'BIH',
-  '101': 'SRB',
-  '103': 'ALB',
-  '104': 'MKD',
-  '105': 'MNE',
-  '106': 'RUS',
-  '107': 'UKR',
-  '108': 'MDA',
-  '109': 'BLR',
-  '110': 'GEO',
-  '111': 'ARM',
-  '112': 'AZE',
-  '113': 'KAZ',
-  '114': 'UZB',
-  '115': 'TKM',
-  '116': 'TJK',
-  '117': 'KGZ',
-  '118': 'EST',
-  '119': 'LVA',
-  '120': 'LTU',
-  '122': 'AUS',
-  '123': 'NZL',
-  '124': 'FJI',
-  '125': 'PNG',
-  '127': 'ZAF',
-  '130': 'KEN',
-  '131': 'TZA',
-  '132': 'UGA',
-  '133': 'ETH',
-  '134': 'NGA',
-  '135': 'GHA',
-  '136': 'SEN',
-  '138': 'MAR',
-  '139': 'TUN',
-  '140': 'LBY',
-  '141': 'DZA',
-  '143': 'MOZ',
-  '147': 'COD',
-  '148': 'CMR',
-  '153': 'SDN',
-  '154': 'SSD',
-  '156': 'SOM',
-  '159': 'MLI',
-  '160': 'BFA',
-  '161': 'NER',
-  '162': 'TCD',
-  '165': 'MDG',
-  '171': 'PRK',
+// --- Japan MOFA (anzen.mofa.go.jp) japanese-name -> ISO3 mapping (v9.1 rewrite) ---
+//
+// v9.1 (SHIP-SPEC 1.1d): the OLD static JP_MOFA_ID_TO_ISO3 table above (page-ID
+// keyed) went STALE — anzen.mofa.go.jp renumbered its per-country page IDs at
+// some point, so the old IDs pointed at the WRONG countries and the level-scrape
+// regex additionally matched unrelated in-page "レベル" text, together producing
+// a spurious constant-Level-4 ("Do Not Travel") reading for ~89 actually-safe
+// countries — this is why v9/v9.1's frozen exclusion set (weights.json
+// frozenExcludedSources) has always had to carry 'jp' as a broken-parser
+// exclusion. The fix REWRITES discovery to be fully dynamic: scrape the live
+// riskmap index page for {pageId, japaneseName} pairs (~206, see
+// fetchJpCountryIndex below) and resolve ISO3 via THIS name table, instead of
+// trusting any hardcoded page ID. Unmatched names are skipped with a console
+// warning and NEVER guessed (T-lb3-02).
+const JP_NAME_TO_ISO3: Record<string, string> = {
+  'インド': 'IND', 'インドネシア': 'IDN', '大韓民国（韓国）': 'KOR', 'カンボジア': 'KHM',
+  'シンガポール': 'SGP', 'スリランカ': 'LKA', 'タイ': 'THA', '台湾': 'TWN',
+  '中華人民共和国（中国）': 'CHN', 'ネパール': 'NPL', 'パキスタン': 'PAK', 'バングラデシュ': 'BGD',
+  'フィリピン': 'PHL', 'ブルネイ': 'BRN', 'ベトナム': 'VNM', '香港': 'HKG',
+  'マレーシア': 'MYS', 'ミャンマー': 'MMR', 'モンゴル': 'MNG', 'ラオス': 'LAO',
+  'モルディブ': 'MDV', '北朝鮮': 'PRK', 'マカオ': 'MAC', 'ブータン': 'BTN',
+  'アフガニスタン': 'AFG', 'アラブ首長国連邦': 'ARE', 'イエメン': 'YEM', 'イスラエル': 'ISR',
+  'イラク': 'IRQ', 'イラン': 'IRN', 'オマーン': 'OMN', 'カタール': 'QAT',
+  'クウェート': 'KWT', 'サウジアラビア': 'SAU', 'シリア': 'SYR', 'トルコ': 'TUR',
+  'バーレーン': 'BHR', 'ヨルダン': 'JOR', 'レバノン': 'LBN',
+  'オーストラリア': 'AUS', 'ソロモン諸島': 'SLB', 'サモア': 'WSM', 'ニュージーランド': 'NZL',
+  'パプアニューギニア': 'PNG', 'フィジー': 'FJI', 'バヌアツ': 'VUT', 'タヒチ': 'PYF',
+  'アルジェリア': 'DZA', 'アンゴラ': 'AGO', 'ウガンダ': 'UGA', 'エジプト': 'EGY',
+  'エチオピア': 'ETH', 'ガーナ': 'GHA', 'ガボン': 'GAB', 'カメルーン': 'CMR',
+  'ギニア': 'GIN', 'ケニア': 'KEN', 'コートジボワール': 'CIV', 'コンゴ共和国': 'COG',
+  'コンゴ民主共和国': 'COD', 'ザンビア': 'ZMB', 'シエラレオネ': 'SLE', 'ジンバブエ': 'ZWE',
+  'スーダン': 'SDN', 'セーシェル': 'SYC', 'セネガル': 'SEN', 'ソマリア': 'SOM',
+  'タンザニア': 'TZA', '中央アフリカ': 'CAF', 'チュニジア': 'TUN', 'トーゴ': 'TGO',
+  'ナイジェリア': 'NGA', 'ニジェール': 'NER', 'ブルキナファソ': 'BFA', 'ベナン': 'BEN',
+  'マダガスカル': 'MDG', 'マラウイ': 'MWI', 'マリ': 'MLI', '南アフリカ共和国': 'ZAF',
+  'モザンビーク': 'MOZ', 'モロッコ': 'MAR', 'リビア': 'LBY', 'リベリア': 'LBR',
+  'ブルンジ': 'BDI', 'レソト': 'LSO', 'ルワンダ': 'RWA', 'コモロ': 'COM',
+  'チャド': 'TCD', 'エリトリア': 'ERI', 'ギニアビサウ': 'GNB', 'ジブチ': 'DJI',
+  '西サハラ地域': 'ESH', 'ナミビア': 'NAM',
+  'アイルランド': 'IRL', 'アゼルバイジャン': 'AZE', 'イタリア': 'ITA', '英国': 'GBR',
+  'エストニア': 'EST', 'オーストリア': 'AUT', 'オランダ': 'NLD', 'ギリシャ': 'GRC',
+  'スイス': 'CHE', 'スウェーデン': 'SWE', 'スペイン': 'ESP', 'スロベニア': 'SVN',
+  'チェコ': 'CZE', 'デンマーク': 'DNK', 'ドイツ': 'DEU', 'ノルウェー': 'NOR',
+  'バチカン': 'VAT', 'ハンガリー': 'HUN', 'フィンランド': 'FIN', 'フランス': 'FRA',
+  'ブルガリア': 'BGR', 'ベルギー': 'BEL', 'ポーランド': 'POL', 'ポルトガル': 'PRT',
+  'セルビア': 'SRB', 'ルクセンブルク': 'LUX', 'ルーマニア': 'ROU', 'ロシア': 'RUS',
+  'モンテネグロ': 'MNE', 'コソボ': 'XKX', 'ウクライナ': 'UKR', 'ウズベキスタン': 'UZB',
+  'スロバキア': 'SVK', 'ベラルーシ': 'BLR', 'ラトビア': 'LVA', 'カザフスタン': 'KAZ',
+  'クロアチア': 'HRV', 'ボスニア・ヘルツェゴビナ': 'BIH', 'リトアニア': 'LTU', 'キプロス': 'CYP',
+  'マルタ': 'MLT', 'アルバニア': 'ALB', 'ジブラルタル': 'GIB', 'モルドバ': 'MDA',
+  'アルメニア': 'ARM', 'ジョージア': 'GEO', 'タジキスタン': 'TJK', 'トルクメニスタン': 'TKM',
+  '北マケドニア共和国': 'MKD',
+  'アメリカ合衆国（米国）': 'USA', 'カナダ': 'CAN', '北マリアナ諸島': 'MNP', 'グアム': 'GUM',
+  'アルゼンチン': 'ARG', 'ウルグアイ': 'URY', 'エクアドル': 'ECU', 'エルサルバドル': 'SLV',
+  'キューバ': 'CUB', 'グアテマラ': 'GTM', 'コスタリカ': 'CRI', 'コロンビア': 'COL',
+  'ジャマイカ': 'JAM', 'スリナム': 'SUR', 'チリ': 'CHL', 'ドミニカ共和国': 'DOM',
+  'トリニダード・トバゴ': 'TTO', 'ニカラグア': 'NIC', 'ハイチ': 'HTI', 'パナマ': 'PAN',
+  'バハマ': 'BHS', 'パラグアイ': 'PRY', 'ブラジル': 'BRA', 'ベネズエラ': 'VEN',
+  'ペルー': 'PER', 'ボリビア': 'BOL', 'ホンジュラス': 'HND', 'メキシコ': 'MEX',
+  'キルギス': 'KGZ', 'キリバス': 'KIR', 'マーシャル': 'MHL', 'ミクロネシア': 'FSM',
+  'ナウル': 'NRU', 'パラオ': 'PLW', 'トンガ': 'TON', 'ツバル': 'TUV',
+  'カーボベルデ': 'CPV', '赤道ギニア': 'GNQ', 'ガンビア': 'GMB', 'モーリタニア': 'MRT',
+  'モーリシャス': 'MUS', 'サントメ・プリンシペ': 'STP', 'エスワティニ王国': 'SWZ',
+  'アイスランド': 'ISL', 'リヒテンシュタイン': 'LIE', 'モナコ': 'MCO', 'サンマリノ': 'SMR',
+  'アンティグア・バーブーダ': 'ATG', 'バルバドス': 'BRB', 'ベリーズ': 'BLZ', 'ドミニカ': 'DMA',
+  'グレナダ': 'GRD', 'セントクリストファー・ネービス': 'KNA', 'セントルシア': 'LCA',
+  'セントビンセント': 'VCT', 'ガイアナ': 'GUY', '東ティモール': 'TLS', 'ボツワナ': 'BWA',
+  'アンドラ': 'AND', 'ニューカレドニア': 'NCL', 'クック諸島': 'COK', '南スーダン': 'SSD',
+  'ニウエ': 'NIU',
+};
+
+/** Minimum matched-country floor for the JP dynamic index (T-lb3-02, SHIP-SPEC 1.1d: >=180/206). */
+const JP_MIN_MAPPED = 180;
+
+/** Discovery anchors the rewritten JP fetcher MUST reproduce (SHIP-SPEC 1.1d). */
+const JP_DISCOVERY_ANCHORS: Record<string, number> = {
+  RUS: 4, UKR: 4, IRQ: 4, IRN: 4,
+  FRA: 1, USA: 1, SGP: 1, AUS: 1, CAN: 1, GBR: 1, VAT: 1, CHN: 1,
+  MEX: 3, ECU: 3,
+  BHR: 2, XKX: 2,
+  BLR: 4,
 };
 
 interface FetcherResult {
@@ -392,21 +339,71 @@ async function fetchNlAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 3: Japan (MOFA anzen.mofa.go.jp)
+// Sub-fetcher 3: Japan (MOFA anzen.mofa.go.jp) — v9.1 REWRITE (SHIP-SPEC 1.1d)
 // =============================================================================
 
-/** Convert fullwidth digit to number: 1->1, 2->2 etc */
-function parseJpDigit(char: string): number {
-  const code = char.charCodeAt(0);
-  // Fullwidth digits: \uFF10 (0) through \uFF19 (9)
-  if (code >= 0xff10 && code <= 0xff19) {
-    return code - 0xff10;
+interface JpIndexEntry {
+  pageId: string;
+  japaneseName: string;
+  iso3: string | null; // null = unmatched (skipped, never guessed)
+}
+
+/**
+ * Discover the CURRENT {pageId -> japaneseName} index from the live riskmap
+ * listing page. The old static JP_MOFA_ID_TO_ISO3 table (page-ID keyed) went
+ * stale when anzen.mofa.go.jp renumbered its pages — this is the root cause of
+ * the pre-v9.1 spurious constant-Level-4 bug. Resolving ISO3 by NAME (via
+ * JP_NAME_TO_ISO3) instead of by page ID is renumbering-proof.
+ */
+function parseJpCountryIndex(html: string): JpIndexEntry[] {
+  const pattern = /href="\/info\/pcinfectionspothazardinfo_(\d+)\.html">([^<]+)</g;
+  const seen = new Set<string>();
+  const entries: JpIndexEntry[] = [];
+  let match;
+  while ((match = pattern.exec(html)) !== null) {
+    const pageId = match[1];
+    if (seen.has(pageId)) continue;
+    seen.add(pageId);
+    const japaneseName = match[2].trim();
+    const iso3 = JP_NAME_TO_ISO3[japaneseName] ?? null;
+    entries.push({ pageId, japaneseName, iso3 });
   }
-  // ASCII digits
-  if (code >= 0x30 && code <= 0x39) {
-    return code - 0x30;
+  return entries;
+}
+
+/**
+ * Parse ONE country's max hazard level from its detail page, SCOPED to
+ * `<div id="kikendetail">` only (T-lb3-01/T-lb3-02: prevents the old bug where
+ * unrelated in-page level text elsewhere on the page was matched). Within that
+ * div, each regional `.kiken_levels` block carries 0+
+ * `kiken_level_base kiken_level_{chuui|kentou|enki|taihi}` divs — we take the
+ * MAX numeric level across all of them (a country with any region at Level 4
+ * is treated as Level 4 overall, matching the pre-existing MAX-across-regions
+ * convention). A page with NO `#kikendetail` div has no active hazard-level
+ * advisory published at all, which is Level 1 (safest / no warning) —
+ * verified live against USA/FRA/GBR/AUS/CAN/SGP/VAT (all lack the div).
+ */
+function parseJpKikenLevel(html: string): number {
+  const detailMatch = html.match(/<div id="kikendetail">/);
+  if (!detailMatch || detailMatch.index === undefined) return 1; // no advisory published -> safest
+
+  // Scope the search window to the kikendetail div's contents. We don't have a
+  // full HTML parser here; a generous fixed window comfortably covers every
+  // observed kikendetail block (typically <3KB) while stopping well before the
+  // unrelated infectious-disease section that follows it.
+  const scoped = html.slice(detailMatch.index, detailMatch.index + 8000);
+  const closeMatch = scoped.match(/<\/div>\s*<\/div>\s*<\/div>/);
+  const window = closeMatch && closeMatch.index !== undefined ? scoped.slice(0, closeMatch.index) : scoped;
+
+  const LEVEL_BY_CLASS: Record<string, number> = { chuui: 1, kentou: 2, enki: 3, taihi: 4 };
+  const classPattern = /kiken_level_(chuui|kentou|enki|taihi)/g;
+  let max = 0;
+  let m;
+  while ((m = classPattern.exec(window)) !== null) {
+    const lvl = LEVEL_BY_CLASS[m[1]];
+    if (lvl > max) max = lvl;
   }
-  return 0;
+  return max > 0 ? max : 1;
 }
 
 async function fetchJpAdvisories(
@@ -416,17 +413,48 @@ async function fetchJpAdvisories(
 ): Promise<FetcherResult> {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
-  const pageResults: Record<string, { iso3: string; level: number }> = {};
+  const pageResults: Record<string, { japaneseName: string; iso3: string | null; level?: number }> = {};
 
-  const entries = Object.entries(JP_MOFA_ID_TO_ISO3);
+  // Step 1: dynamic country index from the live riskmap listing page.
+  const indexResponse = await fetch(`${JP_MOFA_BASE}/riskmap/`, {
+    signal: AbortSignal.timeout(20_000),
+    headers: { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' },
+  });
+  if (!indexResponse.ok) {
+    throw new Error(`riskmap index: HTTP ${indexResponse.status}`);
+  }
+  const indexHtml = await indexResponse.text();
+  const jpIndex = parseJpCountryIndex(indexHtml);
 
+  writeJson(join(rawDir, 'advisories-jp-index.json'), {
+    fetchedAt,
+    totalEntries: jpIndex.length,
+    entries: jpIndex,
+  });
+
+  const matched = jpIndex.filter((e) => e.iso3 !== null);
+  const unmatched = jpIndex.filter((e) => e.iso3 === null);
+  console.log(
+    `[ADVISORIES-T1] JP: index discovered ${jpIndex.length} entries, ${matched.length} mapped to ISO3, ${unmatched.length} unmatched (skipped, never guessed)`,
+  );
+  if (unmatched.length > 0) {
+    console.warn(`[ADVISORIES-T1] JP: unmatched japaneseName values: ${unmatched.map((e) => e.japaneseName).join(', ')}`);
+  }
+  if (matched.length < JP_MIN_MAPPED) {
+    console.error(
+      `[ADVISORIES-T1] JP: only ${matched.length}/${jpIndex.length} mapped, below the ${JP_MIN_MAPPED} floor — JP_NAME_TO_ISO3 table may need updating`,
+    );
+  }
+
+  // Step 2: fetch each matched country's detail page, scoped kikendetail parse.
   await fetchBatch(
-    entries,
-    async ([pageId, iso3]) => {
+    matched,
+    async (entry) => {
+      const iso3 = entry.iso3 as string;
       const country = getCountryByIso3(iso3);
       if (!country) return;
 
-      const url = `${JP_MOFA_BASE}/info/pcinfectionspothazardinfo_${pageId}.html`;
+      const url = `${JP_MOFA_BASE}/info/pcinfectionspothazardinfo_${entry.pageId}.html`;
       try {
         const r = await fetch(url, {
           signal: AbortSignal.timeout(15_000),
@@ -436,23 +464,8 @@ async function fetchJpAdvisories(
         if (!r.ok) return; // Page doesn't exist for this country
 
         const html = await r.text();
-
-        // Look for danger level patterns: レベル followed by a digit (1-4)
-        // Digits may be fullwidth (１-４) or ASCII (1-4)
-        const levelPattern = /\u30EC\u30D9\u30EB\s*([１-４1-4])/g;
-        let maxLevel = 0;
-        let match;
-
-        while ((match = levelPattern.exec(html)) !== null) {
-          const digit = parseJpDigit(match[1]);
-          if (digit >= 1 && digit <= 4 && digit > maxLevel) {
-            maxLevel = digit;
-          }
-        }
-
-        if (maxLevel === 0) return; // No level found
-
-        const level = normalizeJpLevel(maxLevel);
+        const rawLevel = parseJpKikenLevel(html);
+        const level = normalizeJpLevel(rawLevel);
 
         indicators.push({
           countryIso3: country.iso3,
@@ -472,7 +485,7 @@ async function fetchJpAdvisories(
           updatedAt: fetchedAt,
         };
 
-        pageResults[pageId] = { iso3: country.iso3, level };
+        pageResults[entry.pageId] = { japaneseName: entry.japaneseName, iso3: country.iso3, level };
       } catch {
         // Individual page fetch failed, skip silently
       }
@@ -480,10 +493,29 @@ async function fetchJpAdvisories(
     5, // Concurrency 5 (be polite to MOFA servers)
   );
 
+  // Discovery-anchor self-check (SHIP-SPEC 1.1d): log any mismatch loudly —
+  // never throws, so a transient MOFA content change doesn't break the whole
+  // fetch, but a regression is impossible to miss in the pipeline logs.
+  const gotByIso3 = new Map(indicators.map((i) => [i.countryIso3, i.value]));
+  const anchorMismatches: string[] = [];
+  for (const [iso3, expectedLevel] of Object.entries(JP_DISCOVERY_ANCHORS)) {
+    const got = gotByIso3.get(iso3);
+    if (got !== expectedLevel) {
+      anchorMismatches.push(`${iso3}: expected ${expectedLevel}, got ${got ?? 'MISSING'}`);
+    }
+  }
+  if (anchorMismatches.length > 0) {
+    console.warn(`[ADVISORIES-T1] JP: discovery-anchor mismatches: ${anchorMismatches.join('; ')}`);
+  } else {
+    console.log('[ADVISORIES-T1] JP: all discovery anchors reproduced correctly');
+  }
+
   writeJson(join(rawDir, 'advisories-jp.json'), {
     fetchedAt,
-    totalMappings: entries.length,
+    totalMappings: jpIndex.length,
+    matchedCount: matched.length,
     countriesWithData: Object.keys(pageResults).length,
+    anchorMismatches,
     pageResults,
   });
 

@@ -614,20 +614,60 @@ async function fetchUkAdvisories(
   return { indicators, advisoryInfo };
 }
 
-/** Parse Canada advisory level from individual country page HTML.
- *  Only match the actual banner class (not the legend section which lists all levels). */
-function parseCaAdvisoryLevel(html: string): number {
-  // The active advisory banner uses class="banner-X" with the advisory text inside
-  // e.g. <div class='banner-do-not-travel'>Avoid all travel</div>
-  const bannerMatch = html.match(/class=['"]banner-(do-not-travel|reconsider-travel|increased-caution|normal-precautions)['"]/i);
-  if (bannerMatch) {
-    const bannerType = bannerMatch[1].toLowerCase();
-    if (bannerType === 'do-not-travel') return 4;
-    if (bannerType === 'reconsider-travel') return 3;
-    if (bannerType === 'increased-caution') return 2;
-    if (bannerType === 'normal-precautions') return 1;
+/** banner-X class -> unified 1-4 level. */
+const CA_BANNER_TO_LEVEL: Record<string, number> = {
+  'do-not-travel': 4,
+  'reconsider-travel': 3,
+  'increased-caution': 2,
+  'normal-precautions': 1,
+};
+
+/**
+ * v9.1 (SHIP-SPEC 1.1e) HARDENING: collect ALL distinct banner-X classes present
+ * on the page (global match), not just the first one found. The pre-v9.1 single
+ * `.match()` silently trusted whichever banner happened to appear first in the
+ * HTML — the root cause of the verified GUM (Guam) ca=4 transient misparse
+ * (SHIP-SPEC 1.1f correction script). Returns the distinct levels found, sorted
+ * ascending; callers decide how to resolve >1 distinct level.
+ */
+function parseCaAdvisoryBanners(html: string): number[] {
+  const pattern = /class=['"]banner-(do-not-travel|reconsider-travel|increased-caution|normal-precautions)['"]/gi;
+  const levels = new Set<number>();
+  let m;
+  while ((m = pattern.exec(html)) !== null) {
+    const lvl = CA_BANNER_TO_LEVEL[m[1].toLowerCase()];
+    if (lvl) levels.add(lvl);
   }
-  return 2; // default to caution
+  return [...levels].sort((a, b) => a - b);
+}
+
+/**
+ * Look up iso3's ca advisory level from the most recent PRIOR date's
+ * advisories-info.json (strictly before `onOrAfterDate`, YYYY-MM-DD). Used as
+ * the ambiguous-banner fallback (SHIP-SPEC 1.1e): when today's page shows >1
+ * distinct banner type, trust yesterday's already-validated level rather than
+ * guess which of today's banners is the "real" one.
+ */
+function findPreviousCaLevel(iso3: string, onOrAfterDate: string): number | null {
+  const rawBase = join(process.cwd(), 'data', 'raw');
+  if (!existsSync(rawBase)) return null;
+  const dateDirs = readdirSync(rawBase)
+    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d < onOrAfterDate)
+    .sort()
+    .reverse();
+  for (const dateDir of dateDirs) {
+    const infoPath = join(rawBase, dateDir, 'advisories-info.json');
+    const info = readJson<AdvisoryInfoMap>(infoPath);
+    const level = info?.[iso3]?.ca?.level;
+    if (typeof level === 'number') return level;
+  }
+  return null;
+}
+
+interface CaDebugEntry {
+  iso3: string;
+  allBannerMatches: number[];
+  chosenLevel: number;
 }
 
 /**
@@ -642,6 +682,8 @@ async function fetchCaAdvisories(
 ): Promise<FetcherResult> {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
+  const debugEntries: CaDebugEntry[] = [];
+  const snapshotDate = fetchedAt.slice(0, 10); // YYYY-MM-DD
 
   // Step 1: Get the destinations page with the dropdown
   const response = await fetch(CA_ADVISORIES_URL, {
@@ -668,7 +710,7 @@ async function fetchCaAdvisories(
   // Extract country slugs from <option value="slug">Country Name</option>
   const optionPattern = /<option\s+value="([^"]+)">([^<]+)<\/option>/gi;
   interface CaEntry { slug: string; name: string; iso3: string }
-  const entries: CaEntry[] = [];
+  const rawEntries: CaEntry[] = [];
 
   let match;
   while ((match = optionPattern.exec(html)) !== null) {
@@ -679,17 +721,26 @@ async function fetchCaAdvisories(
     const country = getCountryByName(name);
     if (!country) continue;
 
-    entries.push({ slug, name, iso3: country.iso3 });
+    rawEntries.push({ slug, name, iso3: country.iso3 });
   }
 
-  console.log(`[ADVISORIES] CA: Found ${entries.length} countries in dropdown, fetching advisory levels...`);
+  // v9.1 (SHIP-SPEC 1.1e): dedupe by iso3 BEFORE fetchBatch — the dropdown can
+  // list more than one slug resolving to the same country; fetching only the
+  // first avoids wasted requests and avoids two concurrent ambiguous-banner
+  // resolutions racing on the same iso3.
+  const seenIso3 = new Set<string>();
+  const entries = rawEntries.filter((e) => {
+    if (seenIso3.has(e.iso3)) return false;
+    seenIso3.add(e.iso3);
+    return true;
+  });
+
+  console.log(
+    `[ADVISORIES] CA: Found ${rawEntries.length} dropdown entries -> ${entries.length} unique countries after dedup, fetching advisory levels...`,
+  );
 
   // Step 2: Batch-fetch individual country pages (20 concurrent)
-  const seen = new Set<string>();
-
   await fetchBatch(entries, async (entry) => {
-    if (seen.has(entry.iso3)) return;
-
     try {
       const r = await fetch(`https://travel.gc.ca/destinations/${entry.slug}`, {
         signal: AbortSignal.timeout(15_000),
@@ -703,9 +754,29 @@ async function fetchCaAdvisories(
       if (!r.ok) return;
 
       const pageHtml = await r.text();
-      const level = parseCaAdvisoryLevel(pageHtml);
+      const banners = parseCaAdvisoryBanners(pageHtml);
 
-      seen.add(entry.iso3);
+      let level: number;
+      if (banners.length === 0) {
+        level = 2; // default to caution (unchanged pre-v9.1 fallback)
+      } else if (banners.length === 1) {
+        level = banners[0];
+      } else {
+        // v9.1 (SHIP-SPEC 1.1e): AMBIGUOUS — >1 distinct banner type present.
+        // Trust the previous day's already-validated level for this country;
+        // if none exists, fall back to the MOST SEVERE banner found (never
+        // silently pick the first match, which is what produced the GUM bug).
+        const prevLevel = findPreviousCaLevel(entry.iso3, snapshotDate);
+        level = prevLevel ?? Math.max(...banners);
+        console.error(
+          `[ADVISORIES] CA: ${entry.iso3} AMBIGUOUS banners [${banners.join(', ')}] -> ` +
+            (prevLevel !== null
+              ? `using previous-day level ${level}`
+              : `no prior data, using most-severe fallback ${level}`),
+        );
+      }
+
+      debugEntries.push({ iso3: entry.iso3, allBannerMatches: banners, chosenLevel: level });
 
       indicators.push({
         countryIso3: entry.iso3,
@@ -727,6 +798,8 @@ async function fetchCaAdvisories(
       // Individual country fetch failed — skip it
     }
   }, 20);
+
+  writeJson(join(rawDir, 'advisories-ca-debug.json'), debugEntries);
 
   return { indicators, advisoryInfo };
 }
