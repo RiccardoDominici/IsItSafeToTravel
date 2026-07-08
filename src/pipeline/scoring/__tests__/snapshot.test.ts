@@ -152,15 +152,15 @@ describe('snapshot: globalScore computation', () => {
     }
   });
 
-  it('computes globalScore as arithmetic mean of country scores rounded to 1 decimal', () => {
+  it('computes globalScore as arithmetic mean of country scores rounded to 2 decimals', () => {
     const countries = [
       makeScoredCountry('USA', 7.5),
       makeScoredCountry('AFG', 2.3),
       makeScoredCountry('ITA', 8.1),
     ];
     const snapshot = writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
-    // (7.5 + 2.3 + 8.1) / 3 = 5.966... -> 6.0
-    assert.equal(snapshot.globalScore, 6.0);
+    // (7.5 + 2.3 + 8.1) / 3 = 5.9666... -> 5.97
+    assert.equal(snapshot.globalScore, 5.97);
   });
 
   it('returns globalScore 0 when there are no countries', () => {
@@ -172,23 +172,45 @@ describe('snapshot: globalScore computation', () => {
     const countries = [makeScoredCountry('USA', 7.5), makeScoredCountry('AFG', 2.3), makeScoredCountry('ITA', 8.1)];
     writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
     const raw = JSON.parse(readFileSync(join(TEST_SCORES_DIR, '2099-03-01.json'), 'utf-8'));
-    assert.equal(raw.globalScore, 6.0);
+    assert.equal(raw.globalScore, 5.97);
   });
 
   it('persists globalScore in latest.json', () => {
     const countries = [makeScoredCountry('USA', 7.5), makeScoredCountry('AFG', 2.3), makeScoredCountry('ITA', 8.1)];
     writeSnapshot('2099-03-01', countries, TEST_FETCH_RESULTS, '1.0.0');
     const raw = JSON.parse(readFileSync(join(TEST_SCORES_DIR, 'latest.json'), 'utf-8'));
-    assert.equal(raw.globalScore, 6.0);
+    assert.equal(raw.globalScore, 5.97);
   });
 });
 
 describe('snapshot: listSnapshotDates', () => {
+  // writeSnapshot() also overwrites latest.json as a side effect -- back it up
+  // and restore it, same as the other describe blocks in this file, so this
+  // suite doesn't leave a test fixture sitting in the real data/scores dir.
+  let hadExistingLatest = false;
+  let existingLatestContent: string | null = null;
+
+  beforeEach(() => {
+    const latestPath = join(TEST_SCORES_DIR, 'latest.json');
+    if (existsSync(latestPath)) {
+      hadExistingLatest = true;
+      existingLatestContent = readFileSync(latestPath, 'utf-8');
+    }
+  });
+
   afterEach(() => {
     const testDate1 = join(TEST_SCORES_DIR, '2099-01-01.json');
     const testDate2 = join(TEST_SCORES_DIR, '2099-01-02.json');
     if (existsSync(testDate1)) rmSync(testDate1);
     if (existsSync(testDate2)) rmSync(testDate2);
+
+    // Restore original latest.json if it existed
+    const latestPath = join(TEST_SCORES_DIR, 'latest.json');
+    if (hadExistingLatest && existingLatestContent) {
+      writeFileSync(latestPath, existingLatestContent, 'utf-8');
+    } else if (!hadExistingLatest && existsSync(latestPath)) {
+      rmSync(latestPath);
+    }
   });
 
   it('returns dates in ascending order', () => {

@@ -67,7 +67,8 @@ const pillarKeys: Record<string, string> = {
       {sorted.map((pillar) => {
         const label = t(pillarKeys[pillar.name] as any);
         const displayScore = (pillar.score * 10).toFixed(1);
-        const riskLevel = pillar.score >= 0.7 ? t('country.risk_low') : pillar.score >= 0.4 ? t('country.risk_moderate') : t('country.risk_high');
+        const s = Number(displayScore); // band on the displayed 1-decimal value
+        const riskLevel = s >= 7 ? t('country.risk_low') : s >= 4 ? t('country.risk_moderate') : t('country.risk_high');
         const coveragePercent = Math.round(pillar.dataCompleteness * 100);
         const lowCoverage = pillar.dataCompleteness < LOW_COVERAGE_FLAG_THRESHOLD;
 

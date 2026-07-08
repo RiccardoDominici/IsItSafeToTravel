@@ -50,7 +50,9 @@ const riskLevels: Record<Lang, [string, string, string]> = {
   de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
 };
 
-const score = country.score;
+// Band on the same 1-decimal value the paragraph displays via {score}, so the
+// verdict never disagrees with the shown number at band boundaries.
+const score = Number(country.score.toFixed(1));
 const [low, moderate, high] = riskLevels[lang];
 const riskLevel = score >= 7 ? low : score >= 5 ? moderate : high;
 

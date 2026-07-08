@@ -105,18 +105,21 @@ describe('history: writeHistoryIndex', () => {
     const usaPoints = result.countries['USA']?.filter(p => p.date.startsWith('2099-'));
     const afgPoints = result.countries['AFG']?.filter(p => p.date.startsWith('2099-'));
 
+    // Fixture uses dataCompleteness: 0, which is below history.ts's 0.15
+    // threshold for flagging data-sparse snapshots, so every point legitimately
+    // carries dc: 0.
     assert.ok(usaPoints, 'USA should exist in countries');
     assert.equal(usaPoints!.length, 2);
     assert.deepEqual(usaPoints, [
-      { date: '2099-01-01', score: 7.5 },
-      { date: '2099-01-02', score: 7.6 },
+      { date: '2099-01-01', score: 7.5, dc: 0 },
+      { date: '2099-01-02', score: 7.6, dc: 0 },
     ]);
 
     assert.ok(afgPoints, 'AFG should exist in countries');
     assert.equal(afgPoints!.length, 2);
     assert.deepEqual(afgPoints, [
-      { date: '2099-01-01', score: 2.3 },
-      { date: '2099-01-02', score: 2.4 },
+      { date: '2099-01-01', score: 2.3, dc: 0 },
+      { date: '2099-01-02', score: 2.4, dc: 0 },
     ]);
   });
 

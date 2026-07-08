@@ -28,7 +28,8 @@ const REGIONS = [
   { type: 'middle_east', slug: 'middle-east', titleKey: 'hub.region.middle_east.title' },
 ] as const;
 
-function badgeClasses(score: number): string {
+function badgeClasses(rawScore: number): string {
+  const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
   if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
   if (score >= 5) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
   return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';

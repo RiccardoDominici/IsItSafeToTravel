@@ -16,7 +16,8 @@ const { country, allCountries, lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
 
-function getScoreColor(score: number): string {
+function getScoreColor(rawScore: number): string {
+  const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
   if (score >= 7) return 'text-emerald-700 dark:text-emerald-400';
   if (score >= 5) return 'text-amber-700 dark:text-amber-400';
   return 'text-red-700 dark:text-red-400';

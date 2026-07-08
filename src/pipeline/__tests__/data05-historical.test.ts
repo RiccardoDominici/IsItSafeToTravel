@@ -1,6 +1,6 @@
-import { describe, it, afterEach } from 'node:test';
+import { describe, it, beforeEach, afterEach } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { existsSync, rmSync } from 'node:fs';
+import { existsSync, rmSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { writeSnapshot, loadSnapshot, listSnapshotDates } from '../scoring/snapshot.js';
 import type { ScoredCountry, FetchResult } from '../types.js';
@@ -35,10 +35,32 @@ const FETCH_RESULTS: FetchResult[] = [
 describe('DATA-05: historical scores stored and retrievable', () => {
   const testDates = ['2098-06-01', '2098-06-02', '2098-06-03'];
 
+  // writeSnapshot() also overwrites latest.json as a side effect -- back it up
+  // and restore it (same pattern as snapshot.test.ts) so this suite doesn't
+  // leave a test fixture sitting in the real data/scores dir.
+  let hadExistingLatest = false;
+  let existingLatestContent: string | null = null;
+
+  beforeEach(() => {
+    const latestPath = join(SCORES_DIR, 'latest.json');
+    if (existsSync(latestPath)) {
+      hadExistingLatest = true;
+      existingLatestContent = readFileSync(latestPath, 'utf-8');
+    }
+  });
+
   afterEach(() => {
     for (const d of testDates) {
       const f = join(SCORES_DIR, `${d}.json`);
       if (existsSync(f)) rmSync(f);
+    }
+
+    // Restore original latest.json if it existed
+    const latestPath = join(SCORES_DIR, 'latest.json');
+    if (hadExistingLatest && existingLatestContent) {
+      writeFileSync(latestPath, existingLatestContent, 'utf-8');
+    } else if (!hadExistingLatest && existsSync(latestPath)) {
+      rmSync(latestPath);
     }
   });
 
