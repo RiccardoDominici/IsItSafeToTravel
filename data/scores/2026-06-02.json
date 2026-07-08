@@ -1,6 +1,6 @@
 {
   "date": "2026-06-02",
-  "generatedAt": "2026-07-08T14:20:46.047Z",
+  "generatedAt": "2026-07-08T19:43:32.541Z",
   "pipelineVersion": "0.0.1",
   "weightsVersion": "9.1.0",
   "globalScore": 6.53,
@@ -100,7 +100,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.18018562783060094,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -390,7 +390,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7947379951019272,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.514Z",
       "sources": [
         {
           "name": "advisories",
@@ -430,9 +430,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -717,7 +717,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7950059386486356,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -751,9 +751,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -851,7 +851,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.09375,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -912,7 +912,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": []
     },
     {
@@ -1175,7 +1175,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.79348633549077,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -1209,9 +1209,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -1389,7 +1389,7 @@
       },
       "dataCompleteness": 0.267,
       "confidence": 0.40399655821311287,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -1405,9 +1405,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -1636,7 +1636,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7774890377300772,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -1670,9 +1670,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -1957,7 +1957,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7949347703823965,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -1991,9 +1991,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -2264,7 +2264,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938764590890494,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -2298,9 +2298,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -2378,7 +2378,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.11478381959707687,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -2467,7 +2467,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.075,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -2528,7 +2528,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": []
     },
     {
@@ -2700,7 +2700,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5984981736496583,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -2722,9 +2722,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -2981,7 +2981,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943050546133864,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -3015,9 +3015,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -3281,7 +3281,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943704393586389,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -3315,9 +3315,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -3581,7 +3581,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7944025353467968,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -3615,9 +3615,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -3895,7 +3895,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7948760389197451,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -3929,9 +3929,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -4188,7 +4188,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945578937884773,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -4222,9 +4222,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -4488,7 +4488,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.794707815859352,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -4522,9 +4522,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -4579,7 +4579,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": []
     },
     {
@@ -4856,7 +4856,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.794876107700402,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -4890,9 +4890,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -5177,7 +5177,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.794982937764261,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -5217,9 +5217,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -5462,7 +5462,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7939567539120759,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -5496,9 +5496,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -5762,7 +5762,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7930824262065806,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -5796,9 +5796,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -6013,7 +6013,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6444832179872649,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -6035,9 +6035,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -6273,7 +6273,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7934985378837254,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -6307,9 +6307,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -6364,7 +6364,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": []
     },
     {
@@ -6620,7 +6620,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7944810332297162,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -6654,9 +6654,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -6899,7 +6899,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6466197619822105,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -6921,9 +6921,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -7187,7 +7187,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945703866609883,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -7221,9 +7221,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -7487,7 +7487,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7947921138954489,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -7527,9 +7527,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -7779,7 +7779,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6818763337157496,
-      "lastUpdated": "2026-07-08T14:20:46.021Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -7807,9 +7807,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -8003,7 +8003,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6465311883776133,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -8025,9 +8025,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -8284,7 +8284,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7916034070053873,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.516Z",
       "sources": [
         {
           "name": "advisories",
@@ -8318,9 +8318,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -8375,7 +8375,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": []
     },
     {
@@ -8638,7 +8638,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7937981863625709,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -8672,9 +8672,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -8917,7 +8917,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940307383128733,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -8951,9 +8951,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -9196,7 +9196,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943413608703693,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -9230,9 +9230,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -9287,7 +9287,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": []
     },
     {
@@ -9529,7 +9529,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940882042134783,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -9563,9 +9563,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -9836,7 +9836,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7948499994074977,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -9870,9 +9870,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -10136,7 +10136,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946892254117074,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -10176,9 +10176,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -10365,7 +10365,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.77175983436853,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "gpi",
@@ -10393,9 +10393,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -10645,7 +10645,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945914224398382,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -10679,9 +10679,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -10896,7 +10896,7 @@
       },
       "dataCompleteness": 0.82,
       "confidence": 0.772615144418423,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -10936,9 +10936,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -11139,7 +11139,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7723809523809524,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -11173,9 +11173,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -11266,7 +11266,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.08571428571428573,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": [
         {
           "name": "advisories",
@@ -11543,7 +11543,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7948524188515566,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -11583,9 +11583,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -11785,7 +11785,7 @@
       },
       "dataCompleteness": 0.58,
       "confidence": 0.5629824561403509,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -11813,9 +11813,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -12009,7 +12009,7 @@
       },
       "dataCompleteness": 0.72,
       "confidence": 0.6926222066661304,
-      "lastUpdated": "2026-07-08T14:20:46.022Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -12043,9 +12043,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -12316,7 +12316,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943416332327053,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -12350,9 +12350,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -12630,7 +12630,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946375984191026,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -12670,9 +12670,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -12750,7 +12750,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.15920914404710004,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": [
         {
           "name": "worldbank",
@@ -12811,7 +12811,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": []
     },
     {
@@ -12902,7 +12902,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.14799992299992298,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": [
         {
           "name": "advisories",
@@ -13164,7 +13164,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7927055946244289,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -13198,9 +13198,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -13422,7 +13422,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7935374613091497,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -13456,9 +13456,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -13694,7 +13694,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943772737810136,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -13728,9 +13728,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -13994,7 +13994,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7735714285714286,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -14028,9 +14028,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -14231,7 +14231,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5870617745855405,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -14253,9 +14253,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -14505,7 +14505,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942034872245881,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -14539,9 +14539,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -14784,7 +14784,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941558664056813,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -14818,9 +14818,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -15084,7 +15084,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946283001092751,
-      "lastUpdated": "2026-07-08T14:20:46.020Z",
+      "lastUpdated": "2026-07-08T19:43:32.515Z",
       "sources": [
         {
           "name": "advisories",
@@ -15118,9 +15118,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -15370,7 +15370,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945285790269151,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -15404,9 +15404,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -15663,7 +15663,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.794666042849708,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -15697,9 +15697,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -15949,7 +15949,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938907181533061,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -15983,9 +15983,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -16056,7 +16056,7 @@
       },
       "dataCompleteness": 0.1,
       "confidence": 0.2176470588235294,
-      "lastUpdated": "2026-07-08T14:20:46.047Z",
+      "lastUpdated": "2026-07-08T19:43:32.541Z",
       "sources": [
         {
           "name": "advisories",
@@ -16066,9 +16066,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -16318,7 +16318,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946307460167616,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -16352,9 +16352,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -16597,7 +16597,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.792421741766196,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -16631,9 +16631,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -16883,7 +16883,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7943910236121137,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -16923,9 +16923,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -17168,7 +17168,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940429496625702,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -17202,9 +17202,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -17433,7 +17433,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.7020951925642821,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -17461,9 +17461,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -17533,7 +17533,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.06,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -17789,7 +17789,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945178370650003,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -17823,9 +17823,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -17895,7 +17895,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.0375,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "worldbank",
@@ -18045,7 +18045,7 @@
       },
       "dataCompleteness": 0.48,
       "confidence": 0.4654240434111409,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "inform",
@@ -18307,7 +18307,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7733776301218162,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -18341,9 +18341,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -18558,7 +18558,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7775326708421628,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -18592,9 +18592,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -18837,7 +18837,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7936770875817211,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -18871,9 +18871,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -18928,7 +18928,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": []
     },
     {
@@ -19191,7 +19191,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7947209846198969,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -19225,9 +19225,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -19312,7 +19312,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.11010488986564107,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -19567,7 +19567,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7732627865961199,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -19601,9 +19601,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -19701,7 +19701,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.09375,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -19922,7 +19922,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7728138528138528,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "gpi",
@@ -19950,9 +19950,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -20195,7 +20195,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7933059186091166,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -20229,9 +20229,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -20446,7 +20446,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.772615144418423,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -20480,9 +20480,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -20718,7 +20718,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941288921002974,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -20752,9 +20752,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -20962,7 +20962,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6088465068110132,
-      "lastUpdated": "2026-07-08T14:20:46.026Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -20984,9 +20984,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -21086,7 +21086,7 @@
       },
       "dataCompleteness": 0.2,
       "confidence": 0.2840397055968439,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -21102,9 +21102,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -21382,7 +21382,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946468633858857,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.521Z",
       "sources": [
         {
           "name": "advisories",
@@ -21422,9 +21422,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -21515,7 +21515,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.08571428571428573,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -21599,7 +21599,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.16180703536961996,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -21861,7 +21861,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7916175434412854,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -21895,9 +21895,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -22025,7 +22025,7 @@
       },
       "dataCompleteness": 0.3,
       "confidence": 0.36091665677077145,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -22314,7 +22314,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946392664324002,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -22348,9 +22348,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -22600,7 +22600,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938144287565185,
-      "lastUpdated": "2026-07-08T14:20:46.024Z",
+      "lastUpdated": "2026-07-08T19:43:32.519Z",
       "sources": [
         {
           "name": "advisories",
@@ -22634,9 +22634,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -22907,7 +22907,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946593815462399,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -22941,9 +22941,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -23186,7 +23186,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941024015992316,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -23220,9 +23220,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -23479,7 +23479,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7944026509375529,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -23519,9 +23519,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -23592,7 +23592,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.11438187767338134,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -23868,7 +23868,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946893088520969,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -23908,9 +23908,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -23973,7 +23973,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.0375,
-      "lastUpdated": "2026-07-08T14:20:46.041Z",
+      "lastUpdated": "2026-07-08T19:43:32.536Z",
       "sources": [
         {
           "name": "advisories",
@@ -24208,7 +24208,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7937090308845584,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -24242,9 +24242,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -24501,7 +24501,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.794658945803819,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -24535,9 +24535,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -24780,7 +24780,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943495333523708,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -24814,9 +24814,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -25052,7 +25052,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7886076055708892,
-      "lastUpdated": "2026-07-08T14:20:46.027Z",
+      "lastUpdated": "2026-07-08T19:43:32.522Z",
       "sources": [
         {
           "name": "advisories",
@@ -25086,9 +25086,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -25310,7 +25310,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7939501063564672,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -25344,9 +25344,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -25575,7 +25575,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.79419162470512,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -25609,9 +25609,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -25875,7 +25875,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7936836581902564,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -25915,9 +25915,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -25972,7 +25972,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.043Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": []
     },
     {
@@ -26207,7 +26207,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941558707522521,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -26241,9 +26241,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -26493,7 +26493,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.794388855366384,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -26533,9 +26533,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -26771,7 +26771,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.794099456496996,
-      "lastUpdated": "2026-07-08T14:20:46.028Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -26805,9 +26805,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -27050,7 +27050,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943611276741274,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -27084,9 +27084,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -27308,7 +27308,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7936428105493785,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -27342,9 +27342,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -27615,7 +27615,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7945245800059008,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.517Z",
       "sources": [
         {
           "name": "advisories",
@@ -27655,9 +27655,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -27844,7 +27844,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6130656108767215,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -27866,9 +27866,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -28034,7 +28034,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5721204099105487,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -28056,9 +28056,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -28273,7 +28273,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7937516362024037,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -28307,9 +28307,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -28566,7 +28566,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938137806269678,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -28600,9 +28600,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -28852,7 +28852,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7732627865961199,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -28886,9 +28886,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -29124,7 +29124,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7939122623994489,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -29158,9 +29158,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -29403,7 +29403,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940504352341108,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -29437,9 +29437,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -29682,7 +29682,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7731328320802004,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -29716,9 +29716,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -29898,7 +29898,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6218550445416132,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -29920,9 +29920,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -30116,7 +30116,7 @@
       },
       "dataCompleteness": 0.463,
       "confidence": 0.5531188404403635,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -30138,9 +30138,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -30404,7 +30404,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7945543466984217,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -30444,9 +30444,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -30696,7 +30696,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7934929519048307,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -30730,9 +30730,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -30968,7 +30968,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.793251924456042,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -31002,9 +31002,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -31212,7 +31212,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6967349688353117,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -31240,9 +31240,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -31478,7 +31478,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.792733206696261,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.524Z",
       "sources": [
         {
           "name": "advisories",
@@ -31512,9 +31512,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -31606,7 +31606,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.22004644395948747,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -31689,7 +31689,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.07315003192269942,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": [
         {
           "name": "advisories",
@@ -31951,7 +31951,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946135789189074,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -31985,9 +31985,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -32137,7 +32137,7 @@
       },
       "dataCompleteness": 0.267,
       "confidence": 0.3749139084687916,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -32153,9 +32153,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -32412,7 +32412,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7934916109313787,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -32446,9 +32446,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -32698,7 +32698,7 @@
       },
       "dataCompleteness": 0.82,
       "confidence": 0.7729845741113347,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -32738,9 +32738,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -32955,7 +32955,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6938133494549178,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -32983,9 +32983,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -33249,7 +33249,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7945386911883222,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -33289,9 +33289,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -33471,7 +33471,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5641835529554179,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -33493,9 +33493,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -33710,7 +33710,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7922796210960373,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -33744,9 +33744,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -34003,7 +34003,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7733776301218162,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -34037,9 +34037,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -34268,7 +34268,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6961362650242537,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -34296,9 +34296,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -34534,7 +34534,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7943585908090726,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -34574,9 +34574,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -34826,7 +34826,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7906302201832791,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -34860,9 +34860,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -35105,7 +35105,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.793604297388205,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -35139,9 +35139,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -35204,7 +35204,7 @@
       "advisories": {},
       "dataCompleteness": 0.04,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": [
         {
           "name": "gdacs",
@@ -35466,7 +35466,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7943292802513772,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -35506,9 +35506,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -35744,7 +35744,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938631979224167,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -35778,9 +35778,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -35885,7 +35885,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.09999999999999999,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": [
         {
           "name": "advisories",
@@ -35989,7 +35989,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.09375,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -36231,7 +36231,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7922451097586435,
-      "lastUpdated": "2026-07-08T14:20:46.031Z",
+      "lastUpdated": "2026-07-08T19:43:32.526Z",
       "sources": [
         {
           "name": "advisories",
@@ -36265,9 +36265,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -36524,7 +36524,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946720101075075,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -36558,9 +36558,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -36810,7 +36810,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7943300840897717,
-      "lastUpdated": "2026-07-08T14:20:46.030Z",
+      "lastUpdated": "2026-07-08T19:43:32.525Z",
       "sources": [
         {
           "name": "advisories",
@@ -36850,9 +36850,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -36943,7 +36943,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.08571428571428573,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -37185,7 +37185,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7934851620109951,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -37219,9 +37219,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -37320,7 +37320,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.21177839078897936,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": [
         {
           "name": "advisories",
@@ -37589,7 +37589,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945844360035274,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -37623,9 +37623,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -37680,7 +37680,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": []
     },
     {
@@ -37929,7 +37929,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7945487808471104,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -37969,9 +37969,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -38221,7 +38221,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941416764488844,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -38255,9 +38255,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -38362,7 +38362,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.09999999999999999,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": [
         {
           "name": "advisories",
@@ -38590,7 +38590,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7938791305714407,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -38624,9 +38624,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -38869,7 +38869,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940397433077936,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -38903,9 +38903,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -39176,7 +39176,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7947053887234474,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -39216,9 +39216,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -39404,7 +39404,7 @@
       },
       "dataCompleteness": 0.43,
       "confidence": 0.518939393939394,
-      "lastUpdated": "2026-07-08T14:20:46.032Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -39426,9 +39426,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -39664,7 +39664,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7936934462564414,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.527Z",
       "sources": [
         {
           "name": "advisories",
@@ -39698,9 +39698,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -39943,7 +39943,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940289874454953,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -39977,9 +39977,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -40236,7 +40236,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946796098838719,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -40276,9 +40276,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -40535,7 +40535,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7940545760997887,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -40569,9 +40569,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -40634,7 +40634,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.0375,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": []
     },
     {
@@ -40883,7 +40883,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946049441943307,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -40917,9 +40917,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -41183,7 +41183,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7946657009824772,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -41223,9 +41223,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -41419,7 +41419,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5460678868179663,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -41441,9 +41441,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -41679,7 +41679,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.793967265996624,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -41713,9 +41713,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -41951,7 +41951,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941604029333428,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -41985,9 +41985,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -42072,7 +42072,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.20632446968989243,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": [
         {
           "name": "advisories",
@@ -42285,7 +42285,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7721008403361345,
-      "lastUpdated": "2026-07-08T14:20:46.029Z",
+      "lastUpdated": "2026-07-08T19:43:32.523Z",
       "sources": [
         {
           "name": "advisories",
@@ -42319,9 +42319,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -42564,7 +42564,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942873025166268,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -42598,9 +42598,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -42843,7 +42843,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941420036364372,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -42877,9 +42877,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -43080,7 +43080,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.776836858644322,
-      "lastUpdated": "2026-07-08T14:20:46.033Z",
+      "lastUpdated": "2026-07-08T19:43:32.528Z",
       "sources": [
         {
           "name": "advisories",
@@ -43114,9 +43114,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -43215,7 +43215,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.21064335522050404,
-      "lastUpdated": "2026-07-08T14:20:46.042Z",
+      "lastUpdated": "2026-07-08T19:43:32.537Z",
       "sources": [
         {
           "name": "advisories",
@@ -43477,7 +43477,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7935974598223621,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -43511,9 +43511,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -43590,7 +43590,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.06,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.539Z",
       "sources": []
     },
     {
@@ -43832,7 +43832,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942565715540789,
-      "lastUpdated": "2026-07-08T14:20:46.034Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -43866,9 +43866,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -44118,7 +44118,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7945405198993091,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -44158,9 +44158,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -44403,7 +44403,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943574514758426,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.529Z",
       "sources": [
         {
           "name": "advisories",
@@ -44437,9 +44437,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -44675,7 +44675,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943323125396721,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -44709,9 +44709,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -44968,7 +44968,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945034908512135,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -45002,9 +45002,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -45261,7 +45261,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7946489026122499,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -45295,9 +45295,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -45533,7 +45533,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7937625144654623,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -45567,9 +45567,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -45624,7 +45624,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": []
     },
     {
@@ -45678,7 +45678,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": []
     },
     {
@@ -45740,7 +45740,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.0375,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": []
     },
     {
@@ -45947,7 +45947,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6999197387685696,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -45975,9 +45975,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -46220,7 +46220,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942265743821201,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -46254,9 +46254,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -46506,7 +46506,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942302099781836,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -46540,9 +46540,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -46685,7 +46685,7 @@
       },
       "dataCompleteness": 0.267,
       "confidence": 0.37115318179155565,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -46701,9 +46701,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -46946,7 +46946,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7731328320802004,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -46980,9 +46980,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -47037,7 +47037,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.045Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": []
     },
     {
@@ -47279,7 +47279,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7939646575945893,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -47313,9 +47313,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -47558,7 +47558,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7939990913211347,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -47598,9 +47598,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -47780,7 +47780,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6733343397184233,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -47808,9 +47808,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -48032,7 +48032,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6972692543269746,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -48060,9 +48060,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -48291,7 +48291,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7935035464174512,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -48325,9 +48325,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -48563,7 +48563,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7929214121357886,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -48597,9 +48597,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -48842,7 +48842,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942819859639579,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -48876,9 +48876,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -49128,7 +49128,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7925426287115828,
-      "lastUpdated": "2026-07-08T14:20:46.025Z",
+      "lastUpdated": "2026-07-08T19:43:32.520Z",
       "sources": [
         {
           "name": "advisories",
@@ -49162,9 +49162,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -49241,7 +49241,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.075,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": [
         {
           "name": "advisories",
@@ -49468,7 +49468,7 @@
       },
       "dataCompleteness": 0.68,
       "confidence": 0.6543039061525623,
-      "lastUpdated": "2026-07-08T14:20:46.036Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -49496,9 +49496,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -49734,7 +49734,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7942966878429898,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -49768,9 +49768,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -49863,7 +49863,7 @@
       },
       "dataCompleteness": 0.217,
       "confidence": 0.23040380749674824,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": [
         {
           "name": "advisories",
@@ -50125,7 +50125,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7732627865961199,
-      "lastUpdated": "2026-07-08T14:20:46.023Z",
+      "lastUpdated": "2026-07-08T19:43:32.518Z",
       "sources": [
         {
           "name": "advisories",
@@ -50159,9 +50159,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -50404,7 +50404,7 @@
       },
       "dataCompleteness": 0.78,
       "confidence": 0.7732627865961199,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -50438,9 +50438,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -50690,7 +50690,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7943713394400255,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -50730,9 +50730,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -50975,7 +50975,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941385895746927,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -51009,9 +51009,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -51081,7 +51081,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.06,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.540Z",
       "sources": [
         {
           "name": "advisories",
@@ -51337,7 +51337,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7941747481204133,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -51371,9 +51371,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -51588,7 +51588,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7923175174239552,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -51622,9 +51622,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -51825,7 +51825,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6040172753022257,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -51847,9 +51847,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -52078,7 +52078,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7922527229363843,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -52112,9 +52112,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -52364,7 +52364,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7943211839096231,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -52398,9 +52398,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -52622,7 +52622,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.7940088396512118,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -52662,9 +52662,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -52851,7 +52851,7 @@
       },
       "dataCompleteness": 0.463,
       "confidence": 0.5181825292662016,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -52873,9 +52873,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -53046,7 +53046,7 @@
       },
       "dataCompleteness": 0.45,
       "confidence": 0.5482142857142858,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -53068,9 +53068,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -53320,7 +53320,7 @@
       },
       "dataCompleteness": 0.88,
       "confidence": 0.7945189622088034,
-      "lastUpdated": "2026-07-08T14:20:46.038Z",
+      "lastUpdated": "2026-07-08T19:43:32.532Z",
       "sources": [
         {
           "name": "advisories",
@@ -53354,9 +53354,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -53606,7 +53606,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7780813106009111,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.533Z",
       "sources": [
         {
           "name": "advisories",
@@ -53640,9 +53640,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -53899,7 +53899,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7779480049785277,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -53933,9 +53933,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -53990,7 +53990,7 @@
       "advisories": {},
       "dataCompleteness": 0,
       "confidence": 0,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.541Z",
       "sources": []
     },
     {
@@ -54225,7 +54225,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7770435976774472,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -54259,9 +54259,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -54462,7 +54462,7 @@
       },
       "dataCompleteness": 0.853,
       "confidence": 0.7765129652728501,
-      "lastUpdated": "2026-07-08T14:20:46.039Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -54502,9 +54502,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -54747,7 +54747,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7778140774309855,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -54781,9 +54781,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -54868,7 +54868,7 @@
       },
       "dataCompleteness": 0.2,
       "confidence": 0.15,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "vdem",
@@ -55033,7 +55033,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.5991097709965407,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -55055,9 +55055,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -55307,7 +55307,7 @@
       },
       "dataCompleteness": 0.853,
       "confidence": 0.7777900499981427,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -55347,9 +55347,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -55442,7 +55442,7 @@
       },
       "dataCompleteness": 0.217,
       "confidence": 0.22477616677245849,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.541Z",
       "sources": [
         {
           "name": "advisories",
@@ -55525,7 +55525,7 @@
       },
       "dataCompleteness": 0.15,
       "confidence": 0.12220880125359102,
-      "lastUpdated": "2026-07-08T14:20:46.046Z",
+      "lastUpdated": "2026-07-08T19:43:32.541Z",
       "sources": [
         {
           "name": "worldbank",
@@ -55774,7 +55774,7 @@
       },
       "dataCompleteness": 0.853,
       "confidence": 0.7778652494877227,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -55814,9 +55814,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -56038,7 +56038,7 @@
       },
       "dataCompleteness": 0.613,
       "confidence": 0.6687556823181413,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.534Z",
       "sources": [
         {
           "name": "advisories",
@@ -56066,9 +56066,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -56131,7 +56131,7 @@
       },
       "dataCompleteness": 0.05,
       "confidence": 0.0375,
-      "lastUpdated": "2026-07-08T14:20:46.047Z",
+      "lastUpdated": "2026-07-08T19:43:32.541Z",
       "sources": []
     },
     {
@@ -56324,7 +56324,7 @@
       },
       "dataCompleteness": 0.53,
       "confidence": 0.6288466460492748,
-      "lastUpdated": "2026-07-08T14:20:46.035Z",
+      "lastUpdated": "2026-07-08T19:43:32.530Z",
       "sources": [
         {
           "name": "advisories",
@@ -56346,9 +56346,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -56504,7 +56504,7 @@
       },
       "dataCompleteness": 0.217,
       "confidence": 0.35814206977468444,
-      "lastUpdated": "2026-07-08T14:20:46.044Z",
+      "lastUpdated": "2026-07-08T19:43:32.538Z",
       "sources": [
         {
           "name": "advisories",
@@ -56759,7 +56759,7 @@
       },
       "dataCompleteness": 0.853,
       "confidence": 0.7776749035348753,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -56799,9 +56799,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -57044,7 +57044,7 @@
       },
       "dataCompleteness": 0.92,
       "confidence": 0.79419619024715,
-      "lastUpdated": "2026-07-08T14:20:46.037Z",
+      "lastUpdated": "2026-07-08T19:43:32.531Z",
       "sources": [
         {
           "name": "advisories",
@@ -57084,9 +57084,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -57322,7 +57322,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.777758706319758,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -57356,9 +57356,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     },
@@ -57608,7 +57608,7 @@
       },
       "dataCompleteness": 0.813,
       "confidence": 0.7779640017970506,
-      "lastUpdated": "2026-07-08T14:20:46.040Z",
+      "lastUpdated": "2026-07-08T19:43:32.535Z",
       "sources": [
         {
           "name": "advisories",
@@ -57642,9 +57642,9 @@
         },
         {
           "name": "ucdp",
-          "url": "",
+          "url": "https://ucdp.uu.se/",
           "fetchedAt": "2026-06-02T00:00:00.000Z",
-          "description": "ucdp"
+          "description": "UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- state-based and one-sided conflict deaths, via the Our World in Data mirror (CC-BY)"
         }
       ]
     }
@@ -57654,73 +57654,73 @@
       "source": "advisories",
       "success": true,
       "countriesFound": 769,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "advisories_tier1",
       "success": true,
       "countriesFound": 511,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "advisories_tier2a",
       "success": true,
       "countriesFound": 371,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "advisories_tier2b",
       "success": true,
       "countriesFound": 469,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "advisories_tier3a",
       "success": true,
       "countriesFound": 221,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "advisories_tier3b",
       "success": true,
       "countriesFound": 177,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "gdacs",
       "success": true,
       "countriesFound": 35,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "gpi",
       "success": true,
       "countriesFound": 486,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "inform",
       "success": true,
       "countriesFound": 955,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "vdem",
       "success": true,
       "countriesFound": 528,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "worldbank",
       "success": true,
       "countriesFound": 590,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     },
     {
       "source": "ucdp",
       "success": true,
       "countriesFound": 196,
-      "fetchedAt": "2026-07-08T14:20:46.047Z"
+      "fetchedAt": "2026-07-08T19:43:32.541Z"
     }
   ]
 }
