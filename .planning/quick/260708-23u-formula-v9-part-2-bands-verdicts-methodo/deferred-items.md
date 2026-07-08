@@ -1,5 +1,9 @@
 # Deferred Items — quick-260708-23u (Formula v9 PART 2)
 
+> **RESOLUTION UPDATE (2026-07-08, quick task 260708-efx):** the CLAUDE.md Scoring
+> section was rewritten for v9 (commit 9d4193ed). README broader staleness (WGI
+> mentions, locale list) remains open — cosmetic, not formula-related.
+
 Out-of-scope discoveries surfaced while executing this plan. None were fixed here (per the
 plan's explicit `files_modified` scope + deviation-rule scope boundary) — logged for a future
 quick task or phase.

@@ -1,5 +1,14 @@
 # Deferred items — quick-260706-x81 (Formula v9 PART 1)
 
+> **RESOLUTION UPDATE (2026-07-08, quick task 260708-efx):** items 2, 3 and the
+> operational note below are FIXED — snapshot.test.ts globalScore assertions aligned
+> to the 2-decimal implementation (5.97); history.test.ts expectations now include
+> `dc: 0`; latest.json backup/restore added to BOTH snapshot.test.ts (listSnapshotDates)
+> and data05-historical.test.ts (the second, previously-undocumented corruptor).
+> Item 1 resolved itself with the Task-3 live backfill as predicted (drift guard green).
+> npm test: 120/120, `git status data/scores/` clean after runs.
+
+
 Pre-existing, out-of-scope issues discovered while running `npm test`. None are
 caused by the Formula v9 engine/weights/backfill/gpi/test changes in this plan
 (verified against the Task 1 commit / pre-v9 baseline, where all three already
