@@ -198,7 +198,7 @@ function main() {
   lines.push(`- **Governance** (weight: ${wpct("governance")}) — Political stability, rule of law, corruption`);
   lines.push(`- **Environment** (weight: ${wpct("environment")}) — Natural disaster risk, climate hazards`);
   lines.push("");
-  lines.push('The overall score is a **weighted geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would. Two safeguards then apply: a **hard cap** forces the overall score to 2/10 or below when a government issues a Level 4 "Do Not Travel" advisory (confirmed by multiple sources), and a **critical floor** caps the score when any well-measured pillar drops below 2.5/10. Scores range from 0 (least safe) to 10 (safest) and are recomputed daily.');
+  lines.push('The overall score is an **uncertainty-weighted (Bayesian shrinkage) geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would, and each pillar is shrunk toward a conservative, region-anchored prior in proportion to how much fresh data backs it, so thin or stale evidence never masquerades as certainty. A calibrated, importance-weighted consensus of 37 government travel advisories feeds into the Conflict pillar, and a count-damped modifier gently discounts the score when advisories broadly agree on "Do Not Travel" — there are no hard caps or floors. Scores range from roughly 3.7 to 8.9 (global mean ~6.75) and are recomputed daily; each country also carries a confidence value (0-1) showing how much data backs its score.');
   lines.push("");
 
   // Global Safety Score
