@@ -25,6 +25,14 @@
   Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
 
+# Data endpoints: keep fetchable (map, compare, API consumers) but out of the
+# Google index — both showed up in GSC as "crawled, currently not indexed"
+/map-data.json
+  X-Robots-Tag: noindex
+
+/scores.json
+  X-Robots-Tag: noindex
+
 /*.html
   Cache-Control: public, max-age=600, must-revalidate
 

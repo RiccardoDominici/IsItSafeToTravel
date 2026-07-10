@@ -376,8 +376,10 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
 }
 
 /**
- * Build JSON-LD structured data for the homepage.
- * Includes WebSite schema with SearchAction.
+ * Build JSON-LD structured data for the homepage (WebSite schema).
+ * No SearchAction: the site has no query-based search results endpoint, Google
+ * crawls the literal {search_term_string} template as a 404, and the sitelinks
+ * search box feature it powered was retired by Google in 2024.
  */
 export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: string): Record<string, unknown> {
   const descriptions: Record<Lang, string> = {
@@ -397,14 +399,6 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
     url: siteUrl,
     description: descriptions[lang],
     inLanguage: localeMap[lang],
-    potentialAction: {
-      '@type': 'SearchAction',
-      target: {
-        '@type': 'EntryPoint',
-        urlTemplate: `${siteUrl}/${lang}/${routes[lang].country}/{search_term_string}/`,
-      },
-      'query-input': 'required name=search_term_string',
-    },
     ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }

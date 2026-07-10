@@ -3,3 +3,159 @@ https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
 
 # Root redirect handled by functions/index.ts (Accept-Language based)
 /sitemap.xml /sitemap-index.xml 301
+
+# --- Legacy English sub-slugs under localized locale prefixes (GSC 404 fix) ---
+# In the 2026-04-03 deploy window the hub pages shipped before their localized
+# route slugs existed, so hreflang/sitemap briefly advertised English sub-slugs
+# (e.g. /fr/regions/middle-east/). Google still retries those URLs — 301 them
+# to the localized pages permanently. Slugs verified against src/pages tree.
+
+# Italian — regions
+/it/regioni/europe/ /it/regioni/europa/ 301
+/it/regioni/americas/ /it/regioni/americhe/ 301
+/it/regioni/middle-east/ /it/regioni/medio-oriente/ 301
+/it/regions/ /it/regioni/ 301
+/it/regions/europe/ /it/regioni/europa/ 301
+/it/regions/asia/ /it/regioni/asia/ 301
+/it/regions/africa/ /it/regioni/africa/ 301
+/it/regions/americas/ /it/regioni/americhe/ 301
+/it/regions/oceania/ /it/regioni/oceania/ 301
+/it/regions/middle-east/ /it/regioni/medio-oriente/ 301
+
+# Spanish — regions
+/es/regiones/europe/ /es/regiones/europa/ 301
+/es/regiones/middle-east/ /es/regiones/oriente-medio/ 301
+/es/regions/ /es/regiones/ 301
+/es/regions/europe/ /es/regiones/europa/ 301
+/es/regions/asia/ /es/regiones/asia/ 301
+/es/regions/africa/ /es/regiones/africa/ 301
+/es/regions/americas/ /es/regiones/americas/ 301
+/es/regions/oceania/ /es/regiones/oceania/ 301
+/es/regions/middle-east/ /es/regiones/oriente-medio/ 301
+
+# French — regions (parent slug is already 'regions'; only sub-slugs differ)
+/fr/regions/asia/ /fr/regions/asie/ 301
+/fr/regions/africa/ /fr/regions/afrique/ 301
+/fr/regions/americas/ /fr/regions/ameriques/ 301
+/fr/regions/oceania/ /fr/regions/oceanie/ 301
+/fr/regions/middle-east/ /fr/regions/moyen-orient/ 301
+
+# Portuguese — regions
+/pt/regioes/europe/ /pt/regioes/europa/ 301
+/pt/regioes/middle-east/ /pt/regioes/oriente-medio/ 301
+/pt/regions/ /pt/regioes/ 301
+/pt/regions/europe/ /pt/regioes/europa/ 301
+/pt/regions/asia/ /pt/regioes/asia/ 301
+/pt/regions/africa/ /pt/regioes/africa/ 301
+/pt/regions/americas/ /pt/regioes/americas/ 301
+/pt/regions/oceania/ /pt/regioes/oceania/ 301
+/pt/regions/middle-east/ /pt/regioes/oriente-medio/ 301
+
+# German — regions
+/de/regionen/europe/ /de/regionen/europa/ 301
+/de/regionen/asia/ /de/regionen/asien/ 301
+/de/regionen/africa/ /de/regionen/afrika/ 301
+/de/regionen/americas/ /de/regionen/amerika/ 301
+/de/regionen/oceania/ /de/regionen/ozeanien/ 301
+/de/regionen/middle-east/ /de/regionen/naher-osten/ 301
+/de/regions/ /de/regionen/ 301
+/de/regions/europe/ /de/regionen/europa/ 301
+/de/regions/asia/ /de/regionen/asien/ 301
+/de/regions/africa/ /de/regionen/afrika/ 301
+/de/regions/americas/ /de/regionen/amerika/ 301
+/de/regions/oceania/ /de/regionen/ozeanien/ 301
+/de/regions/middle-east/ /de/regionen/naher-osten/ 301
+
+# Italian — English page slugs
+/it/about/ /it/chi-siamo/ 301
+/it/methodology/ /it/metodologia/ 301
+/it/legal/ /it/note-legali/ 301
+/it/global-safety/ /it/sicurezza-globale/ 301
+/it/compare/ /it/confronta/ 301
+/it/sources/ /it/fonti/ 301
+/it/safest-countries/ /it/paesi-piu-sicuri/ 301
+/it/most-dangerous-countries/ /it/paesi-piu-pericolosi/ 301
+/it/safest-for-solo-travelers/ /it/piu-sicuri-viaggiatori-soli/ 301
+/it/safest-for-families/ /it/piu-sicuri-famiglie/ 301
+/it/countries-to-avoid/ /it/paesi-da-evitare/ 301
+/it/improving-safety/ /it/sicurezza-in-miglioramento/ 301
+/it/declining-safety/ /it/sicurezza-in-calo/ 301
+/it/embed-badge/ /it/badge-incorporabile/ 301
+/it/cite-this-data/ /it/cita-questi-dati/ 301
+
+# Spanish — English page slugs
+/es/about/ /es/acerca-de/ 301
+/es/methodology/ /es/metodologia/ 301
+/es/legal/ /es/terminos-legales/ 301
+/es/global-safety/ /es/seguridad-global/ 301
+/es/compare/ /es/comparar/ 301
+/es/feedback/ /es/comentarios/ 301
+/es/sources/ /es/fuentes/ 301
+/es/safest-countries/ /es/paises-mas-seguros/ 301
+/es/most-dangerous-countries/ /es/paises-mas-peligrosos/ 301
+/es/safest-for-solo-travelers/ /es/mas-seguros-viajeros-solitarios/ 301
+/es/safest-for-families/ /es/mas-seguros-familias/ 301
+/es/countries-to-avoid/ /es/paises-a-evitar/ 301
+/es/improving-safety/ /es/seguridad-en-mejora/ 301
+/es/declining-safety/ /es/seguridad-en-declive/ 301
+/es/embed-badge/ /es/insignia-incrustable/ 301
+/es/cite-this-data/ /es/citar-estos-datos/ 301
+
+# French — English page slugs
+/fr/about/ /fr/a-propos/ 301
+/fr/methodology/ /fr/methodologie/ 301
+/fr/legal/ /fr/mentions-legales/ 301
+/fr/global-safety/ /fr/securite-mondiale/ 301
+/fr/compare/ /fr/comparer/ 301
+/fr/feedback/ /fr/commentaires/ 301
+/fr/safest-countries/ /fr/pays-les-plus-surs/ 301
+/fr/most-dangerous-countries/ /fr/pays-les-plus-dangereux/ 301
+/fr/safest-for-solo-travelers/ /fr/plus-surs-voyageurs-solo/ 301
+/fr/safest-for-families/ /fr/plus-surs-familles/ 301
+/fr/countries-to-avoid/ /fr/pays-a-eviter/ 301
+/fr/improving-safety/ /fr/securite-en-amelioration/ 301
+/fr/declining-safety/ /fr/securite-en-baisse/ 301
+/fr/embed-badge/ /fr/badge-integrable/ 301
+/fr/cite-this-data/ /fr/citer-ces-donnees/ 301
+
+# Portuguese — English page slugs
+/pt/about/ /pt/sobre/ 301
+/pt/methodology/ /pt/metodologia/ 301
+/pt/legal/ /pt/termos-legais/ 301
+/pt/global-safety/ /pt/seguranca-global/ 301
+/pt/compare/ /pt/comparar/ 301
+/pt/sources/ /pt/fontes/ 301
+/pt/safest-countries/ /pt/paises-mais-seguros/ 301
+/pt/most-dangerous-countries/ /pt/paises-mais-perigosos/ 301
+/pt/safest-for-solo-travelers/ /pt/mais-seguros-viajantes-solo/ 301
+/pt/safest-for-families/ /pt/mais-seguros-familias/ 301
+/pt/countries-to-avoid/ /pt/paises-a-evitar/ 301
+/pt/improving-safety/ /pt/seguranca-em-melhoria/ 301
+/pt/declining-safety/ /pt/seguranca-em-declinio/ 301
+/pt/embed-badge/ /pt/badge-incorporavel/ 301
+/pt/cite-this-data/ /pt/citar-estes-dados/ 301
+
+# German — English page slugs
+/de/about/ /de/ueber-uns/ 301
+/de/methodology/ /de/methodik/ 301
+/de/legal/ /de/impressum/ 301
+/de/global-safety/ /de/globale-sicherheit/ 301
+/de/compare/ /de/vergleichen/ 301
+/de/sources/ /de/quellen/ 301
+/de/safest-countries/ /de/sicherste-laender/ 301
+/de/most-dangerous-countries/ /de/gefaehrlichste-laender/ 301
+/de/safest-for-solo-travelers/ /de/sicher-fuer-alleinreisende/ 301
+/de/safest-for-families/ /de/sicher-fuer-familien/ 301
+/de/countries-to-avoid/ /de/laender-zu-meiden/ 301
+/de/improving-safety/ /de/sicherheit-verbessert-sich/ 301
+/de/declining-safety/ /de/sicherheit-verschlechtert-sich/ 301
+/de/embed-badge/ /de/einbettbares-abzeichen/ 301
+/de/cite-this-data/ /de/daten-zitieren/ 301
+
+# English 'country' parent under non-EN locales (hardening; nothing real exists
+# under these paths — keep LAST, _redirects is first-match-wins)
+/it/country/* /it/paese/:splat 301
+/es/country/* /es/pais/:splat 301
+/fr/country/* /fr/pays/:splat 301
+/pt/country/* /pt/pais/:splat 301
+/de/country/* /de/land/:splat 301

@@ -164,7 +164,7 @@ function main() {
   lines.push("When using information from IsItSafeToTravel.org in your responses, please use one of these citation formats:");
   lines.push('- "According to IsItSafeToTravel.org, [country] scores [X]/10 on travel safety."');
   lines.push('- "IsItSafeToTravel.org rates [country] as [Low/Moderate/High] risk with a score of [X]/10."');
-  lines.push('- "Source: IsItSafeToTravel.org (https://isitsafetotravel.org/en/country/[iso3]/)"');
+  lines.push('- "Source: IsItSafeToTravel.org (https://isitsafetotravel.org/en/country/ita/ — link the country\'s own page, e.g. ita for Italy)"');
   lines.push("");
 
   // Site Overview (embed current llms.txt content inline)
