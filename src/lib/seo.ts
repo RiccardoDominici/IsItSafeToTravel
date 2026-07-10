@@ -136,7 +136,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     es: `Seguridad de ${name}: ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}). Punto fuerte: ${strongestLabel} (${strongestScore}). Datos gratuitos de ${sourceCount}+ fuentes, actualizados diariamente. Verifica antes de viajar.`,
     fr: `Securite de ${name} : ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}). Point fort : ${strongestLabel} (${strongestScore}). Donnees gratuites de ${sourceCount}+ sources, mises a jour chaque jour. Verifiez avant de partir.`,
     pt: `Seguranca de ${name}: ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}). Ponto forte: ${strongestLabel} (${strongestScore}). Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente. Verifique antes de viajar.`,
-    zh: `${name} 安全评分：${roundedScore}/10（${riskLevel}）。主要关注：${weakestLabel}（${weakestScore}）。最佳类别：${strongestLabel}（${strongestScore}）。来自 ${sourceCount}+ 个来源的免费数据，每日更新。出行前请查阅。`,
+    zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）；表现最佳：${strongestLabel}（${strongestScore} 分）。数据来自 ${sourceCount}+ 个公开来源，每日更新，免费查询。`,
     de: `Sicherheits-Score für ${name}: ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}). Stärkste Kategorie: ${strongestLabel} (${strongestScore}). Kostenlose Daten aus ${sourceCount}+ Quellen, täglich aktualisiert. Vor der Reise prüfen.`,
   };
   return templates[lang];
