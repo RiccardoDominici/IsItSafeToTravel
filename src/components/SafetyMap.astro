@@ -365,6 +365,14 @@ const countryRoute = routes[lang].country;
     const isTouchDevice = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
     const maxZoom = isTouchDevice ? 20 : 8;
 
+    // Timestamp of the last touch inside the map. Tap-generated synthetic
+    // mouse events (mouseenter/mousemove/click) fire within a few hundred ms
+    // of the touch, so recency is the reliable way to tell them apart from
+    // real mouse input — click.pointerType is not trustworthy across engines
+    // (iOS 18.1–18.3 reports 'mouse' for taps, Firefox ≤128 reports nothing).
+    let lastTouchTs = -Infinity;
+    const wasTouchRecently = () => performance.now() - lastTouchTs < 700;
+
     // Zoom behavior
     const zoom = d3
       .zoom<SVGSVGElement, unknown>()
@@ -421,6 +429,34 @@ const countryRoute = routes[lang].country;
       svgEl.addEventListener('touchstart', (e: TouchEvent) => {
         touchMoveCount = 0;
       }, { passive: true });
+      // Second finger down = pinch start: dismiss any visible tooltip and
+      // cancel the pending tap-to-navigate state. Must be on the container in
+      // the capture phase — d3-zoom stopImmediatePropagation()s two-finger
+      // touchstarts on the svg, so a later svg listener would never fire.
+      container.addEventListener('touchstart', (e: TouchEvent) => {
+        lastTouchTs = performance.now();
+        if (e.touches.length >= 2) {
+          lastTappedIso3 = null;
+          hideTooltip();
+        }
+      }, { passive: true, capture: true });
+      container.addEventListener('touchend', () => {
+        lastTouchTs = performance.now();
+      }, { passive: true, capture: true });
+      // Touching anywhere outside the map dismisses the preview card (the
+      // synthetic mouseleave that used to do this is ignored on touch now).
+      // Self-removes once this container is replaced by a view transition.
+      const outsideTouchDismiss = (e: TouchEvent) => {
+        if (!container.isConnected) {
+          document.removeEventListener('touchstart', outsideTouchDismiss, true);
+          return;
+        }
+        if (!container.contains(e.target as Node)) {
+          lastTappedIso3 = null;
+          hideTooltip();
+        }
+      };
+      document.addEventListener('touchstart', outsideTouchDismiss, { passive: true, capture: true });
       svgEl.addEventListener('touchmove', (e: TouchEvent) => {
         if (e.touches.length === 1) {
           touchMoveCount++;
@@ -437,11 +473,15 @@ const countryRoute = routes[lang].country;
     const zoomOutBtn = document.getElementById('zoom-out');
     if (zoomInBtn) {
       zoomInBtn.addEventListener('click', () => {
+        lastTappedIso3 = null;
+        hideTooltip();
         svg.transition().duration(300).call(zoom.scaleBy, 1.5);
       });
     }
     if (zoomOutBtn) {
       zoomOutBtn.addEventListener('click', () => {
+        lastTappedIso3 = null;
+        hideTooltip();
         svg.transition().duration(300).call(zoom.scaleBy, 1 / 1.5);
       });
     }
@@ -575,30 +615,43 @@ const countryRoute = routes[lang].country;
             return iso3 && scoreMap.has(iso3) ? 'pointer' : 'default';
           })
           .on('mouseenter', function (event: MouseEvent, d: any) {
+            // Ignore the synthetic hover a tap generates: mutating the DOM in
+            // these handlers makes iOS WebKit withhold the tap's click event,
+            // and the click handler owns the touch preview flow anyway.
+            if (wasTouchRecently()) return;
             const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
             if (!iso3) return;
             d3.select(this).attr('stroke-width', 1.5);
             showTooltip(event, iso3);
           })
           .on('mousemove', function (event: MouseEvent, d: any) {
+            if (wasTouchRecently()) return;
             const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
             if (!iso3) return;
             showTooltip(event, iso3);
           })
           .on('mouseleave', function () {
+            if (wasTouchRecently()) return;
             d3.select(this).attr('stroke-width', 0.5);
             hideTooltip();
           })
-          .on('click', function (_event: MouseEvent, d: any) {
+          .on('click', function (event: MouseEvent, d: any) {
             const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
             if (!iso3) return;
-            navigateToCountry(iso3);
-          })
-          .on('touchstart', function (event: TouchEvent, d: any) {
-            const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
-            if (!iso3) return;
-
-            if (iso3 === lastTappedIso3) {
+            // On touch, the browser fires this synthetic click only for a clean
+            // single-finger tap — never for a pinch or scroll — so it is the
+            // reliable tap signal (touchstart also fires for the first finger
+            // of a pinch, which made the tooltip pop up under one finger while
+            // zooming). First tap previews, second tap on the same country
+            // navigates; mouse clicks navigate directly.
+            if (!wasTouchRecently()) {
+              navigateToCountry(iso3);
+              return;
+            }
+            // Navigate only while this country's preview is actually visible;
+            // if anything dismissed it, the tap re-arms the preview instead
+            // of navigating unexpectedly.
+            if (iso3 === lastTappedIso3 && !tooltip.classList.contains('hidden')) {
               // Second tap: navigate
               navigateToCountry(iso3);
             } else {
@@ -720,8 +773,10 @@ const countryRoute = routes[lang].country;
               path as any
             );
 
-            // Reset zoom
+            // Reset zoom and dismiss the (now mispositioned) preview card
             svg.call(zoom.transform, d3.zoomIdentity);
+            lastTappedIso3 = null;
+            hideTooltip();
           }, 250);
         });
       })
