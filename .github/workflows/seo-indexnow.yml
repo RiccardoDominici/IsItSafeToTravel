@@ -1,10 +1,35 @@
 name: SEO IndexNow Submission
 
+# "Streaming" IndexNow: after each deploy, hash every prerendered HTML page,
+# diff against the manifest from the previous run (persisted via actions/cache),
+# and submit ONLY the URLs whose content actually changed — in chunks of <= 500
+# with a pause between POSTs. This replaces the old behavior of resubmitting
+# all ~1900 sitemap URLs as one giant batch on every deploy, which Bing
+# Webmaster Tools flagged as "IndexNow is in batch mode".
+
 on:
   workflow_run:
     workflows: ["Deploy to Cloudflare Pages"]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      submit_all:
+        description: "Force full resubmission of every sitemap URL (ignore change detection)"
+        type: boolean
+        required: false
+        default: false
+
+# Serialize runs so two overlapping deploys can't race the manifest cache.
+concurrency:
+  group: seo-indexnow
+  cancel-in-progress: false
+
+env:
+  SITE_HOST: isitsafetotravel.org
+  INDEXNOW_KEY: b4f7e2a1d9c8365f
+  INDEXNOW_KEY_LOCATION: https://isitsafetotravel.org/b4f7e2a1d9c8365f.txt
+  CHUNK_SIZE: "500"
+  SLEEP_SECONDS: "5"
 
 jobs:
   index-now:
@@ -30,94 +55,174 @@ jobs:
             cp data/scores/latest.json public/scores.json
           fi
 
-      - name: Build site
-        run: npm run build
+      # `npm run build` chains generate:og (~400s, regenerates 248 PNGs) +
+      # generate:llms + astro build + validate:seo. This workflow only needs the
+      # prerendered HTML + sitemaps to hash and diff: og:image meta tags are
+      # static path strings (they never depend on the PNG files existing), and
+      # llms.txt / llms-full.txt are committed in public/. The deploy workflow
+      # still runs the full validated build for production, so `npx astro build`
+      # is sufficient — and much faster — here.
+      - name: Build site (HTML only, skips OG regeneration and SEO validation)
+        run: npx astro build
 
-      - name: Extract URLs from sitemap and submit to IndexNow
+      # actions/cache keys are immutable, so save under a per-run key and rely
+      # on the restore-keys prefix to pick up the most recent manifest.
+      - name: Restore URL->hash manifest from previous run
+        uses: actions/cache/restore@v4
+        with:
+          path: .indexnow/manifest.tsv
+          key: indexnow-manifest-${{ github.run_id }}
+          restore-keys: |
+            indexnow-manifest-
+
+      - name: Compute changed URLs
+        id: diff
+        env:
+          SUBMIT_ALL: ${{ inputs.submit_all }}
         run: |
-          SITEMAP_INDEX="dist/client/sitemap-index.xml"
+          set -euo pipefail
 
+          SITEMAP_INDEX="dist/client/sitemap-index.xml"
           if [ ! -f "$SITEMAP_INDEX" ]; then
             echo "::error::Sitemap index not found at $SITEMAP_INDEX"
             exit 1
           fi
 
-          # Read per-language sitemap filenames from the sitemap index
-          SITEMAP_FILES=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_INDEX" | sed 's|https://isitsafetotravel.org/|dist/client/|')
-
+          # Per-language sitemap files referenced by the sitemap index
+          SITEMAP_FILES=$(grep -o '<loc>[^<]*' "$SITEMAP_INDEX" | sed -e 's|^<loc>||' -e "s|https://$SITE_HOST/|dist/client/|")
           if [ -z "$SITEMAP_FILES" ]; then
             echo "::error::No sitemaps found in $SITEMAP_INDEX"
             exit 1
           fi
 
-          echo "Found $(echo "$SITEMAP_FILES" | wc -l | tr -d ' ') sitemap files in index"
-          echo "$SITEMAP_FILES"
-
-          # Extract <loc> URLs from every per-language sitemap and concatenate
-          ALL_URLS_FILE=$(mktemp)
+          URLS_FILE=$(mktemp)
           while IFS= read -r SITEMAP_FILE; do
             [ -z "$SITEMAP_FILE" ] && continue
             if [ ! -f "$SITEMAP_FILE" ]; then
               echo "::warning::Sitemap referenced but missing: $SITEMAP_FILE"
               continue
             fi
-            FILE_COUNT=$(grep -oP '(?<=<loc>)[^<]+' "$SITEMAP_FILE" | tee -a "$ALL_URLS_FILE" | wc -l | tr -d ' ')
-            echo "  $SITEMAP_FILE: $FILE_COUNT URLs"
+            grep -o '<loc>[^<]*' "$SITEMAP_FILE" | sed 's|^<loc>||' >> "$URLS_FILE" || true
           done <<< "$SITEMAP_FILES"
 
-          URLS=$(sed '/^$/d' "$ALL_URLS_FILE")
-          rm -f "$ALL_URLS_FILE"
-          URL_COUNT=$(echo "$URLS" | wc -l | tr -d ' ')
+          sort -u -o "$URLS_FILE" "$URLS_FILE"
+          echo "Canonical URLs in sitemap: $(wc -l < "$URLS_FILE" | tr -d ' ')"
 
-          echo "Found $URL_COUNT URLs in sitemap"
-          echo "$URLS"
+          # Hash the built HTML behind every canonical URL. trailingSlash is
+          # 'always', so https://host/en/country/ita/ -> dist/client/en/country/ita/index.html
+          mkdir -p .indexnow
+          NEW_MANIFEST=".indexnow/manifest.new.tsv"
+          : > "$NEW_MANIFEST"
+          while IFS= read -r URL; do
+            REL="${URL#https://$SITE_HOST/}"
+            REL="${REL%/}"
+            if [ -z "$REL" ]; then
+              FILE="dist/client/index.html"
+            else
+              FILE="dist/client/$REL/index.html"
+            fi
+            if [ ! -f "$FILE" ]; then
+              echo "::warning::No built HTML for sitemap URL $URL (expected $FILE) — skipping"
+              continue
+            fi
+            HASH=$(sha256sum "$FILE" | cut -d' ' -f1)
+            printf '%s\t%s\n' "$URL" "$HASH" >> "$NEW_MANIFEST"
+          done < "$URLS_FILE"
+          rm -f "$URLS_FILE"
 
-          # Build JSON array of URLs
-          URL_JSON=$(echo "$URLS" | jq -R -s 'split("\n") | map(select(length > 0))')
+          OLD_MANIFEST=".indexnow/manifest.tsv"
+          SUBMIT_LIST=".indexnow/submit-urls.txt"
 
-          # Submit in batches of 10,000
-          BATCH_SIZE=10000
-          TOTAL=$(echo "$URL_JSON" | jq 'length')
+          if [ "${SUBMIT_ALL:-false}" = "true" ]; then
+            echo "submit_all requested — submitting every URL"
+            cut -f1 "$NEW_MANIFEST" > "$SUBMIT_LIST"
+          elif [ ! -s "$OLD_MANIFEST" ]; then
+            echo "No previous manifest (first run or cache evicted) — submitting every URL"
+            cut -f1 "$NEW_MANIFEST" > "$SUBMIT_LIST"
+          else
+            echo "Previous manifest: $(wc -l < "$OLD_MANIFEST" | tr -d ' ') URLs"
+            # New URLs + URLs whose HTML hash changed
+            awk -F'\t' 'NR==FNR { old[$1] = $2; next } !($1 in old) || old[$1] != $2 { print $1 }' \
+              "$OLD_MANIFEST" "$NEW_MANIFEST" > "$SUBMIT_LIST"
+            # Removed URLs: IndexNow also expects deletions to be announced so
+            # engines recrawl them, see the 404/410, and drop them.
+            awk -F'\t' 'NR==FNR { new[$1] = 1; next } !($1 in new) { print $1 }' \
+              "$NEW_MANIFEST" "$OLD_MANIFEST" >> "$SUBMIT_LIST"
+          fi
+
+          # The new manifest becomes the state persisted after a successful run
+          mv "$NEW_MANIFEST" "$OLD_MANIFEST"
+
+          COUNT=$(wc -l < "$SUBMIT_LIST" | tr -d ' ')
+          echo "URLs to submit: $COUNT"
+          head -n 50 "$SUBMIT_LIST"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          {
+            echo "### IndexNow change detection"
+            echo "- Pages hashed: $(wc -l < "$OLD_MANIFEST" | tr -d ' ')"
+            echo "- URLs to submit: $COUNT"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Submit changed URLs to IndexNow in small chunks
+        if: steps.diff.outputs.count != '0'
+        run: |
+          set -euo pipefail
+
+          SUBMIT_LIST=".indexnow/submit-urls.txt"
+          URL_JSON=$(jq -R -s 'split("\n") | map(select(length > 0))' "$SUBMIT_LIST")
+          TOTAL=$(jq 'length' <<< "$URL_JSON")
+          echo "Submitting $TOTAL URLs in chunks of $CHUNK_SIZE (sleep ${SLEEP_SECONDS}s between POSTs)"
+
           OFFSET=0
-
+          FAILURES=0
           while [ "$OFFSET" -lt "$TOTAL" ]; do
-            BATCH=$(echo "$URL_JSON" | jq --argjson offset "$OFFSET" --argjson size "$BATCH_SIZE" '.[$offset:$offset+$size]')
-            BATCH_COUNT=$(echo "$BATCH" | jq 'length')
-
-            echo "Submitting batch of $BATCH_COUNT URLs (offset $OFFSET)..."
+            BATCH=$(jq --argjson offset "$OFFSET" --argjson size "$CHUNK_SIZE" '.[$offset:$offset+$size]' <<< "$URL_JSON")
+            BATCH_COUNT=$(jq 'length' <<< "$BATCH")
 
             PAYLOAD=$(jq -n \
-              --arg host "isitsafetotravel.org" \
-              --arg key "b4f7e2a1d9c8365f" \
-              --arg keyLocation "https://isitsafetotravel.org/b4f7e2a1d9c8365f.txt" \
+              --arg host "$SITE_HOST" \
+              --arg key "$INDEXNOW_KEY" \
+              --arg keyLocation "$INDEXNOW_KEY_LOCATION" \
               --argjson urlList "$BATCH" \
               '{host: $host, key: $key, keyLocation: $keyLocation, urlList: $urlList}')
 
-            echo "Payload:"
-            echo "$PAYLOAD" | jq .
-
-            # Submit to IndexNow via api.indexnow.org
             HTTP_STATUS=$(curl -s -o /tmp/indexnow-response.txt -w "%{http_code}" \
               -X POST "https://api.indexnow.org/IndexNow" \
               -H "Content-Type: application/json; charset=utf-8" \
               -d "$PAYLOAD")
 
-            RESPONSE=$(cat /tmp/indexnow-response.txt)
-            echo "IndexNow response: HTTP $HTTP_STATUS"
-            echo "$RESPONSE"
+            echo "Chunk at offset $OFFSET ($BATCH_COUNT URLs): HTTP $HTTP_STATUS"
+            cat /tmp/indexnow-response.txt || true
+            echo ""
 
-            if [ "$HTTP_STATUS" -ge 200 ] && [ "$HTTP_STATUS" -lt 300 ]; then
-              echo "Batch submitted successfully"
-            else
-              echo "::warning::IndexNow returned HTTP $HTTP_STATUS for batch at offset $OFFSET"
+            if [ "$HTTP_STATUS" -lt 200 ] || [ "$HTTP_STATUS" -ge 300 ]; then
+              echo "::warning::IndexNow returned HTTP $HTTP_STATUS for chunk at offset $OFFSET"
+              FAILURES=$((FAILURES + 1))
             fi
 
-            OFFSET=$((OFFSET + BATCH_SIZE))
+            OFFSET=$((OFFSET + CHUNK_SIZE))
+            if [ "$OFFSET" -lt "$TOTAL" ]; then
+              sleep "$SLEEP_SECONDS"
+            fi
           done
 
-      - name: Ping Google sitemap
-        run: |
-          echo "Pinging Google with sitemap URL..."
-          curl -s "https://www.google.com/ping?sitemap=https://isitsafetotravel.org/sitemap-index.xml"
-          echo ""
-          echo "Google sitemap ping complete"
+          if [ "$FAILURES" -gt 0 ]; then
+            echo "::error::$FAILURES chunk(s) failed — the manifest will not be saved, so these URLs are retried on the next run"
+            exit 1
+          fi
+          echo "All chunks submitted successfully"
+
+      # Note: the Google sitemap "ping" step was removed. Google deprecated the
+      # /ping endpoint in June 2023 and shut it down in January 2024; it now
+      # returns HTTP 404 (verified). Google discovers updates via the sitemap
+      # <lastmod> values and Search Console instead.
+
+      # Runs only when every previous step succeeded, so the cached manifest
+      # always reflects the last state that was FULLY submitted. If submission
+      # fails, the old manifest survives and the same URLs are retried next run.
+      - name: Save URL->hash manifest
+        uses: actions/cache/save@v4
+        with:
+          path: .indexnow/manifest.tsv
+          key: indexnow-manifest-${{ github.run_id }}
+
