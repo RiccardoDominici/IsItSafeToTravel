@@ -2,7 +2,7 @@
 quick_id: 260710-seo
 slug: bing-gsc-indexing-fixes
 date: 2026-07-10
-status: in-progress
+status: done
 ---
 
 # Fix Bing Webmaster Tools + GSC indexing recommendations
@@ -46,9 +46,9 @@ Bing Recommendations e GSC Coverage (screenshot 2026-07-10) segnalano 5 problemi
 6. ✅ Bonus prevenzione: sweep sito-intero in `validate-seo.ts` (`validateAllHreflangTargets`) — ogni hreflang di ogni pagina deve puntare a un file in dist (previene la classe di bug di aprile).
 7. ✅ Bonus: eliminato URL template letterale `[iso3]` da `generate-llms-full.ts` (stessa classe di `{search_term_string}`), llms rigenerati.
 8. ✅ Sitemap zh + index re-inviate a Google via API (accelera ricrawl stragglers zh).
-9. ⏳ Build (`npx astro build`) + `npm run validate:seo` all-pass.
-10. ⏳ Commit atomici + push (auto-deploy).
-11. ⏳ Aggiornare memoria progetto.
+9. ✅ Build + `validate:seo` 2214/2214 pass + `npm test` 131/131 pass.
+10. ✅ 5 commit atomici (a3a5c924…2803421e) + push d80c5f80 (auto-deploy).
+11. ✅ Memoria progetto aggiornata (project_google_indexing).
 
 ## Diagnosi GSC live (API, 2026-07-10, 38 URL ispezionati)
 
