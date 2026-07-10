@@ -109,6 +109,63 @@ function validateHreflang() {
   }
 }
 
+/**
+ * Site-wide sweep: every hreflang href on every built page must resolve to a
+ * file in dist. Guards against the 2026-04 failure mode where a page shipped
+ * before its localized route slug existed and getLocalizedPath passed the
+ * English sub-slug through untranslated, advertising 404 URLs to Google
+ * (e.g. /fr/regions/middle-east/). The sampled checks above miss hub pages.
+ */
+function validateAllHreflangTargets() {
+  console.log("\n--- Hreflang Target Sweep (all pages) ---");
+
+  const htmlFiles: string[] = [];
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      const full = path.join(dir, entry.name);
+      if (entry.isDirectory()) walk(full);
+      else if (entry.name === "index.html") htmlFiles.push(full);
+    }
+  };
+  walk(DIST);
+
+  const hreflangRe = /< *link[^>]*hreflang=["'][^"']+["'][^>]*href=["']([^"']+)["'][^>]*\/?>/gi;
+  const broken: string[] = [];
+  let scanned = 0;
+  const seen = new Set<string>();
+
+  for (const file of htmlFiles) {
+    const html = readHtml(file);
+    scanned++;
+    let m;
+    while ((m = hreflangRe.exec(html)) !== null) {
+      const href = m[1];
+      if (seen.has(href)) continue;
+      seen.add(href);
+      let pathname: string;
+      try {
+        pathname = new URL(href).pathname;
+      } catch {
+        broken.push(`${href} (unparseable, on ${path.relative(DIST, file)})`);
+        continue;
+      }
+      const target =
+        pathname === "/"
+          ? null // root is a Accept-Language redirect function, not a file
+          : path.join(DIST, pathname, "index.html");
+      if (target && !fs.existsSync(target)) {
+        broken.push(`${href} (linked from ${path.relative(DIST, file)})`);
+      }
+    }
+  }
+
+  check(
+    `hreflang sweep: all targets exist (${scanned} pages, ${seen.size} unique URLs)`,
+    broken.length === 0,
+    broken.slice(0, 10).join("; ") + (broken.length > 10 ? ` … +${broken.length - 10} more` : "")
+  );
+}
+
 function validateHreflangPage(filePath: string, label: string) {
   const html = readHtml(filePath);
 
@@ -626,6 +683,7 @@ function main() {
   }
 
   validateHreflang();
+  validateAllHreflangTargets();
   validateJsonLd();
   validateMeta();
   validateLlmsFullTxt();
