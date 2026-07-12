@@ -21,6 +21,7 @@ import FaqSection from '../../../components/country/FaqSection.astro';
 import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
 import ComparisonTable from '../../../components/country/ComparisonTable.astro';
 import TravelDealsWidget from '../../../components/TravelDealsWidget.astro';
+import NewsletterSignup from '../../../components/NewsletterSignup.astro';
 import { getMainCityIata, getMainCityName } from '../../../lib/iata-cities';
 import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
 import { loadSentimentForCountry } from '../../../lib/sentiment';
@@ -110,6 +111,7 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
       countryName={getLocalizedCountryName(country, lang)}
       mode="country"
     />
+    <NewsletterSignup lang={lang} placement="country" countrySlug={country.iso3.toLowerCase()} />
     <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
     <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
