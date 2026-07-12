@@ -52,6 +52,18 @@ const legalHref = `/${lang}/${routes[lang].legal}/`;
   </div>
 </div>
 
+<style is:global>
+  /* While the consent banner is open, hide the Ko-fi floating widget: both sit
+     bottom-left and Ko-fi otherwise covers the Reject button (reject must stay
+     as easy as accept). Ko-fi injects async, so a CSS gate on a body class is
+     the only ordering-safe way to keep it out until the choice is made. */
+  body.cookie-banner-open .floatingchat-container-wrap,
+  body.cookie-banner-open .floatingchat-container-wrap-mobi,
+  body.cookie-banner-open [id*='kofi-widget-overlay'] {
+    display: none !important;
+  }
+</style>
+
 <script is:inline>
   (function () {
     var STORAGE_KEY = 'cookie-consent';
@@ -100,9 +112,11 @@ const legalHref = `/${lang}/${routes[lang].legal}/`;
 
     function showBanner() {
       if (banner) banner.classList.remove('hidden');
+      document.body.classList.add('cookie-banner-open');
     }
     function hideBanner() {
       if (banner) banner.classList.add('hidden');
+      document.body.classList.remove('cookie-banner-open');
     }
 
     if (acceptBtn) {
