@@ -26,6 +26,13 @@ export interface NewsEventParams {
   toBand?: BandKey; // band_change
   issuer?: string; // advisory issuer code, subset of MAJOR_ISSUERS
   level?: number; // advisory level 3|4
+  /**
+   * INTERNAL ONLY — never rendered. Scoring-engine confidence (0-1) of the subject
+   * country (min of the pair for rank_overtake) at generation time. Present on the
+   * coverage-gated types (score_jump, band_change, top10_change, rank_overtake) for
+   * observability/tuning; renderers must ignore it.
+   */
+  confidence?: number;
 }
 
 export interface NewsEvent {
@@ -73,6 +80,14 @@ export const SEVERE_ADVISORY_MIN_LEVEL = 3;
 export const MAJOR_ISSUERS = ['us', 'uk', 'ca', 'au'] as const;
 /** If prev snapshot is more than this many days stale, skip movement events (keep new_country). */
 export const MAX_DIFF_GAP_DAYS = 7;
+/**
+ * Movement events (score_jump, band_change, top10_change, rank_overtake) are suppressed
+ * for countries whose scoring-engine `confidence` is below this — a low-coverage score
+ * moves mostly because its prior/advisory nudge moves, and that is not news. Aligned with
+ * the "limited data" UI flag threshold (ScoreHero); severe_advisory and new_country are
+ * exempt (real external facts, meaningful regardless of coverage).
+ */
+export const MIN_NEWS_CONFIDENCE = 0.4;
 /** Hard daily cap on persisted events (highest-priority kept). */
 export const MAX_EVENTS_PER_DAY = 15;
 /** Homepage section shows at most this many events. */

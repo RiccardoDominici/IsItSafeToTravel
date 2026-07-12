@@ -1,6 +1,6 @@
 {
   "date": "2026-07-01",
-  "generatedAt": "2026-07-12T02:25:22.323Z",
+  "generatedAt": "2026-07-12T11:56:38.287Z",
   "events": [
     {
       "id": "2026-07-01:score_jump:RUS",
@@ -11,7 +11,8 @@
         "delta": -0.23,
         "score": 3.9,
         "prevScore": 4.2,
-        "direction": "down"
+        "direction": "down",
+        "confidence": 0.79
       },
       "priority": 50
     }

@@ -1,6 +1,6 @@
 {
   "date": "2026-06-23",
-  "generatedAt": "2026-07-12T02:25:18.630Z",
+  "generatedAt": "2026-07-12T11:56:38.163Z",
   "events": [
     {
       "id": "2026-06-23:band_change:ZMB",
@@ -11,7 +11,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.78
       },
       "priority": 70
     }

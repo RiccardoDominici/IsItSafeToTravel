@@ -1,6 +1,6 @@
 {
   "date": "2026-07-02",
-  "generatedAt": "2026-07-12T02:25:22.781Z",
+  "generatedAt": "2026-07-12T11:56:38.303Z",
   "events": [
     {
       "id": "2026-07-02:score_jump:VNM",
@@ -11,7 +11,8 @@
         "delta": -0.16,
         "score": 6.7,
         "prevScore": 6.9,
-        "direction": "down"
+        "direction": "down",
+        "confidence": 0.78
       },
       "priority": 50
     }

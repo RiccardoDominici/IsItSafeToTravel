@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-07-12T10:48:53.536Z",
+  "generatedAt": "2026-07-12T11:56:38.462Z",
   "lastProcessedDate": "2026-07-12",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
@@ -13,7 +13,6 @@
     "jump:RUS": "2026-07-01",
     "jump:VNM": "2026-07-02",
     "band:AND": "2026-07-08",
-    "band:ASM": "2026-07-08",
     "band:BHR": "2026-07-08",
     "band:DEU": "2026-07-08",
     "band:GRC": "2026-07-08",
@@ -25,7 +24,8 @@
     "band:USA": "2026-07-08",
     "band:VNM": "2026-07-08",
     "overtake:CHE|LUX": "2026-07-08",
-    "overtake:IRL|SGP": "2026-07-08"
+    "overtake:IRL|SGP": "2026-07-08",
+    "overtake:CZE|NOR": "2026-07-08"
   },
   "recentEvents": [
     {
@@ -37,20 +37,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8,
-        "direction": "up"
-      },
-      "priority": 70
-    },
-    {
-      "id": "2026-07-08:band_change:ASM",
-      "date": "2026-07-08",
-      "type": "band_change",
-      "params": {
-        "country": "ASM",
-        "fromBand": "high_caution",
-        "toBand": "moderate",
-        "score": 6,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.45
       },
       "priority": 70
     },
@@ -63,7 +51,8 @@
         "fromBand": "good",
         "toBand": "moderate",
         "score": 6.9,
-        "direction": "down"
+        "direction": "down",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -76,7 +65,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8.1,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -89,7 +79,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -102,7 +93,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -115,7 +107,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -128,7 +121,8 @@
         "fromBand": "high_caution",
         "toBand": "moderate",
         "score": 6,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -141,7 +135,8 @@
         "fromBand": "high_caution",
         "toBand": "moderate",
         "score": 6,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -154,7 +149,8 @@
         "fromBand": "good",
         "toBand": "excellent",
         "score": 8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -167,7 +163,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7.3,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -180,7 +177,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7.1,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -193,7 +191,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7.1,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.8
       },
       "priority": 70
     },
@@ -204,7 +203,8 @@
       "params": {
         "country": "CHE",
         "other": "LUX",
-        "rank": 3
+        "rank": 3,
+        "confidence": 0.71
       },
       "priority": 60
     },
@@ -215,7 +215,20 @@
       "params": {
         "country": "IRL",
         "other": "SGP",
-        "rank": 5
+        "rank": 5,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-07-08:rank_overtake:NOR:CZE",
+      "date": "2026-07-08",
+      "type": "rank_overtake",
+      "params": {
+        "country": "NOR",
+        "other": "CZE",
+        "rank": 9,
+        "confidence": 0.8
       },
       "priority": 60
     },
@@ -228,7 +241,8 @@
         "delta": -0.16,
         "score": 6.7,
         "prevScore": 6.9,
-        "direction": "down"
+        "direction": "down",
+        "confidence": 0.78
       },
       "priority": 50
     },
@@ -241,7 +255,8 @@
         "delta": -0.23,
         "score": 3.9,
         "prevScore": 4.2,
-        "direction": "down"
+        "direction": "down",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -254,7 +269,8 @@
         "delta": 0.25,
         "score": 7.3,
         "prevScore": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.78
       },
       "priority": 50
     },
@@ -267,7 +283,8 @@
         "delta": 0.26,
         "score": 7.6,
         "prevScore": 7.3,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -280,7 +297,8 @@
         "delta": 0.17,
         "score": 6.8,
         "prevScore": 6.7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -293,7 +311,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 70
     },
@@ -306,7 +325,8 @@
         "delta": 0.29,
         "score": 7,
         "prevScore": 6.8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -319,7 +339,8 @@
         "delta": 0.19,
         "score": 4.8,
         "prevScore": 4.6,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -332,7 +353,8 @@
         "fromBand": "moderate",
         "toBand": "good",
         "score": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.78
       },
       "priority": 70
     },
@@ -345,7 +367,8 @@
         "delta": 0.19,
         "score": 6.9,
         "prevScore": 6.7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.78
       },
       "priority": 50
     },
@@ -358,7 +381,8 @@
         "delta": 0.15,
         "score": 6.5,
         "prevScore": 6.4,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -371,7 +395,8 @@
         "delta": 0.24,
         "score": 6,
         "prevScore": 5.8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -384,7 +409,8 @@
         "delta": 0.19,
         "score": 6.7,
         "prevScore": 6.5,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -397,7 +423,8 @@
         "delta": 0.21,
         "score": 7.2,
         "prevScore": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     }

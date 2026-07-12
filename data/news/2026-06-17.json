@@ -1,6 +1,6 @@
 {
   "date": "2026-06-17",
-  "generatedAt": "2026-07-12T02:25:15.879Z",
+  "generatedAt": "2026-07-12T11:56:38.068Z",
   "events": [
     {
       "id": "2026-06-17:score_jump:ISR",
@@ -11,7 +11,8 @@
         "delta": 0.24,
         "score": 6,
         "prevScore": 5.8,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -24,7 +25,8 @@
         "delta": 0.21,
         "score": 7.2,
         "prevScore": 7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -37,7 +39,8 @@
         "delta": 0.19,
         "score": 6.9,
         "prevScore": 6.7,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.78
       },
       "priority": 50
     },
@@ -50,7 +53,8 @@
         "delta": 0.19,
         "score": 6.7,
         "prevScore": 6.5,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     },
@@ -63,7 +67,8 @@
         "delta": 0.15,
         "score": 6.5,
         "prevScore": 6.4,
-        "direction": "up"
+        "direction": "up",
+        "confidence": 0.79
       },
       "priority": 50
     }

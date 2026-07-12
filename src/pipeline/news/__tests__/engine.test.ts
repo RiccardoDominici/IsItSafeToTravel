@@ -133,6 +133,51 @@ describe('computeNews: no prior snapshot', () => {
   });
 });
 
+describe('computeNews: confidence gate (MIN_NEWS_CONFIDENCE = 0.4)', () => {
+  it('suppresses band_change for a low-confidence country', () => {
+    const prev = mkSnapshot('2026-07-09', [mkCountry('LOW', 6.8, { confidence: 0.25 })]);
+    const curr = mkSnapshot('2026-07-10', [mkCountry('LOW', 7.1, { confidence: 0.25 })]);
+    const events = computeNews(prev, curr, '2026-07-10');
+    assert.equal(events.find((e) => e.type === 'band_change'), undefined);
+  });
+
+  it('suppresses score_jump for a low-confidence country', () => {
+    const prev = mkSnapshot('2026-07-09', [mkCountry('LOW', 6.0, { confidence: 0.39 })]);
+    const curr = mkSnapshot('2026-07-10', [mkCountry('LOW', 6.3, { confidence: 0.39 })]);
+    const events = computeNews(prev, curr, '2026-07-10');
+    assert.equal(events.find((e) => e.type === 'score_jump'), undefined);
+  });
+
+  it('suppresses rank_overtake when EITHER side is low-confidence', () => {
+    const filler = Array.from({ length: 38 }, (_, i) => mkCountry(`F${i.toString().padStart(2, '0')}`, 7.0 - i * 0.01));
+    const prev = mkSnapshot('2026-07-09', [mkCountry('ITA', 8.0, { confidence: 0.3 }), mkCountry('FRA', 7.9), ...filler]);
+    const curr = mkSnapshot('2026-07-10', [mkCountry('FRA', 8.0), mkCountry('ITA', 7.85, { confidence: 0.3 }), ...filler]);
+    const events = computeNews(prev, curr, '2026-07-10');
+    assert.equal(events.find((e) => e.type === 'rank_overtake'), undefined);
+  });
+
+  it('does NOT suppress severe_advisory for a low-confidence country (real external fact)', () => {
+    const adv = (level: number) => ({ us: { level, text: '', source: '', url: '', updatedAt: '' } });
+    const prev = mkSnapshot('2026-07-09', [mkCountry('LOW', 6.0, { confidence: 0.2, advisories: adv(2) })]);
+    const curr = mkSnapshot('2026-07-10', [mkCountry('LOW', 6.0, { confidence: 0.2, advisories: adv(4) })]);
+    const events = computeNews(prev, curr, '2026-07-10');
+    assert.ok(events.find((e) => e.type === 'severe_advisory'));
+  });
+
+  it('attaches internal confidence param to gated types and treats missing confidence as confident', () => {
+    const prev = mkSnapshot('2026-07-09', [mkCountry('AAA', 6.0, { confidence: 0.83 })]);
+    const curr = mkSnapshot('2026-07-10', [mkCountry('AAA', 6.2, { confidence: 0.83 })]);
+    const jump = computeNews(prev, curr, '2026-07-10').find((e) => e.type === 'score_jump');
+    assert.ok(jump);
+    assert.equal(jump!.params.confidence, 0.83);
+
+    // confidence: undefined (pre-v9 snapshot shape) must NOT suppress
+    const prevU = mkSnapshot('2026-07-09', [mkCountry('BBB', 6.0, { confidence: undefined as unknown as number })]);
+    const currU = mkSnapshot('2026-07-10', [mkCountry('BBB', 6.2, { confidence: undefined as unknown as number })]);
+    assert.ok(computeNews(prevU, currU, '2026-07-10').find((e) => e.type === 'score_jump'));
+  });
+});
+
 describe('filterSortCap: cooldown suppression', () => {
   const event: NewsEvent = {
     id: '2026-07-10:rank_overtake:FRA:ITA',

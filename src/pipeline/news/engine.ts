@@ -12,6 +12,7 @@ import {
   SEVERE_ADVISORY_MIN_LEVEL,
   MAJOR_ISSUERS,
   MAX_DIFF_GAP_DAYS,
+  MIN_NEWS_CONFIDENCE,
   PRIORITY,
   daysBetween,
 } from './types.js';
@@ -23,6 +24,12 @@ const MIN_RANKING_SOURCES = 4;
 const hasSufficientData = (c: ScoredCountry): boolean => (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
+
+// Coverage-confidence gate for movement events. `confidence` is absent only on
+// pre-v9 snapshots (never regenerated ones), where suppressing everything would be
+// worse than the old behavior — treat missing as confident.
+const conf = (c: ScoredCountry): number => c.confidence ?? 1;
+const isConfident = (c: ScoredCountry): boolean => conf(c) >= MIN_NEWS_CONFIDENCE;
 
 function numLevel(level: unknown): number {
   const n = Number(level ?? NaN);
@@ -76,8 +83,9 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
 
     const d = round2(c.score - p.score);
     const sNew = Number(c.score.toFixed(1));
+    const cConf = round2(conf(c));
 
-    if (Math.abs(d) >= SCORE_JUMP_MIN) {
+    if (Math.abs(d) >= SCORE_JUMP_MIN && isConfident(c)) {
       events.push(
         mk(
           'score_jump',
@@ -88,20 +96,28 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
             score: sNew,
             prevScore: Number(p.score.toFixed(1)),
             direction: d > 0 ? 'up' : 'down',
+            confidence: cConf,
           },
           date,
         ),
       );
     }
 
-    if (bandCrossConfirmed(p.score, c.score)) {
+    if (bandCrossConfirmed(p.score, c.score) && isConfident(c)) {
       const from = getBand(p.score);
       const to = getBand(c.score);
       events.push(
         mk(
           'band_change',
           c.iso3,
-          { country: c.iso3, fromBand: from, toBand: to, score: sNew, direction: bandDirection(from, to) },
+          {
+            country: c.iso3,
+            fromBand: from,
+            toBand: to,
+            score: sNew,
+            direction: bandDirection(from, to),
+            confidence: cConf,
+          },
           date,
         ),
       );
@@ -109,11 +125,13 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
 
     const rt = rankT.get(c.iso3);
     const rp = rankP.get(c.iso3);
-    if (rt !== undefined && rt <= 10 && (rp === undefined || rp > 10)) {
-      events.push(mk('top10_change', c.iso3, { country: c.iso3, direction: 'enter', rank: rt }, date));
-    }
-    if (rp !== undefined && rp <= 10 && (rt === undefined || rt > 10)) {
-      events.push(mk('top10_change', c.iso3, { country: c.iso3, direction: 'exit', rank: rt ?? rp }, date));
+    if (isConfident(c)) {
+      if (rt !== undefined && rt <= 10 && (rp === undefined || rp > 10)) {
+        events.push(mk('top10_change', c.iso3, { country: c.iso3, direction: 'enter', rank: rt, confidence: cConf }, date));
+      }
+      if (rp !== undefined && rp <= 10 && (rt === undefined || rt > 10)) {
+        events.push(mk('top10_change', c.iso3, { country: c.iso3, direction: 'exit', rank: rt ?? rp, confidence: cConf }, date));
+      }
     }
 
     for (const iss of MAJOR_ISSUERS) {
@@ -159,12 +177,21 @@ function computeOvertakes(
 
     const a = currByIso.get(iso)!;
     const b = currByIso.get(best)!;
+    if (!isConfident(a) || !isConfident(b)) continue; // both sides need real coverage
     const gap = Math.abs(a.score - b.score);
     const moveA = Math.abs(a.score - (prevByIso.get(iso)?.score ?? a.score));
     const moveB = Math.abs(b.score - (prevByIso.get(best)?.score ?? b.score));
     if (gap < RANK_OVERTAKE_MIN_GAP || Math.max(moveA, moveB) < RANK_OVERTAKE_MIN_MOVE) continue;
 
-    out.push(mk('rank_overtake', iso, { country: iso, other: best, rank: rt }, date, best));
+    out.push(
+      mk(
+        'rank_overtake',
+        iso,
+        { country: iso, other: best, rank: rt, confidence: round2(Math.min(conf(a), conf(b))) },
+        date,
+        best,
+      ),
+    );
   }
 
   return out;

@@ -74,7 +74,9 @@ country (score-adjacent "limited data" UI flag below 0.4).
 - Pipeline Stage 7 (`src/pipeline/news/engine.ts`, non-fatal) diffs the two latest score
   snapshots into language-neutral `NewsEvent`s (6 types: severe_advisory, new_country,
   top10_change, band_change, rank_overtake, score_jump) → `data/news/YYYY-MM-DD.json` +
-  rolling `data/news/index.json` (cooldown state). Rendering is i18n-template-based
+  rolling `data/news/index.json` (cooldown state). Movement events are suppressed below
+  `MIN_NEWS_CONFIDENCE` (0.4, = the "limited data" UI flag); severe_advisory/new_country
+  are exempt. `params.confidence` is internal-only — renderers must never show it. Rendering is i18n-template-based
   (`news.*` keys in `src/i18n/ui.ts`, `renderNewsEvent` in `src/lib/news.ts`) — never put
   pre-rendered text in the data files. Homepage section self-hides on 0-event days.
 - Newsletter: D1 `subscribers`/`digest_log` tables live in the **isitsafetotravel-sentiment**
