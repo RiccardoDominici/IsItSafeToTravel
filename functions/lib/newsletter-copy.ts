@@ -2,8 +2,11 @@
 // mailing-list Functions (subscribe/confirm/unsubscribe) and the digest script.
 // Kept dependency-free of src/i18n/ui.ts on purpose: functions/ is a separate edge runtime and
 // the house style (see functions/api/vote.ts, feedback.ts) does not import from src/.
-// Styling mirrors functions/api/feedback.ts's inline email aesthetic (terracotta #c96b4f, sand
-// background #f9f6f3, system font stack).
+// Styling matches the site's brand: sand palette + terracotta accent, DM Sans heading font (see
+// src/styles/global.css). Digest event cards are a lite, email-safe rendition of the site's B6
+// news card (src/components/news/NewsCard.astro) — same sentiment tint family (emerald=up,
+// red=down/alert, sky=rank moves), flag emoji, bold linked headline, right-aligned score.
+// Nested tables + fully inline CSS throughout (no external CSS/JS/fonts/images — email-safe).
 
 export type Locale = 'en' | 'it' | 'es' | 'fr' | 'pt' | 'zh' | 'de';
 export const LOCALES: ReadonlySet<string> = new Set(['en', 'it', 'es', 'fr', 'pt', 'zh', 'de']);
@@ -71,27 +74,89 @@ const CONFIRM_FOOTER = rec(
   'Du erhältst diese E-Mail, weil jemand diese Adresse auf isitsafetotravel.org eingegeben hat. Es werden keine E-Mails gesendet, bevor du bestätigst. — Gesendet vom Betreiber von isitsafetotravel.org · Kontakt: Riccardo.Dominici1999@gmail.com · Dies ist keine Werbung.',
 );
 
-/** Base email chrome: sand/terracotta card, matches feedback.ts's inline aesthetic. */
-function emailShell(bodyHtml: string): string {
-  return `
-    <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
-      <div style="background: #f9f6f3; border-radius: 12px; padding: 28px;">
-        ${bodyHtml}
-      </div>
-    </div>`;
+// ---------------------------------------------------------------------------
+// Shared email chrome — brand header, bulletproof button, sand/white card shell
+// ---------------------------------------------------------------------------
+
+const FONT_STACK = "'DM Sans','Segoe UI',Arial,sans-serif";
+const SAND_50 = '#F7F4EE';
+const SAND_100 = '#EFEAE0';
+const SAND_500 = '#8C7F6E';
+const SAND_600 = '#6B5F52';
+const SAND_800 = '#362F29';
+const TERRACOTTA_500 = '#c96b4f';
+
+/** Hidden preheader: shows next to the subject in inbox lists, invisible in the body. */
+function preheaderHtml(text: string): string {
+  return `<div style="display:none;max-height:0;overflow:hidden;mso-hide:all;font-size:1px;line-height:1px;color:${SAND_50};opacity:0;">${escapeHtml(text)}&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>`;
 }
 
+/**
+ * Full email document: sand-50 page background, centered 600px white card, brand wordmark
+ * header (🌍 IsItSafeToTravel), nested-table body. `bodyRowsHtml` must be a sequence of <tr>s.
+ */
+function emailShell(locale: Locale, preheader: string, bodyRowsHtml: string): string {
+  return `<!doctype html>
+<html lang="${locale}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>IsItSafeToTravel</title>
+</head>
+<body style="margin:0;padding:0;background:${SAND_50};font-family:${FONT_STACK};">
+${preheaderHtml(preheader)}
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${SAND_50};">
+<tr><td align="center" style="padding:32px 16px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;">
+<tr><td align="center" style="padding:0 0 20px;">
+<span style="font-family:${FONT_STACK};font-size:20px;font-weight:700;color:${SAND_800};">🌍 IsItSafeToTravel</span>
+</td></tr>
+<tr><td style="background:#ffffff;border-radius:14px;padding:32px 28px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+${bodyRowsHtml}
+</table>
+</td></tr>
+</table>
+</td></tr>
+</table>
+</body>
+</html>`;
+}
+
+/** Bulletproof CTA button: VML roundrect for Outlook desktop, plain padded <a> everywhere else. */
 function emailButton(label: string, url: string): string {
-  return `<a href="${escapeHtml(url)}" style="display:inline-block; margin-top:20px; padding:12px 24px; background:#c96b4f; color:#fff; text-decoration:none; border-radius:8px; font-weight:600;">${escapeHtml(label)}</a>`;
+  const safeLabel = escapeHtml(label);
+  const safeUrl = escapeHtml(url);
+  return `<!--[if mso]>
+<v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="${safeUrl}" style="height:48px;v-text-anchor:middle;width:260px;" arcsize="16%" stroke="f" fillcolor="${TERRACOTTA_500}">
+<w:anchorlock/>
+<center style="color:#ffffff;font-family:Arial,sans-serif;font-size:15px;font-weight:bold;">${safeLabel}</center>
+</v:roundrect>
+<![endif]-->
+<!--[if !mso]><!-->
+<a href="${safeUrl}" target="_blank" style="display:inline-block;background:${TERRACOTTA_500};color:#ffffff;font-family:${FONT_STACK};font-size:15px;font-weight:700;text-decoration:none;padding:14px 32px;border-radius:8px;">${safeLabel}</a>
+<!--<![endif]-->`;
 }
 
 export function confirmEmailHtml(locale: Locale, confirmUrl: string): string {
-  return emailShell(`
-    <h2 style="color:#1a1a1a; margin:0 0 12px;">${escapeHtml(CONFIRM_HEADING[locale])}</h2>
-    <p style="color:#333; line-height:1.6; margin:0;">${escapeHtml(CONFIRM_BODY[locale])}</p>
-    ${emailButton(CONFIRM_BUTTON[locale], confirmUrl)}
-    <p style="margin-top:28px; color:#999; font-size:12px; line-height:1.6;">${escapeHtml(CONFIRM_FOOTER[locale])}</p>
-  `);
+  const rows = `
+<tr><td style="padding:0 0 14px;">
+<h1 style="margin:0;font-family:${FONT_STACK};font-size:22px;font-weight:700;color:${SAND_800};">${escapeHtml(CONFIRM_HEADING[locale])}</h1>
+</td></tr>
+<tr><td style="padding:0 0 24px;">
+<p style="margin:0;font-family:${FONT_STACK};color:${SAND_600};font-size:15px;line-height:1.6;">${escapeHtml(CONFIRM_BODY[locale])}</p>
+</td></tr>
+<tr><td align="center" style="padding:0 0 14px;">
+${emailButton(CONFIRM_BUTTON[locale], confirmUrl)}
+</td></tr>
+<tr><td align="center" style="padding:0 0 28px;">
+<p style="margin:0;font-family:${FONT_STACK};color:${SAND_500};font-size:12px;word-break:break-all;">${escapeHtml(confirmUrl)}</p>
+</td></tr>
+<tr><td style="border-top:1px solid ${SAND_100};padding-top:20px;">
+<p style="margin:0;font-family:${FONT_STACK};color:${SAND_500};font-size:12px;line-height:1.6;">${escapeHtml(CONFIRM_FOOTER[locale])}</p>
+</td></tr>`;
+  return emailShell(locale, `${CONFIRM_HEADING[locale]} — ${CONFIRM_SUBJECT[locale]}`, rows);
 }
 
 // ---------------------------------------------------------------------------
@@ -114,16 +179,21 @@ function page(locale: Locale, message: string): string {
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>IsItSafeToTravel</title>
 <style>
-  body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f9f6f3;color:#1a1a1a;margin:0;padding:40px 20px;display:flex;justify-content:center;}
-  .card{max-width:480px;background:#fff;border-radius:12px;padding:32px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;}
-  a{color:#c96b4f;text-decoration:none;font-weight:600;}
-  p{line-height:1.6;}
+  body{font-family:'DM Sans','Segoe UI',Arial,sans-serif;background:${SAND_50};color:${SAND_800};margin:0;padding:40px 20px;display:flex;justify-content:center;}
+  .wrap{max-width:420px;width:100%;}
+  .wordmark{display:block;text-align:center;font-weight:700;font-size:18px;color:${SAND_800};margin-bottom:16px;}
+  .card{background:#fff;border-radius:14px;padding:36px 28px;box-shadow:0 1px 3px rgba(0,0,0,0.08);text-align:center;}
+  a.back{color:${TERRACOTTA_500};text-decoration:none;font-weight:700;}
+  p{line-height:1.6;margin:0 0 20px;font-size:15px;}
 </style>
 </head>
 <body>
-  <div class="card">
-    <p>${escapeHtml(message)}</p>
-    <a href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>
+  <div class="wrap">
+    <div class="wordmark">🌍 IsItSafeToTravel</div>
+    <div class="card">
+      <p>${escapeHtml(message)}</p>
+      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>
+    </div>
   </div>
 </body>
 </html>`;
@@ -304,14 +374,82 @@ const UNSUBSCRIBE_LABEL = rec(
   'Cancelar inscrição', '取消订阅', 'Abmelden',
 );
 
-/** Header + rows (pre-rendered by the caller) + footer, ready to send. */
-export function wrapperHtml(locale: Locale, rowsHtml: string, unsubUrl: string): string {
-  return emailShell(`
-    <h2 style="color:#1a1a1a; margin:0 0 16px;">${escapeHtml(DIGEST_HEADER[locale])}</h2>
-    <table style="width:100%; border-collapse:collapse;">${rowsHtml}</table>
-    <p style="margin-top:28px; color:#999; font-size:12px; line-height:1.6;">
-      ${escapeHtml(DIGEST_FOOTER[locale])}
-      <br><a href="${escapeHtml(unsubUrl)}" style="color:#c96b4f;">${escapeHtml(UNSUBSCRIBE_LABEL[locale])}</a>
-    </p>
-  `);
+const VIEW_ALL_LABEL = rec(
+  'View all updates', 'Vedi tutti gli aggiornamenti', 'Ver todas las actualizaciones',
+  'Voir toutes les mises à jour', 'Ver todas as atualizações', '查看所有更新', 'Alle Updates ansehen',
+);
+
+// ---------------------------------------------------------------------------
+// Digest — per-event card (email-safe lite rendition of the site's B6 NewsCard: tinted
+// background by sentiment, flag + bold linked headline, muted detail, right-aligned score)
+// ---------------------------------------------------------------------------
+
+export type CardSentiment = 'up' | 'down' | 'info';
+
+const SENTIMENT_COLORS: Record<CardSentiment, { bg: string; border: string; text: string }> = {
+  up: { bg: '#ecfdf5', border: '#10b981', text: '#047857' }, // emerald
+  down: { bg: '#fef2f2', border: '#ef4444', text: '#b91c1c' }, // red
+  info: { bg: '#f0f9ff', border: '#0ea5e9', text: '#0369a1' }, // sky
+};
+
+export interface EventCardOptions {
+  url: string;
+  flag: string | null;
+  headline: string;
+  detail: string;
+  sentiment: CardSentiment;
+  scoreText?: string;
+}
+
+/** One event, styled as a tinted card with the headline as a clickable link to the country page. */
+export function eventCardHtml(opts: EventCardOptions): string {
+  const c = SENTIMENT_COLORS[opts.sentiment];
+  const flagHtml = opts.flag ? `${opts.flag} ` : '';
+  const scoreHtml = opts.scoreText
+    ? `<td valign="top" align="right" style="padding:14px 14px 14px 8px;white-space:nowrap;"><span style="font-family:${FONT_STACK};font-weight:700;font-size:17px;color:${c.text};">${escapeHtml(opts.scoreText)}</span></td>`
+    : '';
+  return `
+<tr><td style="padding:0 0 12px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse:separate;border-radius:10px;background:${c.bg};border-left:4px solid ${c.border};">
+<tr>
+<td style="padding:14px 8px 14px 14px;">
+<a href="${escapeHtml(opts.url)}" target="_blank" style="color:${SAND_800};text-decoration:none;font-weight:700;font-size:15px;line-height:1.4;font-family:${FONT_STACK};">${flagHtml}${escapeHtml(opts.headline)}</a>
+<div style="margin-top:4px;color:${SAND_600};font-size:13px;line-height:1.5;">${escapeHtml(opts.detail)}</div>
+</td>
+${scoreHtml}
+</tr>
+</table>
+</td></tr>`;
+}
+
+/** Header + date + event cards (pre-rendered by the caller) + "view all" CTA + footer. */
+export function wrapperHtml(
+  locale: Locale,
+  cardsHtml: string,
+  unsubUrl: string,
+  viewAllUrl: string,
+  dateLabel: string,
+): string {
+  const rows = `
+<tr><td style="padding:0 0 4px;">
+<h1 style="margin:0;font-family:${FONT_STACK};font-size:21px;font-weight:700;color:${SAND_800};">${escapeHtml(DIGEST_HEADER[locale])}</h1>
+</td></tr>
+<tr><td style="padding:0 0 20px;">
+<p style="margin:0;font-family:${FONT_STACK};color:${SAND_500};font-size:13px;">${escapeHtml(dateLabel)}</p>
+</td></tr>
+<tr><td>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+${cardsHtml}
+</table>
+</td></tr>
+<tr><td align="center" style="padding:12px 0 28px;">
+${emailButton(VIEW_ALL_LABEL[locale], viewAllUrl)}
+</td></tr>
+<tr><td style="border-top:1px solid ${SAND_100};padding-top:20px;">
+<p style="margin:0;font-family:${FONT_STACK};color:${SAND_500};font-size:12px;line-height:1.6;">
+${escapeHtml(DIGEST_FOOTER[locale])}
+<br><a href="${escapeHtml(unsubUrl)}" style="color:${TERRACOTTA_500};">${escapeHtml(UNSUBSCRIBE_LABEL[locale])}</a>
+</p>
+</td></tr>`;
+  return emailShell(locale, `${DIGEST_HEADER[locale]} — ${dateLabel}`, rows);
 }

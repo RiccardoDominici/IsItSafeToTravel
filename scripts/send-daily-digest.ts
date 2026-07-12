@@ -37,11 +37,11 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { sendBatch, type EmailMessage } from '../functions/lib/email.js';
-import { digestSubjectFallback, wrapperHtml, escapeHtml, type Locale } from '../functions/lib/newsletter-copy.js';
+import { digestSubjectFallback, wrapperHtml, eventCardHtml, escapeHtml, type Locale, type CardSentiment } from '../functions/lib/newsletter-copy.js';
 import { loadLatestScores, getLocalizedCountryName } from '../src/lib/scores.js';
 import { routes } from '../src/i18n/ui.js';
 import type { Lang } from '../src/i18n/ui.js';
-import { renderNewsEvent } from '../src/lib/news.js';
+import { renderNewsEvent, flagEmoji } from '../src/lib/news.js';
 import { useTranslations } from '../src/i18n/utils.js';
 import type { NewsEvent as PipelineNewsEvent } from '../src/pipeline/news/types.js';
 
@@ -277,7 +277,11 @@ function countrySeg(lang: Locale): string {
   return (routes as Record<Lang, Record<string, string>>)[lang as Lang]?.country ?? 'country';
 }
 
-function renderEvent(e: NewsEvent, lang: Locale, nameOf: (iso3: string) => string): { head: string; detail: string; url: string } {
+function newsSeg(lang: Locale): string {
+  return (routes as Record<Lang, Record<string, string>>)[lang as Lang]?.news ?? 'news';
+}
+
+function renderEvent(e: NewsEvent, lang: Locale, nameOf: (iso3: string) => string): { head: string; detail: string; url: string; iso3: string } {
   // Pre-rendered shape, if the news track ships baked-in per-locale text instead of codes.
   if (e.headline && e.countryName) {
     const iso3 = e.iso3 ?? '';
@@ -286,6 +290,7 @@ function renderEvent(e: NewsEvent, lang: Locale, nameOf: (iso3: string) => strin
       head: e.headline[lang] ?? e.headline.en ?? '',
       detail: e.detail?.[lang] ?? e.detail?.en ?? '',
       url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${slug}/`,
+      iso3,
     };
   }
   // Primary renderer: src/lib/news.ts's renderNewsEvent, the SAME i18n-backed function the
@@ -297,24 +302,70 @@ function renderEvent(e: NewsEvent, lang: Locale, nameOf: (iso3: string) => strin
     const t = useTranslations(lang as Lang);
     const rendered = renderNewsEvent(e as unknown as PipelineNewsEvent, lang as Lang, t, nameOf);
     const iso3 = e.params?.country ?? e.iso3 ?? '';
-    return { head: rendered.headline, detail: rendered.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${iso3.toLowerCase()}/` };
+    return { head: rendered.headline, detail: rendered.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${iso3.toLowerCase()}/`, iso3 };
   } catch (err) {
     console.warn(`[digest] renderNewsEvent failed for event ${e.id ?? '?'} (falling back to built-in templates): ${err instanceof Error ? err.message : String(err)}`);
   }
   const r = renderBuiltIn(e, lang, nameOf);
-  return { head: r.head, detail: r.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${r.iso3.toLowerCase()}/` };
+  return { head: r.head, detail: r.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${r.iso3.toLowerCase()}/`, iso3: r.iso3 };
 }
 
-function fallbackDigestHtml(events: NewsEvent[], lang: Locale, unsubUrl: string, nameOf: (iso3: string) => string): string {
-  const rows = events
+// Sentiment + score-badge logic mirrors src/components/news/NewsCard.astro's B6 card
+// (sentimentFor/scoreBigFor) so digest emails read as the same visual family as the site.
+function sentimentFor(e: NewsEvent): CardSentiment {
+  const p = e.params ?? {};
+  switch (e.type) {
+    case 'severe_advisory':
+      return 'down';
+    case 'rank_overtake':
+      return 'info';
+    case 'new_country':
+      return 'up';
+    case 'top10_change':
+      return p.direction === 'exit' ? 'down' : 'up';
+    case 'band_change':
+    case 'score_jump':
+      return p.direction === 'down' ? 'down' : 'up';
+    default:
+      return 'info';
+  }
+}
+
+function scoreBigFor(e: NewsEvent): string {
+  const p = e.params ?? {};
+  if (e.type === 'severe_advisory') return p.level !== undefined ? `L${p.level}` : '';
+  if (e.type === 'rank_overtake' || e.type === 'top10_change') return p.rank !== undefined ? `#${p.rank}` : '';
+  if (e.type === 'band_change' || e.type === 'score_jump') {
+    if (p.score === undefined) return '';
+    const arrow = p.direction === 'down' ? '↓' : '↑';
+    return `${arrow} ${p.score.toFixed(1)}`;
+  }
+  if (e.type === 'new_country') return p.score !== undefined ? p.score.toFixed(1) : '';
+  return '';
+}
+
+function fallbackDigestHtml(
+  events: NewsEvent[],
+  lang: Locale,
+  unsubUrl: string,
+  nameOf: (iso3: string) => string,
+  dateLabel: string,
+  viewAllUrl: string,
+): string {
+  const cards = events
     .map((e) => {
-      const { head, detail, url } = renderEvent(e, lang, nameOf);
-      return `<tr><td style="padding:12px 0;border-bottom:1px solid #eee">
-        <a href="${url}" style="color:#c96b4f;font-weight:600;text-decoration:none">${escapeHtml(head)}</a><br>
-        <span style="color:#555">${escapeHtml(detail)}</span></td></tr>`;
+      const { head, detail, url, iso3 } = renderEvent(e, lang, nameOf);
+      return eventCardHtml({
+        url,
+        flag: iso3 ? flagEmoji(iso3) : null,
+        headline: head,
+        detail,
+        sentiment: sentimentFor(e),
+        scoreText: scoreBigFor(e),
+      });
     })
     .join('');
-  return wrapperHtml(lang, rows, unsubUrl);
+  return wrapperHtml(lang, cards, unsubUrl, viewAllUrl, dateLabel);
 }
 
 // ---------------------------------------------------------------------------
@@ -414,12 +465,16 @@ async function main() {
   for (const [locale, recipients] of byLocale) {
     const lang = (LOCALE_LIST.includes(locale as Locale) ? locale : 'en') as Locale;
     const subject = digestSubjectFallback(lang, events.length);
+    const dateLabel = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' }).format(
+      new Date(`${date}T00:00:00Z`),
+    );
+    const viewAllUrl = `https://isitsafetotravel.org/${lang}/${newsSeg(lang)}/`;
     const messages: EmailMessage[] = recipients.map((r) => {
       const unsubUrl = `https://isitsafetotravel.org/api/unsubscribe?token=${r.unsub_token}`;
       return {
         to: r.email,
         subject,
-        html: fallbackDigestHtml(events, lang, unsubUrl, nameOf(lang as Lang)),
+        html: fallbackDigestHtml(events, lang, unsubUrl, nameOf(lang as Lang), dateLabel, viewAllUrl),
         headers: { 'List-Unsubscribe': `<${unsubUrl}>`, 'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click' },
       };
     });
