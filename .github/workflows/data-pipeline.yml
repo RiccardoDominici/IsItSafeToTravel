@@ -276,6 +276,38 @@ jobs:
             fi
           fi
 
+          # Newsletter subscriber report, same pattern as the vote report above.
+          # Non-blocking: any failure leaves SUBS_LINE empty.
+          SUBS_LINE=""
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$D1_TOKEN" ]; then
+            read -r -d '' SUBS_SQL <<'SQL' || true
+          SELECT (SELECT COUNT(*) FROM subscribers WHERE status='confirmed') AS confirmed,
+                 (SELECT COUNT(*) FROM subscribers WHERE status='confirmed' AND confirmed_at > CAST(strftime('%s','now') AS INTEGER) - 604800) AS new7d,
+                 (SELECT COUNT(*) FROM subscribers WHERE status='pending') AS pending,
+                 (SELECT recipients FROM digest_log WHERE send_date = date('now')) AS sent_today
+          SQL
+            SUBS_JSON=$(jq -n --arg sql "$SUBS_SQL" '{sql: $sql}' \
+              | curl -fsS -m 30 -X POST \
+                  "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database/83acaffe-32ff-43fc-b68f-5343d01000d5/query" \
+                  -H "Authorization: Bearer ${D1_TOKEN}" \
+                  -H "Content-Type: application/json" \
+                  --data @- 2>/dev/null) || SUBS_JSON=""
+            S_CONF=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].confirmed // empty' 2>/dev/null)
+            if [ -n "$S_CONF" ]; then
+              S_NEW7=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].new7d // 0')
+              S_PEND=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].pending // 0')
+              S_SENT=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].sent_today // empty')
+              SUBS_LINE="📬 Newsletter: ${S_CONF} confirmed (+${S_NEW7} this week), ${S_PEND} pending"
+              if [ -n "$S_SENT" ]; then
+                SUBS_LINE="${SUBS_LINE} — digest sent to ${S_SENT}"
+              else
+                SUBS_LINE="${SUBS_LINE} — no digest today"
+              fi
+            else
+              echo "::warning::subscriber report query failed (non-blocking)"
+            fi
+          fi
+
           if [ "$JOB_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "ok" ]; then
             TITLE="✅ Daily pipeline OK — $DATE"
             BODY="Pipeline ran, ${COUNTRY_COUNT} countries scored, all data-quality checks passed. Deploy triggered. ${RUN_URL}"
@@ -295,6 +327,9 @@ jobs:
 
           if [ -n "$VOTES_LINE" ]; then
             BODY="${BODY}\n\n${VOTES_LINE}"
+          fi
+          if [ -n "$SUBS_LINE" ]; then
+            BODY="${BODY}\n${SUBS_LINE}"
           fi
 
           # ntfy.sh push notification (per project memory: riccardo-claude topic)
