@@ -62,13 +62,13 @@ const CONFIRM_BUTTON = rec(
 
 // Legal §3c: sender identity + "this is not marketing" line, required on the confirmation email.
 const CONFIRM_FOOTER = rec(
-  "You're receiving this because someone entered this address on isitsafetotravel.org. No emails are sent until you confirm. — Sent by Riccardo Dominici, operator of isitsafetotravel.org · Contact: Riccardo.Dominici1999@gmail.com · This is not marketing.",
-  "Ricevi questo messaggio perché questo indirizzo è stato inserito su isitsafetotravel.org. Nessuna email viene inviata prima della conferma. — Inviata da Riccardo Dominici, gestore di isitsafetotravel.org · Contatto: Riccardo.Dominici1999@gmail.com · Non è materiale promozionale.",
-  'Recibes este mensaje porque alguien introdujo esta dirección en isitsafetotravel.org. No se envía ningún correo hasta que confirmes. — Enviado por Riccardo Dominici, operador de isitsafetotravel.org · Contacto: Riccardo.Dominici1999@gmail.com · Esto no es marketing.',
-  "Vous recevez cet e-mail car quelqu'un a saisi cette adresse sur isitsafetotravel.org. Aucun e-mail n'est envoyé tant que vous n'avez pas confirmé. — Envoyé par Riccardo Dominici, opérateur d'isitsafetotravel.org · Contact : Riccardo.Dominici1999@gmail.com · Ceci n'est pas un e-mail marketing.",
-  'Recebe esta mensagem porque este endereço foi inserido em isitsafetotravel.org. Nenhum e-mail é enviado antes da confirmação. — Enviado por Riccardo Dominici, operador do isitsafetotravel.org · Contacto: Riccardo.Dominici1999@gmail.com · Isto não é marketing.',
-  '您收到此邮件是因为有人在 isitsafetotravel.org 上输入了此邮箱地址。在您确认之前不会发送任何邮件。— 发件人:Riccardo Dominici,isitsafetotravel.org 运营者 · 联系方式:Riccardo.Dominici1999@gmail.com · 这不是营销邮件。',
-  'Du erhältst diese E-Mail, weil jemand diese Adresse auf isitsafetotravel.org eingegeben hat. Es werden keine E-Mails gesendet, bevor du bestätigst. — Gesendet von Riccardo Dominici, Betreiber von isitsafetotravel.org · Kontakt: Riccardo.Dominici1999@gmail.com · Dies ist keine Werbung.',
+  "You're receiving this because someone entered this address on isitsafetotravel.org. No emails are sent until you confirm. — Sent by the operator of isitsafetotravel.org · Contact: Riccardo.Dominici1999@gmail.com · This is not marketing.",
+  "Ricevi questo messaggio perché questo indirizzo è stato inserito su isitsafetotravel.org. Nessuna email viene inviata prima della conferma. — Inviata dal gestore di isitsafetotravel.org · Contatto: Riccardo.Dominici1999@gmail.com · Non è materiale promozionale.",
+  'Recibes este mensaje porque alguien introdujo esta dirección en isitsafetotravel.org. No se envía ningún correo hasta que confirmes. — Enviado por el operador de isitsafetotravel.org · Contacto: Riccardo.Dominici1999@gmail.com · Esto no es marketing.',
+  "Vous recevez cet e-mail car quelqu'un a saisi cette adresse sur isitsafetotravel.org. Aucun e-mail n'est envoyé tant que vous n'avez pas confirmé. — Envoyé par l'opérateur d'isitsafetotravel.org · Contact : Riccardo.Dominici1999@gmail.com · Ceci n'est pas un e-mail marketing.",
+  'Recebe esta mensagem porque este endereço foi inserido em isitsafetotravel.org. Nenhum e-mail é enviado antes da confirmação. — Enviado pelo operador do isitsafetotravel.org · Contacto: Riccardo.Dominici1999@gmail.com · Isto não é marketing.',
+  '您收到此邮件是因为有人在 isitsafetotravel.org 上输入了此邮箱地址。在您确认之前不会发送任何邮件。— 发件人:isitsafetotravel.org 运营者 · 联系方式:Riccardo.Dominici1999@gmail.com · 这不是营销邮件。',
+  'Du erhältst diese E-Mail, weil jemand diese Adresse auf isitsafetotravel.org eingegeben hat. Es werden keine E-Mails gesendet, bevor du bestätigst. — Gesendet vom Betreiber von isitsafetotravel.org · Kontakt: Riccardo.Dominici1999@gmail.com · Dies ist keine Werbung.',
 );
 
 /** Base email chrome: sand/terracotta card, matches feedback.ts's inline aesthetic. */
@@ -290,13 +290,13 @@ const DIGEST_HEADER = rec(
 
 // Legal §3c recurring-digest footer: sender identity + "never share your address" + unsubscribe.
 const DIGEST_FOOTER = rec(
-  'You receive this because you confirmed a subscription at isitsafetotravel.org. Sent by Riccardo Dominici (Italy), operator of isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · We never share your address.',
-  "Ricevi questa email perché hai confermato un'iscrizione su isitsafetotravel.org. Inviata da Riccardo Dominici (Italia), gestore di isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Non condividiamo mai il tuo indirizzo.",
-  'Recibes este correo porque confirmaste una suscripción en isitsafetotravel.org. Enviado por Riccardo Dominici (Italia), operador de isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Nunca compartimos tu dirección.',
-  'Vous recevez cet e-mail car vous avez confirmé un abonnement sur isitsafetotravel.org. Envoyé par Riccardo Dominici (Italie), opérateur d\'isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Nous ne partageons jamais votre adresse.',
-  'Recebe este e-mail porque confirmou uma inscrição em isitsafetotravel.org. Enviado por Riccardo Dominici (Itália), operador do isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Nunca partilhamos o seu endereço.',
-  '您收到此邮件是因为您在 isitsafetotravel.org 确认了订阅。发件人:Riccardo Dominici(意大利),isitsafetotravel.org 运营者 · Riccardo.Dominici1999@gmail.com · 我们绝不会分享您的邮箱地址。',
-  'Du erhältst diese E-Mail, weil du ein Abonnement auf isitsafetotravel.org bestätigt hast. Gesendet von Riccardo Dominici (Italien), Betreiber von isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Wir geben deine Adresse niemals weiter.',
+  'You receive this because you confirmed a subscription at isitsafetotravel.org. Sent by the operator of isitsafetotravel.org (Italy) · Riccardo.Dominici1999@gmail.com · We never share your address.',
+  "Ricevi questa email perché hai confermato un'iscrizione su isitsafetotravel.org. Inviata dal gestore di isitsafetotravel.org (Italia) · Riccardo.Dominici1999@gmail.com · Non condividiamo mai il tuo indirizzo.",
+  'Recibes este correo porque confirmaste una suscripción en isitsafetotravel.org. Enviado por el operador de isitsafetotravel.org (Italia) · Riccardo.Dominici1999@gmail.com · Nunca compartimos tu dirección.',
+  'Vous recevez cet e-mail car vous avez confirmé un abonnement sur isitsafetotravel.org. Envoyé par l\'opérateur d\'isitsafetotravel.org (Italie) · Riccardo.Dominici1999@gmail.com · Nous ne partageons jamais votre adresse.',
+  'Recebe este e-mail porque confirmou uma inscrição em isitsafetotravel.org. Enviado pelo operador do isitsafetotravel.org (Itália) · Riccardo.Dominici1999@gmail.com · Nunca partilhamos o seu endereço.',
+  '您收到此邮件是因为您在 isitsafetotravel.org 确认了订阅。发件人:isitsafetotravel.org 运营者(意大利)· Riccardo.Dominici1999@gmail.com · 我们绝不会分享您的邮箱地址。',
+  'Du erhältst diese E-Mail, weil du ein Abonnement auf isitsafetotravel.org bestätigt hast. Gesendet vom Betreiber von isitsafetotravel.org (Italien) · Riccardo.Dominici1999@gmail.com · Wir geben deine Adresse niemals weiter.',
 );
 
 const UNSUBSCRIBE_LABEL = rec(
