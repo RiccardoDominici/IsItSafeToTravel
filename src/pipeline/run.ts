@@ -7,6 +7,10 @@ import { injectUcdpForDate } from './backfill.js';
 import { aggregateVotes } from './sentiment/aggregate.js';
 import { fetchVotes } from './sentiment/fetch-votes.js';
 import { writeSentimentSnapshot, writeSentimentHistoryIndex, getSentimentDir } from './sentiment/snapshot.js';
+import { computeNews } from './news/engine.js';
+import { filterSortCap, cooldownKey } from './news/cooldown.js';
+import { readNewsIndex, writeNewsDay, writeNewsIndex, rebuildRecent, pruneCooldowns } from './news/snapshot.js';
+import { listSnapshotDates, loadSnapshot } from './scoring/snapshot.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -130,6 +134,32 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn(`[Sentiment] Stage 6 failed unexpectedly (non-fatal): ${message}`);
+  }
+
+  // Stage 7: Daily News / "Safety Movers" (display-only, must never abort the run).
+  // Diffs today's snapshot against the most recent prior one; wrapped in try/catch so
+  // ANY failure here only warns and never changes PipelineResult.success (mirrors Stage 6).
+  console.log('\n--- Stage 7: News ---');
+  try {
+    const idx = readNewsIndex();
+    const prevDates = listSnapshotDates().filter((d) => d < date);
+    const prev = prevDates.length ? loadSnapshot(prevDates[prevDates.length - 1]) : null;
+    const curr = loadSnapshot(date)!; // just written in Stage 4, guaranteed present
+    const raw = computeNews(prev, curr, date);
+    const kept = filterSortCap(raw, idx.cooldowns, date);
+    for (const e of kept) idx.cooldowns[cooldownKey(e)] = date;
+    writeNewsDay(date, kept);
+    const recent = rebuildRecent(date);
+    writeNewsIndex({
+      generatedAt: new Date().toISOString(),
+      lastProcessedDate: date,
+      cooldowns: pruneCooldowns(idx.cooldowns, date, 90),
+      recentEvents: recent,
+    });
+    console.log(`[News] ${kept.length} event(s) for ${date} (prev=${prev?.date ?? 'none'})`);
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[News] Stage 7 failed unexpectedly (non-fatal): ${message}`);
   }
 
   console.log(

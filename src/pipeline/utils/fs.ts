@@ -25,6 +25,10 @@ export function getScoresDir(): string {
   return process.env.SCORES_DIR ?? join(process.cwd(), 'data', 'scores');
 }
 
+export function getNewsDir(): string {
+  return join(process.cwd(), 'data', 'news');
+}
+
 /**
  * Find the most recent cached file matching a pattern in data/raw/YYYY-MM-DD/ directories.
  * Returns the full path to the file, or null if not found.
