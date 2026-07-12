@@ -1,0 +1,71 @@
+---
+export const prerender = true;
+import Base from '../../../layouts/Base.astro';
+import Breadcrumb from '../../../components/Breadcrumb.astro';
+import NewsCard from '../../../components/news/NewsCard.astro';
+import NewsletterSignup from '../../../components/NewsletterSignup.astro';
+import { loadNewsArchive, nameResolver } from '../../../lib/news';
+import { ARCHIVE_DAYS } from '../../../pipeline/news/types';
+import { useTranslations } from '../../../i18n/utils';
+import { routes } from '../../../i18n/ui';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'de';
+const t = useTranslations(lang);
+const nameOf = nameResolver(lang);
+const archive = loadNewsArchive(ARCHIVE_DAYS);
+const flat = archive.flatMap((g) => g.events);
+const title = t('news.page.title' as any);
+const description = t('news.page.description' as any);
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${routes[lang].news}/`;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': ['CollectionPage', 'WebPage'], name: title, description, url: canonicalUrl, inLanguage: lang },
+    {
+      '@type': 'ItemList',
+      itemListOrder: 'https://schema.org/ItemListOrderDescending',
+      numberOfItems: flat.length,
+      itemListElement: flat.map((e, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: `https://isitsafetotravel.org/${lang}/${routes[lang].country}/${(e.params.country || '').toLowerCase()}/`,
+      })),
+    },
+  ],
+};
+---
+
+<Base lang={lang} title={title} description={description} jsonLd={jsonLd}>
+  <div class="max-w-3xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[{ label: t('nav.home'), href: `/${lang}/` }, { label: title, href: '' }]} />
+    <header class="text-center space-y-3">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">{title}</h1>
+      <p class="text-base text-sand-600 dark:text-sand-300">{t('news.page.intro' as any)}</p>
+    </header>
+
+    <NewsletterSignup lang={lang} placement="news" />
+
+    {archive.length === 0 ? (
+      <p class="text-center text-sand-500 dark:text-sand-400 py-12">{t('news.page.empty' as any)}</p>
+    ) : (
+      archive.map((group) => (
+        <section class="space-y-3">
+          <h2 class="text-sm font-semibold text-sand-500 dark:text-sand-400">
+            {new Date(group.date).toLocaleDateString(lang, {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
+          </h2>
+          <ul class="space-y-2">
+            {group.events.map((e) => (
+              <NewsCard event={e} lang={lang} nameOf={nameOf} />
+            ))}
+          </ul>
+        </section>
+      ))
+    )}
+  </div>
+</Base>

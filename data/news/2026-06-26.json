@@ -1,0 +1,32 @@
+{
+  "date": "2026-06-26",
+  "generatedAt": "2026-07-12T02:25:20.013Z",
+  "events": [
+    {
+      "id": "2026-06-26:score_jump:QAT",
+      "date": "2026-06-26",
+      "type": "score_jump",
+      "params": {
+        "country": "QAT",
+        "delta": 0.26,
+        "score": 7.6,
+        "prevScore": 7.3,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-26:score_jump:ARE",
+      "date": "2026-06-26",
+      "type": "score_jump",
+      "params": {
+        "country": "ARE",
+        "delta": 0.25,
+        "score": 7.3,
+        "prevScore": 7,
+        "direction": "up"
+      },
+      "priority": 50
+    }
+  ]
+}

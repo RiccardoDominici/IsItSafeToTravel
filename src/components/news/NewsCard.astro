@@ -1,0 +1,82 @@
+---
+import type { NewsEvent } from '../../pipeline/news/types';
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { renderNewsEvent } from '../../lib/news';
+
+interface Props {
+  event: NewsEvent;
+  lang: Lang;
+  nameOf: (iso3: string) => string;
+}
+
+const { event, lang, nameOf } = Astro.props;
+const t = useTranslations(lang);
+const rendered = renderNewsEvent(event, lang, t, nameOf);
+const r = routes[lang];
+
+const formattedDate = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' }).format(
+  new Date(event.date),
+);
+
+function countryUrl(iso3: string): string {
+  return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
+}
+
+const isNegative =
+  event.type === 'severe_advisory' ||
+  (event.type === 'band_change' && event.params.direction === 'down') ||
+  (event.type === 'score_jump' && event.params.direction === 'down') ||
+  (event.type === 'top10_change' && event.params.direction === 'exit');
+const isPositive =
+  event.type === 'rank_overtake' ||
+  event.type === 'new_country' ||
+  (event.type === 'band_change' && event.params.direction === 'up') ||
+  (event.type === 'score_jump' && event.params.direction === 'up') ||
+  (event.type === 'top10_change' && event.params.direction === 'enter');
+
+const badgeClasses = isNegative
+  ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+  : isPositive
+    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+    : 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
+
+const badgeText =
+  event.type === 'severe_advisory'
+    ? `L${event.params.level}`
+    : event.params.score !== undefined
+      ? event.params.score.toFixed(1)
+      : '';
+---
+
+<li class="list-none">
+  <article class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3">
+    <div class="flex items-start justify-between gap-2">
+      <h3 class="text-sm font-semibold text-sand-800 dark:text-sand-100">
+        {rendered.links.length > 0 ? (
+          <a href={countryUrl(rendered.links[0].iso3)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors">
+            {rendered.headline}
+          </a>
+        ) : rendered.headline}
+      </h3>
+      {badgeText && (
+        <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${badgeClasses}`}>
+          {badgeText}
+        </span>
+      )}
+    </div>
+    <p class="mt-1 text-sm text-sand-600 dark:text-sand-400">{rendered.detail}</p>
+    {rendered.links.length > 1 && (
+      <p class="mt-2 text-xs text-sand-500 dark:text-sand-400">
+        {rendered.links.map((l, i) => (
+          <Fragment>
+            {i > 0 && <span aria-hidden="true"> &middot; </span>}
+            <a href={countryUrl(l.iso3)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors">{l.name}</a>
+          </Fragment>
+        ))}
+      </p>
+    )}
+    <p class="mt-2 text-xs text-sand-400 dark:text-sand-500">{formattedDate}</p>
+  </article>
+</li>

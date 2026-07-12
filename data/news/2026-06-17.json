@@ -1,0 +1,71 @@
+{
+  "date": "2026-06-17",
+  "generatedAt": "2026-07-12T02:25:15.879Z",
+  "events": [
+    {
+      "id": "2026-06-17:score_jump:ISR",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "ISR",
+        "delta": 0.24,
+        "score": 6,
+        "prevScore": 5.8,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:QAT",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "QAT",
+        "delta": 0.21,
+        "score": 7.2,
+        "prevScore": 7,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:ARE",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "ARE",
+        "delta": 0.19,
+        "score": 6.9,
+        "prevScore": 6.7,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:KWT",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": 0.19,
+        "score": 6.7,
+        "prevScore": 6.5,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:BHR",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "BHR",
+        "delta": 0.15,
+        "score": 6.5,
+        "prevScore": 6.4,
+        "direction": "up"
+      },
+      "priority": 50
+    }
+  ]
+}

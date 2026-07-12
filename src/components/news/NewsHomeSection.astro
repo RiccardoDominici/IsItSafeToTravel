@@ -1,0 +1,43 @@
+---
+// Homepage "Today's Safety Movers" section. Renders nothing at all (no wrapping <section>
+// either) when there are 0 events for the latest news date — see PLAN-news.md's
+// "self-hides when empty" requirement. DEVIATION from PLAN-news.md: the plan's homepage
+// snippet wraps <NewsHomeSection /> in a page-level <section class="max-w-6xl ..."> — that
+// wrapper is owned by THIS component instead, so an empty result truly renders zero markup
+// instead of an empty padded <section>. Homepage files just render <NewsHomeSection lang={lang} />.
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { loadLatestNews, nameResolver } from '../../lib/news';
+import { HOMEPAGE_MAX } from '../../pipeline/news/types';
+import NewsCard from './NewsCard.astro';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const events = loadLatestNews(HOMEPAGE_MAX);
+const nameOf = nameResolver(lang);
+const r = routes[lang];
+---
+
+{events.length > 0 && (
+  <section class="max-w-6xl mx-auto px-4 py-8">
+    <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+      {t('news.section.home_title' as any)}
+    </h2>
+    <ul class="space-y-2">
+      {events.map((event) => (
+        <NewsCard event={event} lang={lang} nameOf={nameOf} />
+      ))}
+    </ul>
+    <a
+      href={`/${lang}/${r.news}/`}
+      class="mt-4 inline-block text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline"
+    >
+      {t('news.section.home_viewall' as any)} &rarr;
+    </a>
+  </section>
+)}

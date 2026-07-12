@@ -670,6 +670,34 @@ function validateAdvisoryIntegrity() {
 }
 
 // =====================================================================
+// 7. NEWS PAGES (Daily News / "Safety Movers")
+// =====================================================================
+// Keep NEWS_SLUG in sync with the `news` key in src/i18n/ui.ts `routes` for every locale.
+
+function validateNewsPages() {
+  console.log("\n--- News Pages ---");
+  const NEWS_SLUG: Record<string, string> = {
+    en: "news",
+    it: "notizie",
+    es: "noticias",
+    fr: "actualites",
+    pt: "noticias",
+    zh: "news",
+    de: "nachrichten",
+  };
+
+  for (const lang of LANGUAGES) {
+    const p = path.join(DIST, lang, NEWS_SLUG[lang], "index.html");
+    const ok = fs.existsSync(p);
+    check(`news: ${lang}/${NEWS_SLUG[lang]} exists`, ok, ok ? "" : "file not found");
+    if (ok) {
+      const html = readHtml(p);
+      check(`news: ${lang} has JSON-LD`, html.includes('application/ld+json'));
+    }
+  }
+}
+
+// =====================================================================
 // MAIN
 // =====================================================================
 
@@ -690,6 +718,7 @@ function main() {
   validateAdvisoryCoverage();
   validateAdvisoryIntegrity();
   validateDatasetDescriptionLength();
+  validateNewsPages();
 
   // Summary
   console.log("\n========================================");

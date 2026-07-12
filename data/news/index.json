@@ -1,0 +1,405 @@
+{
+  "generatedAt": "2026-07-12T02:25:26.931Z",
+  "lastProcessedDate": "2026-07-11",
+  "cooldowns": {
+    "jump:ISR": "2026-06-17",
+    "jump:QAT": "2026-06-26",
+    "jump:ARE": "2026-06-26",
+    "jump:KWT": "2026-06-24",
+    "jump:BHR": "2026-06-25",
+    "band:ZMB": "2026-07-08",
+    "band:KWT": "2026-06-24",
+    "jump:LBN": "2026-06-24",
+    "jump:RUS": "2026-07-01",
+    "jump:VNM": "2026-07-02",
+    "band:AND": "2026-07-08",
+    "band:ASM": "2026-07-08",
+    "band:BHR": "2026-07-08",
+    "band:DEU": "2026-07-08",
+    "band:GRC": "2026-07-08",
+    "band:HUN": "2026-07-08",
+    "band:ITA": "2026-07-08",
+    "band:KHM": "2026-07-08",
+    "band:MRT": "2026-07-08",
+    "band:SVK": "2026-07-08",
+    "band:USA": "2026-07-08",
+    "band:VNM": "2026-07-08",
+    "overtake:CHE|LUX": "2026-07-08",
+    "overtake:IRL|SGP": "2026-07-08"
+  },
+  "recentEvents": [
+    {
+      "id": "2026-07-08:band_change:AND",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "AND",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:ASM",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "ASM",
+        "fromBand": "high_caution",
+        "toBand": "moderate",
+        "score": 6,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:BHR",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "BHR",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.9,
+        "direction": "down"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:DEU",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "DEU",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8.1,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:GRC",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "GRC",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:HUN",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "HUN",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:ITA",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "ITA",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:KHM",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "KHM",
+        "fromBand": "high_caution",
+        "toBand": "moderate",
+        "score": 6,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:MRT",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "MRT",
+        "fromBand": "high_caution",
+        "toBand": "moderate",
+        "score": 6,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:SVK",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "SVK",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:USA",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "USA",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.3,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:VNM",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "VNM",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.1,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:band_change:ZMB",
+      "date": "2026-07-08",
+      "type": "band_change",
+      "params": {
+        "country": "ZMB",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.1,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-08:rank_overtake:CHE:LUX",
+      "date": "2026-07-08",
+      "type": "rank_overtake",
+      "params": {
+        "country": "CHE",
+        "other": "LUX",
+        "rank": 3
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-07-08:rank_overtake:IRL:SGP",
+      "date": "2026-07-08",
+      "type": "rank_overtake",
+      "params": {
+        "country": "IRL",
+        "other": "SGP",
+        "rank": 5
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-07-02:score_jump:VNM",
+      "date": "2026-07-02",
+      "type": "score_jump",
+      "params": {
+        "country": "VNM",
+        "delta": -0.16,
+        "score": 6.7,
+        "prevScore": 6.9,
+        "direction": "down"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-07-01:score_jump:RUS",
+      "date": "2026-07-01",
+      "type": "score_jump",
+      "params": {
+        "country": "RUS",
+        "delta": -0.23,
+        "score": 3.9,
+        "prevScore": 4.2,
+        "direction": "down"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-26:score_jump:ARE",
+      "date": "2026-06-26",
+      "type": "score_jump",
+      "params": {
+        "country": "ARE",
+        "delta": 0.25,
+        "score": 7.3,
+        "prevScore": 7,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-26:score_jump:QAT",
+      "date": "2026-06-26",
+      "type": "score_jump",
+      "params": {
+        "country": "QAT",
+        "delta": 0.26,
+        "score": 7.6,
+        "prevScore": 7.3,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-25:score_jump:BHR",
+      "date": "2026-06-25",
+      "type": "score_jump",
+      "params": {
+        "country": "BHR",
+        "delta": 0.17,
+        "score": 6.8,
+        "prevScore": 6.7,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-24:band_change:KWT",
+      "date": "2026-06-24",
+      "type": "band_change",
+      "params": {
+        "country": "KWT",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-06-24:score_jump:KWT",
+      "date": "2026-06-24",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": 0.29,
+        "score": 7,
+        "prevScore": 6.8,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-24:score_jump:LBN",
+      "date": "2026-06-24",
+      "type": "score_jump",
+      "params": {
+        "country": "LBN",
+        "delta": 0.19,
+        "score": 4.8,
+        "prevScore": 4.6,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-23:band_change:ZMB",
+      "date": "2026-06-23",
+      "type": "band_change",
+      "params": {
+        "country": "ZMB",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7,
+        "direction": "up"
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-06-17:score_jump:ARE",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "ARE",
+        "delta": 0.19,
+        "score": 6.9,
+        "prevScore": 6.7,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:BHR",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "BHR",
+        "delta": 0.15,
+        "score": 6.5,
+        "prevScore": 6.4,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:ISR",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "ISR",
+        "delta": 0.24,
+        "score": 6,
+        "prevScore": 5.8,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:KWT",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": 0.19,
+        "score": 6.7,
+        "prevScore": 6.5,
+        "direction": "up"
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-06-17:score_jump:QAT",
+      "date": "2026-06-17",
+      "type": "score_jump",
+      "params": {
+        "country": "QAT",
+        "delta": 0.21,
+        "score": 7.2,
+        "prevScore": 7,
+        "direction": "up"
+      },
+      "priority": 50
+    }
+  ]
+}
