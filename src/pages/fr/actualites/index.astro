@@ -59,11 +59,11 @@ const jsonLd = {
               day: 'numeric',
             })}
           </h2>
-          <ul class="space-y-2">
+          <div class="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] gap-[0.8rem]">
             {group.events.map((e) => (
               <NewsCard event={e} lang={lang} nameOf={nameOf} />
             ))}
-          </ul>
+          </div>
         </section>
       ))
     )}

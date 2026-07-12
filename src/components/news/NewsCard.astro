@@ -1,17 +1,20 @@
 ---
-import type { NewsEvent } from '../../pipeline/news/types';
+// B6 "tinta piena, filigrana intera" restyle — see
+// /private/tmp/.../scratchpad/news-design-variants.html for the approved design spec.
+import type { NewsEvent, NewsEventType } from '../../pipeline/news/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
-import { renderNewsEvent } from '../../lib/news';
+import { renderNewsEvent, flagEmoji } from '../../lib/news';
 
 interface Props {
   event: NewsEvent;
   lang: Lang;
   nameOf: (iso3: string) => string;
+  featured?: boolean;
 }
 
-const { event, lang, nameOf } = Astro.props;
+const { event, lang, nameOf, featured = false } = Astro.props;
 const t = useTranslations(lang);
 const rendered = renderNewsEvent(event, lang, t, nameOf);
 const r = routes[lang];
@@ -24,59 +27,224 @@ function countryUrl(iso3: string): string {
   return `/${lang}/${r.country}/${iso3.toLowerCase()}/`;
 }
 
-const isNegative =
-  event.type === 'severe_advisory' ||
-  (event.type === 'band_change' && event.params.direction === 'down') ||
-  (event.type === 'score_jump' && event.params.direction === 'down') ||
-  (event.type === 'top10_change' && event.params.direction === 'exit');
-const isPositive =
-  event.type === 'rank_overtake' ||
-  event.type === 'new_country' ||
-  (event.type === 'band_change' && event.params.direction === 'up') ||
-  (event.type === 'score_jump' && event.params.direction === 'up') ||
-  (event.type === 'top10_change' && event.params.direction === 'enter');
+// Sentiment: same subject as the current isPositive/isNegative logic, EXCEPT rank_overtake,
+// which the approved spec renders as neutral/info (sky) rather than positive — an overtake
+// is a comparison between two countries, not unambiguous good news for the "loser".
+type Sentiment = 'up' | 'down' | 'info';
 
-const badgeClasses = isNegative
-  ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
-  : isPositive
-    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
-    : 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
+function sentimentFor(e: NewsEvent): Sentiment {
+  switch (e.type) {
+    case 'severe_advisory':
+      return 'down';
+    case 'rank_overtake':
+      return 'info';
+    case 'new_country':
+      return 'up';
+    case 'top10_change':
+      return e.params.direction === 'exit' ? 'down' : 'up';
+    case 'band_change':
+    case 'score_jump':
+      return e.params.direction === 'down' ? 'down' : 'up';
+    default:
+      return 'info';
+  }
+}
+const sentiment = sentimentFor(event);
 
-const badgeText =
-  event.type === 'severe_advisory'
-    ? `L${event.params.level}`
-    : event.params.score !== undefined
-      ? event.params.score.toFixed(1)
-      : '';
+// Event-type icon (SVG paths only — stroke-width/size applied where rendered).
+type IconKey = 'alert_triangle' | 'trend_up' | 'trend_down' | 'double_chevron_up' | 'star' | 'plus';
+
+function iconKeyFor(e: NewsEvent): IconKey {
+  switch (e.type) {
+    case 'severe_advisory':
+      return 'alert_triangle';
+    case 'rank_overtake':
+      return 'double_chevron_up';
+    case 'top10_change':
+      return 'star';
+    case 'new_country':
+      return 'plus';
+    case 'band_change':
+    case 'score_jump':
+      return e.params.direction === 'down' ? 'trend_down' : 'trend_up';
+    default:
+      return 'plus';
+  }
+}
+const iconKey = iconKeyFor(event);
+
+const ICON_PATHS: Record<IconKey, string> = {
+  alert_triangle:
+    '<path d="M12 3 2.5 20h19L12 3z"/><line x1="12" y1="10" x2="12" y2="14"/><circle cx="12" cy="17" r="0.4"/>',
+  trend_up: '<polyline points="4 17 10 11 14 15 20 8"/><polyline points="14 8 20 8 20 14"/>',
+  trend_down: '<polyline points="4 7 10 13 14 9 20 16"/><polyline points="14 16 20 16 20 10"/>',
+  double_chevron_up: '<polyline points="7 15 12 20 17 15"/><polyline points="7 9 12 4 17 9"/>',
+  star: '<polygon points="12 3 14.7 8.6 20.8 9.4 16.4 13.7 17.5 19.8 12 16.9 6.5 19.8 7.6 13.7 3.2 9.4 9.3 8.6 12 3"/>',
+  plus: '<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>',
+};
+
+// Sentiment -> Tailwind class bundles (literal strings so the Tailwind v4 scanner sees them).
+const SENTIMENT_CLASSES: Record<
+  Sentiment,
+  { gradient: string; border: string; chipBg: string; badgeBg: string; text: string }
+> = {
+  up: {
+    gradient:
+      'bg-gradient-to-br from-emerald-500/10 via-emerald-500/5 via-70% to-white dark:from-emerald-400/13 dark:via-emerald-400/7 dark:to-sand-800',
+    border: 'border-emerald-500/25 dark:border-emerald-400/20',
+    chipBg: 'bg-emerald-100 dark:bg-emerald-900/30',
+    badgeBg: 'bg-emerald-600 dark:bg-emerald-500',
+    text: 'text-emerald-700 dark:text-emerald-400',
+  },
+  down: {
+    gradient:
+      'bg-gradient-to-br from-red-500/10 via-red-500/5 via-70% to-white dark:from-red-400/14 dark:via-red-400/7 dark:to-sand-800',
+    border: 'border-red-500/25 dark:border-red-400/20',
+    chipBg: 'bg-red-100 dark:bg-red-900/30',
+    badgeBg: 'bg-red-600 dark:bg-red-500',
+    text: 'text-red-700 dark:text-red-400',
+  },
+  info: {
+    gradient:
+      'bg-gradient-to-br from-sky-500/10 via-sky-500/5 via-70% to-white dark:from-sky-400/13 dark:via-sky-400/7 dark:to-sand-800',
+    border: 'border-sky-500/25 dark:border-sky-400/20',
+    chipBg: 'bg-sky-100 dark:bg-sky-900/30',
+    badgeBg: 'bg-sky-600 dark:bg-sky-500',
+    text: 'text-sky-700 dark:text-sky-400',
+  },
+};
+const sc = SENTIMENT_CLASSES[sentiment];
+
+const KICKER_KEY: Record<NewsEventType, string> = {
+  severe_advisory: 'news.kicker.severe_advisory',
+  new_country: 'news.kicker.new_country',
+  top10_change: 'news.kicker.top10_change',
+  band_change: 'news.kicker.band_change',
+  rank_overtake: 'news.kicker.rank_overtake',
+  score_jump: 'news.kicker.score_jump',
+};
+const kickerWord = t(KICKER_KEY[event.type] as any);
+const kickerText =
+  event.type === 'severe_advisory' && event.params.level !== undefined
+    ? `${kickerWord} · L${event.params.level}`
+    : kickerWord;
+
+// Big score readout, top-right (params.confidence is INTERNAL ONLY — never rendered here).
+function scoreBigFor(e: NewsEvent): string {
+  const P = e.params;
+  if (e.type === 'severe_advisory') return P.level !== undefined ? `L${P.level}` : '';
+  if (e.type === 'rank_overtake' || e.type === 'top10_change') return P.rank !== undefined ? `#${P.rank}` : '';
+  if (e.type === 'band_change' || e.type === 'score_jump') {
+    if (P.score === undefined) return '';
+    const arrow = P.direction === 'down' ? '↓' : '↑';
+    return `${arrow} ${P.score.toFixed(1)}`;
+  }
+  if (e.type === 'new_country') return P.score !== undefined ? P.score.toFixed(1) : '';
+  return '';
+}
+const scoreBig = scoreBigFor(event);
+
+const primaryIso3 = rendered.links[0]?.iso3 ?? event.params.country ?? '';
+const flag = primaryIso3 ? flagEmoji(primaryIso3) : null;
 ---
 
-<li class="list-none">
-  <article class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3">
-    <div class="flex items-start justify-between gap-2">
-      <h3 class="text-sm font-semibold text-sand-800 dark:text-sand-100">
-        {rendered.links.length > 0 ? (
-          <a href={countryUrl(rendered.links[0].iso3)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors">
-            {rendered.headline}
-          </a>
-        ) : rendered.headline}
-      </h3>
-      {badgeText && (
-        <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${badgeClasses}`}>
-          {badgeText}
-        </span>
-      )}
+<article
+  class:list={[
+    'group relative flex h-full flex-col gap-2 overflow-hidden rounded-xl border px-4 py-3 shadow-sm',
+    'transition-transform duration-150 ease-out hover:-translate-y-0.5 hover:shadow-md',
+    'motion-reduce:transition-none motion-reduce:transform-none',
+    sc.gradient,
+    sc.border,
+    featured && 'min-[720px]:col-span-2',
+  ]}
+>
+  <span
+    class:list={['pointer-events-none absolute top-1/2 right-[0.9rem] h-[4.6rem] w-[4.6rem] -translate-y-1/2 opacity-10', sc.text]}
+    aria-hidden="true"
+  >
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.6"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      class="h-full w-full"
+      set:html={ICON_PATHS[iconKey]}
+    />
+  </span>
+
+  <div class="relative z-10 flex h-full flex-col gap-2 pr-[3.2rem]">
+    <div class="flex items-center gap-2.5">
+      <span class:list={['relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl', sc.chipBg]}>
+        {flag ? (
+          <>
+            <span class="text-xl leading-none" aria-hidden="true">{flag}</span>
+            <span
+              class:list={[
+                'absolute -right-[0.3rem] -bottom-[0.3rem] flex h-[1.15rem] w-[1.15rem] items-center justify-center rounded-full text-white',
+                sc.badgeBg,
+              ]}
+              aria-hidden="true"
+            >
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2.6"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="h-[0.7rem] w-[0.7rem]"
+                set:html={ICON_PATHS[iconKey]}
+              />
+            </span>
+          </>
+        ) : (
+          <span class:list={['flex h-5 w-5 items-center justify-center', sc.text]} aria-hidden="true">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="h-full w-full"
+              set:html={ICON_PATHS[iconKey]}
+            />
+          </span>
+        )}
+      </span>
+      <span class:list={['text-[0.68rem] font-bold tracking-wide uppercase', sc.text]}>{kickerText}</span>
+      {scoreBig && <span class:list={['ml-auto text-xl font-extrabold tabular-nums', sc.text]}>{scoreBig}</span>}
     </div>
-    <p class="mt-1 text-sm text-sand-600 dark:text-sand-400">{rendered.detail}</p>
+
+    <h3 class="text-[0.97rem] leading-snug font-semibold text-balance text-sand-800 dark:text-sand-100">
+      {rendered.links.length > 0 ? (
+        <a
+          href={countryUrl(rendered.links[0].iso3)}
+          class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+        >
+          {rendered.headline}
+        </a>
+      ) : (
+        rendered.headline
+      )}
+    </h3>
+    <p class="text-sm text-sand-600 dark:text-sand-400">{rendered.detail}</p>
     {rendered.links.length > 1 && (
-      <p class="mt-2 text-xs text-sand-500 dark:text-sand-400">
+      <p class="text-xs text-sand-500 dark:text-sand-400">
         {rendered.links.map((l, i) => (
           <Fragment>
             {i > 0 && <span aria-hidden="true"> &middot; </span>}
-            <a href={countryUrl(l.iso3)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors">{l.name}</a>
+            <a href={countryUrl(l.iso3)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors">
+              {l.name}
+            </a>
           </Fragment>
         ))}
       </p>
     )}
-    <p class="mt-2 text-xs text-sand-400 dark:text-sand-500">{formattedDate}</p>
-  </article>
-</li>
+    <div class="mt-auto flex items-center justify-between pt-1 text-xs text-sand-400 dark:text-sand-500">
+      <span>{formattedDate}</span>
+    </div>
+  </div>
+</article>

@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import type { NewsEvent, NewsIndex, BandKey } from '../pipeline/news/types';
 import type { Lang } from '../i18n/ui';
 import { loadLatestScores, getLocalizedCountryName } from './scores';
+import { getCountryByIso3 } from '../pipeline/config/countries';
 
 const NEWS_DIR = join(process.cwd(), 'data', 'news');
 
@@ -58,6 +59,15 @@ export function loadNewsArchive(days = 30): Array<{ date: string; events: NewsEv
     date,
     events: byDate.get(date)!.sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id)),
   }));
+}
+
+/** iso3 -> emoji flag (regional-indicator pair from the country's ISO2), or null if unresolvable. */
+export function flagEmoji(iso3: string): string | null {
+  const iso2 = getCountryByIso3(iso3)?.iso2;
+  if (!iso2 || iso2.length !== 2) return null;
+  const codePoints = [...iso2.toUpperCase()].map((ch) => 0x1f1e6 + (ch.charCodeAt(0) - 65));
+  if (codePoints.some((cp) => cp < 0x1f1e6 || cp > 0x1f1ff)) return null;
+  return String.fromCodePoint(...codePoints);
 }
 
 /** iso3 -> localized name, using the latest scores snapshot (handles zh/de via Intl fallback). */

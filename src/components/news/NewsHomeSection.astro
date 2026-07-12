@@ -28,11 +28,11 @@ const r = routes[lang];
     <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
       {t('news.section.home_title' as any)}
     </h2>
-    <ul class="space-y-2">
-      {events.map((event) => (
-        <NewsCard event={event} lang={lang} nameOf={nameOf} />
+    <div class="grid grid-cols-[repeat(auto-fit,minmax(270px,1fr))] gap-[0.8rem]">
+      {events.map((event, i) => (
+        <NewsCard event={event} lang={lang} nameOf={nameOf} featured={i === 0} />
       ))}
-    </ul>
+    </div>
     <a
       href={`/${lang}/${r.news}/`}
       class="mt-4 inline-block text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline"
