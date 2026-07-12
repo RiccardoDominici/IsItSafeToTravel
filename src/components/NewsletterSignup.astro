@@ -1,0 +1,137 @@
+---
+// Mailing-list signup widget (quick task 260711-daily-news-and-mailing-list).
+// Progressive enhancement matching SentimentVote.astro: native form POST works with
+// JavaScript disabled (functions/api/subscribe.ts answers form-encoded submissions with an
+// inline "check your inbox" HTML page); the inline script upgrades it to a fetch() call with
+// JS-side success/error states, re-initialized on astro:after-swap for view-transitions.
+// Props contract fixed by the news track's reserved slot (src/pages/*/news*/index.astro):
+// { lang, placement }. countrySlug is additive — only meaningful when placement === 'country',
+// used as the subscribe `source` field for attribution (plan §I).
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+  placement: 'news' | 'home' | 'country';
+  countrySlug?: string;
+}
+
+const { lang, placement, countrySlug } = Astro.props;
+const t = useTranslations(lang);
+
+const source = placement === 'country' && countrySlug ? countrySlug : placement === 'news' ? 'news-page' : 'home';
+const legalHref = `/${lang}/${routes[lang].legal}/`;
+const formId = `newsletter-${Math.random().toString(36).slice(2, 8)}`;
+---
+
+<section class="max-w-2xl mx-auto px-4 py-6">
+  <form
+    id={formId}
+    class="newsletter-signup rounded-xl border border-sand-200 dark:border-sand-700 bg-sand-50 dark:bg-sand-800/50 p-5"
+    action="/api/subscribe"
+    method="POST"
+    novalidate
+  >
+    <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100">{t('newsletter.title' as any)}</h2>
+    <p class="text-sm text-sand-600 dark:text-sand-400 mt-1">{t('newsletter.subtitle' as any)}</p>
+
+    <input type="hidden" name="locale" value={lang} />
+    <input type="hidden" name="source" value={source} />
+    {/* Honeypot: bots fill hidden fields. Real users never see or reach this input. */}
+    <input
+      type="text"
+      name="website"
+      tabindex="-1"
+      autocomplete="off"
+      class="absolute -left-[9999px] w-px h-px overflow-hidden"
+      aria-hidden="true"
+    />
+
+    <div class="mt-3 flex flex-col sm:flex-row gap-2">
+      <label class="sr-only" for={`${formId}-email`}>{t('newsletter.placeholder' as any)}</label>
+      <input
+        id={`${formId}-email`}
+        type="email"
+        name="email"
+        required
+        autocomplete="email"
+        placeholder={t('newsletter.placeholder' as any)}
+        class="flex-1 min-h-[44px] rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 px-3.5 text-sm text-sand-800 dark:text-sand-100 placeholder:text-sand-400 dark:placeholder:text-sand-500 focus:outline-none focus:ring-2 focus:ring-terracotta-500 focus:border-transparent"
+      />
+      <button
+        type="submit"
+        class="min-h-[44px] shrink-0 inline-flex items-center justify-center rounded-xl px-5 font-heading font-semibold text-white bg-terracotta-500 shadow-sm transition-colors hover:bg-terracotta-600 hover:shadow-md"
+      >
+        {t('newsletter.cta' as any)}
+      </button>
+    </div>
+
+    <p class="text-xs text-sand-500 dark:text-sand-400 mt-2 leading-relaxed">
+      {t('newsletter.consent_pre' as any)}<a
+        href={legalHref}
+        class="underline hover:text-terracotta-500 dark:hover:text-terracotta-400"
+      >{t('legal.privacy_title' as any)}</a>{t('newsletter.consent_post' as any)}
+    </p>
+  </form>
+
+  <div aria-live="polite">
+    <p id={`${formId}-success`} class="hidden mt-3 text-sm font-medium text-terracotta-600 dark:text-terracotta-400">
+      {t('newsletter.success' as any)}
+    </p>
+    <p id={`${formId}-error`} class="hidden mt-3 text-xs text-sand-500 dark:text-sand-400">
+      {t('newsletter.error' as any)}
+    </p>
+  </div>
+</section>
+
+<script define:vars={{ formId }}>
+  function initNewsletterSignup() {
+    const form = document.getElementById(formId);
+    const successEl = document.getElementById(formId + '-success');
+    const errorEl = document.getElementById(formId + '-error');
+    if (!form || !successEl || !errorEl) return;
+    // Avoid double-binding if astro:after-swap re-runs this on the same DOM node.
+    if (form.dataset.jsInit === '1') return;
+    form.dataset.jsInit = '1';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      errorEl.classList.add('hidden');
+
+      const emailInput = form.querySelector('input[name="email"]');
+      const localeInput = form.querySelector('input[name="locale"]');
+      const sourceInput = form.querySelector('input[name="source"]');
+      const websiteInput = form.querySelector('input[name="website"]');
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+
+      try {
+        const res = await fetch('/api/subscribe', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: emailInput ? emailInput.value : '',
+            locale: localeInput ? localeInput.value : undefined,
+            source: sourceInput ? sourceInput.value : undefined,
+            website: websiteInput ? websiteInput.value : '',
+          }),
+        });
+
+        if (res.ok) {
+          form.classList.add('hidden');
+          successEl.classList.remove('hidden');
+        } else {
+          errorEl.classList.remove('hidden');
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      } catch {
+        errorEl.classList.remove('hidden');
+        if (submitBtn) submitBtn.disabled = false;
+      }
+    });
+  }
+
+  initNewsletterSignup();
+  document.addEventListener('astro:after-swap', initNewsletterSignup);
+</script>
