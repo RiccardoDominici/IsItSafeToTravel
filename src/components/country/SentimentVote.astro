@@ -104,6 +104,8 @@ const question = t('sentiment.question').replace('{country}', countryName);
     if (!form || !submitBtn || !thanksEl || !errorEl) return;
 
     const storageKey = 'sentiment-voted-' + iso3;
+    // UTC day stamp, matching the server's UTC day-bucketed dedupe window.
+    const todayUtc = new Date().toISOString().slice(0, 10);
     const radios = form.querySelectorAll('input[name="calibration"]');
 
     function showThanks() {
@@ -112,11 +114,13 @@ const question = t('sentiment.question').replace('{country}', countryName);
       errorEl.classList.add('hidden');
     }
 
-    // Soft dedupe (D-17): a returning voter sees thank-you, not the prompt. Client-only —
-    // not authoritative (server salted-hash dedupe is the source of truth, T-39-20).
+    // Soft dedupe (D-17), one vote per UTC day: a same-day returning voter sees thank-you,
+    // not the prompt; from the next day the form is offered again. Legacy permanent '1'
+    // markers never equal a date, so past voters regain the form under the daily policy.
+    // Client-only — not authoritative (server salted-hash dedupe is the source of truth).
     let alreadyVoted = false;
     try {
-      alreadyVoted = !!localStorage.getItem(storageKey);
+      alreadyVoted = localStorage.getItem(storageKey) === todayUtc;
     } catch {
       alreadyVoted = false;
     }
@@ -155,7 +159,7 @@ const question = t('sentiment.question').replace('{country}', countryName);
 
         if (res.ok) {
           try {
-            localStorage.setItem(storageKey, '1');
+            localStorage.setItem(storageKey, todayUtc);
           } catch {
             // localStorage unavailable — soft dedupe just won't persist; not fatal.
           }

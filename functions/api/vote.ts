@@ -5,7 +5,7 @@
 // gracefully (skip verification, keep working) instead of 500ing — D-12/D-14.
 
 // Claude's-discretion tunable thresholds (CONTEXT.md "Claude's Discretion").
-const DEDUPE_WINDOW_DAYS = 7; // per-country weekly dedupe window (voter_hash)
+const DEDUPE_WINDOW_DAYS = 1; // per-country daily dedupe window (voter_hash, UTC day bucket)
 const DAILY_PER_VISITOR_CAP = 30; // max votes/day per salted visitor hash (day_hash)
 const MAX_BODY_BYTES = 1024; // reject oversized bodies before parsing/using fields
 const FALLBACK_SALT = 'isitsafetotravel-vote-fallback-salt-v1'; // used only if VOTE_HASH_SALT secret is unset
@@ -150,9 +150,10 @@ export async function onRequestPost(context: any) {
     const ip = context.request.headers.get('CF-Connecting-IP') ?? '';
     const salt = context.env?.VOTE_HASH_SALT ?? FALLBACK_SALT;
     const nowMs = Date.now();
-    const weekBucket = Math.floor(nowMs / (7 * 864e5));
     const dayBucket = Math.floor(nowMs / 864e5);
-    const voter_hash = await voterHash(salt, ip, `${iso3}:${weekBucket}`);
+    // Day-bucketed voter hash: same visitor + same country hashes identically only within
+    // the same UTC day, so UNIQUE(iso3, voter_hash) enforces exactly one vote/country/day.
+    const voter_hash = await voterHash(salt, ip, `${iso3}:${dayBucket}`);
     const day_hash = await voterHash(salt, ip, `day:${dayBucket}`);
     // Coarse geolocation only (2-letter ISO country, or null/'T1'/'XX' — Tor/unknown), from
     // Cloudflare's edge-populated request.cf.country / CF-IPCountry header. No raw IP, no
@@ -167,7 +168,7 @@ export async function onRequestPost(context: any) {
 
     const nowSec = Math.floor(nowMs / 1000);
 
-    // (6) Per-country weekly dedupe: same salted voter hash within the window is rejected
+    // (6) Per-country daily dedupe: same salted voter hash within the window is rejected
     // WITHOUT inserting a new row.
     const dedupeWindowStart = nowSec - DEDUPE_WINDOW_DAYS * 86400;
     const dedupeRow = await db
