@@ -13,14 +13,16 @@ AI answer engines.
 | `npm run build` | `generate:og` → `generate:llms` → `astro build` → `validate:seo`. **Slow (~400s)** — the OG step regenerates 248 images. To iterate faster, run `npx astro build` directly (OG/llms already on disk) then `npm run validate:seo`. |
 | `npm run validate:seo` | Post-build SEO gate (`scripts/validate-seo.ts`) against `dist/client`. **Must stay all-pass** before committing SEO/schema changes. |
 | `npm run generate:llms` | Regenerate `public/llms.txt` + `public/llms-full.txt` (fast). |
-| `npm run pipeline` / `npx tsx src/pipeline/run.ts [YYYY-MM-DD]` | Run the data pipeline (fetch → score → snapshot). |
+| `npm run pipeline` / `npx tsx src/pipeline/run.ts [YYYY-MM-DD]` | Run the data pipeline (fetch → score → snapshot → news). |
+| `npx tsx --test src/pipeline/news/__tests__/engine.test.ts` | News-engine unit tests (plain `node --test` fails — needs tsx). |
+| `npx tsx scripts/send-daily-digest.ts --dry-run` | Newsletter digest dry-run (no emails, no D1 writes). |
 
 ## Do NOT hand-edit generated files (a PreToolUse hook blocks this)
 
 | Generated output | Edit instead |
 |---|---|
 | `public/llms.txt`, `public/llms-full.txt` | `scripts/generate-llms-full.ts` |
-| `public/scores.json`, `data/scores/**`, `data/raw/**`, `data/history/**`, `data/sentiment/**` | the pipeline (`src/pipeline/run.ts`) |
+| `public/scores.json`, `data/scores/**`, `data/raw/**`, `data/history/**`, `data/sentiment/**`, `data/news/**` | the pipeline (`src/pipeline/run.ts`) |
 | `public/og/**` | `scripts/generate-og-images.ts` |
 | `dist/**` | `npm run build` |
 
@@ -66,6 +68,24 @@ Scores ≈ [3.4, 8.9], mean ~6.60; bands UNCHANGED: <5 danger / 5–6 high cauti
 7–8 good / ≥8 excellent. Constants frozen in `weights.json` (key stays `formulaV9` regardless of
 formula version); parity fixture: `scripts/verify-formula-v91-parity.ts`. `confidence` field per
 country (score-adjacent "limited data" UI flag below 0.4).
+
+## Daily news ("safety movers") + newsletter
+
+- Pipeline Stage 7 (`src/pipeline/news/engine.ts`, non-fatal) diffs the two latest score
+  snapshots into language-neutral `NewsEvent`s (6 types: severe_advisory, new_country,
+  top10_change, band_change, rank_overtake, score_jump) → `data/news/YYYY-MM-DD.json` +
+  rolling `data/news/index.json` (cooldown state). Rendering is i18n-template-based
+  (`news.*` keys in `src/i18n/ui.ts`, `renderNewsEvent` in `src/lib/news.ts`) — never put
+  pre-rendered text in the data files. Homepage section self-hides on 0-event days.
+- Newsletter: D1 `subscribers`/`digest_log` tables live in the **isitsafetotravel-sentiment**
+  DB (same binding as votes). Double opt-in via `functions/api/{subscribe,confirm,unsubscribe}.ts`;
+  Resend adapter in `functions/lib/email.ts`. Daily digest = GH Actions step after the pipeline
+  (`scripts/send-daily-digest.ts`), sends only on ≥1-event days, idempotent via `digest_log`;
+  needs `RESEND_API_KEY` in **GitHub** secrets (already a Pages secret). Consent record is
+  GDPR-load-bearing (`consent_version`, no raw IP — see
+  `.planning/quick/260711-daily-news-and-mailing-list/LEGAL-PRIVACY-ASSESSMENT.md`).
+- Votes store voter country (`country_iso`, from `request.cf.country`) — country-level only,
+  never raw IP.
 
 ## Known constraints
 
