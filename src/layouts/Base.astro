@@ -3,6 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { useTranslations, getAlternateLinks, getLocalizedPath } from '../i18n/utils';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import CookieBanner from '../components/CookieBanner.astro';
 import '../styles/fonts.css';
 import '../styles/global.css';
 import interLatinWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
@@ -127,13 +128,37 @@ const resolvedOgType = ogType || 'website';
     <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:bg-terracotta-500 focus:text-white focus:px-4 focus:py-2 focus:rounded focus:text-sm focus:font-semibold">
       Skip to content
     </a>
+    <!-- Positioned right after the skip link (not with Header/Footer) so keyboard
+         users reach Accept/Reject early in tab order; position:fixed means DOM
+         placement here has no effect on where it renders on screen. -->
+    <CookieBanner lang={lang} />
     <Header lang={lang} currentPath={currentPath} />
     <main id="main-content" class="flex-1">
       <slot />
     </main>
     <Footer lang={lang} />
     <!--
-      Deferred third-party loader: Microsoft Clarity + Ko-fi.
+      Microsoft Clarity is consent-gated: window.__hasCookieConsent() (defined by
+      CookieBanner.astro) must return true before it is ever injected. Nothing here
+      sets the _clck/_clsk cookies until the visitor has clicked "Accept".
+    -->
+    <script is:inline>
+      (function () {
+        function injectClarity() {
+          if (window.__clarityLoaded) return;
+          window.__clarityLoaded = true;
+          (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+          })(window, document, "clarity", "script", "w2va23mnes");
+        }
+        window.__injectClarity = injectClarity;
+      })();
+    </script>
+    <!--
+      Deferred third-party loader: Microsoft Clarity (only if consent already
+      granted from a previous visit) + Ko-fi.
       Fires on the first user interaction OR when the main thread goes idle
       (whichever comes first), keeping both off the critical render path.
       NOTE: the Travelpayouts sitewide script (tp-em.com) was intentionally
@@ -148,12 +173,12 @@ const resolvedOgType = ogType || 'website';
           if (loaded) return;
           loaded = true;
 
-          // Microsoft Clarity (privacy-first analytics)
-          (function (c, l, a, r, i, t, y) {
-            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments); };
-            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
-            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
-          })(window, document, "clarity", "script", "w2va23mnes");
+          // Microsoft Clarity — only if the visitor already granted analytics
+          // consent on a previous visit. Fresh visits with no stored choice are
+          // handled by the cookie banner's own Accept click (CookieBanner.astro).
+          if (typeof window.__hasCookieConsent === 'function' && window.__hasCookieConsent()) {
+            window.__injectClarity();
+          }
 
           // Ko-fi floating donate button (defensive guard against blocked CDN)
           var kofi = document.createElement('script');

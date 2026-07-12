@@ -1,0 +1,132 @@
+---
+// GDPR/ePrivacy cookie-consent banner. Gates Microsoft Clarity (see Base.astro's
+// window.__injectClarity / window.__hasCookieConsent) behind an explicit opt-in.
+// Consent is stored client-side only (localStorage), never as a cookie.
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const legalHref = `/${lang}/${routes[lang].legal}/`;
+---
+
+<!--
+  Deliberately unobtrusive: a small toast, not a modal wall. No overlay/backdrop,
+  no blur — the page underneath stays fully visible, scrollable, and interactive.
+  Mobile: thin full-width bar flush with the bottom edge. Desktop (sm+): compact
+  card anchored bottom-left, capped at 360px, well clear of central content.
+-->
+<div
+  id="cookie-banner"
+  class="hidden fixed inset-x-0 bottom-0 z-50 sm:inset-x-auto sm:left-4 sm:bottom-4"
+  role="region"
+  aria-label={t('cookie.prefs')}
+>
+  <div class="w-full sm:w-auto sm:max-w-[360px] bg-sand-50 dark:bg-sand-800 border-t sm:border border-sand-200 dark:border-sand-700 sm:rounded-xl shadow-md px-3 py-2.5 sm:p-3">
+    <p class="text-[0.8rem] leading-snug text-sand-700 dark:text-sand-300">
+      {t('cookie.text')}
+      {' '}
+      <a href={legalHref} class="underline hover:text-terracotta-500 dark:hover:text-terracotta-400 whitespace-nowrap">{t('footer.legal')}</a>
+    </p>
+    <div class="mt-2 flex gap-2">
+      <button
+        id="cookie-reject-btn"
+        type="button"
+        class="flex-1 inline-flex items-center justify-center rounded-lg border border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 px-3 text-[0.8rem] font-heading font-semibold text-sand-700 dark:text-sand-200 transition-colors hover:bg-sand-100 dark:hover:bg-sand-700"
+      >
+        {t('cookie.reject')}
+      </button>
+      <button
+        id="cookie-accept-btn"
+        type="button"
+        class="flex-1 inline-flex items-center justify-center rounded-lg bg-terracotta-500 px-3 text-[0.8rem] font-heading font-semibold text-white shadow-sm transition-colors hover:bg-terracotta-600"
+      >
+        {t('cookie.accept')}
+      </button>
+    </div>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var STORAGE_KEY = 'cookie-consent';
+    var CONSENT_VERSION = 'v1-2026-07-12';
+    var CLARITY_COOKIES = ['_clck', '_clsk', 'CLID', 'ANONCHK', 'MR', 'MUID', 'SM'];
+
+    function readConsent() {
+      try {
+        var raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return null;
+        var parsed = JSON.parse(raw);
+        if (parsed && (parsed.analytics === 'granted' || parsed.analytics === 'denied')) return parsed;
+        return null;
+      } catch (_) {
+        return null;
+      }
+    }
+
+    function writeConsent(analytics) {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: CONSENT_VERSION, analytics: analytics, ts: Date.now() }));
+      } catch (_) {
+        /* no-op: storage unavailable (private mode / blocked) */
+      }
+    }
+
+    function deleteClarityCookies() {
+      var hostParts = window.location.hostname.split('.');
+      var domainVariants = [undefined, window.location.hostname];
+      if (hostParts.length > 2) domainVariants.push('.' + hostParts.slice(-2).join('.'));
+      CLARITY_COOKIES.forEach(function (name) {
+        domainVariants.forEach(function (domain) {
+          document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/;' + (domain ? ' domain=' + domain + ';' : '');
+        });
+      });
+    }
+
+    window.__hasCookieConsent = function () {
+      var consent = readConsent();
+      return !!consent && consent.analytics === 'granted';
+    };
+
+    var banner = document.getElementById('cookie-banner');
+    var acceptBtn = document.getElementById('cookie-accept-btn');
+    var rejectBtn = document.getElementById('cookie-reject-btn');
+
+    function showBanner() {
+      if (banner) banner.classList.remove('hidden');
+    }
+    function hideBanner() {
+      if (banner) banner.classList.add('hidden');
+    }
+
+    if (acceptBtn) {
+      acceptBtn.addEventListener('click', function () {
+        writeConsent('granted');
+        hideBanner();
+        if (typeof window.__injectClarity === 'function') window.__injectClarity();
+      });
+    }
+    if (rejectBtn) {
+      rejectBtn.addEventListener('click', function () {
+        writeConsent('denied');
+        deleteClarityCookies();
+        hideBanner();
+      });
+    }
+
+    // Footer "Cookie preferences" link re-opens the banner so the choice can be revised.
+    window.__reopenCookieBanner = function () {
+      showBanner();
+    };
+
+    if (!readConsent()) {
+      showBanner();
+    }
+  })();
+</script>

@@ -69,6 +69,13 @@ const affiliateUrl = buildAffiliateUrl();
       >
         {t('footer.legal')}
       </a>
+      <button
+        type="button"
+        id="cookie-prefs-link"
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {t('cookie.prefs')}
+      </button>
       <a
         href={`/${lang}/${r.feedback}/`}
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
@@ -109,3 +116,19 @@ const affiliateUrl = buildAffiliateUrl();
     </p>
   </div>
 </footer>
+
+<script>
+  function initCookiePrefsLink() {
+    const btn = document.getElementById('cookie-prefs-link');
+    if (!btn || (btn as HTMLElement).dataset.jsInit === '1') return;
+    (btn as HTMLElement).dataset.jsInit = '1';
+    btn.addEventListener('click', () => {
+      if (typeof (window as any).__reopenCookieBanner === 'function') {
+        (window as any).__reopenCookieBanner();
+      }
+    });
+  }
+
+  initCookiePrefsLink();
+  document.addEventListener('astro:after-swap', initCookiePrefsLink);
+</script>
