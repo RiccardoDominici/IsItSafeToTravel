@@ -154,6 +154,10 @@ export async function onRequestPost(context: any) {
     const dayBucket = Math.floor(nowMs / 864e5);
     const voter_hash = await voterHash(salt, ip, `${iso3}:${weekBucket}`);
     const day_hash = await voterHash(salt, ip, `day:${dayBucket}`);
+    // Coarse geolocation only (2-letter ISO country, or null/'T1'/'XX' — Tor/unknown), from
+    // Cloudflare's edge-populated request.cf.country / CF-IPCountry header. No raw IP, no
+    // city, no lat/long — see LEGAL-PRIVACY-ASSESSMENT.md §B (legitimate interest, Art. 6(1)(f)).
+    const country = context.request.cf?.country ?? context.request.headers.get('CF-IPCountry') ?? null;
 
     // (5) Graceful degradation: no D1 binding attached -> never break the UX (D-14).
     const db = context.env?.DB;
@@ -192,9 +196,9 @@ export async function onRequestPost(context: any) {
     const officialScore = normalizeOfficialScore(body.officialScore);
     const res = await db
       .prepare(
-        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at) VALUES (?, ?, ?, ?, ?, ?)'
+        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso) VALUES (?, ?, ?, ?, ?, ?, ?)'
       )
-      .bind(iso3, delta, officialScore ?? null, voter_hash, day_hash, nowSec)
+      .bind(iso3, delta, officialScore ?? null, voter_hash, day_hash, nowSec, country)
       .run();
     if (res.meta?.changes === 0) {
       return json({ ok: true, deduped: true }, 200);
