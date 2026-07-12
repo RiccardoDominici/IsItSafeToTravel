@@ -28,10 +28,11 @@
 // (`countryName`/`headline`/`detail`). The sibling PLAN-news.md (authoritative — it is the news
 // track's actual file-by-file plan) instead defines a language-neutral `NewsEvent { type,
 // params: {country, other, delta, score, rank, direction, fromBand, toBand, issuer, level} }`
-// with ALL text rendered at build/send time. This script's built-in fallback renderer below
-// supports BOTH shapes defensively: pre-rendered text if present, else its own minimal
-// per-type/per-locale templates keyed off `params`. If `src/lib/news.ts` (renderNewsEvent) lands
-// with the real i18n-backed renderer, swap this fallback for that call — flagged in the report.
+// with ALL text rendered at build/send time. renderEvent() below now tries THREE renderers in
+// order: (1) the pre-rendered shape, if a producer ever ships it; (2) src/lib/news.ts's
+// renderNewsEvent — the SAME i18n-backed renderer the /news/ page uses, imported directly (works
+// cleanly from this tsx/Node context); (3) this script's own minimal TEMPLATES/renderBuiltIn as a
+// last-resort fallback if (2) throws for any reason.
 
 import { existsSync, readFileSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -40,6 +41,9 @@ import { digestSubjectFallback, wrapperHtml, escapeHtml, type Locale } from '../
 import { loadLatestScores, getLocalizedCountryName } from '../src/lib/scores.js';
 import { routes } from '../src/i18n/ui.js';
 import type { Lang } from '../src/i18n/ui.js';
+import { renderNewsEvent } from '../src/lib/news.js';
+import { useTranslations } from '../src/i18n/utils.js';
+import type { NewsEvent as PipelineNewsEvent } from '../src/pipeline/news/types.js';
 
 const DB_NAME = 'isitsafetotravel-sentiment';
 const CHUNK_SIZE = 100; // Resend /emails/batch max per call
@@ -283,6 +287,19 @@ function renderEvent(e: NewsEvent, lang: Locale, nameOf: (iso3: string) => strin
       detail: e.detail?.[lang] ?? e.detail?.en ?? '',
       url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${slug}/`,
     };
+  }
+  // Primary renderer: src/lib/news.ts's renderNewsEvent, the SAME i18n-backed function the
+  // /news/ page uses — single source of truth for headline/detail copy (no drift vs. the site).
+  // Verified importable cleanly from this tsx/Node context (news.ts's only runtime deps are
+  // ./scores.js + node:fs, already used elsewhere in this script). Falls back to this script's
+  // own minimal TEMPLATES renderer below if it throws for any reason.
+  try {
+    const t = useTranslations(lang as Lang);
+    const rendered = renderNewsEvent(e as unknown as PipelineNewsEvent, lang as Lang, t, nameOf);
+    const iso3 = e.params?.country ?? e.iso3 ?? '';
+    return { head: rendered.headline, detail: rendered.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${iso3.toLowerCase()}/` };
+  } catch (err) {
+    console.warn(`[digest] renderNewsEvent failed for event ${e.id ?? '?'} (falling back to built-in templates): ${err instanceof Error ? err.message : String(err)}`);
   }
   const r = renderBuiltIn(e, lang, nameOf);
   return { head: r.head, detail: r.detail, url: `https://isitsafetotravel.org/${lang}/${countrySeg(lang)}/${r.iso3.toLowerCase()}/` };
