@@ -245,6 +245,18 @@ jobs:
             COUNTRY_COUNT=$(jq '.countries | length' public/scores.json 2>/dev/null || echo "?")
           fi
 
+          # Daily news events count (Stage 7 output). Non-blocking: missing file
+          # (news engine is non-fatal) leaves NEWS_LINE empty.
+          NEWS_LINE=""
+          if [ -f "data/news/${DATE}.json" ]; then
+            N_EVENTS=$(jq '.events | length' "data/news/${DATE}.json" 2>/dev/null || echo "")
+            if [ "$N_EVENTS" = "0" ]; then
+              NEWS_LINE="📰 News: quiet day, 0 events — digest skipped"
+            elif [ -n "$N_EVENTS" ]; then
+              NEWS_LINE="📰 News: ${N_EVENTS} event(s) today"
+            fi
+          fi
+
           # Community-vote daily report, appended to whichever notification fires.
           # Reads the sentiment D1 directly (same HTTP API + token fallback as
           # src/pipeline/sentiment/fetch-votes.ts) because the pipeline snapshot
@@ -308,28 +320,40 @@ jobs:
             fi
           fi
 
+          # On OK days the interesting content (news/votes/newsletter) leads and
+          # the pipeline status is a one-line footer; on failures the alarm
+          # detail stays on top.
           if [ "$JOB_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "ok" ]; then
             TITLE="✅ Daily pipeline OK — $DATE"
-            BODY="Pipeline ran, ${COUNTRY_COUNT} countries scored, all data-quality checks passed. Deploy triggered. ${RUN_URL}"
+            BODY=""
+            PIPELINE_SUMMARY="✅ Pipeline: ${COUNTRY_COUNT} countries scored, quality checks passed, deploy triggered."
             PRIORITY="default"
             TAGS="white_check_mark,isitsafetotravel"
           elif [ "$QUALITY_STATUS" = "fail" ]; then
             TITLE="❌ Daily pipeline DATA REGRESSION — $DATE"
             BODY="Pipeline ran but data-quality checks failed:${QUALITY_FAILURES}\n\n${COUNTRY_COUNT} countries scored. ${RUN_URL}"
+            PIPELINE_SUMMARY=""
             PRIORITY="high"
             TAGS="x,warning,isitsafetotravel"
           else
             TITLE="💥 Daily pipeline FAILED — $DATE"
             BODY="Pipeline workflow did not complete cleanly (status=$JOB_STATUS, pipeline-step=$PIPELINE_OUTCOME). Check the run log. ${RUN_URL}"
+            PIPELINE_SUMMARY=""
             PRIORITY="high"
             TAGS="boom,isitsafetotravel"
           fi
 
-          if [ -n "$VOTES_LINE" ]; then
-            BODY="${BODY}\n\n${VOTES_LINE}"
+          CONTENT=""
+          for LINE in "$NEWS_LINE" "$VOTES_LINE" "$SUBS_LINE"; do
+            if [ -n "$LINE" ]; then
+              if [ -n "$CONTENT" ]; then CONTENT="${CONTENT}\n${LINE}"; else CONTENT="$LINE"; fi
+            fi
+          done
+          if [ -n "$CONTENT" ]; then
+            if [ -n "$BODY" ]; then BODY="${BODY}\n\n${CONTENT}"; else BODY="$CONTENT"; fi
           fi
-          if [ -n "$SUBS_LINE" ]; then
-            BODY="${BODY}\n${SUBS_LINE}"
+          if [ -n "$PIPELINE_SUMMARY" ]; then
+            if [ -n "$BODY" ]; then BODY="${BODY}\n\n${PIPELINE_SUMMARY}"; else BODY="$PIPELINE_SUMMARY"; fi
           fi
 
           # ntfy.sh push notification (per project memory: riccardo-claude topic)
