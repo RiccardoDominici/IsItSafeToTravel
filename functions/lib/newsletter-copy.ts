@@ -170,7 +170,7 @@ const BACK_TO_SITE = rec(
 );
 
 /** Minimal, dependency-free page shell for /api/* inline responses. Always noindex. */
-function page(locale: Locale, message: string): string {
+function pageShell(locale: Locale, cardInnerHtml: string): string {
   return `<!doctype html>
 <html lang="${locale}">
 <head>
@@ -190,13 +190,20 @@ function page(locale: Locale, message: string): string {
 <body>
   <div class="wrap">
     <div class="wordmark">🌍 IsItSafeToTravel</div>
-    <div class="card">
-      <p>${escapeHtml(message)}</p>
-      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>
+    <div class="card">${cardInnerHtml}
     </div>
   </div>
 </body>
 </html>`;
+}
+
+function page(locale: Locale, message: string): string {
+  return pageShell(
+    locale,
+    `
+      <p>${escapeHtml(message)}</p>
+      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>`,
+  );
 }
 
 const CHECK_INBOX_TEXT = rec(
@@ -249,6 +256,21 @@ const UNSUB_SUCCESS_TEXT = rec(
   'Du wurdest abgemeldet. Du erhältst keine weiteren E-Mails mehr von uns.',
 );
 
+const UNSUB_CONFIRM_TEXT = rec(
+  'Do you want to stop receiving the daily travel-safety updates at this address?',
+  'Vuoi smettere di ricevere gli aggiornamenti quotidiani sulla sicurezza di viaggio a questo indirizzo?',
+  '¿Quieres dejar de recibir las actualizaciones diarias sobre seguridad de viaje en esta dirección?',
+  'Voulez-vous ne plus recevoir les mises à jour quotidiennes sur la sécurité des voyages à cette adresse ?',
+  'Quer deixar de receber as atualizações diárias sobre segurança de viagem neste endereço?',
+  '您想停止在此邮箱接收每日旅行安全更新吗?',
+  'Möchtest du keine täglichen Reisesicherheits-Updates mehr an diese Adresse erhalten?',
+);
+
+const UNSUB_CONFIRM_BUTTON = rec(
+  'Yes, unsubscribe me', 'Sì, annulla la mia iscrizione', 'Sí, darme de baja', 'Oui, me désabonner',
+  'Sim, cancelar a inscrição', '是的,取消订阅', 'Ja, abmelden',
+);
+
 const UNSUB_ERROR_TEXT = rec(
   'This unsubscribe link is invalid or has already been used.',
   'Questo link di annullamento non è valido o è già stato utilizzato.',
@@ -265,6 +287,23 @@ export const confirmResultHtml = (locale: Locale, success: boolean) =>
   page(locale, success ? CONFIRM_SUCCESS_TEXT[locale] : CONFIRM_ERROR_TEXT[locale]);
 export const unsubResultHtml = (locale: Locale, success: boolean) =>
   page(locale, success ? UNSUB_SUCCESS_TEXT[locale] : UNSUB_ERROR_TEXT[locale]);
+
+/**
+ * GET /api/unsubscribe confirmation page: shows a POST form instead of unsubscribing
+ * directly — a GET that mutates state gets triggered by antispam link scanners
+ * (learned the hard way on day one). Real one-click stays on POST per RFC 8058.
+ */
+export function unsubConfirmHtml(locale: Locale, actionUrl: string): string {
+  return pageShell(
+    locale,
+    `
+      <p>${escapeHtml(UNSUB_CONFIRM_TEXT[locale])}</p>
+      <form method="POST" action="${escapeHtml(actionUrl)}" style="margin:0 0 20px;">
+        <button type="submit" style="background:${TERRACOTTA_500};color:#fff;border:0;border-radius:8px;padding:13px 28px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;">${escapeHtml(UNSUB_CONFIRM_BUTTON[locale])}</button>
+      </form>
+      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>`,
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Error strings for subscribe.ts's respErr()
