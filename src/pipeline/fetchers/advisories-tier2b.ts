@@ -177,6 +177,7 @@ async function fetchBeAdvisories(
 
         const pageHtml = await pageResponse.text();
         const level = normalizeBeLevel(pageHtml);
+        if (level === null) return; // no advisory evidence in the fetched HTML — don't publish a made-up level
 
         indicators.push({
           countryIso3: entry.country.iso3,

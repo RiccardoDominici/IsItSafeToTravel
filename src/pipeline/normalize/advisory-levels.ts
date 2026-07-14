@@ -138,13 +138,16 @@ export function normalizeFiLevel(text: string): UnifiedLevel {
 
 /**
  * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
+ * Returns null when no advisory keyword is present: the country pages are JS-rendered, so
+ * fetched HTML often carries no advisory text at all — defaulting to 1 published a false
+ * "Pas de restrictions" for every country (including level-4 ones like Syria or Yemen).
  */
-export function normalizeBeLevel(text: string): UnifiedLevel {
+export function normalizeBeLevel(text: string): UnifiedLevel | null {
   const lower = text.toLowerCase();
   if (lower.includes('ne pas voyager') || lower.includes('quitter le pays')) return 4;
   if (lower.includes('déconseillé') || lower.includes('deconseille') || lower.includes('éviter') || lower.includes('eviter')) return 3;
   if (lower.includes('prudence') || lower.includes('vigilance') || lower.includes('attention')) return 2;
-  return 1;
+  return null;
 }
 
 /**
