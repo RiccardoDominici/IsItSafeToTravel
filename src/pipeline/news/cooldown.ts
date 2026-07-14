@@ -24,7 +24,8 @@ export function cooldownKey(e: NewsEvent): string {
     case 'top10_change':
       return `top10:${e.params.country}`;
     case 'severe_advisory':
-      return `advisory:${e.params.country}:${e.params.issuer}`;
+      // Level is part of the key: a 3->4 escalation is new news, not a repeat of the level-3 event.
+      return `advisory:${e.params.country}:${e.params.issuer}:${e.params.level}`;
     case 'new_country':
       return `newcountry:${e.params.country}`;
     default:
@@ -53,6 +54,7 @@ export function filterSortCap(events: NewsEvent[], cooldowns: Record<string, str
   const alive = events.filter((e) => {
     const seen = cooldowns[cooldownKey(e)];
     if (!seen) return true;
+    if (seen === date) return true; // stamped by an earlier run of this same day — a re-run must regenerate, not wipe, the day file
     return daysBetween(seen, date) >= WINDOW[e.type]; // Infinity window => always suppressed
   });
 

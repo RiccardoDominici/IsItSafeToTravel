@@ -30,6 +30,9 @@ const BAND_HYSTERESIS = 0.03;
 /**
  * True when a band crossing is a real move, not boundary flap: the raw score must sit
  * >=BAND_HYSTERESIS past the single crossed boundary (a multi-band jump is always real).
+ * Directional: an upward cross needs curr >= boundary + h, a downward one curr <= boundary − h —
+ * an absolute-distance check would confirm display-rounding "crossings" whose raw score never
+ * reached the boundary (e.g. 6.94 -> 6.96 rendering as 6.9 -> 7.0).
  */
 export function bandCrossConfirmed(prevRaw: number, currRaw: number): boolean {
   const from = getBand(prevRaw);
@@ -39,5 +42,6 @@ export function bandCrossConfirmed(prevRaw: number, currRaw: number): boolean {
   const ti = BAND_ORDER.indexOf(to);
   if (Math.abs(fi - ti) >= 2) return true;
   const boundary = 4 + Math.max(fi, ti); // idx1->bd5, idx2->bd6, idx3->bd7, idx4->bd8
-  return Math.abs(Number(currRaw.toFixed(2)) - boundary) >= BAND_HYSTERESIS;
+  const curr = Number(currRaw.toFixed(2));
+  return ti > fi ? curr - boundary >= BAND_HYSTERESIS : boundary - curr >= BAND_HYSTERESIS;
 }

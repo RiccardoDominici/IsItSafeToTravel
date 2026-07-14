@@ -2,6 +2,7 @@ import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
 import { computeNews } from '../engine.js';
 import { filterSortCap, cooldownKey } from '../cooldown.js';
+import { bandCrossConfirmed } from '../../../lib/bands.js';
 import type { DailySnapshot, ScoredCountry, SourceMeta } from '../../types.js';
 import type { NewsEvent } from '../types.js';
 
@@ -199,5 +200,58 @@ describe('filterSortCap: cooldown suppression', () => {
     const cooldowns = { [key]: '2026-06-20' }; // > 14 days ago
     const kept = filterSortCap([event], cooldowns, '2026-07-10');
     assert.equal(kept.length, 1);
+  });
+
+  it('keeps an event whose cooldown was stamped by an earlier run of the SAME day (idempotent re-run)', () => {
+    const key = cooldownKey(event);
+    const cooldowns = { [key]: '2026-07-10' }; // stamped today by run 1 — a re-run must not wipe the day file
+    const kept = filterSortCap([event], cooldowns, '2026-07-10');
+    assert.equal(kept.length, 1);
+  });
+});
+
+describe('cooldownKey: severe_advisory level escalation', () => {
+  const evt = (level: number): NewsEvent => ({
+    id: '2026-07-10:severe_advisory:CCC:us',
+    date: '2026-07-10',
+    type: 'severe_advisory',
+    priority: 100,
+    params: { country: 'CCC', issuer: 'us', level },
+  });
+
+  it('a 3 -> 4 "Do Not Travel" escalation is NOT suppressed by the level-3 stamp', () => {
+    const cooldowns = { [cooldownKey(evt(3))]: '2026-07-05' }; // level-3 event fired 5 days ago
+    const kept = filterSortCap([evt(4)], cooldowns, '2026-07-10');
+    assert.equal(kept.length, 1);
+  });
+
+  it('a repeat at the SAME level is still suppressed within the 21-day window', () => {
+    const cooldowns = { [cooldownKey(evt(3))]: '2026-07-05' };
+    const kept = filterSortCap([evt(3)], cooldowns, '2026-07-10');
+    assert.equal(kept.length, 0);
+  });
+});
+
+describe('bandCrossConfirmed: directional hysteresis', () => {
+  it('rejects a display-rounding "cross" whose raw score never reached the boundary (6.94 -> 6.96)', () => {
+    assert.equal(bandCrossConfirmed(6.94, 6.96), false);
+  });
+
+  it('rejects an upward cross still within hysteresis of the boundary (6.94 -> 7.02)', () => {
+    assert.equal(bandCrossConfirmed(6.94, 7.02), false);
+  });
+
+  it('confirms an upward cross >= 0.03 past the boundary (6.94 -> 7.03)', () => {
+    assert.equal(bandCrossConfirmed(6.94, 7.03), true);
+  });
+
+  // No rejectable downward case exists: a score displaying in the lower band already sits
+  // >= 0.05 below the boundary (display rounding), which always clears the 0.03 hysteresis.
+  it('confirms a downward cross (7.1 -> 6.94)', () => {
+    assert.equal(bandCrossConfirmed(7.1, 6.94), true);
+  });
+
+  it('always confirms a multi-band jump', () => {
+    assert.equal(bandCrossConfirmed(6.5, 8.5), true);
   });
 });
