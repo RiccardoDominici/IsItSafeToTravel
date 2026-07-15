@@ -238,6 +238,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_TOKEN }}
+          CLARITY_API_TOKEN: ${{ secrets.CLARITY_API_TOKEN }}
         run: |
           DATE=$(date -u +%Y-%m-%d)
           COUNTRY_COUNT="?"
@@ -267,9 +268,7 @@ jobs:
           if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$D1_TOKEN" ]; then
             read -r -d '' VOTES_SQL <<'SQL' || true
           SELECT (SELECT COUNT(*) FROM votes) AS total,
-                 (SELECT COUNT(*) FROM votes WHERE created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS last24h,
-                 (SELECT COUNT(DISTINCT iso3) FROM votes) AS countries,
-                 (SELECT GROUP_CONCAT(x, ', ') FROM (SELECT iso3 || ':' || COUNT(*) AS x FROM votes GROUP BY iso3 ORDER BY COUNT(*) DESC, iso3 LIMIT 10)) AS breakdown
+                 (SELECT COUNT(*) FROM votes WHERE created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS last24h
           SQL
             VOTES_JSON=$(jq -n --arg sql "$VOTES_SQL" '{sql: $sql}' \
               | curl -fsS -m 30 -X POST \
@@ -280,9 +279,7 @@ jobs:
             V_TOTAL=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].total // empty' 2>/dev/null)
             if [ -n "$V_TOTAL" ]; then
               V_24H=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].last24h // 0')
-              V_COUNTRIES=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].countries // 0')
-              V_BREAKDOWN=$(echo "$VOTES_JSON" | jq -r '.result[0].results[0].breakdown // "-"')
-              VOTES_LINE="🗳 Community votes: ${V_TOTAL} total (+${V_24H} last 24h) across ${V_COUNTRIES} countries — ${V_BREAKDOWN}"
+              VOTES_LINE="🗳 Votes: +${V_24H} last 24h (${V_TOTAL} total)"
             else
               echo "::warning::vote report query failed (non-blocking)"
             fi
@@ -295,7 +292,6 @@ jobs:
             read -r -d '' SUBS_SQL <<'SQL' || true
           SELECT (SELECT COUNT(*) FROM subscribers WHERE status='confirmed') AS confirmed,
                  (SELECT COUNT(*) FROM subscribers WHERE status='confirmed' AND confirmed_at > CAST(strftime('%s','now') AS INTEGER) - 604800) AS new7d,
-                 (SELECT COUNT(*) FROM subscribers WHERE status='pending') AS pending,
                  (SELECT recipients FROM digest_log WHERE send_date = date('now')) AS sent_today
           SQL
             SUBS_JSON=$(jq -n --arg sql "$SUBS_SQL" '{sql: $sql}' \
@@ -307,9 +303,8 @@ jobs:
             S_CONF=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].confirmed // empty' 2>/dev/null)
             if [ -n "$S_CONF" ]; then
               S_NEW7=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].new7d // 0')
-              S_PEND=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].pending // 0')
               S_SENT=$(echo "$SUBS_JSON" | jq -r '.result[0].results[0].sent_today // empty')
-              SUBS_LINE="📬 Newsletter: ${S_CONF} confirmed (+${S_NEW7} this week), ${S_PEND} pending"
+              SUBS_LINE="📬 Newsletter: ${S_CONF} subscribers (+${S_NEW7} this week)"
               if [ -n "$S_SENT" ]; then
                 SUBS_LINE="${SUBS_LINE} — digest sent to ${S_SENT}"
               else
@@ -320,11 +315,16 @@ jobs:
             fi
           fi
 
-          # Cookie-consent report (accept/reject beacons from CookieBanner.astro,
-          # consent_log table). The accept rate is the multiplier to estimate real
-          # traffic from consent-gated Clarity: real ≈ clarity / accept-rate.
-          # Non-blocking: any failure leaves CONSENT_LINE empty.
-          CONSENT_LINE=""
+          # Estimated real visitors. The consent accept-rate (consent_log, fed by
+          # CookieBanner.astro beacons) is the multiplier that turns consent-gated
+          # Clarity sessions into an estimate of real traffic:
+          #   real ≈ clarity_sessions / accept_rate.
+          # Clarity sessions come from the Data Export API when CLARITY_API_TOKEN
+          # is set (Clarity > Settings > Data Export > Generate new API token);
+          # without it the line falls back to raw consent counts. Divisor uses the
+          # 24h accept-rate when it has accepts, else the all-time rate.
+          # Non-blocking: any failure leaves VISITORS_LINE empty.
+          VISITORS_LINE=""
           if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$D1_TOKEN" ]; then
             read -r -d '' CONSENT_SQL <<'SQL' || true
           SELECT (SELECT COUNT(*) FROM consent_log WHERE choice='granted' AND created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS acc24,
@@ -345,21 +345,46 @@ jobs:
               C_DEN_ALL=$(echo "$CONSENT_JSON" | jq -r '.result[0].results[0].den_all // 0')
               C_TOT24=$((C_ACC24 + C_DEN24))
               C_TOT_ALL=$((C_ACC_ALL + C_DEN_ALL))
-              CONSENT_LINE="🍪 Consent: ${C_ACC24} accept / ${C_DEN24} reject last 24h"
-              if [ "$C_TOT24" -gt 0 ]; then
-                CONSENT_LINE="${CONSENT_LINE} (${C_TOT24} choices, $((100 * C_ACC24 / C_TOT24))% accept)"
+
+              CL_SESS=""
+              if [ -n "$CLARITY_API_TOKEN" ]; then
+                CLARITY_JSON=$(curl -fsS -m 30 \
+                    "https://www.clarity.ms/export-data/api/v1/project-live-insights?numOfDays=1" \
+                    -H "Authorization: Bearer ${CLARITY_API_TOKEN}" 2>/dev/null) || CLARITY_JSON=""
+                CL_SESS=$(echo "$CLARITY_JSON" | jq -r '[.[] | select(.metricName=="Traffic") | .information[0].totalSessionCount] | first // empty' 2>/dev/null)
+                case "$CL_SESS" in (''|*[!0-9]*) CL_SESS="";; esac
+                if [ -z "$CL_SESS" ]; then
+                  echo "::warning::Clarity Data Export API call failed or returned no Traffic metric (non-blocking)"
+                fi
+              else
+                echo "::notice::CLARITY_API_TOKEN not set — visitors line shows consent counts only, no Clarity estimate"
               fi
-              if [ "$C_TOT_ALL" -gt 0 ]; then
-                CONSENT_LINE="${CONSENT_LINE} — all-time ${C_ACC_ALL}/${C_TOT_ALL} accept ($((100 * C_ACC_ALL / C_TOT_ALL))%)"
+
+              RATE_ACC=""; RATE_TOT=""
+              if [ "$C_ACC24" -gt 0 ]; then RATE_ACC=$C_ACC24; RATE_TOT=$C_TOT24
+              elif [ "$C_ACC_ALL" -gt 0 ]; then RATE_ACC=$C_ACC_ALL; RATE_TOT=$C_TOT_ALL; fi
+
+              if [ -n "$CL_SESS" ] && [ -n "$RATE_ACC" ]; then
+                VISITORS_LINE="👥 Visitors: ~$((CL_SESS * RATE_TOT / RATE_ACC)) est. (Clarity ${CL_SESS} ÷ $((100 * RATE_ACC / RATE_TOT))% accept) — 24h consent: ${C_ACC24} accept / ${C_DEN24} reject"
+              elif [ -n "$CL_SESS" ]; then
+                VISITORS_LINE="👥 Visitors: Clarity ${CL_SESS} sessions (no accepts yet, estimate n/a) — 24h consent: ${C_ACC24} accept / ${C_DEN24} reject"
+              else
+                VISITORS_LINE="👥 Visitors: 24h consent ${C_ACC24} accept / ${C_DEN24} reject"
+                if [ "$C_TOT24" -gt 0 ]; then
+                  VISITORS_LINE="${VISITORS_LINE} ($((100 * C_ACC24 / C_TOT24))% accept)"
+                fi
+                if [ "$C_TOT_ALL" -gt 0 ]; then
+                  VISITORS_LINE="${VISITORS_LINE} — all-time $((100 * C_ACC_ALL / C_TOT_ALL))% accept of ${C_TOT_ALL}"
+                fi
               fi
             else
               echo "::warning::consent report query failed (non-blocking)"
             fi
           fi
 
-          # On OK days the interesting content (news/votes/newsletter) leads and
-          # the pipeline status is a one-line footer; on failures the alarm
-          # detail stays on top.
+          # On OK days the interesting content (visitors/votes/newsletter/news)
+          # leads and the pipeline status is a one-line footer; on failures the
+          # alarm detail stays on top.
           if [ "$JOB_STATUS" = "success" ] && [ "$QUALITY_STATUS" = "ok" ]; then
             TITLE="✅ Daily pipeline OK — $DATE"
             BODY=""
@@ -381,7 +406,7 @@ jobs:
           fi
 
           CONTENT=""
-          for LINE in "$NEWS_LINE" "$VOTES_LINE" "$SUBS_LINE" "$CONSENT_LINE"; do
+          for LINE in "$VISITORS_LINE" "$VOTES_LINE" "$SUBS_LINE" "$NEWS_LINE"; do
             if [ -n "$LINE" ]; then
               if [ -n "$CONTENT" ]; then CONTENT="${CONTENT}\n${LINE}"; else CONTENT="$LINE"; fi
             fi
