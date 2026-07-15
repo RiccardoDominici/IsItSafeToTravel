@@ -155,7 +155,6 @@ async function fetchAtAdvisories(
       text: AT_LEVEL_TEXT[level] || `Level ${level}`,
       source: 'Austrian Federal Ministry',
       url: `https://www.bmeia.gv.at${entry.link || '/reise-services/reisewarnungen'}`,
-      updatedAt: fetchedAt,
     };
   }
 
@@ -267,7 +266,6 @@ async function fetchFrAdvisories(
           text: FR_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'French Ministry of Foreign Affairs',
           url: entry.url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -352,7 +350,6 @@ async function fetchHkAdvisories(
         text: HK_LEVEL_TEXT[blanketLevel] || `Level ${blanketLevel}`,
         source: 'Hong Kong Security Bureau',
         url: 'https://www.sb.gov.hk/eng/ota/',
-        updatedAt: fetchedAt,
       };
     }
 
@@ -400,7 +397,6 @@ async function fetchHkAdvisories(
         text: HK_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Hong Kong Security Bureau',
         url: 'https://www.sb.gov.hk/eng/ota/',
-        updatedAt: fetchedAt,
       };
     }
   }
@@ -464,7 +460,6 @@ async function fetchNzAdvisories(
           text: NZ_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'New Zealand SafeTravel',
           url: `https://www.safetravel.govt.nz/destinations/${text.toLowerCase().replace(/\s+/g, '-')}`,
-          updatedAt: fetchedAt,
         };
       });
 
@@ -530,7 +525,6 @@ async function fetchNzAdvisories(
             text: NZ_LEVEL_TEXT[level] || `Level ${level}`,
             source: 'New Zealand SafeTravel',
             url: `https://www.safetravel.govt.nz/destinations/${entry.slug}`,
-            updatedAt: fetchedAt,
           };
         } catch {
           // Individual country page failed, skip silently
@@ -617,7 +611,6 @@ async function fetchIeAdvisories(
       text: IE_LEVEL_TEXT[level] || `Level ${level}`,
       source: 'Irish Department of Foreign Affairs',
       url: baseUrl,
-      updatedAt: fetchedAt,
     };
   });
 
@@ -662,7 +655,6 @@ async function fetchIeAdvisories(
             text: IE_LEVEL_TEXT[level] || `Level ${level}`,
             source: 'Irish Department of Foreign Affairs',
             url,
-            updatedAt: fetchedAt,
           };
         } catch {
           // Individual country page failed, skip silently
@@ -745,7 +737,6 @@ async function fetchFiAdvisories(
       text: FI_LEVEL_TEXT[level] || `Level ${level}`,
       source: 'Finnish Ministry of Foreign Affairs',
       url: baseUrl,
-      updatedAt: fetchedAt,
     };
   });
 
@@ -824,7 +815,6 @@ async function fetchBrAdvisories(
             text: BR_LEVEL_TEXT[level] || `Crisis alert level ${level}`,
             source: 'Brazilian Ministry of Foreign Affairs',
             url: 'https://www.gov.br/mre/pt-br/assuntos/portal-consular/alertas-e-avisos',
-            updatedAt: fetchedAt,
           };
         }
       }
@@ -917,7 +907,6 @@ async function fetchPhAdvisories(
           text: PH_LEVEL_TEXT[level] || `Alert Level ${level}`,
           source: 'Philippine Department of Foreign Affairs',
           url: 'https://dfa.gov.ph/travel-advisories',
-          updatedAt: fetchedAt,
         };
         break; // Found the country, stop checking
       }

@@ -34,14 +34,15 @@ function getAdvisoryColor(advisory: AdvisoryInfo, source: string): string {
 
 const borderColor = getAdvisoryColor(advisory, sourceKey);
 
-const formattedDate = new Intl.DateTimeFormat(lang, {
-  year: 'numeric',
-  month: 'short',
-  day: 'numeric',
-}).format(new Date(advisory.updatedAt));
+// Sources that don't expose a real advisory date have no updatedAt — show nothing
+// rather than a fabricated "updated today".
+const updatedMs = advisory.updatedAt ? new Date(advisory.updatedAt).getTime() : NaN;
+const formattedDate = Number.isFinite(updatedMs)
+  ? new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' }).format(updatedMs)
+  : null;
 
 const levelText = t('country.advisory.level').replace('{level}', String(advisory.level));
-const updatedText = t('country.advisory.updated').replace('{date}', formattedDate);
+const updatedText = formattedDate ? t('country.advisory.updated').replace('{date}', formattedDate) : null;
 
 // Truncate advisory text to 200 characters
 const summaryText = advisory.text.length > 200
@@ -70,7 +71,7 @@ const summaryText = advisory.text.length > 200
   </p>
 
   <div class="flex items-center justify-between text-xs text-sand-500 dark:text-sand-400">
-    <span>{updatedText}</span>
+    <span>{updatedText ?? ''}</span>
     <a
       href={advisory.url}
       target="_blank"

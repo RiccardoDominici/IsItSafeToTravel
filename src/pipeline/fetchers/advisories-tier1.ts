@@ -215,10 +215,10 @@ async function fetchDeAdvisories(
       fetchedAt,
     });
 
-    // Build advisory info
+    // Build advisory info — no source timestamp means no updatedAt (never the fetch time)
     const lastModified = entry.lastModified
       ? new Date(Number(entry.lastModified) * 1000).toISOString()
-      : fetchedAt;
+      : undefined;
 
     if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
     advisoryInfo[country.iso3].de = {
@@ -295,9 +295,9 @@ async function fetchNlAdvisories(
           fetchedAt,
         });
 
-        // Extract last modified date if available
+        // Extract last modified date if available — otherwise omit (never the fetch time)
         const lastModMatch = xml.match(/<lastmodified>([^<]+)<\/lastmodified>/);
-        const updatedAt = lastModMatch ? lastModMatch[1] : fetchedAt;
+        const updatedAt = lastModMatch ? lastModMatch[1] : undefined;
 
         // Prefer the structured <canonical> URL from the XML — guessing the
         // slug from the English name (e.g. "ivory-coast") frequently 404s on
@@ -482,7 +482,6 @@ async function fetchJpAdvisories(
           text: JP_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Japan Ministry of Foreign Affairs',
           url,
-          updatedAt: fetchedAt,
         };
 
         pageResults[entry.pageId] = { japaneseName: entry.japaneseName, iso3: country.iso3, level };
@@ -579,9 +578,9 @@ async function fetchSkAdvisories(
       fetchedAt,
     });
 
-    // Extract date if available
+    // Extract date if available — otherwise omit (never the fetch time)
     const dateStr = String(record['Datum zmeny'] || '').trim();
-    let updatedAt = fetchedAt;
+    let updatedAt: string | undefined;
     if (dateStr) {
       // Format: "DD.MM.YYYY HH:MM:SS"
       const parts = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);

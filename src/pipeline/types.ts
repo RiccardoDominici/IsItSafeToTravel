@@ -135,7 +135,7 @@ export interface AdvisoryInfo {
   text: string;
   source: string;
   url: string;
-  updatedAt: string;
+  updatedAt?: string; // the government's real advisory date — absent when the source exposes none (never the fetch time)
 }
 
 export interface ScoredCountry {

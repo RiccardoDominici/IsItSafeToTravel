@@ -472,7 +472,6 @@ async function fetchChAdvisories(
         text: CH_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Switzerland EDA',
         url: 'https://www.eda.admin.ch/eda/en/fdfa/representations-and-travel-advice.html',
-        updatedAt: fetchedAt,
       };
     });
 
@@ -503,7 +502,6 @@ async function fetchChAdvisories(
           text: CH_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Switzerland EDA',
           url: 'https://www.eda.admin.ch/eda/en/fdfa/representations-and-travel-advice.html',
-          updatedAt: fetchedAt,
         };
       });
     }
@@ -573,7 +571,6 @@ async function fetchSeAdvisories(
         text: SE_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Sweden UD',
         url: 'https://www.regeringen.se/uds-reseinformation/ud-avraader/',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -642,7 +639,6 @@ async function fetchNoAdvisories(
         text: NO_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Norway UD',
         url: 'https://www.regjeringen.no/no/tema/utenrikssaker/reiseinformasjon/reiseraad/id2413163/',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -711,7 +707,6 @@ async function fetchPlAdvisories(
         text: PL_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Poland MSZ',
         url: 'https://www.gov.pl/web/dyplomacja/informacje-dla-podrozujacych',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -780,7 +775,6 @@ async function fetchCzAdvisories(
         text: CZ_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Czech Republic MZV',
         url: 'https://www.mzv.cz/jnp/cz/cestujeme/aktualni_doporuceni_a_varovani/index.html',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -849,7 +843,6 @@ async function fetchHuAdvisories(
         text: HU_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Hungary KKM',
         url: 'https://konzuliszolgalat.kormany.hu/utazasi-tanacsok',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -918,7 +911,6 @@ async function fetchPtAdvisories(
         text: PT_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Portugal MNE',
         url: 'https://portaldascomunidades.mne.gov.pt/pt/vai-viajar/conselhos-aos-viajantes',
-        updatedAt: fetchedAt,
       };
     });
   } catch {

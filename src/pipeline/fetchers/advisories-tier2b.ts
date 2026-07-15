@@ -194,7 +194,6 @@ async function fetchBeAdvisories(
           text: BE_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Belgian Federal Foreign Affairs',
           url: entry.url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -259,7 +258,6 @@ async function fetchDkAdvisories(
           text: DK_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Danish Ministry of Foreign Affairs',
           url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -347,7 +345,6 @@ async function fetchSgAdvisories(
       text: SG_LEVEL_TEXT[level] || `Level ${level}`,
       source: 'Singapore Ministry of Foreign Affairs',
       url: baseUrl,
-      updatedAt: fetchedAt,
     };
   });
 
@@ -409,7 +406,6 @@ async function fetchSgAdvisories(
           text: SG_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Singapore Ministry of Foreign Affairs',
           url: baseUrl,
-          updatedAt: fetchedAt,
         };
       });
     } catch {
@@ -519,7 +515,6 @@ async function fetchRoAdvisories(
           text: RO_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Romanian Ministry of Foreign Affairs',
           url: baseUrl,
-          updatedAt: fetchedAt,
         };
       }
     }
@@ -608,7 +603,6 @@ async function fetchRsAdvisories(
           text: RS_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Serbian Ministry of Foreign Affairs',
           url: entry.url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -709,7 +703,6 @@ async function fetchEeAdvisories(
             text: EE_LEVEL_TEXT[level] || `Level ${level}`,
             source: 'Estonian Ministry of Foreign Affairs',
             url: entry.url,
-            updatedAt: fetchedAt,
           };
         } catch {
           // Skip silently
@@ -751,7 +744,6 @@ async function fetchEeAdvisories(
           text: EE_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Estonian Ministry of Foreign Affairs',
           url: entry.url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -848,7 +840,6 @@ async function fetchHrAdvisories(
           text: HR_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Croatian Ministry of Foreign Affairs',
           url,
-          updatedAt: fetchedAt,
         };
       }
     }
@@ -938,7 +929,6 @@ async function fetchArAdvisories(
           text: AR_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Argentine Ministry of Foreign Affairs',
           url: baseUrl,
-          updatedAt: fetchedAt,
         };
         break; // Found the country, stop checking
       }

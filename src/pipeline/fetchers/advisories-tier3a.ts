@@ -300,7 +300,6 @@ async function fetchItAdvisories(
           text: IT_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Italy Viaggiare Sicuri',
           url,
-          updatedAt: fetchedAt,
         };
       } catch {
         // Individual country page failed, skip silently
@@ -377,7 +376,6 @@ async function fetchEsAdvisories(
         text: ES_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Spain Exteriores',
         url: 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx',
-        updatedAt: fetchedAt,
       };
     });
 
@@ -408,7 +406,6 @@ async function fetchEsAdvisories(
           text: ES_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Spain Exteriores',
           url: 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx',
-          updatedAt: fetchedAt,
         };
       });
     }
@@ -499,7 +496,6 @@ async function fetchKrAdvisories(
         text: KR_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'South Korea MOFA',
         url: 'https://www.0404.go.kr/travelAlert/apntStatus/stepTravelAlert',
-        updatedAt: fetchedAt,
       };
     });
   } catch {
@@ -592,7 +588,6 @@ async function fetchTwAdvisories(
           text: TW_LEVEL_TEXT[normalizedLevel] || `Level ${normalizedLevel}`,
           source: 'Taiwan BOCA',
           url: 'https://www.boca.gov.tw/sp-trwa-list-1.html',
-          updatedAt: fetchedAt,
         };
       }
     });
@@ -717,7 +712,6 @@ async function fetchCnAdvisories(
         text: CN_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'China MFA',
         url: url || LANDING_URL,
-        updatedAt: fetchedAt,
       };
     }
   } catch {
@@ -819,7 +813,6 @@ async function fetchInAdvisories(
         text: IN_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'India MEA',
         url: 'https://www.mea.gov.in/travel-advisory.htm',
-        updatedAt: fetchedAt,
       };
       break;
     }

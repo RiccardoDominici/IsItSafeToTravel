@@ -426,8 +426,8 @@ async function fetchUsAdvisories(
       source: 'advisories_us',
     });
 
-    // Parse date from MM/DD/YYYY format
-    let updatedAt = fetchedAt;
+    // Parse date from MM/DD/YYYY format; no parsable date -> no updatedAt
+    let updatedAt: string | undefined;
     if (dateStr) {
       const parts = dateStr.split('/');
       if (parts.length === 3) {
@@ -528,7 +528,7 @@ async function fetchUkAdvisories(
     countryName: string;
     slug: string;
     iso3: string;
-    updatedAt: string;
+    updatedAt?: string;
     apiUrl: string;
   }
   const countriesToFetch: UkCountryEntry[] = [];
@@ -545,7 +545,7 @@ async function fetchUkAdvisories(
 
     const basePath = String(childObj.base_path || '');
     const slug = basePath ? basePath.replace(/^\/foreign-travel-advice\//, '') : countryName.toLowerCase().replace(/\s+/g, '-');
-    const updatedAt = String(childObj.public_updated_at || fetchedAt);
+    const updatedAt = childObj.public_updated_at ? String(childObj.public_updated_at) : undefined;
 
     countriesToFetch.push({
       countryName,
@@ -786,13 +786,16 @@ async function fetchCaAdvisories(
         source: 'advisories_ca',
       });
 
+      // Real advisory date from the Canada.ca WET template's <meta name="dcterms.modified">
+      const modified = pageHtml.match(/name="dcterms\.modified"[^>]*content="(\d{4}-\d{2}-\d{2})"/)?.[1];
+
       if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
       advisoryInfo[entry.iso3].ca = {
         level,
         text: CA_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Government of Canada',
         url: `https://travel.gc.ca/destinations/${entry.slug}`,
-        updatedAt: fetchedAt,
+        updatedAt: modified,
       };
     } catch {
       // Individual country fetch failed — skip it
@@ -872,7 +875,6 @@ async function fetchAuAdvisories(
         text: AU_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Australian Government',
         url: slug.startsWith('http') ? slug : `https://www.smartraveller.gov.au/destinations/${slug}`,
-        updatedAt: fetchedAt,
       };
     }
   } else {
@@ -929,7 +931,6 @@ async function fetchAuAdvisories(
           text: AU_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Australian Government',
           url: `https://www.smartraveller.gov.au/destinations/${slug}`,
-          updatedAt: fetchedAt,
         };
       }
 
