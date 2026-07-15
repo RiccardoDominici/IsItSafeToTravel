@@ -8,7 +8,7 @@
 const DEDUPE_WINDOW_DAYS = 1; // per-country daily dedupe window (voter_hash, UTC day bucket)
 const DAILY_PER_VISITOR_CAP = 30; // max votes/day per salted visitor hash (day_hash)
 const MAX_BODY_BYTES = 1024; // reject oversized bodies before parsing/using fields
-const FALLBACK_SALT = 'isitsafetotravel-vote-fallback-salt-v1'; // used only if VOTE_HASH_SALT secret is unset
+export const FALLBACK_SALT = 'isitsafetotravel-vote-fallback-salt-v1'; // used only if VOTE_HASH_SALT secret is unset (also imported by consent.ts)
 
 // Compact allowlist Set derived from src/pipeline/config/countries.ts COUNTRIES (248 entries).
 // Embedded here (not imported) because Pages Functions at the edge can't cheaply pull from src/.

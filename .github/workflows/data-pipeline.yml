@@ -320,6 +320,43 @@ jobs:
             fi
           fi
 
+          # Cookie-consent report (accept/reject beacons from CookieBanner.astro,
+          # consent_log table). The accept rate is the multiplier to estimate real
+          # traffic from consent-gated Clarity: real ≈ clarity / accept-rate.
+          # Non-blocking: any failure leaves CONSENT_LINE empty.
+          CONSENT_LINE=""
+          if [ -n "$CLOUDFLARE_ACCOUNT_ID" ] && [ -n "$D1_TOKEN" ]; then
+            read -r -d '' CONSENT_SQL <<'SQL' || true
+          SELECT (SELECT COUNT(*) FROM consent_log WHERE choice='granted' AND created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS acc24,
+                 (SELECT COUNT(*) FROM consent_log WHERE choice='denied'  AND created_at > CAST(strftime('%s','now') AS INTEGER) - 86400) AS den24,
+                 (SELECT COUNT(*) FROM consent_log WHERE choice='granted') AS acc_all,
+                 (SELECT COUNT(*) FROM consent_log WHERE choice='denied')  AS den_all
+          SQL
+            CONSENT_JSON=$(jq -n --arg sql "$CONSENT_SQL" '{sql: $sql}' \
+              | curl -fsS -m 30 -X POST \
+                  "https://api.cloudflare.com/client/v4/accounts/${CLOUDFLARE_ACCOUNT_ID}/d1/database/83acaffe-32ff-43fc-b68f-5343d01000d5/query" \
+                  -H "Authorization: Bearer ${D1_TOKEN}" \
+                  -H "Content-Type: application/json" \
+                  --data @- 2>/dev/null) || CONSENT_JSON=""
+            C_ACC24=$(echo "$CONSENT_JSON" | jq -r '.result[0].results[0].acc24 // empty' 2>/dev/null)
+            if [ -n "$C_ACC24" ]; then
+              C_DEN24=$(echo "$CONSENT_JSON" | jq -r '.result[0].results[0].den24 // 0')
+              C_ACC_ALL=$(echo "$CONSENT_JSON" | jq -r '.result[0].results[0].acc_all // 0')
+              C_DEN_ALL=$(echo "$CONSENT_JSON" | jq -r '.result[0].results[0].den_all // 0')
+              C_TOT24=$((C_ACC24 + C_DEN24))
+              C_TOT_ALL=$((C_ACC_ALL + C_DEN_ALL))
+              CONSENT_LINE="🍪 Consent: ${C_ACC24} accept / ${C_DEN24} reject last 24h"
+              if [ "$C_TOT24" -gt 0 ]; then
+                CONSENT_LINE="${CONSENT_LINE} (${C_TOT24} choices, $((100 * C_ACC24 / C_TOT24))% accept)"
+              fi
+              if [ "$C_TOT_ALL" -gt 0 ]; then
+                CONSENT_LINE="${CONSENT_LINE} — all-time ${C_ACC_ALL}/${C_TOT_ALL} accept ($((100 * C_ACC_ALL / C_TOT_ALL))%)"
+              fi
+            else
+              echo "::warning::consent report query failed (non-blocking)"
+            fi
+          fi
+
           # On OK days the interesting content (news/votes/newsletter) leads and
           # the pipeline status is a one-line footer; on failures the alarm
           # detail stays on top.
@@ -344,7 +381,7 @@ jobs:
           fi
 
           CONTENT=""
-          for LINE in "$NEWS_LINE" "$VOTES_LINE" "$SUBS_LINE"; do
+          for LINE in "$NEWS_LINE" "$VOTES_LINE" "$SUBS_LINE" "$CONSENT_LINE"; do
             if [ -n "$LINE" ]; then
               if [ -n "$CONTENT" ]; then CONTENT="${CONTENT}\n${LINE}"; else CONTENT="$LINE"; fi
             fi

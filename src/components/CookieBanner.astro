@@ -83,11 +83,19 @@ const legalHref = `/${lang}/${routes[lang].legal}/`;
     }
 
     function writeConsent(analytics) {
+      // The random nonce distinguishes visitors that share an egress IP (iCloud
+      // Private Relay, CGNAT) in the anonymous consent tally; it is preserved
+      // across re-choices so a same-day change of mind updates instead of
+      // double-counting. It identifies nothing — pure random, part of the same
+      // strictly-necessary consent record.
+      var prev = readConsent();
+      var nonce = (prev && prev.nonce) || Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
       try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: CONSENT_VERSION, analytics: analytics, ts: Date.now() }));
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ v: CONSENT_VERSION, analytics: analytics, ts: Date.now(), nonce: nonce }));
       } catch (_) {
         /* no-op: storage unavailable (private mode / blocked) */
       }
+      return nonce;
     }
 
     function deleteClarityCookies() {
@@ -106,6 +114,23 @@ const legalHref = `/${lang}/${routes[lang].legal}/`;
       return !!consent && consent.analytics === 'granted';
     };
 
+    // Anonymous accept/reject tally (POST /api/consent -> D1) so the daily
+    // pipeline can report the accept rate — aggregate telemetry only. Fire-and-
+    // forget: the server stores a salted daily hash, never the IP, and failure
+    // must never block the banner UX.
+    function reportConsent(choice, nonce) {
+      try {
+        fetch('/api/consent', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ choice: choice, nonce: nonce || '', lang: document.documentElement.lang || '' }),
+          keepalive: true,
+        }).catch(function () {});
+      } catch (_) {
+        /* no-op: fetch unavailable or blocked */
+      }
+    }
+
     var banner = document.getElementById('cookie-banner');
     var acceptBtn = document.getElementById('cookie-accept-btn');
     var rejectBtn = document.getElementById('cookie-reject-btn');
@@ -121,14 +146,14 @@ const legalHref = `/${lang}/${routes[lang].legal}/`;
 
     if (acceptBtn) {
       acceptBtn.addEventListener('click', function () {
-        writeConsent('granted');
+        reportConsent('granted', writeConsent('granted'));
         hideBanner();
         if (typeof window.__injectClarity === 'function') window.__injectClarity();
       });
     }
     if (rejectBtn) {
       rejectBtn.addEventListener('click', function () {
-        writeConsent('denied');
+        reportConsent('denied', writeConsent('denied'));
         deleteClarityCookies();
         hideBanner();
       });
