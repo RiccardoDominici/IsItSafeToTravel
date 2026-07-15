@@ -3385,7 +3385,7 @@
       "text": "No specific advisory — see latest advice",
       "source": "UK FCDO",
       "url": "https://www.gov.uk/foreign-travel-advice/netherlands",
-      "updatedAt": "2026-07-06T08:26:05Z"
+      "updatedAt": "2026-07-15T08:11:26Z"
     },
     "ca": {
       "level": 2,
@@ -5302,7 +5302,7 @@
       "text": "No specific advisory — see latest advice",
       "source": "UK FCDO",
       "url": "https://www.gov.uk/foreign-travel-advice/zimbabwe",
-      "updatedAt": "2026-01-20T14:14:32Z"
+      "updatedAt": "2026-07-15T08:15:29Z"
     },
     "ca": {
       "level": 2,
@@ -5325,37 +5325,6 @@
       "source": "UK FCDO",
       "url": "https://www.gov.uk/foreign-travel-advice/western-sahara",
       "updatedAt": "2026-06-29T13:34:01Z"
-    }
-  },
-  "COD": {
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/democratic-republic-of-the-congo",
-      "updatedAt": "2026-06-23T10:07:01Z"
-    },
-    "au": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/democratic-republic-congo"
-    }
-  },
-  "KGZ": {
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/kyrgyzstan",
-      "updatedAt": "2026-06-19T15:26:15Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/kyrgyzstan",
-      "updatedAt": "2026-07-08"
     }
   },
   "ISR": {
@@ -5397,42 +5366,35 @@
       "updatedAt": "2026-06-02T10:16:18Z"
     }
   },
-  "MMR": {
+  "KGZ": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/kyrgyzstan",
+      "updatedAt": "2026-06-19T15:26:15Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/kyrgyzstan",
+      "updatedAt": "2026-07-08"
+    }
+  },
+  "COD": {
     "uk": {
       "level": 3,
       "text": "Advise against all but essential travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/myanmar",
-      "updatedAt": "2026-01-28T12:08:16Z"
-    },
-    "ca": {
-      "level": 4,
-      "text": "Avoid all travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/myanmar",
-      "updatedAt": "2026-07-08"
+      "url": "https://www.gov.uk/foreign-travel-advice/democratic-republic-of-the-congo",
+      "updatedAt": "2026-06-23T10:07:01Z"
     },
     "au": {
       "level": 4,
       "text": "Do not travel",
       "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/myanmar"
-    }
-  },
-  "GLP": {
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/guadeloupe",
-      "updatedAt": "2025-12-10T13:54:06Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/guadeloupe",
-      "updatedAt": "2026-06-23"
+      "url": "https://www.smartraveller.gov.au/destinations/africa/democratic-republic-congo"
     }
   },
   "MKD": {
@@ -5457,45 +5419,26 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/north-macedonia"
     }
   },
-  "IOT": {
+  "MMR": {
     "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
+      "level": 3,
+      "text": "Advise against all but essential travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/british-indian-ocean-territory",
-      "updatedAt": "2024-04-08T11:56:22Z"
-    }
-  },
-  "MYT": {
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/mayotte",
-      "updatedAt": "2025-12-10T13:41:54Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/myanmar",
+      "updatedAt": "2026-01-28T12:08:16Z"
     },
     "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
+      "level": 4,
+      "text": "Avoid all travel",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/mayotte",
-      "updatedAt": "2026-07-13"
-    }
-  },
-  "MTQ": {
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/martinique",
-      "updatedAt": "2025-12-10T13:37:46Z"
+      "url": "https://travel.gc.ca/destinations/myanmar",
+      "updatedAt": "2026-07-08"
     },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/martinique",
-      "updatedAt": "2026-06-23"
+    "au": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/myanmar"
     }
   },
   "SWZ": {
@@ -5518,6 +5461,63 @@
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/africa/eswatini"
+    }
+  },
+  "MYT": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/mayotte",
+      "updatedAt": "2025-12-10T13:41:54Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/mayotte",
+      "updatedAt": "2026-07-13"
+    }
+  },
+  "IOT": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/british-indian-ocean-territory",
+      "updatedAt": "2024-04-08T11:56:22Z"
+    }
+  },
+  "GLP": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/guadeloupe",
+      "updatedAt": "2025-12-10T13:54:06Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/guadeloupe",
+      "updatedAt": "2026-06-23"
+    }
+  },
+  "MTQ": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/martinique",
+      "updatedAt": "2025-12-10T13:37:46Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/martinique",
+      "updatedAt": "2026-06-23"
     }
   },
   "ASM": {
@@ -5568,15 +5568,6 @@
       "updatedAt": "2026-06-23"
     }
   },
-  "PRK": {
-    "ca": {
-      "level": 4,
-      "text": "Avoid all travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/north-korea",
-      "updatedAt": "2026-07-08"
-    }
-  },
   "NIU": {
     "ca": {
       "level": 1,
@@ -5590,6 +5581,15 @@
       "text": "Exercise normal safety precautions",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/pacific/niue"
+    }
+  },
+  "PRK": {
+    "ca": {
+      "level": 4,
+      "text": "Avoid all travel",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/north-korea",
+      "updatedAt": "2026-07-08"
     }
   },
   "PRI": {

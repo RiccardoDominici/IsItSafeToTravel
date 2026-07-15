@@ -28,6 +28,87 @@
     ],
     "children": [
       {
+        "api_path": "/api/content/foreign-travel-advice/zimbabwe",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/zimbabwe",
+        "base_path": "/foreign-travel-advice/zimbabwe",
+        "content_id": "d38db404-4291-4088-951a-1b8d5b696f1e",
+        "details": {
+          "change_description": "Addition of  information about direct flights between London and Harare ('Safety and security' page).",
+          "country": {
+            "name": "Zimbabwe",
+            "slug": "zimbabwe",
+            "synonyms": []
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-15T08:15:29Z",
+        "schema_name": "travel_advice",
+        "title": "Zimbabwe travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/zimbabwe",
+        "withdrawn": false
+      },
+      {
+        "api_path": "/api/content/foreign-travel-advice/netherlands",
+        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/netherlands",
+        "base_path": "/foreign-travel-advice/netherlands",
+        "content_id": "98641f11-0391-4679-a033-6d79db918d05",
+        "details": {
+          "change_description": "Removal of information about disruption to Eurostar services ('Warnings and insurance' page).",
+          "country": {
+            "name": "Netherlands",
+            "slug": "netherlands",
+            "synonyms": [
+              "Holland",
+              "Amsterdam"
+            ]
+          }
+        },
+        "document_type": "travel_advice",
+        "links": {
+          "parent": [
+            {
+              "api_path": "/api/content/foreign-travel-advice",
+              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
+              "base_path": "/foreign-travel-advice",
+              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
+              "document_type": "travel_advice_index",
+              "links": {},
+              "locale": "en",
+              "public_updated_at": "2024-08-05T07:23:09Z",
+              "schema_name": "travel_advice_index",
+              "title": "Foreign travel advice",
+              "web_url": "https://www.gov.uk/foreign-travel-advice",
+              "withdrawn": false
+            }
+          ]
+        },
+        "locale": "en",
+        "public_updated_at": "2026-07-15T08:11:26Z",
+        "schema_name": "travel_advice",
+        "title": "Netherlands travel advice",
+        "web_url": "https://www.gov.uk/foreign-travel-advice/netherlands",
+        "withdrawn": false
+      },
+      {
         "api_path": "/api/content/foreign-travel-advice/greece",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/greece",
         "base_path": "/foreign-travel-advice/greece",
@@ -1323,48 +1404,6 @@
         "schema_name": "travel_advice",
         "title": "Malta travel advice",
         "web_url": "https://www.gov.uk/foreign-travel-advice/malta",
-        "withdrawn": false
-      },
-      {
-        "api_path": "/api/content/foreign-travel-advice/netherlands",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/netherlands",
-        "base_path": "/foreign-travel-advice/netherlands",
-        "content_id": "98641f11-0391-4679-a033-6d79db918d05",
-        "details": {
-          "change_description": "Updated information about disruption to Eurostar services ('Warnings and insurance' page).",
-          "country": {
-            "name": "Netherlands",
-            "slug": "netherlands",
-            "synonyms": [
-              "Holland",
-              "Amsterdam"
-            ]
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-07-06T08:26:05Z",
-        "schema_name": "travel_advice",
-        "title": "Netherlands travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/netherlands",
         "withdrawn": false
       },
       {
@@ -7061,45 +7100,6 @@
         "withdrawn": false
       },
       {
-        "api_path": "/api/content/foreign-travel-advice/zimbabwe",
-        "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/zimbabwe",
-        "base_path": "/foreign-travel-advice/zimbabwe",
-        "content_id": "d38db404-4291-4088-951a-1b8d5b696f1e",
-        "details": {
-          "change_description": "Addition of information about flooding in Zimbabwe ('Safety and security' page).",
-          "country": {
-            "name": "Zimbabwe",
-            "slug": "zimbabwe",
-            "synonyms": []
-          }
-        },
-        "document_type": "travel_advice",
-        "links": {
-          "parent": [
-            {
-              "api_path": "/api/content/foreign-travel-advice",
-              "api_url": "https://www.gov.uk/api/content/foreign-travel-advice",
-              "base_path": "/foreign-travel-advice",
-              "content_id": "08d48cdd-6b50-43ff-a53b-beab47f4aab0",
-              "document_type": "travel_advice_index",
-              "links": {},
-              "locale": "en",
-              "public_updated_at": "2024-08-05T07:23:09Z",
-              "schema_name": "travel_advice_index",
-              "title": "Foreign travel advice",
-              "web_url": "https://www.gov.uk/foreign-travel-advice",
-              "withdrawn": false
-            }
-          ]
-        },
-        "locale": "en",
-        "public_updated_at": "2026-01-20T14:14:32Z",
-        "schema_name": "travel_advice",
-        "title": "Zimbabwe travel advice",
-        "web_url": "https://www.gov.uk/foreign-travel-advice/zimbabwe",
-        "withdrawn": false
-      },
-      {
         "api_path": "/api/content/foreign-travel-advice/comoros",
         "api_url": "https://www.gov.uk/api/content/foreign-travel-advice/comoros",
         "base_path": "/foreign-travel-advice/comoros",
@@ -10276,6 +10276,6 @@
   "scheduled_publishing_delay_seconds": null,
   "schema_name": "travel_advice_index",
   "title": "Foreign travel advice",
-  "updated_at": "2026-07-14T16:55:50+01:00",
+  "updated_at": "2026-07-15T09:15:31+01:00",
   "withdrawn_notice": {}
 }
