@@ -1,0 +1,6438 @@
+{
+  "source": "worldbank",
+  "fetchedAt": "2026-07-16T08:13:40.457Z",
+  "indicators": [
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_child_mortality",
+      "value": 53,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_child_mortality",
+      "value": 21.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_child_mortality",
+      "value": 49,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_child_mortality",
+      "value": 30.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 74.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_child_mortality",
+      "value": 33.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_child_mortality",
+      "value": 14.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VGB",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_child_mortality",
+      "value": 74.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_child_mortality",
+      "value": 47.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_child_mortality",
+      "value": 64.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_child_mortality",
+      "value": 89.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_child_mortality",
+      "value": 97.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_child_mortality",
+      "value": 39,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_child_mortality",
+      "value": 89.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_child_mortality",
+      "value": 39.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_child_mortality",
+      "value": 10.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_child_mortality",
+      "value": 64.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_child_mortality",
+      "value": 5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_child_mortality",
+      "value": 4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_child_mortality",
+      "value": 48.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_child_mortality",
+      "value": 35.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_child_mortality",
+      "value": 30.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_child_mortality",
+      "value": 22.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_child_mortality",
+      "value": 10,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_child_mortality",
+      "value": 68,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_child_mortality",
+      "value": 34.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_child_mortality",
+      "value": 2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 45.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_child_mortality",
+      "value": 44.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_child_mortality",
+      "value": 29.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_child_mortality",
+      "value": 32.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_child_mortality",
+      "value": 42.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_child_mortality",
+      "value": 35.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_child_mortality",
+      "value": 18,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_child_mortality",
+      "value": 20.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_child_mortality",
+      "value": 92.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_child_mortality",
+      "value": 67.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_child_mortality",
+      "value": 25.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_child_mortality",
+      "value": 52.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_child_mortality",
+      "value": 15,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_child_mortality",
+      "value": 26.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_child_mortality",
+      "value": 21.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 38.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_child_mortality",
+      "value": 53.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_child_mortality",
+      "value": 16.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 16.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_child_mortality",
+      "value": 29.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_child_mortality",
+      "value": 60,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_child_mortality",
+      "value": 86.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "wb_child_mortality",
+      "value": 62.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "wb_child_mortality",
+      "value": 48.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDV",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "wb_child_mortality",
+      "value": 73,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "wb_child_mortality",
+      "value": 26.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "wb_child_mortality",
+      "value": 36.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "wb_child_mortality",
+      "value": 22.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "wb_child_mortality",
+      "value": 16.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MCO",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "wb_child_mortality",
+      "value": 59.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "wb_child_mortality",
+      "value": 36.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "wb_child_mortality",
+      "value": 39.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NRU",
+      "indicatorName": "wb_child_mortality",
+      "value": 8.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "wb_child_mortality",
+      "value": 25.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "wb_child_mortality",
+      "value": 110.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "wb_child_mortality",
+      "value": 115.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "wb_child_mortality",
+      "value": 10.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "wb_child_mortality",
+      "value": 56,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PLW",
+      "indicatorName": "wb_child_mortality",
+      "value": 21.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "wb_child_mortality",
+      "value": 39.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "wb_child_mortality",
+      "value": 16.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "wb_child_mortality",
+      "value": 26.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "wb_child_mortality",
+      "value": 7.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "wb_child_mortality",
+      "value": 37.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "wb_child_mortality",
+      "value": 14.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "wb_child_mortality",
+      "value": 1.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "STP",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "wb_child_mortality",
+      "value": 6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 36.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYC",
+      "indicatorName": "wb_child_mortality",
+      "value": 14,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "wb_child_mortality",
+      "value": 90.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "wb_child_mortality",
+      "value": 20,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "wb_child_mortality",
+      "value": 101.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "wb_child_mortality",
+      "value": 35.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "wb_child_mortality",
+      "value": 96.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "wb_child_mortality",
+      "value": 5.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LCA",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "wb_child_mortality",
+      "value": 11.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "wb_child_mortality",
+      "value": 61.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "wb_child_mortality",
+      "value": 15.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "wb_child_mortality",
+      "value": 2.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "wb_child_mortality",
+      "value": 3.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "wb_child_mortality",
+      "value": 28.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "wb_child_mortality",
+      "value": 37,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "wb_child_mortality",
+      "value": 9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "wb_child_mortality",
+      "value": 47.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "wb_child_mortality",
+      "value": 56.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "wb_child_mortality",
+      "value": 18.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "wb_child_mortality",
+      "value": 12.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "wb_child_mortality",
+      "value": 9.6,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "wb_child_mortality",
+      "value": 39,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCA",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "wb_child_mortality",
+      "value": 19.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "wb_child_mortality",
+      "value": 48.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "wb_child_mortality",
+      "value": 7.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.8,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "wb_child_mortality",
+      "value": 4.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "wb_child_mortality",
+      "value": 6.5,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "wb_child_mortality",
+      "value": 7.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "wb_child_mortality",
+      "value": 13.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VUT",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "wb_child_mortality",
+      "value": 24.2,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "wb_child_mortality",
+      "value": 17.3,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "wb_child_mortality",
+      "value": 37.9,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "wb_child_mortality",
+      "value": 38.1,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "wb_child_mortality",
+      "value": 48.4,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "wb_child_mortality",
+      "value": 64.7,
+      "year": 2024,
+      "source": "worldbank",
+      "dataDate": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_air_pollution",
+      "value": 37.9483109911724,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.5141032036885,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.5394687279881,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.32593683167305,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.88302187970813,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.9075690536367,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.4161129524253,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.3465949932455,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_air_pollution",
+      "value": 28.5532304553511,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.41473930057816,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.0337620235066,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.7138875571912,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.28191362280586,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_air_pollution",
+      "value": 56.5654845582004,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_air_pollution",
+      "value": 69.2525518340174,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.9080492042776,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.9843753055171,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.44918716609445,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.7646615164655,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 39.6565559870988,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_air_pollution",
+      "value": 30.0727424508173,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_air_pollution",
+      "value": 28.1374394437756,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.0886959562752,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.2435593608353,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.3827173243912,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.56922294285959,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.6823426211069,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_air_pollution",
+      "value": 37.3246424541393,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_air_pollution",
+      "value": 35.6918123934643,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.1930112407691,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.4262068786841,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_air_pollution",
+      "value": 55.603592684544,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.55039237938261,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_air_pollution",
+      "value": 33.2858847106909,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_air_pollution",
+      "value": 42.9595249298994,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.1032480114662,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.991575365069,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.3566187713727,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.1727579725379,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_air_pollution",
+      "value": 35.8125021813766,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_air_pollution",
+      "value": 36.5403519085882,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_air_pollution",
+      "value": 17.6979830088429,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.3873194822538,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.7786705432032,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.44801581673589,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.0691610763589,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.7487592084261,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.50264703002735,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_air_pollution",
+      "value": 40.2974292106183,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.5165760747608,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.5127642846618,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.6084478897872,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_air_pollution",
+      "value": 43.1460553382462,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_air_pollution",
+      "value": 29.5862475987305,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_air_pollution",
+      "value": 42.2208052713627,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_air_pollution",
+      "value": 33.6567997168068,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.91844561892566,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.7458644287773,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.8032820424199,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.44872096526468,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.56663882609005,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.22738625697416,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.3215918230835,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_air_pollution",
+      "value": 38.265175638788,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.5711667549529,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.81223056430691,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_air_pollution",
+      "value": 28.143601284493,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.118664022908,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_air_pollution",
+      "value": 1.63628490009227,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.0315429587203,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_air_pollution",
+      "value": 3.47075894957671,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_air_pollution",
+      "value": 29.6792763049113,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_air_pollution",
+      "value": 27.2639917651602,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_air_pollution",
+      "value": 32.2919342603912,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.9462260034022,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.8127594459366,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_air_pollution",
+      "value": 30.7188969730187,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.7155825810085,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.93296364385632,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_air_pollution",
+      "value": 54.0522242217331,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.8444642120249,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_air_pollution",
+      "value": 40.2453897732326,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_air_pollution",
+      "value": 49.4713662187955,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.51222073505132,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.9008483431459,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.291805636343,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.6535070203861,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.4519383176575,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_air_pollution",
+      "value": 32.6320116469358,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.5961413356991,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.252365609383,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_air_pollution",
+      "value": 3.86704654760796,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.7761196310643,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.8940234142942,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_air_pollution",
+      "value": 62.3484361793193,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.1239014514257,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_air_pollution",
+      "value": 25.9762899979383,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.0121664059875,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.6948532836253,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.4379773450967,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_air_pollution",
+      "value": 17.9178293051068,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.014492731108,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.7455249948656,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.42989857852829,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.3865755564591,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.7211601349048,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.8650142432827,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDV",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.1624191226985,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "wb_air_pollution",
+      "value": 35.5240450338273,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.8087176501156,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.10159681023633,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "wb_air_pollution",
+      "value": 46.5013986975929,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.0610818595338,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.6099613756465,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "wb_air_pollution",
+      "value": 3.51665334908193,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.9450916480619,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MCO",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.3779821797819,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "wb_air_pollution",
+      "value": 42.6916874423772,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.4546520922672,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.7206508843713,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.7216828951578,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "wb_air_pollution",
+      "value": 35.0665284656219,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.2253008498779,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NRU",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.83857913426453,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "wb_air_pollution",
+      "value": 53.2003436952498,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.58757364083248,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.88138507182829,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.4180839334698,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "wb_air_pollution",
+      "value": 65.2302894952218,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "wb_air_pollution",
+      "value": 65.740618883028,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "wb_air_pollution",
+      "value": 21.8117148685703,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNP",
+      "indicatorName": "wb_air_pollution",
+      "value": 2.67817942323547,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.52141079375347,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "wb_air_pollution",
+      "value": 46.8557577090985,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "wb_air_pollution",
+      "value": 58.3745179541935,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PLW",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.94109970714801,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.1210531361735,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.1117516188413,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.327993717276,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.0938536450575,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "wb_air_pollution",
+      "value": 22.2053003753671,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.522574789688,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.76550462748695,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRI",
+      "indicatorName": "wb_air_pollution",
+      "value": 7.83963023115694,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "wb_air_pollution",
+      "value": 107.758571527846,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "wb_air_pollution",
+      "value": 16.007729806639,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.5661567768194,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "wb_air_pollution",
+      "value": 36.0064247681194,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.57949918534889,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.7360737522911,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "STP",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.1195335259737,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "wb_air_pollution",
+      "value": 73.5179752363051,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 41.6483649398667,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.3375514552379,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYC",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.25996565809024,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "wb_air_pollution",
+      "value": 22.461260523478,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.1427300261359,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.7166673872216,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "wb_air_pollution",
+      "value": 12.5550625384956,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.76639967800624,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.5402586086237,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "wb_air_pollution",
+      "value": 27.7247110277789,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.674692498997,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.0808338779581,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "wb_air_pollution",
+      "value": 22.6820308390395,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.87073187526288,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LCA",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.4259042064551,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.6030079678565,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "wb_air_pollution",
+      "value": 37.6123871383607,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.670163102049,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.25938129137927,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "wb_air_pollution",
+      "value": 8.32022270668715,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "wb_air_pollution",
+      "value": 32.0552019474512,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "wb_air_pollution",
+      "value": 33.3455362132125,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.1699588964355,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "wb_air_pollution",
+      "value": 23.4870743016258,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "wb_air_pollution",
+      "value": 11.9874398587491,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "wb_air_pollution",
+      "value": 34.3346739146749,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "wb_air_pollution",
+      "value": 4.68916248431247,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "wb_air_pollution",
+      "value": 13.7770653891863,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "wb_air_pollution",
+      "value": 18.874792802061,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "wb_air_pollution",
+      "value": 26.4041601035213,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.2475628480692,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "wb_air_pollution",
+      "value": 5.22404813151427,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "wb_air_pollution",
+      "value": 31.2148242708861,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "wb_air_pollution",
+      "value": 14.854701604932,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "wb_air_pollution",
+      "value": 57.1867315267375,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "wb_air_pollution",
+      "value": 9.46282991802458,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.96804491055748,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "wb_air_pollution",
+      "value": 10.8548023885457,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "wb_air_pollution",
+      "value": 32.7713715610547,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VUT",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.9939431918878,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "wb_air_pollution",
+      "value": 19.1983096563552,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "wb_air_pollution",
+      "value": 24.7845479100313,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VIR",
+      "indicatorName": "wb_air_pollution",
+      "value": 6.7926382310921,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "wb_air_pollution",
+      "value": 22.394098975674,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "wb_air_pollution",
+      "value": 46.8359781444582,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "wb_air_pollution",
+      "value": 20.2430489112714,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "wb_air_pollution",
+      "value": 15.0254734850511,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_homicide",
+      "value": 4.0324584656778,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_homicide",
+      "value": 1.38708340817063,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_homicide",
+      "value": 1.16107238811947,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_homicide",
+      "value": 25.5360106858383,
+      "year": 2018,
+      "source": "worldbank",
+      "dataDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_homicide",
+      "value": 2.58464719565779,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_homicide",
+      "value": 4.09826656345614,
+      "year": 2016,
+      "source": "worldbank",
+      "dataDate": "2016-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_homicide",
+      "value": 10.7163332993983,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_homicide",
+      "value": 4.49291137824536,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_homicide",
+      "value": 2.20833575400906,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_homicide",
+      "value": 1.93475053810249,
+      "year": 2014,
+      "source": "worldbank",
+      "dataDate": "2014-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_homicide",
+      "value": 0.854406035826682,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_homicide",
+      "value": 0.876191031111463,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_homicide",
+      "value": 2.16122820563689,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_homicide",
+      "value": 32.1981392997156,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_homicide",
+      "value": 0.195636140255462,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_homicide",
+      "value": 2.34217668208578,
+      "year": 2018,
+      "source": "worldbank",
+      "dataDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_homicide",
+      "value": 7.43794627677661,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_homicide",
+      "value": 2.38463165310244,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_homicide",
+      "value": 1.08030153549307,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_homicide",
+      "value": 28.0582917218107,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_homicide",
+      "value": 1.1274974068,
+      "year": 2017,
+      "source": "worldbank",
+      "dataDate": "2017-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_homicide",
+      "value": 2.46751324015657,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_homicide",
+      "value": 4.41843313132273,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_homicide",
+      "value": 1.22446173133237,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_homicide",
+      "value": 11.3681767255945,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_homicide",
+      "value": 19.2752957673079,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VGB",
+      "indicatorName": "wb_homicide",
+      "value": 8.16559833421794,
+      "year": 2006,
+      "source": "worldbank",
+      "dataDate": "2006-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_homicide",
+      "value": 0.486378957300791,
+      "year": 2013,
+      "source": "worldbank",
+      "dataDate": "2013-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_homicide",
+      "value": 1.08890737415431,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_homicide",
+      "value": 1.25044051977478,
+      "year": 2017,
+      "source": "worldbank",
+      "dataDate": "2017-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_homicide",
+      "value": 5.64974214487878,
+      "year": 2016,
+      "source": "worldbank",
+      "dataDate": "2016-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_homicide",
+      "value": 6.99464423976475,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_homicide",
+      "value": 1.82033262639221,
+      "year": 2011,
+      "source": "worldbank",
+      "dataDate": "2011-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_homicide",
+      "value": 6.76008919336955,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_homicide",
+      "value": 1.97968887560784,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_homicide",
+      "value": 4.3677976836113,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_homicide",
+      "value": 20.120400654,
+      "year": 2016,
+      "source": "worldbank",
+      "dataDate": "2016-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_homicide",
+      "value": 6.34829073035101,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_homicide",
+      "value": 0.5018560705357,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_homicide",
+      "value": 24.9134420347488,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_homicide",
+      "value": 17.7454798727379,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_homicide",
+      "value": 0.667347104040825,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_homicide",
+      "value": 4.46315139638841,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUW",
+      "indicatorName": "wb_homicide",
+      "value": 16.9198131011414,
+      "year": 2007,
+      "source": "worldbank",
+      "dataDate": "2007-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_homicide",
+      "value": 0.81785876397005,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_homicide",
+      "value": 0.767827757917044,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_homicide",
+      "value": 0.840599404536194,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_homicide",
+      "value": 27.063396005142,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_homicide",
+      "value": 10.9166976980638,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_homicide",
+      "value": 45.7228145164847,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_homicide",
+      "value": 1.31152527182627,
+      "year": 2017,
+      "source": "worldbank",
+      "dataDate": "2017-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_homicide",
+      "value": 7.89768799960639,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_homicide",
+      "value": 15.6075665087306,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_homicide",
+      "value": 1.53599045052794,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_homicide",
+      "value": 12.5145709802017,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_homicide",
+      "value": 8.51054794891045,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_homicide",
+      "value": 2.0559533103824,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_homicide",
+      "value": 0.98193498501344,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_homicide",
+      "value": 1.33506280409367,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PYF",
+      "indicatorName": "wb_homicide",
+      "value": 0.37108298714383,
+      "year": 2009,
+      "source": "worldbank",
+      "dataDate": "2009-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_homicide",
+      "value": 2.02806499553233,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_homicide",
+      "value": 0.910722780231795,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_homicide",
+      "value": 1.83111773115644,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GIB",
+      "indicatorName": "wb_homicide",
+      "value": 3.20020481310804,
+      "year": 2010,
+      "source": "worldbank",
+      "dataDate": "2010-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_homicide",
+      "value": 0.839605274224601,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_homicide",
+      "value": 5.35131374752502,
+      "year": 2016,
+      "source": "worldbank",
+      "dataDate": "2016-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_homicide",
+      "value": 13.6657527694502,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_homicide",
+      "value": 4.32611490161179,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_homicide",
+      "value": 23.3657267272051,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_homicide",
+      "value": 1.11876398954435,
+      "year": 2017,
+      "source": "worldbank",
+      "dataDate": "2017-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_homicide",
+      "value": 19.1201580922439,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_homicide",
+      "value": 41.1518089717388,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_homicide",
+      "value": 31.4424316507577,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_homicide",
+      "value": 0.376205815214825,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_homicide",
+      "value": 0.722657964901225,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_homicide",
+      "value": 1.29013114183057,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_homicide",
+      "value": 2.81530423021647,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_homicide",
+      "value": 0.303768746039586,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_homicide",
+      "value": 2.37540050451863,
+      "year": 2014,
+      "source": "worldbank",
+      "dataDate": "2014-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_homicide",
+      "value": 9.46375217111484,
+      "year": 2013,
+      "source": "worldbank",
+      "dataDate": "2013-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_homicide",
+      "value": 0.654270171245596,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IMN",
+      "indicatorName": "wb_homicide",
+      "value": 1.19627241515438,
+      "year": 2015,
+      "source": "worldbank",
+      "dataDate": "2015-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_homicide",
+      "value": 1.62581066709758,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_homicide",
+      "value": 0.568072449338316,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_homicide",
+      "value": 49.4403451527686,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_homicide",
+      "value": 0.229153196964695,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_homicide",
+      "value": 0.987830151085125,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_homicide",
+      "value": 2.55058633787163,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_homicide",
+      "value": 4.87166844718499,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_homicide",
+      "value": 7.12479070927292,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_homicide",
+      "value": 0.477306316584835,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_homicide",
+      "value": 1.89497747704421,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_homicide",
+      "value": 0.249991818449578,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_homicide",
+      "value": 1.74734308054439,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_homicide",
+      "value": 2.49681788529087,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_homicide",
+      "value": 2.24466989542556,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_homicide",
+      "value": 38.2397413122181,
+      "year": 2008,
+      "source": "worldbank",
+      "dataDate": "2008-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_homicide",
+      "value": 3.08709483452429,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_homicide",
+      "value": 5.12242598094458,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_homicide",
+      "value": 2.62779952622526,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_homicide",
+      "value": 1.5306610542428,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_homicide",
+      "value": 0.560293537784445,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "wb_homicide",
+      "value": 1.77598671180007,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "wb_homicide",
+      "value": 0.734492430713877,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDV",
+      "indicatorName": "wb_homicide",
+      "value": 0.615093155858455,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "wb_homicide",
+      "value": 0.562898250512237,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "wb_homicide",
+      "value": 4.19186150089601,
+      "year": 1994,
+      "source": "worldbank",
+      "dataDate": "1994-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "wb_homicide",
+      "value": 0.999971522550119,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "wb_homicide",
+      "value": 2.27249663925174,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "wb_homicide",
+      "value": 24.8589948436701,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "wb_homicide",
+      "value": 0.906766290056401,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "wb_homicide",
+      "value": 2.54314378217647,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MCO",
+      "indicatorName": "wb_homicide",
+      "value": 3.08194902456313,
+      "year": 2001,
+      "source": "worldbank",
+      "dataDate": "2001-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "wb_homicide",
+      "value": 5.91503475082916,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "wb_homicide",
+      "value": 0.789201202111271,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "wb_homicide",
+      "value": 1.70500474577332,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "wb_homicide",
+      "value": 3.58999788532633,
+      "year": 2011,
+      "source": "worldbank",
+      "dataDate": "2011-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "wb_homicide",
+      "value": 2.57510107248619,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "wb_homicide",
+      "value": 11.2077806904171,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "wb_homicide",
+      "value": 2.13004129984372,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "wb_homicide",
+      "value": 0.690893081283378,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NCL",
+      "indicatorName": "wb_homicide",
+      "value": 3.10982139906977,
+      "year": 2009,
+      "source": "worldbank",
+      "dataDate": "2009-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "wb_homicide",
+      "value": 1.46149415952832,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "wb_homicide",
+      "value": 11.3473196321723,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "wb_homicide",
+      "value": 4.41784034939735,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "wb_homicide",
+      "value": 15.7466808233499,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "wb_homicide",
+      "value": 1.52854990019388,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "wb_homicide",
+      "value": 0.724747049690651,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "wb_homicide",
+      "value": 0.138633928990513,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "wb_homicide",
+      "value": 4.33487075793336,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PLW",
+      "indicatorName": "wb_homicide",
+      "value": 11.2268096213758,
+      "year": 2018,
+      "source": "worldbank",
+      "dataDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "wb_homicide",
+      "value": 11.7072934419645,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "wb_homicide",
+      "value": 9.34037927179888,
+      "year": 2010,
+      "source": "worldbank",
+      "dataDate": "2010-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "wb_homicide",
+      "value": 6.7795163925492,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "wb_homicide",
+      "value": 8.60480803979216,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "wb_homicide",
+      "value": 4.34759149828352,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "wb_homicide",
+      "value": 0.802314721828908,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "wb_homicide",
+      "value": 0.719971949892832,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRI",
+      "indicatorName": "wb_homicide",
+      "value": 14.5896581532053,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "wb_homicide",
+      "value": 0.0691454145354033,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "wb_homicide",
+      "value": 1.10887485110282,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "wb_homicide",
+      "value": 6.76512531955806,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "wb_homicide",
+      "value": 3.61247427164444,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "wb_homicide",
+      "value": 6.26258538794308,
+      "year": 2018,
+      "source": "worldbank",
+      "dataDate": "2018-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "wb_homicide",
+      "value": 3.63762026882014,
+      "year": 2002,
+      "source": "worldbank",
+      "dataDate": "2002-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "STP",
+      "indicatorName": "wb_homicide",
+      "value": 3.23189666549062,
+      "year": 2011,
+      "source": "worldbank",
+      "dataDate": "2011-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "wb_homicide",
+      "value": 0.935259944754359,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "wb_homicide",
+      "value": 0.267518151792543,
+      "year": 2015,
+      "source": "worldbank",
+      "dataDate": "2015-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "wb_homicide",
+      "value": 1.31400205013848,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYC",
+      "indicatorName": "wb_homicide",
+      "value": 7.96669919735506,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "wb_homicide",
+      "value": 2.22431228940123,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "wb_homicide",
+      "value": 0.0690954942050905,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "wb_homicide",
+      "value": 1.12358440823663,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "wb_homicide",
+      "value": 0.566466326409227,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "wb_homicide",
+      "value": 3.73435012480591,
+      "year": 2008,
+      "source": "worldbank",
+      "dataDate": "2008-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "wb_homicide",
+      "value": 43.7202551331462,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "wb_homicide",
+      "value": 13.9825812737537,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "wb_homicide",
+      "value": 0.690855954769765,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "wb_homicide",
+      "value": 3.31094038448808,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "wb_homicide",
+      "value": 64.1601437187219,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LCA",
+      "indicatorName": "wb_homicide",
+      "value": 39.0440891432332,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAF",
+      "indicatorName": "wb_homicide",
+      "value": 26.8997982515131,
+      "year": 2016,
+      "source": "worldbank",
+      "dataDate": "2016-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "wb_homicide",
+      "value": 51.3212761232698,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "wb_homicide",
+      "value": 5.1480839388,
+      "year": 2008,
+      "source": "worldbank",
+      "dataDate": "2008-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "wb_homicide",
+      "value": 6.51946457704576,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "wb_homicide",
+      "value": 1.14675703743944,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "wb_homicide",
+      "value": 0.597481940544685,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "wb_homicide",
+      "value": 2.05938679956635,
+      "year": 2010,
+      "source": "worldbank",
+      "dataDate": "2010-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "wb_homicide",
+      "value": 0.892370798940089,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "wb_homicide",
+      "value": 3.74921291744897,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "wb_homicide",
+      "value": 4.79225300638159,
+      "year": 2011,
+      "source": "worldbank",
+      "dataDate": "2011-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "wb_homicide",
+      "value": 4.06594633033822,
+      "year": 2015,
+      "source": "worldbank",
+      "dataDate": "2015-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "wb_homicide",
+      "value": 0.946346864516251,
+      "year": 2019,
+      "source": "worldbank",
+      "dataDate": "2019-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "wb_homicide",
+      "value": 40.4432986623964,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "wb_homicide",
+      "value": 4.69348024650292,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "wb_homicide",
+      "value": 3.22789482308636,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "wb_homicide",
+      "value": 1.01355101620555,
+      "year": 2015,
+      "source": "worldbank",
+      "dataDate": "2015-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCA",
+      "indicatorName": "wb_homicide",
+      "value": 76.3400403511642,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "wb_homicide",
+      "value": 18.2907311719786,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "wb_homicide",
+      "value": 8.97308867739149,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "wb_homicide",
+      "value": 3.77663964401616,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "wb_homicide",
+      "value": 0.693218125037315,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "wb_homicide",
+      "value": 1.11868407522333,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "wb_homicide",
+      "value": 5.76340794073065,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "wb_homicide",
+      "value": 11.2453054170348,
+      "year": 2023,
+      "source": "worldbank",
+      "dataDate": "2023-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "wb_homicide",
+      "value": 1.39879762685076,
+      "year": 2021,
+      "source": "worldbank",
+      "dataDate": "2021-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VUT",
+      "indicatorName": "wb_homicide",
+      "value": 0.3346065111081,
+      "year": 2020,
+      "source": "worldbank",
+      "dataDate": "2020-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "wb_homicide",
+      "value": 12.6466448562847,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "wb_homicide",
+      "value": 1.53501286347562,
+      "year": 2011,
+      "source": "worldbank",
+      "dataDate": "2011-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VIR",
+      "indicatorName": "wb_homicide",
+      "value": 49.8571401177396,
+      "year": 2012,
+      "source": "worldbank",
+      "dataDate": "2012-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "wb_homicide",
+      "value": 0.622023007311598,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "wb_homicide",
+      "value": 5.80971851623815,
+      "year": 2013,
+      "source": "worldbank",
+      "dataDate": "2013-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "wb_homicide",
+      "value": 5.20150860823759,
+      "year": 2015,
+      "source": "worldbank",
+      "dataDate": "2015-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "wb_homicide",
+      "value": 6.75833125350771,
+      "year": 2022,
+      "source": "worldbank",
+      "dataDate": "2022-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "wb_population",
+      "value": 43844111,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "wb_population",
+      "value": 2349580,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "wb_population",
+      "value": 47435312,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ASM",
+      "indicatorName": "wb_population",
+      "value": 46029,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AND",
+      "indicatorName": "wb_population",
+      "value": 82904,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "wb_population",
+      "value": 39040039,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ATG",
+      "indicatorName": "wb_population",
+      "value": 94209,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "wb_population",
+      "value": 45851378,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "wb_population",
+      "value": 3086700,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ABW",
+      "indicatorName": "wb_population",
+      "value": 108785,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "wb_population",
+      "value": 27614411,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "wb_population",
+      "value": 9208163,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "wb_population",
+      "value": 10246996,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHS",
+      "indicatorName": "wb_population",
+      "value": 403033,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "wb_population",
+      "value": 1600366,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "wb_population",
+      "value": 175686899,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRB",
+      "indicatorName": "wb_population",
+      "value": 282623,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "wb_population",
+      "value": 9085991,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "wb_population",
+      "value": 11941781,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BLZ",
+      "indicatorName": "wb_population",
+      "value": 422924,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "wb_population",
+      "value": 14814460,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "wb_population",
+      "value": 796682,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "wb_population",
+      "value": 12581843,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "wb_population",
+      "value": 3140095,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "wb_population",
+      "value": 2562122,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "wb_population",
+      "value": 212812405,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VGB",
+      "indicatorName": "wb_population",
+      "value": 39732,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BRN",
+      "indicatorName": "wb_population",
+      "value": 466330,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "wb_population",
+      "value": 6433302,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "wb_population",
+      "value": 24074580,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "wb_population",
+      "value": 14390003,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CPV",
+      "indicatorName": "wb_population",
+      "value": 527326,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "wb_population",
+      "value": 17847982,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "wb_population",
+      "value": 29879337,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "wb_population",
+      "value": 41651653,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYM",
+      "indicatorName": "wb_population",
+      "value": 75844,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "wb_population",
+      "value": 5513282,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "wb_population",
+      "value": 21003705,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "wb_population",
+      "value": 19859921,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "wb_population",
+      "value": 1406585000,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "wb_population",
+      "value": 53425635,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COM",
+      "indicatorName": "wb_population",
+      "value": 882847,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "wb_population",
+      "value": 112832473,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "wb_population",
+      "value": 6484437,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "wb_population",
+      "value": 5152950,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "wb_population",
+      "value": 32711547,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "wb_population",
+      "value": 3876200,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "wb_population",
+      "value": 10937203,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CUW",
+      "indicatorName": "wb_population",
+      "value": 156263,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "wb_population",
+      "value": 1370754,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "wb_population",
+      "value": 10886878,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "wb_population",
+      "value": 6009169,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "wb_population",
+      "value": 1184076,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DMA",
+      "indicatorName": "wb_population",
+      "value": 65871,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "wb_population",
+      "value": 11520487,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "wb_population",
+      "value": 18289896,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "wb_population",
+      "value": 118365995,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "wb_population",
+      "value": 6365503,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "wb_population",
+      "value": 1938431,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "wb_population",
+      "value": 3607003,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "wb_population",
+      "value": 1366475,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "wb_population",
+      "value": 1256174,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "wb_population",
+      "value": 135472051,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FRO",
+      "indicatorName": "wb_population",
+      "value": 54900,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FJI",
+      "indicatorName": "wb_population",
+      "value": 933154,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "wb_population",
+      "value": 5646436,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "wb_population",
+      "value": 68720337,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PYF",
+      "indicatorName": "wb_population",
+      "value": 282465,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "wb_population",
+      "value": 2593130,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "wb_population",
+      "value": 2822093,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "wb_population",
+      "value": 3935766,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "wb_population",
+      "value": 83491249,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "wb_population",
+      "value": 35064272,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GIB",
+      "indicatorName": "wb_population",
+      "value": 40126,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "wb_population",
+      "value": 10413962,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRL",
+      "indicatorName": "wb_population",
+      "value": 56831,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GRD",
+      "indicatorName": "wb_population",
+      "value": 117303,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUM",
+      "indicatorName": "wb_population",
+      "value": 168999,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "wb_population",
+      "value": 18687881,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "wb_population",
+      "value": 15099727,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "wb_population",
+      "value": 2249515,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "wb_population",
+      "value": 835986,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "wb_population",
+      "value": 11906095,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "wb_population",
+      "value": 11005850,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HKG",
+      "indicatorName": "wb_population",
+      "value": 7498900,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "wb_population",
+      "value": 9514251,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "wb_population",
+      "value": 392404,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "wb_population",
+      "value": 1463865525,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "wb_population",
+      "value": 285721236,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "wb_population",
+      "value": 92417681,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "wb_population",
+      "value": 47020774,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "wb_population",
+      "value": 5484367,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "IMN",
+      "indicatorName": "wb_population",
+      "value": 84118,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "wb_population",
+      "value": 10122800,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "wb_population",
+      "value": 58915656,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "wb_population",
+      "value": 2837077,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "wb_population",
+      "value": 123366734,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "wb_population",
+      "value": 11520684,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "wb_population",
+      "value": 20843754,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "wb_population",
+      "value": 57532493,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KIR",
+      "indicatorName": "wb_population",
+      "value": 136488,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "wb_population",
+      "value": 26571036,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "wb_population",
+      "value": 51684564,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "XKX",
+      "indicatorName": "wb_population",
+      "value": 1576876,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "wb_population",
+      "value": 4865298,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "wb_population",
+      "value": 7343064,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "wb_population",
+      "value": 7873046,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "wb_population",
+      "value": 1847785,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "wb_population",
+      "value": 5849421,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "wb_population",
+      "value": 2363325,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "wb_population",
+      "value": 5731206,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "wb_population",
+      "value": 7458555,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LIE",
+      "indicatorName": "wb_population",
+      "value": 41024,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "wb_population",
+      "value": 2888774,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LUX",
+      "indicatorName": "wb_population",
+      "value": 686970,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAC",
+      "indicatorName": "wb_population",
+      "value": 685900,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "wb_population",
+      "value": 32740678,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "wb_population",
+      "value": 22216120,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "wb_population",
+      "value": 35977838,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDV",
+      "indicatorName": "wb_population",
+      "value": 529676,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "wb_population",
+      "value": 25198821,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MLT",
+      "indicatorName": "wb_population",
+      "value": 579704,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MHL",
+      "indicatorName": "wb_population",
+      "value": 36282,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "wb_population",
+      "value": 5315065,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "wb_population",
+      "value": 1243741,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "wb_population",
+      "value": 131946900,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "FSM",
+      "indicatorName": "wb_population",
+      "value": 113683,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "wb_population",
+      "value": 2360527,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MCO",
+      "indicatorName": "wb_population",
+      "value": 38341,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "wb_population",
+      "value": 3568978,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "wb_population",
+      "value": 623129,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "wb_population",
+      "value": 38430770,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "wb_population",
+      "value": 35631653,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "wb_population",
+      "value": 54850648,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "wb_population",
+      "value": 3092816,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NRU",
+      "indicatorName": "wb_population",
+      "value": 12025,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "wb_population",
+      "value": 29618118,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "wb_population",
+      "value": 18087633,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NCL",
+      "indicatorName": "wb_population",
+      "value": 295333,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "wb_population",
+      "value": 5324700,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "wb_population",
+      "value": 7007502,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "wb_population",
+      "value": 27917831,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "wb_population",
+      "value": 237527782,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "wb_population",
+      "value": 1820909,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MNP",
+      "indicatorName": "wb_population",
+      "value": 43541,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "wb_population",
+      "value": 5610870,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "wb_population",
+      "value": 5494691,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "wb_population",
+      "value": 255219554,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PLW",
+      "indicatorName": "wb_population",
+      "value": 17663,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "wb_population",
+      "value": 4571189,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "wb_population",
+      "value": 10762817,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "wb_population",
+      "value": 7013078,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "wb_population",
+      "value": 34576665,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "wb_population",
+      "value": 116786962,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "wb_population",
+      "value": 36435861,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "wb_population",
+      "value": 10804871,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PRI",
+      "indicatorName": "wb_population",
+      "value": 3184835,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "wb_population",
+      "value": 2972215,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "wb_population",
+      "value": 19020271,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "wb_population",
+      "value": 143513328,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "wb_population",
+      "value": 14569341,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "WSM",
+      "indicatorName": "wb_population",
+      "value": 219306,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SMR",
+      "indicatorName": "wb_population",
+      "value": 34109,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "STP",
+      "indicatorName": "wb_population",
+      "value": 240254,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "wb_population",
+      "value": 36973555,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "wb_population",
+      "value": 18931966,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "wb_population",
+      "value": 6549143,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYC",
+      "indicatorName": "wb_population",
+      "value": 122730,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "wb_population",
+      "value": 8819794,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "wb_population",
+      "value": 6111175,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SXM",
+      "indicatorName": "wb_population",
+      "value": 43923,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "wb_population",
+      "value": 5413813,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "wb_population",
+      "value": 2130986,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SLB",
+      "indicatorName": "wb_population",
+      "value": 838645,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "wb_population",
+      "value": 19654739,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "wb_population",
+      "value": 64747319,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "wb_population",
+      "value": 12188788,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "wb_population",
+      "value": 49355143,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "wb_population",
+      "value": 21756000,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "KNA",
+      "indicatorName": "wb_population",
+      "value": 46922,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "LCA",
+      "indicatorName": "wb_population",
+      "value": 180149,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "MAF",
+      "indicatorName": "wb_population",
+      "value": 24941,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VCT",
+      "indicatorName": "wb_population",
+      "value": 99924,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "wb_population",
+      "value": 51662147,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "wb_population",
+      "value": 639850,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "wb_population",
+      "value": 10596620,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "wb_population",
+      "value": 9092436,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "wb_population",
+      "value": 25620427,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "wb_population",
+      "value": 10786734,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "wb_population",
+      "value": 70545865,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "wb_population",
+      "value": 71619863,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "wb_population",
+      "value": 1418517,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "wb_population",
+      "value": 8591626,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TON",
+      "indicatorName": "wb_population",
+      "value": 103742,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "wb_population",
+      "value": 1367764,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "wb_population",
+      "value": 12348573,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "wb_population",
+      "value": 85878556,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "wb_population",
+      "value": 7618847,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TCA",
+      "indicatorName": "wb_population",
+      "value": 46855,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "TUV",
+      "indicatorName": "wb_population",
+      "value": 9492,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "wb_population",
+      "value": 51384894,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "wb_population",
+      "value": 38980376,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "wb_population",
+      "value": 11513149,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "wb_population",
+      "value": 69487000,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "wb_population",
+      "value": 341784857,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "wb_population",
+      "value": 3384688,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "wb_population",
+      "value": 37053428,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VUT",
+      "indicatorName": "wb_population",
+      "value": 335169,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "wb_population",
+      "value": 28516896,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "wb_population",
+      "value": 101598527,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "VIR",
+      "indicatorName": "wb_population",
+      "value": 103792,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "wb_population",
+      "value": 5413596,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "wb_population",
+      "value": 41773878,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "wb_population",
+      "value": 21913874,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "wb_population",
+      "value": 16950795,
+      "year": 2025,
+      "source": "worldbank",
+      "dataDate": "2025-01-01T00:00:00.000Z"
+    }
+  ]
+}
