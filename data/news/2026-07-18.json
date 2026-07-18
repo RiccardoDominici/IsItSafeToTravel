@@ -1,0 +1,61 @@
+{
+  "date": "2026-07-18",
+  "generatedAt": "2026-07-18T07:54:46.895Z",
+  "events": [
+    {
+      "id": "2026-07-18:severe_advisory:ARE:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "ARE",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:JOR:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "JOR",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:OMN:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "OMN",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:QAT:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "QAT",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:SAU:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "SAU",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    }
+  ]
+}

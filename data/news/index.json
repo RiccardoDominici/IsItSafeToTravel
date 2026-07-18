@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-17T08:14:01.160Z",
-  "lastProcessedDate": "2026-07-17",
+  "generatedAt": "2026-07-18T07:54:46.896Z",
+  "lastProcessedDate": "2026-07-18",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -25,9 +25,69 @@
     "band:VNM": "2026-07-08",
     "overtake:CHE|LUX": "2026-07-08",
     "overtake:IRL|SGP": "2026-07-08",
-    "overtake:CZE|NOR": "2026-07-08"
+    "overtake:CZE|NOR": "2026-07-08",
+    "advisory:ARE:ca:3": "2026-07-18",
+    "advisory:JOR:ca:3": "2026-07-18",
+    "advisory:OMN:ca:3": "2026-07-18",
+    "advisory:QAT:ca:3": "2026-07-18",
+    "advisory:SAU:ca:3": "2026-07-18"
   },
   "recentEvents": [
+    {
+      "id": "2026-07-18:severe_advisory:ARE:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "ARE",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:JOR:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "JOR",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:OMN:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "OMN",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:QAT:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "QAT",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-18:severe_advisory:SAU:ca",
+      "date": "2026-07-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "SAU",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
     {
       "id": "2026-07-08:band_change:AND",
       "date": "2026-07-08",
