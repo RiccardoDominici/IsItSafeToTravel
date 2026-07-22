@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-07-21T08:32:20.989Z",
-  "lastProcessedDate": "2026-07-21",
+  "generatedAt": "2026-07-22T08:34:01.938Z",
+  "lastProcessedDate": "2026-07-22",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
     "jump:ARE": "2026-06-26",
     "jump:KWT": "2026-06-24",
-    "jump:BHR": "2026-06-25",
+    "jump:BHR": "2026-07-22",
     "band:ZMB": "2026-07-08",
     "band:KWT": "2026-06-24",
     "jump:LBN": "2026-06-24",
@@ -36,6 +36,20 @@
     "advisory:SAU:au:3": "2026-07-20"
   },
   "recentEvents": [
+    {
+      "id": "2026-07-22:score_jump:BHR",
+      "date": "2026-07-22",
+      "type": "score_jump",
+      "params": {
+        "country": "BHR",
+        "delta": -0.17,
+        "score": 6.7,
+        "prevScore": 6.9,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
     {
       "id": "2026-07-20:severe_advisory:JOR:au",
       "date": "2026-07-20",
