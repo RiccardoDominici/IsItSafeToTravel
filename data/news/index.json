@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-22T08:34:01.938Z",
-  "lastProcessedDate": "2026-07-22",
+  "generatedAt": "2026-07-23T08:36:32.381Z",
+  "lastProcessedDate": "2026-07-23",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -453,20 +453,6 @@
         "confidence": 0.79
       },
       "priority": 50
-    },
-    {
-      "id": "2026-06-23:band_change:ZMB",
-      "date": "2026-06-23",
-      "type": "band_change",
-      "params": {
-        "country": "ZMB",
-        "fromBand": "moderate",
-        "toBand": "good",
-        "score": 7,
-        "direction": "up",
-        "confidence": 0.78
-      },
-      "priority": 70
     }
   ]
 }
