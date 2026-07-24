@@ -1,0 +1,100 @@
+{
+  "date": "2026-07-24",
+  "generatedAt": "2026-07-24T08:31:25.234Z",
+  "events": [
+    {
+      "id": "2026-07-24:severe_advisory:BHR:au",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "au",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:BHR:ca",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "ca",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:au",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "au",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:ca",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "ca",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:BHR:uk",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "uk",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:uk",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "uk",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:band_change:KWT",
+      "date": "2026-07-24",
+      "type": "band_change",
+      "params": {
+        "country": "KWT",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.7,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-24:score_jump:KWT",
+      "date": "2026-07-24",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": -0.48,
+        "score": 6.7,
+        "prevScore": 7.2,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 50
+    }
+  ]
+}

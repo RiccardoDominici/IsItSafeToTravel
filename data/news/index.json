@@ -1,14 +1,14 @@
 {
-  "generatedAt": "2026-07-23T08:36:32.381Z",
-  "lastProcessedDate": "2026-07-23",
+  "generatedAt": "2026-07-24T08:31:25.235Z",
+  "lastProcessedDate": "2026-07-24",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
     "jump:ARE": "2026-06-26",
-    "jump:KWT": "2026-06-24",
+    "jump:KWT": "2026-07-24",
     "jump:BHR": "2026-07-22",
     "band:ZMB": "2026-07-08",
-    "band:KWT": "2026-06-24",
+    "band:KWT": "2026-07-24",
     "jump:LBN": "2026-06-24",
     "jump:RUS": "2026-07-01",
     "jump:VNM": "2026-07-02",
@@ -33,9 +33,109 @@
     "advisory:SAU:ca:3": "2026-07-18",
     "advisory:JOR:au:3": "2026-07-20",
     "advisory:OMN:au:3": "2026-07-20",
-    "advisory:SAU:au:3": "2026-07-20"
+    "advisory:SAU:au:3": "2026-07-20",
+    "advisory:BHR:au:4": "2026-07-24",
+    "advisory:BHR:ca:4": "2026-07-24",
+    "advisory:KWT:au:4": "2026-07-24",
+    "advisory:KWT:ca:4": "2026-07-24",
+    "advisory:BHR:uk:3": "2026-07-24",
+    "advisory:KWT:uk:3": "2026-07-24"
   },
   "recentEvents": [
+    {
+      "id": "2026-07-24:severe_advisory:BHR:au",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "au",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:BHR:ca",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "ca",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:BHR:uk",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BHR",
+        "issuer": "uk",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:au",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "au",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:ca",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "ca",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:severe_advisory:KWT:uk",
+      "date": "2026-07-24",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KWT",
+        "issuer": "uk",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-07-24:band_change:KWT",
+      "date": "2026-07-24",
+      "type": "band_change",
+      "params": {
+        "country": "KWT",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.7,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-07-24:score_jump:KWT",
+      "date": "2026-07-24",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": -0.48,
+        "score": 6.7,
+        "prevScore": 7.2,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
     {
       "id": "2026-07-22:score_jump:BHR",
       "date": "2026-07-22",
@@ -407,48 +507,6 @@
         "delta": 0.17,
         "score": 6.8,
         "prevScore": 6.7,
-        "direction": "up",
-        "confidence": 0.79
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-06-24:band_change:KWT",
-      "date": "2026-06-24",
-      "type": "band_change",
-      "params": {
-        "country": "KWT",
-        "fromBand": "moderate",
-        "toBand": "good",
-        "score": 7,
-        "direction": "up",
-        "confidence": 0.79
-      },
-      "priority": 70
-    },
-    {
-      "id": "2026-06-24:score_jump:KWT",
-      "date": "2026-06-24",
-      "type": "score_jump",
-      "params": {
-        "country": "KWT",
-        "delta": 0.29,
-        "score": 7,
-        "prevScore": 6.8,
-        "direction": "up",
-        "confidence": 0.79
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-06-24:score_jump:LBN",
-      "date": "2026-06-24",
-      "type": "score_jump",
-      "params": {
-        "country": "LBN",
-        "delta": 0.19,
-        "score": 4.8,
-        "prevScore": 4.6,
         "direction": "up",
         "confidence": 0.79
       },
