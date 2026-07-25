@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-24T08:31:25.235Z",
-  "lastProcessedDate": "2026-07-24",
+  "generatedAt": "2026-07-25T08:11:00.114Z",
+  "lastProcessedDate": "2026-07-25",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -493,20 +493,6 @@
         "delta": 0.26,
         "score": 7.6,
         "prevScore": 7.3,
-        "direction": "up",
-        "confidence": 0.79
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-06-25:score_jump:BHR",
-      "date": "2026-06-25",
-      "type": "score_jump",
-      "params": {
-        "country": "BHR",
-        "delta": 0.17,
-        "score": 6.8,
-        "prevScore": 6.7,
         "direction": "up",
         "confidence": 0.79
       },
