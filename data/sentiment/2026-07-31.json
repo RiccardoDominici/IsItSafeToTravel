@@ -1,0 +1,29 @@
+{
+  "generatedAt": "2026-07-31T08:52:39.925Z",
+  "countries": {
+    "USA": {
+      "iso3": "USA",
+      "count": 8,
+      "avgDelta": -1.0156607636019452,
+      "correction": -0.5078303818009726,
+      "perceived": 6.8347929309852,
+      "official": 7.342623312786173
+    },
+    "SLV": {
+      "iso3": "SLV",
+      "count": 5,
+      "avgDelta": 1.1431728552857165,
+      "correction": 0.5715864276428583,
+      "perceived": 7.27255994585278,
+      "official": 6.700973518209922
+    },
+    "CHN": {
+      "iso3": "CHN",
+      "count": 9,
+      "avgDelta": 1.452297156031299,
+      "correction": 0.7261485780156495,
+      "perceived": 7.4599008003842,
+      "official": 6.73375222236855
+    }
+  }
+}
