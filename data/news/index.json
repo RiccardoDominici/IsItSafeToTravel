@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-07-31T08:52:39.951Z",
-  "lastProcessedDate": "2026-07-31",
+  "generatedAt": "2026-08-01T08:25:02.819Z",
+  "lastProcessedDate": "2026-08-01",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -441,20 +441,6 @@
         "confidence": 0.8
       },
       "priority": 60
-    },
-    {
-      "id": "2026-07-02:score_jump:VNM",
-      "date": "2026-07-02",
-      "type": "score_jump",
-      "params": {
-        "country": "VNM",
-        "delta": -0.16,
-        "score": 6.7,
-        "prevScore": 6.9,
-        "direction": "down",
-        "confidence": 0.78
-      },
-      "priority": 50
     }
   ]
 }
