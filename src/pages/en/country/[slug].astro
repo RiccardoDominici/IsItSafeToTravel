@@ -120,6 +120,6 @@ const cityName = iata ? getMainCityName(country.iso3, lang) : null;
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} />
-    <SourcesList sources={country.sources} lang={lang} />
+    <SourcesList sources={country.sources} pillars={country.pillars} lang={lang} />
   </div>
 </Base>

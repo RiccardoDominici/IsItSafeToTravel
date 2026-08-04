@@ -1,19 +1,57 @@
 ---
-import type { SourceMeta } from '../../pipeline/types';
+import type { SourceMeta, PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 
 interface Props {
   sources: SourceMeta[];
   lang: Lang;
+  /**
+   * When provided, the freshness badge is driven by the *data vintage* (newest
+   * indicator year this country actually uses from each source), not by the
+   * pipeline fetch timestamp. The 2026-08 SEO audit flagged a "Fresh" badge on
+   * 2012 World Bank data because the fetch date (daily) was standing in for
+   * the data date — a trust defect for a data publisher.
+   */
+  pillars?: PillarScore[];
 }
 
-const { sources, lang } = Astro.props;
+const { sources, lang, pillars } = Astro.props;
 const t = useTranslations(lang);
 
 type FreshnessLevel = 'fresh' | 'recent' | 'stale' | 'outdated' | 'unknown';
 
-function getFreshnessLevel(fetchedAt: string | undefined): FreshnessLevel {
+// Newest/oldest indicator year per upstream source (keyed by SourceMeta.name;
+// IndicatorScore.source uses the same keys, e.g. 'worldbank', 'gpi').
+// 'advisories' has no indicator entry — advisory levels are current by nature,
+// so that source legitimately falls back to fetch-date freshness below.
+const yearsBySource = new Map<string, { min: number; max: number }>();
+for (const pillar of pillars ?? []) {
+  for (const ind of pillar.indicators) {
+    if (!Number.isFinite(ind.year) || ind.year <= 0) continue;
+    const entry = yearsBySource.get(ind.source);
+    if (!entry) {
+      yearsBySource.set(ind.source, { min: ind.year, max: ind.year });
+    } else {
+      entry.min = Math.min(entry.min, ind.year);
+      entry.max = Math.max(entry.max, ind.year);
+    }
+  }
+}
+
+const currentYear = new Date().getFullYear();
+
+/** Badge from data vintage: how old is the newest data point we use from this source. */
+function getVintageFreshness(maxYear: number): FreshnessLevel {
+  const age = currentYear - maxYear;
+  if (age <= 1) return 'fresh';
+  if (age <= 3) return 'recent';
+  if (age <= 6) return 'stale';
+  return 'outdated';
+}
+
+/** Fallback badge from fetch date — only for sources without dated indicators. */
+function getFetchFreshness(fetchedAt: string | undefined): FreshnessLevel {
   if (!fetchedAt) return 'unknown';
   const date = new Date(fetchedAt);
   if (isNaN(date.getTime())) return 'unknown';
@@ -50,7 +88,9 @@ const freshnessKeys: Record<FreshnessLevel, string> = {
 
     <ul class="space-y-3 divide-y divide-sand-200 dark:divide-sand-700">
       {sources.map((source) => {
-        const freshness = getFreshnessLevel(source.fetchedAt);
+        const years = yearsBySource.get(source.name);
+        const freshness = years ? getVintageFreshness(years.max) : getFetchFreshness(source.fetchedAt);
+        const vintageStr = years ? (years.min === years.max ? String(years.max) : `${years.min}–${years.max}`) : null;
         const fetchedDate = source.fetchedAt && !isNaN(new Date(source.fetchedAt).getTime())
           ? new Intl.DateTimeFormat(lang, {
               year: 'numeric',
@@ -76,7 +116,9 @@ const freshnessKeys: Record<FreshnessLevel, string> = {
               )}
               <span
                 class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${freshnessStyles[freshness]}`}
-                title={fetchedDate ? t('country.source_fetched').replace('{date}', fetchedDate) : ''}
+                title={vintageStr
+                  ? t('country.source_data_year').replace('{year}', vintageStr)
+                  : fetchedDate ? t('country.source_fetched').replace('{date}', fetchedDate) : ''}
               >
                 {t(freshnessKeys[freshness])}
               </span>
@@ -84,9 +126,11 @@ const freshnessKeys: Record<FreshnessLevel, string> = {
             <p class="text-sm text-sand-600 dark:text-sand-400 mt-1">
               {source.description}
             </p>
-            {fetchedDate && (
+            {(vintageStr || fetchedDate) && (
               <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
-                {t('country.source_fetched').replace('{date}', fetchedDate)}
+                {vintageStr && t('country.source_data_year').replace('{year}', vintageStr)}
+                {vintageStr && fetchedDate && <span aria-hidden="true"> &middot; </span>}
+                {fetchedDate && t('country.source_fetched').replace('{date}', fetchedDate)}
               </p>
             )}
           </li>
