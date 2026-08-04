@@ -475,9 +475,12 @@ export function buildWebPageJsonLd(title: string, description: string, canonical
 
 /**
  * Build BreadcrumbList JSON-LD structured data.
- * Each item becomes a ListItem with position, name, and @id (url).
+ * Each item becomes a ListItem with position, name, and item (url).
+ * An entry with no/empty url omits `item` entirely — Google explicitly allows
+ * this for the current-page (last) crumb. Never fall back to the site root:
+ * that emitted a wrong trail on ~91 hub pages (2026-08 SEO audit).
  */
-export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]): Record<string, unknown> {
+export function buildBreadcrumbJsonLd(items: { name: string; url?: string }[]): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -485,7 +488,7 @@ export function buildBreadcrumbJsonLd(items: { name: string; url: string }[]): R
       '@type': 'ListItem',
       position: index + 1,
       name: item.name,
-      item: item.url,
+      ...(item.url && { item: item.url }),
     })),
   };
 }

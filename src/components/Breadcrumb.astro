@@ -14,11 +14,13 @@ interface Props {
 
 const { lang, items } = Astro.props;
 
-// Build JSON-LD items with full URLs
+// Build JSON-LD items with full URLs. An empty href (current-page crumb on hub
+// pages) must NOT resolve to the site root — omit the url so the JSON-LD builder
+// drops `item` for that crumb, which Google allows on the final ListItem.
 const siteUrl = (Astro.site?.href || 'https://isitsafetotravel.org/').replace(/\/$/, '');
 const jsonLdItems = items.map((item) => ({
   name: item.label,
-  url: item.href.startsWith('http') ? item.href : `${siteUrl}${item.href}`,
+  url: item.href ? (item.href.startsWith('http') ? item.href : `${siteUrl}${item.href}`) : undefined,
 }));
 const breadcrumbJsonLd = buildBreadcrumbJsonLd(jsonLdItems);
 ---
