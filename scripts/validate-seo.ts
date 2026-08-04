@@ -507,18 +507,20 @@ function validateLlmsFullTxt() {
 function validateCanonicalCounts() {
   console.log("\n--- Canonical Count Claims ---");
 
-  const FORBIDDEN = [
-    "7 trusted public sources",
-    "7 public sources",
+  // The "7 …" family is regex-guarded against digit prefixes so legitimate
+  // claims like "17 indicators" or "37 governments" never substring-match.
+  const FORBIDDEN: (string | RegExp)[] = [
+    /(?<!\d)7 trusted public sources/,
+    /(?<!\d)7 public sources/,
     "9+ public sources",
-    "7 fonti pubbliche",
-    "7 fuentes publicas",
-    "7 sources publiques",
-    "7 fontes publicas",
-    "7 vertrauenswürdigen öffentlichen Quellen",
-    "aus 7 täglich aktualisierten",
-    "7 个可信公开来源",
-    "7 个公开来源",
+    /(?<!\d)7 fonti pubbliche/,
+    /(?<!\d)7 fuentes publicas/,
+    /(?<!\d)7 sources publiques/,
+    /(?<!\d)7 fontes publicas/,
+    /(?<!\d)7 vertrauenswürdigen öffentlichen Quellen/,
+    /aus (?<!\d)7 täglich aktualisierten/,
+    /(?<!\d)7 个可信公开来源/,
+    /(?<!\d)7 个公开来源/,
     "200+ countries",
     "240+ countries",
     "240+ Countries",
@@ -553,8 +555,10 @@ function validateCanonicalCounts() {
     if (!fs.existsSync(file)) continue;
     const content = fs.readFileSync(file, "utf-8");
     for (const pattern of FORBIDDEN) {
-      if (content.includes(pattern) && !offenders.has(pattern)) {
-        offenders.set(pattern, path.relative(DIST, file));
+      const key = pattern.toString();
+      const hit = typeof pattern === "string" ? content.includes(pattern) : pattern.test(content);
+      if (hit && !offenders.has(key)) {
+        offenders.set(key, path.relative(DIST, file));
       }
     }
   }

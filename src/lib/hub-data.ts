@@ -1,5 +1,6 @@
 import type { ScoredCountry } from '../pipeline/types';
 import type { HistoryPoint } from './scores';
+import { loadLatestScores, loadHistoricalScores, getScoreDelta } from './scores';
 import { getCountriesByRegion } from './regions';
 import type { Region } from './regions';
 
@@ -21,6 +22,26 @@ export function getSafestCountries(countries: ScoredCountry[], n: number): Score
 /** Returns bottom N countries (with sufficient data) sorted by score ascending */
 export function getMostDangerousCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
   return [...countries].filter(hasSufficientData).sort((a, b) => a.score - b.score).slice(0, n);
+}
+
+// Biggest 7-day score movers, for the "biggest movers" block on the two
+// head-term ranking hubs. Always computed over the FULL country list (not the
+// caller's ranked subset — movers are a site-wide concept) and cached at
+// module level: HubPageLayout renders 14 enriched hub pages per build and
+// loadHistoricalScores parses the large history index, so compute once.
+let moversCache: { country: ScoredCountry; delta: number }[] | null = null;
+
+/** Top N countries by absolute 7-day score change (data-coverage floor applied). */
+export function getBiggestMovers(n: number): { country: ScoredCountry; delta: number }[] {
+  if (!moversCache) {
+    const history = loadHistoricalScores(30);
+    moversCache = loadLatestScores()
+      .filter(hasSufficientData)
+      .map((c) => ({ country: c, delta: getScoreDelta(c.iso3, history)?.delta ?? 0 }))
+      .filter((m) => m.delta !== 0)
+      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+  }
+  return moversCache.slice(0, n);
 }
 
 /** For solo travelers: weighted by crime (40%) + governance (40%) + overall (20%) */

@@ -10,9 +10,11 @@ interface Props {
   lang: Lang;
   showDelta?: boolean;
   delta?: number;
+  /** Optional one-line data blurb rendered under the row (top entries on head-term hubs). */
+  blurb?: string;
 }
 
-const { rank, country, lang, showDelta = false, delta = 0 } = Astro.props;
+const { rank, country, lang, showDelta = false, delta = 0, blurb } = Astro.props;
 const r = routes[lang];
 const countryUrl = `/${lang}/${r.country}/${country.iso3.toLowerCase()}/`;
 
@@ -33,21 +35,28 @@ function getDeltaClasses(d: number): string {
 <li class="list-none">
 <a
   href={countryUrl}
-  class="flex items-center gap-3 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
+  class="block rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"
 >
-  <span class="text-sm font-bold text-sand-400 dark:text-sand-500 w-8 text-right shrink-0">
-    {rank}
+  <span class="flex items-center gap-3">
+    <span class="text-sm font-bold text-sand-400 dark:text-sand-500 w-8 text-right shrink-0">
+      {rank}
+    </span>
+    <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate flex-1">
+      {getLocalizedCountryName(country, lang)}
+    </span>
+    {showDelta && delta !== 0 && (
+      <span class={`text-xs font-semibold shrink-0 ${getDeltaClasses(delta)}`}>
+        {delta > 0 ? '+' : ''}{delta.toFixed(2)}
+      </span>
+    )}
+    <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${getScoreBadgeClasses(country.score)}`}>
+      {country.score.toFixed(1)}
+    </span>
   </span>
-  <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate flex-1">
-    {getLocalizedCountryName(country, lang)}
-  </span>
-  {showDelta && delta !== 0 && (
-    <span class={`text-xs font-semibold shrink-0 ${getDeltaClasses(delta)}`}>
-      {delta > 0 ? '+' : ''}{delta.toFixed(2)}
+  {blurb && (
+    <span class="block mt-1.5 pl-11 text-xs leading-relaxed text-sand-500 dark:text-sand-400">
+      {blurb}
     </span>
   )}
-  <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${getScoreBadgeClasses(country.score)}`}>
-    {country.score.toFixed(1)}
-  </span>
 </a>
 </li>

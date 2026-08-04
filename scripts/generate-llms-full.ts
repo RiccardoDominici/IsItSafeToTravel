@@ -216,7 +216,10 @@ function main() {
     if (advParts.length) {
       lines.push(`- **Government advisories:** ${advParts.join("; ")}`);
     }
-    lines.push(`- **Data sources:** ${sourceCount} public sources, updated daily`);
+    // sourceCount is the per-country INDICATOR total (sum across pillars), not
+    // the number of upstream sources — labeling it "public sources" published a
+    // fifth conflicting source count (2026-08 SEO audit follow-up).
+    lines.push(`- **Data inputs:** ${sourceCount} indicators across 5 pillars, updated daily`);
     lines.push(`- **More info:** https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`);
     lines.push("");
   }

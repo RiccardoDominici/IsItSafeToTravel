@@ -8,7 +8,10 @@ import Breadcrumb from '../Breadcrumb.astro';
 import CountryRankRow from './CountryRankRow.astro';
 import HubFaq from './HubFaq.astro';
 import { getHubFaq, type HubType } from '../../lib/hub-faq';
-import { buildFaqPageJsonLd } from '../../lib/seo';
+import { buildFaqPageJsonLd, selectEligiblePillars } from '../../lib/seo';
+import { getBiggestMovers } from '../../lib/hub-data';
+import { getLocalizedCountryName } from '../../lib/scores';
+import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
 
 interface Props {
   lang: Lang;
@@ -57,6 +60,56 @@ const defaultBreadcrumb = [
 ];
 const crumbs = breadcrumbItems || defaultBreadcrumb;
 
+// ---- Head-term hub enrichment (2026-08 SEO audit) ----
+// 'safest countries 2026' is the one head query where this page type is
+// SERP-aligned, but the hubs were ~400 words of bare rank/name/score against
+// 2,000+ word competitors. The two head-term hubs get: a generated one-line
+// data blurb per top-20 entry, a biggest-movers block, and a "how we differ
+// from GPI" section — all derived from data already in the build, no manual
+// editorial at 248-country scale.
+const enrich = hubType === 'safest-countries' || hubType === 'most-dangerous-countries';
+const BLURB_COUNT = 20;
+
+/** One-line data blurb: strongest/weakest eligible pillar + advisory consensus. */
+function buildBlurb(country: ScoredCountry): string {
+  const pillars = selectEligiblePillars(country.pillars);
+  let strongest = pillars[0];
+  let weakest = pillars[0];
+  for (const p of pillars) {
+    if (p.score > strongest.score) strongest = p;
+    if (p.score < weakest.score) weakest = p;
+  }
+  const labels = faqPillarLabels[lang];
+  let text = (t('hub.blurb' as any) as string)
+    .replace('{name}', getLocalizedCountryName(country, lang))
+    .replace('{score}', country.score.toFixed(1))
+    .replace('{strongest}', labels[strongest.name])
+    .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
+    .replace('{weakest}', labels[weakest.name])
+    .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+
+  // Advisory consensus: modal level across present advisories, ties resolve to
+  // the more cautious level (same heuristic as the country-page FAQ Q3).
+  const levels = Object.values(country.advisories ?? {})
+    .map((a) => Number((a as { level: number | string }).level))
+    .filter((l) => Number.isFinite(l) && l >= 1 && l <= 4);
+  if (levels.length > 0) {
+    const counts = [0, 0, 0, 0, 0];
+    for (const l of levels) counts[l]++;
+    let modal = 1;
+    for (let l = 1; l <= 4; l++) if (counts[l] >= counts[modal]) modal = l;
+    text += ' ' + (t('hub.blurb_advisories' as any) as string)
+      .replace('{n}', String(levels.length))
+      .replace('{level}', advisoryLevelWords[lang][modal - 1]);
+  }
+  return text;
+}
+
+const blurbs = enrich
+  ? new Map(countries.slice(0, BLURB_COUNT).map((c) => [c.iso3, buildBlurb(c)]))
+  : null;
+const movers = enrich ? getBiggestMovers(5) : [];
+
 // Hub page cross-links
 const hubLinks: Array<{ key: string; route: string }> = [
   { key: 'hub.safest_countries.title', route: r['safest-countries'] || 'safest-countries' },
@@ -86,6 +139,30 @@ const hubLinks: Array<{ key: string; route: string }> = [
       {intro}
     </p>
 
+    {/* Biggest movers (head-term hubs only; self-hides on quiet weeks) */}
+    {movers.length > 0 && (
+      <section class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-4">
+        <h2 class="text-base font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">
+          {t('hub.movers_title' as any)}
+        </h2>
+        <ul class="flex flex-wrap gap-x-5 gap-y-2 list-none p-0 m-0">
+          {movers.map(({ country, delta }) => (
+            <li>
+              <a
+                href={`/${lang}/${r.country}/${country.iso3.toLowerCase()}/`}
+                class="inline-flex items-center gap-1.5 text-sm text-sand-700 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+              >
+                <span>{getLocalizedCountryName(country, lang)}</span>
+                <span class={`text-xs font-semibold ${delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                  {delta > 0 ? '+' : ''}{delta.toFixed(2)}
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
     <ol class="space-y-2 list-none p-0 m-0">
       {countries.map((country, i) => (
         <CountryRankRow
@@ -94,9 +171,25 @@ const hubLinks: Array<{ key: string; route: string }> = [
           lang={lang}
           showDelta={showDelta}
           delta={deltas?.get(country.iso3) ?? 0}
+          blurb={blurbs?.get(country.iso3)}
         />
       ))}
     </ol>
+
+    {/* How this ranking differs from the GPI (head-term hubs only) */}
+    {enrich && (
+      <section class="max-w-2xl mx-auto">
+        <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">
+          {t('hub.methodology_note_title' as any)}
+        </h2>
+        <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">
+          {(t('hub.methodology_note' as any) as string).split('{methodology_link}')[0]}<a
+            href={`/${lang}/${r.methodology}/`}
+            class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline"
+          >{t('about.methodology_link_text' as any)}</a>{(t('hub.methodology_note' as any) as string).split('{methodology_link}')[1]}
+        </p>
+      </section>
+    )}
 
     {/* FAQ (visible counterpart of the FAQPage JSON-LD node) */}
     {faqData && <HubFaq lang={lang} faqData={faqData} />}

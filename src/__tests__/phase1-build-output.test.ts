@@ -81,7 +81,7 @@ describe('Phase 1: IT page renders locale-appropriate content', () => {
 
   it('contains Italian meta description', () => {
     assert.ok(
-      html.includes('punteggi di sicurezza per oltre 200 destinazioni'),
+      html.includes('Punteggi di sicurezza gratuiti e aggiornati ogni giorno per 248 paesi'),
       'IT page must contain Italian meta description'
     );
   });
