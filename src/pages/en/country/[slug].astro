@@ -69,7 +69,12 @@ const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountr
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const lm = getLastmodMap();
-const dateModified = lm.countries[country.iso3] ?? lm.snapshotDate.slice(0, 10);
+// JSON-LD dateModified must match the visible "Last update" line, which renders
+// lm.snapshotDate (the daily pipeline recompute date). The per-country smart
+// lastmod (lm.countries) is a crawl hint that stays sitemap-only — surfacing it
+// here made schema claim the page was weeks stale while the copy said "updated
+// daily" (2026-08 SEO audit, flagged by 4 independent reviewers).
+const dateModified = lm.snapshotDate.slice(0, 10);
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
 const advisorySources = Object.keys(country.advisories || {}).map(key => ({
   key,

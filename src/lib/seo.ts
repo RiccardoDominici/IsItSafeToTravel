@@ -362,6 +362,8 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         url: canonicalUrl,
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
         temporalCoverage: '2025/..',
+        // Same daily snapshot date as WebPage.dateModified / the visible "Last update".
+        ...(dateModified && { dateModified }),
         creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
         variableMeasured: datasetVariablesByLang[lang].map((v) => ({
           '@type': 'PropertyValue',
