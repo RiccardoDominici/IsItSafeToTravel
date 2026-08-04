@@ -50,7 +50,7 @@ describe('MAP-01: EN homepage contains SafetyMap component structure', () => {
 
   it('contains the map tagline', () => {
     assert.ok(
-      html.includes('Explore safety scores for 200+ countries worldwide'),
+      html.includes('Explore safety scores for 248 countries worldwide'),
       'Homepage must display the map tagline'
     );
   });

@@ -46,7 +46,7 @@ const jsonLd = {
     <section>
       <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.sources_title')}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
-        We aggregate data from 9+ public sources updated daily. See our <a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text')}</a> for full details on how scores are calculated.
+        {t('about.sources_text').split('{methodology_link}')[0]}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text')}</a>{t('about.sources_text').split('{methodology_link}')[1]}
       </p>
     </section>
 

@@ -105,14 +105,14 @@ interface CiteCopy {
 const copy: Record<Lang, CiteCopy> = {
   en: {
     title: 'How to Cite This Data',
-    description: "Cite or link IsItSafeToTravel's daily travel-safety scores for 240+ countries. Ready-made attribution in plain text, HTML, Markdown, APA, MLA and BibTeX. Free, CC BY-NC 4.0.",
+    description: "Cite or link IsItSafeToTravel's daily travel-safety scores for {countryCount} countries. Ready-made attribution in plain text, HTML, Markdown, APA, MLA and BibTeX. Free, CC BY-NC 4.0.",
     intro: 'Journalists, researchers, teachers and bloggers cite our travel-safety data every day. Pick a country (or the whole dataset), then copy a ready-made citation — plain text, a website link, Markdown, or an academic format.',
     whatHeading: "What you're citing",
-    whatText: 'Every score here comes from an open dataset: daily-updated safety scores for 240+ countries, aggregated from 40+ public sources including government advisories, the World Bank, INFORM and the Global Peace Index. Free under Creative Commons BY-NC 4.0. Because it updates daily, always include the date you accessed it.',
+    whatText: 'Every score here comes from an open dataset: daily-updated safety scores for {countryCount} countries, aggregated from 40+ public sources including government advisories, the World Bank, INFORM and the Global Peace Index. Free under Creative Commons BY-NC 4.0. Because it updates daily, always include the date you accessed it.',
     globalOption: '— Whole dataset (all countries) —',
-    globalPlainTemplate: 'Global travel-safety scores for 240+ countries. IsItSafeToTravel.org, accessed {date}. {url}',
-    globalMarkdownTemplate: '[Global travel-safety scores for 240+ countries — IsItSafeToTravel.org]({url}) (accessed {date})',
-    globalHtmlTemplate: '<a href="{url}">Global travel-safety scores for 240+ countries — IsItSafeToTravel.org</a>',
+    globalPlainTemplate: 'Global travel-safety scores for {countryCount} countries. IsItSafeToTravel.org, accessed {date}. {url}',
+    globalMarkdownTemplate: '[Global travel-safety scores for {countryCount} countries — IsItSafeToTravel.org]({url}) (accessed {date})',
+    globalHtmlTemplate: '<a href="{url}">Global travel-safety scores for {countryCount} countries — IsItSafeToTravel.org</a>',
     accessedNote: 'The access date updates automatically to today.',
     howHeading: 'How to cite',
     fmtPlain: 'Plain text (attribution line)',
@@ -148,10 +148,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   it: {
     title: 'Come Citare Questi Dati',
-    description: 'Cita o collega i punteggi di sicurezza di viaggio giornalieri di IsItSafeToTravel per 240+ paesi. Attribuzione pronta in testo, HTML, Markdown, APA, MLA e BibTeX. Gratis, CC BY-NC 4.0.',
+    description: 'Cita o collega i punteggi di sicurezza di viaggio giornalieri di IsItSafeToTravel per {countryCount} paesi. Attribuzione pronta in testo, HTML, Markdown, APA, MLA e BibTeX. Gratis, CC BY-NC 4.0.',
     intro: "Giornalisti, ricercatori, insegnanti e blogger citano i nostri dati ogni giorno. Scegli un paese (o l'intero dataset), poi copia una citazione pronta — testo semplice, un link al sito, Markdown o un formato accademico.",
     whatHeading: 'Cosa stai citando',
-    whatText: 'Ogni punteggio proviene da un dataset aperto: punteggi di sicurezza aggiornati ogni giorno per 240+ paesi, da 40+ fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e Global Peace Index. Gratis con licenza Creative Commons BY-NC 4.0. Poiché si aggiorna ogni giorno, indica sempre la data di consultazione.',
+    whatText: 'Ogni punteggio proviene da un dataset aperto: punteggi di sicurezza aggiornati ogni giorno per {countryCount} paesi, da 40+ fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e Global Peace Index. Gratis con licenza Creative Commons BY-NC 4.0. Poiché si aggiorna ogni giorno, indica sempre la data di consultazione.',
     globalOption: '— Intero dataset (tutti i paesi) —',
     globalPlainTemplate: 'Punteggi di sicurezza di viaggio globali per oltre 240 paesi. IsItSafeToTravel.org, consultato il {date}. {url}',
     globalMarkdownTemplate: '[Punteggi di sicurezza di viaggio globali per oltre 240 paesi — IsItSafeToTravel.org]({url}) (consultato il {date})',
@@ -191,10 +191,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   es: {
     title: 'Cómo Citar Estos Datos',
-    description: 'Cita o enlaza las puntuaciones diarias de seguridad de viaje de IsItSafeToTravel para 240+ países. Atribución lista en texto, HTML, Markdown, APA, MLA y BibTeX. Gratis, CC BY-NC 4.0.',
+    description: 'Cita o enlaza las puntuaciones diarias de seguridad de viaje de IsItSafeToTravel para {countryCount} países. Atribución lista en texto, HTML, Markdown, APA, MLA y BibTeX. Gratis, CC BY-NC 4.0.',
     intro: 'Periodistas, investigadores, docentes y blogueros citan nuestros datos cada día. Elige un país (o todo el conjunto de datos) y copia una cita lista — texto simple, un enlace, Markdown o un formato académico.',
     whatHeading: 'Qué estás citando',
-    whatText: 'Cada puntuación proviene de un dataset abierto: puntuaciones actualizadas a diario para 240+ países, de 40+ fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM y el Global Peace Index. Gratis bajo Creative Commons BY-NC 4.0. Como se actualiza a diario, incluye siempre la fecha de consulta.',
+    whatText: 'Cada puntuación proviene de un dataset abierto: puntuaciones actualizadas a diario para {countryCount} países, de 40+ fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM y el Global Peace Index. Gratis bajo Creative Commons BY-NC 4.0. Como se actualiza a diario, incluye siempre la fecha de consulta.',
     globalOption: '— Todo el conjunto de datos (todos los países) —',
     globalPlainTemplate: 'Puntuaciones globales de seguridad de viaje para más de 240 países. IsItSafeToTravel.org, consultado el {date}. {url}',
     globalMarkdownTemplate: '[Puntuaciones globales de seguridad de viaje para más de 240 países — IsItSafeToTravel.org]({url}) (consultado el {date})',
@@ -234,10 +234,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   fr: {
     title: 'Comment Citer Ces Données',
-    description: "Citez ou liez les scores quotidiens de sécurité voyage d'IsItSafeToTravel pour 240+ pays. Attribution prête en texte, HTML, Markdown, APA, MLA et BibTeX. Gratuit, CC BY-NC 4.0.",
+    description: "Citez ou liez les scores quotidiens de sécurité voyage d'IsItSafeToTravel pour {countryCount} pays. Attribution prête en texte, HTML, Markdown, APA, MLA et BibTeX. Gratuit, CC BY-NC 4.0.",
     intro: 'Journalistes, chercheurs, enseignants et blogueurs citent nos données chaque jour. Choisissez un pays (ou le jeu de données complet), puis copiez une citation prête — texte brut, un lien, Markdown ou un format académique.',
     whatHeading: 'Ce que vous citez',
-    whatText: "Chaque score provient d'un jeu de données ouvert : scores mis à jour chaque jour pour 240+ pays, à partir de 40+ sources publiques dont les avis gouvernementaux, la Banque mondiale, INFORM et le Global Peace Index. Gratuit sous Creative Commons BY-NC 4.0. Comme il change chaque jour, indiquez toujours votre date de consultation.",
+    whatText: "Chaque score provient d'un jeu de données ouvert : scores mis à jour chaque jour pour {countryCount} pays, à partir de 40+ sources publiques dont les avis gouvernementaux, la Banque mondiale, INFORM et le Global Peace Index. Gratuit sous Creative Commons BY-NC 4.0. Comme il change chaque jour, indiquez toujours votre date de consultation.",
     globalOption: '— Jeu de données complet (tous les pays) —',
     globalPlainTemplate: 'Scores mondiaux de sécurité voyage pour plus de 240 pays. IsItSafeToTravel.org, consulté le {date}. {url}',
     globalMarkdownTemplate: '[Scores mondiaux de sécurité voyage pour plus de 240 pays — IsItSafeToTravel.org]({url}) (consulté le {date})',
@@ -277,10 +277,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   pt: {
     title: 'Como Citar Estes Dados',
-    description: 'Cite ou vincule as pontuações diárias de segurança de viagem do IsItSafeToTravel para 240+ países. Atribuição pronta em texto, HTML, Markdown, APA, MLA e BibTeX. Grátis, CC BY-NC 4.0.',
+    description: 'Cite ou vincule as pontuações diárias de segurança de viagem do IsItSafeToTravel para {countryCount} países. Atribuição pronta em texto, HTML, Markdown, APA, MLA e BibTeX. Grátis, CC BY-NC 4.0.',
     intro: 'Jornalistas, pesquisadores, professores e blogueiros citam nossos dados todos os dias. Escolha um país (ou todo o conjunto de dados) e copie uma citação pronta — texto simples, um link, Markdown ou um formato acadêmico.',
     whatHeading: 'O que você está citando',
-    whatText: 'Cada pontuação vem de um dataset aberto: pontuações atualizadas diariamente para 240+ países, de 40+ fontes públicas incluindo avisos governamentais, Banco Mundial, INFORM e o Global Peace Index. Grátis sob Creative Commons BY-NC 4.0. Como é atualizado diariamente, inclua sempre a data de acesso.',
+    whatText: 'Cada pontuação vem de um dataset aberto: pontuações atualizadas diariamente para {countryCount} países, de 40+ fontes públicas incluindo avisos governamentais, Banco Mundial, INFORM e o Global Peace Index. Grátis sob Creative Commons BY-NC 4.0. Como é atualizado diariamente, inclua sempre a data de acesso.',
     globalOption: '— Conjunto de dados completo (todos os países) —',
     globalPlainTemplate: 'Pontuações globais de segurança de viagem para mais de 240 países. IsItSafeToTravel.org, acessado em {date}. {url}',
     globalMarkdownTemplate: '[Pontuações globais de segurança de viagem para mais de 240 países — IsItSafeToTravel.org]({url}) (acessado em {date})',
@@ -320,14 +320,14 @@ const copy: Record<Lang, CiteCopy> = {
   },
   zh: {
     title: '如何引用此数据',
-    description: '引用或链接 IsItSafeToTravel 每日更新的 240+ 国家旅行安全评分。提供纯文本、HTML、Markdown、APA、MLA 和 BibTeX 现成署名。免费，CC BY-NC 4.0。',
+    description: '引用或链接 IsItSafeToTravel 每日更新的 {countryCount} 国家旅行安全评分。提供纯文本、HTML、Markdown、APA、MLA 和 BibTeX 现成署名。免费，CC BY-NC 4.0。',
     intro: '记者、研究人员、教师和博主每天都在引用我们的旅行安全数据。选择一个国家（或整个数据集），然后复制现成的引用——纯文本、网站链接、Markdown 或学术格式。',
     whatHeading: '您引用的内容',
-    whatText: '每个评分都来自一个开放数据集：240+ 国家每日更新的安全评分，汇总自 40+ 个公开来源，包括政府旅行警告、世界银行、INFORM 和全球和平指数。采用 Creative Commons BY-NC 4.0 免费授权。由于每日更新，请始终注明访问日期。',
+    whatText: '每个评分都来自一个开放数据集：{countryCount} 国家每日更新的安全评分，汇总自 40+ 个公开来源，包括政府旅行警告、世界银行、INFORM 和全球和平指数。采用 Creative Commons BY-NC 4.0 免费授权。由于每日更新，请始终注明访问日期。',
     globalOption: '— 整个数据集（所有国家）—',
-    globalPlainTemplate: '全球旅行安全评分（240+ 个国家和地区）。IsItSafeToTravel.org，访问于 {date}。{url}',
-    globalMarkdownTemplate: '[全球旅行安全评分（240+ 个国家和地区）— IsItSafeToTravel.org]({url})（访问于 {date}）',
-    globalHtmlTemplate: '<a href="{url}">全球旅行安全评分（240+ 个国家和地区）— IsItSafeToTravel.org</a>',
+    globalPlainTemplate: '全球旅行安全评分（{countryCount} 个国家和地区）。IsItSafeToTravel.org，访问于 {date}。{url}',
+    globalMarkdownTemplate: '[全球旅行安全评分（{countryCount} 个国家和地区）— IsItSafeToTravel.org]({url})（访问于 {date}）',
+    globalHtmlTemplate: '<a href="{url}">全球旅行安全评分（{countryCount} 个国家和地区）— IsItSafeToTravel.org</a>',
     accessedNote: '访问日期会自动更新为今天。',
     howHeading: '如何引用',
     fmtPlain: '纯文本（署名行）',
@@ -363,10 +363,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   de: {
     title: 'Diese Daten zitieren',
-    description: 'Zitieren oder verlinken Sie die täglichen Reise-Sicherheits-Scores von IsItSafeToTravel für 240+ Länder. Fertige Namensnennung in Text, HTML, Markdown, APA, MLA und BibTeX. Kostenlos, CC BY-NC 4.0.',
+    description: 'Zitieren oder verlinken Sie die täglichen Reise-Sicherheits-Scores von IsItSafeToTravel für {countryCount} Länder. Fertige Namensnennung in Text, HTML, Markdown, APA, MLA und BibTeX. Kostenlos, CC BY-NC 4.0.',
     intro: 'Journalisten, Forschende, Lehrkräfte und Blogger zitieren unsere Daten täglich. Wählen Sie ein Land (oder den gesamten Datensatz) und kopieren Sie eine fertige Zitation — Klartext, einen Website-Link, Markdown oder ein akademisches Format.',
     whatHeading: 'Was Sie zitieren',
-    whatText: 'Jeder Score stammt aus einem offenen Datensatz: täglich aktualisierte Sicherheits-Scores für 240+ Länder aus 40+ öffentlichen Quellen, darunter Regierungshinweise, Weltbank, INFORM und Global Peace Index. Kostenlos unter Creative Commons BY-NC 4.0. Da er sich täglich ändert, geben Sie stets Ihr Zugriffsdatum an.',
+    whatText: 'Jeder Score stammt aus einem offenen Datensatz: täglich aktualisierte Sicherheits-Scores für {countryCount} Länder aus 40+ öffentlichen Quellen, darunter Regierungshinweise, Weltbank, INFORM und Global Peace Index. Kostenlos unter Creative Commons BY-NC 4.0. Da er sich täglich ändert, geben Sie stets Ihr Zugriffsdatum an.',
     globalOption: '— Gesamter Datensatz (alle Länder) —',
     globalPlainTemplate: 'Globale Reise-Sicherheits-Scores für über 240 Länder. IsItSafeToTravel.org, abgerufen am {date}. {url}',
     globalMarkdownTemplate: '[Globale Reise-Sicherheits-Scores für über 240 Länder — IsItSafeToTravel.org]({url}) (abgerufen am {date})',
@@ -406,7 +406,14 @@ const copy: Record<Lang, CiteCopy> = {
   },
 };
 
-const c = copy[lang];
+// Fill the canonical country count into the per-language copy. The literal
+// "240+" claims drifted from the real count (248) — 2026-08 SEO audit; all
+// strings now carry a {countryCount} placeholder resolved from live data.
+const countryCount = String(countries.length);
+const c = JSON.parse(
+  JSON.stringify(copy[lang]),
+  (_key, value) => (typeof value === 'string' ? value.replaceAll('{countryCount}', countryCount) : value),
+) as CiteCopy;
 const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r.cite}/`;
 
 const breadcrumbItems = [

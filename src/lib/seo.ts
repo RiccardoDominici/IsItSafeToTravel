@@ -5,6 +5,7 @@ import { getLocalizedCountryName } from './scores';
 import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
+import { COUNTRY_COUNT } from './site-stats';
 import wikidataMapJson from '../data/countries-wikidata.json';
 
 // ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
@@ -504,7 +505,7 @@ export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown
     '@type': 'Organization',
     name: 'IsItSafeToTravel',
     url: siteUrl,
-    description: 'Free travel safety platform providing transparent, data-driven safety scores for 200+ countries worldwide.',
+    description: `Free travel safety platform providing transparent, data-driven safety scores for ${COUNTRY_COUNT} countries worldwide.`,
     // Google requires a raster logo >= 112x112px; icon-512.png is the largest PNG we ship.
     logo: `${siteUrl}/icon-512.png`,
     founder: { '@type': 'Person', name: 'Riccardo Dominici', url: 'https://github.com/RiccardoDominici' },
@@ -708,7 +709,7 @@ export function buildDatasetJsonLd(): Record<string, unknown> {
   return {
     '@type': 'Dataset',
     name: 'Global Travel Safety Scores 2026',
-    description: 'Daily updated safety scores for 240+ countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.',
+    description: `Daily updated safety scores for ${COUNTRY_COUNT} countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.`,
     url: 'https://isitsafetotravel.org/',
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
     temporalCoverage: '2025/..',
@@ -786,7 +787,7 @@ export function buildMethodologyDatasetJsonLd(): Record<string, unknown> {
   return {
     '@type': 'Dataset',
     name: 'IsItSafeToTravel Global Safety Scores',
-    description: 'Daily updated composite safety scores for 240+ countries, aggregating 40+ public data sources.',
+    description: `Daily updated composite safety scores for ${COUNTRY_COUNT} countries, aggregating 40+ public data sources.`,
     url: 'https://isitsafetotravel.org/',
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
     temporalCoverage: '2025/..',

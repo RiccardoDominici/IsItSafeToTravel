@@ -45,7 +45,7 @@ describe('Phase 1: EN page renders locale-appropriate content', () => {
 
   it('contains English meta description', () => {
     assert.ok(
-      html.includes('Check safety scores for 200+ travel destinations'),
+      html.includes('Free daily-updated safety scores for 248 countries'),
       'EN page must contain English meta description'
     );
   });

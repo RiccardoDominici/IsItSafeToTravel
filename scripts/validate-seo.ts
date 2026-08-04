@@ -485,6 +485,86 @@ function validateLlmsFullTxt() {
   );
 
   console.log(`  (llms-full.txt: ${content.length} bytes, ~${countryCount} country entries)`);
+
+  // Exactly one regional aggregate: a second "## Regional Averages" list used a
+  // different region map than the comparison table and published conflicting
+  // numbers in the same file (2026-08 SEO audit).
+  check(
+    "llms-full.txt: single regional aggregate (no 'Regional Averages' duplicate)",
+    !content.includes("## Regional Averages"),
+    "duplicate regional section reintroduced"
+  );
+}
+
+// =====================================================================
+// 4b. CANONICAL COUNT CLAIMS
+// =====================================================================
+// The 2026-08 SEO audit found four contradictory source counts ("7 trusted",
+// "9+", "40+") and three country counts ("200+", "240+", 248) live at once.
+// Canonical values live in src/lib/site-stats.ts; this walk fails the build
+// if any known stale variant creeps back into the rendered output.
+
+function validateCanonicalCounts() {
+  console.log("\n--- Canonical Count Claims ---");
+
+  const FORBIDDEN = [
+    "7 trusted public sources",
+    "7 public sources",
+    "9+ public sources",
+    "7 fonti pubbliche",
+    "7 fuentes publicas",
+    "7 sources publiques",
+    "7 fontes publicas",
+    "7 vertrauenswürdigen öffentlichen Quellen",
+    "aus 7 täglich aktualisierten",
+    "7 个可信公开来源",
+    "7 个公开来源",
+    "200+ countries",
+    "240+ countries",
+    "240+ Countries",
+    "240+ paesi",
+    "240+ Paesi",
+    "240+ paises",
+    "240+ Paises",
+    "240+ pays",
+    "240+ Pays",
+    "240+ Länder",
+    "240+ 国家",
+    "200+ 个国家",
+    "200+ Länder",
+  ];
+
+  // Walk every rendered HTML file plus the llms outputs.
+  const targets: string[] = [
+    path.join(DIST, "llms.txt"),
+    path.join(DIST, "llms-full.txt"),
+  ];
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir)) {
+      const full = path.join(dir, entry);
+      if (fs.statSync(full).isDirectory()) walk(full);
+      else if (entry.endsWith(".html")) targets.push(full);
+    }
+  };
+  walk(DIST);
+
+  const offenders = new Map<string, string>();
+  for (const file of targets) {
+    if (!fs.existsSync(file)) continue;
+    const content = fs.readFileSync(file, "utf-8");
+    for (const pattern of FORBIDDEN) {
+      if (content.includes(pattern) && !offenders.has(pattern)) {
+        offenders.set(pattern, path.relative(DIST, file));
+      }
+    }
+  }
+
+  check(
+    "counts: no stale source/country-count claims in rendered output",
+    offenders.size === 0,
+    [...offenders.entries()].map(([p, f]) => `"${p}" in ${f}`).join("; ")
+  );
+  console.log(`  (scanned ${targets.length} files for ${FORBIDDEN.length} stale patterns)`);
 }
 
 // =====================================================================
@@ -715,6 +795,7 @@ function main() {
   validateJsonLd();
   validateMeta();
   validateLlmsFullTxt();
+  validateCanonicalCounts();
   validateAdvisoryCoverage();
   validateAdvisoryIntegrity();
   validateDatasetDescriptionLength();

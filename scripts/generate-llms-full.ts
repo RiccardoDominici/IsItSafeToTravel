@@ -47,55 +47,10 @@ interface LatestData {
   countries: ScoredCountry[];
 }
 
-// ── region mapping (ISO-3166-1 alpha-3 → region) ────────────────────────────
-const REGION_MAP: Record<string, string> = {};
-
-const EUROPE = [
-  "ALB","AND","AUT","BLR","BEL","BIH","BGR","HRV","CYP","CZE","DNK","EST",
-  "FIN","FRA","DEU","GRC","HUN","ISL","IRL","ITA","XKX","LVA","LIE","LTU",
-  "LUX","MLT","MDA","MCO","MNE","NLD","MKD","NOR","POL","PRT","ROU","RUS",
-  "SMR","SRB","SVK","SVN","ESP","SWE","CHE","UKR","GBR","VAT","FRO","GIB",
-  "IMN","JEY","GGY","ALA","SJM",
-];
-const ASIA = [
-  "AFG","ARM","AZE","BGD","BTN","BRN","KHM","CHN","GEO","HKG","IND","IDN",
-  "JPN","KAZ","KGZ","LAO","MAC","MYS","MDV","MNG","MMR","NPL","PRK","PAK",
-  "PHL","SGP","KOR","LKA","TWN","TJK","THA","TLS","TKM","UZB","VNM",
-];
-const MIDDLE_EAST = [
-  "BHR","IRN","IRQ","ISR","JOR","KWT","LBN","OMN","PSE","QAT","SAU","SYR",
-  "TUR","ARE","YEM",
-];
-const AFRICA = [
-  "DZA","AGO","BEN","BWA","BFA","BDI","CPV","CMR","CAF","TCD","COM","COG",
-  "COD","CIV","DJI","EGY","GNQ","ERI","SWZ","ETH","GAB","GMB","GHA","GIN",
-  "GNB","KEN","LSO","LBR","LBY","MDG","MWI","MLI","MRT","MUS","MAR","MOZ",
-  "NAM","NER","NGA","RWA","STP","SEN","SYC","SLE","SOM","ZAF","SSD","SDN",
-  "TZA","TGO","TUN","UGA","ZMB","ZWE","MYT","REU","SHN","ESH",
-];
-const AMERICAS = [
-  "ATG","ARG","BHS","BRB","BLZ","BOL","BRA","CAN","CHL","COL","CRI","CUB",
-  "DMA","DOM","ECU","SLV","GRD","GTM","GUY","HTI","HND","JAM","MEX","NIC",
-  "PAN","PRY","PER","KNA","LCA","VCT","SUR","TTO","USA","URY","VEN","ABW",
-  "AIA","BMU","VGB","CYM","CUW","GLP","MTQ","MSR","PRI","BLM","MAF","SXM",
-  "TCA","VIR","FLK","GUF","SPM",
-];
-const OCEANIA = [
-  "AUS","FJI","KIR","MHL","FSM","NRU","NZL","PLW","PNG","WSM","SLB","TON",
-  "TUV","VUT","ASM","COK","PYF","GUM","NCL","NIU","NFK","MNP","PCN","TKL",
-  "WLF",
-];
-
-for (const iso of EUROPE) REGION_MAP[iso] = "Europe";
-for (const iso of ASIA) REGION_MAP[iso] = "Asia";
-for (const iso of MIDDLE_EAST) REGION_MAP[iso] = "Middle East";
-for (const iso of AFRICA) REGION_MAP[iso] = "Africa";
-for (const iso of AMERICAS) REGION_MAP[iso] = "Americas";
-for (const iso of OCEANIA) REGION_MAP[iso] = "Oceania";
-
-function getRegion(iso3: string): string {
-  return REGION_MAP[iso3] ?? "Other";
-}
+// Region mapping: this script used to carry its own ISO3→region lists, which
+// drifted from src/lib/regions.ts and made the removed "Regional Averages"
+// section contradict the "Regional Safety Comparison" table in the same file.
+// The shared libRegionMap (imported above) is now the only region source here.
 
 // ── helpers ──────────────────────────────────────────────────────────────────
 function riskLabel(score: number): string {
@@ -329,31 +284,12 @@ function main() {
   }
   lines.push("");
 
-  // Regional averages
-  lines.push("## Regional Averages");
-  lines.push("");
-
-  const regionScores: Record<string, number[]> = {};
-  for (const c of countries) {
-    const r = getRegion(c.iso3);
-    if (!regionScores[r]) regionScores[r] = [];
-    regionScores[r].push(c.score);
-  }
-
-  const regionOrder = ["Europe", "Asia", "Americas", "Oceania", "Middle East", "Africa"];
-  for (const r of regionOrder) {
-    const scores = regionScores[r];
-    if (!scores || scores.length === 0) continue;
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    lines.push(`- **${r}:** ${fmt(avg)}/10 (${scores.length} countries)`);
-  }
-  // Any "Other" region
-  if (regionScores["Other"]?.length) {
-    const scores = regionScores["Other"];
-    const avg = scores.reduce((a, b) => a + b, 0) / scores.length;
-    lines.push(`- **Other:** ${fmt(avg)}/10 (${scores.length} countries)`);
-  }
-  lines.push("");
+  // NOTE: a second "## Regional Averages" list used to live here, computed via
+  // getRegion() while the comparison table above uses the src/lib/regions.ts
+  // map — the two disagreed on region membership, so the same file published
+  // two conflicting sets of regional numbers (2026-08 SEO audit, flagged as a
+  // trust defect for AI consumers). The table above is the single regional
+  // aggregate now; validate-seo.ts asserts the duplicate heading stays gone.
 
   // Footer
   lines.push("---");
