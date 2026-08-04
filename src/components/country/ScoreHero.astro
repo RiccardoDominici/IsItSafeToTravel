@@ -65,9 +65,17 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
 ---
 
 <section class="text-center py-8 md:py-12 px-4">
-  <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-6">
-    {getLocalizedCountryName(country, lang)}
+  {/* Question-form H1 + verdict directly under it: SERP competitors all restate
+      the query as H1, and our yes/no verdict used to sit ~60% down the page in
+      a small italic line (2026-08 SXO audit, HIGH). */}
+  <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.h1_question').replace('{name}', getLocalizedCountryName(country, lang))}
   </h1>
+
+  <p class={`inline-flex items-center gap-2 rounded-xl border px-4 py-2 mb-6 text-lg md:text-xl font-semibold text-sand-800 dark:text-sand-100 ${verdict.bg} ${verdict.border}`}>
+    <span aria-hidden="true">{verdict.emoji}</span>
+    <span>{verdict.text[lang] ?? verdict.text.en}</span>
+  </p>
 
   <div
     class="inline-flex flex-col items-center justify-center rounded-2xl px-8 py-6 shadow-lg"
@@ -83,10 +91,6 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
 
   <p class="mt-4 text-lg font-medium text-sand-600 dark:text-sand-400">
     {t('country.score_label')}
-  </p>
-
-  <p class="mt-1 text-sm text-sand-500 dark:text-sand-400 italic">
-    {verdict.text[lang] ?? verdict.text.en}
   </p>
 
   {country.confidence < 0.4 && (
