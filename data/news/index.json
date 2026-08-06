@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-05T08:38:19.082Z",
-  "lastProcessedDate": "2026-08-05",
+  "generatedAt": "2026-08-06T08:39:24.072Z",
+  "lastProcessedDate": "2026-08-06",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -15,7 +15,7 @@
     "band:AND": "2026-07-08",
     "band:BHR": "2026-07-08",
     "band:DEU": "2026-07-08",
-    "band:GRC": "2026-07-08",
+    "band:GRC": "2026-08-06",
     "band:HUN": "2026-07-08",
     "band:ITA": "2026-07-08",
     "band:KHM": "2026-07-08",
@@ -42,6 +42,20 @@
     "advisory:KWT:uk:3": "2026-07-24"
   },
   "recentEvents": [
+    {
+      "id": "2026-08-06:band_change:GRC",
+      "date": "2026-08-06",
+      "type": "band_change",
+      "params": {
+        "country": "GRC",
+        "fromBand": "excellent",
+        "toBand": "good",
+        "score": 7.9,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
     {
       "id": "2026-07-24:severe_advisory:BHR:au",
       "date": "2026-07-24",

@@ -1,0 +1,20 @@
+{
+  "date": "2026-08-06",
+  "generatedAt": "2026-08-06T08:39:24.071Z",
+  "events": [
+    {
+      "id": "2026-08-06:band_change:GRC",
+      "date": "2026-08-06",
+      "type": "band_change",
+      "params": {
+        "country": "GRC",
+        "fromBand": "excellent",
+        "toBand": "good",
+        "score": 7.9,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    }
+  ]
+}
