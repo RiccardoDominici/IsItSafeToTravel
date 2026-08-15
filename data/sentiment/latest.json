@@ -1,37 +1,37 @@
 {
-  "generatedAt": "2026-08-14T07:27:39.993Z",
+  "generatedAt": "2026-08-15T06:41:12.559Z",
   "countries": {
+    "SLV": {
+      "iso3": "SLV",
+      "count": 6,
+      "avgDelta": 1.105838181549198,
+      "correction": 0.552919090774599,
+      "perceived": 7.253892608984521,
+      "official": 6.700973518209922
+    },
     "USA": {
       "iso3": "USA",
       "count": 11,
-      "avgDelta": -0.49772874584123517,
-      "correction": -0.24886437292061758,
+      "avgDelta": -0.4977287458412353,
+      "correction": -0.24886437292061764,
       "perceived": 7.093758939865555,
       "official": 7.342623312786173
     },
     "RUS": {
       "iso3": "RUS",
       "count": 5,
-      "avgDelta": 0.3303272180454085,
-      "correction": 0.16516360902270424,
+      "avgDelta": 0.3303272180454084,
+      "correction": 0.1651636090227042,
       "perceived": 4.143662989584877,
       "official": 3.978499380562173
     },
     "CHN": {
       "iso3": "CHN",
       "count": 14,
-      "avgDelta": 1.6239417350534835,
-      "correction": 0.8119708675267417,
+      "avgDelta": 1.6239417350534837,
+      "correction": 0.8119708675267419,
       "perceived": 7.545723089895292,
       "official": 6.73375222236855
-    },
-    "SLV": {
-      "iso3": "SLV",
-      "count": 5,
-      "avgDelta": 1.1431728552857163,
-      "correction": 0.5715864276428582,
-      "perceived": 7.27255994585278,
-      "official": 6.700973518209922
     }
   }
 }
