@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-16T06:42:46.974Z",
-  "lastProcessedDate": "2026-08-16",
+  "generatedAt": "2026-08-17T06:58:45.315Z",
+  "lastProcessedDate": "2026-08-17",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -193,61 +193,6 @@
       "params": {
         "country": "SAU",
         "issuer": "au",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-18:severe_advisory:ARE:ca",
-      "date": "2026-07-18",
-      "type": "severe_advisory",
-      "params": {
-        "country": "ARE",
-        "issuer": "ca",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-18:severe_advisory:JOR:ca",
-      "date": "2026-07-18",
-      "type": "severe_advisory",
-      "params": {
-        "country": "JOR",
-        "issuer": "ca",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-18:severe_advisory:OMN:ca",
-      "date": "2026-07-18",
-      "type": "severe_advisory",
-      "params": {
-        "country": "OMN",
-        "issuer": "ca",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-18:severe_advisory:QAT:ca",
-      "date": "2026-07-18",
-      "type": "severe_advisory",
-      "params": {
-        "country": "QAT",
-        "issuer": "ca",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-18:severe_advisory:SAU:ca",
-      "date": "2026-07-18",
-      "type": "severe_advisory",
-      "params": {
-        "country": "SAU",
-        "issuer": "ca",
         "level": 3
       },
       "priority": 100
