@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-08-18T06:45:23.663Z",
-  "lastProcessedDate": "2026-08-18",
+  "generatedAt": "2026-08-19T06:45:48.947Z",
+  "lastProcessedDate": "2026-08-19",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -163,39 +163,6 @@
         "confidence": 0.8
       },
       "priority": 50
-    },
-    {
-      "id": "2026-07-20:severe_advisory:JOR:au",
-      "date": "2026-07-20",
-      "type": "severe_advisory",
-      "params": {
-        "country": "JOR",
-        "issuer": "au",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-20:severe_advisory:OMN:au",
-      "date": "2026-07-20",
-      "type": "severe_advisory",
-      "params": {
-        "country": "OMN",
-        "issuer": "au",
-        "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-07-20:severe_advisory:SAU:au",
-      "date": "2026-07-20",
-      "type": "severe_advisory",
-      "params": {
-        "country": "SAU",
-        "issuer": "au",
-        "level": 3
-      },
-      "priority": 100
     }
   ]
 }
