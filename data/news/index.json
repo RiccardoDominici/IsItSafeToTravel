@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-21T06:49:22.468Z",
-  "lastProcessedDate": "2026-08-21",
+  "generatedAt": "2026-08-22T06:42:24.458Z",
+  "lastProcessedDate": "2026-08-22",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
     "jump:ARE": "2026-06-26",
-    "jump:KWT": "2026-07-24",
-    "jump:BHR": "2026-07-22",
+    "jump:KWT": "2026-08-22",
+    "jump:BHR": "2026-08-22",
     "band:ZMB": "2026-07-08",
     "band:KWT": "2026-07-24",
     "jump:LBN": "2026-06-24",
@@ -42,6 +42,34 @@
     "advisory:KWT:uk:3": "2026-07-24"
   },
   "recentEvents": [
+    {
+      "id": "2026-08-22:score_jump:BHR",
+      "date": "2026-08-22",
+      "type": "score_jump",
+      "params": {
+        "country": "BHR",
+        "delta": 0.17,
+        "score": 6.5,
+        "prevScore": 6.4,
+        "direction": "up",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-08-22:score_jump:KWT",
+      "date": "2026-08-22",
+      "type": "score_jump",
+      "params": {
+        "country": "KWT",
+        "delta": 0.19,
+        "score": 7,
+        "prevScore": 6.8,
+        "direction": "up",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
     {
       "id": "2026-08-06:band_change:GRC",
       "date": "2026-08-06",
