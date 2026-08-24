@@ -1,0 +1,3408 @@
+{
+  "source": "gpi",
+  "fetchedAt": "2026-08-24T06:57:54.070Z",
+  "indicators": [
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_overall",
+      "value": 1.602,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.663,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.704,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_overall",
+      "value": 2.075,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.13,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KHM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_overall",
+      "value": 2.231,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.462,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.038,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_overall",
+      "value": 1.918,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.021,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.398,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_overall",
+      "value": 1.489,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.296,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JPN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.794,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_overall",
+      "value": 1.846,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.153,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LAO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.812,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_overall",
+      "value": 1.513,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.917,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MYS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.204,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_overall",
+      "value": 1.692,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.148,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.423,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_overall",
+      "value": 2.911,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.224,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MMR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.367,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_overall",
+      "value": 1.343,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.497,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NZL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.409,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_overall",
+      "value": 2.845,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.856,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRK",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.105,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_overall",
+      "value": 2.002,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.28,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PNG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.791,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_overall",
+      "value": 2.092,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.377,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PHL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.716,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_overall",
+      "value": 1.435,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.341,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SGP",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.095,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.839,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.554,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.233,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_overall",
+      "value": 1.751,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.672,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TWN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.808,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_overall",
+      "value": 2.089,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.339,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "THA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.562,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_overall",
+      "value": 1.681,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.885,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TLS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.604,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_overall",
+      "value": 1.738,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.908,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VNM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.61,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_overall",
+      "value": 1.86,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.115,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CRI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.706,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_overall",
+      "value": 2.139,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.644,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CUB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.545,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_overall",
+      "value": 2.038,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.414,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DOM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.577,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_overall",
+      "value": 2.264,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.59,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLV",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.174,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_overall",
+      "value": 2.025,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.434,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GTM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.688,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_overall",
+      "value": 2.755,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.354,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HTI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.8,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_overall",
+      "value": 2.075,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.637,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HND",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.77,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_overall",
+      "value": 1.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.384,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JAM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.792,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_overall",
+      "value": 2.65,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.915,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MEX",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.738,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_overall",
+      "value": 2.107,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.623,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NIC",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.779,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_overall",
+      "value": 1.976,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.549,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.648,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_overall",
+      "value": 1.959,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.397,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TTO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.762,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_overall",
+      "value": 1.525,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.554,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.569,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_overall",
+      "value": 2.535,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.454,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "USA",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.09,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_overall",
+      "value": 1.628,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.735,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.795,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_overall",
+      "value": 1.788,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.699,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ROU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.874,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_overall",
+      "value": 2.605,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.812,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.021,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_overall",
+      "value": 1.825,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.776,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.057,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_overall",
+      "value": 2.142,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.296,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AZE",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.1,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_overall",
+      "value": 2.216,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.422,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BLR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.306,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_overall",
+      "value": 2.066,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.478,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GEO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.799,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_overall",
+      "value": 1.771,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.087,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KAZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.75,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "gpi_overall",
+      "value": 1.853,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.047,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KGZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.741,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_overall",
+      "value": 1.836,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.139,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.293,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_overall",
+      "value": 3.367,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.876,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.285,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_overall",
+      "value": 1.799,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.976,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TJK",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.651,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_overall",
+      "value": 1.903,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.172,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TKM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.145,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_overall",
+      "value": 3.184,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.744,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UKR",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.088,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_overall",
+      "value": 1.726,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.995,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UZB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.737,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_overall",
+      "value": 2.053,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.157,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DZA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.103,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_overall",
+      "value": 2.131,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.188,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BHR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.096,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_overall",
+      "value": 2.186,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.496,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EGY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.856,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_overall",
+      "value": 2.759,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.944,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.82,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_overall",
+      "value": 2.662,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.078,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRQ",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.179,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_overall",
+      "value": 3.124,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.511,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISR",
+      "indicatorName": "gpi_militarisation",
+      "value": 3.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.913,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.022,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "JOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.783,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_overall",
+      "value": 1.813,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.693,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KWT",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.068,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_overall",
+      "value": 2.435,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.57,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.008,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_overall",
+      "value": 2.361,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.655,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBY",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.093,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_overall",
+      "value": 1.887,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.995,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MAR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.695,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_overall",
+      "value": 1.85,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.778,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "OMN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.06,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_overall",
+      "value": 2.877,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.753,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PSE",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.265,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_overall",
+      "value": 1.676,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.369,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "QAT",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.247,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_overall",
+      "value": 2.067,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.893,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SAU",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.588,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_overall",
+      "value": 3.195,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.339,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SDN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.271,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_overall",
+      "value": 3.067,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.232,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.983,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_overall",
+      "value": 1.947,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.386,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TUN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.593,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_overall",
+      "value": 1.927,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARE",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.188,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_overall",
+      "value": 3.081,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.433,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "YEM",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.186,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_overall",
+      "value": 1.922,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.49,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ARG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.468,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_overall",
+      "value": 2.054,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.366,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BOL",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.144,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_overall",
+      "value": 2.333,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.817,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BRA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.748,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_overall",
+      "value": 1.826,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.246,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.991,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_overall",
+      "value": 2.735,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.317,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.825,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_overall",
+      "value": 2.539,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.914,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ECU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.957,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_overall",
+      "value": 2.093,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.696,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GUY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.581,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_overall",
+      "value": 1.882,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.231,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.978,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_overall",
+      "value": 2.12,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.558,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PER",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.718,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_overall",
+      "value": 1.754,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.411,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "URY",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.529,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.516,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.92,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "VEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.093,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_overall",
+      "value": 3.106,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.556,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AFG",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.701,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_overall",
+      "value": 2.226,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.579,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BGD",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.615,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_overall",
+      "value": 1.546,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.788,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BTN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.281,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_overall",
+      "value": 2.409,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.284,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IND",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.419,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_overall",
+      "value": 2.143,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.444,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NPL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.748,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_overall",
+      "value": 2.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.798,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PAK",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.574,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_overall",
+      "value": 1.91,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.125,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.891,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_overall",
+      "value": 1.955,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.263,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.647,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.293,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.734,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.738,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_overall",
+      "value": 1.823,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.365,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BWA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.79,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_overall",
+      "value": 2.882,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.001,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BFA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.082,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_overall",
+      "value": 2.417,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.686,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BDI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.662,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_overall",
+      "value": 2.634,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.913,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CMR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.811,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_overall",
+      "value": 2.906,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.559,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CAF",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.291,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_overall",
+      "value": 2.769,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.251,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TCD",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.938,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "gpi_overall",
+      "value": 2.061,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.387,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CIV",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.896,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_overall",
+      "value": 3.189,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.571,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COD",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.955,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_overall",
+      "value": 2.098,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.262,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DJI",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.156,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_overall",
+      "value": 1.729,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.875,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNQ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.527,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_overall",
+      "value": 2.412,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.185,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ERI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.73,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_overall",
+      "value": 2.648,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.749,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ETH",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.658,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_overall",
+      "value": 2.086,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.616,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GAB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.743,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_overall",
+      "value": 1.943,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.046,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.912,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_overall",
+      "value": 2.22,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.523,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GIN",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.082,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_overall",
+      "value": 2.012,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.294,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.156,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_overall",
+      "value": 2.447,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.927,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "KEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.768,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_overall",
+      "value": 2.016,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.329,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LSO",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.115,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_overall",
+      "value": 2.024,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.652,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LBR",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.706,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_overall",
+      "value": 1.849,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.184,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.571,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_overall",
+      "value": 1.994,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.257,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MWI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.93,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_overall",
+      "value": 2.996,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.268,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MLI",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.962,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_overall",
+      "value": 2.184,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.582,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MRT",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.239,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_overall",
+      "value": 1.586,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.096,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MUS",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.369,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_overall",
+      "value": 2.383,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.775,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.635,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_overall",
+      "value": 1.872,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.373,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NAM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.826,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_overall",
+      "value": 2.832,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.862,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.902,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_overall",
+      "value": 2.755,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.951,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NGA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.747,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_overall",
+      "value": 2.256,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "COG",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.003,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_overall",
+      "value": 2.2,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.463,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "RWA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.476,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_overall",
+      "value": 1.939,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.353,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SEN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.487,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_overall",
+      "value": 1.937,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.465,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.591,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_overall",
+      "value": 2.973,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.503,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SOM",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.81,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_overall",
+      "value": 2.308,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.917,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZAF",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.679,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_overall",
+      "value": 3.116,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_safety_security",
+      "value": 3.865,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SSD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.102,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_overall",
+      "value": 2.095,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.815,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWZ",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.598,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_overall",
+      "value": 2.08,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.121,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TZA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.821,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "gpi_overall",
+      "value": 1.837,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.248,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GMB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.508,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_overall",
+      "value": 2.251,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.508,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "TGO",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.918,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_overall",
+      "value": 2.42,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.999,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "UGA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.816,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_overall",
+      "value": 1.992,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.493,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.442,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_overall",
+      "value": 2.051,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.489,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ZWE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.763,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_overall",
+      "value": 1.725,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.812,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ALB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.933,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_overall",
+      "value": 1.421,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.622,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "AUT",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.336,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_overall",
+      "value": 1.608,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.695,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BEL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.992,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_overall",
+      "value": 1.81,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.124,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "BIH",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.492,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_overall",
+      "value": 1.619,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.7,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HRV",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.82,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_overall",
+      "value": 1.967,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.207,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CYP",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.792,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_overall",
+      "value": 1.517,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.641,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CZE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.498,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_overall",
+      "value": 1.504,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.321,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DNK",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.08,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_overall",
+      "value": 1.623,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.454,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "EST",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.068,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_overall",
+      "value": 1.478,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.287,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FIN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.717,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_overall",
+      "value": 2.083,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.984,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "FRA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.806,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_overall",
+      "value": 1.657,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.739,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "DEU",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.083,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_overall",
+      "value": 1.828,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.891,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GRC",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.36,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_overall",
+      "value": 1.538,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.717,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "HUN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.426,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_overall",
+      "value": 1.161,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.288,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ISL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.027,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_overall",
+      "value": 1.371,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.525,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "IRL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.339,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_overall",
+      "value": 1.712,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.664,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ITA",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.494,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_overall",
+      "value": 1.589,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.558,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LVA",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.713,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_overall",
+      "value": 1.62,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.494,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "LTU",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.956,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_overall",
+      "value": 1.792,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.909,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.045,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_overall",
+      "value": 1.672,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.817,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "MNE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.69,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_overall",
+      "value": 1.566,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.473,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NLD",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.169,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_overall",
+      "value": 1.688,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.243,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "NOR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.689,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_overall",
+      "value": 1.615,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.606,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "POL",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.935,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_overall",
+      "value": 1.427,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.669,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "PRT",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.231,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_overall",
+      "value": 1.919,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_safety_security",
+      "value": 2.017,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SRB",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.924,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_overall",
+      "value": 1.661,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.749,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVK",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.585,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_overall",
+      "value": 1.369,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.452,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SVN",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.308,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_overall",
+      "value": 1.654,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.765,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "ESP",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.884,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_overall",
+      "value": 1.732,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.463,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "SWE",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.12,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_overall",
+      "value": 1.363,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.433,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "CHE",
+      "indicatorName": "gpi_militarisation",
+      "value": 1.564,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_overall",
+      "value": 1.73,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_safety_security",
+      "value": 1.56,
+      "year": 2026,
+      "source": "gpi"
+    },
+    {
+      "countryIso3": "GBR",
+      "indicatorName": "gpi_militarisation",
+      "value": 2.507,
+      "year": 2026,
+      "source": "gpi"
+    }
+  ]
+}

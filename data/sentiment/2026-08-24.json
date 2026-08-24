@@ -1,0 +1,37 @@
+{
+  "generatedAt": "2026-08-24T07:01:03.093Z",
+  "countries": {
+    "CHN": {
+      "iso3": "CHN",
+      "count": 21,
+      "avgDelta": 1.8020557693256585,
+      "correction": 0.9010278846628292,
+      "perceived": 7.634780107031379,
+      "official": 6.73375222236855
+    },
+    "USA": {
+      "iso3": "USA",
+      "count": 13,
+      "avgDelta": -0.500196598979722,
+      "correction": -0.250098299489861,
+      "perceived": 7.092525013296312,
+      "official": 7.342623312786173
+    },
+    "RUS": {
+      "iso3": "RUS",
+      "count": 6,
+      "avgDelta": 0.758826278983173,
+      "correction": 0.3794131394915865,
+      "perceived": 4.35791252005376,
+      "official": 3.978499380562173
+    },
+    "SLV": {
+      "iso3": "SLV",
+      "count": 6,
+      "avgDelta": 1.1058381815491982,
+      "correction": 0.5529190907745991,
+      "perceived": 7.253892608984522,
+      "official": 6.700973518209922
+    }
+  }
+}
