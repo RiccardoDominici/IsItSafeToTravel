@@ -1,4 +1,4 @@
-import { writeJson, getScoresDir } from '../utils/fs.js';
+import { writeJson, readJson, getScoresDir } from '../utils/fs.js';
 import { listSnapshotDates, loadSnapshot } from './snapshot.js';
 import { join } from 'node:path';
 import type { PillarName } from '../types.js';
@@ -10,21 +10,74 @@ export interface HistoryIndex {
   pillarHistory: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
+/** Remove trailing entries dated >= cutoff from a date-ascending point array (in place). */
+function trimFromCutoff(points: Array<{ date: string }>, cutoff: string): void {
+  while (points.length > 0 && points[points.length - 1].date >= cutoff) points.pop();
+}
+
 /**
- * Build and write history-index.json from all available daily snapshots.
+ * Build and write history-index.json from the daily snapshots.
  *
- * Consolidates per-country score arrays and global score history into a
- * single file for efficient build-time loading.
+ * DEFAULT (incremental): folds in only snapshots newer than what the existing
+ * index already covers. Rebuilding from scratch used to re-parse every snapshot
+ * on disk (~700 files / ~1.3 GB of JSON) on EVERY daily run; now the steady
+ * state reads one JSON file plus the new day's snapshot. Points are appended in
+ * date order; a same-day rerun replaces that day's entries instead of
+ * duplicating them (trailing entries >= new cutoff are trimmed first).
+ *
+ * opts.full forces a complete rebuild from all available snapshots — required
+ * after backfills that RESCORE history (scripts/backfill-*.ts), where cached
+ * old points must be recomputed, not kept.
+ *
+ * Note: after scripts/prune-snapshots.ts deletes old snapshot files, a full
+ * rebuild can only cover surviving dates — the index itself is the archive.
  */
-export function writeHistoryIndex(): HistoryIndex {
+export function writeHistoryIndex(opts: { full?: boolean } = {}): HistoryIndex {
+  const indexPath = join(getScoresDir(), 'history-index.json');
   const dates = listSnapshotDates();
+  const existing = opts.full ? null : readJson<HistoryIndex>(indexPath);
+
   const global: Array<{ date: string; score: number }> = [];
   const countries: Record<string, Array<{ date: string; score: number; dc?: number }>> = {};
   const pillarHistory: Record<string, Record<string, Array<{ date: string; score: number }>>> = {};
 
-  for (const date of dates) {
+  let pendingDates: string[];
+  if (existing && existing.global.length > 0) {
+    const lastCovered = existing.global[existing.global.length - 1].date;
+    // ">=" so a same-day rerun (snapshot regenerated after a manual pipeline
+    // run) is RE-FOLDED — the cutoff trim below replaces those points instead
+    // of duplicating them.
+    pendingDates = dates.filter((d) => d >= lastCovered);
+    if (pendingDates.length === 0) {
+      console.log(`history-index.json up to date (${dates.length} snapshots, last ${lastCovered})`);
+      return existing;
+    }
+    // Same-day rerun guard: drop any existing entries for the dates we are
+    // about to (re)append, so repeated runs never duplicate points.
+    const cutoff = pendingDates[0];
+    global.push(...existing.global);
+    trimFromCutoff(global, cutoff);
+    for (const [iso3, points] of Object.entries(existing.countries)) {
+      trimFromCutoff(points, cutoff);
+      if (points.length > 0) countries[iso3] = points;
+    }
+    for (const [iso3, pillars] of Object.entries(existing.pillarHistory)) {
+      for (const [pillar, points] of Object.entries(pillars)) {
+        trimFromCutoff(points, cutoff);
+        if (points.length > 0) {
+          (pillarHistory[iso3] ??= {})[pillar] = points;
+        }
+      }
+    }
+  } else {
+    pendingDates = dates;
+  }
+
+  let folded = 0;
+  for (const date of pendingDates) {
     const snapshot = loadSnapshot(date);
     if (!snapshot) continue;
+    folded++;
 
     // Always recalculate from country scores for 2-decimal precision
     const globalScore = snapshot.countries.length > 0
@@ -64,9 +117,11 @@ export function writeHistoryIndex(): HistoryIndex {
     pillarHistory: pillarHistory as Record<string, Record<PillarName, Array<{ date: string; score: number }>>>,
   };
 
-  const indexPath = join(getScoresDir(), 'history-index.json');
   writeJson(indexPath, index);
-  console.log(`Wrote history-index.json with ${dates.length} snapshots, ${Object.keys(countries).length} countries`);
+  console.log(
+    `Wrote history-index.json: ${global.length} points total ` +
+    `(${folded} new snapshot(s) folded in${opts.full ? ', full rebuild' : ', incremental'})`,
+  );
 
   return index;
 }

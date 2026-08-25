@@ -1,18 +1,47 @@
-import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, renameSync } from 'node:fs';
 import { join, dirname } from 'node:path';
+
+/** Files serialized larger than this are written without indentation (halves disk/git size). */
+const COMPACT_THRESHOLD_BYTES = 256_000;
 
 export function ensureDir(dirPath: string): void {
   mkdirSync(dirPath, { recursive: true });
 }
 
+/**
+ * Atomic JSON writer.
+ *
+ * Writes to a temp file in the same directory, then renames over the target —
+ * POSIX rename is atomic, so a crash mid-write can never leave a truncated
+ * JSON behind (a truncated *-parsed.json used to abort the whole pipeline
+ * stage on the next run). Large payloads (snapshots, history-index.json) are
+ * serialized without indentation to roughly halve their size.
+ */
 export function writeJson(filePath: string, data: unknown): void {
   ensureDir(dirname(filePath));
-  writeFileSync(filePath, JSON.stringify(data, null, 2) + '\n', 'utf-8');
+  let json = JSON.stringify(data);
+  if (Buffer.byteLength(json, 'utf-8') <= COMPACT_THRESHOLD_BYTES) {
+    json = JSON.stringify(data, null, 2);
+  }
+  const tmpPath = `${filePath}.tmp`;
+  writeFileSync(tmpPath, json + '\n', 'utf-8');
+  renameSync(tmpPath, filePath);
 }
 
+/**
+ * Read a JSON file, returning null for both missing and CORRUPT files instead
+ * of throwing — callers already handle null ("skip / fall back"), so one bad
+ * file can no longer abort an entire stage. Corruption is logged loudly.
+ */
 export function readJson<T>(filePath: string): T | null {
   if (!existsSync(filePath)) return null;
-  return JSON.parse(readFileSync(filePath, 'utf-8')) as T;
+  try {
+    return JSON.parse(readFileSync(filePath, 'utf-8')) as T;
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[fs] Corrupt/unreadable JSON treated as missing: ${filePath} (${msg})`);
+    return null;
+  }
 }
 
 export function getRawDir(date: string): string {

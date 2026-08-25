@@ -268,7 +268,7 @@ async function main() {
 
   // ----- Step D: regenerate history index -----
   console.log('--- Step D: regenerate history index ---');
-  writeHistoryIndex();
+  writeHistoryIndex({ full: true }); // backfills rescore history: cached old points must be recomputed
   console.log('');
 
   const totalSec = ((Date.now() - startTime) / 1000).toFixed(1);
