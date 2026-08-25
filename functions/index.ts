@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 // Cloudflare Pages Function: language-based redirect for root URL
 // Reads Accept-Language header to serve the correct language version.
 // Googlebot gets /en/ (no Accept-Language match) which aligns with x-default hreflang.

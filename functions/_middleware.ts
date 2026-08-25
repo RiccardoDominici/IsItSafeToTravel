@@ -1,3 +1,4 @@
+/// <reference types="@cloudflare/workers-types" />
 // Cloudflare Pages Middleware: redirect .pages.dev to canonical domain
 // Prevents duplicate content indexing on the preview domain.
 

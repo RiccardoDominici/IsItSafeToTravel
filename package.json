@@ -13,6 +13,7 @@
     "generate:llms": "npx tsx scripts/generate-llms-full.ts",
     "preview": "astro preview",
     "astro": "astro",
+    "typecheck": "astro check",
     "test": "node --import tsx --test --test-concurrency=1 src/pipeline/__tests__/*.test.ts src/pipeline/scoring/__tests__/*.test.ts",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
     "test:freshness": "node --import tsx --test src/pipeline/scoring/__tests__/freshness.test.ts",
@@ -35,6 +36,7 @@
     "typescript": "^5.9.3"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260702.1",
     "@resvg/resvg-js": "^2.6.2",
     "@types/d3": "^7.4.3",
     "@types/papaparse": "^5.5.2",

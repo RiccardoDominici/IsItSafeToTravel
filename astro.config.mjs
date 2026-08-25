@@ -13,6 +13,7 @@ const lastmodMap = buildLastmodMap();
 // Country route slugs per language (to extract ISO3 from URLs)
 const countryRouteSlugs = ['country', 'paese', 'pais', 'pays', 'land'];
 
+/** @param {string} url */
 function getCountryIso3FromUrl(url) {
   const urlPath = new URL(url).pathname;
   const segments = urlPath.split('/').filter(Boolean);

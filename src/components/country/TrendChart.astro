@@ -121,8 +121,9 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
     Promise.all([
       import('d3'),
       fetch('/trend/' + container.dataset.iso3 + '.json')
-        .then(r => r.ok ? r.json() : { history: [], pillars: null }),
-    ]).then(([d3module, trendJson]) => {
+        .then(r => r.ok ? r.json() : Promise.resolve({ history: [], pillars: null })),
+    ]).then(([d3module, trendJsonRaw]) => {
+    const trendJson = trendJsonRaw as { history?: Array<{ date: string; score: number; dc?: number }>; pillars?: Record<string, Array<{ date: string; score: number }>> | null };
     const { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } = d3module;
 
     function smartDateFormat(dates: Date[]): (d: Date) => string {
@@ -265,7 +266,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           if (!currentSeg || currentSeg.insufficient !== insuf) {
             // Overlap: connect segments by including the last point of prev segment
             if (currentSeg && currentSeg.points.length > 0) {
-              const overlap = currentSeg.points[currentSeg.points.length - 1];
+              const overlap: HistoryPoint = currentSeg.points[currentSeg.points.length - 1];
               currentSeg = { points: [overlap], insufficient: insuf };
             } else {
               currentSeg = { points: [], insufficient: insuf };

@@ -1,5 +1,8 @@
 import { ui, defaultLang, type Lang, languages, routes, publishedLanguages } from './ui';
 
+/** Union of every valid i18n key (from the EN dictionary — the reference locale). */
+export type TranslationKey = keyof (typeof ui)[typeof defaultLang];
+
 export function getLangFromUrl(url: URL): Lang {
   const [, lang] = url.pathname.split('/');
   if (lang && lang in languages) return lang as Lang;
@@ -7,7 +10,7 @@ export function getLangFromUrl(url: URL): Lang {
 }
 
 export function useTranslations(lang: Lang) {
-  return function t(key: keyof (typeof ui)[typeof defaultLang]): string {
+  return function t(key: TranslationKey): string {
     return ui[lang][key] || ui[defaultLang][key];
   };
 }

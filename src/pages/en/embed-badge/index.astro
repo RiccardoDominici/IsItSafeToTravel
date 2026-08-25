@@ -96,7 +96,7 @@ const jsonLd = buildWebPageJsonLd(title, description, canonicalUrl, lang);
 </Base>
 
 <script>
-  const select = document.getElementById('badge-country') as HTMLSelectElement;
+  const select = document.getElementById("badge-country") as unknown as HTMLSelectElement;
   const preview = document.getElementById('badge-preview') as HTMLImageElement;
   const htmlArea = document.getElementById('embed-html') as HTMLTextAreaElement;
   const mdArea = document.getElementById('embed-markdown') as HTMLTextAreaElement;

@@ -4,7 +4,7 @@
 import type { NewsEvent, NewsEventType } from '../../pipeline/news/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
-import { useTranslations } from '../../i18n/utils';
+import { useTranslations, type TranslationKey } from '../../i18n/utils';
 import { renderNewsEvent, flagEmoji } from '../../lib/news';
 
 interface Props {
@@ -17,7 +17,7 @@ interface Props {
 const { event, lang, nameOf, featured = false } = Astro.props;
 const t = useTranslations(lang);
 const rendered = renderNewsEvent(event, lang, t, nameOf);
-const r = routes[lang];
+const r = routes[lang as keyof typeof routes];
 
 const formattedDate = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long', day: 'numeric' }).format(
   new Date(event.date),
@@ -115,7 +115,7 @@ const SENTIMENT_CLASSES: Record<
 };
 const sc = SENTIMENT_CLASSES[sentiment];
 
-const KICKER_KEY: Record<NewsEventType, string> = {
+const KICKER_KEY: Record<NewsEventType, TranslationKey> = {
   severe_advisory: 'news.kicker.severe_advisory',
   new_country: 'news.kicker.new_country',
   top10_change: 'news.kicker.top10_change',
@@ -123,7 +123,7 @@ const KICKER_KEY: Record<NewsEventType, string> = {
   rank_overtake: 'news.kicker.rank_overtake',
   score_jump: 'news.kicker.score_jump',
 };
-const kickerWord = t(KICKER_KEY[event.type] as any);
+const kickerWord = t(KICKER_KEY[event.type as NewsEventType]);
 const kickerText =
   event.type === 'severe_advisory' && event.params.level !== undefined
     ? `${kickerWord} · L${event.params.level}`

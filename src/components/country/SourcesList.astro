@@ -1,7 +1,7 @@
 ---
 import type { SourceMeta, PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
-import { useTranslations } from '../../i18n/utils';
+import { useTranslations, type TranslationKey } from '../../i18n/utils';
 
 interface Props {
   sources: SourceMeta[];
@@ -71,7 +71,7 @@ const freshnessStyles: Record<FreshnessLevel, string> = {
   unknown: 'bg-sand-200 text-sand-600 dark:bg-sand-700 dark:text-sand-300',
 };
 
-const freshnessKeys: Record<FreshnessLevel, string> = {
+const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
   fresh: 'sources.freshness.fresh',
   recent: 'sources.freshness.recent',
   stale: 'sources.freshness.stale',

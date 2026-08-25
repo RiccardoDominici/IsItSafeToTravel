@@ -65,7 +65,9 @@ interface Props {
   sentiment: SentimentEntry | null;
 }
 
-const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries, sentiment } = Astro.props;
+// getStaticPaths props are not inferred by astro check — cast once to the declared
+// Props interface so every downstream component receives properly typed values.
+const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries, sentiment } = Astro.props as unknown as Props;
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const lm = getLastmodMap();
