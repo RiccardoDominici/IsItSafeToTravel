@@ -134,8 +134,8 @@ const countryRoute = routes[lang].country;
 </div>
 
 <script>
-  import * as d3 from 'd3';
-  import * as topojson from 'topojson-client';
+  // Type-only import: erased at build time, keeps annotations without bundling d3.
+  import type * as d3types from 'd3';
   import {
     safetyColorScale,
     UNSCORED_COLOR,
@@ -161,7 +161,16 @@ const countryRoute = routes[lang].country;
 
   async function initMap() {
     const container = document.getElementById('safety-map-container');
-    if (!container) return;
+    if (!container || container.dataset.mapInit === 'true') return;
+    container.dataset.mapInit = 'true';
+
+    // Dynamic imports: d3 (~250 KB minified) + topojson load only when the map
+    // actually enters the viewport (see scheduleInit below) instead of blocking
+    // first paint on every homepage. The data fetches below run in parallel.
+    const [d3, topojson] = (await Promise.all([
+      import('d3'),
+      import('topojson-client'),
+    ])) as [typeof d3types, typeof import('topojson-client')];
 
     const lang = container.dataset.lang || 'en';
     const translations: Translations = JSON.parse(
@@ -178,7 +187,7 @@ const countryRoute = routes[lang].country;
     try {
       const res = await fetch('/map-data.json');
       if (res.ok) {
-        const snapshot = await res.json();
+        const snapshot = (await res.json()) as Record<string, any>;
         scores = (snapshot.countries || []).map((c: any) => ({
           iso3: c.iso3,
           name: c.name?.[lang] || c.name?.en || c.iso3,
@@ -210,7 +219,7 @@ const countryRoute = routes[lang].country;
     const enabledSources = new Set<string>(sortedSources.map(s => s[0]));
 
     // Ref to SVG group for source filter — assigned after map renders
-    let mapGroupRef: d3.Selection<SVGGElement, unknown, null, undefined> | null = null;
+    let mapGroupRef: d3types.Selection<SVGGElement, unknown, null, undefined> | null = null;
 
     // Apply source filter to map: dim countries with no visible advisory sources
     function applySourceFilterToMap() {
@@ -342,7 +351,7 @@ const countryRoute = routes[lang].country;
     // Projection
     const projection = d3
       .geoNaturalEarth1()
-      .fitSize([width, height], { type: 'Sphere' } as d3.GeoPermissibleObjects);
+      .fitSize([width, height], { type: 'Sphere' } as d3types.GeoPermissibleObjects);
 
     const path = d3.geoPath().projection(projection);
 
@@ -406,7 +415,7 @@ const countryRoute = routes[lang].country;
 
         return true;
       })
-      .on('zoom', (event: d3.D3ZoomEvent<SVGSVGElement, unknown>) => {
+      .on('zoom', (event: d3types.D3ZoomEvent<SVGSVGElement, unknown>) => {
         g.attr('transform', event.transform.toString());
         // On mobile, keep stroke-width visually constant regardless of zoom level
         if (isTouchDevice) {
@@ -766,7 +775,7 @@ const countryRoute = routes[lang].country;
             svg.attr('viewBox', `0 0 ${newWidth} ${newHeight}`);
             projection.fitSize([newWidth, newHeight], {
               type: 'Sphere',
-            } as d3.GeoPermissibleObjects);
+            } as d3types.GeoPermissibleObjects);
 
             g.selectAll<SVGPathElement, any>('.country-path').attr(
               'd',
@@ -785,7 +794,38 @@ const countryRoute = routes[lang].country;
       });
   }
 
+  /**
+   * Defer map init (and the d3/topojson download) until the container is close
+   * to the viewport. Falls back to immediate init where IntersectionObserver
+   * is unavailable. Re-armed after Astro view transitions.
+   */
+  let mapObserver: IntersectionObserver | null = null;
+  function scheduleInit(): void {
+    const container = document.getElementById('safety-map-container');
+    if (!container) return;
+    if (typeof IntersectionObserver === 'undefined') {
+      initMap();
+      return;
+    }
+    if (container.getBoundingClientRect().top < window.innerHeight + 300) {
+      // Already at/near the viewport — don't wait for an observer tick.
+      initMap();
+      return;
+    }
+    mapObserver?.disconnect();
+    mapObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          mapObserver?.disconnect();
+          initMap();
+        }
+      },
+      { rootMargin: '300px' },
+    );
+    mapObserver.observe(container);
+  }
+
   // Init on load and after Astro view transitions
-  initMap();
-  document.addEventListener('astro:after-swap', initMap);
+  scheduleInit();
+  document.addEventListener('astro:after-swap', scheduleInit);
 </script>

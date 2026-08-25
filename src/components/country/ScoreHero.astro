@@ -2,7 +2,7 @@
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
-import { scoreToColor } from '../../lib/colors';
+import { scoreToColor, readableTextColor } from '../../lib/colors';
 import { getLocalizedCountryName } from '../../lib/scores';
 
 interface Props {
@@ -15,6 +15,9 @@ const { country, lang, scoreDelta } = Astro.props;
 const t = useTranslations(lang);
 
 const bgColor = scoreToColor(country.score);
+// WCAG: the moderate band's yellow fails contrast with white text — pick dark
+// text on light backgrounds, keep white on danger/safe colors.
+const fgColor = readableTextColor(bgColor);
 
 // Travel verdict based on score. `badge` uses the same tinted-pill classes as
 // the site's other status badges ("Updated daily", freshness, score chips) so
@@ -75,7 +78,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
 
   <div
     class="inline-flex flex-col items-center justify-center rounded-2xl px-8 py-6 shadow-lg"
-    style={`background-color: ${bgColor}; color: #fff;`}
+    style={`background-color: ${bgColor}; color: ${fgColor};`}
   >
     <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
       {country.scoreDisplay}
