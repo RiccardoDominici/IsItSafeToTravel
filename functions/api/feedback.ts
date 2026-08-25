@@ -17,7 +17,9 @@
 //      branches on res.ok).
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-const MAX_BODY_BYTES = 2048;
+// Must comfortably fit the 5000-char message limit below plus name/email/type and
+// JSON overhead, including multi-byte scripts (CJK ≈ 3 B/char in UTF-8).
+const MAX_BODY_BYTES = 20_480;
 const FEEDBACK_CAP_PER_DAY = 5; // per salted IP hash, rolling 24h
 const RATE_WINDOW_SEC = 86_400;
 const FALLBACK_SALT = 'isitsafetotravel-vote-fallback-salt-v1'; // same constant as vote/subscribe
@@ -160,7 +162,12 @@ export async function onRequestPost(context: { request: Request; env: Env }): Pr
 
     let body: Record<string, unknown>;
     try {
-      body = JSON.parse(rawBody);
+      const parsed: unknown = JSON.parse(rawBody);
+      // JSON.parse accepts null/arrays/scalars — only a plain object is a valid payload.
+      if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
+        return json({ ok: false, reason: 'invalid_json' }, 400);
+      }
+      body = parsed as Record<string, unknown>;
     } catch {
       return json({ ok: false, reason: 'invalid_json' }, 400);
     }
@@ -170,7 +177,10 @@ export async function onRequestPost(context: { request: Request; env: Env }): Pr
     const name = sanitizeHeaderValue(body.name, 200);
     const email = String(body.email ?? '').trim().toLowerCase().slice(0, 254);
     const message = String(body.message ?? '').slice(0, 5000);
-    const typeLabel = TYPE_LABELS[String(body.type ?? '')] ?? TYPE_LABELS.other;
+    // Object.hasOwn guards against prototype-chain keys ('constructor', 'toString', …)
+    // resolving to inherited non-string values and escaping the allowlist.
+    const rawType = String(body.type ?? '');
+    const typeLabel = Object.hasOwn(TYPE_LABELS, rawType) ? TYPE_LABELS[rawType] : TYPE_LABELS.other;
 
     if (!name || !EMAIL_RE.test(email) || !message.trim()) {
       return json({ ok: false, reason: 'invalid_input' }, 400);

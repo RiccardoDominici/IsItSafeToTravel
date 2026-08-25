@@ -43,11 +43,14 @@ const action = mode === 'country'
   : 'https://www.aviasales.com/';
 ---
 
+{/* rel IS valid on <form> per WHATWG (sponsored is required on monetized affiliate
+    links); Astro's FormHTMLAttributes type lags the spec, hence the spread below. */}
 <form
   id={formId}
   action={action}
   method="GET"
   target="_blank"
+  {...{ rel: 'noopener noreferrer sponsored' }}
   class="flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-2.5 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-900 text-sm"
 >
   <input type="hidden" name="marker" value={TRAVELPAYOUTS_MARKER} />
