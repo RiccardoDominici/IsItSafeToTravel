@@ -1,5 +1,6 @@
 import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../types.js';
 import type { AdvisoryInfoMap } from './advisories.js';
+import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
@@ -715,6 +716,16 @@ export async function fetchTier1Advisories(date: string): Promise<FetchResult> {
       fetchedAt,
     };
   }
+
+  // Per-source floor check: a single issuer's site redesign must not
+  // silently drop its column (restores from the last healthy cache).
+  enforcePerSourceFloors({
+    logPrefix: '[ADVISORIES-T1]',
+    infoFile: 'advisories-tier1-info.json',
+    indicators: allIndicators,
+    advisoryInfo: combinedAdvisoryInfo,
+    errors,
+  });
 
   // Save combined parsed data
   const sourceData: RawSourceData = {
