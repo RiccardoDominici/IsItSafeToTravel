@@ -1090,6 +1090,20 @@ export async function fetchTier2aAdvisories(date: string): Promise<FetchResult> 
   enforcePerSourceFloors({
     logPrefix: '[ADVISORIES-T2A]',
     infoFile: 'advisories-tier2a-info.json',
+    // Full issuer list from this tier's sub-fetchers — a zero-row collapse
+    // must be caught too, not skipped because nothing was fetched.
+    expectedIssuers: [
+      'at',
+      'br',
+      'fi',
+      'fr',
+      'hk',
+      'ie',
+      'nz',
+      'ph',
+    ],
+    // Measured minimums — small issuers must not false-positive daily.
+    floors: { nz: 14, hk: 9, fr: 5, br: 0, fi: 0, ph: 0 }, // 0 = never produced data yet: monitor silently
     indicators: allIndicators,
     advisoryInfo: combinedAdvisoryInfo,
     errors,

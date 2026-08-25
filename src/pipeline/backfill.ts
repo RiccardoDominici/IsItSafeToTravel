@@ -479,7 +479,9 @@ async function runBackfill(dryRun: boolean = false): Promise<BackfillResult> {
   // Rebuild history index after all snapshots updated
   if (!dryRun) {
     console.log('\n--- Rebuilding history-index.json ---');
-    const historyIndex = writeHistoryIndex();
+    // Full rebuild REQUIRED: this backfill rewrote historical snapshots, and
+    // the incremental path would keep their stale cached points.
+    const historyIndex = writeHistoryIndex({ full: true });
     console.log(
       `History index rebuilt: ${historyIndex.global.length} dates, ${Object.keys(historyIndex.countries).length} countries`,
     );

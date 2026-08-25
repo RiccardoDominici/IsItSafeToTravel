@@ -966,6 +966,18 @@ export async function fetchTier3aAdvisories(date: string): Promise<FetchResult> 
   enforcePerSourceFloors({
     logPrefix: '[ADVISORIES-T3A]',
     infoFile: 'advisories-tier3a-info.json',
+    // Full issuer list from this tier's sub-fetchers — a zero-row collapse
+    // must be caught too, not skipped because nothing was fetched.
+    expectedIssuers: [
+      'cn',
+      'es',
+      'in',
+      'it',
+      'kr',
+      'tw',
+    ],
+    // Measured minimums — small issuers must not false-positive daily.
+    floors: { cn: 4, es: 2, in: 1, kr: 0 }, // 0 = never produced data yet: monitor silently
     indicators: allIndicators,
     advisoryInfo: combinedAdvisoryInfo,
     errors,

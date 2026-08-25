@@ -1,6 +1,7 @@
 import { writeJson, readJson, getScoresDir } from '../utils/fs.js';
 import { listSnapshotDates, loadSnapshot } from './snapshot.js';
 import { join } from 'node:path';
+import { existsSync } from 'node:fs';
 import type { PillarName } from '../types.js';
 
 export interface HistoryIndex {
@@ -36,6 +37,20 @@ export function writeHistoryIndex(opts: { full?: boolean } = {}): HistoryIndex {
   const indexPath = join(getScoresDir(), 'history-index.json');
   const dates = listSnapshotDates();
   const existing = opts.full ? null : readJson<HistoryIndex>(indexPath);
+
+  // A MISSING index is fine (first run / intentional rebuild — it will be
+  // reconstructed from the snapshots on disk). An EXISTING but UNPARSABLE one
+  // is NOT: after scripts/prune-snapshots.ts the old daily files are gone and
+  // this index is the only long-term archive. Silently rebuilding from the
+  // pruned remainder would quietly truncate history to ~120 days + monthly
+  // anchors, so fail loudly instead and let an operator git-restore the file.
+  if (!opts.full && existing === null && existsSync(indexPath)) {
+    throw new Error(
+      `history-index.json exists but is corrupt/unreadable (${indexPath}). ` +
+      `Refusing to overwrite the historical archive with a partial rebuild — ` +
+      `restore it with: git checkout HEAD -- data/scores/history-index.json`,
+    );
+  }
 
   const global: Array<{ date: string; score: number }> = [];
   const countries: Record<string, Array<{ date: string; score: number; dc?: number }>> = {};
