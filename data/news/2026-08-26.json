@@ -1,0 +1,188 @@
+{
+  "date": "2026-08-26",
+  "generatedAt": "2026-08-26T06:52:00.584Z",
+  "events": [
+    {
+      "id": "2026-08-26:band_change:HRV",
+      "date": "2026-08-26",
+      "type": "band_change",
+      "params": {
+        "country": "HRV",
+        "fromBand": "excellent",
+        "toBand": "good",
+        "score": 7.9,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-08-26:band_change:KWT",
+      "date": "2026-08-26",
+      "type": "band_change",
+      "params": {
+        "country": "KWT",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.8,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-08-26:band_change:MRT",
+      "date": "2026-08-26",
+      "type": "band_change",
+      "params": {
+        "country": "MRT",
+        "fromBand": "moderate",
+        "toBand": "high_caution",
+        "score": 5.8,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-08-26:band_change:PHL",
+      "date": "2026-08-26",
+      "type": "band_change",
+      "params": {
+        "country": "PHL",
+        "fromBand": "moderate",
+        "toBand": "high_caution",
+        "score": 5.9,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-08-26:rank_overtake:AUT:SVN",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "AUT",
+        "other": "SVN",
+        "rank": 13,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:MLT:SVN",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "MLT",
+        "other": "SVN",
+        "rank": 16,
+        "confidence": 0.7
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:AUS:SVN",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "AUS",
+        "other": "SVN",
+        "rank": 17,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:LTU:SVN",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "LTU",
+        "other": "SVN",
+        "rank": 18,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:BEL:SVN",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "BEL",
+        "other": "SVN",
+        "rank": 19,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:BTN:HRV",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "BTN",
+        "other": "HRV",
+        "rank": 35,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:rank_overtake:LIE:HRV",
+      "date": "2026-08-26",
+      "type": "rank_overtake",
+      "params": {
+        "country": "LIE",
+        "other": "HRV",
+        "rank": 36,
+        "confidence": 0.55
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-08-26:score_jump:SVN",
+      "date": "2026-08-26",
+      "type": "score_jump",
+      "params": {
+        "country": "SVN",
+        "delta": -0.19,
+        "score": 8.3,
+        "prevScore": 8.5,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-08-26:score_jump:HRV",
+      "date": "2026-08-26",
+      "type": "score_jump",
+      "params": {
+        "country": "HRV",
+        "delta": -0.18,
+        "score": 7.9,
+        "prevScore": 8.1,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-08-26:score_jump:MMR",
+      "date": "2026-08-26",
+      "type": "score_jump",
+      "params": {
+        "country": "MMR",
+        "delta": 0.15,
+        "score": 4.4,
+        "prevScore": 4.2,
+        "direction": "up",
+        "confidence": 0.8
+      },
+      "priority": 50
+    }
+  ]
+}
