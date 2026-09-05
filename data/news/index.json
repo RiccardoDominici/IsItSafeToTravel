@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-04T10:52:04.597Z",
-  "lastProcessedDate": "2026-09-04",
+  "generatedAt": "2026-09-05T10:06:35.437Z",
+  "lastProcessedDate": "2026-09-05",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
@@ -263,20 +263,6 @@
         "confidence": 0.8
       },
       "priority": 50
-    },
-    {
-      "id": "2026-08-06:band_change:GRC",
-      "date": "2026-08-06",
-      "type": "band_change",
-      "params": {
-        "country": "GRC",
-        "fromBand": "excellent",
-        "toBand": "good",
-        "score": 7.9,
-        "direction": "down",
-        "confidence": 0.8
-      },
-      "priority": 70
     }
   ]
 }
