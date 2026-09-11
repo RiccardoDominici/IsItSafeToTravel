@@ -1,0 +1,212 @@
+{
+  "date": "2026-09-11",
+  "generatedAt": "2026-09-11T10:46:42.461Z",
+  "events": [
+    {
+      "id": "2026-09-11:top10_change:LVA",
+      "date": "2026-09-11",
+      "type": "top10_change",
+      "params": {
+        "country": "LVA",
+        "direction": "enter",
+        "rank": 10,
+        "confidence": 0.8
+      },
+      "priority": 80
+    },
+    {
+      "id": "2026-09-11:top10_change:LUX",
+      "date": "2026-09-11",
+      "type": "top10_change",
+      "params": {
+        "country": "LUX",
+        "direction": "exit",
+        "rank": 34,
+        "confidence": 0.57
+      },
+      "priority": 80
+    },
+    {
+      "id": "2026-09-11:band_change:BGD",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "BGD",
+        "fromBand": "moderate",
+        "toBand": "high_caution",
+        "score": 5.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:BTN",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "BTN",
+        "fromBand": "excellent",
+        "toBand": "good",
+        "score": 7.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:CMR",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "CMR",
+        "fromBand": "high_caution",
+        "toBand": "danger",
+        "score": 4.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:CPV",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "CPV",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.9,
+        "direction": "down",
+        "confidence": 0.57
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:KEN",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "KEN",
+        "fromBand": "moderate",
+        "toBand": "high_caution",
+        "score": 5.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:KHM",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "KHM",
+        "fromBand": "moderate",
+        "toBand": "high_caution",
+        "score": 5.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:LIE",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "LIE",
+        "fromBand": "excellent",
+        "toBand": "good",
+        "score": 7.7,
+        "direction": "down",
+        "confidence": 0.5
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:MWI",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "MWI",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:PER",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "PER",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.8,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:SEN",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "SEN",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.8,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:STP",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "STP",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.7,
+        "direction": "down",
+        "confidence": 0.57
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:TTO",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "TTO",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.2,
+        "direction": "up",
+        "confidence": 0.78
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-11:band_change:TUN",
+      "date": "2026-09-11",
+      "type": "band_change",
+      "params": {
+        "country": "TUN",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.9,
+        "direction": "down",
+        "confidence": 0.78
+      },
+      "priority": 70
+    }
+  ]
+}
