@@ -1,13 +1,13 @@
 {
-  "generatedAt": "2026-09-11T10:46:42.462Z",
-  "lastProcessedDate": "2026-09-11",
+  "generatedAt": "2026-09-12T10:16:07.038Z",
+  "lastProcessedDate": "2026-09-12",
   "cooldowns": {
     "jump:ISR": "2026-06-17",
     "jump:QAT": "2026-06-26",
     "jump:ARE": "2026-06-26",
     "jump:KWT": "2026-08-22",
     "jump:BHR": "2026-08-22",
-    "band:ZMB": "2026-07-08",
+    "band:ZMB": "2026-09-12",
     "band:KWT": "2026-08-26",
     "jump:LBN": "2026-06-24",
     "jump:RUS": "2026-07-01",
@@ -65,9 +65,221 @@
     "band:SEN": "2026-09-11",
     "band:STP": "2026-09-11",
     "band:TTO": "2026-09-11",
-    "band:TUN": "2026-09-11"
+    "band:TUN": "2026-09-11",
+    "band:BHS": "2026-09-12",
+    "band:FSM": "2026-09-12",
+    "band:LSO": "2026-09-12",
+    "band:UZB": "2026-09-12",
+    "band:VUT": "2026-09-12",
+    "overtake:IRL|LUX": "2026-09-12",
+    "overtake:AUT|NZL": "2026-09-12",
+    "overtake:MLT|PRT": "2026-09-12",
+    "overtake:BEL|POL": "2026-09-12",
+    "overtake:GBR|NLD": "2026-09-12",
+    "overtake:BTN|GRC": "2026-09-12",
+    "jump:MDV": "2026-09-12",
+    "jump:CPV": "2026-09-12",
+    "jump:STP": "2026-09-12"
   },
   "recentEvents": [
+    {
+      "id": "2026-09-12:band_change:BHS",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "BHS",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.9,
+        "direction": "down",
+        "confidence": 0.65
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:band_change:FSM",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "FSM",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.3,
+        "direction": "up",
+        "confidence": 0.48
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:band_change:LSO",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "LSO",
+        "fromBand": "good",
+        "toBand": "moderate",
+        "score": 6.8,
+        "direction": "down",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:band_change:UZB",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "UZB",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7,
+        "direction": "up",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:band_change:VUT",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "VUT",
+        "fromBand": "good",
+        "toBand": "excellent",
+        "score": 8.1,
+        "direction": "up",
+        "confidence": 0.69
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:band_change:ZMB",
+      "date": "2026-09-12",
+      "type": "band_change",
+      "params": {
+        "country": "ZMB",
+        "fromBand": "moderate",
+        "toBand": "good",
+        "score": 7.1,
+        "direction": "up",
+        "confidence": 0.8
+      },
+      "priority": 70
+    },
+    {
+      "id": "2026-09-12:rank_overtake:BEL:POL",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "BEL",
+        "other": "POL",
+        "rank": 19,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:rank_overtake:BTN:GRC",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "BTN",
+        "other": "GRC",
+        "rank": 35,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:rank_overtake:GBR:NLD",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "GBR",
+        "other": "NLD",
+        "rank": 23,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:rank_overtake:LUX:IRL",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "LUX",
+        "other": "IRL",
+        "rank": 4,
+        "confidence": 0.71
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:rank_overtake:NZL:AUT",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "NZL",
+        "other": "AUT",
+        "rank": 12,
+        "confidence": 0.8
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:rank_overtake:PRT:MLT",
+      "date": "2026-09-12",
+      "type": "rank_overtake",
+      "params": {
+        "country": "PRT",
+        "other": "MLT",
+        "rank": 15,
+        "confidence": 0.7
+      },
+      "priority": 60
+    },
+    {
+      "id": "2026-09-12:score_jump:CPV",
+      "date": "2026-09-12",
+      "type": "score_jump",
+      "params": {
+        "country": "CPV",
+        "delta": 0.8,
+        "score": 7.7,
+        "prevScore": 6.9,
+        "direction": "up",
+        "confidence": 0.7
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-09-12:score_jump:MDV",
+      "date": "2026-09-12",
+      "type": "score_jump",
+      "params": {
+        "country": "MDV",
+        "delta": 0.87,
+        "score": 7.9,
+        "prevScore": 7,
+        "direction": "up",
+        "confidence": 0.7
+      },
+      "priority": 50
+    },
+    {
+      "id": "2026-09-12:score_jump:STP",
+      "date": "2026-09-12",
+      "type": "score_jump",
+      "params": {
+        "country": "STP",
+        "delta": 0.8,
+        "score": 7.5,
+        "prevScore": 6.7,
+        "direction": "up",
+        "confidence": 0.68
+      },
+      "priority": 50
+    },
     {
       "id": "2026-09-11:top10_change:LUX",
       "date": "2026-09-11",
