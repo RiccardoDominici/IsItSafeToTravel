@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-09-20T10:49:17.214Z",
-  "lastProcessedDate": "2026-09-20",
+  "generatedAt": "2026-09-21T12:13:44.013Z",
+  "lastProcessedDate": "2026-09-21",
   "cooldowns": {
     "jump:QAT": "2026-06-26",
     "jump:ARE": "2026-06-26",
@@ -663,34 +663,6 @@
         "score": 8.3,
         "prevScore": 8.5,
         "direction": "down",
-        "confidence": 0.8
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-08-22:score_jump:BHR",
-      "date": "2026-08-22",
-      "type": "score_jump",
-      "params": {
-        "country": "BHR",
-        "delta": 0.17,
-        "score": 6.5,
-        "prevScore": 6.4,
-        "direction": "up",
-        "confidence": 0.8
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-08-22:score_jump:KWT",
-      "date": "2026-08-22",
-      "type": "score_jump",
-      "params": {
-        "country": "KWT",
-        "delta": 0.19,
-        "score": 7,
-        "prevScore": 6.8,
-        "direction": "up",
         "confidence": 0.8
       },
       "priority": 50
