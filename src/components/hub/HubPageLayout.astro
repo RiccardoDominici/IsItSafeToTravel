@@ -1,5 +1,5 @@
 ---
-import type { ScoredCountry } from '../../pipeline/types';
+import type { PillarName, ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
@@ -12,6 +12,8 @@ import { buildFaqPageJsonLd, selectEligiblePillars } from '../../lib/seo';
 import { getBiggestMovers } from '../../lib/hub-data';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
+import { hubBlurbTemplates } from '../../i18n/hub-blurbs';
+import { getRegion, type Region } from '../../lib/regions';
 
 interface Props {
   lang: Lang;
@@ -60,47 +62,112 @@ const defaultBreadcrumb = [
 ];
 const crumbs = breadcrumbItems || defaultBreadcrumb;
 
-// ---- Head-term hub enrichment (2026-08 SEO audit) ----
+// ---- Hub enrichment (2026-08 SEO audit, extended 2026-09) ----
 // 'safest countries 2026' is the one head query where this page type is
 // SERP-aligned, but the hubs were ~400 words of bare rank/name/score against
-// 2,000+ word competitors. The two head-term hubs get: a generated one-line
-// data blurb per top-20 entry, a biggest-movers block, and a "how we differ
-// from GPI" section — all derived from data already in the build, no manual
-// editorial at 248-country scale.
-const enrich = hubType === 'safest-countries' || hubType === 'most-dangerous-countries';
+// 2,000+ word competitors. Originally only the two head-term hubs (full 1-10
+// ranking, directly GPI-comparable) got a data blurb, a biggest-movers block
+// and a "how we differ from GPI" section. The 2026-09 follow-up (SXO-03 / C6)
+// extends the per-country BLURB to the other 5 hubs too — the movers block and
+// GPI note stay head-term-only below (isHeadTermHub), since sitewide "movers"
+// and "vs GPI" framing only make sense for a plain score ranking, not for an
+// advisory-, weighted-subset- or trend-based one. Every blurb is generated
+// from data already in the build, no manual editorial at 248-country scale.
+const HEAD_TERM_HUBS: HubType[] = ['safest-countries', 'most-dangerous-countries'];
+const isHeadTermHub = hubType !== undefined && HEAD_TERM_HUBS.includes(hubType);
+const enrich = hubType !== undefined;
 const BLURB_COUNT = 20;
 
-/** One-line data blurb: strongest/weakest eligible pillar + advisory consensus. */
+function pillarScore(country: ScoredCountry, name: PillarName): number {
+  return (country.pillars.find((p) => p.name === name)?.score ?? 0) * 10;
+}
+
+/**
+ * One-line, per-country data blurb. The head-term hubs (safest/most-dangerous)
+ * name the country's strongest/weakest eligible pillar; the other 5 hubs name
+ * the specific pillars THAT hub actually weighs (see hub-data.ts), or — for
+ * the two trend hubs — the 7-day delta the page already computed.
+ */
 function buildBlurb(country: ScoredCountry): string {
-  const pillars = selectEligiblePillars(country.pillars);
-  let strongest = pillars[0];
-  let weakest = pillars[0];
-  for (const p of pillars) {
-    if (p.score > strongest.score) strongest = p;
-    if (p.score < weakest.score) weakest = p;
-  }
   const labels = faqPillarLabels[lang];
-  let text = (t('hub.blurb' as any) as string)
-    .replace('{name}', getLocalizedCountryName(country, lang))
-    .replace('{score}', country.score.toFixed(1))
-    .replace('{strongest}', labels[strongest.name])
-    .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
-    .replace('{weakest}', labels[weakest.name])
-    .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+  const name = getLocalizedCountryName(country, lang);
+  const score = country.score.toFixed(1);
+  let text: string;
+  // countries-to-avoid already names the advisory count in its own sentence —
+  // skip the generic advisory-consensus appendage below to avoid saying it twice.
+  let skipAdvisoryAppend = false;
+
+  if (isHeadTermHub) {
+    const pillars = selectEligiblePillars(country.pillars);
+    let strongest = pillars[0];
+    let weakest = pillars[0];
+    for (const p of pillars) {
+      if (p.score > strongest.score) strongest = p;
+      if (p.score < weakest.score) weakest = p;
+    }
+    text = (t('hub.blurb' as any) as string)
+      .replace('{name}', name)
+      .replace('{score}', score)
+      .replace('{strongest}', labels[strongest.name])
+      .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
+      .replace('{weakest}', labels[weakest.name])
+      .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+  } else if (hubType === 'safest-for-families') {
+    // Weighted health 35% + governance 35% + crime 20% + overall 10% (hub-data.ts) — name the two heaviest.
+    text = hubBlurbTemplates['safest-for-families'][lang]
+      .replace('{name}', name)
+      .replace('{score}', score)
+      .replace('{healthScore}', pillarScore(country, 'health').toFixed(1))
+      .replace('{crimeScore}', pillarScore(country, 'crime').toFixed(1));
+  } else if (hubType === 'safest-for-solo-travelers') {
+    // Weighted crime 40% + governance 40% + overall 20% (hub-data.ts).
+    text = hubBlurbTemplates['safest-for-solo-travelers'][lang]
+      .replace('{name}', name)
+      .replace('{score}', score)
+      .replace('{crimeScore}', pillarScore(country, 'crime').toFixed(1))
+      .replace('{governanceScore}', pillarScore(country, 'governance').toFixed(1));
+  } else if (hubType === 'countries-to-avoid') {
+    // Membership itself is advisory-driven (majority Level 4, hub-data.ts) — say so, plus the weakest pillar.
+    const advisories = Object.values(country.advisories ?? {});
+    const total = advisories.length;
+    const level4Count = advisories.filter((a) => Number((a as { level: number | string })?.level) === 4).length;
+    const pillars = selectEligiblePillars(country.pillars);
+    let weakest = pillars[0];
+    for (const p of pillars) if (p.score < weakest.score) weakest = p;
+    text = hubBlurbTemplates['countries-to-avoid'][lang]
+      .replace('{name}', name)
+      .replace('{score}', score)
+      .replace('{n}', String(level4Count))
+      .replace('{total}', String(total))
+      .replace('{weakest}', labels[weakest.name])
+      .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+    skipAdvisoryAppend = true;
+  } else if (hubType === 'improving-safety' || hubType === 'declining-safety') {
+    // Reuse the 7-day delta the page already computed (passed via the deltas prop) instead of re-deriving a pillar driver.
+    const delta = Math.abs(deltas?.get(country.iso3) ?? 0);
+    text = hubBlurbTemplates[hubType][lang]
+      .replace('{name}', name)
+      .replace('{score}', score)
+      .replace('{delta}', delta.toFixed(2));
+  } else {
+    return '';
+  }
 
   // Advisory consensus: modal level across present advisories, ties resolve to
   // the more cautious level (same heuristic as the country-page FAQ Q3).
-  const levels = Object.values(country.advisories ?? {})
-    .map((a) => Number((a as { level: number | string }).level))
-    .filter((l) => Number.isFinite(l) && l >= 1 && l <= 4);
-  if (levels.length > 0) {
-    const counts = [0, 0, 0, 0, 0];
-    for (const l of levels) counts[l]++;
-    let modal = 1;
-    for (let l = 1; l <= 4; l++) if (counts[l] >= counts[modal]) modal = l;
-    text += ' ' + (t('hub.blurb_advisories' as any) as string)
-      .replace('{n}', String(levels.length))
-      .replace('{level}', advisoryLevelWords[lang][modal - 1]);
+  if (!skipAdvisoryAppend) {
+    const levels = Object.values(country.advisories ?? {})
+      .map((a) => Number((a as { level: number | string }).level))
+      .filter((l) => Number.isFinite(l) && l >= 1 && l <= 4);
+    if (levels.length > 0) {
+      const counts = [0, 0, 0, 0, 0];
+      for (const l of levels) counts[l]++;
+      let modal = 1;
+      for (let l = 1; l <= 4; l++) if (counts[l] >= counts[modal]) modal = l;
+      text += ' ' + (t('hub.blurb_advisories' as any) as string)
+        .replace('{n}', String(levels.length))
+        .replace('{level}', advisoryLevelWords[lang][modal - 1]);
+    }
   }
   return text;
 }
@@ -108,7 +175,28 @@ function buildBlurb(country: ScoredCountry): string {
 const blurbs = enrich
   ? new Map(countries.slice(0, BLURB_COUNT).map((c) => [c.iso3, buildBlurb(c)]))
   : null;
-const movers = enrich ? getBiggestMovers(5) : [];
+const movers = isHeadTermHub ? getBiggestMovers(5) : [];
+
+// countries-to-avoid only: group by region with sub-headings (2026-09 audit,
+// SXO-03) — the SERP for this query is dominated by editorial results grouped
+// by region (Sahel, Middle East…), unlike the other hubs' flat rank order.
+// Rank numbers stay GLOBAL (position in the full avoid-list) even inside a
+// region group, since "how bad, worldwide" is the meaningful number here.
+const REGION_GROUPS: Array<{ type: Region; titleKey: string }> = [
+  { type: 'europe', titleKey: 'hub.region.europe.title' },
+  { type: 'asia', titleKey: 'hub.region.asia.title' },
+  { type: 'africa', titleKey: 'hub.region.africa.title' },
+  { type: 'americas', titleKey: 'hub.region.americas.title' },
+  { type: 'oceania', titleKey: 'hub.region.oceania.title' },
+  { type: 'middle_east', titleKey: 'hub.region.middle_east.title' },
+];
+const groupByRegion = hubType === 'countries-to-avoid';
+const globalRank = new Map(countries.map((c, i) => [c.iso3, i + 1]));
+const regionGroups = groupByRegion
+  ? REGION_GROUPS.map((rg) => ({ ...rg, countries: countries.filter((c) => getRegion(c.iso3) === rg.type) })).filter(
+      (g) => g.countries.length > 0
+    )
+  : [];
 
 // Hub page cross-links
 const hubLinks: Array<{ key: string; route: string }> = [
@@ -122,7 +210,7 @@ const hubLinks: Array<{ key: string; route: string }> = [
 ];
 ---
 
-<Base lang={lang} title={title} description={description} jsonLd={finalJsonLd}>
+<Base lang={lang} title={title} description={description} jsonLd={finalJsonLd} ogImage="/og/default.png">
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={crumbs} />
 
@@ -163,21 +251,45 @@ const hubLinks: Array<{ key: string; route: string }> = [
       </section>
     )}
 
-    <ol class="space-y-2 list-none p-0 m-0">
-      {countries.map((country, i) => (
-        <CountryRankRow
-          rank={i + 1}
-          country={country}
-          lang={lang}
-          showDelta={showDelta}
-          delta={deltas?.get(country.iso3) ?? 0}
-          blurb={blurbs?.get(country.iso3)}
-        />
-      ))}
-    </ol>
+    {groupByRegion ? (
+      <div class="space-y-6">
+        {regionGroups.map((group) => (
+          <section>
+            <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-2">
+              {t(group.titleKey as any)}
+            </h2>
+            <ol class="space-y-2 list-none p-0 m-0">
+              {group.countries.map((country) => (
+                <CountryRankRow
+                  rank={globalRank.get(country.iso3) ?? 0}
+                  country={country}
+                  lang={lang}
+                  showDelta={showDelta}
+                  delta={deltas?.get(country.iso3) ?? 0}
+                  blurb={blurbs?.get(country.iso3)}
+                />
+              ))}
+            </ol>
+          </section>
+        ))}
+      </div>
+    ) : (
+      <ol class="space-y-2 list-none p-0 m-0">
+        {countries.map((country, i) => (
+          <CountryRankRow
+            rank={i + 1}
+            country={country}
+            lang={lang}
+            showDelta={showDelta}
+            delta={deltas?.get(country.iso3) ?? 0}
+            blurb={blurbs?.get(country.iso3)}
+          />
+        ))}
+      </ol>
+    )}
 
     {/* How this ranking differs from the GPI (head-term hubs only) */}
-    {enrich && (
+    {isHeadTermHub && (
       <section class="max-w-2xl mx-auto">
         <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">
           {t('hub.methodology_note_title' as any)}
