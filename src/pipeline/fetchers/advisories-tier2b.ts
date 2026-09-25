@@ -5,10 +5,11 @@ import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js
 import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
   normalizeBeLevel,
-  normalizeDkLevel,
+  normalizeDkTier,
   normalizeSgLevel,
   normalizeRoLevel,
   normalizeRsLevel,
+  extractRsSecuritySection,
   normalizeEeLevel,
   normalizeHrLevel,
   normalizeArAlert,
@@ -257,6 +258,49 @@ async function fetchBeAdvisories(
 // Sub-fetcher 2: Denmark (um.dk) -- HTML-10
 // =============================================================================
 
+/**
+ * Reads um.dk's travel-guide accordion structure to determine one
+ * country-level advisory level.
+ *
+ * Each severity tier the page currently shows is one
+ * `<li class="... travel-guide-accordion__item--MODIFIER">` (modifier:
+ * minimal < low < medium < high — see normalizeDkTier), whose
+ * `.travel-guide-accordion__subtitle` names the scope ("Hele landet" = whole
+ * country, or a named region/border area). Multiple tiers can coexist: a
+ * mild whole-country baseline plus a severe border-zone carve-out (e.g.
+ * Thailand: "opmaerksom" for "Hele landet, undtagen ..." PLUS "high" for a
+ * 20km strip on the Cambodian border). We take the tier explicitly scoped to
+ * the whole country; if none is (Pakistan/Nigeria only box named provinces,
+ * never "Hele landet"), we report 2 ("increased caution") rather than
+ * inheriting a named region's severity — mirroring how normalizeDeLevel
+ * already downgrades Germany's region-only "Teilreisewarnung" instead of
+ * letting a hotspot inflate the whole country's value.
+ */
+export function extractDkLevel($: ReturnType<typeof cheerio.load>): UnifiedLevel | null {
+  const tiers: { modifier: 'minimal' | 'low' | 'medium' | 'high'; wholeCountry: boolean }[] = [];
+  $('li.accordion-item').each((_, el) => {
+    const cls = $(el).attr('class') || '';
+    const m = /travel-guide-accordion__item--(minimal|low|medium|high)/.exec(cls);
+    if (!m) return;
+    const subtitle = $(el).find('.travel-guide-accordion__subtitle').first().text();
+    tiers.push({
+      modifier: m[1] as 'minimal' | 'low' | 'medium' | 'high',
+      wholeCountry: subtitle.includes('Hele landet'),
+    });
+  });
+
+  if (tiers.length === 0) {
+    // A real, dated guidance page (caller already excluded the "no guidance
+    // published" case) with literally no advisory box: DK's own baseline.
+    // Every sampled country WITH a guidance page carried at least one tier
+    // live (2026-09-25) — this is a defensive fallback, not an observed case.
+    return 1;
+  }
+
+  const wholeCountryTier = tiers.find((t) => t.wholeCountry);
+  return wholeCountryTier ? normalizeDkTier(wholeCountryTier.modifier) : 2;
+}
+
 async function fetchDkAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -265,7 +309,14 @@ async function fetchDkAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  // Build slug attempts from COUNTRIES using English name lowercased, hyphenated
+  // Build slug attempts from COUNTRIES using English name lowercased, hyphenated.
+  // um.dk's own slugs are DANISH ("frankrig", "tyskland"), not English, so
+  // this only resolves countries whose Danish and English names coincide
+  // (true for most non-European names, e.g. "Afghanistan", "Somalia" —
+  // exactly the countries this fix targets). European countries with a
+  // distinct Danish name are still missed; fixing that needs a Danish name
+  // table crawling the real listing page, mirroring GERMAN_NAMES/
+  // SWEDISH_NAMES/etc. in advisories-tier3b.ts. Out of scope for this fix.
   const countrySlugEntries = COUNTRIES.map(c => ({
     country: c,
     slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
@@ -278,7 +329,7 @@ async function fetchDkAdvisories(
     sampleEntries,
     async (entry) => {
       try {
-        const url = `https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/${entry.slug}`;
+        const url = `https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/${entry.slug}/`;
         const r = await fetch(url, {
           signal: AbortSignal.timeout(15_000),
           headers: FETCH_HEADERS,
@@ -287,9 +338,18 @@ async function fetchDkAdvisories(
         if (!r.ok) return;
 
         const html = await r.text();
-        const level = normalizeDkLevel(html);
+        const $ = cheerio.load(html);
 
-        // Skip if we get the "no advisory" page (level 1 with very short content)
+        // um.dk serves a soft-200 "Vi har ingen rejsevejledning for X" page
+        // for countries it has not published guidance for at all (confirmed
+        // live 2026-09-25 for Afghanistan, Burundi, Burkina Faso, Bahrain,
+        // Belarus, Cuba, Eritrea, Haiti among others) — that is an absence
+        // of data, not a safety statement, and must not become a level.
+        if ($('body').text().includes('Vi har ingen rejsevejledning')) return;
+
+        const level = extractDkLevel($);
+        if (level === null) return;
+
         indicators.push({
           countryIso3: entry.country.iso3,
           indicatorName: 'advisory_level_dk',
@@ -624,7 +684,17 @@ async function fetchRsAdvisories(
         if (!pageResponse.ok) return;
 
         const pageHtml = await pageResponse.text();
-        const level = normalizeRsLevel(pageHtml);
+        // RS writes free-form prose reusing the same generic safety tips
+        // ("avoid carrying large amounts of cash", "avoid demonstrations")
+        // on every country page, including entirely safe ones — matching
+        // against the raw page (or even the whole visible body text) makes
+        // those false-positive as a country-specific warning. Scope to the
+        // "SECURITY SITUATION" paragraph only, and skip when it can't be
+        // found or contains no recognizable level (never guess).
+        const page$ = cheerio.load(pageHtml);
+        const section = extractRsSecuritySection(page$('body').text());
+        const level = section === null ? null : normalizeRsLevel(section);
+        if (level === null) return;
 
         indicators.push({
           countryIso3: entry.country.iso3,

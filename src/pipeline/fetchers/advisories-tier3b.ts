@@ -388,6 +388,7 @@ async function fetchChAdvisories(
       // Extract advisory level from parent context
       const parentText = $(el).closest('li, div, tr, td, article').text();
       const level = normalizeChLevel(parentText);
+      if (level === null) return; // no recognizable level in this context — don't guess
 
       indicators.push({
         countryIso3: country.iso3,
@@ -418,6 +419,7 @@ async function fetchChAdvisories(
 
         const parentText = $(el).closest('li, div, tr, td, p').text();
         const level = normalizeChLevel(parentText);
+        if (level === null) return; // no recognizable level in this context — don't guess
 
         indicators.push({
           countryIso3: country.iso3,

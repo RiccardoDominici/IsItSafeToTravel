@@ -158,7 +158,12 @@ export function extractFrTerritoryLevel(rawText: string): UnifiedLevel | null {
 /**
  * Normalize Hong Kong OTA alert levels to unified 1-4 scale.
  * HK uses 3 levels: Amber (signs of threat), Red (significant), Black (severe).
- * No alert = level 1.
+ * Callers must only invoke this for a country actually carrying one of those
+ * classes — the OTA listing page includes generic "info-" pages for
+ * countries HK hasn't assessed at all, so "not in the red/amber set" is NOT
+ * evidence of "normal precautions" and must not be mapped here (audit
+ * 2026-09-25: the fetcher used to default unclassified countries to 1,
+ * asserting "no alert" for Afghanistan, Iraq, Sudan, Ukraine...).
  */
 export function normalizeHkAlert(alert: string): UnifiedLevel {
   const lower = alert.toLowerCase();
@@ -341,14 +346,26 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
 }
 
 /**
- * Normalize Denmark (um.dk) Danish advisory text to unified 1-4 scale.
+ * Normalize a Denmark (um.dk) travel-guide accordion tier to unified 1-4
+ * scale. um.dk structures each country page as a stack of accordion `<li>`
+ * items whose CSS modifier class names the severity directly — minimal <
+ * low < medium < high (see the fetcher for the DOM walk that produces this
+ * modifier). "minimal" and "low" both fold into 2: the unified scale has no
+ * room for a 5th tier, and collapsing DK's two mildest tiers together
+ * matches how this file already collapses multi-tier caution language for
+ * other issuers (normalizeNoLevel, normalizePtLevel).
+ *
+ * Audit 2026-09-25: the previous implementation (`normalizeDkLevel`) matched
+ * keywords against the RAW page HTML, which encodes å/æ/ø as numeric HTML
+ * entities (`&#xE5;`) rather than literal UTF-8 — so "frarådes"/"undgå"
+ * never matched anything, and the parser defaulted to 1 for nearly every
+ * country, including active war zones. The fetcher now decodes text via
+ * cheerio and reads the structural tier instead of guessing from prose.
  */
-export function normalizeDkLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('frarådes alle rejser') || lower.includes('fraraades alle') || lower.includes('forlad landet')) return 4;
-  if (lower.includes('frarådes') || lower.includes('fraraades') || lower.includes('undgå') || lower.includes('undgaa')) return 3;
-  if (lower.includes('skærpet') || lower.includes('skaerpet') || lower.includes('opmærksom') || lower.includes('opmaerksom') || lower.includes('vær forsigtig')) return 2;
-  return 1;
+export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high'): UnifiedLevel {
+  if (modifier === 'high') return 4;
+  if (modifier === 'medium') return 3;
+  return 2; // minimal | low
 }
 
 /**
@@ -425,14 +442,57 @@ export function normalizeRoLevel(level: number): UnifiedLevel {
 }
 
 /**
- * Normalize Serbia (mfa.gov.rs) English advisory text to unified 1-4 scale.
+ * Extracts the "SECURITY SITUATION —" paragraph from a Serbian MFA
+ * (mfa.gov.rs) country page's visible text, bounded by the next ALL-CAPS
+ * section heading (TRANSPORT, VISA REGIME, CONTACT INFORMATION, ...). RS
+ * writes free-form prose per country rather than a structured level field,
+ * and generic tips reused across every country page ("avoid carrying large
+ * amounts of cash", "avoid street demonstrations") live in the SAME
+ * body text — scoping to just this section keeps a safe country's boilerplate
+ * from being read as a country-specific warning. Returns null when the page
+ * doesn't have this heading at all (different template, or genuinely no
+ * content), so the caller can skip the country rather than guess.
  */
-export function normalizeRsLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('do not travel') || lower.includes('extremely high') || lower.includes('leave immediately')) return 4;
-  if (lower.includes('avoid') || lower.includes('high level') || lower.includes('reconsider')) return 3;
+export function extractRsSecuritySection(bodyText: string): string | null {
+  const startIdx = bodyText.search(/SECURITY SITUATION/i);
+  if (startIdx === -1) return null;
+  const rest = bodyText.slice(startIdx + 'SECURITY SITUATION'.length);
+  // Next heading: a run of 2-4 ALL-CAPS words followed by a dash, e.g. "TRANSPORT —".
+  const nextHeadingIdx = rest.search(/[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}\s*[—-]/);
+  return nextHeadingIdx === -1 ? rest.slice(0, 600) : rest.slice(0, nextHeadingIdx);
+}
+
+/**
+ * Normalize Serbia (mfa.gov.rs) English advisory text (the SECURITY
+ * SITUATION section only — see extractRsSecuritySection) to unified 1-4
+ * scale.
+ *
+ * Audit 2026-09-25: the previous keyword list missed RS's actual phrasing
+ * for its most severe cases — "citizens ... are advised to refrain from all
+ * travel to Israel" and "... refrain from any type of travel to Jordan"
+ * contain neither "do not travel" nor any other matched keyword, so active
+ * war-zone pages fell through to a hardcoded level-1 default. This version
+ * matches RS's real vocabulary (confirmed against live pages for Afghanistan,
+ * Israel, Jordan, Palestine, Oman, Iraq, Somalia, CAR, Haiti, Nigeria, Sudan)
+ * and returns null instead of defaulting when nothing matches.
+ */
+export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
+  const lower = sectionText.toLowerCase();
+  if (
+    lower.includes('do not travel') ||
+    lower.includes('extremely high') ||
+    lower.includes('leave immediately') ||
+    /refrain from (all |any(?: type of)? )?travel/.test(lower)
+  ) return 4;
+  if (
+    lower.includes('not recommended') ||
+    lower.includes('not advise') ||
+    lower.includes('advised against') ||
+    lower.includes('reconsider') ||
+    lower.includes('high level')
+  ) return 3;
   if (lower.includes('increased') || lower.includes('caution') || lower.includes('elevated')) return 2;
-  return 1;
+  return null;
 }
 
 /**
@@ -713,13 +773,26 @@ export function normalizeInLevel(text: string): UnifiedLevel {
 /**
  * Normalize Switzerland (EDA) German/English advisory text to unified 1-4 scale.
  * Includes both diacritical and ASCII-folded variants for resilience.
+ *
+ * Audit 2026-09-25: eda.admin.ch was rebuilt as a Nuxt/card-grid site (image
+ * cards linking to `/en/country-<name>`, no `travel-advice`/`reisehinweise`
+ * hrefs anymore) and the real advisory level is loaded client-side, absent
+ * from the server-rendered HTML entirely — confirmed live for Afghanistan:
+ * neither the country page nor its linked "Travel advice for Afghanistan"
+ * page contains any of this function's keywords, or any recognizable level
+ * signal at all. The fetcher's old CSS selectors matched nothing, fell back
+ * to a generic link scan, and this function's unconditional `return 1`
+ * default turned that into a confident (and often wrong — e.g. Afghanistan,
+ * Bahrain) "Grundsaetzliche Vorsicht" for every country it happened to find
+ * a link for. Returns null instead when no keyword matches; a full fix needs
+ * a rewritten fetcher able to read whatever now serves the real content.
  */
-export function normalizeChLevel(text: string): UnifiedLevel {
+export function normalizeChLevel(text: string): UnifiedLevel | null {
   const lower = text.toLowerCase();
   if (lower.includes('von reisen wird abgeraten') || lower.includes('grundsätzlich abgeraten') || lower.includes('grundsaetzlich abgeraten') || lower.includes('do not travel')) return 4;
   if (lower.includes('von nicht dringenden reisen') || lower.includes('nicht dringenden reisen wird abgeraten') || lower.includes('avoid non-essential')) return 3;
   if (lower.includes('erhöhte vorsicht') || lower.includes('erhoehte vorsicht') || lower.includes('increased caution')) return 2;
-  return 1;
+  return null;
 }
 
 /**

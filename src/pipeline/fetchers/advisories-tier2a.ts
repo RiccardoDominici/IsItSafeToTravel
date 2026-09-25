@@ -357,12 +357,20 @@ async function fetchHkAdvisories(
       const country = getCountryByName(link.name);
       if (!country) continue;
 
-      let level: UnifiedLevel = 1;
+      // countryLinks comes from generic "/eng/ota/note-|info-" hrefs, most of
+      // which are plain background-info pages HK publishes for nearly every
+      // destination — NOT a safety assessment. Only redAlerts/yellowAlerts
+      // membership is an actual OTA judgement; anything else means "HK has
+      // not classified this destination", which must not become "level 1"
+      // (audit 2026-09-25: this used to default to 1, asserting "no alert"
+      // for Afghanistan, Iraq, Sudan, Ukraine, Venezuela, Colombia...).
+      let level: UnifiedLevel | null = null;
       if (redAlerts.has(link.name)) {
         level = normalizeHkAlert('red');
       } else if (yellowAlerts.has(link.name)) {
         level = normalizeHkAlert('amber');
       }
+      if (level === null) continue;
 
       indicators.push({
         countryIso3: country.iso3,
