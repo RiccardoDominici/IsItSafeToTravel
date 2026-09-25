@@ -114,6 +114,36 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
 // Sub-fetcher 1: Belgium (diplomatie.belgium.be) -- HTML-09
 // =============================================================================
 
+// The country-index page (fetched below to discover the 177 per-country URLs) links each
+// country to its own "voyager-en-X" hub, which in turn links to a dedicated "Sécurité
+// générale" article -- THAT article carries the actual advisory prose. The site restructured
+// its content this way at some point before 2026-08; the fetcher used to run normalizeBeLevel
+// directly on the country-index shell (no advisory text there at all), which is why it always
+// found 0 countries and the per-source floor kept restoring a stale 2026-06-09 cache.
+const BE_ARTICLE_SELECTOR = 'article.node--type-country-detailed';
+const BE_BLOCK_SELECTOR = `${BE_ARTICLE_SELECTOR} p, ${BE_ARTICLE_SELECTOR} li, ${BE_ARTICLE_SELECTOR} h2, ${BE_ARTICLE_SELECTOR} h3, ${BE_ARTICLE_SELECTOR} h4`;
+
+/** Find the "Sécurité générale" sub-page link on a Belgian MFA country hub page. */
+function findBeSecurityLink($: cheerio.CheerioAPI): string | null {
+  let href: string | null = null;
+  $('a').each((_, el) => {
+    if (href) return;
+    const text = $(el).text().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    if (text.startsWith('securite generale')) href = $(el).attr('href') || null;
+  });
+  return href;
+}
+
+/** Extract the security article's block elements, one per array entry, for normalizeBeLevel. */
+function extractBeArticleBlocks($: cheerio.CheerioAPI): string[] {
+  const blocks: string[] = [];
+  $(BE_BLOCK_SELECTOR).each((_, el) => {
+    const text = $(el).text().replace(/\s+/g, ' ').trim();
+    if (text) blocks.push(text);
+  });
+  return blocks;
+}
+
 async function fetchBeAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -165,20 +195,36 @@ async function fetchBeAdvisories(
     return { indicators, advisoryInfo };
   }
 
-  // Batch-crawl per-country pages
+  // Batch-crawl per-country pages. Two hops per country: the hub page (to find the security
+  // article's URL -- it isn't a predictable slug, the "en/au/aux/à" preposition depends on
+  // French grammatical gender) and the security article itself (the actual advisory text).
   await fetchBatch(
     countryEntries,
     async (entry) => {
       try {
-        const pageResponse = await fetch(entry.url, {
+        const hubResponse = await fetch(entry.url, {
           signal: AbortSignal.timeout(15_000),
           headers: FETCH_HEADERS,
         });
-        if (!pageResponse.ok) return;
+        if (!hubResponse.ok) return;
 
-        const pageHtml = await pageResponse.text();
-        const level = normalizeBeLevel(pageHtml);
-        if (level === null) return; // no advisory evidence in the fetched HTML — don't publish a made-up level
+        const hubHtml = await hubResponse.text();
+        const hub$ = cheerio.load(hubHtml);
+        const secHref = findBeSecurityLink(hub$);
+        if (!secHref) return; // page structure changed again -- skip rather than guess
+
+        const secUrl = secHref.startsWith('http') ? secHref : `https://diplomatie.belgium.be${secHref}`;
+        const secResponse = await fetch(secUrl, {
+          signal: AbortSignal.timeout(15_000),
+          headers: FETCH_HEADERS,
+        });
+        if (!secResponse.ok) return;
+
+        const secHtml = await secResponse.text();
+        const sec$ = cheerio.load(secHtml);
+        const blocks = extractBeArticleBlocks(sec$);
+        const level = normalizeBeLevel(blocks.join('\n'), entry.country.name.fr);
+        if (level === null) return; // no advisory evidence in the fetched article — don't publish a made-up level
 
         indicators.push({
           countryIso3: entry.country.iso3,
@@ -194,7 +240,7 @@ async function fetchBeAdvisories(
           level,
           text: BE_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Belgian Federal Foreign Affairs',
-          url: entry.url,
+          url: secUrl,
         };
       } catch {
         // Individual country page failed, skip silently

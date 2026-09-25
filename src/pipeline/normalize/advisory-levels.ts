@@ -7,6 +7,8 @@
  * N-level mapper for future sources.
  */
 
+import { COUNTRIES } from '../config/countries.js';
+
 /** Unified advisory level: 1 = normal, 2 = increased caution, 3 = avoid travel, 4 = do not travel */
 export type UnifiedLevel = 1 | 2 | 3 | 4;
 
@@ -200,18 +202,142 @@ export function normalizeFiLevel(text: string): UnifiedLevel {
 
 // --- Tier 2b normalization functions ---
 
+// Countries whose own French (or English) name is a strong signal that a sentence is
+// actually a cross-reference to a *different* country's advisory (e.g. a Belgian Thailand
+// page warning that "Tout voyage au Myanmar est fortement déconseillé" as border context) —
+// used only as a veto against normalizeBeLevel's generic "le pays" fallback, see below.
+// Folded (accent-stripped, lowercased) once at module load; >=5 chars to dodge short-name
+// substring collisions (e.g. "Inde" inside "indépendant").
+const BE_OTHER_COUNTRY_NAMES = Array.from(
+  new Set(
+    COUNTRIES.flatMap((c) => [foldFr(c.name.fr), foldFr(c.name.en)]).filter((n) => n.length >= 5),
+  ),
+);
+
+/** Lowercase + strip diacritics, for accent-insensitive French text matching. */
+function foldFr(s: string): string {
+  return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+}
+
 /**
  * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
- * Returns null when no advisory keyword is present: the country pages are JS-rendered, so
- * fetched HTML often carries no advisory text at all — defaulting to 1 published a false
- * "Pas de restrictions" for every country (including level-4 ones like Syria or Yemen).
+ *
+ * Belgium publishes no numeric/color level: the actual verdict lives in free-text prose on
+ * each country's dedicated "Sécurité générale" article (fetchBeAdvisories follows the link to
+ * it — the country-index page itself, which the old parser read, is a near-empty shell with
+ * no advisory text at all, which is *why* it always saw nothing and collapsed to 0 countries).
+ *
+ * `text` must be that article's block elements (<p>/<li>/<h2-4>), one per line ("\n"-joined),
+ * NOT the whole page flattened to one string — Drupal concatenates heading text directly
+ * against the next paragraph with no punctuation between them, so flattening would let an
+ * unrelated "Criminalité" section bleed into an adjacent security verdict. `countryNameFr`
+ * is the current country's own French name (e.g. "Thaïlande"), used for the whole-country-vs-
+ * regional scope check below.
+ *
+ * This is the second design pass (see git history for the first): the first pass classified
+ * per-block, escalating on any "déconseillé" unless a region/border word was also present in
+ * that block. Verifying it against ~20 live pages on 2026-09-25 (SOURCE-REPAIR-BRIEF rule 8a)
+ * surfaced two real failure modes that block-level, escalate-by-default scoring can't avoid:
+ *  1. "déconseillé" is also French for "inadvisable" in a purely behavioral sense ("il est
+ *     fortement déconseillé de laisser des effets personnels sans surveillance" — a pickpocket
+ *     tip, not a travel verdict). Fix: a "déconseillé" only counts if its OWN sentence also
+ *     names a travel act (voyage/se rendre/déplacement/séjour) — the Pakistan page separately
+ *     confirmed this alone isn't enough ("Lors de la planification d'un voyage au Pakistan...
+ *     Y assister [a religious gathering], même comme spectateur, est fortement déconseillé" —
+ *     "voyage" and "déconseillé" share a paragraph but not a sentence).
+ *  2. Named sub-regions are usually proper nouns (Nord Sinaï, Port Elizabeth's townships, a
+ *     Mexican "certains États" list, Kenya's Kibera/Mathare) that no finite word list can
+ *     enumerate — so a "does this mention a region word" check under-catches them and wrongly
+ *     promotes a partial warning to whole-country severity (violates the "partial warnings
+ *     must not promote past 2" rule). Fix: invert the default — a "déconseillé" only reaches
+ *     3/4 if its paragraph *positively* names the country itself (or a generic "tout le
+ *     pays"/"l'ensemble du territoire" phrase); absent that confirmation it's capped at 2
+ *     rather than escalated on the absence of a recognized region word. The generic-phrase
+ *     fallback is itself vetoed if a *different* country is named nearby (BE_OTHER_COUNTRY_
+ *     NAMES) — otherwise "il ne faut pas...en raison de l'insécurité qui règne dans le pays"
+ *     about Myanmar, quoted on Thailand's own page, would wrongly confirm Thailand.
+ *
+ * Levels (unchanged from pass 1, re-verified against Afghanistan/Mali/Syria -> 4;
+ * Ukraine/Niger/North Korea/Haiti -> 3-4; Egypt/Turkey/Thailand/Pakistan/Kenya/Mexico
+ * regional-only mentions -> capped at 2; Portugal/Italy/Japan -> 1):
+ *  - "formellement/fortement/strictement/fermement déconseillé", "ne pas se rendre", "quitter
+ *    le pays" -> 4 (whole-country-confirmed) or 2 (not confirmed / regional).
+ *  - any other "déconseillé" root, or "reporter tous les voyages" -> 3 or 2, same rule.
+ *  - vigilance/prudence/attention qualified by "accrue"/"renforcée"/"particulière"/
+ *    "soutenue"/"extrême", or an explicitly elevated crime rate ("criminalité" + "élevé") -> 2
+ *    (these never need the whole-country check — 2 is already the cap either way).
+ *  - none of the above, but the article has real content -> 1 (this page genuinely is a
+ *    comprehensive one-page-per-country baseline, so silence here is itself "normal
+ *    precautions" — unlike the old shell-page bug this replaces).
+ *
+ * Returns null only when there's no real content to classify (empty input, or fewer than 3
+ * blocks — a redesigned/broken page) so a fetch failure can never be silently published as
+ * "no restrictions".
  */
-export function normalizeBeLevel(text: string): UnifiedLevel | null {
-  const lower = text.toLowerCase();
-  if (lower.includes('ne pas voyager') || lower.includes('quitter le pays')) return 4;
-  if (lower.includes('déconseillé') || lower.includes('deconseille') || lower.includes('éviter') || lower.includes('eviter')) return 3;
-  if (lower.includes('prudence') || lower.includes('vigilance') || lower.includes('attention')) return 2;
-  return null;
+export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLevel | null {
+  if (!text || !text.trim()) return null;
+  const blocks = text.split('\n').map((b) => b.trim()).filter(Boolean);
+  if (blocks.length < 3) return null; // not a real article — avoid fabricating "level 1"
+
+  const countryFold = foldFr(countryNameFr);
+
+  const REGIONAL_WORDS = [
+    'region', 'zone', 'province', 'district', 'frontalie', 'frontier',
+    'nord du', 'nord de', 'sud du', 'sud de', 'est du', 'ouest du',
+    'certaines parties', 'certains endroits', 'ces zones', 'ces regions', 'cette region',
+    'localite', 'quartier', 'comte', 'bidonville', 'canton', 'township',
+    'certains etats', 'certain etat', // e.g. Mexico's "voyages... vers certains États"
+  ];
+  const WHOLE_COUNTRY_PHRASES = [
+    'le pays', 'tout le pays', 'ensemble du pays', 'ensemble du territoire',
+    'tout le territoire', 'interieur du pays',
+  ];
+  const TRAVEL_WORDS = ['voyage', 'voyager', 'se rendre', 'deplacement', 'deplacer', 'sejour'];
+  const LEVEL4_STRONG = [
+    'formellement deconseill', 'fortement deconseill', 'strictement deconseill',
+    'fermement deconseill', 'ne pas se rendre', 'quitter le pays',
+  ];
+  const LEVEL3_WORDS = ['deconseill', 'reporter tous les voyages', 'reporter le voyage'];
+  const LEVEL2_BASE = ['vigilance', 'prudence', 'attention'];
+  const LEVEL2_INTENSIFIERS = ['accrue', 'accru', 'renforcee', 'particuliere', 'soutenue', 'extreme'];
+
+  let level: UnifiedLevel = 1;
+
+  for (const rawBlock of blocks) {
+    // Sentence-level, not block-level: a paragraph mixing a travel verdict with an unrelated
+    // safety tip (or a cross-reference to another country) must not let the two cues mix.
+    const sentences = rawBlock.split(/(?<=[.!?;])\s+/).map((s) => s.trim()).filter(Boolean);
+
+    for (let i = 0; i < sentences.length; i++) {
+      const cur = foldFr(sentences[i]);
+      const hasTravelWord = TRAVEL_WORDS.some((w) => cur.includes(w));
+
+      let sentenceLevel = 0;
+      if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) sentenceLevel = 4;
+      else if (hasTravelWord && LEVEL3_WORDS.some((w) => cur.includes(w))) sentenceLevel = 3;
+      else if (LEVEL2_BASE.some((base) => cur.includes(base)) && LEVEL2_INTENSIFIERS.some((mod) => cur.includes(mod))) sentenceLevel = 2;
+      else if (cur.includes('criminalit') && /elev/.test(cur)) sentenceLevel = 2; // "taux [de criminalité] élevé" in either word order
+
+      if (sentenceLevel === 0) continue;
+
+      if (sentenceLevel > 2) {
+        // Whole-country confirmation looks one sentence back too (within the same paragraph):
+        // "en Corée du Nord... Tous les voyages sont déconseillés" names the country once and
+        // refers back to it implicitly, which is normal French, not a scope expansion.
+        const window = foldFr((i > 0 ? sentences[i - 1] + ' ' : '') + sentences[i]);
+        const mentionsOtherCountry = BE_OTHER_COUNTRY_NAMES.some((n) => n !== countryFold && window.includes(n));
+        const wholeCountryConfirmed = window.includes(countryFold)
+          || (!mentionsOtherCountry && WHOLE_COUNTRY_PHRASES.some((p) => window.includes(p)));
+        const regionalHit = REGIONAL_WORDS.some((w) => window.includes(w));
+
+        if (!wholeCountryConfirmed || regionalHit) sentenceLevel = 2;
+      }
+
+      if (sentenceLevel > level) level = sentenceLevel as UnifiedLevel;
+    }
+  }
+
+  return level;
 }
 
 /**
