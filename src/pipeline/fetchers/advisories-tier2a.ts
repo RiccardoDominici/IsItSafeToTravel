@@ -901,7 +901,17 @@ async function fetchBrAdvisories(
 // =============================================================================
 // Sub-fetcher 8: Philippines (DFA) -- HTML-08
 // =============================================================================
-
+//
+// NOT REPAIRABLE with a plain fetch() (investigated 2026-09-25, same conclusion as FI
+// above and for the same reason). Every path on dfa.gov.ph, including the bare root "/",
+// returns a genuine Cloudflare Managed Challenge: `cf-mitigated: challenge`, a
+// `Just a moment...` interstitial requiring the Sec-CH-UA client-hint round trip and a
+// real JS engine, reproduced identically with both this project's identifying User-Agent
+// and a full browser User-Agent. This is the whole domain, not just this path, so there is
+// no alternate endpoint on the same host to fall back to. Same conclusion as FI: fixing
+// this needs a headless browser capable of solving Cloudflare's challenge (e.g.
+// Playwright), which this project does not depend on anywhere -- out of scope for a
+// single-source repair, see the FI comment above for the full reasoning. Left as-is.
 async function fetchPhAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -934,7 +944,7 @@ async function fetchPhAdvisories(
   }
 
   if (!html) {
-    console.warn('[ADVISORIES-T2A] PH: All URLs returned 403 or failed, returning empty result');
+    console.warn('[ADVISORIES-T2A] PH: both URLs behind a Cloudflare JS challenge (cf-mitigated: challenge), not a simple 403 -- not fixable without a headless browser, returning empty result');
     return { indicators, advisoryInfo };
   }
 
