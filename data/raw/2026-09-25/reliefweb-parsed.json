@@ -1,7 +1,35 @@
 {
   "source": "reliefweb",
-  "fetchedAt": "2026-09-25T11:18:24.118Z",
+  "fetchedAt": "2026-09-25T22:36:18.139Z",
   "indicators": [
+    {
+      "countryIso3": "SUR",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 6,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 6,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "ZMB",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 3,
+      "year": 2026,
+      "source": "reliefweb"
+    },
     {
       "countryIso3": "SOM",
       "indicatorName": "reliefweb_active_disasters",
@@ -45,23 +73,9 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "MDG",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 6,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
       "countryIso3": "MWI",
       "indicatorName": "reliefweb_active_disasters",
       "value": 3,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "MOZ",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 6,
       "year": 2026,
       "source": "reliefweb"
     },
@@ -76,20 +90,6 @@
       "countryIso3": "GHA",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "SUR",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "ZMB",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 3,
       "year": 2026,
       "source": "reliefweb"
     },

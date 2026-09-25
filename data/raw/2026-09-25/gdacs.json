@@ -4,67 +4,6 @@
     {
       "type": "Feature",
       "bbox": [
-        -107.5,
-        17.2,
-        -107.5,
-        17.2
-      ],
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -107.5,
-          17.2
-        ]
-      },
-      "properties": {
-        "eventtype": "TC",
-        "eventid": 1001325,
-        "episodeid": 19,
-        "eventname": "POLO-26",
-        "glide": "",
-        "name": "Tropical Cyclone POLO-26",
-        "description": "Tropical Cyclone POLO-26",
-        "htmldescription": "Orange Tropical Cyclone POLO-26 in Mexico from: 21 Sep 2026  to: 25 Sep 2026 .",
-        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "url": {
-          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001325&episodeid=19",
-          "report": "https://www.gdacs.org/report.aspx?eventid=1001325&episodeid=19&eventtype=TC",
-          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001325"
-        },
-        "alertlevel": "Orange",
-        "alertscore": 2,
-        "episodealertlevel": "Orange",
-        "episodealertscore": 2,
-        "istemporary": "false",
-        "iscurrent": "true",
-        "country": "Mexico",
-        "fromdate": "2026-09-21T03:00:00",
-        "todate": "2026-09-25T09:00:00",
-        "datemodified": "2026-09-25T09:24:50",
-        "iso3": "MEX",
-        "source": "NOAA",
-        "sourceid": "",
-        "polygonlabel": "Centroid",
-        "Class": "Point_Centroid",
-        "countryonland": "",
-        "affectedcountries": [
-          {
-            "iso2": "MX",
-            "iso3": "MEX",
-            "countryname": "Mexico"
-          }
-        ],
-        "severitydata": {
-          "severity": 287.0352,
-          "severitytext": "Hurricane/Typhoon > 74 mph (maximum wind speed of 287 km/h)",
-          "severityunit": "km/h"
-        }
-      }
-    },
-    {
-      "type": "Feature",
-      "bbox": [
         83.7,
         18.1,
         83.7,
@@ -102,7 +41,7 @@
         "country": "India",
         "fromdate": "2026-09-22T18:00:00",
         "todate": "2026-09-24T00:00:00",
-        "datemodified": "2026-09-25T11:15:14",
+        "datemodified": "2026-09-25T22:35:14",
         "iso3": "IND",
         "source": "JTWC",
         "sourceid": "",
@@ -283,7 +222,7 @@
         "country": "Indonesia",
         "fromdate": "2026-09-04T21:00:00",
         "todate": "2026-09-04T21:00:00",
-        "datemodified": "2026-09-25T11:15:17",
+        "datemodified": "2026-09-25T22:35:15",
         "iso3": "IDN",
         "source": "DARWIN",
         "sourceid": "",
@@ -409,7 +348,7 @@
         "country": "Nepal",
         "fromdate": "2026-08-26T01:00:00",
         "todate": "2026-09-01T14:00:00",
-        "datemodified": "2026-09-25T11:15:17",
+        "datemodified": "2026-09-25T22:35:15",
         "iso3": "NPL",
         "source": "GLOFAS",
         "sourceid": "",
@@ -589,7 +528,7 @@
         "country": "Indonesia",
         "fromdate": "2026-08-14T21:58:21",
         "todate": "2026-08-14T21:58:21",
-        "datemodified": "2026-09-25T11:15:18",
+        "datemodified": "2026-09-25T22:35:15",
         "iso3": "IDN",
         "source": "NEIC",
         "sourceid": "",
@@ -649,7 +588,7 @@
         "country": "Colombia",
         "fromdate": "2026-08-10T12:34:28",
         "todate": "2026-08-10T12:34:28",
-        "datemodified": "2026-09-25T11:15:18",
+        "datemodified": "2026-09-25T22:35:16",
         "iso3": "COL",
         "source": "NEIC",
         "sourceid": "",
@@ -895,7 +834,7 @@
         "country": "Japan",
         "fromdate": "2026-07-28T07:27:15",
         "todate": "2026-07-28T07:27:15",
-        "datemodified": "2026-09-25T11:15:18",
+        "datemodified": "2026-09-25T22:35:16",
         "iso3": "JPN",
         "source": "NEIC",
         "sourceid": "",
@@ -1261,7 +1200,7 @@
         "country": "Guam, Northern Mariana Islands, Japan, Taiwan, China",
         "fromdate": "2026-07-01T00:00:00",
         "todate": "2026-07-11T18:00:00",
-        "datemodified": "2026-09-25T11:15:23",
+        "datemodified": "2026-09-25T22:35:17",
         "iso3": "CHN",
         "source": "JTWC",
         "sourceid": "",
@@ -1463,7 +1402,7 @@
         "country": "Venezuela",
         "fromdate": "2026-06-24T22:05:12",
         "todate": "2026-06-24T22:05:12",
-        "datemodified": "2026-09-25T11:15:29",
+        "datemodified": "2026-09-25T22:35:17",
         "iso3": "VEN",
         "source": "NEIC",
         "sourceid": "",
@@ -1523,7 +1462,7 @@
         "country": "Venezuela",
         "fromdate": "2026-06-24T22:04:32",
         "todate": "2026-06-24T22:04:32",
-        "datemodified": "2026-09-25T11:15:29",
+        "datemodified": "2026-09-25T22:35:17",
         "iso3": "VEN",
         "source": "NEIC",
         "sourceid": "",
@@ -1643,7 +1582,7 @@
         "country": "Indonesia",
         "fromdate": "2026-06-16T03:27:44",
         "todate": "2026-06-16T03:27:44",
-        "datemodified": "2026-09-25T11:15:29",
+        "datemodified": "2026-09-25T22:35:17",
         "iso3": "IDN",
         "source": "NEIC",
         "sourceid": "",
@@ -1703,7 +1642,7 @@
         "country": "Philippines",
         "fromdate": "2026-06-07T23:37:40",
         "todate": "2026-06-07T23:37:40",
-        "datemodified": "2026-09-25T11:15:30",
+        "datemodified": "2026-09-25T22:35:17",
         "iso3": "PHL",
         "source": "NEIC",
         "sourceid": "",
@@ -4357,66 +4296,6 @@
           "severity": 148.1472,
           "severitytext": "Hurricane/Typhoon > 74 mph (maximum wind speed of 148 km/h)",
           "severityunit": "km/h"
-        }
-      }
-    },
-    {
-      "type": "Feature",
-      "bbox": [
-        44.9167,
-        12.8333,
-        44.9167,
-        12.8333
-      ],
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          44.9167,
-          12.8333
-        ]
-      },
-      "properties": {
-        "eventtype": "FL",
-        "eventid": 1103504,
-        "episodeid": 2,
-        "eventname": "",
-        "glide": "FL-2025-000177-YEM",
-        "name": "Flood in Yemen",
-        "description": "Flood in Yemen",
-        "htmldescription": "Orange Flood in Yemen from: 16 Sep 2025 01 to: 25 Sep 2025 14.",
-        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png",
-        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/FL.png",
-        "url": {
-          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=FL&eventid=1103504&episodeid=2",
-          "report": "https://www.gdacs.org/report.aspx?eventid=1103504&episodeid=2&eventtype=FL",
-          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=FL&eventid=1103504"
-        },
-        "alertlevel": "Orange",
-        "alertscore": 2,
-        "episodealertlevel": "Orange",
-        "episodealertscore": 1.5,
-        "istemporary": "false",
-        "iscurrent": "false",
-        "country": "Yemen",
-        "fromdate": "2025-09-16T01:00:00",
-        "todate": "2025-09-25T14:00:00",
-        "datemodified": "2025-09-25T11:03:04",
-        "iso3": "YEM",
-        "source": "GLOFAS",
-        "sourceid": "",
-        "polygonlabel": "Centroid",
-        "Class": "Point_Centroid",
-        "affectedcountries": [
-          {
-            "iso2": "YE",
-            "iso3": "YEM",
-            "countryname": "Yemen"
-          }
-        ],
-        "severitydata": {
-          "severity": 0,
-          "severitytext": "Magnitude 0 ",
-          "severityunit": ""
         }
       }
     }

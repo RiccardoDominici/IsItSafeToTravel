@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T11:22:53.654Z",
+  "generatedAt": "2026-09-25T22:59:32.209Z",
   "lastProcessedDate": "2026-09-25",
   "cooldowns": {
     "jump:KWT": "2026-08-22",
@@ -75,9 +75,93 @@
     "overtake:BTN|GRC": "2026-09-12",
     "jump:MDV": "2026-09-12",
     "jump:CPV": "2026-09-12",
-    "jump:STP": "2026-09-12"
+    "jump:STP": "2026-09-12",
+    "advisory:COD:us:4": "2026-09-25",
+    "advisory:MMR:us:4": "2026-09-25",
+    "advisory:PRK:us:4": "2026-09-25",
+    "advisory:PSE:us:4": "2026-09-25",
+    "advisory:ISR:us:3": "2026-09-25",
+    "advisory:JOR:us:3": "2026-09-25",
+    "advisory:MAC:us:3": "2026-09-25"
   },
   "recentEvents": [
+    {
+      "id": "2026-09-25:severe_advisory:COD:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "COD",
+        "issuer": "us",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:ISR:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "ISR",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:JOR:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "JOR",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:MAC:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "MAC",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:MMR:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "MMR",
+        "issuer": "us",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:PRK:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "PRK",
+        "issuer": "us",
+        "level": 4
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-09-25:severe_advisory:PSE:us",
+      "date": "2026-09-25",
+      "type": "severe_advisory",
+      "params": {
+        "country": "PSE",
+        "issuer": "us",
+        "level": 4
+      },
+      "priority": 100
+    },
     {
       "id": "2026-09-12:band_change:BHS",
       "date": "2026-09-12",

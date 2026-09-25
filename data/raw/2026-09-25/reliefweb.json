@@ -1,15 +1,159 @@
 {
-  "time": 2315,
+  "time": 48,
   "href": "https://api.reliefweb.int/v2/disasters?appname=RDominici-isitsafetotravelsafetyscoring-a7x2",
   "links": {
     "self": {
       "href": "https://api.reliefweb.int/v2/disasters?appname=RDominici-isitsafetotravelsafetyscoring-a7x2"
     }
   },
-  "took": 1375,
+  "took": 25,
   "totalCount": 107,
   "count": 107,
   "data": [
+    {
+      "id": "52549",
+      "score": 1,
+      "fields": {
+        "name": "Suriname: Chikungunya Virus Outbreak - Mar 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000037-SUR",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/221",
+            "id": 221,
+            "name": "Suriname",
+            "shortname": "Suriname",
+            "iso3": "sur",
+            "location": {
+              "lat": 3.69,
+              "lon": -55.91
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52549"
+    },
+    {
+      "id": "52512",
+      "score": 1,
+      "fields": {
+        "name": "Tropical Cyclone Fytia - Jan 2026",
+        "status": "ongoing",
+        "glide": "TC-2026-000009-MDG",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/144",
+            "id": 144,
+            "name": "Madagascar",
+            "shortname": "Madagascar",
+            "iso3": "mdg",
+            "location": {
+              "lat": -19.37,
+              "lon": 46.71
+            },
+            "primary": true
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/164",
+            "id": 164,
+            "name": "Mozambique",
+            "shortname": "Mozambique",
+            "iso3": "moz",
+            "location": {
+              "lat": -18.09,
+              "lon": 34.75
+            }
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL"
+          },
+          {
+            "id": 4618,
+            "name": "Tropical Cyclone",
+            "code": "TC",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52512"
+    },
+    {
+      "id": "52503",
+      "score": 1,
+      "fields": {
+        "name": "Zambia: Floods - Jan 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000020-ZMB",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/256",
+            "id": 256,
+            "name": "Zambia",
+            "shortname": "Zambia",
+            "iso3": "zmb",
+            "location": {
+              "lat": -14,
+              "lon": 27.43
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52503"
+    },
+    {
+      "id": "52496",
+      "score": 1,
+      "fields": {
+        "name": "Mozambique: Floods - Dec 2025",
+        "status": "ongoing",
+        "glide": "FL-2025-000227-MOZ",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/164",
+            "id": 164,
+            "name": "Mozambique",
+            "shortname": "Mozambique",
+            "iso3": "moz",
+            "location": {
+              "lat": -18.09,
+              "lon": 34.75
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52496"
+    },
     {
       "id": "52419",
       "score": 1,
@@ -426,150 +570,6 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/51538"
-    },
-    {
-      "id": "52549",
-      "score": 1,
-      "fields": {
-        "name": "Suriname: Chikungunya Virus Outbreak - Mar 2026",
-        "status": "ongoing",
-        "glide": "EP-2026-000037-SUR",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/221",
-            "id": 221,
-            "name": "Suriname",
-            "shortname": "Suriname",
-            "iso3": "sur",
-            "location": {
-              "lat": 3.69,
-              "lon": -55.91
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52549"
-    },
-    {
-      "id": "52512",
-      "score": 1,
-      "fields": {
-        "name": "Tropical Cyclone Fytia - Jan 2026",
-        "status": "ongoing",
-        "glide": "TC-2026-000009-MDG",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/144",
-            "id": 144,
-            "name": "Madagascar",
-            "shortname": "Madagascar",
-            "iso3": "mdg",
-            "location": {
-              "lat": -19.37,
-              "lon": 46.71
-            },
-            "primary": true
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/164",
-            "id": 164,
-            "name": "Mozambique",
-            "shortname": "Mozambique",
-            "iso3": "moz",
-            "location": {
-              "lat": -18.09,
-              "lon": 34.75
-            }
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL"
-          },
-          {
-            "id": 4618,
-            "name": "Tropical Cyclone",
-            "code": "TC",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52512"
-    },
-    {
-      "id": "52503",
-      "score": 1,
-      "fields": {
-        "name": "Zambia: Floods - Jan 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000020-ZMB",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/256",
-            "id": 256,
-            "name": "Zambia",
-            "shortname": "Zambia",
-            "iso3": "zmb",
-            "location": {
-              "lat": -14,
-              "lon": 27.43
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52503"
-    },
-    {
-      "id": "52496",
-      "score": 1,
-      "fields": {
-        "name": "Mozambique: Floods - Dec 2025",
-        "status": "ongoing",
-        "glide": "FL-2025-000227-MOZ",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/164",
-            "id": 164,
-            "name": "Mozambique",
-            "shortname": "Mozambique",
-            "iso3": "moz",
-            "location": {
-              "lat": -18.09,
-              "lon": 34.75
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52496"
     },
     {
       "id": "33516",
