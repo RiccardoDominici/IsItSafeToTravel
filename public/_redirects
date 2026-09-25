@@ -4,6 +4,59 @@ https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
 # Root redirect handled by functions/index.ts (Accept-Language based)
 /sitemap.xml /sitemap-index.xml 301
 
+# --- Bare (no-locale) top-level pages -> /en/ equivalent ---
+# Every EN top-level page lived at a bare path before i18n added locale
+# prefixes; anything still linking/crawling the old bare path (old
+# backlinks, cached search results, manual URL edits) got a plain 404.
+# Cloudflare Pages does not treat "/x" and "/x/" as the same rule (docs:
+# https://developers.cloudflare.com/pages/configuration/redirects/ —
+# trailing-slash variants need separate explicit entries), hence the pairs
+# below. Slugs verified against src/pages/en/ (2026-09-25 audit,
+# findings/technical.md).
+/api /en/api/ 301
+/api/ /en/api/ 301
+/about /en/about/ 301
+/about/ /en/about/ 301
+/methodology /en/methodology/ 301
+/methodology/ /en/methodology/ 301
+/sources /en/sources/ 301
+/sources/ /en/sources/ 301
+/cite-this-data /en/cite-this-data/ 301
+/cite-this-data/ /en/cite-this-data/ 301
+/embed-badge /en/embed-badge/ 301
+/embed-badge/ /en/embed-badge/ 301
+/compare /en/compare/ 301
+/compare/ /en/compare/ 301
+/news /en/news/ 301
+/news/ /en/news/ 301
+/regions /en/regions/ 301
+/regions/ /en/regions/ 301
+/safest-countries /en/safest-countries/ 301
+/safest-countries/ /en/safest-countries/ 301
+/most-dangerous-countries /en/most-dangerous-countries/ 301
+/most-dangerous-countries/ /en/most-dangerous-countries/ 301
+/countries-to-avoid /en/countries-to-avoid/ 301
+/countries-to-avoid/ /en/countries-to-avoid/ 301
+/safest-for-families /en/safest-for-families/ 301
+/safest-for-families/ /en/safest-for-families/ 301
+/safest-for-solo-travelers /en/safest-for-solo-travelers/ 301
+/safest-for-solo-travelers/ /en/safest-for-solo-travelers/ 301
+/improving-safety /en/improving-safety/ 301
+/improving-safety/ /en/improving-safety/ 301
+/declining-safety /en/declining-safety/ 301
+/declining-safety/ /en/declining-safety/ 301
+/global-safety /en/global-safety/ 301
+/global-safety/ /en/global-safety/ 301
+/legal /en/legal/ 301
+/legal/ /en/legal/ 301
+/feedback /en/feedback/ 301
+/feedback/ /en/feedback/ 301
+
+# Bare /country/:iso3/ (no locale prefix) -> /en/country/:iso3/. The
+# locale-specific hardening rules further down only cover /it/country/* etc;
+# this is the same idea for requests missing a locale prefix entirely.
+/country/* /en/country/:splat 301
+
 # --- Legacy English sub-slugs under localized locale prefixes (GSC 404 fix) ---
 # In the 2026-04-03 deploy window the hub pages shipped before their localized
 # route slugs existed, so hreflang/sitemap briefly advertised English sub-slugs
