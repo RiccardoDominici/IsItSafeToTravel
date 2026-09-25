@@ -735,6 +735,7 @@ export async function fetchTier1Advisories(date: string): Promise<FetchResult> {
     indicators: allIndicators,
     advisoryInfo: combinedAdvisoryInfo,
     errors,
+    runDate: date,
   });
 
   // Save combined parsed data

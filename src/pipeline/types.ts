@@ -231,6 +231,9 @@ export interface DailySnapshot {
   globalScore: number; // arithmetic mean of all countries[].score, rounded to 1 decimal
   countries: ScoredCountry[];
   fetchResults: FetchResult[];
+  // Data-revision marker (see pipeline/config/data-revision.ts). Missing on
+  // every snapshot written before 2026-09-25 — treat as 1 (computeNews does).
+  dataRevision?: number;
 }
 
 // --- Sentiment (display-only, NOT a scoring pillar) ---

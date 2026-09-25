@@ -1070,6 +1070,7 @@ export async function fetchTier3aAdvisories(date: string): Promise<FetchResult> 
     indicators: allIndicators,
     advisoryInfo: combinedAdvisoryInfo,
     errors,
+    runDate: date,
   });
 
   // Save combined parsed data
