@@ -40,6 +40,23 @@ const zoomOutLabel = t('map.zoom.out');
 const legendSafe = t('map.legend.safe');
 const legendDanger = t('map.legend.danger');
 const countryRoute = routes[lang].country;
+const r = routes[lang];
+
+// The D3 map only renders once JS runs (visual audit V1/2026-08: homepage is
+// blank without JS, no <noscript> fallback). Rather than duplicate the whole
+// map, point no-JS visitors to the two static country lists that cover the
+// same data. Component-local per-locale copy (same pattern as Footer.astro,
+// RegionsIndex.astro) — no dedicated i18n key exists for this yet.
+const noscriptCopy: Record<Lang, { message: string; regionsLabel: string }> = {
+  en: { message: 'This interactive map needs JavaScript. Browse safety rankings without it:', regionsLabel: 'Regions' },
+  it: { message: 'Questa mappa interattiva richiede JavaScript. Sfoglia le classifiche di sicurezza senza attivarlo:', regionsLabel: 'Regioni' },
+  es: { message: 'Este mapa interactivo necesita JavaScript. Explora las clasificaciones de seguridad sin activarlo:', regionsLabel: 'Regiones' },
+  fr: { message: "Cette carte interactive nécessite JavaScript. Parcourez les classements de sécurité sans l'activer :", regionsLabel: 'Régions' },
+  pt: { message: 'Este mapa interativo precisa de JavaScript. Explore os rankings de segurança sem ativá-lo:', regionsLabel: 'Regiões' },
+  zh: { message: '此交互式地图需要 JavaScript。您也可以不启用它，直接浏览安全排名：', regionsLabel: '地区' },
+  de: { message: 'Diese interaktive Karte benötigt JavaScript. Sicherheitsrankings können Sie auch ohne ansehen:', regionsLabel: 'Regionen' },
+};
+const nc = noscriptCopy[lang];
 ---
 
 <div
@@ -53,6 +70,26 @@ const countryRoute = routes[lang].country;
   data-country-route={countryRoute}
 >
   <!-- SVG injected by D3 -->
+
+  <noscript>
+    <div class="flex h-full w-full flex-col items-center justify-center gap-3 px-6 text-center">
+      <p class="max-w-sm text-sm text-sand-600 dark:text-sand-300">{nc.message}</p>
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        <a
+          href={`/${lang}/${r['safest-countries']}/`}
+          class="rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 px-4 py-2 text-sm font-medium text-sand-700 dark:text-sand-200 hover:border-terracotta-400 dark:hover:border-terracotta-500"
+        >
+          {t('hub.safest_countries.title' as any)}
+        </a>
+        <a
+          href={`/${lang}/${r['regions']}/`}
+          class="rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 px-4 py-2 text-sm font-medium text-sand-700 dark:text-sand-200 hover:border-terracotta-400 dark:hover:border-terracotta-500"
+        >
+          {nc.regionsLabel}
+        </a>
+      </div>
+    </div>
+  </noscript>
 
   <!-- Zoom guard overlay -->
   <div
