@@ -53,16 +53,100 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
 }
 
 /**
- * Normalize Slovakia (MZV) text-based "stupen" advisory to unified 1-4 scale.
- * Parses patterns like "2. stupen" from Slovak advisory text.
+ * Normalize Slovakia (MZV) "Bezpecnostna situacia" per-country free text to
+ * unified 1-4 scale. Repair 2026-09-25 (SOURCE-REPAIR-BRIEF): replaces the
+ * old normalizeSkLevel, which matched literal ASCII "stupen" and so never
+ * actually matched the real field value — MZV always spells the word with
+ * the palatalized "stupeň" (U+0148 ň), a different code point that JS's
+ * case-insensitive regex does not fold onto plain "n". It also always
+ * defaulted unmatched/empty text to Level 1, which is exactly the silent
+ * "no contraindications" failure mode this repair exists to remove.
+ *
+ * Returns null (never guess) when the field is empty: MZV's per-country
+ * dataset (CKAN package staty-sveta-podmienky-cestovania-a-pobytu) leaves it
+ * blank for some countries it hasn't written a security assessment for yet
+ * (observed for North Korea, Mali, Somalia on 2026-09-25) rather than ever
+ * publishing "no risk" — collapsing that gap to Level 1 would fabricate a
+ * safety statement the source never made.
+ *
+ * Classification priority (highest first), calibrated against 18 real
+ * country pages spanning AFG/SYR/UKR/EGY/LBN/ISR (elevated) through
+ * MEX/TUR/KEN/FRA (caution) to ITA/USA/JPN/THA/NIC (baseline):
+ *  1. An explicit "<digit>. stupeň" — MZV's own official degree label,
+ *     always present when a formal advisory is active (verified: AFG="4.
+ *     stupeň" -> opustiť krajinu; EGY="3. stupeň" -> necestovať do určitých
+ *     oblastí). When the text narrates a CHANGE ("Zmena odporúčania 4.
+ *     stupeň ... sa mení na 3. stupeň", Lebanon, dated 2026-02-26) both the
+ *     old and new digit appear; Slovak always narrates old-then-new, so the
+ *     LAST digit in the text is the currently-applicable one.
+ *  2. A country-wide "leave the country/territory" instruction with no
+ *     digit stated ("krajinu opustiť"/"opustiť krajinu", "územie
+ *     opustiť"/"opustiť územie") -> Level 4 (verified: Ukraine, Israel).
+ *     Deliberately narrow to the "krajin(u)"/"územ(ie)" object: it must NOT
+ *     fire on incident-response advice aimed at a different noun (France:
+ *     "opustite miesto ohrozenia" = leave the scene of danger; Israel's own
+ *     rocket-alert instructions later in the SAME page: "opustite vozidlo"
+ *     = leave the vehicle).
+ *  3. A direct "increased caution" recommendation ("zvýšenú/zvýšená
+ *     opatrnosť") with no digit stated -> Level 2 (verified: Mexico, Turkey,
+ *     Kenya all lack an explicit degree but explicitly ask for heightened
+ *     vigilance; confirmed ABSENT from the Level-1 baseline samples).
+ *  4. Otherwise Level 1 — MZV's own baseline reading for a country it HAS
+ *     written content for (this source is comprehensive: one page per
+ *     country), the same convention Japan's "no #kikendetail div" uses.
+ *
+ * Deliberately NOT a signal: bare "neodporúča(me) cestovať" ("does not
+ * recommend travelling"). Thailand's page reads "neodporúča cestovať do
+ * Thajska BEZ CESTOVNÉHO POISTENIA" (does not recommend travelling to
+ * Thailand WITHOUT TRAVEL INSURANCE) — an insurance reminder, not a security
+ * warning. A plain substring match on that phrase would have misclassified
+ * a normal-risk country as Level 3+, which is exactly the false-positive
+ * SOURCE-REPAIR-BRIEF rule 1 warns is worse than no data.
  */
-export function normalizeSkLevel(text: string): UnifiedLevel {
-  if (!text || !text.trim()) return 1;
-  const match = text.match(/(\d)\.\s*stupen/i);
-  if (match) {
-    const digit = parseInt(match[1], 10);
+export function normalizeSkSecurityText(rawHtml: string | null | undefined): UnifiedLevel | null {
+  if (!rawHtml || !rawHtml.trim()) return null;
+
+  // Strip tags before matching: MZV wraps individual words in <a>/<strong>
+  // spans often enough (e.g. the degree link itself, emphasis) that a
+  // token-adjacency regex run against raw HTML can miss a real match.
+  const text = rawHtml.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+
+  // Priority 1: explicit official degree. \w is ASCII-only in JS regex, so
+  // it can't span the "ň" diacritic itself — matching the "stupe" prefix
+  // plus an explicit [nň] identifies the word without relying on \w to
+  // cross it (and without the old literal-"stupen" bug above).
+  const stupenMatches = [...text.matchAll(/(\d)\.\s*stupe[nň]/gi)];
+  if (stupenMatches.length > 0) {
+    const last = stupenMatches[stupenMatches.length - 1];
+    const digit = parseInt(last[1], 10);
     return Math.min(4, Math.max(1, digit)) as UnifiedLevel;
   }
+
+  // Priority 2/3 below use \S{0,4} (up to 4 trailing NON-space characters),
+  // not \w*: Slovak case endings on these stems are themselves diacritics
+  // ("zvýšenú", "opustiť", "územie"/"územia") sitting directly before the
+  // required \s+ word boundary, and ASCII-only \w matches zero of them —
+  // \w* would stop one character short of the boundary and the whole
+  // alternative would silently never match (caught by the France/Mexico/
+  // Kenya/Ukraine cases in advisory-levels-sk.test.ts). \S is whitespace-
+  // agnostic, not ASCII-restricted, so it crosses diacritics fine; capping
+  // it at 4 keeps the match bounded to one inflected word, not a run-on.
+
+  // Priority 2: whole-country evacuation language, no digit stated.
+  if (
+    /(krajin\S{0,4}\s+opusti\S{0,4}|opusti\S{0,4}\s+krajin\S{0,4}|územ\S{0,4}\s+opusti\S{0,4}|opusti\S{0,4}\s+územ\S{0,4})/i.test(
+      text,
+    )
+  ) {
+    return 4;
+  }
+
+  // Priority 3: "increased caution" recommendation, no digit stated.
+  if (/zvýšen\S{0,4}\s+opatrnos\S{0,4}/i.test(text)) {
+    return 2;
+  }
+
+  // Priority 4: comprehensive source, content published, nothing elevated found.
   return 1;
 }
 

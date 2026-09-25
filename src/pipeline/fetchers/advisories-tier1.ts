@@ -7,7 +7,7 @@ import {
   normalizeDeLevel,
   normalizeNlColor,
   normalizeJpLevel,
-  normalizeSkLevel,
+  normalizeSkSecurityText,
 } from '../normalize/advisory-levels.js';
 import { join } from 'node:path';
 
@@ -16,8 +16,23 @@ const DE_API_URL = 'https://www.auswaertiges-amt.de/opendata/travelwarning';
 const NL_API_BASE =
   'https://opendata.nederlandwereldwijd.nl/v2/sources/nederlandwereldwijd/infotypes/countries';
 const JP_MOFA_BASE = 'https://www.anzen.mofa.go.jp';
-const SK_API_URL =
-  'https://opendata.mzv.sk/api/3/action/datastore_search?resource_id=d2b4a3bf-2606-4b28-a51a-277b0708c076&limit=500';
+// SK repair 2026-09-25 (SOURCE-REPAIR-BRIEF): the OLD SK_API_URL pointed at
+// the "aktualne-upozornenia-pred-cestou" CKAN resource (a single flat table)
+// and read its "Stupen rizika CO" column. That resource died silently the
+// week of 2026-08-22 — MZV repurposed it into a rolling feed of ad-hoc travel
+// notices (border-crossing closures, embassy press releases...); on
+// 2026-09-25 only 1 of its 140 rows still carried a non-empty risk level, so
+// the fetcher had been emitting a "0 countries" collapse and living off the
+// per-source-floor cache restore every day since. MZV's actual per-country
+// risk baseline lives in a DIFFERENT CKAN package: one resource per country,
+// each with a "Bezpecnostna situacia" free-text field (see
+// normalizeSkSecurityText in normalize/advisory-levels.ts for how that text
+// maps to our 1-4 scale). SK_COUNTRY_PACKAGE_URL discovers the current
+// {resourceId -> country} list (resource IDs are not stable identifiers we
+// can hardcode); SK_DATASTORE_BASE then fetches each country's single record.
+const SK_COUNTRY_PACKAGE_URL =
+  'https://opendata.mzv.sk/api/3/action/package_show?id=staty-sveta-podmienky-cestovania-a-pobytu';
+const SK_DATASTORE_BASE = 'https://opendata.mzv.sk/api/3/action/datastore_search';
 
 // --- Level text maps ---
 const DE_LEVEL_TEXT: Record<number, string> = {
@@ -158,6 +173,11 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
     if (!target[iso3]) target[iso3] = {};
     Object.assign(target[iso3], info);
   }
+}
+
+/** Simple async delay helper — used only for the SK sub-fetcher's politeness pause. */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // =============================================================================
@@ -523,8 +543,94 @@ async function fetchJpAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 4: Slovakia (MZV open data)
+// Sub-fetcher 4: Slovakia (MZV open data) — v-repair-2026-09-25
 // =============================================================================
+//
+// MZV's per-country CKAN resources are named "Traveling - <English name>",
+// using EU-Publications-Office-style abbreviated official names (e.g. "Dem.
+// Peopl.Rep. of Korea", "Iran,Islamic Republic of", "Czechia") that mostly —
+// but not always — match our COUNTRIES en names. getCountryByName() resolves
+// the ~199/235 resources whose stripped name already matches directly (e.g.
+// "Ethiopia", "Turkey"); this table carries the ~35 documented exceptions,
+// found by diffing the live resource list against COUNTRIES with a
+// throwaway harness (not committed). Anything covered by NEITHER path is
+// logged and skipped — never guessed (mirrors JP_NAME_TO_ISO3 above).
+const SK_NAME_TO_ISO3: Record<string, string> = {
+  'Viet Nam': 'VNM',
+  'Venezuela (Bol.Rep.of)': 'VEN',
+  'United Rep.of Tanzania': 'TZA',
+  'Syrian Arab Republic': 'SYR',
+  'St.Vincent,the Grenadin.': 'VCT',
+  'Sint Maarten (Dutch p.)': 'SXM',
+  'Saint Martin (French p.)': 'MAF',
+  'Saint Barthélemy': 'BLM',
+  'Holy See': 'VAT',
+  'St.Helena,Asc,Trist.daC.': 'SHN',
+  'United States of America': 'USA',
+  'United Kingd.of GB a.NI.': 'GBR',
+  'Dem.Peopl.Rep. of Korea': 'PRK',
+  'St. Pierre and Miquelon': 'SPM',
+  'Russian Federation': 'RUS',
+  'Réunion': 'REU',
+  "Côte d'Ivoire": 'CIV',
+  'Palestine, State of': 'PSE',
+  'Republic of Moldova': 'MDA',
+  'Micronesia (Fed.St. of)': 'FSM',
+  'US Minor Outlying Isl.': 'UMI',
+  "Lao People's Dem. Rep.": 'LAO',
+  'Dem.Rep. of the Congo': 'COD',
+  'Korea, Republic of': 'KOR',
+  'Iran,Islamic Republic of': 'IRN',
+  'Falkland Isl. (Malvinas)': 'FLK',
+  'The State of Eritrea': 'ERI',
+  'Curaçao': 'CUW',
+  'Czechia': 'CZE',
+  'Brunei Darussalam': 'BRN',
+  'Virgin Islands, British': 'VGB',
+  'British Ind.Ocean Terr.': 'IOT',
+  'Bolivia (Plurinat.State)': 'BOL',
+  'Virgin Islands of the US': 'VIR',
+  'Central African Rep.': 'CAF',
+  // NOT mapped: "Bermuda" — the resource exists but BMU is not in COUNTRIES.
+};
+
+interface SkCountryResource {
+  resourceId: string;
+  countryName: string; // "Traveling - " prefix stripped
+  iso3: string | null; // null = unmatched (skipped, never guessed)
+}
+
+/**
+ * Discover the CURRENT {resourceId -> country} list from the CCKAN package
+ * metadata (1 request). Resource IDs are opaque and NOT stable across MZV
+ * content edits, so this cannot be a hardcoded table like DE/NL/JP's URLs —
+ * it must be rediscovered on every run, same reasoning as JP's dynamic
+ * riskmap index above.
+ */
+async function fetchSkCountryIndex(): Promise<SkCountryResource[]> {
+  const response = await fetch(SK_COUNTRY_PACKAGE_URL, {
+    signal: AbortSignal.timeout(20_000),
+    headers: { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' },
+  });
+  if (!response.ok) {
+    throw new Error(`package_show: HTTP ${response.status}`);
+  }
+  const data = (await response.json()) as Record<string, unknown>;
+  const result = data.result as Record<string, unknown> | undefined;
+  const resources = result?.resources as Array<Record<string, unknown>> | undefined;
+  if (!Array.isArray(resources)) {
+    throw new Error('No resources array in Slovakia package_show response');
+  }
+
+  return resources.map((r) => {
+    const rawName = String(r.name || '');
+    const prefix = 'Traveling - ';
+    const countryName = rawName.startsWith(prefix) ? rawName.slice(prefix.length) : rawName;
+    const direct = getCountryByName(countryName);
+    const iso3 = direct?.iso3 ?? SK_NAME_TO_ISO3[countryName] ?? null;
+    return { resourceId: String(r.id || ''), countryName, iso3 };
+  });
+}
 
 async function fetchSkAdvisories(
   rawDir: string,
@@ -534,74 +640,104 @@ async function fetchSkAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  const response = await fetch(SK_API_URL, {
-    signal: AbortSignal.timeout(30_000),
-    headers: { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  const rawData = await response.json();
-  writeJson(join(rawDir, 'advisories-sk.json'), rawData);
-
-  const result = (rawData as Record<string, unknown>).result as Record<string, unknown> | undefined;
-  if (!result) throw new Error('No result field in Slovakia API data');
-
-  const records = result.records as Record<string, unknown>[];
-  if (!Array.isArray(records)) throw new Error('No records array in Slovakia API response');
-
-  let withData = 0;
-  const total = records.length;
-
-  for (const record of records) {
-    const englishName = String(record['Oficialny anglicky nazov'] || '').trim();
-    const riskText = String(record['Stupen rizika CO'] || '').trim();
-
-    if (!englishName) continue;
-
-    const country = getCountryByName(englishName);
-    if (!country) continue;
-
-    // Only produce indicator if risk text is non-empty
-    if (!riskText) continue;
-
-    withData++;
-    const level = normalizeSkLevel(riskText);
-
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_sk',
-      value: level,
-      year: currentYear,
-      source: 'advisories_sk',
-      fetchedAt,
-    });
-
-    // Extract date if available — otherwise omit (never the fetch time)
-    const dateStr = String(record['Datum zmeny'] || '').trim();
-    let updatedAt: string | undefined;
-    if (dateStr) {
-      // Format: "DD.MM.YYYY HH:MM:SS"
-      const parts = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
-      if (parts) {
-        updatedAt = `${parts[3]}-${parts[2]}-${parts[1]}T00:00:00Z`;
-      }
-    }
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].sk = {
-      level,
-      text: SK_LEVEL_TEXT[level] || riskText,
-      source: 'Slovak Ministry of Foreign Affairs',
-      url: 'https://www.mzv.sk/cestovanie/cestovne-odporucania',
-      updatedAt,
-    };
-  }
+  const index = await fetchSkCountryIndex();
+  const matched = index.filter(
+    (e): e is SkCountryResource & { iso3: string } => e.iso3 !== null,
+  );
+  const unmatched = index.filter((e) => e.iso3 === null);
 
   console.log(
-    `[ADVISORIES-T1] SK: ${withData} countries with risk data out of ${total} records`,
+    `[ADVISORIES-T1] SK: country index discovered ${index.length} resources, ${matched.length} mapped to ISO3, ${unmatched.length} unmatched (skipped, never guessed)`,
+  );
+  if (unmatched.length > 0) {
+    console.warn(
+      `[ADVISORIES-T1] SK: unmatched resource names: ${unmatched.map((e) => e.countryName).join(', ')}`,
+    );
+  }
+
+  // Countries whose page exists but whose "Bezpecnostna situacia" field is
+  // blank (observed for e.g. North Korea, Mali, Somalia on 2026-09-25) — we
+  // emit nothing for them (SOURCE-REPAIR-BRIEF rule 1), logged here so a
+  // future run can be diffed against this list rather than re-discovering it.
+  const emptySecurityField: string[] = [];
+
+  await fetchBatch(
+    matched,
+    async (entry) => {
+      const country = getCountryByIso3(entry.iso3);
+      if (!country) return;
+
+      const url = `${SK_DATASTORE_BASE}?resource_id=${entry.resourceId}&limit=1`;
+      try {
+        const r = await fetch(url, {
+          signal: AbortSignal.timeout(15_000),
+          headers: { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' },
+        });
+        if (!r.ok) return; // Page doesn't exist / resource gone, skip silently
+
+        const data = (await r.json()) as Record<string, unknown>;
+        const result = data.result as Record<string, unknown> | undefined;
+        const records = result?.records as Array<Record<string, unknown>> | undefined;
+        const record = records?.[0];
+        if (!record) return;
+
+        const securityText = record['Bezpecnostna situacia'] as string | null | undefined;
+        const level = normalizeSkSecurityText(securityText);
+        if (level === null) {
+          emptySecurityField.push(country.iso3);
+          return; // rule 1: never guess — no assessment published for this country
+        }
+
+        indicators.push({
+          countryIso3: country.iso3,
+          indicatorName: 'advisory_level_sk',
+          value: level,
+          year: currentYear,
+          source: 'advisories_sk',
+          fetchedAt,
+        });
+
+        // Extract date if available — otherwise omit (never the fetch time)
+        const dateStr = String(record['Datum zmeny'] || '').trim();
+        let updatedAt: string | undefined;
+        if (dateStr) {
+          // Format: "DD.MM.YYYY HH:MM:SS"
+          const parts = dateStr.match(/(\d{2})\.(\d{2})\.(\d{4})/);
+          if (parts) {
+            updatedAt = `${parts[3]}-${parts[2]}-${parts[1]}T00:00:00Z`;
+          }
+        }
+
+        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+        advisoryInfo[country.iso3].sk = {
+          level,
+          text: SK_LEVEL_TEXT[level] || `Level ${level}`,
+          source: 'Slovak Ministry of Foreign Affairs',
+          url: 'https://www.mzv.sk/cestovanie/cestovne-odporucania',
+          updatedAt,
+        };
+      } catch {
+        // Individual country fetch failed, skip silently
+      }
+
+      // Be polite to a small government CKAN instance: ~200 requests follow
+      // the single discovery call, on top of the <=3 concurrency cap below.
+      await delay(150);
+    },
+    3, // Concurrency <=3 per SOURCE-REPAIR-BRIEF rule 4
+  );
+
+  writeJson(join(rawDir, 'advisories-sk.json'), {
+    fetchedAt,
+    resourcesDiscovered: index.length,
+    matchedToIso3: matched.length,
+    unmatchedNames: unmatched.map((e) => e.countryName),
+    countriesWithLevel: indicators.length,
+    emptySecurityField,
+  });
+
+  console.log(
+    `[ADVISORIES-T1] SK: ${indicators.length} countries with a classified risk level out of ${matched.length} matched (${emptySecurityField.length} had an empty security-situation field, skipped)`,
   );
 
   return { indicators, advisoryInfo };
