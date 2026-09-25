@@ -2,7 +2,7 @@ import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../
 import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2 } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
   normalizeChLevel,
   normalizeSeLevel,
@@ -68,15 +68,37 @@ const HU_LEVEL_TEXT: Record<number, string> = {
 };
 
 const PT_LEVEL_TEXT: Record<number, string> = {
-  1: 'Precaucao normal',
-  2: 'Recomenda precaucao',
-  3: 'Condicionada',
-  4: 'Desaconselhada',
+  1: 'Precaução normal',
+  2: 'Reforçar precauções',
+  3: 'Evitar viagens não essenciais',
+  4: 'Viagem desaconselhada',
 };
 
 interface FetcherResult {
   indicators: RawIndicator[];
   advisoryInfo: AdvisoryInfoMap;
+}
+
+/** Fetch a batch of items concurrently with worker queue pattern (used by PT,
+ *  which crawls ~190 individual country pages and must stay polite). */
+async function fetchBatch<T>(
+  items: T[],
+  fn: (item: T) => Promise<void>,
+  concurrency: number,
+): Promise<void> {
+  const queue = [...items];
+  const workers = Array.from({ length: concurrency }, async () => {
+    while (queue.length > 0) {
+      const item = queue.shift();
+      if (item) await fn(item);
+    }
+  });
+  await Promise.allSettled(workers);
+}
+
+/** Simple async delay helper */
+function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /** Merge source advisory info into the combined map */
@@ -312,51 +334,6 @@ const HUNGARIAN_NAMES: Record<string, string> = {
   'Lengyelorszag': 'Poland',
   'Portugalia': 'Portugal',
   'Ukrajna': 'Ukraine',
-};
-
-// Portuguese country names
-const PORTUGUESE_NAMES: Record<string, string> = {
-  'Estados Unidos': 'United States',
-  'Reino Unido': 'United Kingdom',
-  'Franca': 'France',
-  'Alemanha': 'Germany',
-  'Italia': 'Italy',
-  'Espanha': 'Spain',
-  'Russia': 'Russia',
-  'India': 'India',
-  'Coreia do Sul': 'South Korea',
-  'Coreia do Norte': 'North Korea',
-  'Africa do Sul': 'South Africa',
-  'Egito': 'Egypt',
-  'Turquia': 'Turkey',
-  'Grecia': 'Greece',
-  'Croacia': 'Croatia',
-  'Romenia': 'Romania',
-  'Hungria': 'Hungary',
-  'Republica Checa': 'Czech Republic',
-  'Eslovaquia': 'Slovakia',
-  'Austria': 'Austria',
-  'Belgica': 'Belgium',
-  'Holanda': 'Netherlands',
-  'Paises Baixos': 'Netherlands',
-  'Dinamarca': 'Denmark',
-  'Suecia': 'Sweden',
-  'Noruega': 'Norway',
-  'Finlandia': 'Finland',
-  'Nova Zelandia': 'New Zealand',
-  'Mexico': 'Mexico',
-  'China': 'China',
-  'Japao': 'Japan',
-  'Filipinas': 'Philippines',
-  'Bielorrussia': 'Belarus',
-  'Arabia Saudita': 'Saudi Arabia',
-  'Emirados Arabes Unidos': 'United Arab Emirates',
-  'Suica': 'Switzerland',
-  'Polonia': 'Poland',
-  'Marrocos': 'Morocco',
-  'Tunisia': 'Tunisia',
-  'Libia': 'Libya',
-  'Ucrania': 'Ukraine',
 };
 
 /** Try to match a country name using a local name map + fallback to getCountryByName */
@@ -843,9 +820,168 @@ async function fetchHuAdvisories(
 
 // =============================================================================
 // Sub-fetcher 7: Portugal (MNE) -- CPLX-13
-// Fragility: MEDIUM -- Portuguese text, government page
-// Expected failure modes: Page redesign, Portuguese-only content
+// Fragility: MEDIUM -- Portuguese narrative text, one page per country
+// Repaired 2026-09-25: the old single-page scrape read the top
+// "conselhos-aos-viajantes" listing, which only carries a nav menu (country
+// links to the CONSULAR directory, unrelated "rede-consular" URLs) -- no
+// advisory text lives there at all, so normalizePtLevel's old text search
+// silently fell through to its level-1 default for nearly every match. The
+// real per-country pages, e.g. .../conselhos-aos-viajantes/africa/egipto,
+// are separate, server-rendered (no JS needed, confirmed by diffing fetched
+// HTML against the rendered DOM), and carry free-form advisory prose with an
+// explicit "Última atualização: DD/MM/YYYY" date. Every country's URL and
+// Portuguese display name come from the five regional hub pages
+// (africa/america/asia/europa/oceania), which link to them structurally --
+// far more durable than guessing slugs.
+//
+// KNOWN RISK: the old code's CI failure was "HTTP 403, no data available"
+// from GitHub-hosted runners specifically (gh run view 36128588016), while
+// this same URL returns 200 consistently from a residential IP regardless
+// of User-Agent (tested with the pipeline's own UA, no UA, and a generic
+// python-requests UA -- all 200 locally). That rules out UA sniffing, which
+// points to an IP/ASN-level block on MNE's side. This is a traditional
+// server-rendered Joomla site with no client-side API to call instead (no
+// XHR traffic at all -- verified with a network capture), so there is no
+// alternative endpoint per rule 5 of the repair brief. Ships anyway because
+// (a) it cannot be verified from here whether GitHub Actions IPs are still
+// blocked without triggering a real workflow run, which is out of scope for
+// this repair, and (b) if it IS still blocked, enforcePerSourceFloors keeps
+// serving the last good cache with a loud CI error either way -- no silent
+// regression risk. Orchestrator: check the next real pipeline run's
+// "[ADVISORIES-T3B] PT:" log line to confirm reachability.
 // =============================================================================
+
+const PT_BASE_URL = 'https://portaldascomunidades.mne.gov.pt';
+const PT_REGIONS = ['africa', 'america', 'asia', 'europa', 'oceania'] as const;
+
+interface PtCountryLink {
+  name: string; // Portuguese display name, straight from the hub page's link text
+  url: string;
+}
+
+/** Parse MNE's "Última atualização: DD/MM/YYYY" into an ISO date, if present. */
+function parsePtUpdatedAt(text: string): string | undefined {
+  const m = text.match(/[uú]ltima atualiza[cç][aã]o:\s*(\d{2})\/(\d{2})\/(\d{4})/i);
+  if (!m) return undefined;
+  const [, dd, mm, yyyy] = m;
+  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
+
+const PT_AVISOS_START = /^avisos?\b/i;
+const PT_SECTION_END = /^(app registo viajante|informa[cç][aã]o geral|contactos)/i;
+
+/**
+ * Extract just the "Avisos" (warnings) section of a country page, not the
+ * whole `.com-content-article__body`. The full body also contains an
+ * encyclopedic "Informação geral" section (climate, customs/drug-law notes,
+ * neighbouring-country context, ...) that reuses the same "desaconselh*"
+ * vocabulary for unrelated topics -- e.g. Mexico's page calls psychotropic
+ * substances "fortemente desaconselhada" and separately describes a
+ * Guatemala border problem as "desaconselhável", neither of which is about
+ * whether to travel to Mexico. Scoping to the Avisos section (bounded by the
+ * "APP REGISTO VIAJANTE" boilerplate that follows it on every page) avoids
+ * that cross-contamination; a page with no Avisos heading at all (common for
+ * very safe countries, e.g. Italy/USA) legitimately returns "".
+ */
+function extractPtAvisosText($: cheerio.CheerioAPI): string {
+  const body = $('.com-content-article__body');
+  const parts: string[] = [];
+  let collecting = false;
+  for (const el of body.children().toArray()) {
+    const text = $(el).text().trim();
+    if (!text) continue;
+    if (!collecting) {
+      if (PT_AVISOS_START.test(text)) collecting = true;
+      continue;
+    }
+    if (PT_SECTION_END.test(text)) break;
+    parts.push(text);
+  }
+  if (parts.length > 0) return parts.join(' ').replace(/\s+/g, ' ').trim();
+
+  // Fallback for pages where MNE bundles the disclaimer and the Avisos
+  // heading into one DOM node instead of separate paragraphs (seen on e.g.
+  // Russia's page) -- same idea, applied to the flattened text. The negative
+  // lookbehind keeps "pré-aviso" (advance notice, e.g. about transport
+  // strikes -- unrelated prose that happens to contain the substring) from
+  // being misread as the section heading.
+  const fullText = body.text().replace(/\s+/g, ' ').trim();
+  const m = fullText.match(/(?<!-)\bavisos?\b/i);
+  if (!m || m.index === undefined) return '';
+  const rest = fullText.slice(m.index + m[0].length);
+  const endMatch = rest.match(/app registo viajante|informa[cç][aã]o geral/i);
+  return (endMatch && endMatch.index !== undefined ? rest.slice(0, endMatch.index) : rest).trim();
+}
+
+function stripDiacritics(s: string): string {
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+// COUNTRIES' own `.pt` names, keyed accent-folded -- built once so every one
+// of MNE's 200 country pages can resolve without a hand-typed name map.
+const ptNameMap = new Map<string, (typeof COUNTRIES)[number]>();
+for (const country of COUNTRIES) {
+  ptNameMap.set(stripDiacritics(country.name.pt).toLowerCase(), country);
+}
+
+// MNE (European Portuguese) occasionally diverges from this codebase's more
+// Brazilian-leaning `name.pt` strings -- e.g. "Burkina Faso" vs our
+// "Burquina Faso", "Chéquia" vs "República Tcheca", "Grenada" vs "Granada".
+// Built by diffing all 200 links from the five hub pages against
+// COUNTRIES during the 2026-09-25 repair; every key below is a real,
+// verified miss, not a guess. "Israel e Territórios Palestinianos
+// Ocupados" is MNE's own single combined page for both, so it fans out to
+// both ISO3s. Bermuda has no entry: it's a UK territory outside our
+// 248-country list (same gap PL's Odyseusz fetcher hit).
+const PT_NAME_OVERRIDES: Record<string, string[]> = {
+  'burkina faso': ['BFA'],
+  'djibouti': ['DJI'],
+  'egipto': ['EGY'],
+  'guine bissau': ['GNB'],
+  'guine conacry': ['GIN'],
+  'mauricias (ilhas)': ['MUS'],
+  'republica centro africana': ['CAF'],
+  'republica do congo': ['COG'],
+  'seychelles': ['SYC'],
+  'estados unidos da america': ['USA'],
+  'grenada': ['GRD'],
+  'bahrain': ['BHR'],
+  'irao': ['IRN'],
+  'israel e territorios palestinianos ocupados': ['ISR', 'PSE'],
+  'koweit': ['KWT'],
+  'myanmar': ['MMR'],
+  'oma (sultanato)': ['OMN'],
+  'qatar': ['QAT'],
+  'timor leste': ['TLS'],
+  'turquemenistao': ['TKM'],
+  'vietname': ['VNM'],
+  'bosnia-herzegovina': ['BIH'],
+  'chequia': ['CZE'],
+  'moldova': ['MDA'],
+  'sao marino': ['SMR'],
+  'vaticano': ['VAT'],
+  'cook (ilhas)': ['COK'],
+  'marshall (ilhas)': ['MHL'],
+  'papua nova guine': ['PNG'],
+  'salomao (ilhas)': ['SLB'],
+  'samoa (estado independente)': ['WSM'],
+};
+
+/** Resolve MNE's Portuguese country-page name to our CountryEntry list --
+ *  usually one entry, two for MNE's combined Israel/Palestine page, zero
+ *  for territories we don't track (e.g. Bermuda). */
+function resolvePtCountries(name: string): (typeof COUNTRIES)[number][] {
+  const key = stripDiacritics(name).toLowerCase().trim();
+  const overrideIsos = PT_NAME_OVERRIDES[key];
+  if (overrideIsos) {
+    return overrideIsos
+      .map((iso3) => getCountryByIso3(iso3))
+      .filter((c): c is (typeof COUNTRIES)[number] => Boolean(c));
+  }
+  const direct = ptNameMap.get(key);
+  return direct ? [direct] : [];
+}
 
 async function fetchPtAdvisories(
   rawDir: string,
@@ -856,53 +992,95 @@ async function fetchPtAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   try {
-    const response = await fetch(
-      'https://portaldascomunidades.mne.gov.pt/pt/vai-viajar/conselhos-aos-viajantes',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+    // Step 1: discover every country page from the five regional hub pages --
+    // structural links (href + anchor text), not narrative text, so this
+    // half is resilient to prose/wording changes.
+    const links: PtCountryLink[] = [];
+    for (const region of PT_REGIONS) {
+      const hubUrl = `${PT_BASE_URL}/pt/vai-viajar/conselhos-aos-viajantes/${region}`;
+      try {
+        const response = await fetch(hubUrl, { signal: AbortSignal.timeout(30_000), headers: FETCH_HEADERS });
+        if (!response.ok) {
+          console.warn(`[ADVISORIES-T3B] PT: hub ${region} HTTP ${response.status}, skipping region`);
+          continue;
+        }
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        $(`a[href*="/vai-viajar/conselhos-aos-viajantes/${region}/"]`).each((_, el) => {
+          const href = $(el).attr('href');
+          const name = $(el).text().trim();
+          if (!href || !name) return;
+          const url = href.startsWith('http') ? href : `${PT_BASE_URL}${href}`;
+          if (!links.find((l) => l.url === url)) links.push({ name, url });
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[ADVISORIES-T3B] PT: hub ${region} unavailable (${msg}), skipping region`);
+      }
+      await delay(300); // polite gap between the 5 hub requests
+    }
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3B] PT: HTTP ${response.status}, no data available`);
+    if (links.length === 0) {
+      console.warn('[ADVISORIES-T3B] PT: no country links found on any hub page');
       return { indicators, advisoryInfo };
     }
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    // Step 2: crawl each country page, <=3 concurrent (rule 4).
+    await fetchBatch(
+      links,
+      async (link) => {
+        try {
+          const countries = resolvePtCountries(link.name);
+          if (countries.length === 0) return;
 
-    // Parse advisory entries
-    $('a, li, h3, h4, td').each((_, el) => {
-      const text = $(el).text().trim();
-      if (text.length < 3 || text.length > 50) return;
+          const response = await fetch(link.url, { signal: AbortSignal.timeout(15_000), headers: FETCH_HEADERS });
+          if (!response.ok) return;
 
-      const country = matchCountry(text, PORTUGUESE_NAMES);
-      if (!country) return;
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
+          const html = await response.text();
+          const $ = cheerio.load(html);
+          const bodyText = $('.com-content-article__body').text().replace(/\s+/g, ' ').trim();
+          if (bodyText.length < 20) return; // page loaded but carries no content -- never guess
 
-      const parentText = $(el).closest('li, div, section, tr, article, p').text();
-      const level = normalizePtLevel(parentText);
+          const avisosText = extractPtAvisosText($);
+          // No Avisos section at all is itself MNE's comprehensive-per-country
+          // "nothing to flag" baseline (confirmed on ITA/USA, which have full
+          // pages but skip straight to the boilerplate app-promo section) --
+          // level 1, not a skip.
+          const level = avisosText ? normalizePtLevel(avisosText) : 1;
+          if (level === null) return; // Avisos section present but unreadable -- never guess
 
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_pt',
-        value: level,
-        year: currentYear,
-        source: 'advisories_pt',
-        fetchedAt,
-      });
+          const updatedAt = parsePtUpdatedAt(bodyText);
+          // Almost always one country; two only for MNE's combined
+          // Israel/Palestine page, which applies the same text to both.
+          for (const country of countries) {
+            indicators.push({
+              countryIso3: country.iso3,
+              indicatorName: 'advisory_level_pt',
+              value: level,
+              year: currentYear,
+              source: 'advisories_pt',
+              fetchedAt,
+            });
 
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].pt = {
-        level,
-        text: PT_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Portugal MNE',
-        url: 'https://portaldascomunidades.mne.gov.pt/pt/vai-viajar/conselhos-aos-viajantes',
-      };
-    });
-  } catch {
-    console.warn('[ADVISORIES-T3B] PT: portaldascomunidades.mne.gov.pt unavailable, returning empty result');
+            if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+            advisoryInfo[country.iso3].pt = {
+              level,
+              text: PT_LEVEL_TEXT[level] || `Level ${level}`,
+              source: 'Portugal MNE',
+              url: link.url,
+              updatedAt,
+            };
+          }
+        } catch {
+          // Individual country page failed, skip silently -- one bad page
+          // must not abort the whole crawl.
+        }
+      },
+      3,
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[ADVISORIES-T3B] PT: portaldascomunidades.mne.gov.pt unavailable (${msg}), returning empty result`);
   }
 
   console.log(`  [PT] Found ${indicators.length} countries`);

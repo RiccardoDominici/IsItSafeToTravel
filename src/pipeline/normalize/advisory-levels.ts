@@ -371,14 +371,91 @@ export function normalizeHuLevel(text: string): UnifiedLevel {
   return 1;
 }
 
+// Portugal (MNE) has no explicit level badge on its per-country advisory
+// pages (portaldascomunidades.mne.gov.pt, redesigned since the previous
+// audit) -- each page is free-form prose, so the unified level has to be
+// inferred sentence-by-sentence. A statement only counts as a COUNTRY-WIDE
+// signal when its own clause carries no regional qualifier (zona, região,
+// fronteira, "estado do/da <place>", bairro, ...): this is the same
+// "a partial/regional warning must not promote the whole country" guard used
+// for DE/NL elsewhere in this codebase, just applied at clause granularity
+// because MNE mixes country-wide and region-only warnings in the same
+// paragraph (e.g. Egypt: baseline "no advisory against travel" + a Sinai/
+// Gaza-border-only "totally advised against"). Verified against 17 real
+// pages (AFG/SYR/UKR/MEX/JPN/FRA/ITA/USA/EGY/THA + DEU/RUS/BRA/HTI/VEN/YEM/
+// somalia) during the 2026-09-25 source repair.
+const PT_REGIONAL_SCOPE =
+  /zona|regi[aã]o|regi[oõ]es|fronteir|prov[íi]ncia|distrito|estado d[oa]\b|norte d|sul d|leste d|oeste d|[aá]rea|cidade d|ilha d|litoral|interior d|faixa d|bairro/;
+
+// "não existe um desaconselhamento..." explicitly says NO advisory applies --
+// must not be read as one just because the word "desaconselh" appears.
+const PT_NEGATED = /não existe|não h[aá] |sem desaconselhamento|não se desaconselha|não [eé] desaconselh/;
+
+// Personal-safety-tip boilerplate ("don't flash valuables", "avoid certain
+// neighbourhoods at night", "hire a car with driver rather than self-drive")
+// appears on almost every country's page, including very safe ones -- it's
+// about individual behaviour, not a country-level travel recommendation.
+const PT_PERSONAL_SAFETY_TIP =
+  /deslocações? noturnas|durante a noite|à noite|de noite|estar na rua|andar (a pé|sozinho)|sair (sozinho|à noite)|objetos de valor|transportes? públicos?|carteiristas|a partir de que horas|bairros que suscitam|condução (própria|de veículo)|conduzir|aluguer de viatura|condutor/;
+
+const PT_STRONG_UNSCOPED =
+  /não viaje em nenhuma circunstância|evite viajar para|saia (do país|imediatamente)|abandone o país imediatamente/;
+
+const PT_AVOID_NON_ESSENTIAL =
+  /viagens? não essenciais|deslocações? não essenciais|(viagem|deslocação|entrada no país) (está|fica|encontra-se)?\s*condicionada/;
+
+// MNE alternates between "desaconselhar" and "evitar" for the same kind of
+// advisory ("evitadas deslocações à Rússia" == "desaconselhadas..."). Only
+// count "evitar" when its object is travel itself -- bare "evitar" is also
+// used for generic tips ("evite andar sozinho"), which must not drive the
+// level.
+const PT_ADVISE_AGAINST =
+  /desaconselh|evit(ar|e|ada|adas|ado|ados)\s+(quaisquer\s+|todas as\s+)?(deslocações|viagens)/;
+
+const PT_CAUTION =
+  /precaução|vigilância acrescida|cautela redobrada|risco elevado de|risco acrescido de|elevada (incidência|taxa) de criminalidade|situação de (instabilidade|insegurança)|forte presença (militar|policial)/;
+
 /**
- * Normalize Portugal (MNE) Portuguese advisory text to unified 1-4 scale.
- * Includes both diacritical and ASCII-folded variants for resilience.
+ * Normalize Portugal (MNE) advisory narrative text to unified 1-4 scale.
+ * Returns null when the page carries no advisory content at all (unreachable/
+ * empty fetch) -- per the "never fall back to level 1" rule, that must drop
+ * the country rather than publish a fabricated "normal precautions". A page
+ * that loaded fine but genuinely has no warning language IS a valid level-1
+ * baseline: MNE publishes one comprehensive page per country, so silence is
+ * itself the "no specific advisory" statement.
  */
-export function normalizePtLevel(text: string): UnifiedLevel {
+export function normalizePtLevel(text: string): UnifiedLevel | null {
+  if (!text || text.trim().length < 20) return null;
   const lower = text.toLowerCase();
-  if (lower.includes('desaconselhada') || lower.includes('não viaje') || lower.includes('nao viaje') || lower.includes('evite todas as viagens')) return 4;
-  if (lower.includes('condicionada') || lower.includes('evite viagens não essenciais') || lower.includes('evite viagens nao essenciais')) return 3;
-  if (lower.includes('recomenda precaução') || lower.includes('recomenda precaucao') || lower.includes('cuidados especiais')) return 2;
+  const clauses = lower.split(/(?<=[.;!?])\s+|\n+/);
+
+  let saw4 = false;
+  let saw3 = false;
+  let sawScoped = false;
+  let sawCaution = false;
+
+  for (const clause of clauses) {
+    if (!clause.trim() || PT_NEGATED.test(clause) || PT_PERSONAL_SAFETY_TIP.test(clause)) continue;
+
+    const regional = PT_REGIONAL_SCOPE.test(clause);
+    const adviseAgainst = PT_ADVISE_AGAINST.test(clause);
+    const nonEssential = PT_AVOID_NON_ESSENTIAL.test(clause);
+    const strong = PT_STRONG_UNSCOPED.test(clause);
+
+    if (strong && !regional) {
+      saw4 = true;
+    } else if (adviseAgainst && !regional) {
+      if (nonEssential) saw3 = true;
+      else saw4 = true;
+    } else if (adviseAgainst || (nonEssential && regional)) {
+      sawScoped = true; // regional-only warning -- never promotes past level 2
+    }
+
+    if (PT_CAUTION.test(clause)) sawCaution = true;
+  }
+
+  if (saw4) return 4;
+  if (saw3) return 3;
+  if (sawScoped || sawCaution) return 2;
   return 1;
 }
