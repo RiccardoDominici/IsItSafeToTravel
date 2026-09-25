@@ -353,13 +353,65 @@ export function normalizeDkLevel(text: string): UnifiedLevel {
 
 /**
  * Normalize Singapore (mfa.gov.sg) English advisory text to unified 1-4 scale.
+ *
+ * The old implementation scraped a listing page that no longer exists at its old URL (see
+ * fetchSgAdvisories) and, even where it matched, used single-word cues ("avoid", "caution")
+ * broad enough to fire on unrelated boilerplate. mfa.gov.sg is NOT a comprehensive one-page-
+ * per-country directory the way Belgium's is: most country pages (Japan, France...) carry only
+ * visa/entry-requirement text with no safety verdict at all — this is an event-based notice
+ * system (earthquakes, floods, protests, conflict), not a standing per-country baseline. So
+ * unlike normalizeBeLevel, this NEVER defaults to 1: silence here means "no notice currently
+ * published", not "normal precautions confirmed", and the two must not be conflated (rule 1).
+ *
+ * `text` must be the page's advisory paragraphs, one per line ("\n"-joined, matching
+ * fetchSgAdvisories) — classified per paragraph, not over the whole page flattened, because
+ * MFA reuses one shared regional-conflict paragraph verbatim across every affected country's
+ * page (e.g. "Singaporeans are advised to defer all travel **to the region**" appears
+ * unchanged on Bahrain/Kuwait/Qatar/UAE's pages during a Middle-East-wide notice; "defer all
+ * travel to the conflict areas in the Thai-Cambodian **border regions**" appears on both
+ * Thailand's and Cambodia's pages). Read at the whole-page level this reads as "level 4 for
+ * every one of those countries"; per Rule 2 (partial/regional warnings must not promote a
+ * country past 2) a paragraph naming "the region"/"border regions"/"conflict area(s)" rather
+ * than the country itself is capped at 2, mirroring normalizeBeLevel's regional-scope guard.
+ *
+ * Phrase tiers below were read directly off ~15 live pages on 2026-09-25: Syria and North
+ * Korea use "defer/avoid ALL travel" (no "non-essential" qualifier) naming the country itself
+ * -> 4; Libya/Ukraine use "defer all non-essential travel" -> 3; Nepal/Madagascar/France
+ * (flash floods, post-unrest monitoring, elevated terror threat) use "exercise a high degree
+ * of caution" -> 2. Calm/visa-only pages (Japan, Italy, most of the 189-country sitemap) match
+ * nothing -> null, correctly emitting no indicator for them.
  */
-export function normalizeSgLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('do not travel') || lower.includes('leave immediately') || lower.includes('defer all travel')) return 4;
-  if (lower.includes('travel advisory') || lower.includes('avoid') || lower.includes('reconsider') || lower.includes('defer')) return 3;
-  if (lower.includes('travel notice') || lower.includes('caution') || lower.includes('increased')) return 2;
-  return 1;
+export function normalizeSgLevel(text: string): UnifiedLevel | null {
+  if (!text || !text.trim()) return null;
+
+  const REGIONAL_WORDS = ['the region', 'border region', 'conflict area', 'the following area', 'certain area'];
+
+  let level: UnifiedLevel | null = null;
+
+  for (const paragraph of text.split('\n')) {
+    const lower = paragraph.toLowerCase();
+    let paragraphLevel: UnifiedLevel | 0 = 0;
+
+    // "do not travel" alone is also generic crime-safety phrasing ("do not travel alone at
+    // night") on plenty of otherwise-calm pages (e.g. Ethiopia) -- exclude that manner-qualified
+    // form specifically rather than dropping the cue outright, since a bare "Do not travel to
+    // X" verdict is a real, distinct level-4 pattern worth keeping.
+    if (lower.includes('defer all travel') || lower.includes('avoid all travel')
+      || (lower.includes('do not travel') && !lower.includes('do not travel alone'))
+      || lower.includes('leave immediately') || lower.includes('evacuate immediately')) paragraphLevel = 4;
+    else if (lower.includes('defer all non-essential travel') || lower.includes('avoid all non-essential travel')
+      || lower.includes('avoid non-essential travel')) paragraphLevel = 3;
+    else if (lower.includes('exercise a high degree of caution') || lower.includes('exercise increased caution')
+      || lower.includes('exercise extra caution') || lower.includes('high degree of vigilance')) paragraphLevel = 2;
+
+    if (paragraphLevel === 0) continue;
+
+    if (paragraphLevel > 2 && REGIONAL_WORDS.some((w) => lower.includes(w))) paragraphLevel = 2;
+
+    if (level === null || paragraphLevel > level) level = paragraphLevel;
+  }
+
+  return level; // null when no paragraph matched — not the same as "confirmed normal"
 }
 
 /**

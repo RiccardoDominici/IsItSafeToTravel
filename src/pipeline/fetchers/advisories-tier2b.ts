@@ -321,6 +321,49 @@ async function fetchDkAdvisories(
 // Sub-fetcher 3: Singapore (MFA) -- HTML-11
 // =============================================================================
 
+// mfa.gov.sg moved off the old "/Overseas-Singaporeans/..." path entirely (the redirect
+// target itself now 404s); the current per-country pages live at
+// "/travelling-overseas/travel-advisories-notices-and-visa-information/{slug}/". The old code
+// also scraped a listing page for a "travel advisory" vs "travel notice" label to guess a
+// level -- that listing is client-side (React) paginated and only ever exposes the ~10 most
+// recently touched countries in the initial HTML, so it could never have found most of the
+// 191 country pages that actually exist. sitemap.xml lists all of them directly (a real
+// Rule-6 structured endpoint) and needs no guessing.
+//
+// sitemap.xml specifically (not the country pages) 403s under this file's normal User-Agent --
+// CloudFront/WAF appears to apply a stricter bot rule to that one path. A standard browser UA
+// clears it; this isn't evading any auth or paywall, sitemap.xml is public-by-design content
+// meant for crawling. Country pages themselves fetch fine under the normal UA.
+const SG_SITEMAP_URL = 'https://www.mfa.gov.sg/sitemap.xml';
+const SG_BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+const SG_PATH_PREFIX = '/travelling-overseas/travel-advisories-notices-and-visa-information/';
+
+// Sitemap slugs that don't match a simple slugified English country name -- mfa.gov.sg uses
+// each country's full official/constitutional name for some of these.
+const SG_SLUG_ALIASES: Record<string, string> = {
+  'bolivarian-republic-of-venezuela': 'VEN',
+  'democratic-republic-of-congo': 'COD',
+  'federated-states-of-micronesia': 'FSM',
+  'kosovo': 'XKX',
+  'kyrgyz-republic': 'KGZ',
+  'lao-peoples-democratic-republic': 'LAO',
+  'malta': 'MLT',
+  'palestinian-territories': 'PSE',
+  'republic-of-guinea': 'GIN',
+  'republic-of-south-korea': 'KOR',
+  'turkiye': 'TUR',
+};
+
+/** Slugify an English country name the same way mfa.gov.sg's own URLs are built. */
+function slugifyEn(name: string): string {
+  return name
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 async function fetchSgAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -329,117 +372,62 @@ async function fetchSgAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  const baseUrl = 'https://www.mfa.gov.sg/Overseas-Singaporeans/Travelling-Overseas/travel-advisories-notices-and-visa-information';
-
-  const response = await fetch(baseUrl, {
+  const sitemapResponse = await fetch(SG_SITEMAP_URL, {
     signal: AbortSignal.timeout(30_000),
-    headers: FETCH_HEADERS,
+    headers: { ...FETCH_HEADERS, 'User-Agent': SG_BROWSER_UA },
   });
 
-  if (!response.ok) {
-    console.warn(`[ADVISORIES-T2B] SG: HTTP ${response.status}, returning empty`);
+  if (!sitemapResponse.ok) {
+    console.warn(`[ADVISORIES-T2B] SG: sitemap HTTP ${sitemapResponse.status}, returning empty`);
     return { indicators, advisoryInfo };
   }
 
-  const html = await response.text();
-  const $ = cheerio.load(html);
+  const sitemapXml = await sitemapResponse.text();
+  const slugByIso3 = new Map<string, typeof COUNTRIES[number]>();
+  for (const c of COUNTRIES) slugByIso3.set(slugifyEn(c.name.en), c);
 
-  // Parse listing page for country entries with category text
-  $('a, tr, li, div').each((_, el) => {
-    const text = $(el).text().trim();
-    if (!text || text.length > 500) return;
-
-    const textLower = text.toLowerCase();
-
-    // Look for country-related entries with travel advisory/notice markers
-    let category = '';
-    if (textLower.includes('travel advisory') || textLower.includes('travel page with travel advisory')) {
-      category = 'advisory';
-    } else if (textLower.includes('travel notice') || textLower.includes('travel page with travel notice')) {
-      category = 'notice';
+  const countryEntries: { url: string; country: typeof COUNTRIES[number] }[] = [];
+  const locRegex = new RegExp(`<loc>(https://www\\.mfa\\.gov\\.sg${SG_PATH_PREFIX}([a-z0-9-]+)/)</loc>`, 'g');
+  let match: RegExpExecArray | null;
+  while ((match = locRegex.exec(sitemapXml)) !== null) {
+    const [, url, slug] = match;
+    const country = slugByIso3.get(slug) ?? (SG_SLUG_ALIASES[slug] ? COUNTRIES.find((c) => c.iso3 === SG_SLUG_ALIASES[slug]) : undefined);
+    if (country && !countryEntries.find((e) => e.country.iso3 === country.iso3)) {
+      countryEntries.push({ url, country });
     }
+  }
 
-    // Try to extract a country name from the text (first line or link text)
-    const firstLine = text.split('\n')[0].trim();
-    const country = getCountryByName(firstLine);
-    if (!country) return;
+  if (countryEntries.length === 0) {
+    console.warn('[ADVISORIES-T2B] SG: No country URLs found in sitemap');
+    return { indicators, advisoryInfo };
+  }
 
-    // Avoid duplicates
-    const existing = indicators.find(i => i.countryIso3 === country.iso3);
-    if (existing) return;
+  await fetchBatch(
+    countryEntries,
+    async (entry) => {
+      try {
+        const pageResponse = await fetch(entry.url, {
+          signal: AbortSignal.timeout(20_000),
+          headers: FETCH_HEADERS,
+        });
+        if (!pageResponse.ok) return;
 
-    let level: UnifiedLevel;
-    if (category === 'advisory') {
-      level = 3;
-    } else if (category === 'notice') {
-      level = 2;
-    } else {
-      level = 1;
-    }
+        const pageHtml = await pageResponse.text();
+        const page$ = cheerio.load(pageHtml);
+        const paragraphs: string[] = [];
+        page$('p[class*="prose-body-base"]').each((_, el) => {
+          // The site injects U+00A0 (non-breaking space) mid-phrase for line-break control
+          // (e.g. "non-essential travel") -- \s+ normalization must collapse it too, or
+          // exact phrase matches like "defer all non-essential travel" silently never fire.
+          const text = page$(el).text().replace(/\s+/g, ' ').trim();
+          if (text) paragraphs.push(text);
+        });
 
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_sg',
-      value: level,
-      year: currentYear,
-      source: 'advisories_sg',
-      fetchedAt,
-    });
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].sg = {
-      level,
-      text: SG_LEVEL_TEXT[level] || `Level ${level}`,
-      source: 'Singapore Ministry of Foreign Affairs',
-      url: baseUrl,
-    };
-  });
-
-  // Check for pagination -- fetch additional pages if present
-  const nextPages: string[] = [];
-  $('a[href*="page"], a.pagination-next, a[href*="Page"]').each((_, el) => {
-    const href = $(el).attr('href');
-    if (href && !nextPages.includes(href)) {
-      const fullUrl = href.startsWith('http') ? href : `https://www.mfa.gov.sg${href}`;
-      nextPages.push(fullUrl);
-    }
-  });
-
-  // Fetch up to 10 additional pages
-  for (const pageUrl of nextPages.slice(0, 10)) {
-    try {
-      const pageResp = await fetch(pageUrl, {
-        signal: AbortSignal.timeout(15_000),
-        headers: FETCH_HEADERS,
-      });
-      if (!pageResp.ok) continue;
-
-      const pageHtml = await pageResp.text();
-      const page$ = cheerio.load(pageHtml);
-
-      page$('a, tr, li, div').each((_, el) => {
-        const text = page$(el).text().trim();
-        if (!text || text.length > 500) return;
-
-        const textLower = text.toLowerCase();
-        let category = '';
-        if (textLower.includes('travel advisory')) category = 'advisory';
-        else if (textLower.includes('travel notice')) category = 'notice';
-
-        const firstLine = text.split('\n')[0].trim();
-        const country = getCountryByName(firstLine);
-        if (!country) return;
-
-        const existing = indicators.find(i => i.countryIso3 === country.iso3);
-        if (existing) return;
-
-        let level: UnifiedLevel;
-        if (category === 'advisory') level = 3;
-        else if (category === 'notice') level = 2;
-        else level = 1;
+        const level = normalizeSgLevel(paragraphs.join('\n'));
+        if (level === null) return; // no explicit notice published for this country -- skip, don't fabricate
 
         indicators.push({
-          countryIso3: country.iso3,
+          countryIso3: entry.country.iso3,
           indicatorName: 'advisory_level_sg',
           value: level,
           year: currentYear,
@@ -447,18 +435,19 @@ async function fetchSgAdvisories(
           fetchedAt,
         });
 
-        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-        advisoryInfo[country.iso3].sg = {
+        if (!advisoryInfo[entry.country.iso3]) advisoryInfo[entry.country.iso3] = {};
+        advisoryInfo[entry.country.iso3].sg = {
           level,
           text: SG_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Singapore Ministry of Foreign Affairs',
-          url: baseUrl,
+          url: entry.url,
         };
-      });
-    } catch {
-      // Pagination page failed, skip
-    }
-  }
+      } catch {
+        // Individual country page failed, skip silently
+      }
+    },
+    3,
+  );
 
   console.log(`[ADVISORIES-T2B] SG: ${indicators.length} countries from MFA`);
   return { indicators, advisoryInfo };
