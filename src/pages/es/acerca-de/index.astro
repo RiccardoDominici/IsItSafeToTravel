@@ -4,18 +4,20 @@ import Base from '../../../layouts/Base.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
+import { aboutCopy } from '../../../i18n/about-copy';
 import { buildWebPageJsonLd, buildPersonJsonLd, buildBreadcrumbJsonLd } from '../../../lib/seo';
 
 const lang: Lang = 'es';
 const t = useTranslations(lang);
 const r = routes[lang];
+const c = aboutCopy[lang];
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const siteUrl = 'https://isitsafetotravel.org';
 
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
-    { ...buildWebPageJsonLd(t('about.title'), t('about.description'), canonicalUrl, lang), '@context': undefined },
+    { ...buildWebPageJsonLd(c.title, c.description, canonicalUrl, lang), '@context': undefined },
     { ...buildPersonJsonLd(), '@context': undefined },
     { ...buildBreadcrumbJsonLd([
       { name: t('nav.home'), url: `${siteUrl}/${lang}/` },
@@ -23,47 +25,67 @@ const jsonLd = {
     ]), '@context': undefined },
   ],
 };
+
+// {link}-token paragraphs (see about-copy.ts), pre-split so the markup below
+// stays a thin render with no string logic in the template body.
+const [sourcesBefore, sourcesAfter] = c.sourcesText.split('{link}');
+const [dataCodeBefore, dataCodeAfter] = c.dataCodeText.split('{link}');
+const [whoRunsBefore, whoRunsAfter] = c.whoRunsItText.split('{link}');
+const [contactBefore, contactAfter] = c.contactText.split('{link}');
+const [feedbackBefore, feedbackAfter] = c.contactFeedback.split('{link}');
 ---
-<Base lang={lang} title={t('about.title')} description={t('about.description')} jsonLd={jsonLd} ogImage="/og/default.png">
+<Base lang={lang} title={c.title} description={c.description} jsonLd={jsonLd} ogImage="/og/default.png">
   <div class="max-w-3xl mx-auto px-4 py-8 space-y-6">
-    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{t('about.heading')}</h1>
+    <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{c.heading}</h1>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.project_title')}</h2>
-      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.project_text')}</p>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.projectTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.projectText}</p>
     </section>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.mission_title')}</h2>
-      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.mission_text')}</p>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.missionTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.missionText}</p>
     </section>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.author_title')}</h2>
-      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{t('about.author_text')}</p>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.howItWorksTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.howItWorksText}</p>
     </section>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.sources_title')}</h2>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.sourcesTitle}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
-        {t('about.sources_text').split('{methodology_link}')[0]}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text')}</a>{t('about.sources_text').split('{methodology_link}')[1]}
+        {sourcesBefore}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.methodologyLinkText}</a>{sourcesAfter}
       </p>
     </section>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.opensource_title')}</h2>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.dataCodeTitle}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
-        {t('about.opensource_text').split('{github_link}')[0]}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">GitHub</a>{t('about.opensource_text').split('{github_link}')[1]}
+        {dataCodeBefore}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">GitHub</a>{dataCodeAfter}
       </p>
     </section>
 
     <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{t('about.contact_title')}</h2>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.correctionsTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.correctionsText}</p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.whoRunsItTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {whoRunsBefore}<a href="https://github.com/RiccardoDominici" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.authorName}</a>{whoRunsAfter}
+      </p>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.contactTitle}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed mb-3">
-        {t('about.contact_text').split('{github_issues_link}')[0]}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel/issues" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.github_issues_text')}</a>{t('about.contact_text').split('{github_issues_link}')[1]}
+        {contactBefore}<a href="https://github.com/RiccardoDominici/IsItSafeToTravel/issues" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.githubIssuesText}</a>{contactAfter}
       </p>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
-        {t('about.contact_feedback').split('{feedback_link}')[0]}<a href={`/${lang}/${r.feedback}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.feedback_link_text')}</a>{t('about.contact_feedback').split('{feedback_link}')[1]}
+        {feedbackBefore}<a href={`/${lang}/${r.feedback}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.feedbackLinkText}</a>{feedbackAfter}
       </p>
     </section>
   </div>
