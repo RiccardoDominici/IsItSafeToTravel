@@ -146,6 +146,12 @@ function loadFromIndividualSnapshots(days?: number): Map<string, HistoryPoint[]>
 }
 
 // iso3 → iso2 map for Intl.DisplayNames lookup (region codes are alpha-2).
+// iso3 -> full CountryEntry (name in en/it/es/fr/pt), for getLocalizedCountryName's
+// first-priority lookup below -- see that function's docstring for why.
+const COUNTRY_BY_ISO3: Record<string, (typeof COUNTRIES)[number]> = Object.fromEntries(
+  COUNTRIES.map(c => [c.iso3, c]),
+);
+
 const ISO3_TO_ISO2: Record<string, string> = Object.fromEntries(
   COUNTRIES.map(c => [c.iso3, c.iso2]),
 );
@@ -178,18 +184,32 @@ function getDisplayNames(lang: Lang): Intl.DisplayNames | null {
  * Get a country's display name in the requested language.
  *
  * Resolution order:
- *  1. Use \`country.name[lang]\` when the snapshot supplied a translation.
- *  2. Otherwise, fall back to \`Intl.DisplayNames\` (built-in ICU country
+ *  1. Use \`COUNTRIES\` (src/pipeline/config/countries.ts) by iso3 when it has
+ *     a translation. This is source code, live the moment it deploys; the
+ *     snapshot below is data, committed once a day by the pipeline. A
+ *     diacritics fix in COUNTRIES (e.g. "Japon" -> "Japón") would otherwise
+ *     keep showing the old spelling on the live site for up to 24h, until
+ *     the next scheduled pipeline run regenerates scores.json with it
+ *     (2026-09-25 audit: es/pt/fr pages served "Japon"/"Mexico"/"Canada"
+ *     from a stale snapshot after the fix had already shipped in source).
+ *  2. Otherwise use \`country.name[lang]\` when the snapshot supplied a
+ *     translation (covers iso3 codes absent from COUNTRIES, if any).
+ *  3. Otherwise, fall back to \`Intl.DisplayNames\` (built-in ICU country
  *     names) keyed by the country's ISO-3166 alpha-2 code. This makes
- *     zh / de display correctly (e.g. JPN → 日本 / Japan) even when the
- *     snapshot was generated before those locales were added to the
- *     pipeline.
- *  3. Final fallback: English name from the snapshot.
+ *     zh / de display correctly (e.g. JPN → 日本 / Japan) even though
+ *     COUNTRIES and the snapshot only carry en/it/es/fr/pt.
+ *  4. Final fallback: English name from the snapshot.
  */
 export function getLocalizedCountryName(
   country: { iso3?: string; name: Record<string, string> },
   lang: Lang,
 ): string {
+  if (country.iso3) {
+    const entry = COUNTRY_BY_ISO3[country.iso3.toUpperCase()];
+    const fromConfig = entry ? (entry.name as Record<string, string>)[lang] : undefined;
+    if (fromConfig) return fromConfig;
+  }
+
   const fromSnapshot = country.name[lang];
   if (fromSnapshot) return fromSnapshot;
 
