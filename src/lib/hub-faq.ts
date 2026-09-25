@@ -37,7 +37,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How often is the safest-countries ranking updated?',
         answer:
-          'Scores are recalculated every day from more than 40 public sources, including government travel advisories, the Global Peace Index, UCDP conflict data and World Bank indicators. The ranking always reflects the most recent daily snapshot.',
+          `Scores are recalculated every day from ${SOURCE_COUNT_DISPLAY} public sources, including government travel advisories, the Global Peace Index, UCDP conflict data and World Bank indicators. The ranking always reflects the most recent daily snapshot.`,
       },
       {
         question: 'What makes a country one of the safest to visit?',
@@ -530,7 +530,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'What data-driven precautions should solo travelers take?',
         answer:
-          "Check the country's daily-updated score and its crime pillar before booking, register with your embassy where possible, and re-check advisories close to departure — scores are recalculated every day from more than 40 public sources, so conditions can shift.",
+          `Check the country's daily-updated score and its crime pillar before booking, register with your embassy where possible, and re-check advisories close to departure — scores are recalculated every day from ${SOURCE_COUNT_DISPLAY} public sources, so conditions can shift.`,
       },
     ],
     it: [
