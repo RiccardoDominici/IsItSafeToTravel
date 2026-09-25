@@ -488,8 +488,20 @@ function parseJpCountryIndex(html: string): JpIndexEntry[] {
  * convention). A page with NO `#kikendetail` div has no active hazard-level
  * advisory published at all, which is Level 1 (safest / no warning) —
  * verified live against USA/FRA/GBR/AUS/CAN/SGP/VAT (all lack the div).
+ *
+ * Repair 2026-09-25 (source review follow-up): returns null — never guess —
+ * when the `#kikendetail` div IS present but no recognized
+ * `kiken_level_{chuui|kentou|enki|taihi}` class was found inside it. Before
+ * this fix that case fell through to the SAME `return 1` as "no div at all",
+ * silently collapsing "MOFA published a hazard block we failed to parse"
+ * (a markup change, an unknown class, the scoping window missing the real
+ * content) into "this country is safe" — the exact false
+ * "no-contraindications" failure mode SOURCE-REPAIR-BRIEF rule 1 forbids.
+ * The caller (fetchJpAdvisories) must skip the country entirely on null,
+ * exactly like a failed fetch — see the "kikenLevelUnparseable" tracking
+ * there.
  */
-function parseJpKikenLevel(html: string): number {
+export function parseJpKikenLevel(html: string): number | null {
   const detailMatch = html.match(/<div id="kikendetail">/);
   if (!detailMatch || detailMatch.index === undefined) return 1; // no advisory published -> safest
 
@@ -509,7 +521,7 @@ function parseJpKikenLevel(html: string): number {
     const lvl = LEVEL_BY_CLASS[m[1]];
     if (lvl > max) max = lvl;
   }
-  return max > 0 ? max : 1;
+  return max > 0 ? max : null; // div present but unparseable -> never guess
 }
 
 async function fetchJpAdvisories(
@@ -520,6 +532,10 @@ async function fetchJpAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
   const pageResults: Record<string, { japaneseName: string; iso3: string | null; level?: number }> = {};
+  // Countries whose #kikendetail div was present but had no recognized
+  // kiken_level_* class inside — parseJpKikenLevel returns null for these,
+  // and we emit nothing for them rather than guess (see its doc comment).
+  const kikenLevelUnparseable: string[] = [];
 
   // Step 1: dynamic country index from the live riskmap listing page.
   const indexResponse = await fetch(`${JP_MOFA_BASE}/riskmap/`, {
@@ -571,6 +587,10 @@ async function fetchJpAdvisories(
 
         const html = await r.text();
         const rawLevel = parseJpKikenLevel(html);
+        if (rawLevel === null) {
+          kikenLevelUnparseable.push(country.iso3);
+          return; // never guess — emit nothing for this country
+        }
         const level = normalizeJpLevel(rawLevel);
 
         indicators.push({
@@ -598,6 +618,12 @@ async function fetchJpAdvisories(
     5, // Concurrency 5 (be polite to MOFA servers)
   );
 
+  if (kikenLevelUnparseable.length > 0) {
+    console.warn(
+      `[ADVISORIES-T1] JP: ${kikenLevelUnparseable.length} countries had a #kikendetail div with no recognized kiken_level_* class — skipped, never guessed: ${kikenLevelUnparseable.join(', ')}`,
+    );
+  }
+
   // Discovery-anchor self-check (SHIP-SPEC 1.1d): log any mismatch loudly —
   // never throws, so a transient MOFA content change doesn't break the whole
   // fetch, but a regression is impossible to miss in the pipeline logs.
@@ -620,6 +646,7 @@ async function fetchJpAdvisories(
     totalMappings: jpIndex.length,
     matchedCount: matched.length,
     countriesWithData: Object.keys(pageResults).length,
+    kikenLevelUnparseable,
     anchorMismatches,
     pageResults,
   });
