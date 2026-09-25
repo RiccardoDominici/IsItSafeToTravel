@@ -87,7 +87,7 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
 const iata = getMainCityIata(country.iso3);
 const cityName = iata ? getMainCityName(country.iso3, lang) : null;
 ---
-<Base lang={lang} title={`Ist ${getLocalizedCountryName(country, lang)} sicher? Sicherheits-Score ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`Ist ${getLocalizedCountryName(country, lang)} sicher? Score ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
