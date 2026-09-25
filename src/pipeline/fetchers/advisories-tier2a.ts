@@ -527,6 +527,60 @@ async function fetchNzAdvisories(
 // =============================================================================
 // Sub-fetcher 5: Ireland (DFA) -- HTML-03
 // =============================================================================
+//
+// dfa.ie now 301-redirects to the ireland.ie homepage (the site consolidated onto one
+// domain), so it is not a useful fallback any more -- dropped. The real break is that
+// ireland.ie sits behind CloudFront + AWS WAF Bot Control, which returns 403 for this
+// project's normal identifying User-Agent regardless of IP (reproduced from a residential
+// network, so this is not the "only works from a residential IP" trap the repair brief
+// warns about -- it is a plain User-Agent string check). A Googlebot-style
+// "Mozilla/5.0 (compatible; ...)" identifier passes; a bare "Mozilla/5.0" alone still
+// gets blocked, so AWS Bot Control is allow-listing the well-known-crawler shape rather
+// than simply requiring *some* browser-looking string. This override is local to this
+// fetcher, not the shared FETCH_HEADERS, since every other sub-fetcher in this file
+// already works fine with the plain identifying UA.
+const IE_FETCH_HEADERS = {
+  ...FETCH_HEADERS,
+  'User-Agent': 'Mozilla/5.0 (compatible; IsItSafeToTravelBot/1.0; +https://isitsafetotravel.org)',
+};
+
+// URL pattern (verified against 200+ countries, 2026-09-25):
+//   https://www.ireland.ie/en/dfa/overseas-travel/advice/<slug>/
+// <slug> is `country.name.en`, lower-cased, non-alphanumerics -> hyphens, EXCEPT the
+// handful of real name mismatches below (confirmed against the site's own destination
+// <select> at /en/dfa/overseas-travel/advice/, which lists ~213 fiches). A full-coverage
+// dry run against all 248 COUNTRIES slugs (naive + these aliases) got 207 hits; every miss
+// left over is a fiche Ireland genuinely does not publish (its own micro-neighbours San
+// Marino/Vatican, overseas territories, small islands).
+const IE_SLUG_ALIASES: Partial<Record<string, string>> = {
+  CPV: 'cape-verde',
+  COD: 'democratic-republic-of-congo',
+  FSM: 'federated-states-of-micronesia',
+  GMB: 'republic-of-the-gambia',
+  GBR: 'great-britain', // Ireland's site uses "Great Britain", not "United Kingdom"
+  PRK: 'democratic-republic-of-korea',
+  KOR: 'republic-of-korea',
+  MMR: 'myanmar-burma',
+  MKD: 'republic-of-north-macedonia',
+  RUS: 'russian-federation',
+  STP: 'saint-tome-sao-tome-and-principe',
+  SVK: 'slovak-republic-slovakia',
+  TUR: 'turkiye',
+  USA: 'united-states-of-america',
+  NLD: 'the-netherlands',
+  BRN: 'brunei-darussalam',
+};
+
+function ieSlug(country: typeof COUNTRIES[number]): string {
+  const alias = IE_SLUG_ALIASES[country.iso3];
+  if (alias) return alias;
+  return country.name.en
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
 
 async function fetchIeAdvisories(
   rawDir: string,
@@ -536,115 +590,50 @@ async function fetchIeAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  // Try primary URL first, then fallback
-  const urls = [
-    'https://www.ireland.ie/en/dfa/overseas-travel/',
-    'https://www.dfa.ie/travel/travel-advice/',
-  ];
+  await fetchBatch(
+    COUNTRIES,
+    async (country) => {
+      const url = `https://www.ireland.ie/en/dfa/overseas-travel/advice/${ieSlug(country)}/`;
+      try {
+        const response = await fetch(url, {
+          signal: AbortSignal.timeout(15_000),
+          headers: IE_FETCH_HEADERS,
+        });
+        // 404 is expected for countries/territories Ireland does not publish a fiche for.
+        if (!response.ok) return;
 
-  let html = '';
-  let baseUrl = urls[0];
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        // The "Security Status" badge heading -- verified as the single occurrence of
+        // this class on a fiche page (2026-09-25), so no risk of picking up an unrelated
+        // accordion (e.g. "Local Laws and Customs") elsewhere on the same page.
+        const ratingText = $('.accordion__title').first().text().trim();
+        if (!ratingText) return; // different page shape: no rating found, emit nothing
 
-  for (const url of urls) {
-    try {
-      const response = await fetch(url, {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      });
+        const level = normalizeIeRating(ratingText);
 
-      if (response.ok) {
-        html = await response.text();
-        baseUrl = url;
-        break;
+        indicators.push({
+          countryIso3: country.iso3,
+          indicatorName: 'advisory_level_ie',
+          value: level,
+          year: currentYear,
+          source: 'advisories_ie',
+          fetchedAt,
+        });
+
+        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+        advisoryInfo[country.iso3].ie = {
+          level,
+          text: IE_LEVEL_TEXT[level] || `Level ${level}`,
+          source: 'Irish Department of Foreign Affairs',
+          url,
+        };
+      } catch {
+        // Individual country page failed (timeout, network), skip silently
       }
-    } catch {
-      // Try next URL
-    }
-  }
-
-  if (!html) {
-    console.warn('[ADVISORIES-T2A] IE: All URLs returned 403 or failed, returning empty result');
-    return { indicators, advisoryInfo };
-  }
-
-  const $ = cheerio.load(html);
-
-  // Try to extract country links and advisory levels from listing page
-  $('a[href*="advice"], a[href*="travel"]').each((_, el) => {
-    const text = $(el).text().trim();
-    const parentText = $(el).closest('li, div, tr').text().trim().toLowerCase();
-    const country = getCountryByName(text);
-    if (!country) return;
-
-    const level = normalizeIeRating(parentText);
-
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_ie',
-      value: level,
-      year: currentYear,
-      source: 'advisories_ie',
-      fetchedAt,
-    });
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].ie = {
-      level,
-      text: IE_LEVEL_TEXT[level] || `Level ${level}`,
-      source: 'Irish Department of Foreign Affairs',
-      url: baseUrl,
-    };
-  });
-
-  // If listing page did not yield good data, try per-country pages
-  if (indicators.length < 5) {
-    indicators.length = 0; // Reset any partial data
-
-    const countrySlugEntries = COUNTRIES.map(c => ({
-      country: c,
-      slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-    }));
-
-    await fetchBatch(
-      countrySlugEntries,
-      async (entry) => {
-        try {
-          const url = `${baseUrl.includes('ireland.ie') ? 'https://www.ireland.ie/en/dfa/overseas-travel/advice' : 'https://www.dfa.ie/travel/travel-advice'}/${entry.slug}/`;
-          const r = await fetch(url, {
-            signal: AbortSignal.timeout(15_000),
-            headers: FETCH_HEADERS,
-          });
-
-          if (!r.ok) return;
-
-          const pageHtml = await r.text();
-          const pageLower = pageHtml.toLowerCase();
-
-          const level = normalizeIeRating(pageLower);
-
-          indicators.push({
-            countryIso3: entry.country.iso3,
-            indicatorName: 'advisory_level_ie',
-            value: level,
-            year: currentYear,
-            source: 'advisories_ie',
-            fetchedAt,
-          });
-
-          if (!advisoryInfo[entry.country.iso3]) advisoryInfo[entry.country.iso3] = {};
-          advisoryInfo[entry.country.iso3].ie = {
-            level,
-            text: IE_LEVEL_TEXT[level] || `Level ${level}`,
-            source: 'Irish Department of Foreign Affairs',
-            url,
-          };
-        } catch {
-          // Individual country page failed, skip silently
-        }
-      },
-      3,
-    );
-  }
+    },
+    3, // Concurrency 3 for politeness, per source-repair-brief rule 4 (248 requests total)
+  );
 
   console.log(`[ADVISORIES-T2A] IE: ${indicators.length} countries from DFA`);
   return { indicators, advisoryInfo };

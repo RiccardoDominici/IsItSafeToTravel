@@ -174,7 +174,11 @@ export function normalizeIeRating(rating: string): UnifiedLevel {
   const lower = rating.toLowerCase();
   if (lower.includes('do not travel')) return 4;
   if (lower.includes('avoid') && (lower.includes('non-essential') || lower.includes('unnecessary'))) return 3;
-  if (lower.includes('caution') || lower.includes('high degree')) return 2;
+  // Word-boundary match: a plain .includes('caution') also fires on "normal preCAUTIONs",
+  // silently promoting every level-1 country to level 2 (found 2026-09-25 wiring this
+  // function up to real Ireland DFA fiche text for the first time -- it was unreachable
+  // dead code before since the fetcher never successfully extracted per-country text).
+  if (/\bcaution\b/.test(lower) || lower.includes('high degree')) return 2;
   return 1; // normal precautions
 }
 
