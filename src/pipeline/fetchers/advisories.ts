@@ -979,7 +979,7 @@ async function fetchUkAdvisories(
 
   // Step 2: Batch-fetch individual country pages for alert_status (20 concurrent)
   await fetchBatch(countriesToFetch, async (entry) => {
-    let level = 1; // Default: no specific advisory
+    let level: number;
     let alertText = '';
 
     try {
@@ -991,27 +991,38 @@ async function fetchUkAdvisories(
         },
       });
 
-      if (r.ok) {
-        const data = await r.json() as Record<string, unknown>;
-        const details = data.details as Record<string, unknown> | undefined;
-        const alertStatus = (details?.alert_status || []) as string[];
+      // A failed/errored fetch means we don't actually know this country's
+      // status — skip it (no indicator) rather than guess level 1. This is
+      // DIFFERENT from an empty alert_status below: that comes from a
+      // SUCCESSFUL response and is FCDO's own genuine "no advice against
+      // travel" signal, not a guess.
+      if (!r.ok) return;
 
-        // Use the most severe alert status
-        let maxLevel = 1;
-        for (const status of alertStatus) {
-          const statusLevel = UK_ALERT_LEVEL[status] ?? 1;
-          if (statusLevel > maxLevel) maxLevel = statusLevel;
-        }
-        level = maxLevel;
+      const data = await r.json() as Record<string, unknown>;
+      const details = data.details as Record<string, unknown> | undefined;
+      const alertStatus = (details?.alert_status || []) as string[];
 
-        // Use the description from the individual page if available
-        const desc = String(data.description || '').trim();
-        if (desc && !desc.startsWith('FCDO travel advice')) {
-          alertText = desc;
-        }
+      // Use the most severe alert status. An empty array here is a real,
+      // successfully-fetched FCDO signal (no advisory against travel), not a
+      // parse failure — level 1 is correct, not a default-on-failure guess.
+      let maxLevel = 1;
+      for (const status of alertStatus) {
+        const statusLevel = UK_ALERT_LEVEL[status] ?? 1;
+        if (statusLevel > maxLevel) maxLevel = statusLevel;
+      }
+      level = maxLevel;
+
+      // Use the description from the individual page if available
+      const desc = String(data.description || '').trim();
+      if (desc && !desc.startsWith('FCDO travel advice')) {
+        alertText = desc;
       }
     } catch {
-      // Individual country fetch failed — use default level 1
+      // Network-level failure (timeout, DNS, connection reset) — skip this
+      // country rather than guess level 1 (audit 2026-09-25: this used to
+      // default to 1 here, asserting "normal precautions" for a country we
+      // simply failed to reach).
+      return;
     }
 
     indicators.push({
