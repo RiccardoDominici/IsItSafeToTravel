@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { enforcePerSourceFloors, MAX_RESTORE_AGE_DAYS } from '../fetchers/source-floor.js';
 import { writeJson } from '../utils/fs.js';
+import { DATA_REVISION_SINCE } from '../config/data-revision.js';
 import type { RawIndicator } from '../types.js';
 import type { AdvisoryInfoMap } from '../fetchers/advisories.js';
 
@@ -26,6 +27,18 @@ import type { AdvisoryInfoMap } from '../fetchers/advisories.js';
 
 const INFO_FILE = 'test-tier-info.json';
 const ISSUER = 'zz'; // fake 2-letter issuer key, never collides with a real one
+// Passed as `revisionSince` by every test below that isn't specifically about the
+// revision-cutoff mechanism, so those tests keep exercising ONLY the 14-day bound
+// with their existing 2026-08/09 fixture dates, unaffected by the real
+// DATA_REVISION_SINCE default (2026-09-26, later than every such fixture date).
+const PRE_REVISION = '2000-01-01';
+
+/** Add `days` (may be negative) to a YYYY-MM-DD string, via Date.UTC so it never shifts with the local timezone. */
+function addDays(ymd: string, days: number): string {
+  const [y, m, d] = ymd.split('-').map(Number);
+  const ms = Date.UTC(y, m - 1, d) + days * 86_400_000;
+  return new Date(ms).toISOString().slice(0, 10);
+}
 
 function makeInfoMap(entries: Record<string, number>): AdvisoryInfoMap {
   const map: Record<string, unknown> = {};
@@ -76,6 +89,7 @@ describe('source-floor: restore policy', () => {
       errors,
       runDate,
       rawBaseDir,
+      revisionSince: PRE_REVISION, // isolate: test the 14-day bound only, not the revision cutoff
     });
 
     const restored = indicators.filter((i) => i.source === `advisories_${ISSUER}`);
@@ -120,6 +134,7 @@ describe('source-floor: restore policy', () => {
       errors,
       runDate,
       rawBaseDir,
+      revisionSince: PRE_REVISION,
     });
 
     assert.equal(
@@ -154,6 +169,7 @@ describe('source-floor: restore policy', () => {
       errors,
       runDate,
       rawBaseDir,
+      revisionSince: PRE_REVISION,
     });
 
     assert.ok(
@@ -196,6 +212,7 @@ describe('source-floor: restore policy', () => {
       errors,
       runDate,
       rawBaseDir,
+      revisionSince: PRE_REVISION,
     });
 
     const restoredIso3s = indicators
@@ -254,6 +271,7 @@ describe('source-floor: restore policy', () => {
       errors,
       runDate,
       rawBaseDir,
+      revisionSince: PRE_REVISION,
     });
 
     assert.equal(
@@ -265,6 +283,117 @@ describe('source-floor: restore policy', () => {
       (advisoryInfo as any).AAA?.[ISSUER]?.restoredFrom,
       genuineDay,
       'must skip past the restored day and reach back to the last GENUINE healthy day',
+    );
+  });
+
+  it('never restores from a cache dated before revisionSince, even within the 14-day window', () => {
+    // Reproduces the exact gap found live 2026-09-25: hk/ch (0 genuine data that
+    // day) and most of dk/rs restored from YESTERDAY's cache, which still held
+    // the pre-fix parsers' wrong values (e.g. false level-1 on Afghanistan) —
+    // well within the 14-day window, so the age bound alone didn't stop it. The
+    // revision floor closes that gap: a cache before revisionSince is never an
+    // eligible restore source, no matter how recent or well-populated.
+    const rawBaseDir = trackedFixtureDir();
+    const revisionSince = '2026-09-26'; // matches DATA_REVISION_SINCE's real value
+    const runDate = revisionSince;      // the first run under the new revision
+    const yesterday = addDays(runDate, -1); // pre-revision, only 1 day old
+
+    writeJson(join(rawBaseDir, yesterday, INFO_FILE), makeInfoMap({ AAA: 1, BBB: 1, CCC: 1 }));
+
+    const indicators: RawIndicator[] = [];
+    const advisoryInfo: AdvisoryInfoMap = {};
+    const errors: string[] = [];
+
+    enforcePerSourceFloors({
+      logPrefix: '[TEST]',
+      infoFile: INFO_FILE,
+      expectedIssuers: [ISSUER],
+      floors: { [ISSUER]: 2 },
+      indicators,
+      advisoryInfo,
+      errors,
+      runDate,
+      rawBaseDir,
+      revisionSince,
+    });
+
+    assert.equal(
+      indicators.filter((i) => i.source === `advisories_${ISSUER}`).length,
+      0,
+      'a 1-day-old pre-revision cache must still be rejected as a restore source',
+    );
+    assert.equal((advisoryInfo as any).AAA, undefined);
+    assert.ok(
+      errors.some(
+        (e) => e.includes(`dead since ${yesterday}`) && e.includes('not restored')
+          && e.includes('pre-revision') && e.includes(revisionSince),
+      ),
+      `expected a pre-revision "not restored" error, got: ${JSON.stringify(errors)}`,
+    );
+  });
+
+  it('restores normally from a genuinely healthy day on/after revisionSince', () => {
+    const rawBaseDir = trackedFixtureDir();
+    const revisionSince = '2026-09-26';
+    const runDate = addDays(revisionSince, 2);
+    const postRevisionDay = addDays(revisionSince, 1); // healthy, on/after the cutoff
+
+    writeJson(join(rawBaseDir, postRevisionDay, INFO_FILE), makeInfoMap({ AAA: 2, BBB: 3 }));
+
+    const indicators: RawIndicator[] = [];
+    const advisoryInfo: AdvisoryInfoMap = {};
+    const errors: string[] = [];
+
+    enforcePerSourceFloors({
+      logPrefix: '[TEST]',
+      infoFile: INFO_FILE,
+      expectedIssuers: [ISSUER],
+      floors: { [ISSUER]: 2 },
+      indicators,
+      advisoryInfo,
+      errors,
+      runDate,
+      rawBaseDir,
+      revisionSince,
+    });
+
+    assert.equal(
+      indicators.filter((i) => i.source === `advisories_${ISSUER}`).length,
+      2,
+      'a genuinely post-revision healthy day must restore normally',
+    );
+    assert.equal((advisoryInfo as any).AAA?.[ISSUER]?.restoredFrom, postRevisionDay);
+  });
+
+  it('defaults revisionSince to the real DATA_REVISION_SINCE constant when not overridden', () => {
+    const rawBaseDir = trackedFixtureDir();
+    const runDate = addDays(DATA_REVISION_SINCE, 1);
+    // Healthy and only 2 days old (well within MAX_RESTORE_AGE_DAYS) but dated
+    // BEFORE the real cutoff -- only the default wiring can reject this.
+    const healthyButPreRevision = addDays(DATA_REVISION_SINCE, -1);
+
+    writeJson(join(rawBaseDir, healthyButPreRevision, INFO_FILE), makeInfoMap({ AAA: 2, BBB: 3 }));
+
+    const indicators: RawIndicator[] = [];
+    const errors: string[] = [];
+
+    enforcePerSourceFloors({
+      logPrefix: '[TEST]',
+      infoFile: INFO_FILE,
+      expectedIssuers: [ISSUER],
+      floors: { [ISSUER]: 2 },
+      indicators,
+      advisoryInfo: {},
+      errors,
+      runDate,
+      rawBaseDir,
+      // revisionSince deliberately omitted -- must default to the real constant
+    });
+
+    assert.equal(
+      indicators.filter((i) => i.source === `advisories_${ISSUER}`).length,
+      0,
+      'without an override, the real DATA_REVISION_SINCE must still block a pre-revision restore',
     );
   });
 

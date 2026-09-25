@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import type { RawIndicator, AdvisoryInfo } from '../types.js';
 import type { AdvisoryInfoMap } from './advisories.js';
+import { DATA_REVISION_SINCE } from '../config/data-revision.js';
 
 /**
  * Per-source floor enforcement for multi-issuer advisory tiers.
@@ -14,7 +15,7 @@ import type { AdvisoryInfoMap } from './advisories.js';
  * between 2026-05-27 and 2026-06-02; later post-mortems found it, pt/be/ie/
  * it/pl and sk had died the same way by August 2026.
  *
- * Four mechanisms:
+ * Five mechanisms:
  *   1. EXPECTED ISSUERS — the caller passes the tier's full issuer list from
  *      code, so a zero-row issuer is checked too (count treated as 0).
  *   2. HIGH-WATER BASELINE — each issuer's floor adapts to its historical
@@ -34,6 +35,16 @@ import type { AdvisoryInfoMap } from './advisories.js';
  *      pre-August historical-maximum data through 2026-09-25, some of it
  *      flatly wrong, e.g. Italy/Ireland showing "normal precautions" for
  *      Afghanistan from a 2026-03-27 cache).
+ *   5. DATA-REVISION FLOOR — on top of the 14-day bound, a cache dated before
+ *      DATA_REVISION_SINCE (config/data-revision.ts) is NEVER used as a
+ *      restore source, however healthy-by-count and however recent. Every
+ *      pre-revision cache was produced by parsers this revision fixed, so a
+ *      "healthy" pre-revision day (e.g. hk/dk/ch/rs's own pre-fix output)
+ *      just means the bug was productive, not that the data is trustworthy
+ *      — without this, the 14-day bound alone would still let a currently-
+ *      broken issuer's last pre-fix day (always the most recent, so always
+ *      "healthy" and "recent") keep getting restored for up to 14 MORE days
+ *      after the fix ships.
  */
 
 /** Default absolute floor for issuers without an explicit override. */
@@ -79,6 +90,13 @@ interface EnforceOpts {
    * throwaway fixture directory instead of the real multi-year archive.
    */
   rawBaseDir?: string;
+  /**
+   * Caches dated before this are never used as a restore source (see
+   * DATA_REVISION_SINCE in config/data-revision.ts for why). Defaults to
+   * that constant; overridable so tests can exercise the 14-day bound in
+   * isolation with fixture dates that predate the real cutoff.
+   */
+  revisionSince?: string;
 }
 
 /** Group indicator counts by issuer key parsed from the `advisories_<key>` source tag. */
@@ -191,9 +209,11 @@ interface HealthyDay {
 }
 
 /**
- * Most recent date (strictly before runDate) on which `key` met `floor`, and
- * the LAST healthy date ever seen (even if too old to restore from) — the
- * latter drives the "dead since <date>" error message.
+ * Most recent date (strictly before runDate) on which `key` met `floor` AND
+ * is on/after revisionSince, and the LAST healthy date ever seen regardless
+ * of revisionSince (even if too old, or pre-revision, to restore from) — the
+ * latter drives the "dead since <date>" error message, which stays useful
+ * diagnostic context even for a day this function won't restore from.
  */
 function findMostRecentHealthyDay(
   stats: ArchiveStats,
@@ -202,6 +222,7 @@ function findMostRecentHealthyDay(
   runDate: string,
   rawBaseDir: string,
   infoFile: string,
+  revisionSince: string,
 ): { mostRecent: HealthyDay | null; lastEverHealthy: string | null } {
   let mostRecent: HealthyDay | null = null;
   let lastEverHealthy: string | null = null;
@@ -213,6 +234,10 @@ function findMostRecentHealthyDay(
     const count = stats.genuineDaily.get(dateDir)?.get(key) ?? 0;
     if (count < floor) continue;
     lastEverHealthy = dateDir; // dates are scanned ascending, so this keeps advancing
+    // Pre-revision days can still be genuinely "healthy" by count and are
+    // worth reporting above, but every one of them was produced by parsers
+    // this revision fixed — never eligible as an actual restore SOURCE.
+    if (dateDir < revisionSince) continue;
     mostRecent = { date: dateDir, path: join(rawBaseDir, dateDir, infoFile) };
   }
 
@@ -230,6 +255,7 @@ export function enforcePerSourceFloors(opts: EnforceOpts): void {
     errors,
     runDate,
     rawBaseDir = join(process.cwd(), 'data', 'raw'),
+    revisionSince = DATA_REVISION_SINCE,
   } = opts;
   const fetchedCounts = countByIssuer(indicators);
 
@@ -252,15 +278,26 @@ export function enforcePerSourceFloors(opts: EnforceOpts): void {
     errors.push(msg);
 
     const { mostRecent, lastEverHealthy } = findMostRecentHealthyDay(
-      stats, key, floor, runDate, rawBaseDir, infoFile,
+      stats, key, floor, runDate, rawBaseDir, infoFile, revisionSince,
     );
 
     const age = mostRecent ? daysBetween(runDate, mostRecent.date) : null;
     if (!mostRecent || age === null || age > MAX_RESTORE_AGE_DAYS) {
       const deadSince = lastEverHealthy ?? 'never';
+      // Distinguish WHY nothing was eligible: a recent-but-pre-revision day
+      // (excluded outright, regardless of age) reads very differently from
+      // "genuinely aged out" — reporting the latter's wording for the former
+      // would say e.g. "older than 14 days" about a cache from yesterday.
+      let reason: string;
+      if (!mostRecent && lastEverHealthy !== null && lastEverHealthy < revisionSince) {
+        reason = `only pre-revision caches available, before ${revisionSince}`;
+      } else if (lastEverHealthy === null) {
+        reason = 'no cache ever met the floor';
+      } else {
+        reason = `older than ${MAX_RESTORE_AGE_DAYS} days`;
+      }
       const staleMsg =
-        `${key.toUpperCase()}: dead since ${deadSince} — not restored ` +
-        `(older than ${MAX_RESTORE_AGE_DAYS} days); parser needs repair`;
+        `${key.toUpperCase()}: dead since ${deadSince} — not restored (${reason}); parser needs repair`;
       console.error(`${logPrefix} ${staleMsg}`);
       errors.push(staleMsg);
       continue;
@@ -295,8 +332,13 @@ export function enforcePerSourceFloors(opts: EnforceOpts): void {
       if (!target[iso3]) target[iso3] = {};
       if (!target[iso3][key]) {
         // restoredFrom is informational only (debugging/UI provenance) —
-        // never read back by the scoring engine.
-        target[iso3][key] = { ...info, restoredFrom: mostRecent.date };
+        // never read back by the scoring engine. Propagate an EXISTING
+        // restoredFrom forward rather than overwriting it: mostRecent is
+        // already guaranteed genuine (excluded-from-healthy-scan anti-chain
+        // logic above), so `info.restoredFrom` should always be unset here —
+        // this is defense-in-depth matching the same propagation pattern
+        // runWithFloor uses in advisories.ts, not a behavior change.
+        target[iso3][key] = { ...info, restoredFrom: info.restoredFrom ?? mostRecent.date };
       }
     }
     console.warn(

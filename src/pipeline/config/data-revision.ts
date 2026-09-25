@@ -31,3 +31,21 @@
  *     correction, not a real overnight change in safety.
  */
 export const DATA_REVISION = 2;
+
+/**
+ * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes
+ * effect — the first SCHEDULED run using the rev-2 code, not the day the PR
+ * merged. `source-floor.ts` uses this as a hard floor on restore eligibility,
+ * in addition to MAX_RESTORE_AGE_DAYS: a cache dated before this is NEVER
+ * used as a restore source, no matter how high its count or how recent it is
+ * relative to MAX_RESTORE_AGE_DAYS. Every cache before this date was written
+ * by the parsers rev 2 fixed (hk/dk/ch/rs defaulting to level 1, and the
+ * unbounded historical-max restore itself) — a "healthy" pre-revision count
+ * just means the bug was productive, not that the data is trustworthy. Without
+ * this cutoff, the 14-day bound alone still lets a currently-broken issuer's
+ * LAST pre-fix day (which always looks recent and healthy) keep getting
+ * restored for up to 14 more days after rev 2 ships, before finally erroring
+ * — this closes that gap outright: from DATA_REVISION_SINCE's first run
+ * onward, a fixed parser's deliberate omissions stay omitted immediately.
+ */
+export const DATA_REVISION_SINCE = '2026-09-26';
