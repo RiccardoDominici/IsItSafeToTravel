@@ -2,9 +2,10 @@
 import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
-import { loadLatestScores } from '../lib/scores';
+import { loadLatestScores, loadLatestSnapshot } from '../lib/scores';
 import { getLastmodMap } from '../lib/lastmod';
 import { buildDatasetJsonLd, WEBSITE_ID, SITE_DATASET_ID } from '../lib/seo';
+import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from '../lib/site-stats';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 
@@ -17,6 +18,21 @@ const t = useTranslations(lang);
 const r = routes[lang];
 const countryCount = loadLatestScores().length;
 const snapshotDate = getLastmodMap().snapshotDate;
+
+// Real generation instant of the current snapshot, for the `freshness` copy
+// below. Audit I5: the page used to hardcode "regenerated daily at ~06:00
+// UTC" -- the pipeline's actual cron is 06:00 UTC but the run routinely lands
+// hours later (11:18-11:22 UTC on the audit date), so the claim was false by
+// 5h+ every day. Showing the real generatedAt instant is honest regardless
+// of how long the pipeline takes on any given day.
+const generatedAtDate = (() => {
+  const iso = loadLatestSnapshot()?.generatedAt;
+  const d = iso ? new Date(iso) : null;
+  return d && !isNaN(d.getTime()) ? d : null;
+})();
+const generatedAtFormatted = generatedAtDate
+  ? `${new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit', timeZone: 'UTC', hour12: false }).format(generatedAtDate)} UTC`
+  : snapshotDate;
 
 // Page copy is inlined per-language (same pattern as RegionsIndex) to avoid
 // threading ~30 more keys through the large i18n/ui.ts table. Technical
@@ -60,7 +76,7 @@ const copy: Record<
   en: {
     title: 'Free Travel Safety Data & API',
     description: `Download daily-updated travel safety scores for ${countryCount} countries as free JSON. No API key, no rate limits — open data under CC BY-NC 4.0.`,
-    intro: `Every number on this site comes from an open dataset you can download. Safety scores for ${countryCount} countries — recomputed daily from 40+ public sources — are published as static JSON files on a global CDN.`,
+    intro: `Every number on this site comes from an open dataset you can download. Safety scores for ${countryCount} countries — recomputed daily from ${SOURCE_COUNT_DISPLAY} public sources — are published as static JSON files on a global CDN.`,
     noAuth: 'No API key, no registration, no request limits. All endpoints support cross-origin requests (CORS), so you can fetch them directly from a browser.',
     endpointsHeading: 'Endpoints',
     thEndpoint: 'Endpoint',
@@ -83,17 +99,17 @@ const copy: Record<
     fScoreDisplay: 'Score rounded for display.',
     fConfidence: 'Precision-weighted data-density score, 0–1 (higher = more and fresher underlying data). Low confidence means the score sits closer to a conservative regional prior than to hard local evidence.',
     fPillars: "The 5 risk pillars (conflict, crime, health, governance, environment) with score, weight, and underlying indicators. Crime blends the Global Peace Index's Safety & Security domain with the World Bank's intentional-homicide rate (population-reliability scaled); Conflict blends GPI with a calibrated advisory consensus and UCDP conflict-death counts; rule of law lives under Governance.",
-    fAdvisories: 'Government travel advisory levels per issuing country (US, UK, CA, AU, and 33 more).',
+    fAdvisories: `Government travel advisory levels per issuing country (${ADVISORY_GOV_COUNT_DISPLAY} governments today, e.g. US, UK, CA, AU).`,
     fSources: 'The public data sources used for this country, with fetch dates.',
-    freshness: `Data is regenerated daily at ~06:00 UTC. Current snapshot: ${snapshotDate}.`,
+    freshness: `Data is regenerated once a day. Current snapshot generated ${generatedAtFormatted}.`,
     licenseHeading: 'License & attribution',
     licenseText: 'All data is licensed under Creative Commons BY-NC 4.0: free to use, share, and adapt for non-commercial purposes.',
-    attributionText: 'Please credit "IsItSafeToTravel.org" with a link when you use the data. The full pipeline and site are open source on GitHub.',
+    attributionText: 'Please credit "IsItSafeToTravel.org" with a link when you use the data. The full pipeline and site source code is publicly viewable on GitHub.',
   },
   it: {
     title: 'Dati e API gratuiti sulla sicurezza di viaggio',
     description: `Scarica i punteggi di sicurezza di viaggio aggiornati ogni giorno per ${countryCount} paesi in JSON gratuito. Nessuna API key, nessun limite — open data CC BY-NC 4.0.`,
-    intro: `Ogni numero su questo sito proviene da un dataset aperto che puoi scaricare. I punteggi di sicurezza di ${countryCount} paesi — ricalcolati ogni giorno da 40+ fonti pubbliche — sono pubblicati come file JSON statici su una CDN globale.`,
+    intro: `Ogni numero su questo sito proviene da un dataset aperto che puoi scaricare. I punteggi di sicurezza di ${countryCount} paesi — ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche — sono pubblicati come file JSON statici su una CDN globale.`,
     noAuth: 'Nessuna API key, nessuna registrazione, nessun limite di richieste. Tutti gli endpoint supportano richieste cross-origin (CORS), quindi puoi interrogarli direttamente dal browser.',
     endpointsHeading: 'Endpoint',
     thEndpoint: 'Endpoint',
@@ -116,17 +132,17 @@ const copy: Record<
     fScoreDisplay: 'Punteggio arrotondato per la visualizzazione.',
     fConfidence: "Punteggio di densità dei dati ponderato per precisione, 0–1 (più alto = dati sottostanti più numerosi e recenti). Una confidenza bassa indica che il punteggio è più vicino a un valore di riferimento regionale prudente che a prove concrete locali.",
     fPillars: "I 5 pilastri di rischio (conflitti, criminalità, salute, governance, ambiente) con punteggio, peso e indicatori sottostanti. La criminalità combina il dominio Sicurezza e Protezione del Global Peace Index con il tasso di omicidi intenzionali della Banca Mondiale (scalato per affidabilità in base alla popolazione); il Conflitto combina il GPI con un consenso calibrato degli avvisi e il numero di morti per conflitto UCDP; lo stato di diritto rientra in Governance.",
-    fAdvisories: 'Livelli degli avvisi di viaggio governativi per paese emittente (US, UK, CA, AU e altri 33).',
+    fAdvisories: `Livelli degli avvisi di viaggio governativi per paese emittente (${ADVISORY_GOV_COUNT_DISPLAY} governi oggi, ad es. US, UK, CA, AU).`,
     fSources: 'Le fonti pubbliche usate per questo paese, con date di acquisizione.',
-    freshness: `I dati vengono rigenerati ogni giorno alle ~06:00 UTC. Snapshot attuale: ${snapshotDate}.`,
+    freshness: `I dati vengono rigenerati una volta al giorno. Snapshot attuale generato: ${generatedAtFormatted}.`,
     licenseHeading: 'Licenza e attribuzione',
     licenseText: 'Tutti i dati sono rilasciati con licenza Creative Commons BY-NC 4.0: liberi da usare, condividere e adattare per scopi non commerciali.',
-    attributionText: 'Cita "IsItSafeToTravel.org" con un link quando usi i dati. La pipeline completa e il sito sono open source su GitHub.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un link quando usi i dati. Il codice sorgente completo della pipeline e del sito è visibile pubblicamente su GitHub.',
   },
   es: {
     title: 'Datos y API gratuitos de seguridad de viaje',
     description: `Descarga puntuaciones de seguridad de viaje actualizadas a diario para ${countryCount} países en JSON gratuito. Sin API key, sin límites — datos abiertos CC BY-NC 4.0.`,
-    intro: `Cada número de este sitio proviene de un dataset abierto que puedes descargar. Las puntuaciones de seguridad de ${countryCount} países — recalculadas a diario a partir de 40+ fuentes públicas — se publican como archivos JSON estáticos en una CDN global.`,
+    intro: `Cada número de este sitio proviene de un dataset abierto que puedes descargar. Las puntuaciones de seguridad de ${countryCount} países — recalculadas a diario a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas — se publican como archivos JSON estáticos en una CDN global.`,
     noAuth: 'Sin API key, sin registro, sin límites de peticiones. Todos los endpoints admiten peticiones cross-origin (CORS), así que puedes consultarlos directamente desde el navegador.',
     endpointsHeading: 'Endpoints',
     thEndpoint: 'Endpoint',
@@ -149,17 +165,17 @@ const copy: Record<
     fScoreDisplay: 'Puntuación redondeada para visualización.',
     fConfidence: 'Puntuación de densidad de datos ponderada por precisión, 0–1 (más alto = datos subyacentes más numerosos y recientes). Una confianza baja indica que la puntuación está más cerca de un valor de referencia regional prudente que de evidencia local sólida.',
     fPillars: 'Los 5 pilares de riesgo (conflicto, crimen, salud, gobernanza, medio ambiente) con puntuación, peso e indicadores subyacentes. La criminalidad combina el dominio de Seguridad y Protección del Global Peace Index con la tasa de homicidios intencionales del Banco Mundial (escalada por fiabilidad según la población); el Conflicto combina el GPI con un consenso calibrado de avisos y el número de muertes por conflicto de la UCDP; el estado de derecho está en Gobernanza.',
-    fAdvisories: 'Niveles de avisos de viaje gubernamentales por país emisor (US, UK, CA, AU y 33 más).',
+    fAdvisories: `Niveles de avisos de viaje gubernamentales por país emisor (${ADVISORY_GOV_COUNT_DISPLAY} gobiernos hoy, p. ej. US, UK, CA, AU).`,
     fSources: 'Las fuentes públicas usadas para este país, con fechas de obtención.',
-    freshness: `Los datos se regeneran a diario a las ~06:00 UTC. Snapshot actual: ${snapshotDate}.`,
+    freshness: `Los datos se regeneran una vez al día. Snapshot actual generado: ${generatedAtFormatted}.`,
     licenseHeading: 'Licencia y atribución',
     licenseText: 'Todos los datos están bajo licencia Creative Commons BY-NC 4.0: libres para usar, compartir y adaptar con fines no comerciales.',
-    attributionText: 'Cita "IsItSafeToTravel.org" con un enlace cuando uses los datos. La pipeline completa y el sitio son open source en GitHub.',
+    attributionText: 'Cita "IsItSafeToTravel.org" con un enlace cuando uses los datos. El código fuente completo de la pipeline y del sitio es visible públicamente en GitHub.',
   },
   fr: {
     title: 'Données et API gratuites de sécurité de voyage',
     description: `Téléchargez les scores de sécurité de voyage mis à jour quotidiennement pour ${countryCount} pays en JSON gratuit. Pas de clé API, pas de limites — open data CC BY-NC 4.0.`,
-    intro: `Chaque chiffre de ce site provient d'un jeu de données ouvert que vous pouvez télécharger. Les scores de sécurité de ${countryCount} pays — recalculés chaque jour à partir de 40+ sources publiques — sont publiés sous forme de fichiers JSON statiques sur un CDN mondial.`,
+    intro: `Chaque chiffre de ce site provient d'un jeu de données ouvert que vous pouvez télécharger. Les scores de sécurité de ${countryCount} pays — recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques — sont publiés sous forme de fichiers JSON statiques sur un CDN mondial.`,
     noAuth: 'Pas de clé API, pas d’inscription, pas de limite de requêtes. Tous les endpoints acceptent les requêtes cross-origin (CORS) : vous pouvez les interroger directement depuis un navigateur.',
     endpointsHeading: 'Endpoints',
     thEndpoint: 'Endpoint',
@@ -182,17 +198,17 @@ const copy: Record<
     fScoreDisplay: 'Score arrondi pour l’affichage.',
     fConfidence: "Score de densité de données pondéré par la précision, 0–1 (plus élevé = données sous-jacentes plus nombreuses et plus récentes). Une confiance faible signifie que le score est plus proche d'une référence régionale prudente que de preuves locales solides.",
     fPillars: "Les 5 piliers de risque (conflit, criminalité, santé, gouvernance, environnement) avec score, poids et indicateurs sous-jacents. La criminalité combine le domaine Sûreté et Sécurité du Global Peace Index avec le taux d'homicides intentionnels de la Banque Mondiale (pondéré par fiabilité selon la population) ; le Conflit combine le GPI avec un consensus calibré des avis et le nombre de morts liées aux conflits de l'UCDP ; l'état de droit relève de la Gouvernance.",
-    fAdvisories: 'Niveaux d’avis aux voyageurs gouvernementaux par pays émetteur (US, UK, CA, AU et 33 autres).',
+    fAdvisories: `Niveaux d’avis aux voyageurs gouvernementaux par pays émetteur (${ADVISORY_GOV_COUNT_DISPLAY} gouvernements aujourd’hui, ex. US, UK, CA, AU).`,
     fSources: 'Les sources publiques utilisées pour ce pays, avec dates de collecte.',
-    freshness: `Les données sont régénérées chaque jour vers 06:00 UTC. Snapshot actuel : ${snapshotDate}.`,
+    freshness: `Les données sont régénérées une fois par jour. Snapshot actuel généré : ${generatedAtFormatted}.`,
     licenseHeading: 'Licence et attribution',
     licenseText: 'Toutes les données sont sous licence Creative Commons BY-NC 4.0 : libres d’utilisation, de partage et d’adaptation à des fins non commerciales.',
-    attributionText: 'Merci de créditer « IsItSafeToTravel.org » avec un lien lorsque vous utilisez les données. La pipeline complète et le site sont open source sur GitHub.',
+    attributionText: 'Merci de créditer « IsItSafeToTravel.org » avec un lien lorsque vous utilisez les données. Le code source complet de la pipeline et du site est visible publiquement sur GitHub.',
   },
   pt: {
     title: 'Dados e API gratuitos de segurança de viagem',
     description: `Baixe pontuações de segurança de viagem atualizadas diariamente para ${countryCount} países em JSON gratuito. Sem API key, sem limites — dados abertos CC BY-NC 4.0.`,
-    intro: `Cada número deste site vem de um dataset aberto que você pode baixar. As pontuações de segurança de ${countryCount} países — recalculadas diariamente a partir de 40+ fontes públicas — são publicadas como arquivos JSON estáticos em uma CDN global.`,
+    intro: `Cada número deste site vem de um dataset aberto que você pode baixar. As pontuações de segurança de ${countryCount} países — recalculadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas — são publicadas como arquivos JSON estáticos em uma CDN global.`,
     noAuth: 'Sem API key, sem cadastro, sem limites de requisições. Todos os endpoints aceitam requisições cross-origin (CORS), então você pode consultá-los diretamente do navegador.',
     endpointsHeading: 'Endpoints',
     thEndpoint: 'Endpoint',
@@ -215,17 +231,17 @@ const copy: Record<
     fScoreDisplay: 'Pontuação arredondada para exibição.',
     fConfidence: 'Pontuação de densidade de dados ponderada por precisão, 0–1 (mais alto = dados subjacentes mais numerosos e recentes). Baixa confiança significa que a pontuação está mais próxima de um valor de referência regional prudente do que de evidências locais sólidas.',
     fPillars: 'Os 5 pilares de risco (conflito, crime, saúde, governança, ambiente) com pontuação, peso e indicadores subjacentes. A criminalidade combina o domínio de Segurança e Proteção do Global Peace Index com a taxa de homicídios intencionais do Banco Mundial (ajustada por confiabilidade conforme a população); o Conflito combina o GPI com um consenso calibrado de avisos e o número de mortes por conflito da UCDP; o estado de direito está em Governança.',
-    fAdvisories: 'Níveis de avisos de viagem governamentais por país emissor (US, UK, CA, AU e mais 33).',
+    fAdvisories: `Níveis de avisos de viagem governamentais por país emissor (${ADVISORY_GOV_COUNT_DISPLAY} governos hoje, ex. US, UK, CA, AU).`,
     fSources: 'As fontes públicas usadas para este país, com datas de coleta.',
-    freshness: `Os dados são regenerados diariamente às ~06:00 UTC. Snapshot atual: ${snapshotDate}.`,
+    freshness: `Os dados são regenerados uma vez por dia. Snapshot atual gerado: ${generatedAtFormatted}.`,
     licenseHeading: 'Licença e atribuição',
     licenseText: 'Todos os dados estão licenciados sob Creative Commons BY-NC 4.0: livres para usar, compartilhar e adaptar para fins não comerciais.',
-    attributionText: 'Credite "IsItSafeToTravel.org" com um link ao usar os dados. A pipeline completa e o site são open source no GitHub.',
+    attributionText: 'Credite "IsItSafeToTravel.org" com um link ao usar os dados. O código-fonte completo da pipeline e do site é visível publicamente no GitHub.',
   },
   zh: {
     title: '免费旅行安全数据与 API',
     description: `以免费 JSON 格式下载每日更新的 ${countryCount} 个国家旅行安全评分。无需 API 密钥，无速率限制 — CC BY-NC 4.0 开放数据。`,
-    intro: `本站的每一个数字都来自一个可下载的开放数据集。${countryCount} 个国家的安全评分 — 每天根据 40+ 个公开来源重新计算 — 以静态 JSON 文件形式发布在全球 CDN 上。`,
+    intro: `本站的每一个数字都来自一个可下载的开放数据集。${countryCount} 个国家的安全评分 — 每天根据 ${SOURCE_COUNT_DISPLAY} 个公开来源重新计算 — 以静态 JSON 文件形式发布在全球 CDN 上。`,
     noAuth: '无需 API 密钥，无需注册，没有请求限制。所有端点均支持跨域请求（CORS），可以直接从浏览器获取。',
     endpointsHeading: '端点',
     thEndpoint: '端点',
@@ -248,17 +264,17 @@ const copy: Record<
     fScoreDisplay: '用于显示的四舍五入评分。',
     fConfidence: '按精度加权的数据密度评分，0–1（数值越高表示底层数据越多、越新）。置信度低意味着评分更接近审慎的区域先验值，而非扎实的本地证据。',
     fPillars: '5 个风险支柱（冲突、犯罪、健康、治理、环境），包含评分、权重和底层指标。犯罪支柱结合全球和平指数的"安全与治安"维度与世界银行的故意杀人率（按人口可靠性缩放）；冲突支柱结合全球和平指数、经校准的警告共识以及 UCDP 冲突死亡人数；法治则归入治理支柱。',
-    fAdvisories: '按发布国划分的政府旅行警告等级（美国、英国、加拿大、澳大利亚及其他 33 个）。',
+    fAdvisories: `按发布国划分的政府旅行警告等级（今日共 ${ADVISORY_GOV_COUNT_DISPLAY} 个政府，例如美国、英国、加拿大、澳大利亚）。`,
     fSources: '该国家使用的公开数据来源及获取日期。',
-    freshness: `数据每天约 06:00 UTC 重新生成。当前快照：${snapshotDate}。`,
+    freshness: `数据每天重新生成一次。当前快照生成时间：${generatedAtFormatted}。`,
     licenseHeading: '许可与署名',
     licenseText: '所有数据均采用 Creative Commons BY-NC 4.0 许可：可自由使用、分享和改编，仅限非商业用途。',
-    attributionText: '使用数据时请注明 "IsItSafeToTravel.org" 并附上链接。完整的数据管道和网站在 GitHub 上开源。',
+    attributionText: '使用数据时请注明 "IsItSafeToTravel.org" 并附上链接。完整的数据管道和网站源代码在 GitHub 上公开可见。',
   },
   de: {
     title: 'Kostenlose Reisesicherheits-Daten & API',
     description: `Laden Sie täglich aktualisierte Reisesicherheits-Scores für ${countryCount} Länder als kostenloses JSON herunter. Kein API-Key, keine Limits — Open Data unter CC BY-NC 4.0.`,
-    intro: `Jede Zahl auf dieser Website stammt aus einem offenen Datensatz, den Sie herunterladen können. Die Sicherheits-Scores von ${countryCount} Ländern — täglich aus 40+ öffentlichen Quellen neu berechnet — werden als statische JSON-Dateien über ein globales CDN veröffentlicht.`,
+    intro: `Jede Zahl auf dieser Website stammt aus einem offenen Datensatz, den Sie herunterladen können. Die Sicherheits-Scores von ${countryCount} Ländern — täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet — werden als statische JSON-Dateien über ein globales CDN veröffentlicht.`,
     noAuth: 'Kein API-Key, keine Registrierung, keine Anfragelimits. Alle Endpunkte unterstützen Cross-Origin-Anfragen (CORS) und können direkt aus dem Browser abgerufen werden.',
     endpointsHeading: 'Endpunkte',
     thEndpoint: 'Endpunkt',
@@ -281,12 +297,12 @@ const copy: Record<
     fScoreDisplay: 'Gerundeter Score für die Anzeige.',
     fConfidence: 'Präzisionsgewichteter Datendichte-Score, 0–1 (höher = mehr und aktuellere zugrunde liegende Daten). Niedrige Konfidenz bedeutet, dass der Score näher an einem vorsichtigen regionalen Richtwert liegt als an harten lokalen Belegen.',
     fPillars: 'Die 5 Risikosäulen (Konflikt, Kriminalität, Gesundheit, Governance, Umwelt) mit Score, Gewicht und zugrunde liegenden Indikatoren. Kriminalität kombiniert die Domäne Sicherheit & Schutz des Global Peace Index mit der Rate vorsätzlicher Tötungsdelikte der Weltbank (nach Bevölkerungs-Zuverlässigkeit skaliert); Konflikt kombiniert den GPI mit einem kalibrierten Reisehinweis-Konsens und der UCDP-Konflikttoten-Zahl; Rechtsstaatlichkeit gehört zu Governance.',
-    fAdvisories: 'Reisewarnstufen der Regierungen nach ausstellendem Land (US, UK, CA, AU und 33 weitere).',
+    fAdvisories: `Reisewarnstufen der Regierungen nach ausstellendem Land (heute ${ADVISORY_GOV_COUNT_DISPLAY} Regierungen, z. B. US, UK, CA, AU).`,
     fSources: 'Die für dieses Land verwendeten öffentlichen Quellen mit Abrufdaten.',
-    freshness: `Die Daten werden täglich gegen 06:00 UTC neu generiert. Aktueller Snapshot: ${snapshotDate}.`,
+    freshness: `Die Daten werden einmal täglich neu generiert. Aktueller Snapshot generiert: ${generatedAtFormatted}.`,
     licenseHeading: 'Lizenz & Namensnennung',
     licenseText: 'Alle Daten stehen unter der Lizenz Creative Commons BY-NC 4.0: frei nutzbar, teilbar und anpassbar für nicht-kommerzielle Zwecke.',
-    attributionText: 'Bitte nennen Sie "IsItSafeToTravel.org" mit Link, wenn Sie die Daten verwenden. Pipeline und Website sind Open Source auf GitHub.',
+    attributionText: 'Bitte nennen Sie "IsItSafeToTravel.org" mit Link, wenn Sie die Daten verwenden. Der vollständige Quellcode von Pipeline und Website ist öffentlich auf GitHub einsehbar.',
   },
 };
 
@@ -321,11 +337,16 @@ const italy = countries.find((c) => c.iso3 === 'ITA');
 console.log(italy.score); // composite safety score, 1-10
 console.log(italy.confidence); // 0-1, how much data backs the score`;
 
-// WebPage + Dataset + BreadcrumbList in one @graph. The Dataset node mirrors the
-// homepage Dataset (buildDatasetJsonLd) but points at this page, which is the
+// WebPage + Dataset in one @graph. The Dataset node mirrors the homepage
+// Dataset (buildDatasetJsonLd) but points at this page, which is the
 // canonical human-readable documentation of the downloadable distribution.
 // isPartOf/mainEntity connect this page into the site graph (S1): part of the
 // WebSite, primary entity is the Dataset node right below it in the same @graph.
+// No inline BreadcrumbList here: the <Breadcrumb> component rendered below
+// already emits one via its own <script> tag (buildBreadcrumbJsonLd, the
+// single site-wide source for breadcrumb structured data) -- this file used
+// to also build one by hand, so every /api/ page shipped two BreadcrumbList
+// nodes for the same trail.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -345,13 +366,6 @@ const jsonLd = {
       ...buildDatasetJsonLd(lang),
       url: canonicalUrl,
       dateModified: snapshotDate,
-    },
-    {
-      '@type': 'BreadcrumbList',
-      itemListElement: [
-        { '@type': 'ListItem', position: 1, name: t('nav.home'), item: `https://isitsafetotravel.org/${lang}/` },
-        { '@type': 'ListItem', position: 2, name: c.title, item: canonicalUrl },
-      ],
     },
   ],
 };
