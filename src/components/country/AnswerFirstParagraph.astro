@@ -1,9 +1,11 @@
 ---
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
-import { useTranslations } from '../../i18n/utils';
 import { getLocalizedCountryName } from '../../lib/scores';
-import { MIN_PILLAR_COVERAGE } from '../../pipeline/scoring/engine';
+import { getBandVerdictCopy } from '../../lib/band-copy';
+import { LOW_CONFIDENCE_THRESHOLD } from '../../lib/confidence';
+import { selectPillarExtremes } from '../../lib/pillar-extremes';
+import { getProvenanceCounts, buildProvenanceSentence } from '../../lib/provenance-copy';
 
 interface Props {
   country: ScoredCountry;
@@ -13,7 +15,6 @@ interface Props {
 }
 
 const { country, rank, totalCountries, lang } = Astro.props;
-const t = useTranslations(lang);
 
 // Per-language ordinal for the global ranking (en 78th, it 78°, fr 78e, pt 78º;
 // es/de/zh read naturally with the plain number given the sentence templates)
@@ -40,50 +41,102 @@ const pillarLabels: Record<Lang, Record<string, string>> = {
   de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
 };
 
-const riskLevels: Record<Lang, [string, string, string]> = {
-  en: ['Low risk', 'Moderate risk', 'High risk'],
-  it: ['rischio basso', 'rischio moderato', 'rischio alto'],
-  es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-  fr: ['risque faible', 'risque modéré', 'risque élevé'],
-  pt: ['risco baixo', 'risco moderado', 'risco alto'],
-  zh: ['低风险', '中等风险', '高风险'],
-  de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
-};
-
-// Band on the same 1-decimal value the paragraph displays via {score}, so the
-// verdict never disagrees with the shown number at band boundaries.
-const score = Number(country.score.toFixed(1));
-const [low, moderate, high] = riskLevels[lang];
-const riskLevel = score >= 7 ? low : score >= 5 ? moderate : high;
-
-// Only pillars with sufficient data coverage are eligible to be named best/worst,
-// so a zero-data pillar (e.g. Monaco's crime/governance/environment) never surfaces.
-// Falls back to all pillars when none clear the threshold (mirrors seo.ts + engine.ts).
-const eligiblePillars = country.pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
-const pillarPool = eligiblePillars.length > 0 ? eligiblePillars : country.pillars;
-let strongest = pillarPool[0];
-let weakest = pillarPool[0];
-for (const p of pillarPool) {
-  if (p.score > strongest.score) strongest = p;
-  if (p.score < weakest.score) weakest = p;
+/**
+ * Sentence-by-sentence copy, composed rather than templated from one fixed
+ * string, so each clause can vary independently:
+ *  - sentenceA: the verdict+rank opener. Has a distinct low-confidence variant
+ *    (2026-09-25 audit, C7) that drops the confident framing and says plainly
+ *    that the rating rests on thin evidence, instead of reading identically to
+ *    a well-evidenced country and relying on the ⚠️ badge alone to signal it.
+ *  - sentenceB: names the strongest/weakest pillar, or a neutral variant when
+ *    they are within 0.05 of each other (near-tie zero-data territories —
+ *    audit C2/I13: naming the *same* pillar as both "biggest concern" and
+ *    "strongest area" was self-contradictory).
+ * Sentence C (provenance) is shared with the FAQ via provenance-copy.ts.
+ */
+interface AnswerFirstCopy {
+  sentenceA: string;
+  sentenceALowConfidence: string;
+  sentenceBNormal: string;
+  sentenceBNeutral: string;
 }
 
-const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
-// Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
-const sourceCount = 40;
+const copy: Record<Lang, AnswerFirstCopy> = {
+  en: {
+    sentenceA: '{name} has a safety score of {score}/10 as of {date}, rated as {riskLevel} and ranking {rank} out of {total} countries worldwide.',
+    sentenceALowConfidence: '{name} has a provisional safety score of {score}/10 as of {date}, tentatively rated as {riskLevel} — with limited data behind it, so treat this as a cautious estimate rather than a confident verdict. It ranks {rank} out of {total} countries worldwide.',
+    sentenceBNormal: 'The biggest concern is {weakestPillar} ({weakestScore}/10), while the strongest area is {strongestPillar} ({strongestScore}/10).',
+    sentenceBNeutral: 'Its five safety pillars are closely matched, with no single area standing out as a particular strength or weakness.',
+  },
+  it: {
+    sentenceA: '{name} ha un punteggio di sicurezza di {score}/10 al {date}, classificato come {riskLevel}, {rank} su {total} paesi al mondo.',
+    sentenceALowConfidence: '{name} ha un punteggio di sicurezza provvisorio di {score}/10 al {date}, classificato in via preliminare come {riskLevel} — i dati disponibili sono limitati, quindi trattalo come una stima prudente e non come un verdetto definitivo. Si colloca {rank} su {total} paesi al mondo.',
+    sentenceBNormal: 'La maggiore preoccupazione è {weakestPillar} ({weakestScore}/10), mentre il punto di forza è {strongestPillar} ({strongestScore}/10).',
+    sentenceBNeutral: "I cinque pilastri di sicurezza sono molto simili tra loro, senza un'area che emerga chiaramente come punto di forza o di debolezza.",
+  },
+  es: {
+    sentenceA: '{name} tiene una puntuación de seguridad de {score}/10 a fecha de {date}, clasificado como {riskLevel}, puesto {rank} de {total} países del mundo.',
+    sentenceALowConfidence: '{name} tiene una puntuación de seguridad provisional de {score}/10 a fecha de {date}, clasificado de forma preliminar como {riskLevel} — los datos disponibles son limitados, así que trátala como una estimación prudente y no como un veredicto definitivo. Ocupa el puesto {rank} de {total} países del mundo.',
+    sentenceBNormal: 'La mayor preocupación es {weakestPillar} ({weakestScore}/10), mientras que el punto más fuerte es {strongestPillar} ({strongestScore}/10).',
+    sentenceBNeutral: 'Los cinco pilares de seguridad están muy igualados, sin ninguna área que destaque claramente como punto fuerte o débil.',
+  },
+  fr: {
+    sentenceA: '{name} a un score de sécurité de {score}/10 au {date}, classé comme {riskLevel}, {rank} sur {total} pays au monde.',
+    sentenceALowConfidence: "{name} a un score de sécurité provisoire de {score}/10 au {date}, classé à titre préliminaire comme {riskLevel} — les données disponibles sont limitées, à considérer donc comme une estimation prudente plutôt qu'un verdict fiable. Il se classe {rank} sur {total} pays au monde.",
+    sentenceBNormal: 'La plus grande préoccupation est {weakestPillar} ({weakestScore}/10), tandis que le point fort est {strongestPillar} ({strongestScore}/10).',
+    sentenceBNeutral: 'Les cinq piliers de sécurité sont très proches les uns des autres, sans domaine se distinguant nettement comme point fort ou point faible.',
+  },
+  pt: {
+    sentenceA: '{name} tem uma pontuação de segurança de {score}/10 em {date}, classificado como {riskLevel}, {rank} entre {total} países do mundo.',
+    sentenceALowConfidence: '{name} tem uma pontuação de segurança provisória de {score}/10 em {date}, classificado de forma preliminar como {riskLevel} — os dados disponíveis são limitados, portanto trate isso como uma estimativa prudente, e não como um veredito confiável. Ocupa a posição {rank} entre {total} países do mundo.',
+    sentenceBNormal: 'A maior preocupação é {weakestPillar} ({weakestScore}/10), enquanto o ponto mais forte é {strongestPillar} ({strongestScore}/10).',
+    sentenceBNeutral: 'Os cinco pilares de segurança estão muito equilibrados entre si, sem nenhuma área que se destaque claramente como ponto forte ou fraco.',
+  },
+  zh: {
+    sentenceA: '截至{date}，{name}的安全评分为{score}/10，风险等级为{riskLevel}，在全球{total}个国家中排名第{rank}。',
+    sentenceALowConfidence: '截至{date}，{name}的安全评分为{score}/10（暂定），风险等级初步评为{riskLevel}——由于可用数据有限，请将此视为审慎的估计，而非确定的结论。在全球{total}个国家中排名第{rank}。',
+    sentenceBNormal: '最大隐患是{weakestPillar}（{weakestScore}/10），表现最好的领域是{strongestPillar}（{strongestScore}/10）。',
+    sentenceBNeutral: '该国五大安全支柱的得分非常接近，没有哪一项明显突出为优势或短板。',
+  },
+  de: {
+    sentenceA: '{name} hat zum {date} eine Sicherheitsbewertung von {score}/10 und ist als {riskLevel} eingestuft, weltweit Rang {rank} von {total} Ländern.',
+    sentenceALowConfidence: '{name} hat zum {date} eine vorläufige Sicherheitsbewertung von {score}/10 und ist vorläufig als {riskLevel} eingestuft — die verfügbaren Daten sind begrenzt, betrachten Sie dies also als vorsichtige Schätzung und nicht als gesichertes Urteil. Das Land liegt weltweit auf Rang {rank} von {total}.',
+    sentenceBNormal: 'Die größte Sorge betrifft {weakestPillar} ({weakestScore}/10), während der stärkste Bereich {strongestPillar} ({strongestScore}/10) ist.',
+    sentenceBNeutral: 'Die fünf Sicherheitssäulen des Landes liegen sehr nah beieinander, keine sticht deutlich als besondere Stärke oder Schwäche hervor.',
+  },
+};
 
-const text = t('country.answer_first' as any)
-  .replace('{name}', getLocalizedCountryName(country, lang))
-  .replace('{score}', score.toFixed(1))
-  .replace('{date}', dateStr)
-  .replace('{riskLevel}', riskLevel)
-  .replace('{rank}', ordinal(rank, lang))
-  .replace('{total}', String(totalCountries))
-  .replace('{weakestPillar}', pillarLabels[lang][weakest.name])
-  .replace('{weakestScore}', (weakest.score * 10).toFixed(1))
-  .replace('{strongestPillar}', pillarLabels[lang][strongest.name])
-  .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
-  .replace('{sourceCount}', String(sourceCount));
+const score = Number(country.score.toFixed(1));
+const { riskLabel } = getBandVerdictCopy(country.score, lang);
+const isLowConfidence = country.confidence < LOW_CONFIDENCE_THRESHOLD;
+const { weakest, strongest, isNearTie } = selectPillarExtremes(country.pillars);
+const provenance = buildProvenanceSentence(getProvenanceCounts(country), getLocalizedCountryName(country, lang), lang);
+
+const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
+const c = copy[lang];
+
+const fill = (tpl: string, slots: Record<string, string>) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
+
+const sentenceA = fill(isLowConfidence ? c.sentenceALowConfidence : c.sentenceA, {
+  name: getLocalizedCountryName(country, lang),
+  score: score.toFixed(1),
+  date: dateStr,
+  riskLevel: riskLabel,
+  rank: ordinal(rank, lang),
+  total: String(totalCountries),
+});
+
+const sentenceB = isNearTie
+  ? c.sentenceBNeutral
+  : fill(c.sentenceBNormal, {
+      weakestPillar: pillarLabels[lang][weakest.name],
+      weakestScore: (weakest.score * 10).toFixed(1),
+      strongestPillar: pillarLabels[lang][strongest.name],
+      strongestScore: (strongest.score * 10).toFixed(1),
+    });
+
+const joiner = lang === 'zh' ? '' : ' ';
+const text = [sentenceA, sentenceB, provenance].join(joiner);
 ---
 
 <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed max-w-2xl mx-auto text-center px-4">

@@ -7,6 +7,15 @@ import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, l
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
 import { COUNTRY_COUNT } from './site-stats';
 import wikidataMapJson from '../data/countries-wikidata.json';
+// 2026-09-25 audit fix round (I4/C2/I1/C7): buildCountryMetaDescription and the
+// country-FAQ functions below now derive their risk label, strongest/weakest
+// pillar and provenance clause from the same shared helpers AnswerFirstParagraph
+// uses, instead of each keeping its own copy — see the docstring in each module.
+import { getBand } from './bands';
+import { getBandVerdictCopy } from './band-copy';
+import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
+import { selectPillarExtremes } from './pillar-extremes';
+import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
 
 // ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
 // (helps AI answer engines and Google disambiguate the country entity).
@@ -96,33 +105,26 @@ const ADVISORY_GOV_PRIORITY = [
 export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang): string {
   const score = country.score;
 
-  // Determine risk level
-  const riskLevels: Record<Lang, [string, string, string]> = {
-    en: ['Low risk', 'Moderate risk', 'High risk'],
-    it: ['rischio basso', 'rischio moderato', 'rischio alto'],
-    es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-    fr: ['risque faible', 'risque modéré', 'risque élevé'],
-    pt: ['risco baixo', 'risco moderado', 'risco alto'],
-    zh: ['低风险', '中等风险', '高风险'],
-    de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
-  };
-  const [low, moderate, high] = riskLevels[lang];
-  // Band on the displayed 1-decimal value so the label matches the number shown.
-  const s1 = Number(score.toFixed(1));
-  const riskLevel = s1 >= 7 ? low : s1 >= 5 ? moderate : high;
+  // Single source of truth for the risk label (band-copy.ts) — must read the
+  // same as ScoreHero's pill, the FAQ verdict and the answer-first paragraph
+  // for this score, or the SERP snippet contradicts the page it links to
+  // (2026-09-25 audit, I4).
+  const { riskLabel: riskLevel } = getBandVerdictCopy(score, lang);
 
-  // Find the weakest pillar (score is 0-1, display as x10 for /10 scale).
-  // Only pillars with sufficient data coverage are eligible, so a zero-data pillar
-  // (e.g. Monaco's crime/governance/environment) is never named as the top risk.
-  const pillars = selectEligiblePillars(country.pillars);
-  let weakest = pillars[0];
-  for (const p of pillars) {
-    if (p.score < weakest.score) weakest = p;
-  }
+  // Strongest/weakest via the shared sort-based picker (pillar-extremes.ts):
+  // a plain max/min loop names the SAME pillar as both "top concern" and
+  // "strongest area" when every pillar is tied (2026-09-25 audit, I13, the
+  // same root cause as content.md's C2 in AnswerFirstParagraph). Only
+  // pillars with sufficient data coverage are eligible, so a zero-data
+  // pillar (e.g. Monaco's crime/governance/environment) is never named.
+  const { weakest, isNearTie } = selectPillarExtremes(country.pillars);
 
   const weakestScore = (weakest.score * 10).toFixed(1);
   const weakestLabel = pillarLabels[lang][weakest.name];
   // Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
+  // NOTE: unlike AnswerFirstParagraph/the FAQ (see provenance-copy.ts), this
+  // site-wide claim is intentionally left as-is here — it's a separate,
+  // out-of-scope decision (site-stats.ts) for this fix round.
   const sourceCount = 40;
   const name = getLocalizedCountryName(country, lang);
 
@@ -136,15 +138,27 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   // the full sentence. Measured against the live snapshot: worst case 145-155
   // characters in every locale.
   const DESCRIPTION_MAX = 155;
-  const bases: Record<Lang, string> = {
-    en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}).`,
-    it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}).`,
-    es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}).`,
-    fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}).`,
-    pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}).`,
-    zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）。`,
-    de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
-  };
+  const bases: Record<Lang, string> = isNearTie
+    ? {
+        // Near-tie (all pillars within 0.05, e.g. zero-data territories): no
+        // "top concern" clause naming an arbitrary pillar (2026-09-25 audit, I13).
+        en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). All five safety pillars are closely matched.`,
+        it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). I cinque pilastri di sicurezza sono molto simili tra loro.`,
+        es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Los cinco pilares de seguridad están muy igualados.`,
+        fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Les cinq piliers de sécurité sont très proches les uns des autres.`,
+        pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Os cinco pilares de segurança estão muito equilibrados entre si.`,
+        zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），五大安全支柱得分非常接近，没有明显的强项或弱项。`,
+        de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Die fünf Sicherheitssäulen liegen sehr nah beieinander.`,
+      }
+    : {
+        en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}).`,
+        it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}).`,
+        es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}).`,
+        fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}).`,
+        pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}).`,
+        zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）。`,
+        de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
+      };
   const tails: Record<Lang, string> = {
     en: ` Free data from ${sourceCount}+ sources, updated daily.`,
     it: ` Dati gratuiti da ${sourceCount}+ fonti, aggiornati ogni giorno.`,
@@ -566,21 +580,19 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const year = now.getFullYear().toString();
   const monthYear = now.toLocaleDateString(localeMap[lang], { month: 'long', year: 'numeric' });
 
-  // Determine risk level
-  const riskLevels: Record<Lang, [string, string, string]> = {
-    en: ['Low risk', 'Moderate risk', 'High risk'],
-    it: ['rischio basso', 'rischio moderato', 'rischio alto'],
-    es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-    fr: ['risque faible', 'risque modéré', 'risque élevé'],
-    pt: ['risco baixo', 'risco moderado', 'risco alto'],
-    zh: ['低风险', '中等风险', '高风险'],
-    de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
-  };
-  const [low, moderate, high] = riskLevels[lang];
-  // Band on the displayed 1-decimal value so the FAQ verdict matches the number shown.
-  const scoreBanded = Number(score.toFixed(1));
-  const riskBand: 'low' | 'moderate' | 'high' = scoreBanded >= 7 ? 'low' : scoreBanded >= 5 ? 'moderate' : 'high';
-  const riskLevel = riskBand === 'low' ? low : riskBand === 'moderate' ? moderate : high;
+  // Single source of truth for band + risk label (band-copy.ts / bands.ts) —
+  // must agree with ScoreHero's pill and the answer-first paragraph for this
+  // exact score, or the FAQ contradicts the rest of the same page (2026-09-25
+  // audit, I4: this used to be its own 3-tier {low,moderate,high} split at the
+  // same 7/5 numeric boundaries as ScoreHero's 5-tier one, so e.g. Jersey at
+  // 5.6 read "Only for experienced travelers" in the hero and "moderately
+  // safe... most trips are trouble-free" in the FAQ, one scroll down).
+  const band = getBand(score);
+  const { riskLabel: riskLevel } = getBandVerdictCopy(score, lang);
+  // Thin/zero-evidence countries (audit C7) get a distinct opener instead of
+  // the banded a1Verdict — never a confident "Yes, generally safe" built on a
+  // pure regional prior.
+  const isLowConfidence = country.confidence < LOW_CONFIDENCE_THRESHOLD;
 
   // Sort ELIGIBLE pillars weakest-first so answers name the score's actual
   // drivers and never a zero-data pillar (Monaco fix). When only one pillar is
@@ -626,9 +638,14 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const tidy = (s: string) => s.replace(/ {2,}/g, ' ').trim();
 
   // A1 — verdict, how the score works, why this country's number (drag pillars
-  // + what the weakest one means), provenance.
+  // + what the weakest one means), provenance. Provenance is the country's own
+  // advisory/source counts (provenance-copy.ts), never a fixed "40+" claim —
+  // shared with AnswerFirstParagraph so the two surfaces never disagree
+  // (2026-09-25 audit, I1/I12).
   const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
-  const a1 = tidy([copy.a1Verdict[riskBand], copy.a1Formula, drivers, copy.a1Provenance].map(fill).join(joiner));
+  const verdictOpener = isLowConfidence ? copy.a1VerdictLowConfidence : copy.a1Verdict[band];
+  const provenance = buildProvenanceSentence(getProvenanceCounts(country), name, lang);
+  const a1 = tidy([verdictOpener, copy.a1Formula, drivers, provenance].map(fill).join(joiner));
 
   // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only
   // when the pillar is genuinely weak, so top scorers don't read as alarmist.
