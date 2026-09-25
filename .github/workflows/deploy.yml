@@ -51,3 +51,40 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy dist/client --project-name=isitsafetotravel
+
+      # IndexNow submission used to be a separate workflow reacting to this
+      # one via `workflow_run`. That silently broke on 2026-08-25: daily
+      # deploys are dispatched by data-pipeline.yml with the default
+      # GITHUB_TOKEN, and per GitHub's docs, workflow_run is not among the
+      # events GITHUB_TOKEN-triggered runs are allowed to fire (see
+      # scripts/indexnow/submit-changed.sh header for the full citation and
+      # the empirical confirmation: 34/34 bot deploys, 0 IndexNow runs). Doing
+      # it as a step in this same job removes the dependency on that event
+      # entirely. Restore the previous run's URL->hash manifest so only
+      # actually-changed pages get submitted (see the script for why).
+      - name: Restore IndexNow manifest
+        uses: actions/cache/restore@v4
+        with:
+          path: .indexnow/manifest.tsv
+          key: indexnow-manifest-${{ github.run_id }}
+          restore-keys: |
+            indexnow-manifest-
+
+      # IndexNow is best-effort SEO plumbing, never a reason to fail a
+      # production deploy that already succeeded — hence continue-on-error.
+      - name: Submit changed URLs to IndexNow
+        id: indexnow
+        continue-on-error: true
+        run: scripts/indexnow/submit-changed.sh dist/client
+
+      # Only persist the manifest when the submission step actually
+      # succeeded (continue-on-error hides failures from the job status but
+      # not from steps.<id>.outcome) — otherwise the stale manifest survives
+      # and the same changed URLs are retried on the next deploy instead of
+      # being marked "already submitted" when they were not.
+      - name: Save IndexNow manifest
+        if: steps.indexnow.outcome == 'success'
+        uses: actions/cache/save@v4
+        with:
+          path: .indexnow/manifest.tsv
+          key: indexnow-manifest-${{ github.run_id }}

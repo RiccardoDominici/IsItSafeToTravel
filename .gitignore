@@ -26,6 +26,10 @@ Thumbs.db
 .wrangler/
 .dev.vars
 
+# IndexNow URL->hash manifest (scripts/indexnow/submit-changed.sh) — a CI
+# working file persisted across runs via actions/cache, never committed.
+.indexnow/
+
 # Logs
 *.log
 npm-debug.log*
