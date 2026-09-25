@@ -8,10 +8,19 @@
 
 import fs from "node:fs";
 import path from "node:path";
+import { routes } from "../src/i18n/ui.js";
+import {
+  localeMap,
+  WEBSITE_ID,
+  ORGANIZATION_ID,
+  AUTHOR_ID,
+  SITE_DATASET_ID,
+} from "../src/lib/seo.js";
 
 const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
 const LANGUAGES = ["en", "it", "es", "fr", "pt", "zh", "de"] as const;
+type Language = (typeof LANGUAGES)[number];
 
 // ISO3 → Wikidata/Wikipedia entity mapping used for Place.sameAs grounding.
 // Loaded leniently: if the file is missing, the sameAs checks are skipped.
@@ -19,7 +28,7 @@ const WIKIDATA_MAP_PATH = path.resolve(
   import.meta.dirname ?? ".",
   "../src/data/countries-wikidata.json"
 );
-const WIKIDATA_MAP: Record<string, { qid?: string; wikipedia?: string }> = (() => {
+const WIKIDATA_MAP: Record<string, { qid?: string; wikipedia?: string; wikipediaByLang?: Partial<Record<Language, string>> }> = (() => {
   try {
     return JSON.parse(fs.readFileSync(WIKIDATA_MAP_PATH, "utf-8"));
   } catch {
@@ -353,6 +362,255 @@ function validateJsonLd() {
           !!parsed["name"],
           "missing name"
         );
+      }
+    }
+  }
+}
+
+// =====================================================================
+// 2b. SCHEMA CONNECTIONS & i18n (S1/S2/S6/S7/S9/S10/GEO-07 — 2026-09 audit)
+// =====================================================================
+// The 2026-09 SEO audit found every JSON-LD node on the site was an island
+// (zero @id cross-references anywhere, even within one page's own @graph),
+// Dataset/Organization text hardcoded English-only on 6/7 locales, ranking
+// hub pages with no WebPage/CollectionPage/dateModified, and Place.sameAs
+// always pointing at en.wikipedia.org regardless of page language. The same
+// audit noted that several *earlier* schema fixes were written but never
+// deployed (or deployed and then drifted) between its two runs — these
+// checks exist so that can't happen silently to this round of fixes.
+
+/** All JSON-LD nodes on a page, flattened across every <script> block and
+ * every @graph — @type-only blocks and @graph arrays both included. */
+function extractGraphNodes(html: string): Record<string, any>[] {
+  const jsonLdRe = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  const nodes: Record<string, any>[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = jsonLdRe.exec(html)) !== null) {
+    let parsed: any;
+    try {
+      parsed = JSON.parse(m[1]);
+    } catch {
+      continue;
+    }
+    if (Array.isArray(parsed["@graph"])) nodes.push(...parsed["@graph"]);
+    else nodes.push(parsed);
+  }
+  return nodes;
+}
+
+function nodeHasType(node: Record<string, any>, type: string): boolean {
+  const t = node["@type"];
+  return t === type || (Array.isArray(t) && t.includes(type));
+}
+
+function findNode(nodes: Record<string, any>[], type: string): Record<string, any> | undefined {
+  return nodes.find((n) => nodeHasType(n, type));
+}
+
+/** routes[lang][key], loosely typed — this script only ever reads known-valid
+ * route keys gathered from src/i18n/ui.ts, so a precise Routes type isn't worth
+ * threading through just for a build-time validator. */
+function routeSlug(lang: string, key: string): string | undefined {
+  return (routes as unknown as Record<string, Record<string, string>>)[lang]?.[key];
+}
+
+function validateSchemaConnections() {
+  console.log("\n--- Schema Connections: @id graph, i18n, Dataset properties ---");
+
+  const countryCodes = getAllCountryCodes();
+  // Smaller sample than the base JSON-LD check (12): here every code is
+  // checked across all 7 languages (6 x 7 = 42 pages), not just English.
+  const sample = sampleArray(countryCodes, 6);
+
+  for (const code of sample) {
+    for (const lang of LANGUAGES) {
+      const seg = COUNTRY_SEGMENT[lang];
+      const filePath = path.join(DIST, lang, seg, code, "index.html");
+      if (!fs.existsSync(filePath)) continue; // already reported by validateHreflang/validateJsonLd
+      const nodes = extractGraphNodes(readHtml(filePath));
+      const label = `${lang}/${seg}/${code}`;
+
+      const webPage = findNode(nodes, "WebPage");
+      const place = findNode(nodes, "Place");
+      const dataset = findNode(nodes, "Dataset");
+      const placeId = place?.["@id"];
+
+      check(`schema(${label}): WebPage node present`, !!webPage);
+      if (webPage) {
+        check(`schema(${label}): WebPage.isPartOf -> WebSite`, webPage.isPartOf?.["@id"] === WEBSITE_ID, JSON.stringify(webPage.isPartOf));
+        check(`schema(${label}): WebPage.mainEntity -> Place`, !!placeId && webPage.mainEntity?.["@id"] === placeId, JSON.stringify(webPage.mainEntity));
+        check(`schema(${label}): WebPage.publisher -> Organization`, webPage.publisher?.["@id"] === ORGANIZATION_ID, JSON.stringify(webPage.publisher));
+        check(`schema(${label}): WebPage.author -> Person`, webPage.author?.["@id"] === AUTHOR_ID, JSON.stringify(webPage.author));
+      }
+
+      check(`schema(${label}): Dataset node present`, !!dataset);
+      if (dataset) {
+        check(`schema(${label}): Dataset.inLanguage matches page locale`, dataset.inLanguage === localeMap[lang], `got ${dataset.inLanguage}`);
+        check(`schema(${label}): Dataset.isAccessibleForFree === true`, dataset.isAccessibleForFree === true, `got ${dataset.isAccessibleForFree}`);
+        check(
+          `schema(${label}): Dataset.temporalCoverage is a derived open interval`,
+          typeof dataset.temporalCoverage === "string" && /^\d{4}-\d{2}-\d{2}\/\.\.$/.test(dataset.temporalCoverage),
+          `got ${dataset.temporalCoverage} (should start where data/scores/history-index.json actually begins, not a hardcoded year)`
+        );
+        check(`schema(${label}): Dataset.spatialCoverage -> this country's Place`, !!placeId && dataset.spatialCoverage?.["@id"] === placeId, JSON.stringify(dataset.spatialCoverage));
+        check(`schema(${label}): Dataset.creator -> Organization`, dataset.creator?.["@id"] === ORGANIZATION_ID, JSON.stringify(dataset.creator));
+      }
+
+      // GEO-07: Place.sameAs should use the page-language Wikipedia article
+      // when countries-wikidata.json has one, falling back to English.
+      const wd = WIKIDATA_MAP[code.toUpperCase()];
+      if (place && wd) {
+        const expectedWikipedia = lang === "en" ? wd.wikipedia : wd.wikipediaByLang?.[lang as Language] ?? wd.wikipedia;
+        if (expectedWikipedia) {
+          const sameAs: string[] = Array.isArray(place.sameAs) ? place.sameAs : [];
+          check(
+            `schema(${label}): Place.sameAs has the locale-appropriate Wikipedia article`,
+            sameAs.includes(expectedWikipedia),
+            `expected ${expectedWikipedia} in ${JSON.stringify(sameAs)}`
+          );
+        }
+      }
+    }
+  }
+
+  // Site-wide entities (homepage): Organization/WebSite/Dataset carry the
+  // stable canonical @id, and Dataset name/description are localized (S2) —
+  // regression-guarded here by asserting each non-EN description differs
+  // from the English one, since "identical byte-for-byte to English" is
+  // exactly how the original audit detected the missing localization.
+  let enHomeOrgDescription: string | undefined;
+  let enHomeDatasetDescription: string | undefined;
+  for (const lang of LANGUAGES) {
+    const filePath = path.join(DIST, lang, "index.html");
+    if (!fs.existsSync(filePath)) continue;
+    const nodes = extractGraphNodes(readHtml(filePath));
+    const org = findNode(nodes, "Organization");
+    const site = findNode(nodes, "WebSite");
+    const dataset = findNode(nodes, "Dataset");
+    const label = `${lang}/index`;
+
+    check(`schema(${label}): Organization.@id is the canonical anchor`, org?.["@id"] === ORGANIZATION_ID, JSON.stringify(org?.["@id"]));
+    check(`schema(${label}): WebSite.@id is the canonical anchor`, site?.["@id"] === WEBSITE_ID, JSON.stringify(site?.["@id"]));
+    check(`schema(${label}): Dataset.@id is the canonical anchor`, dataset?.["@id"] === SITE_DATASET_ID, JSON.stringify(dataset?.["@id"]));
+    check(`schema(${label}): Dataset.inLanguage matches page locale`, dataset?.inLanguage === localeMap[lang], `got ${dataset?.inLanguage}`);
+    check(`schema(${label}): Dataset.isAccessibleForFree === true`, dataset?.isAccessibleForFree === true);
+    check(
+      `schema(${label}): Dataset.distribution has the 4 DataDownload entries`,
+      Array.isArray(dataset?.distribution) && dataset.distribution.length === 4,
+      `got ${JSON.stringify(dataset?.distribution)}`
+    );
+
+    if (lang === "en") {
+      enHomeOrgDescription = org?.description;
+      enHomeDatasetDescription = dataset?.description;
+    } else {
+      check(
+        `schema(${label}): Organization.description is localized (not English)`,
+        !!org?.description && org.description !== enHomeOrgDescription,
+        org?.description
+      );
+      check(
+        `schema(${label}): Dataset.description is localized (not English)`,
+        !!dataset?.description && dataset.description !== enHomeDatasetDescription,
+        dataset?.description
+      );
+    }
+  }
+
+  // Methodology Dataset (S9): variableMeasured used to be missing descriptions
+  // on 5 of its 6 PropertyValue entries; now shares the same fully-described
+  // per-language table as the homepage/country Dataset nodes.
+  for (const lang of LANGUAGES) {
+    const slug = routeSlug(lang, "methodology");
+    if (!slug) continue;
+    const filePath = path.join(DIST, lang, slug, "index.html");
+    if (!fs.existsSync(filePath)) continue;
+    const nodes = extractGraphNodes(readHtml(filePath));
+    const dataset = findNode(nodes, "Dataset");
+    const label = `${lang}/${slug}`;
+
+    check(`schema(${label}): Dataset.isAccessibleForFree === true`, dataset?.isAccessibleForFree === true);
+    check(`schema(${label}): Dataset.inLanguage matches page locale`, dataset?.inLanguage === localeMap[lang], `got ${dataset?.inLanguage}`);
+    const variableMeasured: Array<{ description?: string }> = Array.isArray(dataset?.variableMeasured) ? dataset.variableMeasured : [];
+    check(
+      `schema(${label}): every Dataset.variableMeasured entry has a description`,
+      variableMeasured.length > 0 && variableMeasured.every((v) => !!v.description),
+      `${variableMeasured.filter((v) => !v.description).length}/${variableMeasured.length} missing description`
+    );
+  }
+
+  // /en/api/: Dataset.distribution must list all 4 bulk downloads (S4 — used
+  // to declare just scores.json even though the page documents 6 endpoints).
+  const apiSlug = routeSlug("en", "api") ?? "api";
+  const apiPath = path.join(DIST, "en", apiSlug, "index.html");
+  if (fs.existsSync(apiPath)) {
+    const dataset = findNode(extractGraphNodes(readHtml(apiPath)), "Dataset");
+    check(
+      `schema(en/${apiSlug}): Dataset.distribution has the 4 DataDownload entries`,
+      Array.isArray(dataset?.distribution) && dataset.distribution.length === 4,
+      `got ${JSON.stringify(dataset?.distribution)}`
+    );
+  } else {
+    check(`schema(en/${apiSlug}): file exists`, false);
+  }
+}
+
+// =====================================================================
+// 2c. HUB COLLECTIONPAGE (S6 — 2026-09 audit)
+// =====================================================================
+// Ranking hub pages (safest/most-dangerous/countries-to-avoid/regions/...)
+// never had a WebPage/CollectionPage node or a dateModified, unlike /news/.
+// Sampled across 3 languages (not all 7) to keep this fast — the fix lives in
+// one shared layout (HubPageLayout.astro), so a per-language sample is enough
+// to catch a locale-specific regression without re-checking all ~13 hub types.
+
+function validateHubSchema() {
+  console.log("\n--- Hub CollectionPage (S6) ---");
+  const HUB_ROUTE_KEYS = ["safest-countries", "most-dangerous-countries", "countries-to-avoid"];
+  const SAMPLE_LANGS: Language[] = ["en", "it", "de"];
+
+  for (const lang of SAMPLE_LANGS) {
+    for (const key of HUB_ROUTE_KEYS) {
+      const slug = routeSlug(lang, key);
+      if (!slug) continue;
+      const filePath = path.join(DIST, lang, slug, "index.html");
+      const label = `${lang}/${slug}`;
+      if (!fs.existsSync(filePath)) {
+        check(`hub-schema(${label}): file exists`, false);
+        continue;
+      }
+      const nodes = extractGraphNodes(readHtml(filePath));
+      const collectionPage = findNode(nodes, "CollectionPage");
+      const itemList = findNode(nodes, "ItemList");
+      check(`hub-schema(${label}): has a CollectionPage node`, !!collectionPage);
+      if (collectionPage) {
+        check(
+          `hub-schema(${label}): CollectionPage.dateModified is a date`,
+          typeof collectionPage.dateModified === "string" && /^\d{4}-\d{2}-\d{2}$/.test(collectionPage.dateModified),
+          `got ${collectionPage.dateModified}`
+        );
+        check(`hub-schema(${label}): CollectionPage.isPartOf -> WebSite`, collectionPage.isPartOf?.["@id"] === WEBSITE_ID);
+        check(
+          `hub-schema(${label}): CollectionPage.mainEntity -> ItemList`,
+          !!itemList?.["@id"] && collectionPage.mainEntity?.["@id"] === itemList["@id"],
+          JSON.stringify(collectionPage.mainEntity)
+        );
+      }
+    }
+
+    // Region pages take no hubType/FAQ prop and were explicitly called out in
+    // the audit as still missing CollectionPage even if the ranking hubs got
+    // fixed — the layout change must be unconditional, not FAQ-gated.
+    const regionsSlug = routeSlug(lang, "regions");
+    const europeSlug = routeSlug(lang, "europe");
+    if (regionsSlug && europeSlug) {
+      const filePath = path.join(DIST, lang, regionsSlug, europeSlug, "index.html");
+      const label = `${lang}/${regionsSlug}/${europeSlug}`;
+      if (fs.existsSync(filePath)) {
+        const hasCollectionPage = !!findNode(extractGraphNodes(readHtml(filePath)), "CollectionPage");
+        check(`hub-schema(${label}): region page has a CollectionPage node`, hasCollectionPage);
+      } else {
+        check(`hub-schema(${label}): file exists`, false);
       }
     }
   }
@@ -797,6 +1055,8 @@ function main() {
   validateHreflang();
   validateAllHreflangTargets();
   validateJsonLd();
+  validateSchemaConnections();
+  validateHubSchema();
   validateMeta();
   validateLlmsFullTxt();
   validateCanonicalCounts();
