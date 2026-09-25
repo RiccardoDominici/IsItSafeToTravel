@@ -159,9 +159,14 @@ jobs:
           nl_l4=$(jq '[.countries[] | select(.advisories.nl.level==4)] | length' "$SNAP")
           if [ "$nl_l4" -gt 30 ]; then warn "$nl_l4 countries flagged NL Level 4 — verify NL regex (typical baseline ≤30)"; fi
 
-          # DE Level 3 false positive guard (was 27; should be ~0 after partialWarning fix)
+          # DE Level 3 guard. History: 27 false positives when partial (regional)
+          # warnings were promoted to the whole country; ~0 after that fix. Since the
+          # 2026-09-25 fetcher change, Level 3 is set only when the Auswärtiges Amt
+          # text advises against travel to the WHOLE country ("wird (dringend)
+          # abgeraten") — 13 countries on that date. A jump well above that means
+          # regional wording is leaking into whole-country scope again.
           de_l3=$(jq '[.countries[] | select(.advisories.de.level==3)] | length' "$SNAP")
-          if [ "$de_l3" -gt 5 ]; then warn "$de_l3 countries flagged DE Level 3 — verify partialWarning mapping"; fi
+          if [ "$de_l3" -gt 20 ]; then warn "$de_l3 countries flagged DE Level 3 (13 on 2026-09-25) — verify whole-country scoping in fetchDeAdvisories"; fi
 
           # Echo to step summary
           {
