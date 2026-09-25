@@ -35,6 +35,67 @@ const countryData = scores.map(country => ({
   pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),
   color: scoreToColor(country.score),
 }));
+
+// ---- Static empty-state content (2026-09 SEO audit: OP-1 / PERF-01) ----
+// The empty state used to be an empty <div> filled in by the deferred client
+// script on every load — with 0 selected countries (the default, no ?c= in the
+// URL) that produced a real, measured layout shift (CLS 0.155) as the content
+// popped in after parse, and left <main> at 4-8 words for crawlers that don't
+// run JS. Rendering it here at build time means the common case (no selection)
+// needs zero DOM mutation — the script below only toggles `hidden` when the
+// count changes, it never builds this markup.
+const EXAMPLE_ISO3 = ['ITA', 'FRA', 'JPN']; // 3 well-known, well-covered countries — not a ranking, just a sample
+const exampleCountries = EXAMPLE_ISO3
+  .map((iso3) => countryData.find((c) => c.iso3 === iso3))
+  .filter((c): c is (typeof countryData)[number] => c !== undefined);
+const examplePillars = [
+  { name: 'conflict', label: t('country.pillar.conflict') },
+  { name: 'crime', label: t('country.pillar.crime') },
+  { name: 'health', label: t('country.pillar.health') },
+  { name: 'governance', label: t('country.pillar.governance') },
+  { name: 'environment', label: t('country.pillar.environment') },
+];
+
+// Component-local per-locale copy (same pattern as RegionsIndex.astro/CitePage.astro) —
+// these 3 strings are new for this audit fix, no i18n key existed for them yet.
+const emptyStateCopy: Record<Lang, { explainer: string; exampleHeading: string; exampleCta: string }> = {
+  en: {
+    explainer: 'Compare safety scores for up to 5 countries side by side, broken down across all 5 risk pillars — conflict, crime, health, governance and environment.',
+    exampleHeading: 'Example comparison',
+    exampleCta: 'Search for a country above to build your own comparison.',
+  },
+  it: {
+    explainer: 'Confronta i punteggi di sicurezza di fino a 5 paesi fianco a fianco, suddivisi nei 5 pilastri di rischio: conflitti, criminalità, sanità, governance e ambiente.',
+    exampleHeading: 'Esempio di confronto',
+    exampleCta: 'Cerca un paese qui sopra per creare il tuo confronto.',
+  },
+  es: {
+    explainer: 'Compara las puntuaciones de seguridad de hasta 5 países lado a lado, desglosadas en los 5 pilares de riesgo: conflicto, criminalidad, salud, gobernanza y medio ambiente.',
+    exampleHeading: 'Ejemplo de comparación',
+    exampleCta: 'Busca un país arriba para crear tu propia comparación.',
+  },
+  fr: {
+    explainer: 'Comparez les scores de sécurité de 5 pays maximum côte à côte, répartis sur les 5 piliers de risque : conflit, criminalité, santé, gouvernance et environnement.',
+    exampleHeading: 'Exemple de comparaison',
+    exampleCta: 'Recherchez un pays ci-dessus pour créer votre propre comparaison.',
+  },
+  pt: {
+    explainer: 'Compare as pontuações de segurança de até 5 países lado a lado, detalhadas nos 5 pilares de risco: conflito, criminalidade, saúde, governança e meio ambiente.',
+    exampleHeading: 'Exemplo de comparação',
+    exampleCta: 'Pesquise um país acima para criar sua própria comparação.',
+  },
+  zh: {
+    explainer: '并排比较最多 5 个国家的安全评分，并按冲突、犯罪、医疗、治理和环境这 5 大风险支柱详细拆解。',
+    exampleHeading: '对比示例',
+    exampleCta: '在上方搜索国家，创建您自己的对比。',
+  },
+  de: {
+    explainer: 'Vergleichen Sie die Sicherheitswerte von bis zu 5 Ländern nebeneinander, aufgeschlüsselt nach allen 5 Risikosäulen: Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt.',
+    exampleHeading: 'Beispielvergleich',
+    exampleCta: 'Suchen Sie oben nach einem Land, um Ihren eigenen Vergleich zu erstellen.',
+  },
+};
+const ec = emptyStateCopy[lang];
 ---
 
 <Base lang={lang} title={t('compare.title')} description={t('compare.description')} jsonLd={jsonLd} ogImage="/og/default.png">
@@ -52,8 +113,6 @@ const countryData = scores.map(country => ({
       data-lang={lang}
       data-t={JSON.stringify({
         select_prompt: t('compare.select_prompt'),
-        empty_title: t('compare.empty_title'),
-        empty_suggestion: t('compare.empty_suggestion'),
         max_reached: t('compare.max_reached'),
         remove: t('compare.remove'),
         score_card_label: t('compare.score_card_label'),
@@ -61,8 +120,6 @@ const countryData = scores.map(country => ({
         trend_title: t('compare.trend_title'),
         no_results: t('compare.no_results'),
         add_country: t('compare.add_country'),
-        example_btn_1: t('compare.example_btn_1'),
-        example_btn_2: t('compare.example_btn_2'),
         history_accumulating: t('compare.history_accumulating'),
         reset: t('chart.reset'),
         time_range_label: t('chart.time_range_label'),
@@ -90,7 +147,56 @@ const countryData = scores.map(country => ({
           />
           <div id="search-dropdown" class="hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg"></div>
         </div>
-        <div id="empty-state"></div>
+        <div id="empty-state">
+          <div class="text-center py-8 text-sand-500 dark:text-sand-400">
+            <p class="text-lg mb-2 text-sand-700 dark:text-sand-300">{t('compare.empty_title')}</p>
+            <p class="text-sm max-w-xl mx-auto mb-4">{ec.explainer}</p>
+            <div class="flex justify-center gap-3">
+              <button type="button" class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">{t('compare.example_btn_1')}</button>
+              <button type="button" class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">{t('compare.example_btn_2')}</button>
+            </div>
+          </div>
+
+          {exampleCountries.length === 3 && (
+            <div class="mt-6 max-w-2xl mx-auto rounded-xl border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 p-4 md:p-6 overflow-x-auto">
+              <h2 class="text-base font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{ec.exampleHeading}</h2>
+              <table class="w-full text-sm border-collapse">
+                <thead>
+                  <tr>
+                    <th class="text-left py-2 pr-3 text-sand-500 dark:text-sand-400 font-medium"></th>
+                    {exampleCountries.map((c) => (
+                      <th class="text-center py-2 px-3 font-heading font-bold text-sand-800 dark:text-sand-100 whitespace-nowrap">
+                        <span class="block">{c.name}</span>
+                        <span
+                          class="mt-1 inline-flex items-center justify-center w-9 h-9 rounded-full text-white text-sm font-bold"
+                          style={`background-color: ${c.color};`}
+                        >
+                          {c.scoreDisplay}
+                        </span>
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {examplePillars.map((pillar) => (
+                    <tr class="border-t border-sand-200 dark:border-sand-700">
+                      <td class="py-2 pr-3 text-sand-600 dark:text-sand-300 whitespace-nowrap">{pillar.label}</td>
+                      {exampleCountries.map((c) => {
+                        const p = c.pillars.find((pp) => pp.name === pillar.name);
+                        return (
+                          <td class="text-center py-2 px-3 tabular-nums text-sand-700 dark:text-sand-300">
+                            {p ? (p.score * 10).toFixed(1) : '—'}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p class="mt-4 text-center text-sm text-sand-500 dark:text-sand-400">{ec.exampleCta}</p>
+            </div>
+          )}
+        </div>
       </div>
 
       <!-- Score Cards -->
@@ -193,6 +299,20 @@ const countryData = scores.map(country => ({
   const chipsContainer = document.getElementById('chips-container')!;
   const searchWrapper = document.getElementById('search-wrapper')!;
   const emptyState = document.getElementById('empty-state')!;
+
+  // The two "try comparing" quick-suggestion buttons are now static HTML (see
+  // above) — wire them up once here instead of re-attaching listeners every
+  // time renderSelector() used to rebuild this block from scratch.
+  emptyState.querySelectorAll('[data-suggest]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const codes = btn.getAttribute('data-suggest')!.split(',');
+      selectedCountries = codes
+        .map((code) => allCountries.find((c) => c.iso3 === code))
+        .filter((c): c is CountryItem => c !== undefined);
+      updateUrl();
+      render();
+    });
+  });
 
   let activeIndex = -1;
   let currentResults: CountryItem[] = [];
@@ -319,31 +439,11 @@ const countryData = scores.map(country => ({
       searchInput.placeholder = selectedCountries.length === 0 ? t.select_prompt : t.add_country;
     }
 
-    // Empty state with suggestions
-    if (selectedCountries.length === 0) {
-      emptyState.innerHTML = `
-        <div class="text-center py-12 text-sand-500 dark:text-sand-400">
-          <p class="text-lg mb-3">${t.empty_title}</p>
-          <p class="text-sm mb-4">${t.empty_suggestion}</p>
-          <div class="flex justify-center gap-3">
-            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="ITA,FRA">${t.example_btn_1}</button>
-            <button class="px-4 py-2 rounded-lg bg-sand-200 dark:bg-sand-700 text-sand-700 dark:text-sand-200 hover:bg-sand-300 dark:hover:bg-sand-600 text-sm transition-colors" data-suggest="JPN,AUS">${t.example_btn_2}</button>
-          </div>
-        </div>
-      `;
-      emptyState.querySelectorAll('[data-suggest]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const codes = btn.getAttribute('data-suggest')!.split(',');
-          selectedCountries = codes
-            .map(code => allCountries.find(c => c.iso3 === code))
-            .filter((c): c is CountryItem => c !== undefined);
-          updateUrl();
-          render();
-        });
-      });
-    } else {
-      emptyState.innerHTML = '';
-    }
+    // Empty state is static HTML (rendered server-side, see the Astro template) —
+    // this only shows/hides it, it never builds the markup. Building it here on
+    // every render used to leave #empty-state truly empty until this script ran,
+    // which is what produced the measured CLS on first load (OP-1/PERF-01, 2026-09 audit).
+    emptyState.classList.toggle('hidden', selectedCountries.length > 0);
   }
 
   function renderScoreCards(): void {
