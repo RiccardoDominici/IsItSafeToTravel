@@ -5,6 +5,10 @@
   Permissions-Policy: camera=(), microphone=(), geolocation=()
   Strict-Transport-Security: max-age=31536000; includeSubDomains
   Content-Security-Policy-Report-Only: default-src 'self'; script-src 'self' 'unsafe-inline' static.cloudflareinsights.com storage.ko-fi.com ko-fi.com challenges.cloudflare.com; style-src 'self' 'unsafe-inline' storage.ko-fi.com ko-fi.com; img-src 'self' data: storage.ko-fi.com ko-fi.com; font-src 'self' data:; connect-src 'self' ko-fi.com storage.ko-fi.com challenges.cloudflare.com; frame-src ko-fi.com storage.ko-fi.com www.aviasales.com challenges.cloudflare.com; frame-ancestors 'none'; base-uri 'self'; form-action 'self' www.aviasales.com
+  # same-origin-allow-popups (not the stricter same-origin) because Ko-fi
+  # donations and Cloudflare Turnstile open as popups and still need to
+  # talk back to this window; see MDN Cross-Origin-Opener-Policy docs.
+  Cross-Origin-Opener-Policy: same-origin-allow-popups
 
 /*.js
   Cache-Control: public, max-age=31536000, immutable
@@ -31,6 +35,17 @@
   X-Robots-Tag: noindex
 
 /scores.json
+  X-Robots-Tag: noindex
+
+# Same public-JSON-endpoint pattern as above (496 URLs: 248 countries x 2)
+# but missing this header — found in the 2026-09-25 SEO audit
+# (findings/technical.md T6): unlike scores.json/map-data.json these were
+# never reported in GSC as "crawled, currently not indexed", so this is a
+# preventive fix, not a reaction to an observed indexing problem.
+/trend/*
+  X-Robots-Tag: noindex
+
+/history/*
   X-Robots-Tag: noindex
 
 /*.html
