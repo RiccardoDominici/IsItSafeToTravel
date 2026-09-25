@@ -14,6 +14,12 @@ const r = routes[lang];
 const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
 const apiLabel = ({ en: 'Data & API', it: 'Dati e API', es: 'Datos y API', fr: 'Données et API', pt: 'Dados e API', zh: '数据与 API', de: 'Daten & API' } as Record<Lang, string>)[lang];
 const citeLabel = ({ en: 'Cite this data', it: 'Cita questi dati', es: 'Citar datos', fr: 'Citer les données', pt: 'Citar dados', zh: '引用数据', de: 'Daten zitieren' } as Record<Lang, string>)[lang];
+// /news/ and /global-safety/ had exactly 1 inlink each (the homepage teaser widget only) —
+// absent from header AND footer, so no page but the homepage links back to them (2026-09
+// audit, IL-1). Labels follow the same component-local per-locale pattern as regionsLabel
+// above (no dedicated short-label i18n key exists yet); route slugs come from routes[lang].
+const newsLabel = ({ en: 'News', it: 'Notizie', es: 'Noticias', fr: 'Actualités', pt: 'Notícias', zh: '新闻', de: 'Nachrichten' } as Record<Lang, string>)[lang];
+const globalSafetyLabel = ({ en: 'Global Safety', it: 'Sicurezza Globale', es: 'Seguridad Global', fr: 'Sécurité Mondiale', pt: 'Segurança Global', zh: '全球安全', de: 'Globale Sicherheit' } as Record<Lang, string>)[lang];
 const currentYear = new Date().getFullYear();
 const affiliateUrl = buildAffiliateUrl();
 ---
@@ -21,7 +27,7 @@ const affiliateUrl = buildAffiliateUrl();
 <footer class="bg-sand-100 dark:bg-sand-800 border-t border-sand-200 dark:border-sand-700 mt-auto">
   <div class="max-w-6xl mx-auto px-4 py-8">
     <!-- Disclaimer -->
-    <p class="text-sm text-sand-500 dark:text-sand-400 mb-6 max-w-3xl">
+    <p class="text-sm text-sand-600 dark:text-sand-300 mb-6 max-w-3xl">
       {t('footer.disclaimer')}
     </p>
 
@@ -44,6 +50,18 @@ const affiliateUrl = buildAffiliateUrl();
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >
         {regionsLabel}
+      </a>
+      <a
+        href={`/${lang}/${r['global-safety']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {globalSafetyLabel}
+      </a>
+      <a
+        href={`/${lang}/${r['news']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {newsLabel}
       </a>
       <a
         href={`/${lang}/${r['embed-badge']}/`}
@@ -111,7 +129,7 @@ const affiliateUrl = buildAffiliateUrl();
     </div>
 
     <!-- Copyright -->
-    <p class="text-xs text-sand-400 dark:text-sand-500">
+    <p class="text-xs text-sand-600 dark:text-sand-300">
       &copy; {currentYear} IsItSafeToTravel. All rights reserved.
     </p>
   </div>

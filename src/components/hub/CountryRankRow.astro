@@ -41,6 +41,11 @@ function getDeltaClasses(d: number): string {
     <span class="text-sm font-bold text-sand-400 dark:text-sand-500 w-8 text-right shrink-0">
       {rank}
     </span>
+    {/* Real (non-decorative) separator text: without it the rank/name/score spans have no
+        whitespace between them in the compiled HTML, so both the raw anchor text search
+        engines read and the accessible name screen readers announce run together as
+        "45France7.9" instead of "45 · France · 7.9" (2026-09 audit, IL-2). */}
+    <span class="text-sand-300 dark:text-sand-600 shrink-0">&middot;</span>
     <span class="text-sm font-medium text-sand-800 dark:text-sand-100 truncate flex-1">
       {getLocalizedCountryName(country, lang)}
     </span>
@@ -49,6 +54,7 @@ function getDeltaClasses(d: number): string {
         {delta > 0 ? '+' : ''}{delta.toFixed(2)}
       </span>
     )}
+    <span class="text-sand-300 dark:text-sand-600 shrink-0">&middot;</span>
     <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${getScoreBadgeClasses(country.score)}`}>
       {country.score.toFixed(1)}
     </span>
