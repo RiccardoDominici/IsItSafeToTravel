@@ -2,12 +2,11 @@ import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../
 import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2 } from '../config/countries.js';
 import {
   normalizeChLevel,
   normalizeSeLevel,
   normalizeNoLevel,
-  normalizePlLevel,
   normalizeCzLevel,
   normalizeHuLevel,
   normalizePtLevel,
@@ -45,11 +44,13 @@ const NO_LEVEL_TEXT: Record<number, string> = {
   4: 'Fraraader alle reiser',
 };
 
+// Wording matches the official Odyseusz risk-level labels verbatim (see
+// PL_CODE_TO_LEVEL below) so the on-page text always agrees with the badge.
 const PL_LEVEL_TEXT: Record<number, string> = {
-  1: 'Zachowaj czujnosc',
-  2: 'Zachowaj szczegolna ostroznosc',
-  3: 'Odradza sie podrozowanie',
-  4: 'Nie planuj podrozy',
+  1: 'Zwykła ostrożność',
+  2: 'Szczególna ostrożność',
+  3: 'Unikaj podróży',
+  4: 'Nie jedź',
 };
 
 const CZ_LEVEL_TEXT: Record<number, string> = {
@@ -233,53 +234,6 @@ const NORWEGIAN_NAMES: Record<string, string> = {
   'Ukraina': 'Ukraine',
   'Etiopia': 'Ethiopia',
   'Libanon': 'Lebanon',
-};
-
-// Polish country names
-const POLISH_NAMES: Record<string, string> = {
-  'Stany Zjednoczone': 'United States',
-  'Wielka Brytania': 'United Kingdom',
-  'Francja': 'France',
-  'Niemcy': 'Germany',
-  'Wlochy': 'Italy',
-  'Hiszpania': 'Spain',
-  'Rosja': 'Russia',
-  'Brazylia': 'Brazil',
-  'Indie': 'India',
-  'Korea Poludniowa': 'South Korea',
-  'Korea Polnocna': 'North Korea',
-  'Republika Poludniowej Afryki': 'South Africa',
-  'Egipt': 'Egypt',
-  'Turcja': 'Turkey',
-  'Grecja': 'Greece',
-  'Chorwacja': 'Croatia',
-  'Rumunia': 'Romania',
-  'Wegry': 'Hungary',
-  'Czechy': 'Czech Republic',
-  'Slowacja': 'Slovakia',
-  'Austria': 'Austria',
-  'Belgia': 'Belgium',
-  'Holandia': 'Netherlands',
-  'Dania': 'Denmark',
-  'Szwecja': 'Sweden',
-  'Norwegia': 'Norway',
-  'Finlandia': 'Finland',
-  'Nowa Zelandia': 'New Zealand',
-  'Meksyk': 'Mexico',
-  'Kolumbia': 'Colombia',
-  'Chiny': 'China',
-  'Japonia': 'Japan',
-  'Filipiny': 'Philippines',
-  'Kambodza': 'Cambodia',
-  'Bialorus': 'Belarus',
-  'Arabia Saudyjska': 'Saudi Arabia',
-  'Zjednoczone Emiraty Arabskie': 'United Arab Emirates',
-  'Szwajcaria': 'Switzerland',
-  'Portugalia': 'Portugal',
-  'Maroko': 'Morocco',
-  'Tunezja': 'Tunisia',
-  'Libia': 'Libya',
-  'Ukraina': 'Ukraine',
 };
 
 // Czech country names
@@ -651,10 +605,37 @@ async function fetchNoAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 4: Poland (MSZ) -- CPLX-10
-// Fragility: MEDIUM -- Polish text, government page
-// Expected failure modes: Page redesign, Polish-only content
+// Sub-fetcher 4: Poland (MSZ, "Odyseusz" portal) -- CPLX-10
+// Fragility: LOW -- structured JSON API, ISO2-keyed
+// Repaired 2026-09-25: the old gov.pl HTML page now 302-redirects to
+// odyseusz.gov.pl, MSZ's new travel-safety portal -- an Angular SPA with no
+// server-rendered markup, so cheerio always saw an empty shell (silent
+// 0-country collapse, caught only by the per-source floor restoring
+// April-2026 cache day after day). The SPA itself calls a JSON API for its
+// country list; that's what we call directly now, no HTML parsing needed.
 // =============================================================================
+
+const PL_API_URL = 'https://odyseusz.gov.pl/api/v1/informacje/profile-panstw';
+
+// Odyseusz risk-level codes -> unified 1-4 scale. `bazowyKodPoziomuZagrozenia`
+// is the COUNTRY-WIDE baseline MSZ itself computes, kept separate from any
+// `SZCZEGOLOWY_DLA_REGIONU` (region-only) entries in the per-country detail
+// endpoint -- so a Sinai- or southern-Thailand-style regional warning can
+// never leak into the national level here; verified against MEX/EGY/THA,
+// which all carry region-level 3/4 sub-entries under a baseline of 1/2.
+const PL_CODE_TO_LEVEL: Record<string, UnifiedLevel> = {
+  ZACHOWAJ_ZWYKLA_OSTROZNOSC: 1,
+  ZACHOWAJ_SZCZEGOLNA_OSTROZNOSC: 2,
+  MSZ_ODRADZA_PODROZE_KTORE_NIE_SA_KONIECZNE: 3,
+  MSZ_ODRADZA_WSZELKIE_PODROZE: 4,
+};
+
+interface OdyseuszCountryProfile {
+  kodIso: string;
+  nazwa: string;
+  bazowyKodPoziomuZagrozenia?: string | null;
+  dataZatwierdzenia?: string | null;
+}
 
 async function fetchPlAdvisories(
   rawDir: string,
@@ -665,33 +646,33 @@ async function fetchPlAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   try {
-    const response = await fetch(
-      'https://www.gov.pl/web/dyplomacja/informacje-dla-podrozujacych',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+    const response = await fetch(PL_API_URL, {
+      signal: AbortSignal.timeout(30_000),
+      headers: { ...FETCH_HEADERS, Accept: 'application/json' },
+    });
 
     if (!response.ok) {
       console.warn(`[ADVISORIES-T3B] PL: HTTP ${response.status}, no data available`);
       return { indicators, advisoryInfo };
     }
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    const profiles = (await response.json()) as OdyseuszCountryProfile[];
+    writeJson(join(rawDir, 'advisories-pl-raw.json'), profiles);
 
-    // Parse country advisories from travel information page
-    $('a, li, h3, h4, td').each((_, el) => {
-      const text = $(el).text().trim();
-      if (text.length < 3 || text.length > 50) return;
+    for (const profile of profiles) {
+      const country = getCountryByIso2(profile.kodIso);
+      if (!country) continue;
 
-      const country = matchCountry(text, POLISH_NAMES);
-      if (!country) return;
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
-
-      const parentText = $(el).closest('li, div, section, tr, article, p').text();
-      const level = normalizePlLevel(parentText);
+      // Rule: never fall back to level 1 -- an unrecognised/future risk code
+      // must drop the country rather than guess its severity.
+      const code = profile.bazowyKodPoziomuZagrozenia;
+      const level = code ? PL_CODE_TO_LEVEL[code] : undefined;
+      if (!level) {
+        if (code) {
+          console.warn(`[ADVISORIES-T3B] PL: unrecognised risk code "${code}" for ${profile.kodIso}, skipping`);
+        }
+        continue;
+      }
 
       indicators.push({
         countryIso3: country.iso3,
@@ -706,12 +687,18 @@ async function fetchPlAdvisories(
       advisoryInfo[country.iso3].pl = {
         level,
         text: PL_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Poland MSZ',
-        url: 'https://www.gov.pl/web/dyplomacja/informacje-dla-podrozujacych',
+        source: 'Poland MSZ (Odyseusz)',
+        url: `https://odyseusz.gov.pl/${profile.kodIso}`,
+        // dataZatwierdzenia ("date approved") is a bare YYYY-MM-DD date --
+        // the API exposes no time-of-day, so this is midnight UTC.
+        updatedAt: profile.dataZatwierdzenia
+          ? new Date(profile.dataZatwierdzenia).toISOString()
+          : undefined,
       };
-    });
-  } catch {
-    console.warn('[ADVISORIES-T3B] PL: gov.pl unavailable, returning empty result');
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[ADVISORIES-T3B] PL: odyseusz.gov.pl unavailable (${msg}), returning empty result`);
   }
 
   console.log(`  [PL] Found ${indicators.length} countries`);
