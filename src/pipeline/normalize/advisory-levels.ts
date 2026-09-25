@@ -1139,15 +1139,69 @@ export function normalizePlLevel(text: string): UnifiedLevel {
   return 1;
 }
 
+// MZV (Czech MFA) has no explicit level badge on its per-country "cestovani"
+// pages -- a country either has an "Aktuální doporučení a varování" section
+// (linking to a free-form warning article) or it doesn't, and the article
+// itself is narrative prose. Same approach as normalizePtLevel: classify
+// clause-by-clause, and only let a clause drive the COUNTRY-WIDE level when
+// it carries no regional qualifier (oblast, hranice/příhraniční, pásmo,
+// provincie, okres, "některých států" ...) -- MZV routinely names the worst
+// sub-regions explicitly (e.g. Pákistán's Afghan/Indian border areas and
+// Balúčistán) while giving the rest of the country a lower, separate rating,
+// and a border-zone warning must not promote the whole country past level 2.
+const CZ_REGIONAL_SCOPE =
+  /oblast|hranic|pásm|provinci|okres|někter[éý]ch stát|měst|část/;
+
+const CZ_STRONG_UNSCOPED =
+  /nedoporučujeme cestovat|necestujte|varování před cestami do země|varování před cestami na celé území|opusťte zemi|opustit zemi/;
+
+const CZ_AVOID_NON_ESSENTIAL =
+  /zvažit nezbytnost cesty|doporučujeme se vyhnout|(jen|pouze) ve? (zcela )?nezbytn/;
+
+const CZ_CAUTION =
+  /zvýšen[áé] opatrnost|zvýšené riziko|bezpečnostní riziko|zesílená ostražitost/;
+
 /**
- * Normalize Czech Republic (MZV) Czech advisory text to unified 1-4 scale.
- * Includes both diacritical and ASCII-folded variants for resilience.
+ * Normalize Czech Republic (MZV) advisory narrative text to unified 1-4
+ * scale. Returns null only when there is no real text to classify (empty
+ * fetch) -- a country whose "cestovani" page loaded fine but has no
+ * "Aktuální doporučení a varování" section is a valid level-1 baseline (MZV
+ * publishes one comprehensive page per country, so the section's absence
+ * IS the "nothing to flag" statement), and free-form warning prose that
+ * matches none of the keywords below (e.g. a hurricane-season notice with
+ * no explicit caution language) also resolves to level 1 rather than being
+ * dropped, consistent with the other MZV-style sources in this file.
  */
-export function normalizeCzLevel(text: string): UnifiedLevel {
+export function normalizeCzLevel(text: string): UnifiedLevel | null {
+  if (!text || text.trim().length < 10) return null;
   const lower = text.toLowerCase();
-  if (lower.includes('nedoporučujeme cestovat') || lower.includes('nedoporucujeme cestovat') || lower.includes('necestujte')) return 4;
-  if (lower.includes('zvažit nezbytnost cesty') || lower.includes('zvazit nezbytnost cesty') || lower.includes('doporučujeme se vyhnout') || lower.includes('doporucujeme se vyhnout')) return 3;
-  if (lower.includes('zvýšená opatrnost') || lower.includes('zvysena opatrnost') || lower.includes('dbejte zvýšené opatrnosti') || lower.includes('dbejte zvysene opatrnosti')) return 2;
+  const clauses = lower.split(/(?<=[.;!?])\s+|\n+/);
+
+  let saw4 = false;
+  let saw3 = false;
+  let sawScoped = false;
+  let sawCaution = false;
+
+  for (const clause of clauses) {
+    if (!clause.trim()) continue;
+    const regional = CZ_REGIONAL_SCOPE.test(clause);
+    const strong = CZ_STRONG_UNSCOPED.test(clause);
+    const nonEssential = CZ_AVOID_NON_ESSENTIAL.test(clause);
+
+    if (strong && !regional) {
+      saw4 = true;
+    } else if (nonEssential && !regional) {
+      saw3 = true;
+    } else if (strong || nonEssential || regional) {
+      sawScoped = true; // regional-only warning -- never promotes past level 2
+    }
+
+    if (CZ_CAUTION.test(clause)) sawCaution = true;
+  }
+
+  if (saw4) return 4;
+  if (saw3) return 3;
+  if (sawScoped || sawCaution) return 2;
   return 1;
 }
 

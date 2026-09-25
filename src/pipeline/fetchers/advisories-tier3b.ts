@@ -54,10 +54,10 @@ const PL_LEVEL_TEXT: Record<number, string> = {
 };
 
 const CZ_LEVEL_TEXT: Record<number, string> = {
-  1: 'Budte obezretni',
-  2: 'Zvysena opatrnost',
-  3: 'Zvazit nezbytnost cesty',
-  4: 'Nedoporucujeme cestovat',
+  1: 'Běžná opatrnost',
+  2: 'Zvýšená opatrnost',
+  3: 'Cestujte jen v nezbytných případech',
+  4: 'Nedoporučujeme cestovat',
 };
 
 const HU_LEVEL_TEXT: Record<number, string> = {
@@ -99,6 +99,23 @@ async function fetchBatch<T>(
 /** Simple async delay helper */
 function delay(ms: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Fetch with one retry after a short backoff -- CZ's crawl chains two fetches
+ *  per warned country (cestovani page, then its detail article), and a small
+ *  fraction of requests fail transiently under the sustained ~200-request
+ *  crawl even though the exact same URL succeeds fine in isolation (observed
+ *  during verification: AFG/MEX/USA all came back clean on a fresh retry). A
+ *  single retry recovers most of those without meaningfully slowing the run. */
+async function fetchWithRetry(url: string, timeoutMs: number): Promise<Response> {
+  try {
+    const r = await fetch(url, { signal: AbortSignal.timeout(timeoutMs), headers: FETCH_HEADERS });
+    if (r.ok) return r;
+    throw new Error(`HTTP ${r.status}`);
+  } catch {
+    await delay(500);
+    return fetch(url, { signal: AbortSignal.timeout(timeoutMs), headers: FETCH_HEADERS });
+  }
 }
 
 /** Merge source advisory info into the combined map */
@@ -256,46 +273,6 @@ const NORWEGIAN_NAMES: Record<string, string> = {
   'Ukraina': 'Ukraine',
   'Etiopia': 'Ethiopia',
   'Libanon': 'Lebanon',
-};
-
-// Czech country names
-const CZECH_NAMES: Record<string, string> = {
-  'Spojene staty americke': 'United States',
-  'Velka Britanie': 'United Kingdom',
-  'Francie': 'France',
-  'Nemecko': 'Germany',
-  'Italie': 'Italy',
-  'Spanelsko': 'Spain',
-  'Rusko': 'Russia',
-  'Brazilie': 'Brazil',
-  'Indie': 'India',
-  'Jizni Korea': 'South Korea',
-  'Severni Korea': 'North Korea',
-  'Jihoafricka republika': 'South Africa',
-  'Turecko': 'Turkey',
-  'Recko': 'Greece',
-  'Chorvatsko': 'Croatia',
-  'Rumunsko': 'Romania',
-  'Madarsko': 'Hungary',
-  'Slovensko': 'Slovakia',
-  'Rakousko': 'Austria',
-  'Belgie': 'Belgium',
-  'Nizozemsko': 'Netherlands',
-  'Dansko': 'Denmark',
-  'Svedsko': 'Sweden',
-  'Norsko': 'Norway',
-  'Finsko': 'Finland',
-  'Novy Zeland': 'New Zealand',
-  'Mexiko': 'Mexico',
-  'Cina': 'China',
-  'Japonsko': 'Japan',
-  'Filipiny': 'Philippines',
-  'Belorusko': 'Belarus',
-  'Svycarsko': 'Switzerland',
-  'Polsko': 'Poland',
-  'Portugalsko': 'Portugal',
-  'Maroko': 'Morocco',
-  'Ukrajina': 'Ukraine',
 };
 
 // Hungarian country names
@@ -686,9 +663,110 @@ async function fetchPlAdvisories(
 
 // =============================================================================
 // Sub-fetcher 5: Czech Republic (MZV) -- CPLX-11
-// Fragility: MEDIUM -- Czech text, government page
-// Expected failure modes: Page redesign, Czech-only content
+// Fragility: MEDIUM -- Czech narrative text, one page per country
+// Repaired 2026-09-25: www.mzv.cz 302-redirects to mzv.gov.cz (a domain
+// migration, same class of break as PL/PT). The old target URL,
+// ".../cestujeme/aktualni_doporuceni_a_varovani/", is a curated NEWS FEED of
+// only the countries with a recent warning article -- not comprehensive, so
+// (per rule 1) its silence can't be read as "safe". The comprehensive
+// resource is the "encyklopedie_statu" (country encyclopedia): 8 region
+// hubs -> one "cestovani" (travel) page per country. Each cestovani page
+// either has an "Aktuální doporučení a varování" (current recommendations
+// and warnings) block linking to a free-text warning article, or it
+// doesn't -- exactly the same structural signal PT's "Avisos" section gives,
+// and the site's own markup (a dedicated #varovani container) already keeps
+// this cleanly separate from the page's other topic sections (customs,
+// documents, visas, health), so there's no PT-style cross-contamination risk
+// to guard against here.
 // =============================================================================
+
+const CZ_BASE_URL = 'https://mzv.gov.cz';
+const CZ_REGIONS = [
+  'afrika', 'asie', 'australie_a_oceanie', 'blizky_vychod',
+  'evropa', 'jizni_amerika', 'severni_amerika', 'stredni_amerika',
+] as const;
+
+interface CzCountryLink {
+  name: string; // Czech display name, straight from the region hub's link text
+  url: string;
+}
+
+// COUNTRIES' `.en` names, keyed accent-folded, as a first-pass fallback --
+// covers Czech names close to their international form (e.g. "Argentina",
+// "Kanada").
+const czEnFallbackMap = new Map<string, (typeof COUNTRIES)[number]>();
+for (const country of COUNTRIES) {
+  czEnFallbackMap.set(stripDiacritics(country.name.en).toLowerCase(), country);
+}
+
+// Most Czech country names have no resemblance to English at all (Slavic
+// exonyms, e.g. "Německo" for Germany, "Řecko" for Greece) -- built by
+// fetching all 8 region hubs and mapping every one of the resulting 199
+// names to an ISO3 during the 2026-09-25 repair (not a guess: every entry
+// was cross-checked against the region it came from, which disambiguates
+// e.g. "Kongo (Brazzaville)" vs "Kongo (Kinshasa)").
+const CZ_NAME_OVERRIDES: Record<string, string> = {
+  'alzirsko': 'DZA', 'cad': 'TCD', 'dzibutsko': 'DJI', 'etiopie': 'ETH',
+  'gambie': 'GMB', 'jihoafricka republika': 'ZAF', 'jihosudanska republika': 'SSD',
+  'kamerun': 'CMR', 'kapverdy': 'CPV', 'kena': 'KEN', 'komory': 'COM',
+  'kongo (brazzaville)': 'COG', 'kongo (kinshasa)': 'COD', 'liberie': 'LBR',
+  'libye': 'LBY', 'madagaskar': 'MDG', 'maroko': 'MAR', 'mauricius': 'MUS',
+  'mauritanie': 'MRT', 'mosambik': 'MOZ', 'namibie': 'NAM', 'nigerie': 'NGA',
+  'pobrezi slonoviny': 'CIV', 'rovnikova guinea': 'GNQ', 'seychely': 'SYC',
+  'somalsko': 'SOM', 'stredoafricka republika': 'CAF',
+  'svaty tomas a princuv ostrov': 'STP', 'svazijsko': 'SWZ', 'tanzanie': 'TZA',
+  'tunisko': 'TUN', 'zambie': 'ZMB',
+  'armenie': 'ARM', 'azerbajdzan': 'AZE', 'banglades': 'BGD', 'brunej': 'BRN',
+  'cina': 'CHN', 'filipiny': 'PHL', 'gruzie': 'GEO', 'hongkong': 'HKG',
+  'indie': 'IND', 'indonesie': 'IDN', 'japonsko': 'JPN', 'kambodza': 'KHM',
+  'kazachstan': 'KAZ', 'korejska lidove demokraticka republika': 'PRK',
+  'korejska republika': 'KOR', 'malajsie': 'MYS', 'maledivy': 'MDV',
+  'mongolsko': 'MNG', 'singapur': 'SGP', 'tadzikistan': 'TJK', 'thajsko': 'THA',
+  'tchaj-wan': 'TWN', 'vychodni timor': 'TLS',
+  'australie': 'AUS', 'cookovy ostrovy': 'COK', 'fidzi': 'FJI',
+  'marshallovy ostrovy': 'MHL', 'mikronesie': 'FSM', 'novy zeland': 'NZL',
+  'papua nova guinea': 'PNG', 'salomounovy ostrovy': 'SLB',
+  'bahrajn': 'BHR', 'irak': 'IRQ', 'izrael': 'ISR', 'jemen': 'YEM',
+  'jordansko': 'JOR', 'katar': 'QAT', 'kuvajt': 'KWT', 'libanon': 'LBN',
+  'palestina': 'PSE', 'saudska arabie': 'SAU', 'spojene arabske emiraty': 'ARE',
+  'syrie': 'SYR',
+  'albanie': 'ALB', 'belgie': 'BEL', 'belorusko': 'BLR',
+  'bosna a hercegovina': 'BIH', 'bulharsko': 'BGR', 'cerna hora': 'MNE',
+  'dansko': 'DNK', 'estonsko': 'EST', 'finsko': 'FIN', 'francie': 'FRA',
+  'chorvatsko': 'HRV', 'irsko': 'IRL', 'island': 'ISL', 'italie': 'ITA',
+  'kypr': 'CYP', 'lichtenstejnsko': 'LIE', 'litva': 'LTU', 'lotyssko': 'LVA',
+  'lucembursko': 'LUX', 'madarsko': 'HUN', 'moldavsko': 'MDA', 'monako': 'MCO',
+  'nemecko': 'DEU', 'nizozemsko': 'NLD', 'norsko': 'NOR', 'polsko': 'POL',
+  'portugalsko': 'PRT', 'rakousko': 'AUT', 'rumunsko': 'ROU', 'rusko': 'RUS',
+  'recko': 'GRC', 'severni makedonie': 'MKD', 'slovensko': 'SVK',
+  'slovinsko': 'SVN', 'srbsko': 'SRB', 'svaty stolec': 'VAT',
+  'spanelsko': 'ESP', 'svedsko': 'SWE', 'svycarsko': 'CHE', 'turecko': 'TUR',
+  'ukrajina': 'UKR', 'velka britanie': 'GBR',
+  'bolivie': 'BOL', 'brazilie': 'BRA', 'ekvador': 'ECU', 'kolumbie': 'COL',
+  'surinam': 'SUR',
+  'kanada': 'CAN', 'mexiko': 'MEX', 'usa': 'USA',
+  'antigua a barbuda': 'ATG', 'bahamy': 'BHS', 'dominika': 'DMA',
+  'dominikanska republika': 'DOM', 'jamajka': 'JAM', 'kostarika': 'CRI',
+  'kuba': 'CUB', 'nikaragua': 'NIC', 'salvador': 'SLV', 'svata lucie': 'LCA',
+  'svaty krystof a nevis': 'KNA', 'svaty vincent a grenadiny': 'VCT',
+  'trinidad a tobago': 'TTO',
+};
+
+function resolveCzCountry(name: string): (typeof COUNTRIES)[number] | undefined {
+  const key = stripDiacritics(name).toLowerCase().trim();
+  const overrideIso3 = CZ_NAME_OVERRIDES[key];
+  if (overrideIso3) return getCountryByIso3(overrideIso3);
+  return czEnFallbackMap.get(key);
+}
+
+/** Parse MZV's "Aktualizováno: DD.MM.YYYY / HH:MM" into an ISO date, if present. */
+function parseCzUpdatedAt(text: string): string | undefined {
+  const m = text.match(/aktualizov[aá]no:\s*(\d{2})\.(\d{2})\.(\d{4})/i);
+  if (!m) return undefined;
+  const [, dd, mm, yyyy] = m;
+  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
 
 async function fetchCzAdvisories(
   rawDir: string,
@@ -699,53 +777,127 @@ async function fetchCzAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   try {
-    const response = await fetch(
-      'https://www.mzv.cz/jnp/cz/cestujeme/aktualni_doporuceni_a_varovani/index.html',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+    // Step 1: discover every country's "cestovani" page from the 8 region
+    // hubs -- structural links, resilient to prose changes.
+    const links: CzCountryLink[] = [];
+    for (const region of CZ_REGIONS) {
+      const hubUrl = `${CZ_BASE_URL}/jnp/cz/encyklopedie_statu/${region}/index.html`;
+      try {
+        const response = await fetchWithRetry(hubUrl, 30_000);
+        if (!response.ok) {
+          console.warn(`[ADVISORIES-T3B] CZ: hub ${region} HTTP ${response.status}, skipping region`);
+          continue;
+        }
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        $(`a[href*="/encyklopedie_statu/${region}/"]`).each((_, el) => {
+          const href = $(el).attr('href');
+          const name = $(el).text().trim();
+          // Every hub also links to itself (no /cestovani/ segment) -- skip that one.
+          if (!href || !name || !href.includes('/cestovani/')) return;
+          const url = href.startsWith('http') ? href : `${CZ_BASE_URL}${href}`;
+          if (!links.find((l) => l.url === url)) links.push({ name, url });
+        });
+      } catch (err) {
+        const msg = err instanceof Error ? err.message : String(err);
+        console.warn(`[ADVISORIES-T3B] CZ: hub ${region} unavailable (${msg}), skipping region`);
+      }
+      await delay(300); // polite gap between the 8 hub requests
+    }
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3B] CZ: HTTP ${response.status}, no data available`);
+    if (links.length === 0) {
+      console.warn('[ADVISORIES-T3B] CZ: no country links found on any hub page');
       return { indicators, advisoryInfo };
     }
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    // Step 2: crawl each country's cestovani page, <=3 concurrent (rule 4).
+    await fetchBatch(
+      links,
+      async (link) => {
+        try {
+          const country = resolveCzCountry(link.name);
+          if (!country) return;
 
-    // Parse advisory entries
-    $('a, li, h3, h4, td').each((_, el) => {
-      const text = $(el).text().trim();
-      if (text.length < 3 || text.length > 50) return;
+          const response = await fetchWithRetry(link.url, 15_000);
+          if (!response.ok) return;
 
-      const country = matchCountry(text, CZECH_NAMES);
-      if (!country) return;
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
+          const html = await response.text();
+          const $ = cheerio.load(html);
+          const warningLinks = $('#varovani .article_list_varovani a')
+            .map((_, el) => $(el).attr('href'))
+            .get()
+            .filter((href): href is string => Boolean(href));
 
-      const parentText = $(el).closest('li, div, section, tr, article, p').text();
-      const level = normalizeCzLevel(parentText);
+          if (warningLinks.length === 0) {
+            // No "Aktuální doporučení a varování" section at all -- MZV's own
+            // comprehensive-per-country baseline, not a skip (see header comment).
+            indicators.push({
+              countryIso3: country.iso3,
+              indicatorName: 'advisory_level_cz',
+              value: 1,
+              year: currentYear,
+              source: 'advisories_cz',
+              fetchedAt,
+            });
+            if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+            advisoryInfo[country.iso3].cz = {
+              level: 1,
+              text: CZ_LEVEL_TEXT[1],
+              source: 'Czech Republic MZV',
+              url: link.url,
+            };
+            return;
+          }
 
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_cz',
-        value: level,
-        year: currentYear,
-        source: 'advisories_cz',
-        fetchedAt,
-      });
+          // Almost always one warning article; fetch each and classify the
+          // combined text together (a handful of pages, e.g. Israel's, list
+          // more than one related warning).
+          const articleTexts: string[] = [];
+          let updatedAt: string | undefined;
+          for (const href of warningLinks) {
+            const articleUrl = href.startsWith('http') ? href : `${CZ_BASE_URL}${href}`;
+            const artResponse = await fetchWithRetry(articleUrl, 15_000);
+            if (!artResponse.ok) continue;
+            const artHtml = await artResponse.text();
+            const $art = cheerio.load(artHtml);
+            const artText = $art('article.article').first().text().replace(/\s+/g, ' ').trim();
+            if (artText) {
+              articleTexts.push(artText);
+              updatedAt ??= parseCzUpdatedAt(artText);
+            }
+          }
 
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].cz = {
-        level,
-        text: CZ_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Czech Republic MZV',
-        url: 'https://www.mzv.cz/jnp/cz/cestujeme/aktualni_doporuceni_a_varovani/index.html',
-      };
-    });
-  } catch {
-    console.warn('[ADVISORIES-T3B] CZ: mzv.cz unavailable, returning empty result');
+          const combinedText = articleTexts.join(' ');
+          const level = normalizeCzLevel(combinedText);
+          if (level === null) return; // no classifiable content -- never guess
+
+          indicators.push({
+            countryIso3: country.iso3,
+            indicatorName: 'advisory_level_cz',
+            value: level,
+            year: currentYear,
+            source: 'advisories_cz',
+            fetchedAt,
+          });
+
+          if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+          advisoryInfo[country.iso3].cz = {
+            level,
+            text: CZ_LEVEL_TEXT[level] || `Level ${level}`,
+            source: 'Czech Republic MZV',
+            url: link.url,
+            updatedAt,
+          };
+        } catch {
+          // Individual country page failed, skip silently -- one bad page
+          // must not abort the whole crawl.
+        }
+      },
+      3,
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[ADVISORIES-T3B] CZ: mzv.gov.cz unavailable (${msg}), returning empty result`);
   }
 
   console.log(`  [CZ] Found ${indicators.length} countries`);
