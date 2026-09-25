@@ -737,6 +737,51 @@ async function fetchFiAdvisories(
 // Sub-fetcher 7: Brazil (Itamaraty) -- HTML-06
 // =============================================================================
 
+// The old URL (.../portal-consular/alertas-e-avisos) 404s: the site restructured its
+// consular section and the alerts listing moved to a URL with LITERAL SPACES in the path
+// (.../alertas e noticias/alertas/alertas -- a Plone CMS convention) -- verified 2026-09-25.
+//
+// Brazil does not publish a structured level-per-country system (BR_LEVEL_TEXT above has
+// always had a single entry -- that was already the design before this fix, not something
+// this change introduces). The live alerts feed mixes, under one visually identical
+// template: real security/conflict bulletins (Ukraine, an active Ebola outbreak in
+// DRC/Uganda), scam/fraud warnings aimed at Brazilians abroad (fake-consulate fraud,
+// job-recruitment scams, human trafficking awareness, irregular-immigration risk), and
+// routine travel-conditions updates (a Bolivia road-blockade bulletin that, as of this
+// writing, reports the blockade already lifted). Two traps found while investigating this,
+// both worth documenting so nobody re-introduces them:
+//   - The bare word "alerta" is not a severity signal here -- literally every article is
+//     titled "Alerta ..." by convention, so matching on it (as the pre-2026-09-25 version
+//     of this parser did) fires on almost everything, including the pure-fraud bulletins.
+//   - The page's own datePublished/dateModified JSON-LD is not usable to filter stale
+//     content by recency: articles get their dates touched by unrelated site maintenance
+//     (a save during the site's mid-2026 restructuring updated old articles' dates too), so
+//     "skip if old" cannot be trusted. Content has to be judged on what it says, not when
+//     the metadata claims it was said.
+// Given that, this parser: (1) identifies the country from the article TITLE only (titles
+// name their subject directly, e.g. "Alerta de viagem - Bolivia" -- safer than scanning
+// body prose, where an unrelated country could be mentioned in passing); (2) requires an
+// explicit travel-danger phrase in the BODY (avoid non-essential travel / do not travel /
+// evacuation / armed conflict / war -- not the word "alerta" alone); (3) excludes anything
+// about fraud/scams/recruitment/trafficking/irregular immigration even if it names a
+// country, since those are not a travel-safety statement about the destination. Unlike the
+// France parser above, this does not attempt a separate "whole country vs specific
+// province" cap: Brazil's bulletins are free-form individual write-ups (not a consistent
+// per-country template with 15+ comparable examples to calibrate against, the way France's
+// fiches are), so a second layer of scope-detection heuristics would be guessing on top of
+// guessing. Coverage will stay close to zero most of the time by design -- rule 1 (never
+// guess) means an ambiguous bulletin is skipped, not forced into a level.
+const BR_SEVERE_RE = /\bnao viaje\b|evacuac[ao]|retirada de (cidadaos|brasileiros)|suspens[ao]o das atividades consulares/;
+const BR_AVOID_RE = /evit\w* viage/; // evite/evitem/evitar viagem(ns)
+const BR_EXCLUDE_RE = /fraude|aliciamento|trafico de pessoas|imigracao irregular|contrato de trabalho|contratos de trabalho|golpe/;
+
+function stripBrAccents(text: string): string {
+  return text
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '');
+}
+
 async function fetchBrAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -745,10 +790,9 @@ async function fetchBrAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  console.log('[ADVISORIES-T2A] BR: Brazil has no structured level system, returning sparse data');
-
   try {
-    const response = await fetch('https://www.gov.br/mre/pt-br/assuntos/portal-consular/alertas-e-avisos', {
+    const listUrl = 'https://www.gov.br/mre/pt-br/assuntos/portal-consular/alertas%20e%20noticias/alertas/alertas';
+    const response = await fetch(listUrl, {
       signal: AbortSignal.timeout(30_000),
       headers: FETCH_HEADERS,
     });
@@ -761,53 +805,91 @@ async function fetchBrAdvisories(
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Look for crisis alert articles mentioning specific countries
-    $('a, h2, h3, .tileItem').each((_, el) => {
-      const text = $(el).text().trim();
-      const textLower = text.toLowerCase();
+    const articles: { title: string; url: string }[] = [];
+    $('.tileItem h2.tileHeadline a').each((_, el) => {
+      const title = $(el).text().trim();
+      const url = $(el).attr('href');
+      if (title && url) articles.push({ title, url });
+    });
 
-      // Look for crisis indicators
-      let level: UnifiedLevel | null = null;
-      if (textLower.includes('emergencia') || textLower.includes('evacuacao') || textLower.includes('não viaje') || textLower.includes('nao viaje')) {
-        level = 4;
-      } else if (textLower.includes('crise') || textLower.includes('alerta') || textLower.includes('conflito')) {
-        level = 3;
-      }
+    await fetchBatch(
+      articles,
+      async (article) => {
+        const titleNorm = stripBrAccents(article.title);
+        if (BR_EXCLUDE_RE.test(titleNorm)) return; // fraud/scam/trafficking bulletin
 
-      if (!level) return;
+        // Country identity comes from the title only -- see comment above. Plain substring
+        // matching alone is not safe: many Portuguese country names contain a *different*
+        // country's name outright (Congo is a substring of "Republica Democratica do
+        // Congo", Russia of "Bielorrussia", Niger of "Nigeria", Mali of "Somalia"...), so
+        // an article naming only the longer country would wrongly also tag the shorter
+        // one. Keep a match only if its name is not itself contained in some other match.
+        const rawMatches = COUNTRIES.filter((country) => {
+          const ptName = country.name.pt ? stripBrAccents(country.name.pt) : '';
+          return ptName && titleNorm.includes(ptName);
+        });
+        const namedCountries = rawMatches.filter((country) => {
+          const ptName = stripBrAccents(country.name.pt!);
+          return !rawMatches.some((other) => {
+            if (other.iso3 === country.iso3) return false;
+            const otherName = stripBrAccents(other.name.pt!);
+            return otherName.length > ptName.length && otherName.includes(ptName);
+          });
+        });
+        if (namedCountries.length === 0) return;
 
-      // Try to extract country name from the text
-      for (const country of COUNTRIES) {
-        const ptName = country.name.pt?.toLowerCase();
-        const enName = country.name.en.toLowerCase();
+        try {
+          const pageResponse = await fetch(article.url, {
+            signal: AbortSignal.timeout(15_000),
+            headers: FETCH_HEADERS,
+          });
+          if (!pageResponse.ok) return;
 
-        if (ptName && textLower.includes(ptName) || textLower.includes(enName)) {
-          // Avoid duplicate entries
-          const existing = indicators.find(i => i.countryIso3 === country.iso3);
-          if (existing) {
-            if (level > existing.value) existing.value = level;
-            return;
+          const pageHtml = await pageResponse.text();
+          const page$ = cheerio.load(pageHtml);
+          page$('script, style').remove();
+          const bodyNorm = stripBrAccents(page$('body').text());
+          if (BR_EXCLUDE_RE.test(bodyNorm)) return; // defense in depth vs. the title check
+
+          let level: UnifiedLevel;
+          if (BR_SEVERE_RE.test(bodyNorm)) {
+            level = 4;
+          } else if (BR_AVOID_RE.test(bodyNorm)) {
+            level = 3;
+          } else {
+            return; // named a country but stated no clear travel-danger phrase: emit nothing
           }
 
-          indicators.push({
-            countryIso3: country.iso3,
-            indicatorName: 'advisory_level_br',
-            value: level,
-            year: currentYear,
-            source: 'advisories_br',
-            fetchedAt,
-          });
+          for (const country of namedCountries) {
+            const existing = indicators.find((i) => i.countryIso3 === country.iso3);
+            if (existing) {
+              if (level > existing.value) existing.value = level;
+              continue;
+            }
 
-          if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-          advisoryInfo[country.iso3].br = {
-            level,
-            text: BR_LEVEL_TEXT[level] || `Crisis alert level ${level}`,
-            source: 'Brazilian Ministry of Foreign Affairs',
-            url: 'https://www.gov.br/mre/pt-br/assuntos/portal-consular/alertas-e-avisos',
-          };
+            indicators.push({
+              countryIso3: country.iso3,
+              indicatorName: 'advisory_level_br',
+              value: level,
+              year: currentYear,
+              source: 'advisories_br',
+              fetchedAt,
+            });
+
+            if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+            advisoryInfo[country.iso3].br = {
+              level,
+              text: BR_LEVEL_TEXT[level] || `Crisis alert level ${level}`,
+              source: 'Brazilian Ministry of Foreign Affairs',
+              url: article.url,
+            };
+          }
+        } catch {
+          // Individual article page failed (timeout, network), skip silently
         }
-      }
-    });
+      },
+      3, // Concurrency 3 for politeness -- small article list, well within budget
+    );
   } catch {
     console.warn('[ADVISORIES-T2A] BR: Portal consular unavailable, returning empty result');
   }
