@@ -6,6 +6,7 @@ import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
+import { ADVISORY_STATUS } from '../../../lib/site-stats';
 
 const lang: Lang = 'de';
 const r = routes[lang];
@@ -14,7 +15,7 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
 const webPageJsonLd = buildWebPageJsonLd(t('sources.title'), t('sources.description'), canonicalUrl, lang, dateModified);
 
-// All 37 government advisory sources with metadata
+// All government advisory sources with metadata; live per-source status (item count) computed from ADVISORY_STATUS below
 const advisorySources = [
   { key: 'us', country: 'United States', tier: 'base', weight: '2.6%', format: 'JSON API' },
   { key: 'uk', country: 'United Kingdom', tier: 'base', weight: '2.5%', format: 'JSON API' },
@@ -145,19 +146,28 @@ const signalSources = [
               <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.country')}</th>
               <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.tier')}</th>
               <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.weight')}</th>
-              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.format')}</th>
+              <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.format')}</th>
+              <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{t('sources.table.status')}</th>
             </tr>
           </thead>
           <tbody>
-            {advisorySources.map(src => (
+            {advisorySources.map(src => {
+              const activeCount = ADVISORY_STATUS[src.key as keyof typeof ADVISORY_STATUS] ?? 0;
+              return (
               <tr class="border-b border-sand-200 dark:border-sand-700">
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`country.advisory.${src.key}` as any)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.country}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`sources.tier.${src.tier}` as any)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.weight}</td>
-                <td class="py-3 text-sand-600 dark:text-sand-300">{src.format}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.format}</td>
+                <td class="py-3 min-h-[24px]">
+                  {activeCount > 0
+                    ? <span class="text-green-700 dark:text-green-400 font-medium">{(activeCount === 1 ? t('sources.status_active_one') : t('sources.status_active').replace('{n}', String(activeCount)))}</span>
+                    : <span class="text-sand-400 dark:text-sand-500 italic">{t('sources.status_unavailable')}</span>}
+                </td>
               </tr>
-            ))}
+              );
+            })}
           </tbody>
         </table>
       </div>
