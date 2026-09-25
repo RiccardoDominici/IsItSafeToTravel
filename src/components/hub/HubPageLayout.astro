@@ -15,6 +15,7 @@ import { getLocalizedCountryName } from '../../lib/scores';
 import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
 import { hubBlurbTemplates } from '../../i18n/hub-blurbs';
 import { getRegion, type Region } from '../../lib/regions';
+import { SOURCE_COUNT_DISPLAY } from '../../lib/site-stats';
 
 interface Props {
   lang: Lang;
@@ -243,7 +244,7 @@ const hubLinks: Array<{ key: string; route: string }> = [
         {title}
       </h1>
       <p class="text-sm text-sand-500 dark:text-sand-400">
-        {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', '40') || 'Rankings updated daily from 40+ data sources'}
+        {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', SOURCE_COUNT_DISPLAY) || `Rankings updated daily from ${SOURCE_COUNT_DISPLAY} data sources`}
       </p>
     </header>
 
