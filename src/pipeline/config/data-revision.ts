@@ -29,6 +29,25 @@
  *          country instead.
  *     Countries affected by either fix see a score change that reflects the
  *     correction, not a real overnight change in safety.
+ *
+ *     Same revision, same run: the broader source-repair pass from the
+ *     2026-09-25 audit (findings/inconsistencies.md I2) landed alongside a/b
+ *     above. Status as of that run, kept here (not just in a commit message)
+ *     because it explains score movement that isn't a real overnight change:
+ *       - Repaired (now fetch live again): us (JSON API/RSS chain rebuilt),
+ *         fr, ie, be, it, es, pl, pt, sk, cz, hu, sg, br.
+ *       - uk/jp/hk/dk/rs/ch/in advisory parsers no longer default to level 1
+ *         when they can't determine a real level (see (b) above for
+ *         hk/dk/ch/rs specifically; uk/jp/in got the same treatment here).
+ *       - de: parser now also recognizes the "wird abgeraten" ("advised
+ *         against") phrasing the source site uses for partial warnings —
+ *         previously unmatched text fell through to a stale/default level;
+ *         this alone changes the resolved level for 36 countries.
+ *       - Still blocked by anti-bot challenges (no/fi/ph/ro): fetchers run
+ *         but the source blocks the request before any level can be parsed.
+ *       - Still not implemented (hr/kr/se): no fetcher exists yet, distinct
+ *         from the anti-bot cases above — there is nothing to repair, only
+ *         to build.
  */
 export const DATA_REVISION = 2;
 
