@@ -61,8 +61,11 @@ const resolvedOgType = ogType || 'website';
     <title>{pageTitle}</title>
     <meta name="description" content={pageDescription} />
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href={canonicalUrl.href} />
+    <!-- Canonical URL (skipped on noindex pages, e.g. 404 — see T10, 2026-09 audit:
+         a canonical there pointed to an unlocalized /404/ that doesn't itself exist
+         as a real page; simplest correct fix is no canonical on a page search
+         engines are told not to index anyway). -->
+    {!noindex && <link rel="canonical" href={canonicalUrl.href} />}
 
     <!-- hreflang tags for i18n SEO -->
     {alternateLinks.map(({ lang: altLang, href }) => (
