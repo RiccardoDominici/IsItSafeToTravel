@@ -3,8 +3,16 @@ import type { AdvisoryInfo } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 
+// `restoredFrom` is being added to the pipeline's AdvisoryInfo type by a
+// concurrent workstream (fetchers/advisories.ts already writes it there when a
+// scraper fails and the previous successful fetch is reused). Extending the
+// type locally, rather than editing src/pipeline/types.ts, avoids touching a
+// file another branch owns in this same fix round; once that branch's change
+// lands, this local extension becomes redundant but harmless.
+type AdvisoryInfoWithRestored = AdvisoryInfo & { restoredFrom?: string };
+
 interface Props {
-  advisory: AdvisoryInfo;
+  advisory: AdvisoryInfoWithRestored;
   sourceName: string;
   sourceKey: string;
   lang: Lang;
@@ -44,6 +52,25 @@ const formattedDate = Number.isFinite(updatedMs)
 const levelText = t('country.advisory.level').replace('{level}', String(advisory.level));
 const updatedText = formattedDate ? t('country.advisory.updated').replace('{date}', formattedDate) : null;
 
+// "Last successfully checked" — shown only when the pipeline fell back to a
+// previously-cached fetch (advisory.restoredFrom set) because today's scrape
+// failed. No key for this exists in i18n/ui.ts yet (new copy, not eligible for
+// a ui.ts edit in this fix round), so it's a small component-local table,
+// matching the established pattern (CitePage.astro, RegionsIndex.astro).
+const restoredLabel: Record<Lang, string> = {
+  en: 'Last successfully checked: {date}',
+  it: 'Ultimo controllo riuscito: {date}',
+  es: 'Última comprobación correcta: {date}',
+  fr: 'Dernière vérification réussie : {date}',
+  pt: 'Última verificação bem-sucedida: {date}',
+  zh: '上次成功核查：{date}',
+  de: 'Zuletzt erfolgreich geprüft: {date}',
+};
+const restoredMs = advisory.restoredFrom ? new Date(advisory.restoredFrom).getTime() : NaN;
+const restoredText = Number.isFinite(restoredMs)
+  ? restoredLabel[lang].replace('{date}', new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' }).format(restoredMs))
+  : null;
+
 // Truncate advisory text to 200 characters
 const summaryText = advisory.text.length > 200
   ? advisory.text.slice(0, 200).trimEnd() + '...'
@@ -78,7 +105,13 @@ const summaryText = advisory.text.length > 200
       rel="noopener noreferrer"
       class="text-terracotta-500 hover:text-terracotta-600 underline"
     >
-      Source
+      {t('country.pillar_source')}
     </a>
   </div>
+
+  {restoredText && (
+    <p class="text-xs text-sand-400 dark:text-sand-500 mt-1 italic">
+      {restoredText}
+    </p>
+  )}
 </div>
