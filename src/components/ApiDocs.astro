@@ -4,7 +4,7 @@ import { routes } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { loadLatestScores } from '../lib/scores';
 import { getLastmodMap } from '../lib/lastmod';
-import { buildDatasetJsonLd } from '../lib/seo';
+import { buildDatasetJsonLd, WEBSITE_ID, SITE_DATASET_ID } from '../lib/seo';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 
@@ -324,6 +324,8 @@ console.log(italy.confidence); // 0-1, how much data backs the score`;
 // WebPage + Dataset + BreadcrumbList in one @graph. The Dataset node mirrors the
 // homepage Dataset (buildDatasetJsonLd) but points at this page, which is the
 // canonical human-readable documentation of the downloadable distribution.
+// isPartOf/mainEntity connect this page into the site graph (S1): part of the
+// WebSite, primary entity is the Dataset node right below it in the same @graph.
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
@@ -334,11 +336,13 @@ const jsonLd = {
       name: c.title,
       description: c.description,
       inLanguage: localeMap[lang],
+      isPartOf: { '@id': WEBSITE_ID },
+      mainEntity: { '@id': SITE_DATASET_ID },
       datePublished: '2026-06-10',
       dateModified: snapshotDate,
     },
     {
-      ...buildDatasetJsonLd(),
+      ...buildDatasetJsonLd(lang),
       url: canonicalUrl,
       dateModified: snapshotDate,
     },

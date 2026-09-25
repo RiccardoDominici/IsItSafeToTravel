@@ -20,8 +20,8 @@ const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
     { ...buildHomepageJsonLd(siteUrl, lang, dateModified), '@context': undefined },
-    { ...buildOrganizationJsonLd(siteUrl), '@context': undefined },
-    buildDatasetJsonLd(),
+    { ...buildOrganizationJsonLd(siteUrl, lang), '@context': undefined },
+    buildDatasetJsonLd(lang),
   ],
 };
 ---

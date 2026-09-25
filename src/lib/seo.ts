@@ -1,7 +1,7 @@
 import type { ScoredCountry, PillarName, PillarScore } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
-import { getLocalizedCountryName } from './scores';
+import { getLocalizedCountryName, loadGlobalHistory } from './scores';
 import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
@@ -17,12 +17,80 @@ import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { selectPillarExtremes } from './pillar-extremes';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
 
-// ISO3 → Wikidata QID + English Wikipedia article, for Place.sameAs entity grounding
-// (helps AI answer engines and Google disambiguate the country entity).
-const wikidataMap = wikidataMapJson as Record<string, { qid?: string; wikipedia?: string }>;
+// ISO3 → Wikidata QID + English Wikipedia article (fallback), plus per-language
+// Wikipedia articles where they exist, for Place.sameAs entity grounding (helps
+// AI answer engines and Google disambiguate the country entity in each locale).
+const wikidataMap = wikidataMapJson as Record<
+  string,
+  { qid?: string; wikipedia?: string; wikipediaByLang?: Partial<Record<Lang, string>> }
+>;
 
-// Locale maps for consistent 7-language handling
-const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+// Locale maps for consistent 7-language handling. Exported so callers that
+// build their own JSON-LD nodes outside this file (e.g. hub pages) can stay
+// in sync instead of hand-rolling a second copy of the same 7 BCP-47 tags.
+export const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+
+// ---------- stable @id anchors (2026-09 SEO audit, S1/S8) ----------
+// Before this fix, every JSON-LD node on the site was an island: nothing
+// referenced anything else by @id, even within the same page's own @graph,
+// and WebSite/Organization/Person were duplicated inline (sometimes with
+// diverging fields, e.g. two different Person.url values — S8) instead of
+// being pointed at from a single canonical node. Using the SAME @id string
+// on every page that defines or references these entities lets Google (and
+// any other JSON-LD consumer) consolidate them into one real-world entity
+// across the whole site — the documented purpose of @id at this scale
+// (site-wide entities defined once, referenced by @id elsewhere), rather
+// than re-embedding a full definition on every one of the ~1,900 pages.
+export const WEBSITE_ID = 'https://isitsafetotravel.org/#website';
+export const ORGANIZATION_ID = 'https://isitsafetotravel.org/#organization';
+export const AUTHOR_ID = 'https://isitsafetotravel.org/#author';
+
+/**
+ * Earliest date in the historical score archive (data/scores/history-index.json),
+ * used as the start of Dataset.temporalCoverage (I11: the JSON-LD hardcoded
+ * "2025/.." while the real archive goes back to 2012-03-19). Lazily cached at
+ * module scope — history-index.json is tens of MB, and buildCountryJsonLd runs
+ * once per country per language (~1,736 times per build), so re-parsing it on
+ * every call would be a serious build-time regression (see CLAUDE.md "Known
+ * constraints"). loadGlobalHistory() already returns points in ascending date
+ * order, so the first entry is the earliest.
+ */
+let cachedHistoryStartDate: string | null | undefined;
+function getHistoryStartDate(): string | null {
+  if (cachedHistoryStartDate === undefined) {
+    const history = loadGlobalHistory();
+    cachedHistoryStartDate = history.length > 0 ? history[0].date : null;
+  }
+  return cachedHistoryStartDate;
+}
+
+/** Dataset.temporalCoverage as an open-ended ISO 8601 interval starting where the
+ * published history actually begins, falling back to the site-launch date only
+ * if the archive is unreadable (defensive — loadGlobalHistory() already handles
+ * a missing file by returning []). */
+function buildTemporalCoverage(): string {
+  return `${getHistoryStartDate() ?? '2026-03-19'}/..`;
+}
+
+// "Global" as a Dataset.spatialCoverage Place name, localized (S2/S10): the two
+// site-wide Dataset builders used to disagree on both the shape (string vs
+// Place object) and language (always English) of this field.
+const globalPlaceName: Record<Lang, string> = {
+  en: 'Global', it: 'Globale', es: 'Global', fr: 'Mondial', pt: 'Global', zh: '全球', de: 'Weltweit',
+};
+
+// Shared distribution list for the two site-wide Dataset nodes (homepage +
+// methodology) and /en/api/ (which spreads buildDatasetJsonLd() as its base —
+// S4: the API page documents 6 endpoints but the Dataset only ever declared
+// one DataDownload). Kept to the 4 machine-readable/bulk downloads; the two
+// parameterized endpoints (/history/{iso3}.json, /trend/{iso3}.json) and the
+// per-country SVG badge aren't a single static resource so don't fit DataDownload.
+const SITE_DATASET_DISTRIBUTION: Record<string, unknown>[] = [
+  { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: 'https://isitsafetotravel.org/scores.json' },
+  { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: 'https://isitsafetotravel.org/map-data.json' },
+  { '@type': 'DataDownload', encodingFormat: 'text/markdown', contentUrl: 'https://isitsafetotravel.org/llms.txt' },
+  { '@type': 'DataDownload', encodingFormat: 'text/markdown', contentUrl: 'https://isitsafetotravel.org/llms-full.txt' },
+];
 
 // Human-readable region names for Place.containedInPlace (schema.org), per locale.
 // Keep all 7 langs covered for every region key so non-EN pages don't leak English text.
@@ -340,14 +408,28 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   const tourType = touristTypes[lang][bandIdx];
   const year = new Date().getFullYear();
 
-  // Entity grounding: link the Place node to Wikidata/Wikipedia when we have a mapping.
+  // Entity grounding: link the Place node to Wikidata/Wikipedia when we have a
+  // mapping. Wikipedia link prefers the article in the PAGE's own language
+  // (GEO-07 — it used to always point at en.wikipedia.org, even from it/de/zh
+  // country pages) and falls back to the English article when no localized one
+  // exists (src/data/countries-wikidata.json, wikipediaByLang, is populated by
+  // batched Wikidata sitelinks lookups — not every country has all 7).
   const wikidataEntry = wikidataMap[country.iso3];
+  const localizedWikipedia = lang === 'en' ? wikidataEntry?.wikipedia : wikidataEntry?.wikipediaByLang?.[lang] ?? wikidataEntry?.wikipedia;
   const sameAs = wikidataEntry
     ? [
         wikidataEntry.qid && `https://www.wikidata.org/wiki/${wikidataEntry.qid}`,
-        wikidataEntry.wikipedia,
+        localizedWikipedia,
       ].filter(Boolean)
     : [];
+
+  const placeId = `${canonicalUrl}#place`;
+  // Minimal-but-connected Organization/Person references (S1/S8): both carry
+  // the site-wide stable @id (so Google can consolidate them with the fuller
+  // definitions on the homepage / about pages) AND enough inline properties
+  // to stand on their own if a page is read in isolation.
+  const organizationRef = { '@id': ORGANIZATION_ID, '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' };
+  const authorRef = { '@id': AUTHOR_ID, '@type': 'Person', name: 'Riccardo Dominici' };
 
   return {
     '@context': 'https://schema.org',
@@ -359,12 +441,13 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         name: webPageNameTemplates[lang](countryName),
         description: buildCountryMetaDescription(country, lang),
         inLanguage: localeMap[lang],
-        author: {
-          '@type': 'Person',
-          name: 'Riccardo Dominici',
-          url: `https://isitsafetotravel.org/${lang}/${routes[lang].about}/`,
-        },
-        publisher: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
+        // Connects this WebPage to the rest of the site graph (S1): part of
+        // the WebSite entity, primary entity is the country's own Place node
+        // (already defined below, in the same @graph, so a bare @id resolves).
+        isPartOf: { '@id': WEBSITE_ID },
+        mainEntity: { '@id': placeId },
+        author: authorRef,
+        publisher: organizationRef,
         ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
       },
       {
@@ -373,7 +456,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         // safety score is not user reviews. Removed twice now — see git a2491daf (Mar 2026)
         // and the May 2026 GSC regression caused by re-adding it in ca86a406.
         '@type': 'Place',
-        '@id': `${canonicalUrl}#place`,
+        '@id': placeId,
         name: countryName,
         description: placeDescriptions[lang](countryName),
         ...(sameAs.length > 0 && { sameAs }),
@@ -392,11 +475,18 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         name: datasetNames[lang](countryName, year),
         description: datasetDescriptions[lang](countryName),
         url: canonicalUrl,
+        inLanguage: localeMap[lang],
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
-        temporalCoverage: '2025/..',
+        isAccessibleForFree: true,
+        temporalCoverage: buildTemporalCoverage(),
+        // This Dataset is about ONE country, so its spatial coverage is that
+        // country's own Place node — already defined above in the same
+        // @graph (S10: was missing entirely on country pages; the two
+        // site-wide Dataset builders below use a "Global" Place instead).
+        spatialCoverage: { '@id': placeId },
         // Same daily snapshot date as WebPage.dateModified / the visible "Last update".
         ...(dateModified && { dateModified }),
-        creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
+        creator: organizationRef,
         variableMeasured: datasetVariablesByLang[lang].map((v) => ({
           '@type': 'PropertyValue',
           name: v.name,
@@ -429,6 +519,7 @@ export function buildHomepageJsonLd(siteUrl: string, lang: Lang, dateModified?: 
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': WEBSITE_ID,
     name: 'IsItSafeToTravel',
     url: siteUrl,
     description: descriptions[lang],
@@ -475,20 +566,27 @@ export function buildGlobalSafetyJsonLd(
     name: names[lang],
     description: descriptions[lang],
     inLanguage: localeMap[lang],
+    isPartOf: { '@id': WEBSITE_ID },
     ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }
 
 /**
  * Build Person JSON-LD structured data for the author.
+ * Single canonical url + stable @id (S8 — this used to diverge from the
+ * `url` inlined into WebPage.author on every country page, so the "same"
+ * person read as two disconnected entities). GitHub moves to `sameAs`,
+ * matching how buildOrganizationJsonLd already separates url vs sameAs.
  */
 export function buildPersonJsonLd(): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Person',
+    '@id': AUTHOR_ID,
     name: 'Riccardo Dominici',
     jobTitle: 'Independent developer and data analyst',
-    url: 'https://github.com/RiccardoDominici',
+    url: 'https://isitsafetotravel.org/en/about/',
+    sameAs: ['https://github.com/RiccardoDominici'],
   };
 }
 
@@ -499,10 +597,12 @@ export function buildWebPageJsonLd(title: string, description: string, canonical
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
+    '@id': canonicalUrl,
     name: title,
     description,
     url: canonicalUrl,
     inLanguage: localeMap[lang],
+    isPartOf: { '@id': WEBSITE_ID },
     ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
   };
 }
@@ -527,19 +627,35 @@ export function buildBreadcrumbJsonLd(items: { name: string; url?: string }[]): 
   };
 }
 
+// Organization.description, localized (S2 — was English-only on 6/7 homepages;
+// note the property is *not* `inLanguage`-tagged: schema.org's inLanguage
+// domainIncludes only CreativeWork/Event/BroadcastService/etc, not Organization,
+// so tagging it here would be inventing a property schema.org doesn't define).
+const organizationDescriptions: Record<Lang, (count: number) => string> = {
+  en: (n) => `Free travel safety platform providing transparent, data-driven safety scores for ${n} countries worldwide.`,
+  it: (n) => `Piattaforma gratuita per la sicurezza di viaggio, con punteggi trasparenti e basati sui dati per ${n} paesi nel mondo.`,
+  es: (n) => `Plataforma gratuita de seguridad de viaje, con puntuaciones transparentes y basadas en datos para ${n} países de todo el mundo.`,
+  fr: (n) => `Plateforme gratuite de sécurité de voyage, avec des scores transparents et fondés sur les données pour ${n} pays dans le monde.`,
+  pt: (n) => `Plataforma gratuita de segurança de viagem, com pontuações transparentes e baseadas em dados para ${n} países em todo o mundo.`,
+  zh: (n) => `免费的旅行安全平台，为全球 ${n} 个国家提供透明、基于数据的安全评分。`,
+  de: (n) => `Kostenlose Reisesicherheits-Plattform mit transparenten, datenbasierten Sicherheits-Scores für ${n} Länder weltweit.`,
+};
+
 /**
  * Build Organization JSON-LD structured data for the homepage.
  */
-export function buildOrganizationJsonLd(siteUrl: string): Record<string, unknown> {
+export function buildOrganizationJsonLd(siteUrl: string, lang: Lang): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': ORGANIZATION_ID,
     name: 'IsItSafeToTravel',
     url: siteUrl,
-    description: `Free travel safety platform providing transparent, data-driven safety scores for ${COUNTRY_COUNT} countries worldwide.`,
+    description: organizationDescriptions[lang](COUNTRY_COUNT),
     // Google requires a raster logo >= 112x112px; icon-512.png is the largest PNG we ship.
     logo: `${siteUrl}/icon-512.png`,
-    founder: { '@type': 'Person', name: 'Riccardo Dominici', url: 'https://github.com/RiccardoDominici' },
+    // Same canonical Person entity as buildPersonJsonLd (S8) — one @id, one url.
+    founder: { '@id': AUTHOR_ID, '@type': 'Person', name: 'Riccardo Dominici' },
     sameAs: ['https://github.com/RiccardoDominici/IsItSafeToTravel'],
     foundingDate: '2026',
   };
@@ -735,34 +851,66 @@ export function buildCountryFaqJsonLd(country: ScoredCountry, lang: Lang): Recor
   };
 }
 
+// Stable @id for the site-wide Dataset entity (all 248 countries) — shared by
+// buildDatasetJsonLd (homepage + /en/api/, which spreads it) and
+// buildMethodologyDatasetJsonLd (methodology page): same real-world dataset,
+// described differently per page context, same pattern as WEBSITE_ID/ORGANIZATION_ID.
+export const SITE_DATASET_ID = 'https://isitsafetotravel.org/#dataset';
+
+// Dataset.name/description for the homepage + /en/api/ Dataset node — distinct
+// copy from the per-country Dataset above (datasetNames/datasetDescriptions)
+// since this one describes the whole 248-country collection, not one country.
+const siteDatasetNames: Record<Lang, (year: number) => string> = {
+  en: (y) => `Global Travel Safety Scores ${y}`,
+  it: (y) => `Punteggi di sicurezza di viaggio globali ${y}`,
+  es: (y) => `Puntuaciones de seguridad de viaje globales ${y}`,
+  fr: (y) => `Scores de sécurité de voyage mondiaux ${y}`,
+  pt: (y) => `Pontuações de segurança de viagem globais ${y}`,
+  zh: (y) => `${y} 年全球旅行安全评分`,
+  de: (y) => `Globale Reisesicherheits-Scores ${y}`,
+};
+const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
+  en: (n) => `Daily updated safety scores for ${n} countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.`,
+  it: (n) => `Punteggi di sicurezza aggiornati ogni giorno per ${n} paesi, aggregati da avvisi governativi, dati sanitari, indicatori di conflitto e metriche ambientali.`,
+  es: (n) => `Puntuaciones de seguridad actualizadas a diario para ${n} países, agregadas a partir de avisos gubernamentales, datos sanitarios, indicadores de conflicto y métricas ambientales.`,
+  fr: (n) => `Scores de sécurité mis à jour chaque jour pour ${n} pays, agrégés à partir des avis gouvernementaux, données sanitaires, indicateurs de conflit et mesures environnementales.`,
+  pt: (n) => `Pontuações de segurança atualizadas diariamente para ${n} países, agregadas a partir de avisos governamentais, dados de saúde, indicadores de conflito e métricas ambientais.`,
+  zh: (n) => `每日更新的 ${n} 个国家安全评分，综合政府旅行警告、卫生数据、冲突指标和环境指标。`,
+  de: (n) => `Täglich aktualisierte Sicherheits-Scores für ${n} Länder, aggregiert aus Regierungs-Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Umweltmetriken.`,
+};
+
 /**
- * Build Dataset JSON-LD structured data for the homepage.
+ * Build Dataset JSON-LD structured data for the homepage (also reused as-is
+ * by /en/api/ and /en/cite-this-data/, which override url/dateModified).
  * Returns an object WITHOUT @context so it can be added to an existing @graph.
  */
-export function buildDatasetJsonLd(): Record<string, unknown> {
+export function buildDatasetJsonLd(lang: Lang): Record<string, unknown> {
+  const year = new Date().getFullYear();
   return {
     '@type': 'Dataset',
-    name: 'Global Travel Safety Scores 2026',
-    description: `Daily updated safety scores for ${COUNTRY_COUNT} countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.`,
+    '@id': SITE_DATASET_ID,
+    name: siteDatasetNames[lang](year),
+    description: siteDatasetDescriptions[lang](COUNTRY_COUNT),
     url: 'https://isitsafetotravel.org/',
+    inLanguage: localeMap[lang],
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
-    temporalCoverage: '2025/..',
-    spatialCoverage: 'Global',
-    creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
-    variableMeasured: [
-      { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
-      { '@type': 'PropertyValue', name: 'Conflict Risk', description: 'Armed conflict and political violence risk assessment' },
-      { '@type': 'PropertyValue', name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
-      { '@type': 'PropertyValue', name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
-      { '@type': 'PropertyValue', name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
-      { '@type': 'PropertyValue', name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
-    ],
-    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
-    distribution: {
-      '@type': 'DataDownload',
-      encodingFormat: 'application/json',
-      contentUrl: 'https://isitsafetotravel.org/scores.json',
-    },
+    // Google Dataset Search-recommended property confirming the data itself
+    // isn't paywalled (S7) — distinct from the CC BY-NC "non-commercial" use
+    // restriction, which is a licensing term, not an access paywall.
+    isAccessibleForFree: true,
+    temporalCoverage: buildTemporalCoverage(),
+    spatialCoverage: { '@type': 'Place', name: globalPlaceName[lang] },
+    creator: { '@id': ORGANIZATION_ID, '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
+    variableMeasured: datasetVariablesByLang[lang].map((v) => ({
+      '@type': 'PropertyValue',
+      name: v.name,
+      description: v.description,
+      ...(v.unitText && { unitText: v.unitText }),
+    })),
+    measurementTechnique: measurementTechniqueByLang[lang],
+    // S4: was a single DataDownload (scores.json) even though /en/api/ documents
+    // 6 endpoints; now the 4 static bulk-download resources (see SITE_DATASET_DISTRIBUTION).
+    distribution: SITE_DATASET_DISTRIBUTION,
   };
 }
 
@@ -790,8 +938,10 @@ export function buildCitePageJsonLd(
         name: title,
         description,
         inLanguage: localeMap[lang],
+        isPartOf: { '@id': WEBSITE_ID },
+        mainEntity: { '@id': SITE_DATASET_ID },
       },
-      buildDatasetJsonLd(),
+      buildDatasetJsonLd(lang),
       {
         '@type': 'FAQPage',
         mainEntity: faqItems.map((qa) => ({
@@ -813,33 +963,55 @@ export function buildCitePageJsonLd(
   };
 }
 
+// Dataset.name/description for the methodology page's Dataset node — same
+// underlying dataset as buildDatasetJsonLd (shares SITE_DATASET_ID) but
+// framed for the methodology audience.
+const methodologyDatasetNames: Record<Lang, string> = {
+  en: 'IsItSafeToTravel Global Safety Scores',
+  it: 'Punteggi di sicurezza globali IsItSafeToTravel',
+  es: 'Puntuaciones de seguridad globales de IsItSafeToTravel',
+  fr: 'Scores de sécurité mondiaux IsItSafeToTravel',
+  pt: 'Pontuações de segurança globais IsItSafeToTravel',
+  zh: 'IsItSafeToTravel 全球安全评分',
+  de: 'IsItSafeToTravel Globale Sicherheits-Scores',
+};
+const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
+  en: (n) => `Daily updated composite safety scores for ${n} countries, aggregating 40+ public data sources.`,
+  it: (n) => `Punteggi di sicurezza compositi aggiornati ogni giorno per ${n} paesi, aggregando oltre 40 fonti pubbliche.`,
+  es: (n) => `Puntuaciones de seguridad compuestas actualizadas a diario para ${n} países, con más de 40 fuentes públicas agregadas.`,
+  fr: (n) => `Scores de sécurité composites mis à jour chaque jour pour ${n} pays, agrégeant plus de 40 sources publiques.`,
+  pt: (n) => `Pontuações de segurança compostas atualizadas diariamente para ${n} países, agregando mais de 40 fontes públicas.`,
+  zh: (n) => `每日更新的 ${n} 个国家综合安全评分，汇总 40 多个公开数据来源。`,
+  de: (n) => `Täglich aktualisierte zusammengesetzte Sicherheits-Scores für ${n} Länder, aggregiert aus über 40 öffentlichen Datenquellen.`,
+};
+
 /**
  * Build Dataset JSON-LD for methodology pages.
  * Returns an object WITHOUT @context so it can be added to an existing @graph.
  */
-export function buildMethodologyDatasetJsonLd(): Record<string, unknown> {
+export function buildMethodologyDatasetJsonLd(lang: Lang): Record<string, unknown> {
   return {
     '@type': 'Dataset',
-    name: 'IsItSafeToTravel Global Safety Scores',
-    description: `Daily updated composite safety scores for ${COUNTRY_COUNT} countries, aggregating 40+ public data sources.`,
+    '@id': SITE_DATASET_ID,
+    name: methodologyDatasetNames[lang],
+    description: methodologyDatasetDescriptions[lang](COUNTRY_COUNT),
     url: 'https://isitsafetotravel.org/',
+    inLanguage: localeMap[lang],
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
-    temporalCoverage: '2025/..',
-    spatialCoverage: { '@type': 'Place', name: 'Global' },
-    creator: { '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
-    variableMeasured: [
-      { '@type': 'PropertyValue', name: 'Safety Score', description: 'Composite safety score on 1-10 scale', unitText: 'score' },
-      { '@type': 'PropertyValue', name: 'Conflict Risk' },
-      { '@type': 'PropertyValue', name: 'Crime Risk' },
-      { '@type': 'PropertyValue', name: 'Health Risk' },
-      { '@type': 'PropertyValue', name: 'Governance Quality' },
-      { '@type': 'PropertyValue', name: 'Environment Risk' },
-    ],
-    measurementTechnique: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
-    distribution: {
-      '@type': 'DataDownload',
-      encodingFormat: 'application/json',
-      contentUrl: 'https://isitsafetotravel.org/scores.json',
-    },
+    isAccessibleForFree: true,
+    temporalCoverage: buildTemporalCoverage(),
+    spatialCoverage: { '@type': 'Place', name: globalPlaceName[lang] },
+    creator: { '@id': ORGANIZATION_ID, '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
+    // S9: used to be name-only (no description) on 5 of these 6 PropertyValue
+    // entries — now shares the same fully-described per-language table as the
+    // homepage/country Dataset nodes instead of a separate, thinner copy.
+    variableMeasured: datasetVariablesByLang[lang].map((v) => ({
+      '@type': 'PropertyValue',
+      name: v.name,
+      description: v.description,
+      ...(v.unitText && { unitText: v.unitText }),
+    })),
+    measurementTechnique: measurementTechniqueByLang[lang],
+    distribution: SITE_DATASET_DISTRIBUTION,
   };
 }

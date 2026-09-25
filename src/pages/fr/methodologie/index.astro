@@ -22,7 +22,7 @@ const faqQuestions = [
   { question: 'Que mesure la catégorie Environnement dans le score de sécurité ?', answer: t('methodology.pillar.environment.description' as any) },
 ];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
-const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd();
+const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd(lang);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [

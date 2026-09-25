@@ -22,7 +22,7 @@ const faqQuestions = [
   { question: 'O que a categoria Meio Ambiente mede na pontuação de segurança?', answer: t('methodology.pillar.environment.description' as any) },
 ];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
-const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd();
+const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd(lang);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
