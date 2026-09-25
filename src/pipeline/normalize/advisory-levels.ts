@@ -293,15 +293,109 @@ export function normalizeArAlert(text: string): UnifiedLevel {
 
 // --- Tier 3a normalization functions ---
 
+/** Lowercase, strip zero-width/non-breaking-space junk (common in government CMS copy-paste), collapse whitespace.
+ *  Shared by every Tier 3a free-text normalizer (IT today, ES below). */
+function normalizeAdvisoryText(text: string): string {
+  return text
+    .toLowerCase()
+    .replace(/[​﻿ ]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+/** Split cleaned prose into sentences -- advisory text mixes whole-country and named-zone claims in the same
+ *  paragraph, so severity must be read sentence-by-sentence rather than on the whole blob (see normalizeItLevel). */
+function splitIntoSentences(text: string): string[] {
+  return text.split(/(?<=[.!?])\s+/).filter((s) => s.length > 0);
+}
+
+/** Sub-national qualifiers that must never let a sentence promote a country above level 2, mirroring the
+ *  DE/NL partial-warning guard used elsewhere in the pipeline (data-pipeline.yml). "Gaza"/"Cisgiordania"/"Sinai"
+ *  are hardcoded because they recur across many countries' dossiers as a spillover risk, not the country itself
+ *  (e.g. Iran's page discusses a Gaza travel ban while assessing Iran, not Gaza). */
+const IT_SUBNATIONAL_MARKERS = [
+  'alcuni stati', 'alcune regioni', 'alcune zone', 'alcune aree', 'alcune città', 'alcune province',
+  'nello stato di', 'nella provincia di', 'nella contea di', 'nella regione di', 'nel distretto di',
+  'zona di confine', 'zone di confine', 'area di confine', 'aree di confine', 'lungo il confine',
+  'striscia di gaza', 'cisgiordania', 'sinai',
+];
+
 /**
  * Normalize Italy (Viaggiare Sicuri) advisory text to unified 1-4 scale.
- * Italian text patterns: "non recarsi", "sconsigliato", "cautela", etc.
+ *
+ * Farnesina has no single "level" field in its per-country dossier (confirmed against the SPA's own JSON API,
+ * `/schede_paese/{ISO3}.json` -- see fetchItAdvisories). The assessment is prose split across two sections:
+ * `Indicazioni-generali` (the whole-country assessment) and `Aree-di-particolare-cautela` (named sub-national or
+ * cross-border danger zones -- occasionally including a *whole-country* statement too, e.g. Yemen's "in tutto il
+ * Paese" sits inside this section). Both are required and scanned sentence-by-sentence so a zone-scoped warning
+ * (e.g. "sconsigliati i viaggi in Sinaloa") can never out-rank a whole-country one.
+ *
+ * Calibrated 2026-09-25 against ~45 countries' live dossiers (AFG, SYR, UKR, MLI, NER, SOM, HTI, YEM -> 4;
+ * LBN, PAK, VEN, LBY, PRK, RUS, NGA, IRN, COD, ETH -> 3; EGY, THA, MEX, KEN, TUR, COL, IND, PHL, IDN, CHN, BRA,
+ * ISR, PSE -> 2; FRA, JPN, USA, DEU, GBR, CHE, AUT, PRT, NLD, BEL, GRC, ESP, LKA -> 1):
+ *  - Level 4 ("a qualsiasi titolo" / "non recarsi" / "in qualunque zona del Paese" / "viaggi ... in tutto il
+ *    Paese"): tight, self-contained patterns -- deliberately NOT "assolutamente sconsigliato" alone or generic
+ *    "tutto il Paese" co-occurrence, both of which false-positived in calibration (Nigeria's "condizioni di
+ *    sicurezza in tutto il Paese" describes the SITUATION, not the ban's scope; Israel's "a qualsiasi titolo"
+ *    ban is Gaza-only, folded into Israel's own page).
+ *  - Level 3 (whole-country "non essenziali/non indispensabili", or "sconsigliati, se non per ragioni di
+ *    necessità/lavoro"): read only from `Indicazioni-generali`, and only from sentences that don't name a
+ *    sub-national qualifier -- Nigeria's *general* sentence says "non indispensabile" even though a later,
+ *    separately-scoped sentence escalates to "assolutamente" for "alcuni stati"; that escalation must NOT
+ *    promote Nigeria to 4.
+ *  - Level 2 (named danger zone with an avoid-verb, general text otherwise clean): read from
+ *    `Aree-di-particolare-cautela`, or from an `Indicazioni-generali` sentence that itself named a sub-national
+ *    qualifier. Plain vigilance tips ("prestare attenzione ai borseggi", ESP's Madrid pickpocket note) do NOT
+ *    count -- only sentences with an explicit avoidance verb (sconsiglia/evitare/non recarsi/interdetto) do.
+ *  - Level 1: no avoidance verb anywhere, but only when the dossier is substantive (not a stub/empty fetch).
+ *
+ * Returns null when both sections are empty/too short to be a real dossier (fetch got a stub, or Farnesina
+ * doesn't publish one for this ISO3) -- per project rule, "no data" must never be reported as "level 1".
  */
-export function normalizeItLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('non recarsi') || lower.includes('sconsigliato')) return 4;
-  if (lower.includes('sconsigliati i viaggi') || lower.includes('evitare')) return 3;
-  if (lower.includes('cautela') || lower.includes('attenzione') || lower.includes('particolare prudenza')) return 2;
+export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): UnifiedLevel | null {
+  const general = normalizeAdvisoryText(generalTextRaw);
+  const area = normalizeAdvisoryText(areaTextRaw);
+  if (general.length + area.length < 40) return null;
+
+  const LEVEL4_PATTERNS = [
+    /a qualsiasi titolo/,
+    /\bnon recarsi\b/,
+    /qualunque zona del paese/,
+    /viagg\w*\s+(a\s+|in\s+)+tutto\s+il\s+(paese|territorio)/,
+    /preclusa la possibilit[aà] di recarsi/,
+  ];
+  const LEVEL3_PATTERNS =
+    /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi|sconsigli/;
+  const LEVEL2_PATTERNS = /sconsigli|evitare\s+(i\s+)?viaggi|evitare di recarsi|non recarsi|interdett/;
+
+  const isSubNational = (sentence: string) => IT_SUBNATIONAL_MARKERS.some((m) => sentence.includes(m));
+
+  const tagged = [
+    ...splitIntoSentences(general).map((s) => ({ s, section: 'general' as const })),
+    ...splitIntoSentences(area).map((s) => ({ s, section: 'area' as const })),
+  ];
+
+  let sawLevel4 = false;
+  let sawLevel3 = false;
+  let sawLevel2 = false;
+
+  for (const { s, section } of tagged) {
+    const subNational = isSubNational(s);
+
+    if (!subNational && LEVEL4_PATTERNS.some((re) => re.test(s))) {
+      sawLevel4 = true;
+      continue;
+    }
+    if (section === 'general' && !subNational && LEVEL3_PATTERNS.test(s)) {
+      sawLevel3 = true;
+      continue;
+    }
+    if (LEVEL2_PATTERNS.test(s)) sawLevel2 = true;
+  }
+
+  if (sawLevel4) return 4;
+  if (sawLevel3) return 3;
+  if (sawLevel2) return 2;
   return 1;
 }
 

@@ -242,10 +242,30 @@ const CHINESE_COUNTRY_NAMES: Record<string, string> = {
 
 // =============================================================================
 // Sub-fetcher 1: Italy (Viaggiare Sicuri) -- CPLX-01
-// Fragility: HIGH -- JS-rendered SPA, may return empty content
-// Expected failure modes: Pages return only <div id="root"> with no content
-// Why sparse results are acceptable: SPA rendering means server-side HTML is empty
+// Fragility: MEDIUM -- structured JSON API behind an Angular SPA; stable shape,
+//   but Farnesina could rename fields without notice.
+// Repaired 2026-09-25: the previous version scraped server-rendered HTML, which
+//   for an Angular SPA is just an empty <div id="root"> -- it silently read menu
+//   chrome instead of country content (e.g. Afghanistan came back as level 1).
+//   The app itself loads country data from a JSON API, found by inspecting its
+//   compiled bundle (`CountryService`: countryListUrl="storage/get",
+//   schedePaeseUrl="schede_paese", getSchedaPaese(t) => `/schede_paese/${t}.json`).
+//   Fetching that JSON directly gives the exact same data the SPA renders, with
+//   no markup noise -- see normalizeItLevel() for how the level is read from it.
 // =============================================================================
+
+interface ViaggiareSicuriSheet {
+  infoSicurezza?: {
+    nodi?: Record<string, { contenuto?: string } | undefined>;
+  };
+}
+
+/** Strip HTML tags/entities from a Viaggiare Sicuri dossier fragment (cheerio handles entity decoding
+ *  correctly, e.g. &nbsp;, which a hand-rolled regex would not). */
+function stripAdvisoryHtml(html: string | undefined): string {
+  if (!html) return '';
+  return cheerio.load(`<div>${html}</div>`)('div').text();
+}
 
 async function fetchItAdvisories(
   rawDir: string,
@@ -255,36 +275,47 @@ async function fetchItAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  // Sample a subset of countries to avoid hammering the server
-  const sampleCountries = COUNTRIES.slice(0, 50);
+  // Farnesina's own country list is the source of truth for which ISO3 codes it
+  // actually publishes a dossier for (~223 of our 248 -- micro-territories and a
+  // few disputed areas are absent). Fetching it first avoids ~25 guaranteed 404s
+  // per run and lets us log real coverage against Farnesina's own total.
+  let publishedIso3: Set<string>;
+  try {
+    const listResponse = await fetch('https://www.viaggiaresicuri.it/schede_paese/lista_nazioni.json', {
+      signal: AbortSignal.timeout(15_000),
+      headers: FETCH_HEADERS,
+    });
+    if (!listResponse.ok) throw new Error(`HTTP ${listResponse.status}`);
+    const list = (await listResponse.json()) as Array<{ 'Codice-3'?: string }>;
+    publishedIso3 = new Set(list.map((c) => c['Codice-3']).filter((x): x is string => !!x));
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : String(error);
+    console.warn(`[ADVISORIES-T3A] IT: country list unavailable (${msg}), returning empty result`);
+    return { indicators, advisoryInfo };
+  }
+
+  const targetCountries = COUNTRIES.filter((c) => publishedIso3.has(c.iso3));
 
   await fetchBatch(
-    sampleCountries,
+    targetCountries,
     async (country) => {
       try {
-        const url = `https://www.viaggiaresicuri.it/find-country/country/${country.iso3}`;
+        const url = `https://www.viaggiaresicuri.it/schede_paese/${country.iso3}.json`;
         const response = await fetch(url, {
           signal: AbortSignal.timeout(15_000),
           headers: FETCH_HEADERS,
         });
-
         if (!response.ok) return;
 
-        const html = await response.text();
+        const sheet = (await response.json()) as ViaggiareSicuriSheet;
+        const nodi = sheet.infoSicurezza?.nodi;
+        if (!nodi) return; // no security section published for this country
 
-        // Check if JS-rendered SPA with no content
-        if (html.includes('<div id="root">') && html.length < 5000) {
-          // JS-rendered page with no server-side content, skip
-          return;
-        }
+        const generalText = stripAdvisoryHtml(nodi['Indicazioni-generali']?.contenuto);
+        const areaText = stripAdvisoryHtml(nodi['Aree-di-particolare-cautela']?.contenuto);
 
-        const $ = cheerio.load(html);
-        const bodyText = $('body').text().toLowerCase();
-
-        if (!bodyText || bodyText.trim().length < 100) return;
-
-        // Extract Italian advisory text and normalize
-        const level = normalizeItLevel(bodyText);
+        const level = normalizeItLevel(generalText, areaText);
+        if (level === null) return; // stub/empty dossier -- don't guess a level
 
         indicators.push({
           countryIso3: country.iso3,
@@ -300,20 +331,19 @@ async function fetchItAdvisories(
           level,
           text: IT_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Italy Viaggiare Sicuri',
-          url,
+          url: `https://www.viaggiaresicuri.it/find-country/country/${country.iso3}`,
         };
       } catch {
         // Individual country page failed, skip silently
       }
     },
-    5,
+    3,
   );
 
-  if (indicators.length === 0) {
-    console.warn('[ADVISORIES-T3A] IT: Viaggiare Sicuri appears to be JS-rendered, returning empty result');
-  }
-
-  console.log(`[ADVISORIES-T3A] IT: ${indicators.length} countries from Viaggiare Sicuri`);
+  console.log(
+    `[ADVISORIES-T3A] IT: ${indicators.length} countries from Viaggiare Sicuri ` +
+    `(${targetCountries.length} published by Farnesina)`,
+  );
   return { indicators, advisoryInfo };
 }
 
