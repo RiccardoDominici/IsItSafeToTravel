@@ -11,6 +11,14 @@ on:
         description: 'Date override (YYYY-MM-DD, leave empty for today)'
         required: false
         type: string
+      skip_digest:
+        # For corrective re-runs (data-revision fixes, same-day regenerations):
+        # the 2026-09-25 correction run emailed subscribers 7 "new" severe
+        # advisories that were artifacts of a repaired source, not news.
+        description: 'Do not email the daily digest for this run'
+        required: false
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -230,7 +238,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Send daily digest
-        if: success()
+        if: success() && github.event.inputs.skip_digest != 'true'
         continue-on-error: true
         env:
           RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
