@@ -5,9 +5,12 @@
  *
  * Answers are intentionally factual and citable: they reference the 5-pillar
  * weighted methodology (conflict 30%, crime 25%, health 20%, governance 15%,
- * environment 10%), daily updates from 40+ public sources, and the 1-10 scale.
+ * environment 10%), daily updates from a live-computed public-source count
+ * (site-stats.ts -- never a hardcoded "40+", see 2026-09-25 audit I2/I3/I12),
+ * and the 1-10 scale.
  */
 import type { Lang } from '../i18n/ui';
+import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY } from './site-stats';
 
 export type HubType =
   | 'safest-countries'
@@ -51,7 +54,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Con quale frequenza viene aggiornata la classifica dei paesi più sicuri?',
         answer:
-          "I punteggi vengono ricalcolati ogni giorno a partire da oltre 40 fonti pubbliche, tra cui avvisi di viaggio governativi, il Global Peace Index, i dati sui conflitti UCDP e indicatori della Banca Mondiale. La classifica riflette sempre l'ultimo aggiornamento giornaliero.",
+          `I punteggi vengono ricalcolati ogni giorno a partire da ${SOURCE_COUNT_DISPLAY} fonti pubbliche, tra cui avvisi di viaggio governativi, il Global Peace Index, i dati sui conflitti UCDP e indicatori della Banca Mondiale. La classifica riflette sempre l'ultimo aggiornamento giornaliero.`,
       },
       {
         question: 'Cosa rende un paese tra i più sicuri da visitare?',
@@ -68,7 +71,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Con qué frecuencia se actualiza la clasificación de los países más seguros?',
         answer:
-          'Las puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas, incluidos los avisos de viaje gubernamentales, el Global Peace Index, los datos de conflictos de la UCDP e indicadores del Banco Mundial. La clasificación refleja siempre la actualización diaria más reciente.',
+          `Las puntuaciones se recalculan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas, incluidos los avisos de viaje gubernamentales, el Global Peace Index, los datos de conflictos de la UCDP e indicadores del Banco Mundial. La clasificación refleja siempre la actualización diaria más reciente.`,
       },
       {
         question: '¿Qué hace que un país sea uno de los más seguros para visitar?',
@@ -85,7 +88,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'À quelle fréquence le classement des pays les plus sûrs est-il mis à jour ?',
         answer:
-          'Les scores sont recalculés chaque jour à partir de plus de 40 sources publiques, dont les avis aux voyageurs gouvernementaux, le Global Peace Index, les données de conflits de l\'UCDP et des indicateurs de la Banque mondiale. Le classement reflète toujours la mise à jour quotidienne la plus récente.',
+          `Les scores sont recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques, dont les avis aux voyageurs gouvernementaux, le Global Peace Index, les données de conflits de l\'UCDP et des indicateurs de la Banque mondiale. Le classement reflète toujours la mise à jour quotidienne la plus récente.`,
       },
       {
         question: "Qu'est-ce qui fait d'un pays l'un des plus sûrs à visiter ?",
@@ -102,7 +105,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Com que frequência o ranking dos países mais seguros é atualizado?',
         answer:
-          'As pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas, incluindo avisos de viagem governamentais, o Global Peace Index, os dados de conflito da UCDP e indicadores do Banco Mundial. O ranking reflete sempre a atualização diária mais recente.',
+          `As pontuações são recalculadas todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas, incluindo avisos de viagem governamentais, o Global Peace Index, os dados de conflito da UCDP e indicadores do Banco Mundial. O ranking reflete sempre a atualização diária mais recente.`,
       },
       {
         question: 'O que torna um país um dos mais seguros para visitar?',
@@ -119,7 +122,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '最安全国家排名多久更新一次？',
         answer:
-          '评分每天根据 40 多个公开数据源重新计算，包括各国政府旅行警告、全球和平指数（Global Peace Index）、UCDP 冲突数据以及世界银行指标。排名始终反映最新的每日数据快照。',
+          `评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算，包括各国政府旅行警告、全球和平指数（Global Peace Index）、UCDP 冲突数据以及世界银行指标。排名始终反映最新的每日数据快照。`,
       },
       {
         question: '是什么让一个国家成为最安全的旅行目的地之一？',
@@ -136,7 +139,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie oft wird das Ranking der sichersten Länder aktualisiert?',
         answer:
-          'Die Werte werden täglich aus mehr als 40 öffentlichen Quellen neu berechnet, darunter staatliche Reisehinweise, der Global Peace Index, UCDP-Konfliktdaten und Indikatoren der Weltbank. Das Ranking spiegelt stets den aktuellsten Tagesstand wider.',
+          `Die Werte werden täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet, darunter staatliche Reisehinweise, der Global Peace Index, UCDP-Konfliktdaten und Indikatoren der Weltbank. Das Ranking spiegelt stets den aktuellsten Tagesstand wider.`,
       },
       {
         question: 'Was macht ein Land zu einem der sichersten Reiseziele?',
@@ -161,7 +164,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Can you still travel to the most dangerous countries?',
         answer:
-          'Travel is sometimes possible but strongly discouraged: insurance may be void, embassies may offer no consular help, and conditions can change within hours. If a trip is essential, check daily-updated advisories — our scores are recalculated every day from 40+ public sources.',
+          `Travel is sometimes possible but strongly discouraged: insurance may be void, embassies may offer no consular help, and conditions can change within hours. If a trip is essential, check daily-updated advisories — our scores are recalculated every day from ${SOURCE_COUNT_DISPLAY} public sources.`,
       },
     ],
     it: [
@@ -178,7 +181,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Si può comunque viaggiare nei paesi più pericolosi?',
         answer:
-          "A volte è possibile, ma fortemente sconsigliato: l'assicurazione può non essere valida, le ambasciate possono non garantire assistenza consolare e le condizioni possono cambiare in poche ore. Se il viaggio è indispensabile, consulta gli avvisi aggiornati quotidianamente: i nostri punteggi vengono ricalcolati ogni giorno da oltre 40 fonti pubbliche.",
+          `A volte è possibile, ma fortemente sconsigliato: l'assicurazione può non essere valida, le ambasciate possono non garantire assistenza consolare e le condizioni possono cambiare in poche ore. Se il viaggio è indispensabile, consulta gli avvisi aggiornati quotidianamente: i nostri punteggi vengono ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
       },
     ],
     es: [
@@ -195,7 +198,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Se puede viajar de todos modos a los países más peligrosos?',
         answer:
-          'A veces es posible, pero está fuertemente desaconsejado: el seguro puede quedar anulado, las embajadas pueden no ofrecer asistencia consular y las condiciones pueden cambiar en cuestión de horas. Si el viaje es imprescindible, consulta los avisos actualizados a diario: nuestras puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas.',
+          `A veces es posible, pero está fuertemente desaconsejado: el seguro puede quedar anulado, las embajadas pueden no ofrecer asistencia consular y las condiciones pueden cambiar en cuestión de horas. Si el viaje es imprescindible, consulta los avisos actualizados a diario: nuestras puntuaciones se recalculan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas.`,
       },
     ],
     fr: [
@@ -212,7 +215,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Peut-on quand même voyager dans les pays les plus dangereux ?',
         answer:
-          "C'est parfois possible, mais fortement déconseillé : l'assurance peut être invalidée, les ambassades peuvent ne fournir aucune aide consulaire et la situation peut changer en quelques heures. Si le voyage est indispensable, consultez les avis mis à jour quotidiennement : nos scores sont recalculés chaque jour à partir de plus de 40 sources publiques.",
+          `C'est parfois possible, mais fortement déconseillé : l'assurance peut être invalidée, les ambassades peuvent ne fournir aucune aide consulaire et la situation peut changer en quelques heures. Si le voyage est indispensable, consultez les avis mis à jour quotidiennement : nos scores sont recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
       },
     ],
     pt: [
@@ -229,7 +232,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Ainda é possível viajar para os países mais perigosos?',
         answer:
-          'Às vezes é possível, mas fortemente desaconselhado: o seguro pode perder a validade, as embaixadas podem não oferecer assistência consular e as condições podem mudar em poucas horas. Se a viagem for essencial, consulte os avisos atualizados diariamente: nossas pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas.',
+          `Às vezes é possível, mas fortemente desaconselhado: o seguro pode perder a validade, as embaixadas podem não oferecer assistência consular e as condições podem mudar em poucas horas. Se a viagem for essencial, consulte os avisos atualizados diariamente: nossas pontuações são recalculadas todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
       },
     ],
     zh: [
@@ -246,7 +249,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '仍然可以前往最危险的国家旅行吗？',
         answer:
-          '有时可行，但强烈不建议：旅行保险可能失效，使领馆可能无法提供领事协助，局势也可能在数小时内变化。如果行程确有必要，请查看每日更新的警告信息——我们的评分每天根据 40 多个公开数据源重新计算。',
+          `有时可行，但强烈不建议：旅行保险可能失效，使领馆可能无法提供领事协助，局势也可能在数小时内变化。如果行程确有必要，请查看每日更新的警告信息——我们的评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算。`,
       },
     ],
     de: [
@@ -263,7 +266,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Kann man trotzdem in die gefährlichsten Länder reisen?',
         answer:
-          'Manchmal ist es möglich, aber dringend abzuraten: Versicherungen können ihre Gültigkeit verlieren, Botschaften können keine konsularische Hilfe leisten und die Lage kann sich binnen Stunden ändern. Ist die Reise unvermeidbar, prüfen Sie die täglich aktualisierten Hinweise — unsere Werte werden jeden Tag aus über 40 öffentlichen Quellen neu berechnet.',
+          `Manchmal ist es möglich, aber dringend abzuraten: Versicherungen können ihre Gültigkeit verlieren, Botschaften können keine konsularische Hilfe leisten und die Lage kann sich binnen Stunden ändern. Ist die Reise unvermeidbar, prüfen Sie die täglich aktualisierten Hinweise — unsere Werte werden jeden Tag aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet.`,
       },
     ],
   },
@@ -278,7 +281,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Which government advisories does this list rely on?',
         answer:
-          'We aggregate official travel advisories from multiple governments, including the United States, Canada, Australia and several European foreign ministries. Together with 40+ other public sources they feed the five weighted pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%), refreshed daily.',
+          `We aggregate official travel advisories from multiple governments, including the United States, Canada, Australia and several European foreign ministries. Together with ${OTHER_SOURCE_COUNT_DISPLAY} other public sources they feed the five weighted pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%), refreshed daily.`,
       },
       {
         question: 'How current is this list of countries to avoid?',
@@ -295,7 +298,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Su quali avvisi governativi si basa questa lista?',
         answer:
-          'Aggreghiamo gli avvisi di viaggio ufficiali di più governi, tra cui Stati Uniti, Canada, Australia e diversi ministeri degli esteri europei. Insieme ad altre 40+ fonti pubbliche alimentano i cinque pilastri ponderati (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%), aggiornati ogni giorno.',
+          `Aggreghiamo gli avvisi di viaggio ufficiali di più governi, tra cui Stati Uniti, Canada, Australia e diversi ministeri degli esteri europei. Insieme ad altre ${OTHER_SOURCE_COUNT_DISPLAY} fonti pubbliche alimentano i cinque pilastri ponderati (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%), aggiornati ogni giorno.`,
       },
       {
         question: 'Quanto è aggiornata questa lista di paesi da evitare?',
@@ -312,7 +315,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿En qué avisos gubernamentales se basa esta lista?',
         answer:
-          'Agregamos los avisos de viaje oficiales de varios gobiernos, incluidos Estados Unidos, Canadá, Australia y varios ministerios de exteriores europeos. Junto con más de 40 fuentes públicas alimentan los cinco pilares ponderados (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), actualizados a diario.',
+          `Agregamos los avisos de viaje oficiales de varios gobiernos, incluidos Estados Unidos, Canadá, Australia y varios ministerios de exteriores europeos. Junto con otras ${OTHER_SOURCE_COUNT_DISPLAY} fuentes públicas alimentan los cinco pilares ponderados (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), actualizados a diario.`,
       },
       {
         question: '¿Qué tan actualizada está esta lista de países a evitar?',
@@ -329,7 +332,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: "Sur quels avis gouvernementaux cette liste s'appuie-t-elle ?",
         answer:
-          "Nous agrégeons les avis aux voyageurs officiels de plusieurs gouvernements, dont les États-Unis, le Canada, l'Australie et plusieurs ministères européens des Affaires étrangères. Avec plus de 40 autres sources publiques, ils alimentent les cinq piliers pondérés (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %), actualisés chaque jour.",
+          `Nous agrégeons les avis aux voyageurs officiels de plusieurs gouvernements, dont les États-Unis, le Canada, l'Australie et plusieurs ministères européens des Affaires étrangères. Avec ${OTHER_SOURCE_COUNT_DISPLAY} autres sources publiques, ils alimentent les cinq piliers pondérés (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %), actualisés chaque jour.`,
       },
       {
         question: 'Cette liste de pays à éviter est-elle à jour ?',
@@ -346,7 +349,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Em quais avisos governamentais esta lista se baseia?',
         answer:
-          'Agregamos os avisos de viagem oficiais de vários governos, incluindo Estados Unidos, Canadá, Austrália e diversos ministérios de relações exteriores europeus. Junto com mais de 40 outras fontes públicas, eles alimentam os cinco pilares ponderados (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%), atualizados diariamente.',
+          `Agregamos os avisos de viagem oficiais de vários governos, incluindo Estados Unidos, Canadá, Austrália e diversos ministérios de relações exteriores europeus. Junto com ${OTHER_SOURCE_COUNT_DISPLAY} outras fontes públicas, eles alimentam os cinco pilares ponderados (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%), atualizados diariamente.`,
       },
       {
         question: 'Quão atualizada é esta lista de países a evitar?',
@@ -363,7 +366,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '这份列表依据哪些政府旅行警告？',
         answer:
-          '我们汇总了多国政府的官方旅行警告，包括美国、加拿大、澳大利亚以及多个欧洲国家外交部。这些警告与其他 40 多个公开数据源一起，构成每日更新的五大加权支柱（冲突 30%、犯罪 25%、医疗 20%、治理 15%、环境 10%）。',
+          `我们汇总了多国政府的官方旅行警告，包括美国、加拿大、澳大利亚以及多个欧洲国家外交部。这些警告与其他 ${OTHER_SOURCE_COUNT_DISPLAY} 个公开数据源一起，构成每日更新的五大加权支柱（冲突 30%、犯罪 25%、医疗 20%、治理 15%、环境 10%）。`,
       },
       {
         question: '这份应避免前往国家的列表有多新？',
@@ -380,7 +383,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Auf welche staatlichen Reisehinweise stützt sich diese Liste?',
         answer:
-          'Wir aggregieren offizielle Reisehinweise mehrerer Regierungen, darunter die USA, Kanada, Australien und mehrere europäische Außenministerien. Zusammen mit über 40 weiteren öffentlichen Quellen speisen sie die fünf gewichteten Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %), die täglich aktualisiert werden.',
+          `Wir aggregieren offizielle Reisehinweise mehrerer Regierungen, darunter die USA, Kanada, Australien und mehrere europäische Außenministerien. Zusammen mit ${OTHER_SOURCE_COUNT_DISPLAY} weiteren öffentlichen Quellen speisen sie die fünf gewichteten Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %), die täglich aktualisiert werden.`,
       },
       {
         question: 'Wie aktuell ist diese Liste der zu meidenden Länder?',
@@ -395,7 +398,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How is the ranking of safest countries for families calculated?',
         answer:
-          'It starts from the same 1-10 safety score — a weighted geometric mean of conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%) — with particular relevance for the pillars families care about most: healthcare quality and low crime. Data is refreshed daily from 40+ public sources.',
+          `It starts from the same 1-10 safety score — a weighted geometric mean of conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%) — with particular relevance for the pillars families care about most: healthcare quality and low crime. Data is refreshed daily from ${SOURCE_COUNT_DISPLAY} public sources.`,
       },
       {
         question: 'Which safety pillars matter most when travelling with children?',
@@ -412,7 +415,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Come viene calcolata la classifica dei paesi più sicuri per le famiglie?',
         answer:
-          'Parte dallo stesso punteggio di sicurezza da 1 a 10 — una media geometrica ponderata di conflitti (30%), criminalità (25%), sanità (20%), governance (15%) e ambiente (10%) — con particolare rilievo per i pilastri più importanti per le famiglie: qualità della sanità e bassa criminalità. I dati vengono aggiornati ogni giorno da oltre 40 fonti pubbliche.',
+          `Parte dallo stesso punteggio di sicurezza da 1 a 10 — una media geometrica ponderata di conflitti (30%), criminalità (25%), sanità (20%), governance (15%) e ambiente (10%) — con particolare rilievo per i pilastri più importanti per le famiglie: qualità della sanità e bassa criminalità. I dati vengono aggiornati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
       },
       {
         question: 'Quali pilastri di sicurezza contano di più quando si viaggia con bambini?',
@@ -429,7 +432,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Cómo se calcula la clasificación de los países más seguros para familias?',
         answer:
-          'Parte de la misma puntuación de seguridad de 1 a 10 — una media geométrica ponderada de conflictos (30%), criminalidad (25%), salud (20%), gobernanza (15%) y medio ambiente (10%) — con especial relevancia de los pilares que más importan a las familias: la calidad sanitaria y la baja criminalidad. Los datos se actualizan cada día a partir de más de 40 fuentes públicas.',
+          `Parte de la misma puntuación de seguridad de 1 a 10 — una media geométrica ponderada de conflictos (30%), criminalidad (25%), salud (20%), gobernanza (15%) y medio ambiente (10%) — con especial relevancia de los pilares que más importan a las familias: la calidad sanitaria y la baja criminalidad. Los datos se actualizan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas.`,
       },
       {
         question: '¿Qué pilares de seguridad importan más al viajar con niños?',
@@ -446,7 +449,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Comment le classement des pays les plus sûrs pour les familles est-il calculé ?',
         answer:
-          'Il part du même score de sécurité de 1 à 10 — une moyenne géométrique pondérée des piliers conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %) — en accordant une attention particulière aux piliers qui comptent le plus pour les familles : la qualité des soins et la faible criminalité. Les données sont actualisées chaque jour à partir de plus de 40 sources publiques.',
+          `Il part du même score de sécurité de 1 à 10 — une moyenne géométrique pondérée des piliers conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %) — en accordant une attention particulière aux piliers qui comptent le plus pour les familles : la qualité des soins et la faible criminalité. Les données sont actualisées chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
       },
       {
         question: "Quels piliers de sécurité comptent le plus lorsqu'on voyage avec des enfants ?",
@@ -463,7 +466,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Como é calculado o ranking dos países mais seguros para famílias?',
         answer:
-          'Ele parte da mesma pontuação de segurança de 1 a 10 — uma média geométrica ponderada de conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%) — com destaque para os pilares que mais importam às famílias: qualidade da saúde e baixa criminalidade. Os dados são atualizados todos os dias a partir de mais de 40 fontes públicas.',
+          `Ele parte da mesma pontuação de segurança de 1 a 10 — uma média geométrica ponderada de conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%) — com destaque para os pilares que mais importam às famílias: qualidade da saúde e baixa criminalidade. Os dados são atualizados todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
       },
       {
         question: 'Quais pilares de segurança importam mais ao viajar com crianças?',
@@ -480,7 +483,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '最适合家庭出行的安全国家排名是如何计算的？',
         answer:
-          '排名基于同样的 1-10 安全评分——由冲突（30%）、犯罪（25%）、医疗（20%）、治理（15%）和环境（10%）的加权几何平均数构成——并特别关注家庭最在意的支柱：医疗质量和低犯罪率。数据每天根据 40 多个公开数据源更新。',
+          `排名基于同样的 1-10 安全评分——由冲突（30%）、犯罪（25%）、医疗（20%）、治理（15%）和环境（10%）的加权几何平均数构成——并特别关注家庭最在意的支柱：医疗质量和低犯罪率。数据每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源更新。`,
       },
       {
         question: '带孩子旅行时哪些安全支柱最重要？',
@@ -497,7 +500,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie wird das Ranking der sichersten Länder für Familien berechnet?',
         answer:
-          'Es basiert auf demselben Sicherheitswert von 1 bis 10 — einem gewichteten geometrischen Mittel aus Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %) — mit besonderem Augenmerk auf die für Familien wichtigsten Säulen: Gesundheitsversorgung und niedrige Kriminalität. Die Daten werden täglich aus über 40 öffentlichen Quellen aktualisiert.',
+          `Es basiert auf demselben Sicherheitswert von 1 bis 10 — einem gewichteten geometrischen Mittel aus Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %) — mit besonderem Augenmerk auf die für Familien wichtigsten Säulen: Gesundheitsversorgung und niedrige Kriminalität. Die Daten werden täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen aktualisiert.`,
       },
       {
         question: 'Welche Sicherheitssäulen zählen beim Reisen mit Kindern am meisten?',
@@ -517,7 +520,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How is the ranking of safest countries for solo travelers calculated?',
         answer:
-          'It is based on the overall 1-10 safety score — a weighted geometric mean of five pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%) — with special attention to the pillars that matter most when travelling alone: crime and governance. Scores are updated daily from 40+ public sources.',
+          `It is based on the overall 1-10 safety score — a weighted geometric mean of five pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%) — with special attention to the pillars that matter most when travelling alone: crime and governance. Scores are updated daily from ${SOURCE_COUNT_DISPLAY} public sources.`,
       },
       {
         question: 'Why do crime and governance matter most for solo travelers?',
@@ -534,7 +537,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Come viene calcolata la classifica dei paesi più sicuri per chi viaggia da solo?',
         answer:
-          'Si basa sul punteggio complessivo da 1 a 10 — una media geometrica ponderata di cinque pilastri (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%) — con particolare attenzione ai pilastri più importanti per chi viaggia da solo: criminalità e governance. I punteggi sono aggiornati ogni giorno da oltre 40 fonti pubbliche.',
+          `Si basa sul punteggio complessivo da 1 a 10 — una media geometrica ponderata di cinque pilastri (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%) — con particolare attenzione ai pilastri più importanti per chi viaggia da solo: criminalità e governance. I punteggi sono aggiornati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
       },
       {
         question: 'Perché criminalità e governance contano di più per i viaggiatori solitari?',
@@ -544,14 +547,14 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Quali precauzioni basate sui dati dovrebbe prendere chi viaggia da solo?',
         answer:
-          'Controlla il punteggio aggiornato quotidianamente e il pilastro criminalità del paese prima di prenotare, registrati presso la tua ambasciata dove possibile e ricontrolla gli avvisi a ridosso della partenza: i punteggi vengono ricalcolati ogni giorno da oltre 40 fonti pubbliche e le condizioni possono cambiare.',
+          `Controlla il punteggio aggiornato quotidianamente e il pilastro criminalità del paese prima di prenotare, registrati presso la tua ambasciata dove possibile e ricontrolla gli avvisi a ridosso della partenza: i punteggi vengono ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche e le condizioni possono cambiare.`,
       },
     ],
     es: [
       {
         question: '¿Cómo se calcula la clasificación de los países más seguros para viajeros en solitario?',
         answer:
-          'Se basa en la puntuación global de 1 a 10 — una media geométrica ponderada de cinco pilares (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%) — con especial atención a los pilares más importantes al viajar solo: criminalidad y gobernanza. Las puntuaciones se actualizan a diario a partir de más de 40 fuentes públicas.',
+          `Se basa en la puntuación global de 1 a 10 — una media geométrica ponderada de cinco pilares (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%) — con especial atención a los pilares más importantes al viajar solo: criminalidad y gobernanza. Las puntuaciones se actualizan a diario a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas.`,
       },
       {
         question: '¿Por qué la criminalidad y la gobernanza importan más para quienes viajan solos?',
@@ -561,14 +564,14 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Qué precauciones basadas en datos debería tomar un viajero en solitario?',
         answer:
-          'Revisa la puntuación del país, actualizada a diario, y su pilar de criminalidad antes de reservar; regístrate en tu embajada cuando sea posible y vuelve a consultar los avisos cerca de la salida: las puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas y las condiciones pueden cambiar.',
+          `Revisa la puntuación del país, actualizada a diario, y su pilar de criminalidad antes de reservar; regístrate en tu embajada cuando sea posible y vuelve a consultar los avisos cerca de la salida: las puntuaciones se recalculan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas y las condiciones pueden cambiar.`,
       },
     ],
     fr: [
       {
         question: 'Comment le classement des pays les plus sûrs pour les voyageurs en solo est-il calculé ?',
         answer:
-          'Il repose sur le score global de 1 à 10 — une moyenne géométrique pondérée de cinq piliers (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %) — avec une attention particulière aux piliers les plus importants quand on voyage seul : la criminalité et la gouvernance. Les scores sont mis à jour quotidiennement à partir de plus de 40 sources publiques.',
+          `Il repose sur le score global de 1 à 10 — une moyenne géométrique pondérée de cinq piliers (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %) — avec une attention particulière aux piliers les plus importants quand on voyage seul : la criminalité et la gouvernance. Les scores sont mis à jour quotidiennement à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
       },
       {
         question: 'Pourquoi la criminalité et la gouvernance comptent-elles le plus pour les voyageurs en solo ?',
@@ -578,14 +581,14 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Quelles précautions fondées sur les données un voyageur en solo devrait-il prendre ?',
         answer:
-          "Vérifiez le score du pays, mis à jour quotidiennement, et son pilier criminalité avant de réserver ; inscrivez-vous auprès de votre ambassade lorsque c'est possible et revérifiez les avis peu avant le départ : les scores sont recalculés chaque jour à partir de plus de 40 sources publiques et la situation peut évoluer.",
+          `Vérifiez le score du pays, mis à jour quotidiennement, et son pilier criminalité avant de réserver ; inscrivez-vous auprès de votre ambassade lorsque c'est possible et revérifiez les avis peu avant le départ : les scores sont recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques et la situation peut évoluer.`,
       },
     ],
     pt: [
       {
         question: 'Como é calculado o ranking dos países mais seguros para quem viaja sozinho?',
         answer:
-          'Ele se baseia na pontuação geral de 1 a 10 — uma média geométrica ponderada de cinco pilares (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%) — com atenção especial aos pilares que mais importam para quem viaja só: criminalidade e governança. As pontuações são atualizadas diariamente a partir de mais de 40 fontes públicas.',
+          `Ele se baseia na pontuação geral de 1 a 10 — uma média geométrica ponderada de cinco pilares (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%) — com atenção especial aos pilares que mais importam para quem viaja só: criminalidade e governança. As pontuações são atualizadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
       },
       {
         question: 'Por que criminalidade e governança importam mais para quem viaja sozinho?',
@@ -595,14 +598,14 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Quais precauções baseadas em dados quem viaja sozinho deve tomar?',
         answer:
-          'Verifique a pontuação do país, atualizada diariamente, e o pilar de criminalidade antes de reservar; registre-se na sua embaixada quando possível e confira novamente os avisos perto da partida: as pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas e as condições podem mudar.',
+          `Verifique a pontuação do país, atualizada diariamente, e o pilar de criminalidade antes de reservar; registre-se na sua embaixada quando possível e confira novamente os avisos perto da partida: as pontuações são recalculadas todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas e as condições podem mudar.`,
       },
     ],
     zh: [
       {
         question: '最适合独自旅行的安全国家排名是如何计算的？',
         answer:
-          '排名基于 1-10 的综合安全评分——五大支柱（冲突 30%、犯罪 25%、医疗 20%、治理 15%、环境 10%）的加权几何平均数——并特别关注独自旅行时最重要的支柱：犯罪和治理。评分每天根据 40 多个公开数据源更新。',
+          `排名基于 1-10 的综合安全评分——五大支柱（冲突 30%、犯罪 25%、医疗 20%、治理 15%、环境 10%）的加权几何平均数——并特别关注独自旅行时最重要的支柱：犯罪和治理。评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源更新。`,
       },
       {
         question: '为什么犯罪和治理对独自旅行者最重要？',
@@ -612,14 +615,14 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '独自旅行者应采取哪些基于数据的预防措施？',
         answer:
-          '预订前查看该国每日更新的评分及其犯罪支柱得分，可能的话向本国使领馆登记行程，并在出发前再次核查旅行警告——评分每天根据 40 多个公开数据源重新计算，局势可能发生变化。',
+          `预订前查看该国每日更新的评分及其犯罪支柱得分，可能的话向本国使领馆登记行程，并在出发前再次核查旅行警告——评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算，局势可能发生变化。`,
       },
     ],
     de: [
       {
         question: 'Wie wird das Ranking der sichersten Länder für Alleinreisende berechnet?',
         answer:
-          'Es basiert auf dem Gesamtwert von 1 bis 10 — einem gewichteten geometrischen Mittel aus fünf Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %) — mit besonderem Fokus auf die für Alleinreisende wichtigsten Säulen: Kriminalität und Regierungsführung. Die Werte werden täglich aus über 40 öffentlichen Quellen aktualisiert.',
+          `Es basiert auf dem Gesamtwert von 1 bis 10 — einem gewichteten geometrischen Mittel aus fünf Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %) — mit besonderem Fokus auf die für Alleinreisende wichtigsten Säulen: Kriminalität und Regierungsführung. Die Werte werden täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen aktualisiert.`,
       },
       {
         question: 'Warum sind Kriminalität und Regierungsführung für Alleinreisende am wichtigsten?',
@@ -629,7 +632,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Welche datenbasierten Vorsichtsmaßnahmen sollten Alleinreisende treffen?',
         answer:
-          'Prüfen Sie vor der Buchung den täglich aktualisierten Länderwert und die Kriminalitätssäule, registrieren Sie sich nach Möglichkeit bei Ihrer Botschaft und kontrollieren Sie die Reisehinweise kurz vor Abreise erneut — die Werte werden jeden Tag aus über 40 öffentlichen Quellen neu berechnet, die Lage kann sich also ändern.',
+          `Prüfen Sie vor der Buchung den täglich aktualisierten Länderwert und die Kriminalitätssäule, registrieren Sie sich nach Möglichkeit bei Ihrer Botschaft und kontrollieren Sie die Reisehinweise kurz vor Abreise erneut — die Werte werden jeden Tag aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet, die Lage kann sich also ändern.`,
       },
     ],
   },
@@ -639,7 +642,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How is the safety improvement trend calculated?',
         answer:
-          "We compare each country's current 1-10 safety score with its historical snapshots and rank countries by the largest positive change. Because scores are recalculated daily from 40+ public sources, the trend captures real shifts in conflict, crime, health, governance and environment data.",
+          `We compare each country's current 1-10 safety score with its historical snapshots and rank countries by the largest positive change. Because scores are recalculated daily from ${SOURCE_COUNT_DISPLAY} public sources, the trend captures real shifts in conflict, crime, health, governance and environment data.`,
       },
       {
         question: "What causes a country's safety score to improve?",
@@ -656,7 +659,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Come viene calcolato il trend di miglioramento della sicurezza?',
         answer:
-          'Confrontiamo il punteggio di sicurezza attuale da 1 a 10 di ogni paese con i suoi snapshot storici e ordiniamo i paesi in base alla variazione positiva maggiore. Poiché i punteggi vengono ricalcolati ogni giorno da oltre 40 fonti pubbliche, il trend cattura cambiamenti reali nei dati su conflitti, criminalità, sanità, governance e ambiente.',
+          `Confrontiamo il punteggio di sicurezza attuale da 1 a 10 di ogni paese con i suoi snapshot storici e ordiniamo i paesi in base alla variazione positiva maggiore. Poiché i punteggi vengono ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche, il trend cattura cambiamenti reali nei dati su conflitti, criminalità, sanità, governance e ambiente.`,
       },
       {
         question: 'Cosa fa migliorare il punteggio di sicurezza di un paese?',
@@ -673,7 +676,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Cómo se calcula la tendencia de mejora de la seguridad?',
         answer:
-          'Comparamos la puntuación actual de 1 a 10 de cada país con sus registros históricos y ordenamos los países según el mayor cambio positivo. Como las puntuaciones se recalculan a diario a partir de más de 40 fuentes públicas, la tendencia refleja cambios reales en los datos de conflictos, criminalidad, salud, gobernanza y medio ambiente.',
+          `Comparamos la puntuación actual de 1 a 10 de cada país con sus registros históricos y ordenamos los países según el mayor cambio positivo. Como las puntuaciones se recalculan a diario a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas, la tendencia refleja cambios reales en los datos de conflictos, criminalidad, salud, gobernanza y medio ambiente.`,
       },
       {
         question: '¿Qué hace que mejore la puntuación de seguridad de un país?',
@@ -690,7 +693,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: "Comment la tendance d'amélioration de la sécurité est-elle calculée ?",
         answer:
-          "Nous comparons le score actuel de 1 à 10 de chaque pays avec ses relevés historiques et classons les pays selon la plus forte variation positive. Les scores étant recalculés chaque jour à partir de plus de 40 sources publiques, la tendance reflète des évolutions réelles des données sur les conflits, la criminalité, la santé, la gouvernance et l'environnement.",
+          `Nous comparons le score actuel de 1 à 10 de chaque pays avec ses relevés historiques et classons les pays selon la plus forte variation positive. Les scores étant recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques, la tendance reflète des évolutions réelles des données sur les conflits, la criminalité, la santé, la gouvernance et l'environnement.`,
       },
       {
         question: "Qu'est-ce qui fait progresser le score de sécurité d'un pays ?",
@@ -707,7 +710,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Como é calculada a tendência de melhora da segurança?',
         answer:
-          'Comparamos a pontuação atual de 1 a 10 de cada país com seus registros históricos e classificamos os países pela maior variação positiva. Como as pontuações são recalculadas diariamente a partir de mais de 40 fontes públicas, a tendência captura mudanças reais nos dados de conflitos, criminalidade, saúde, governança e meio ambiente.',
+          `Comparamos a pontuação atual de 1 a 10 de cada país com seus registros históricos e classificamos os países pela maior variação positiva. Como as pontuações são recalculadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas, a tendência captura mudanças reais nos dados de conflitos, criminalidade, saúde, governança e meio ambiente.`,
       },
       {
         question: 'O que faz a pontuação de segurança de um país melhorar?',
@@ -724,7 +727,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '安全改善趋势是如何计算的？',
         answer:
-          '我们将每个国家当前的 1-10 安全评分与其历史数据快照进行比较，并按最大正向变化排序。由于评分每天根据 40 多个公开数据源重新计算，该趋势反映的是冲突、犯罪、医疗、治理和环境数据的真实变化。',
+          `我们将每个国家当前的 1-10 安全评分与其历史数据快照进行比较，并按最大正向变化排序。由于评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算，该趋势反映的是冲突、犯罪、医疗、治理和环境数据的真实变化。`,
       },
       {
         question: '是什么让一个国家的安全评分上升？',
@@ -741,7 +744,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie wird der Trend zur Sicherheitsverbesserung berechnet?',
         answer:
-          'Wir vergleichen den aktuellen 1-10-Sicherheitswert jedes Landes mit seinen historischen Datenständen und sortieren die Länder nach der größten positiven Veränderung. Da die Werte täglich aus über 40 öffentlichen Quellen neu berechnet werden, bildet der Trend reale Veränderungen bei Konflikt-, Kriminalitäts-, Gesundheits-, Regierungs- und Umweltdaten ab.',
+          `Wir vergleichen den aktuellen 1-10-Sicherheitswert jedes Landes mit seinen historischen Datenständen und sortieren die Länder nach der größten positiven Veränderung. Da die Werte täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet werden, bildet der Trend reale Veränderungen bei Konflikt-, Kriminalitäts-, Gesundheits-, Regierungs- und Umweltdaten ab.`,
       },
       {
         question: 'Wodurch verbessert sich der Sicherheitswert eines Landes?',
@@ -761,7 +764,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'How is the declining safety trend calculated?',
         answer:
-          "We compare each country's current 1-10 score with historical snapshots and rank countries by the largest negative change. Scores are recomputed daily from 40+ public sources, so new conflicts, crime waves or advisory upgrades appear in the trend quickly.",
+          `We compare each country's current 1-10 score with historical snapshots and rank countries by the largest negative change. Scores are recomputed daily from ${SOURCE_COUNT_DISPLAY} public sources, so new conflicts, crime waves or advisory upgrades appear in the trend quickly.`,
       },
       {
         question: "What causes a country's safety score to decline?",
@@ -778,7 +781,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Come viene calcolato il trend di peggioramento della sicurezza?',
         answer:
-          'Confrontiamo il punteggio attuale da 1 a 10 di ogni paese con gli snapshot storici e ordiniamo i paesi in base alla variazione negativa maggiore. I punteggi vengono ricalcolati ogni giorno da oltre 40 fonti pubbliche, quindi nuovi conflitti, ondate di criminalità o innalzamenti degli avvisi emergono rapidamente nel trend.',
+          `Confrontiamo il punteggio attuale da 1 a 10 di ogni paese con gli snapshot storici e ordiniamo i paesi in base alla variazione negativa maggiore. I punteggi vengono ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche, quindi nuovi conflitti, ondate di criminalità o innalzamenti degli avvisi emergono rapidamente nel trend.`,
       },
       {
         question: 'Cosa fa peggiorare il punteggio di sicurezza di un paese?',
@@ -795,7 +798,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿Cómo se calcula la tendencia de deterioro de la seguridad?',
         answer:
-          'Comparamos la puntuación actual de 1 a 10 de cada país con sus registros históricos y ordenamos los países según el mayor cambio negativo. Las puntuaciones se recalculan cada día a partir de más de 40 fuentes públicas, por lo que los nuevos conflictos, las olas de delincuencia o las subidas de los avisos aparecen rápidamente en la tendencia.',
+          `Comparamos la puntuación actual de 1 a 10 de cada país con sus registros históricos y ordenamos los países según el mayor cambio negativo. Las puntuaciones se recalculan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas, por lo que los nuevos conflictos, las olas de delincuencia o las subidas de los avisos aparecen rápidamente en la tendencia.`,
       },
       {
         question: '¿Qué hace que empeore la puntuación de seguridad de un país?',
@@ -812,7 +815,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Comment la tendance de dégradation de la sécurité est-elle calculée ?',
         answer:
-          "Nous comparons le score actuel de 1 à 10 de chaque pays avec ses relevés historiques et classons les pays selon la plus forte variation négative. Les scores sont recalculés chaque jour à partir de plus de 40 sources publiques : nouveaux conflits, vagues de criminalité ou relèvements d'avis apparaissent donc rapidement dans la tendance.",
+          `Nous comparons le score actuel de 1 à 10 de chaque pays avec ses relevés historiques et classons les pays selon la plus forte variation négative. Les scores sont recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques : nouveaux conflits, vagues de criminalité ou relèvements d'avis apparaissent donc rapidement dans la tendance.`,
       },
       {
         question: "Qu'est-ce qui fait baisser le score de sécurité d'un pays ?",
@@ -829,7 +832,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Como é calculada a tendência de piora da segurança?',
         answer:
-          'Comparamos a pontuação atual de 1 a 10 de cada país com os registros históricos e classificamos os países pela maior variação negativa. As pontuações são recalculadas todos os dias a partir de mais de 40 fontes públicas, então novos conflitos, ondas de criminalidade ou elevações de avisos aparecem rapidamente na tendência.',
+          `Comparamos a pontuação atual de 1 a 10 de cada país com os registros históricos e classificamos os países pela maior variação negativa. As pontuações são recalculadas todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas, então novos conflitos, ondas de criminalidade ou elevações de avisos aparecem rapidamente na tendência.`,
       },
       {
         question: 'O que faz a pontuação de segurança de um país piorar?',
@@ -846,7 +849,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '安全恶化趋势是如何计算的？',
         answer:
-          '我们将每个国家当前的 1-10 评分与历史数据快照进行比较，并按最大负向变化排序。评分每天根据 40 多个公开数据源重新计算，因此新的冲突、犯罪潮或警告升级会很快体现在趋势中。',
+          `我们将每个国家当前的 1-10 评分与历史数据快照进行比较，并按最大负向变化排序。评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算，因此新的冲突、犯罪潮或警告升级会很快体现在趋势中。`,
       },
       {
         question: '是什么导致一个国家的安全评分下降？',
@@ -863,7 +866,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Wie wird der Trend zur Sicherheitsverschlechterung berechnet?',
         answer:
-          'Wir vergleichen den aktuellen 1-10-Wert jedes Landes mit historischen Datenständen und sortieren die Länder nach der größten negativen Veränderung. Die Werte werden täglich aus über 40 öffentlichen Quellen neu berechnet, sodass neue Konflikte, Kriminalitätswellen oder hochgestufte Warnungen schnell im Trend erscheinen.',
+          `Wir vergleichen den aktuellen 1-10-Wert jedes Landes mit historischen Datenständen und sortieren die Länder nach der größten negativen Veränderung. Die Werte werden täglich aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet, sodass neue Konflikte, Kriminalitätswellen oder hochgestufte Warnungen schnell im Trend erscheinen.`,
       },
       {
         question: 'Wodurch verschlechtert sich der Sicherheitswert eines Landes?',
