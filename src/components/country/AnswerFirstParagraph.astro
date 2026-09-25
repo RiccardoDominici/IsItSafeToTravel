@@ -32,10 +32,10 @@ function ordinal(n: number, l: Lang): string {
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 const pillarLabels: Record<Lang, Record<string, string>> = {
   en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
-  it: { conflict: 'conflitto', crime: 'criminalita', health: 'salute', governance: 'governance', environment: 'ambiente' },
+  it: { conflict: 'conflitto', crime: 'criminalità', health: 'salute', governance: 'governance', environment: 'ambiente' },
   es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
-  fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
-  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
+  fr: { conflict: 'conflit', crime: 'criminalité', health: 'santé', governance: 'gouvernance', environment: 'environnement' },
+  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saúde', governance: 'governança', environment: 'meio ambiente' },
   zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '环境' },
   de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
 };
@@ -44,7 +44,7 @@ const riskLevels: Record<Lang, [string, string, string]> = {
   en: ['Low risk', 'Moderate risk', 'High risk'],
   it: ['rischio basso', 'rischio moderato', 'rischio alto'],
   es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-  fr: ['risque faible', 'risque modere', 'risque eleve'],
+  fr: ['risque faible', 'risque modéré', 'risque élevé'],
   pt: ['risco baixo', 'risco moderado', 'risco alto'],
   zh: ['低风险', '中等风险', '高风险'],
   de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],

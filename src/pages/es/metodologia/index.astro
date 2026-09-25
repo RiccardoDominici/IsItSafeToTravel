@@ -15,11 +15,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
 const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang, dateModified);
 const faqQuestions = [
-  { question: 'Que mide la categoria Conflicto en la puntuacion de seguridad?', answer: t('methodology.pillar.conflict.description' as any) },
-  { question: 'Que mide la categoria Criminalidad en la puntuacion de seguridad?', answer: t('methodology.pillar.crime.description' as any) },
-  { question: 'Que mide la categoria Salud en la puntuacion de seguridad?', answer: t('methodology.pillar.health.description' as any) },
-  { question: 'Que mide la categoria Gobernanza en la puntuacion de seguridad?', answer: t('methodology.pillar.governance.description' as any) },
-  { question: 'Que mide la categoria Medio Ambiente en la puntuacion de seguridad?', answer: t('methodology.pillar.environment.description' as any) },
+  { question: '¿Qué mide la categoría Conflicto en la puntuación de seguridad?', answer: t('methodology.pillar.conflict.description' as any) },
+  { question: '¿Qué mide la categoría Criminalidad en la puntuación de seguridad?', answer: t('methodology.pillar.crime.description' as any) },
+  { question: '¿Qué mide la categoría Salud en la puntuación de seguridad?', answer: t('methodology.pillar.health.description' as any) },
+  { question: '¿Qué mide la categoría Gobernanza en la puntuación de seguridad?', answer: t('methodology.pillar.governance.description' as any) },
+  { question: '¿Qué mide la categoría Medio Ambiente en la puntuación de seguridad?', answer: t('methodology.pillar.environment.description' as any) },
 ];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
 const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd();
@@ -227,7 +227,7 @@ const advisorySources = [
       </div>
     </section>
 
-    <!-- Bandas de puntuacion -->
+    <!-- Bandas de puntuación -->
     <section class="mb-10">
       <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.band_legend_title')}</h2>
       <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.band_legend_text')}</p>

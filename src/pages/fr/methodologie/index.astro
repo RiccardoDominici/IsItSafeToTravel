@@ -15,11 +15,11 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 const dateModified = new Date().toISOString().split('T')[0];
 const webPageJsonLd = buildWebPageJsonLd(t('methodology.title'), t('methodology.description'), canonicalUrl, lang, dateModified);
 const faqQuestions = [
-  { question: 'Que mesure la categorie Conflit dans le score de securite ?', answer: t('methodology.pillar.conflict.description' as any) },
-  { question: 'Que mesure la categorie Criminalite dans le score de securite ?', answer: t('methodology.pillar.crime.description' as any) },
-  { question: 'Que mesure la categorie Sante dans le score de securite ?', answer: t('methodology.pillar.health.description' as any) },
-  { question: 'Que mesure la categorie Gouvernance dans le score de securite ?', answer: t('methodology.pillar.governance.description' as any) },
-  { question: 'Que mesure la categorie Environnement dans le score de securite ?', answer: t('methodology.pillar.environment.description' as any) },
+  { question: 'Que mesure la catégorie Conflit dans le score de sécurité ?', answer: t('methodology.pillar.conflict.description' as any) },
+  { question: 'Que mesure la catégorie Criminalité dans le score de sécurité ?', answer: t('methodology.pillar.crime.description' as any) },
+  { question: 'Que mesure la catégorie Santé dans le score de sécurité ?', answer: t('methodology.pillar.health.description' as any) },
+  { question: 'Que mesure la catégorie Gouvernance dans le score de sécurité ?', answer: t('methodology.pillar.governance.description' as any) },
+  { question: 'Que mesure la catégorie Environnement dans le score de sécurité ?', answer: t('methodology.pillar.environment.description' as any) },
 ];
 const faqJsonLd = buildFaqPageJsonLd(faqQuestions);
 const methodologyDatasetJsonLd = buildMethodologyDatasetJsonLd();
