@@ -214,7 +214,8 @@ const flag = primaryIso3 ? flagEmoji(primaryIso3) : null;
           </span>
         )}
       </span>
-      <span class:list={['text-[0.68rem] font-bold tracking-wide uppercase', sc.text]}>{kickerText}</span>
+      {/* was text-[0.68rem] (10.9px) — under the ~12px mobile-legibility floor (V2, 2026-09 audit) */}
+      <span class:list={['text-xs font-bold tracking-wide uppercase', sc.text]}>{kickerText}</span>
       {scoreBig && <span class:list={['ml-auto text-xl font-extrabold tabular-nums', sc.text]}>{scoreBig}</span>}
     </div>
 
