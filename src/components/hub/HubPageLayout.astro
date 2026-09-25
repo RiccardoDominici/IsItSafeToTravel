@@ -8,7 +8,8 @@ import Breadcrumb from '../Breadcrumb.astro';
 import CountryRankRow from './CountryRankRow.astro';
 import HubFaq from './HubFaq.astro';
 import { getHubFaq, type HubType } from '../../lib/hub-faq';
-import { buildFaqPageJsonLd, selectEligiblePillars } from '../../lib/seo';
+import { buildFaqPageJsonLd, selectEligiblePillars, WEBSITE_ID, localeMap } from '../../lib/seo';
+import { getLastmodMap } from '../../lib/lastmod';
 import { getBiggestMovers } from '../../lib/hub-data';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
@@ -31,17 +32,40 @@ interface Props {
 
 const { lang, title, description, intro, jsonLd, countries, hubType, showDelta = false, deltas, breadcrumbItems } = Astro.props;
 
-// FAQ: visible section + FAQPage JSON-LD merged with the page's ItemList in a single @graph
+// JSON-LD @graph: ItemList (the ranking itself, passed in as `jsonLd`) plus a
+// CollectionPage node and, when this hub has a FAQ, a FAQPage node.
+//
+// S6 (2026-09 SEO audit): ranking hub pages (safest/most-dangerous/regions/...)
+// never had a WebPage/CollectionPage node or a dateModified, unlike /news/
+// (the site's other listing page, which pairs CollectionPage+WebPage with its
+// ItemList). Added unconditionally — not just inside the FAQ branch — so
+// region pages (which have no hubType/FAQ) get it too. isPartOf/mainEntity
+// connect it into the site graph (S1): part of the WebSite, primary entity is
+// the ItemList right next to it in the same @graph.
 const faqData = hubType ? getHubFaq(hubType, lang) : null;
-let finalJsonLd = jsonLd;
+const { '@context': _ctxItemList, ...itemListRest } = jsonLd;
+const hubUrl = typeof jsonLd.url === 'string' ? jsonLd.url : '';
+const itemListNode = { ...itemListRest, '@id': `${hubUrl}#itemlist` };
+const collectionPageNode = {
+  '@type': ['CollectionPage', 'WebPage'],
+  '@id': `${hubUrl}#collectionpage`,
+  name: title,
+  description,
+  url: hubUrl,
+  inLanguage: localeMap[lang],
+  dateModified: getLastmodMap().snapshotDate,
+  isPartOf: { '@id': WEBSITE_ID },
+  mainEntity: { '@id': `${hubUrl}#itemlist` },
+};
+const graphNodes: Record<string, unknown>[] = [itemListNode, collectionPageNode];
 if (faqData) {
-  const { '@context': _ctx1, ...itemListNode } = jsonLd;
-  const { '@context': _ctx2, ...faqPageNode } = buildFaqPageJsonLd(faqData);
-  finalJsonLd = {
-    '@context': 'https://schema.org',
-    '@graph': [itemListNode, faqPageNode],
-  };
+  const { '@context': _ctxFaq, ...faqPageNode } = buildFaqPageJsonLd(faqData);
+  graphNodes.push(faqPageNode);
 }
+const finalJsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': graphNodes,
+};
 const t = useTranslations(lang);
 const r = routes[lang];
 const dateLocaleMap: Record<Lang, string> = {
