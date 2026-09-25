@@ -12,6 +12,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { regionMap as libRegionMap } from "../src/lib/regions.js";
 import { routes, type Lang } from "../src/i18n/ui.js";
+import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from "../src/lib/site-stats.js";
 
 // The 6 non-English locales, in the order shown next to every country entry
 // and in llms.txt's "## Languages" section (GEO-02: both files used to be
@@ -118,9 +119,9 @@ function main() {
   lines.push("");
   lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." Data is updated daily and licensed under CC BY-NC 4.0.`);
   lines.push("");
-  lines.push(`> **Source:** IsItSafeToTravel.org — Free, open-source travel safety platform. Data updated daily from government advisories (US, UK, Canada, Australia), Global Peace Index, INFORM Risk Index, ReliefWeb, and GDACS.`);
+  lines.push(`> **Source:** IsItSafeToTravel.org — Free, independently run travel safety platform. Data updated daily from ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories (e.g. US, UK, Canada, Australia) plus World Bank, V-Dem, Global Peace Index, INFORM Risk Index, UCDP, ReliefWeb, and GDACS.`);
   lines.push("");
-  lines.push(`> **Data snapshot:** ${today}. Scores refresh daily at 06:00 UTC from 40+ public sources.`);
+  lines.push(`> **Data snapshot:** ${today}. Scores are recomputed once a day from ${SOURCE_COUNT_DISPLAY} public sources.`);
   lines.push("");
 
   // How to Cite
@@ -135,7 +136,7 @@ function main() {
   // Site Overview (embed current llms.txt content inline)
   lines.push("## Site Overview");
   lines.push("");
-  lines.push("IsItSafeToTravel.org is a free, open-source travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).");
+  lines.push("IsItSafeToTravel.org is a free, independently run travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).");
   lines.push("");
   lines.push("### Main Pages");
   lines.push("");
@@ -163,7 +164,7 @@ function main() {
   lines.push(`- **Governance** (weight: ${wpct("governance")}) — Political stability, rule of law, corruption`);
   lines.push(`- **Environment** (weight: ${wpct("environment")}) — Natural disaster risk, climate hazards`);
   lines.push("");
-  lines.push('The overall score is an **uncertainty-weighted (Bayesian shrinkage) geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would, and each pillar is shrunk toward a conservative, region-anchored prior in proportion to how much fresh data backs it, so thin or stale evidence never masquerades as certainty. A calibrated, importance-weighted consensus of 37 government travel advisories feeds into the Conflict pillar alongside UCDP Georeferenced Event Dataset conflict-death counts (via the Our World in Data mirror, CC-BY), and a count-damped modifier gently discounts the score when advisories broadly agree on "Do Not Travel" — there are no hard caps or floors. Scores range from roughly 3.4 to 8.9 (global mean ~6.60) and are recomputed daily; each country also carries a confidence value (0-1) showing how much data backs its score.');
+  lines.push(`The overall score is an **uncertainty-weighted (Bayesian shrinkage) geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would, and each pillar is shrunk toward a conservative, region-anchored prior in proportion to how much fresh data backs it, so thin or stale evidence never masquerades as certainty. A calibrated, importance-weighted consensus of ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories feeds into the Conflict pillar alongside UCDP Georeferenced Event Dataset conflict-death counts (via the Our World in Data mirror, CC-BY), and a count-damped modifier gently discounts the score when advisories broadly agree on "Do Not Travel" — there are no hard caps or floors. Scores range from roughly 3.4 to 8.9 (global mean ~6.60) and are recomputed daily; each country also carries a confidence value (0-1) showing how much data backs its score.`);
   lines.push("");
 
   // Global Safety Score
@@ -339,7 +340,7 @@ function main() {
   // ────── build llms.txt ──────
   const llms = `# IsItSafeToTravel.org
 
-> Free, open-source travel safety platform providing composite safety scores for ${countries.length} countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
+> Free, independently run travel safety platform providing composite safety scores for ${countries.length} countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
 
 ## Main Pages
 
@@ -383,9 +384,9 @@ This site is fully translated into 7 languages; every country page exists in all
 
 ${languageLines}
 
-## Open Source
+## Source Code
 
-- Source code: https://github.com/RiccardoDominici/IsItSafeToTravel
+- Publicly viewable (not open-source licensed — see the repository for terms): https://github.com/RiccardoDominici/IsItSafeToTravel
 `;
 
   fs.writeFileSync(OUT_LLMS, llms, "utf-8");
