@@ -329,8 +329,13 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     }
   },
   "it": {
-    "q1": "E sicuro viaggiare in {name} nel {year}?",
-    "q2": "Qual e il rischio maggiore viaggiando in {name}?",
+    // {nameIn} (q1/q2/a3Consensus below) is a SEPARATE slot from {name}: it's
+    // filled with the full "in/negli/alle/a {name}" locative phrase
+    // (getItalianLocative in country-grammar.ts, wired in via getCountryFaqData
+    // in seo.ts), not the bare name — {name} itself stays bare for the many
+    // subject-position uses elsewhere in this file (a1Verdict, a2, a3Intro...).
+    "q1": "E sicuro viaggiare {nameIn} nel {year}?",
+    "q2": "Qual e il rischio maggiore viaggiando {nameIn}?",
     "q3": "Cosa dicono gli avvisi di viaggio governativi su {name}?",
     "a1Verdict": {
       "excellent": "Sì — {name} è una delle destinazioni più sicure del nostro indice: a {monthYear} ottiene {score}/10, un punteggio classificato come {riskLevel}.",
@@ -364,9 +369,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "a3Intro": "A {monthYear}, {name} conta {advisoryCount}.",
     "a3Consensus": {
       "normal": "Il quadro complessivo è rassicurante: la maggior parte dei governi raccomanda solo precauzioni normali per {name} e nessuno lo colloca oltre un avviso di basso livello.",
-      "caution": "L'indicazione prevalente è di usare maggiore prudenza in {name}; l'avviso più severo — {govLevel} — arriva da {governments}.",
-      "reconsider": "L'indicazione prevalente è di riconsiderare il viaggio in {name}: gli avvisi più severi — {govLevel} — sono stati emessi da {governments}.",
-      "avoid": "La maggior parte dei governi sconsiglia ormai del tutto i viaggi in {name}: un avviso di livello massimo — {govLevel} — è stato emesso da {governments}, tra gli altri."
+      "caution": "L'indicazione prevalente è di usare maggiore prudenza {nameIn}; l'avviso più severo — {govLevel} — arriva da {governments}.",
+      "reconsider": "L'indicazione prevalente è di riconsiderare il viaggio {nameIn}: gli avvisi più severi — {govLevel} — sono stati emessi da {governments}.",
+      "avoid": "La maggior parte dei governi sconsiglia ormai del tutto i viaggi {nameIn}: un avviso di livello massimo — {govLevel} — è stato emesso da {governments}, tra gli altri."
     },
     "a3Cap": "Questi avvisi sono abbastanza gravi da pesare fortemente sul nostro indice: quando la maggioranza dei governi emette un avviso di non viaggiare, il punteggio complessivo di {name} viene spinto decisamente verso il basso, oltre a quanto già indicato dagli altri pilastri.",
     "a3None": "A {monthYear}, nessun governo presente nel nostro set di dati pubblica un avviso di viaggio per {name}: è il caso tipico di territori molto piccoli o remoti. Basa la tua decisione sui punteggi dei pilastri qui sopra e verifica le indicazioni più recenti del tuo governo prima di partire.",
@@ -458,9 +463,13 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "a3Intro": "En {monthYear}, on recense {advisoryCount} pour {name}.",
     "a3Consensus": {
       "normal": "Le tableau d'ensemble est rassurant : la plupart des gouvernements ne recommandent que des précautions normales pour {name}, et aucun ne le place au-dessus d'un avis de faible niveau.",
-      "caution": "La consigne dominante est de redoubler de vigilance lors d'une visite en {name} ; l'avertissement le plus sévère — {govLevel} — émane de {governments}.",
-      "reconsider": "La consigne dominante est de reconsidérer tout voyage en {name} : les avertissements les plus sévères — {govLevel} — ont été émis par {governments}.",
-      "avoid": "La plupart des gouvernements déconseillent désormais tout voyage en {name} : l'avertissement du niveau le plus élevé — {govLevel} — a été émis par {governments}, entre autres."
+      // {namePrep} is a SEPARATE slot from {name}: filled with the full
+      // au/en/aux/à phrase (getFrenchPreposition in country-grammar.ts) —
+      // the old bare "en {name}" was wrong for every masculine country
+      // (e.g. "en Japon" should be "au Japon").
+      "caution": "La consigne dominante est de redoubler de vigilance lors d'une visite {namePrep} ; l'avertissement le plus sévère — {govLevel} — émane de {governments}.",
+      "reconsider": "La consigne dominante est de reconsidérer tout voyage {namePrep} : les avertissements les plus sévères — {govLevel} — ont été émis par {governments}.",
+      "avoid": "La plupart des gouvernements déconseillent désormais tout voyage {namePrep} : l'avertissement du niveau le plus élevé — {govLevel} — a été émis par {governments}, entre autres."
     },
     "a3Cap": "Ces avertissements sont assez graves pour peser fortement sur notre indice : lorsqu'une majorité de gouvernements émet un avis « ne pas voyager », le score global de {name} est fortement tiré vers le bas, en plus de ce qu'indiquent déjà ses autres piliers.",
     "a3None": "En {monthYear}, aucun gouvernement de notre jeu de données ne publie d'avis aux voyageurs pour {name}, ce qui est courant pour les territoires très petits ou reculés. Fondez votre décision sur les scores des piliers ci-dessus et vérifiez les dernières recommandations de votre propre gouvernement avant de partir.",
@@ -470,8 +479,13 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     }
   },
   "pt": {
-    "q1": "E seguro viajar para {name} em {year}?",
-    "q2": "Qual e o maior risco ao viajar para {name}?",
+    // {namePara}/{nameA} are SEPARATE slots from {name}: filled with the full
+    // "para {article} {name}" / "{a-contracted} {name}" phrase
+    // (getPortuguesePhrase in country-grammar.ts, wired in via
+    // getCountryFaqData in seo.ts) — {name} itself stays bare for the many
+    // subject-position uses elsewhere in this file.
+    "q1": "E seguro viajar {namePara} em {year}?",
+    "q2": "Qual e o maior risco ao viajar {namePara}?",
     "q3": "O que dizem os avisos de viagem governamentais sobre {name}?",
     "a1Verdict": {
       "excellent": "Sim — {name} é um dos destinos mais seguros do nosso índice: em {monthYear}, obtém {score}/10, com classificação de {riskLevel}.",
@@ -504,10 +518,10 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     "a3Intro": "Em {monthYear}, {name} conta com {advisoryCount}.",
     "a3Consensus": {
-      "normal": "O panorama geral é tranquilizador: a maioria dos governos recomenda apenas precauções normais para {name} e nenhum o coloca acima de um aviso de baixo nível.",
-      "caution": "A orientação predominante é redobrar a cautela ao visitar {name}; o alerta mais severo — {govLevel} — vem de {governments}.",
-      "reconsider": "A orientação predominante é reconsiderar a viagem a {name}: os alertas mais severos — {govLevel} — foram emitidos por {governments}.",
-      "avoid": "A maioria dos governos já desaconselha qualquer viagem a {name}: o alerta de nível mais alto — {govLevel} — foi emitido por {governments}, entre outros."
+      "normal": "O panorama geral é tranquilizador: a maioria dos governos recomenda apenas precauções normais {namePara} e nenhum o coloca acima de um aviso de baixo nível.",
+      "caution": "A orientação predominante é redobrar a cautela ao visitar {nameArt}; o alerta mais severo — {govLevel} — vem de {governments}.",
+      "reconsider": "A orientação predominante é reconsiderar a viagem {nameA}: os alertas mais severos — {govLevel} — foram emitidos por {governments}.",
+      "avoid": "A maioria dos governos já desaconselha qualquer viagem {nameA}: o alerta de nível mais alto — {govLevel} — foi emitido por {governments}, entre outros."
     },
     "a3Cap": "Esses alertas são graves o suficiente para pesar fortemente em nosso índice: quando a maioria dos governos emite um aviso de não viajar, a pontuação geral de {name} é fortemente puxada para o lado mais baixo, além do que já indicam seus outros pilares.",
     "a3None": "Em {monthYear}, nenhum governo do nosso conjunto de dados publica um aviso de viagem para {name}, o que é comum em territórios muito pequenos ou remotos. Baseie sua decisão nas pontuações dos pilares acima e verifique as orientações mais recentes do seu próprio governo antes de viajar.",
@@ -564,8 +578,13 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     }
   },
   "de": {
-    "q1": "Ist es {year} sicher, nach {name} zu reisen?",
-    "q2": "Was ist das größte Risiko bei einer Reise nach {name}?",
+    // {nameDir} is a SEPARATE slot from {name}: filled with the full
+    // directional phrase ("nach Japan" / "in die Türkei" / "in den Iran")
+    // by getGermanDirectional in country-grammar.ts, wired in via
+    // getCountryFaqData in seo.ts — {name} itself stays bare for the many
+    // subject-position uses elsewhere in this file.
+    "q1": "Ist es {year} sicher, {nameDir} zu reisen?",
+    "q2": "Was ist das größte Risiko bei einer Reise {nameDir}?",
     "q3": "Was sagen staatliche Reisehinweise über {name}?",
     "a1Verdict": {
       "excellent": "Ja — {name} zählt zu den sichersten Reisezielen in unserem Index: Stand {monthYear} erreicht das Land {score}/10 und ist als {riskLevel} eingestuft.",
@@ -599,9 +618,14 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "a3Intro": "Stand {monthYear} verzeichnen wir für {name} {advisoryCount}.",
     "a3Consensus": {
       "normal": "Das Gesamtbild ist beruhigend: Die meisten Regierungen empfehlen für {name} nur normale Vorsicht, und keine stuft es über einen Hinweis niedriger Stufe hinaus ein.",
-      "caution": "Die vorherrschende Empfehlung lautet, bei einem Besuch in {name} erhöhte Vorsicht walten zu lassen; die schärfste aktuelle Warnung — {govLevel} — stammt von {governments}.",
-      "reconsider": "Die vorherrschende Empfehlung lautet, eine Reise nach {name} zu überdenken: Die schwersten Warnungen — {govLevel} — wurden von {governments} ausgesprochen.",
-      "avoid": "Die meisten Regierungen raten inzwischen von jeder Reise nach {name} ab: Die Warnung der höchsten Stufe — {govLevel} — wurde unter anderem von {governments} ausgesprochen."
+      // Reworded from "bei einem Besuch in {name}" (a dative locative — "in
+      // der Türkei" — a THIRD German case alongside the nominative/
+      // directional-accusative the rest of this module handles) to "bei
+      // einer Reise {nameDir}", reusing the same directional-accusative form
+      // as q1/q2 instead of adding a one-off dative case just for this string.
+      "caution": "Die vorherrschende Empfehlung lautet, bei einer Reise {nameDir} erhöhte Vorsicht walten zu lassen; die schärfste aktuelle Warnung — {govLevel} — stammt von {governments}.",
+      "reconsider": "Die vorherrschende Empfehlung lautet, eine Reise {nameDir} zu überdenken: Die schwersten Warnungen — {govLevel} — wurden von {governments} ausgesprochen.",
+      "avoid": "Die meisten Regierungen raten inzwischen von jeder Reise {nameDir} ab: Die Warnung der höchsten Stufe — {govLevel} — wurde unter anderem von {governments} ausgesprochen."
     },
     "a3Cap": "Diese Warnungen sind schwerwiegend genug, um in unserem Index stark ins Gewicht zu fallen: Wenn eine Mehrheit der Regierungen eine Nicht-reisen-Warnung ausspricht, wird der Gesamtwert von {name} deutlich nach unten gezogen — zusätzlich zu dem, was die übrigen Säulen bereits zeigen.",
     "a3None": "Stand {monthYear} veröffentlicht keine Regierung in unserem Datensatz einen Reisehinweis für {name} — typisch für sehr kleine oder abgelegene Gebiete. Stützen Sie Ihre Entscheidung auf die Säulenwerte oben und prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung.",

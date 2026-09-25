@@ -110,7 +110,7 @@ const score = Number(country.score.toFixed(1));
 const { riskLabel } = getBandVerdictCopy(country.score, lang);
 const isLowConfidence = country.confidence < LOW_CONFIDENCE_THRESHOLD;
 const { weakest, strongest, isNearTie } = selectPillarExtremes(country.pillars);
-const provenance = buildProvenanceSentence(getProvenanceCounts(country), getLocalizedCountryName(country, lang), lang);
+const provenance = buildProvenanceSentence(getProvenanceCounts(country), getLocalizedCountryName(country, lang), lang, country.iso3);
 
 const dateStr = new Date().toLocaleDateString(localeMap[lang], { year: 'numeric', month: 'long', day: 'numeric' });
 const c = copy[lang];

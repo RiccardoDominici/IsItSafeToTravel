@@ -15,6 +15,7 @@
 import type { ScoredCountry } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { countryFaqCopy } from './country-faq-copy';
+import { getItalianGeneric, getPortugueseWithArticle, getGermanFuerPhrase } from '../i18n/country-grammar';
 
 export interface ProvenanceCounts {
   advisoryCount: number;
@@ -42,8 +43,17 @@ const otherSourceNoun: Record<Lang, { one: string; other: string }> = {
   de: { one: 'einen weiteren öffentlichen Datensatz', other: '{n} weitere öffentliche Datensätze' },
 };
 
-/** Sentence shown when a country has neither advisories nor other data feeds
- *  (17 territories today, e.g. Jersey) — the score is 100% a regional prior. */
+/**
+ * Sentence shown when a country has neither advisories nor other data feeds
+ * (17 territories today, e.g. Jersey) — the score is 100% a regional prior.
+ * it/pt take `n` as the bare article-bearing noun phrase ("gli Stati Uniti" /
+ * "o Japão", from getItalianGeneric / getPortugueseWithArticle) — "Per"/
+ * "para" themselves are invariant, so they stay hardcoded here. de takes `n`
+ * as the FULL "für ..." phrase already (getGermanFuerPhrase): "für" always
+ * governs the accusative, which changes the article itself for masculine
+ * countries (der -> den), so it can't be a fixed prefix + unchanging noun
+ * phrase the way it/pt can — see country-grammar.ts.
+ */
 const zeroDataSentence: Record<Lang, (name: string) => string> = {
   en: (n) => `There is no direct data for ${n} yet: the score is a cautious estimate based on its region.`,
   it: (n) => `Per ${n} non ci sono ancora dati diretti: il punteggio è una stima prudente basata sulla sua regione.`,
@@ -51,7 +61,7 @@ const zeroDataSentence: Record<Lang, (name: string) => string> = {
   fr: (n) => `Il n'existe pas encore de données directes pour ${n} : le score est une estimation prudente fondée sur sa région.`,
   pt: (n) => `Ainda não há dados diretos para ${n}: a pontuação é uma estimativa prudente baseada na sua região.`,
   zh: (n) => `目前还没有关于${n}的直接数据：该评分是基于所在地区得出的审慎估计。`,
-  de: (n) => `Für ${n} liegen noch keine direkten Daten vor: Der Wert ist eine vorsichtige Schätzung auf Basis der Region.`,
+  de: (n) => `${n} liegen noch keine direkten Daten vor: Der Wert ist eine vorsichtige Schätzung auf Basis der Region.`,
 };
 
 /** "It combines {clause} and is recalculated daily" template, {clause} pre-filled. */
@@ -81,12 +91,21 @@ const andConnector: Record<Lang, string> = {
  * cases: no data at all, advisories only, other feeds only (not observed live
  * today, but the two counts are structurally independent so this stays
  * defensive), and both — never a single hardcoded "40+" claim.
+ *
+ * `iso3` is only needed for the zero-data case (it/pt/de need the
+ * article-bearing or "für"-accusative form there, not the bare name) — see
+ * the zeroDataSentence docstring above.
  */
-export function buildProvenanceSentence(counts: ProvenanceCounts, countryName: string, lang: Lang): string {
+export function buildProvenanceSentence(counts: ProvenanceCounts, countryName: string, lang: Lang, iso3: string): string {
   const { advisoryCount, otherSourceCount } = counts;
 
   if (advisoryCount === 0 && otherSourceCount === 0) {
-    return zeroDataSentence[lang](countryName);
+    const zeroDataName =
+      lang === 'it' ? getItalianGeneric(iso3, countryName)
+      : lang === 'pt' ? getPortugueseWithArticle(iso3, countryName)
+      : lang === 'de' ? getGermanFuerPhrase(iso3, countryName)
+      : countryName;
+    return zeroDataSentence[lang](zeroDataName);
   }
 
   const advisoryNoun = countryFaqCopy[lang].advisoryCountNoun;

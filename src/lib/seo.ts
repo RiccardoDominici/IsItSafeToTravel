@@ -16,6 +16,13 @@ import { getBandVerdictCopy } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { selectPillarExtremes } from './pillar-extremes';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
+import {
+  getItalianLocative,
+  getPortuguesePhrase,
+  getPortugueseWithArticle,
+  getGermanDirectional,
+  getFrenchPreposition,
+} from '../i18n/country-grammar';
 
 // ISO3 → Wikidata QID + English Wikipedia article (fallback), plus per-language
 // Wikipedia articles where they exist, for Place.sameAs entity grounding (helps
@@ -751,6 +758,17 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     strongestScore: (strongest.score * 10).toFixed(1),
     meaning: copy.pillarMeaning[weakest.name],
     drivers: driverClause,
+    // Locale-specific phrases for the templates that put the country name
+    // after a preposition or need an article — {name} itself stays the bare
+    // localized name (used in the many subject-position sentences above).
+    // Harmless to compute for every language: each locale's templates only
+    // ever reference the one slot(s) it actually needs (see country-grammar.ts).
+    nameIn: getItalianLocative(country.iso3, name),
+    namePara: getPortuguesePhrase(country.iso3, name, 'para'),
+    nameA: getPortuguesePhrase(country.iso3, name, 'a'),
+    nameArt: getPortugueseWithArticle(country.iso3, name),
+    nameDir: getGermanDirectional(country.iso3, name),
+    namePrep: getFrenchPreposition(country.iso3, name),
   };
   const fill = (tpl: string) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
   const joiner = lang === 'zh' ? '' : ' ';
@@ -764,7 +782,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // (2026-09-25 audit, I1/I12).
   const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
   const verdictOpener = isLowConfidence ? copy.a1VerdictLowConfidence : copy.a1Verdict[band];
-  const provenance = buildProvenanceSentence(getProvenanceCounts(country), name, lang);
+  const provenance = buildProvenanceSentence(getProvenanceCounts(country), name, lang, country.iso3);
   const a1 = tidy([verdictOpener, copy.a1Formula, drivers, provenance].map(fill).join(joiner));
 
   // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only
