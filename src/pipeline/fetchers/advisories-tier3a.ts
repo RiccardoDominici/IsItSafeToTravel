@@ -814,9 +814,24 @@ async function fetchCnAdvisories(
 
 // =============================================================================
 // Sub-fetcher 6: India (MEA) -- CPLX-06
-// Fragility: HIGH -- 403 errors likely
-// Expected failure modes: WAF blocking, both URLs may return 403
-// Why sparse results are acceptable: India issues few advisories and site blocks bots
+// Fragility: HIGH -- blocked from GitHub-hosted runner IPs (403), not a UA issue
+// Expected failure modes: mea.gov.in 403s every request from CI's datacenter IPs
+// Why sparse results are acceptable: India issues few advisories and CI can't reach this site at all
+// Policy checked 2026-09-25: this sub-fetcher used to send a spoofed Chrome User-Agent, which the
+//   project does not allow (identify honestly, never impersonate a browser to dodge bot filters --
+//   same rule the repaired IT/ES sub-fetchers above already followed with their own honest UA).
+//   Replaced with an honest, self-identifying bot UA and re-tested both MEA URLs: identical response
+//   with the honest UA and the old spoofed one (same 200s, same content, from a residential dev IP)
+//   -- the spoofing was never actually doing anything. CI's own "All URLs returned 403" (this
+//   morning's production log, with the OLD spoofed UA already in place) is IP-based blocking, which
+//   no User-Agent string fixes. Per project rule, left emitting nothing rather than chase a fix that
+//   would only work from a residential IP.
+//   While re-testing found a second, independent bug: 'travel-advisory.htm' (singular) 302-redirects
+//   to '/error.htm', which itself answers HTTP 200 -- the old `if (response.ok) break` accepted that
+//   error page as success and never tried 'travel-advisories.htm' (plural), which is the real,
+//   content-ful page. Fixed by trying the known-good URL first and rejecting any response that
+//   redirected to the error page. Doesn't change CI's outcome (still IP-blocked), but stops a future
+//   residential/proxied run from silently parsing an error page as "zero advisories".
 // =============================================================================
 
 async function fetchInAdvisories(
@@ -827,28 +842,34 @@ async function fetchInAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
+  // 'travel-advisories.htm' (plural) is the real page; 'travel-advisory.htm' (singular) 302s to a
+  // soft-error page that still answers 200 -- tried second, and rejected below if it's the one that
+  // actually responds.
   const urls = [
-    'https://www.mea.gov.in/travel-advisory.htm',
     'https://www.mea.gov.in/travel-advisories.htm',
+    'https://www.mea.gov.in/travel-advisory.htm',
   ];
 
-  const browserHeaders = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+  const honestHeaders = {
+    'User-Agent': 'Mozilla/5.0 (compatible; IsItSafeToTravelBot/1.0; +https://isitsafetotravel.org)',
     'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     'Accept-Language': 'en-US,en;q=0.9',
   };
 
   let html = '';
+  let sourceUrl = urls[0];
 
   for (const url of urls) {
     try {
       const response = await fetch(url, {
         signal: AbortSignal.timeout(30_000),
-        headers: browserHeaders,
+        headers: honestHeaders,
       });
 
-      if (response.ok) {
+      // A redirect to the site's own soft-error page still answers 200 -- don't treat it as content.
+      if (response.ok && !response.url.includes('/error.htm')) {
         html = await response.text();
+        sourceUrl = response.url; // record where the content actually came from, not just which URL was tried
         break;
       }
     } catch {
@@ -857,7 +878,7 @@ async function fetchInAdvisories(
   }
 
   if (!html) {
-    console.warn('[ADVISORIES-T3A] IN: All URLs returned 403 or failed, returning empty result');
+    console.warn('[ADVISORIES-T3A] IN: All URLs returned 403, an error page, or failed, returning empty result');
     return { indicators, advisoryInfo };
   }
 
@@ -879,10 +900,11 @@ async function fetchInAdvisories(
     for (const country of COUNTRIES) {
       if (!textLower.includes(country.name.en.toLowerCase())) continue;
 
+      const level = normalizeInLevel(text);
+      if (level === null) continue; // matched nav-menu noise, not a real advisory keyword -- don't guess
+
       // Avoid duplicates, keep highest level
       const existing = indicators.find(i => i.countryIso3 === country.iso3);
-      const level = normalizeInLevel(text);
-
       if (existing) {
         if (level > existing.value) existing.value = level;
         continue;
@@ -902,7 +924,7 @@ async function fetchInAdvisories(
         level,
         text: IN_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'India MEA',
-        url: 'https://www.mea.gov.in/travel-advisory.htm',
+        url: sourceUrl, // the page this was actually parsed from, not a hardcoded (possibly dead) URL
       };
       break;
     }

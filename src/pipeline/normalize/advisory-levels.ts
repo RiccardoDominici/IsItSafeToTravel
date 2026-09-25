@@ -1058,13 +1058,22 @@ export function normalizeCnLevel(text: string): UnifiedLevel {
 /**
  * Normalize India (MEA) English advisory text to unified 1-4 scale.
  * English text patterns: "do not travel", "avoid", "caution", etc.
+ *
+ * Returns null (no fallback to 1) when none of those phrases matched. mea.gov.in's page is a news-style
+ * bulletin, not a comprehensive one-row-per-country dossier (see project rule: a "no advisory" reading
+ * is only valid from a source that positively asserts a baseline for every country, e.g. ES's "no hay
+ * restricciones especificas"). Found 2026-09-25: the fetcher's broad `a, h2, h3, h4, .list-title, td, li`
+ * selector also grabs the page's own nav-menu text blocks, which coincidentally contain "travel" and a
+ * country's name (India's own site mentions "India" constantly) but none of these level keywords --
+ * the old `return 1` fallback was quietly turning that menu noise into fabricated "no advisory" entries
+ * for India and Malaysia.
  */
-export function normalizeInLevel(text: string): UnifiedLevel {
+export function normalizeInLevel(text: string): UnifiedLevel | null {
   const lower = text.toLowerCase();
   if (lower.includes('do not travel') || lower.includes('leave immediately')) return 4;
   if (lower.includes('avoid') || lower.includes('defer') || lower.includes('reconsider')) return 3;
   if (lower.includes('caution') || lower.includes('exercise')) return 2;
-  return 1;
+  return null;
 }
 
 // --- Tier 3b normalization functions ---
