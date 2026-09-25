@@ -14,6 +14,11 @@ import * as cheerio from 'cheerio';
  */
 const PER_SOURCE_FLOOR = 150;
 
+// US State Department: ordered chain of independent ways to get the same data,
+// tried in order by fetchUsAdvisories() until one returns usable data. See the
+// big comment above US_ENDPOINTS for why the HTML page is last, not first.
+const US_JSON_API_URL = 'https://cadataapi.state.gov/api/TravelAdvisories';
+const US_RSS_URL = 'https://travel.state.gov/_res/rss/TAsTWs.xml';
 const US_ADVISORIES_URL =
   'https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html';
 const UK_FCDO_API_URL = 'https://www.gov.uk/api/content/foreign-travel-advice';
@@ -115,23 +120,26 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
     AU: 'au' as const,
   };
 
+  // US: pass `errors` straight into the fetcher too, so each endpoint in its
+  // internal json-api -> rss -> html chain can log its own failure reason even
+  // when a later endpoint in the chain ends up succeeding (see US_ENDPOINTS).
   const usResult = await runWithFloor('US', sourceKey.US, () =>
-    fetchUsAdvisories(rawDir, fetchedAt, currentYear), errors);
+    fetchUsAdvisories(rawDir, fetchedAt, currentYear, errors), errors, date);
   allIndicators.push(...usResult.indicators);
   mergeAdvisoryInfo(combinedAdvisoryInfo, usResult.advisoryInfo);
 
   const ukResult = await runWithFloor('UK', sourceKey.UK, () =>
-    fetchUkAdvisories(rawDir, fetchedAt, currentYear), errors);
+    fetchUkAdvisories(rawDir, fetchedAt, currentYear), errors, date);
   allIndicators.push(...ukResult.indicators);
   mergeAdvisoryInfo(combinedAdvisoryInfo, ukResult.advisoryInfo);
 
   const caResult = await runWithFloor('CA', sourceKey.CA, () =>
-    fetchCaAdvisories(rawDir, fetchedAt, currentYear), errors);
+    fetchCaAdvisories(rawDir, fetchedAt, currentYear), errors, date);
   allIndicators.push(...caResult.indicators);
   mergeAdvisoryInfo(combinedAdvisoryInfo, caResult.advisoryInfo);
 
   const auResult = await runWithFloor('AU', sourceKey.AU, () =>
-    fetchAuAdvisories(rawDir, fetchedAt, currentYear), errors);
+    fetchAuAdvisories(rawDir, fetchedAt, currentYear), errors, date);
   allIndicators.push(...auResult.indicators);
   mergeAdvisoryInfo(combinedAdvisoryInfo, auResult.advisoryInfo);
 
@@ -218,6 +226,7 @@ async function runWithFloor(
   sourceKey: AdvisorySourceKey,
   fn: () => Promise<FetcherResult>,
   errors: string[],
+  todayDate: string,
 ): Promise<FetcherResult> {
   console.log(`[ADVISORIES] Fetching ${label} advisories...`);
   let result: FetcherResult = { indicators: [], advisoryInfo: {} };
@@ -242,30 +251,53 @@ async function runWithFloor(
     const cached = findLatestCachedSourceInfo(sourceKey);
     if (cached) {
       console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
-      const restored = restoreFromCachedInfo(cached.data, sourceKey);
+      const restored = restoreFromCachedInfo(cached.data, sourceKey, cached.date);
       // Merge: keep any indicators we did get (better than nothing), and
       // overlay the cached ones for countries we missed.
       const have = new Set(result.indicators.map((i) => i.countryIso3));
       for (const ind of restored.indicators) {
         if (!have.has(ind.countryIso3)) result.indicators.push(ind);
       }
+      // Track the OLDEST restoredFrom date among what we just merged in, so the
+      // staleness we report reflects the true last-genuinely-live date even
+      // after this same fallback has chained forward across many days.
+      let oldestRestoredFrom: string | null = null;
       for (const [iso3, info] of Object.entries(restored.advisoryInfo)) {
         if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
         // Only fill in this specific source if missing
         if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
           result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
+          const rf = info[sourceKey]!.restoredFrom;
+          if (rf && (!oldestRestoredFrom || rf < oldestRestoredFrom)) oldestRestoredFrom = rf;
         }
       }
       const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
       console.warn(
         `[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`,
       );
+      if (oldestRestoredFrom) {
+        const ageDays = daysBetween(todayDate, oldestRestoredFrom);
+        console.error(
+          `[ADVISORIES] ${label}: restored data last genuinely live on ${oldestRestoredFrom} (${ageDays}d stale)`,
+        );
+        errors.push(`${label}: restored from cache dated ${oldestRestoredFrom} (${ageDays}d stale)`);
+      }
     } else {
       console.error(`[ADVISORIES] ${label}: no cached info available for fallback`);
     }
   }
 
   return result;
+}
+
+/** Whole-day difference (laterYmd - earlierYmd) between two YYYY-MM-DD strings,
+ *  computed via Date.UTC so it never shifts with the running process's timezone. */
+export function daysBetween(laterYmd: string, earlierYmd: string): number {
+  const toUtcMs = (ymd: string): number => {
+    const [y, m, d] = ymd.split('-').map(Number);
+    return Date.UTC(y, m - 1, d);
+  };
+  return Math.round((toUtcMs(laterYmd) - toUtcMs(earlierYmd)) / 86_400_000);
 }
 
 /**
@@ -276,7 +308,7 @@ async function runWithFloor(
  */
 function findLatestCachedSourceInfo(
   sourceKey: AdvisorySourceKey,
-): { path: string; data: AdvisoryInfoMap } | null {
+): { path: string; date: string; data: AdvisoryInfoMap } | null {
   const rawBase = join(process.cwd(), 'data', 'raw');
   // Scan in date order ourselves — `findLatestCached` would stop at the most
   // recent file, but we want the most recent file whose data for THIS source
@@ -297,7 +329,7 @@ function findLatestCachedSourceInfo(
       if (info && info[sourceKey]) nonNull++;
     }
     if (nonNull >= PER_SOURCE_FLOOR) {
-      return { path: p, data };
+      return { path: p, date: dateDir, data };
     }
   }
   return null;
@@ -305,11 +337,13 @@ function findLatestCachedSourceInfo(
 
 /**
  * Rebuild a partial FetcherResult (indicators + advisoryInfo restricted to the
- * given source) from a cached AdvisoryInfoMap.
+ * given source) from a cached AdvisoryInfoMap. `cacheDate` is the YYYY-MM-DD of
+ * the raw dir the cache came from (findLatestCachedSourceInfo's `date`).
  */
 function restoreFromCachedInfo(
   cached: AdvisoryInfoMap,
   sourceKey: AdvisorySourceKey,
+  cacheDate: string,
 ): FetcherResult {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
@@ -327,42 +361,406 @@ function restoreFromCachedInfo(
       year,
       source: sourceTag,
     });
-    advisoryInfo[iso3] = { [sourceKey]: entry } as AdvisoryInfoMap[string];
+    // Propagate the ORIGINAL restoredFrom date forward if this cached entry was
+    // itself already a restore, so a 10-week-stale value doesn't reset its
+    // staleness clock to "1 day old" just because it got re-persisted into
+    // yesterday's snapshot. If this is the first fallback in the chain (no
+    // restoredFrom yet), the cache file's own date IS the last time it was
+    // genuinely live.
+    const restoredEntry: AdvisoryInfo = {
+      ...entry,
+      restoredFrom: entry.restoredFrom ?? cacheDate,
+    };
+    advisoryInfo[iso3] = { [sourceKey]: restoredEntry } as AdvisoryInfoMap[string];
   }
   return { indicators, advisoryInfo };
 }
 
 /**
- * Fetch US State Department travel advisories.
- * Parses HTML to extract country advisory levels (1-4).
- * Stores RAW level values (1-4) -- normalization is handled by the scoring engine.
+ * Country-name aliases where the State Department's own label text differs from
+ * the ISO-based English name in COUNTRIES (same pattern as gpi.ts NAME_ALIASES).
+ * Verified 2026-09-25 (SOURCE-REPAIR-BRIEF) against a live fetch of both the JSON
+ * API and RSS feed: 20 of 218 titles did not resolve via getCountryByName without
+ * this table -- these 12 are genuine renames; the other 8 are handled separately
+ * below (grouped China/HK/Macau title, split territories, fan-out territory, and
+ * one destination -- Bermuda -- that isn't in our 248-country list at all).
  */
-async function fetchUsAdvisories(
+const US_NAME_ALIASES: Record<string, string> = {
+  'curaçao': 'Curacao',
+  'curacao': 'Curacao',
+  'macau': 'Macao',
+  'the bahamas': 'Bahamas',
+  'federated states of micronesia': 'Micronesia',
+  'burma': 'Myanmar',
+  'cote d ivoire': "Cote d'Ivoire",
+  'the kyrgyz republic': 'Kyrgyzstan',
+  'the gambia': 'Gambia',
+  'czechia': 'Czech Republic',
+  'republic of the congo': 'Congo',
+  'kingdom of denmark': 'Denmark',
+};
+
+function resolveUsCountryName(rawName: string): string {
+  const key = rawName.trim().toLowerCase();
+  return US_NAME_ALIASES[key] || rawName.trim();
+}
+
+/**
+ * The State Department groups China/Hong Kong/Macau advisories under one shared
+ * headline ("Mainland China, Hong Kong & Macau - See Summaries") but still links
+ * each row to a DIFFERENT per-territory page with a different level. Hong Kong and
+ * Macau each ALSO get their own cleanly-titled row elsewhere in the same feed
+ * (verified 2026-09-25), so the only territory we actually need to rescue from the
+ * shared headline is mainland China, which has no clean row of its own. Any other
+ * row using this shared headline is therefore a redundant duplicate of a row we
+ * already capture cleanly -- return null to skip it rather than risk swapping
+ * China's, Hong Kong's, and Macau's levels around.
+ */
+const US_CHINA_GROUP_TITLE = 'mainland china, hong kong & macau - see summaries';
+
+function resolveUsGroupedTitle(rawName: string, url: string): string | null {
+  if (rawName.trim().toLowerCase() !== US_CHINA_GROUP_TITLE) return rawName;
+  return /\/china-travel-advisory\.html$/i.test(url) ? 'China' : null;
+}
+
+/**
+ * Territories the State Department publishes as SEPARATE advisory pages but that
+ * map to a single entry in our 248-country list: iso3 -> the merge is "take the
+ * MOST SEVERE of the constituent levels". This is NOT the same situation the
+ * DE/NL sub-national guard (data-pipeline.yml) exists to prevent -- that guard
+ * stops one dangerous region from dragging down an otherwise-safe, much larger
+ * country. Here, West Bank + Gaza together ARE the entirety of Palestine's
+ * territory, and Bonaire + Saba/Sint Eustatius together ARE the entirety of the
+ * BES islands -- there is no "safe majority of the country" being unfairly
+ * outweighed. Per SOURCE-REPAIR-BRIEF rule 1, "a wrong level on a war zone is far
+ * worse than no data"; the same reasoning means picking the calmer half here
+ * would silently understate risk for whichever half is actually the worse one.
+ */
+const US_COMPOSITE_TERRITORIES: Record<string, string> = {
+  'west bank': 'PSE',
+  'gaza': 'PSE',
+  'bonaire': 'BES',
+  'saba and sint eustatius': 'BES',
+};
+
+/**
+ * The reverse situation: ONE State Department advisory page that explicitly
+ * covers MULTIPLE of our countries at once. Apply the same level to every iso3
+ * listed -- the source itself treats them as one unit, so there's no conflicting
+ * data to reconcile (unlike US_COMPOSITE_TERRITORIES above).
+ */
+const US_FANOUT_TERRITORIES: Record<string, string[]> = {
+  'french west indies': ['MTQ', 'GLP'],
+};
+
+interface CollectedUsEntry {
+  level: number;
+  url: string;
+  updatedAt?: string;
+}
+
+/**
+ * Feed one parsed (name, level, url, updatedAt) row into the accumulator,
+ * resolving fan-out/composite/alias handling uniformly no matter which endpoint
+ * produced the row. Composite territories (US_COMPOSITE_TERRITORIES) are the only
+ * case where a second row for an already-seen iso3 can change the stored level;
+ * any other duplicate (e.g. the feed lists "Saint Kitts and Nevis" twice, once per
+ * URL scheme) keeps whichever row arrived first -- same semantics as the old
+ * per-endpoint `seen` set.
+ */
+function collectUsEntry(
+  collected: Map<string, CollectedUsEntry>,
+  rawName: string,
+  level: number,
+  url: string,
+  updatedAt: string | undefined,
+): void {
+  const key = rawName.trim().toLowerCase();
+
+  const fanoutTargets = US_FANOUT_TERRITORIES[key];
+  if (fanoutTargets) {
+    for (const iso3 of fanoutTargets) {
+      if (!collected.has(iso3)) collected.set(iso3, { level, url, updatedAt });
+    }
+    return;
+  }
+
+  const compositeIso3 = US_COMPOSITE_TERRITORIES[key];
+  if (compositeIso3) {
+    const existing = collected.get(compositeIso3);
+    if (!existing || level > existing.level) {
+      collected.set(compositeIso3, { level, url, updatedAt });
+    }
+    return;
+  }
+
+  const country = getCountryByName(resolveUsCountryName(rawName));
+  if (!country) return;
+  if (!collected.has(country.iso3)) {
+    collected.set(country.iso3, { level, url, updatedAt });
+  }
+}
+
+/** Turn the resolved iso3 -> level/url/updatedAt map into the FetcherResult shape. */
+function finalizeUsEntries(
+  collected: Map<string, CollectedUsEntry>,
+  currentYear: number,
+): FetcherResult {
+  const indicators: RawIndicator[] = [];
+  const advisoryInfo: AdvisoryInfoMap = {};
+
+  for (const [iso3, entry] of collected) {
+    indicators.push({
+      countryIso3: iso3,
+      indicatorName: 'advisory_level_us',
+      value: entry.level,
+      year: currentYear,
+      source: 'advisories_us',
+    });
+    advisoryInfo[iso3] = {
+      us: {
+        level: entry.level,
+        text: US_LEVEL_TEXT[entry.level] || `Level ${entry.level}`,
+        source: 'US State Department',
+        url: entry.url,
+        updatedAt: entry.updatedAt,
+      },
+    };
+  }
+
+  return { indicators, advisoryInfo };
+}
+
+/** Extract { name, level } from a "<Name>[ Travel Advisory] - Level N: ..." title. */
+function parseUsTitle(title: string): { name: string; level: number } | null {
+  const m = title.match(/^(.*?)(?:\s+Travel Advisory)?\s*-\s*Level\s+(\d)\s*:/i);
+  if (!m) return null;
+  const level = parseInt(m[2], 10);
+  if (level < 1 || level > 4) return null;
+  return { name: m[1].trim(), level };
+}
+
+const MONTH_ABBR: Record<string, string> = {
+  jan: '01', feb: '02', mar: '03', apr: '04', may: '05', jun: '06',
+  jul: '07', aug: '08', sep: '09', oct: '10', nov: '11', dec: '12',
+};
+
+/**
+ * Parse an RSS `pubDate` like "Tue, 08 Sep 2026" (no time component) into our
+ * standard `YYYY-MM-DDT00:00:00Z` updatedAt format WITHOUT going through the JS
+ * Date constructor -- parsing a time-less date string with `new Date()` uses the
+ * process's local timezone and can shift the calendar day by +/-1, which would
+ * silently vary between a dev machine and a UTC CI runner.
+ */
+function parseRssPubDate(text: string): string | undefined {
+  const m = text.match(/(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})/);
+  if (!m) return undefined;
+  const month = MONTH_ABBR[m[2].toLowerCase()];
+  if (!month) return undefined;
+  return `${m[3]}-${month}-${m[1].padStart(2, '0')}T00:00:00Z`;
+}
+
+/**
+ * Parse the JSON API's `Updated`/`Published` ("2026-09-08T20:00:00-04:00") into
+ * our standard format, keeping the LOCAL calendar date exactly as published
+ * rather than the UTC-shifted instant (which lands on the next day for any
+ * negative offset -- 20:00 -04:00 is already past midnight UTC).
+ */
+function parseJsonApiDate(text: string): string | undefined {
+  const m = text.match(/^(\d{4}-\d{2}-\d{2})/);
+  return m ? `${m[1]}T00:00:00Z` : undefined;
+}
+
+/**
+ * Fetch with one retry for TRANSIENT failures only: network-level throws
+ * (timeout, DNS, connection reset) and 5xx responses. Never retries a 4xx -- a
+ * 403 is a deterministic block, not a blip, and hammering the same blocked
+ * endpoint a second time in a row is both pointless and impolite (repair-brief
+ * rule 4).
+ */
+async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Promise<Response> {
+  for (let attempt = 0; ; attempt++) {
+    let response: Response;
+    try {
+      response = await fetch(url, init);
+    } catch (error) {
+      if (attempt < retries) {
+        const msg = error instanceof Error ? error.message : String(error);
+        console.warn(`[ADVISORIES] US: network error fetching ${url} (${msg}), retrying...`);
+        await new Promise((resolve) => setTimeout(resolve, 1_500));
+        continue;
+      }
+      throw error;
+    }
+    if (response.ok) return response;
+    if (response.status >= 500 && attempt < retries) {
+      console.warn(
+        `[ADVISORIES] US: HTTP ${response.status} fetching ${url}, retrying...`,
+      );
+      await new Promise((resolve) => setTimeout(resolve, 1_500));
+      continue;
+    }
+    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  }
+}
+
+const US_FETCH_HEADERS = { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' };
+
+/**
+ * Pure parser: JSON API entries -> FetcherResult. Split out from
+ * fetchUsFromJsonApi (which only adds the network fetch + raw-debug-dump
+ * around this) so it can be unit-tested against a saved fixture without any
+ * network access -- see advisories-us.test.ts.
+ */
+export function parseUsJsonApiData(data: unknown[], currentYear: number): FetcherResult {
+  const collected = new Map<string, CollectedUsEntry>();
+  for (const raw of data) {
+    if (!raw || typeof raw !== 'object') continue;
+    const obj = raw as Record<string, unknown>;
+    const title = String(obj.Title || '').trim();
+    const url = String(obj.Link || '').trim();
+    if (!title || !url) continue;
+
+    const parsed = parseUsTitle(title);
+    if (!parsed) continue;
+
+    const resolvedName = resolveUsGroupedTitle(parsed.name, url);
+    if (resolvedName === null) continue;
+
+    const updatedAt = parseJsonApiDate(String(obj.Updated || obj.Published || ''));
+    collectUsEntry(collected, resolvedName, parsed.level, url, updatedAt);
+  }
+
+  return finalizeUsEntries(collected, currentYear);
+}
+
+/**
+ * Endpoint 1 (tried first): the State Department's own public JSON API, the data
+ * source behind their interactive advisories map. Confirmed 2026-09-25: returns
+ * HTTP 200 with our existing User-Agent (no browser/JS challenge), 218 entries,
+ * all 10 SOURCE-REPAIR-BRIEF spot-check countries match travel.state.gov exactly
+ * (cross-checked against the RSS feed below and, for Colombia, an independent
+ * news source). It is NOT the HTML advisories page -- different path, different
+ * bot-protection rule.
+ */
+async function fetchUsFromJsonApi(
   rawDir: string,
   fetchedAt: string,
   currentYear: number,
 ): Promise<FetcherResult> {
-  const indicators: RawIndicator[] = [];
-  const advisoryInfo: AdvisoryInfoMap = {};
-
-  const response = await fetch(US_ADVISORIES_URL, {
+  const response = await fetchWithRetry(US_JSON_API_URL, {
     signal: AbortSignal.timeout(30_000),
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
-    },
+    headers: { Accept: 'application/json', ...US_FETCH_HEADERS },
   });
 
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+  const data = (await response.json()) as unknown;
+  if (!Array.isArray(data)) {
+    throw new Error('unexpected response shape (not an array)');
   }
+  writeJson(join(rawDir, 'advisories-us.json'), {
+    url: US_JSON_API_URL,
+    fetchedAt,
+    endpoint: 'json-api',
+    entryCount: data.length,
+  });
+
+  return parseUsJsonApiData(data, currentYear);
+}
+
+/**
+ * Pure parser: RSS XML text -> FetcherResult. Split out from fetchUsFromRss for
+ * the same fixture-testing reason as parseUsJsonApiData above.
+ */
+export function parseUsRssXml(xml: string, currentYear: number): FetcherResult {
+  const $ = cheerio.load(xml, { xmlMode: true });
+  const collected = new Map<string, CollectedUsEntry>();
+
+  $('item').each((_, item) => {
+    const $item = $(item);
+    const title = $item.find('title').first().text().trim();
+    const url = $item.find('link').first().text().trim();
+    if (!title || !url) return;
+
+    const parsed = parseUsTitle(title);
+    if (!parsed) return;
+
+    // Prefer the explicit <category domain="Threat-Level"> field over the title
+    // text for the level itself -- it's structured metadata rather than a string
+    // we have to regex, so less likely to break if the title wording changes.
+    let level = parsed.level;
+    const categoryText = $item.find('category[domain="Threat-Level"]').first().text();
+    const catMatch = categoryText.match(/Level\s+(\d)/i);
+    if (catMatch) {
+      const catLevel = parseInt(catMatch[1], 10);
+      if (catLevel >= 1 && catLevel <= 4) level = catLevel;
+    }
+
+    const resolvedName = resolveUsGroupedTitle(parsed.name, url);
+    if (resolvedName === null) return;
+
+    const updatedAt = parseRssPubDate($item.find('pubDate').first().text());
+    collectUsEntry(collected, resolvedName, level, url, updatedAt);
+  });
+
+  return finalizeUsEntries(collected, currentYear);
+}
+
+/**
+ * Endpoint 2 (tried second): the official travel-advisories RSS feed. Confirmed
+ * 2026-09-25: HTTP 200 with our existing User-Agent, 216 items, agrees with the
+ * JSON API on every spot-checked country. Kept as an independent fallback in case
+ * the JSON API's path/shape ever changes without the RSS feed changing too (or
+ * vice versa) -- they are plausibly generated by different code on the State
+ * Department's side even though they read from the same underlying data.
+ */
+async function fetchUsFromRss(
+  rawDir: string,
+  fetchedAt: string,
+  currentYear: number,
+): Promise<FetcherResult> {
+  const response = await fetchWithRetry(US_RSS_URL, {
+    signal: AbortSignal.timeout(30_000),
+    headers: { Accept: 'application/rss+xml, text/xml', ...US_FETCH_HEADERS },
+  });
+
+  const xml = await response.text();
+  writeJson(join(rawDir, 'advisories-us.json'), {
+    url: US_RSS_URL,
+    fetchedAt,
+    endpoint: 'rss',
+    contentLength: xml.length,
+  });
+
+  return parseUsRssXml(xml, currentYear);
+}
+
+/**
+ * Endpoint 3 (last resort): scrape the HTML advisories page directly. As of
+ * 2026-09-25 this returns HTTP 403 from every network we tried it from --
+ * GitHub Actions runners (CI logs, every run since ~2026-07-14/16), this repo's
+ * own dev machine via plain curl, and Anthropic's WebFetch tool -- while the two
+ * endpoints above, on the same *.state.gov domain family behind the same
+ * Cloudflare, both return 200. Kept as a fallback anyway: it costs one extra
+ * request only when the two structured endpoints both fail, and IP/bot-rule
+ * blocks like this do get relaxed or change over time.
+ */
+async function fetchUsFromHtml(
+  rawDir: string,
+  fetchedAt: string,
+  currentYear: number,
+): Promise<FetcherResult> {
+  const response = await fetchWithRetry(US_ADVISORIES_URL, {
+    signal: AbortSignal.timeout(30_000),
+    redirect: 'follow',
+    headers: US_FETCH_HEADERS,
+  });
 
   const html = await response.text();
   writeJson(join(rawDir, 'advisories-us.json'), {
     url: US_ADVISORIES_URL,
     fetchedAt,
+    endpoint: 'html',
     contentLength: html.length,
-    type: 'html',
   });
 
   // travel.state.gov changed its HTML around 2026-05: the old `level-badge-N`
@@ -376,9 +774,7 @@ async function fetchUsAdvisories(
   //   <td data-label="Risk Indicators">...</td>
   //   <td data-label="Date Issued"><p>MM/DD/YYYY</p></td>
   const $ = cheerio.load(html);
-  const seen = new Set<string>();
-
-  // Find every destination row by its TH cell, then walk siblings.
+  const collected = new Map<string, CollectedUsEntry>();
   const destinationCells = $('th[data-label="Destination"]');
 
   destinationCells.each((_, th) => {
@@ -412,46 +808,71 @@ async function fetchUsAdvisories(
       const dateInRow = $row.text().match(/(\d{2}\/\d{2}\/\d{4})/);
       if (dateInRow) dateStr = dateInRow[1];
     }
-
-    const country = getCountryByName(countryName);
-    if (!country) return;
-    if (seen.has(country.iso3)) return;
-    seen.add(country.iso3);
-
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_us',
-      value: level,
-      year: currentYear,
-      source: 'advisories_us',
-    });
-
-    // Parse date from MM/DD/YYYY format; no parsable date -> no updatedAt
     let updatedAt: string | undefined;
     if (dateStr) {
       const parts = dateStr.split('/');
-      if (parts.length === 3) {
-        updatedAt = `${parts[2]}-${parts[0]}-${parts[1]}T00:00:00Z`;
+      if (parts.length === 3) updatedAt = `${parts[2]}-${parts[0]}-${parts[1]}T00:00:00Z`;
+    }
+
+    // Prefer the country's own link (deep link to its advisory page) over the
+    // generic listing page URL, matching what the JSON/RSS endpoints give us.
+    const href = $th.find('a').first().attr('href') || '';
+    let url = US_ADVISORIES_URL;
+    if (href) {
+      try {
+        url = new URL(href, US_ADVISORIES_URL).toString();
+      } catch {
+        // malformed href -- keep the generic listing page URL
       }
     }
 
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].us = {
-      level,
-      text: US_LEVEL_TEXT[level] || `Level ${level}`,
-      source: 'US State Department',
-      url: US_ADVISORIES_URL,
-      updatedAt,
-    };
+    const resolvedName = resolveUsGroupedTitle(countryName, url);
+    if (resolvedName === null) return;
+    collectUsEntry(collected, resolvedName, level, url, updatedAt);
   });
 
-  if (indicators.length === 0) {
-    console.warn(
-      '[ADVISORIES] US: HTML parser matched 0 countries — page format may have changed again',
-    );
-  }
+  return finalizeUsEntries(collected, currentYear);
+}
 
-  return { indicators, advisoryInfo };
+/**
+ * Ordered chain of independent ways to obtain US State Department advisory
+ * levels, tried in order until one returns at least one country. Each attempt's
+ * failure reason is pushed into `errors` (which flows into FetchResult.error)
+ * even when a LATER endpoint succeeds -- so a JSON API regression is visible in
+ * the daily log/report even on a day the RSS fallback quietly covers for it.
+ */
+const US_ENDPOINTS: {
+  name: string;
+  fetch: (rawDir: string, fetchedAt: string, currentYear: number) => Promise<FetcherResult>;
+}[] = [
+  { name: 'json-api', fetch: fetchUsFromJsonApi },
+  { name: 'rss', fetch: fetchUsFromRss },
+  { name: 'html', fetch: fetchUsFromHtml },
+];
+
+async function fetchUsAdvisories(
+  rawDir: string,
+  fetchedAt: string,
+  currentYear: number,
+  errors: string[],
+): Promise<FetcherResult> {
+  for (const endpoint of US_ENDPOINTS) {
+    try {
+      const result = await endpoint.fetch(rawDir, fetchedAt, currentYear);
+      const countryCount = new Set(result.indicators.map((i) => i.countryIso3)).size;
+      if (countryCount > 0) {
+        console.log(`[ADVISORIES] US: succeeded via ${endpoint.name} (${countryCount} countries)`);
+        return result;
+      }
+      console.warn(`[ADVISORIES] US/${endpoint.name}: parsed 0 countries, trying next endpoint`);
+      errors.push(`US/${endpoint.name}: parsed 0 countries`);
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : String(error);
+      console.warn(`[ADVISORIES] US/${endpoint.name} failed: ${msg}`);
+      errors.push(`US/${endpoint.name}: ${msg}`);
+    }
+  }
+  return { indicators: [], advisoryInfo: {} };
 }
 
 /** UK FCDO alert_status values mapped to 1-4 advisory levels */

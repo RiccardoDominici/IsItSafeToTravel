@@ -136,6 +136,16 @@ export interface AdvisoryInfo {
   source: string;
   url: string;
   updatedAt?: string; // the government's real advisory date — absent when the source exposes none (never the fetch time)
+  // Staleness transparency (SOURCE-REPAIR-BRIEF 2026-09-25): set ONLY when this value was not
+  // fetched live today but restored from a per-source cache fallback (runWithFloor in
+  // advisories.ts, or the equivalent tier1-3 fallbacks). Value = the last date this specific
+  // source's data was genuinely fetched live, in YYYY-MM-DD — propagated forward unchanged on
+  // every subsequent day the cache keeps getting re-used, so it always reflects the true origin
+  // date rather than "yesterday". Absent/undefined = fetched live today. Internal-only for now,
+  // like `confidence` elsewhere in this file — renderers must not assume it is user-facing yet.
+  // NOTE: this exact field (name + type) may also be added by a parallel branch repairing the
+  // tier1-3 fetchers restore path — keep it identical if merging.
+  restoredFrom?: string;
 }
 
 export interface ScoredCountry {
