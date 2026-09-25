@@ -643,6 +643,24 @@ async function fetchIeAdvisories(
 // Sub-fetcher 6: Finland (um.fi) -- HTML-04
 // =============================================================================
 
+// NOT REPAIRABLE with a plain fetch() (investigated 2026-09-25, see source-repair-brief
+// rule 5/7). Both hosts sit behind Cloudflare, and both return a genuine Cloudflare
+// Managed Challenge -- not a datacenter-IP block: `cf-mitigated: challenge`, a
+// `Just a moment...` interstitial requiring the Sec-CH-UA client-hint round trip and a
+// real JS engine to solve, reproduced identically from a residential network with full
+// browser headers. This is a different failure mode from IE's plain User-Agent-string WAF
+// rule (fixed above by sending a browser-shaped UA) -- no User-Agent or header combination
+// gets past a JS challenge. No alternative endpoint was found either: no RSS feed (common
+// guessed paths 404), no JSON API, nothing on Finland's open-data portal (avoindata.fi).
+// The only way through is a headless browser that can execute Cloudflare's challenge
+// script (e.g. Playwright), which this project does not depend on anywhere else --
+// adding one just for this source is a real architecture decision (new heavy dependency,
+// a browser-binary install step in the GitHub Actions workflow, slower pipeline) that
+// belongs to the orchestrator/user, not to a single-source repair. Left as-is: the
+// try/catch below degrades to an empty result exactly as before, and the per-source floor
+// in enforcePerSourceFloors() restores the last healthy cache (floor 0 today, so it
+// currently only logs and does not restore -- see the floor recommendation in this
+// workstream's report).
 async function fetchFiAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -678,7 +696,7 @@ async function fetchFiAdvisories(
   }
 
   if (!html) {
-    console.warn('[ADVISORIES-T2A] FI: All URLs returned 403 or failed, returning empty result');
+    console.warn('[ADVISORIES-T2A] FI: both hosts behind a Cloudflare JS challenge (cf-mitigated: challenge), not a simple 403 -- not fixable without a headless browser, returning empty result');
     return { indicators, advisoryInfo };
   }
 
