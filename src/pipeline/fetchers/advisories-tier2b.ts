@@ -330,12 +330,14 @@ async function fetchDkAdvisories(
 // 191 country pages that actually exist. sitemap.xml lists all of them directly (a real
 // Rule-6 structured endpoint) and needs no guessing.
 //
-// sitemap.xml specifically (not the country pages) 403s under this file's normal User-Agent --
-// CloudFront/WAF appears to apply a stricter bot rule to that one path. A standard browser UA
-// clears it; this isn't evading any auth or paywall, sitemap.xml is public-by-design content
-// meant for crawling. Country pages themselves fetch fine under the normal UA.
+// sitemap.xml specifically (not the country pages) 403s when fetched with no identifying
+// User-Agent at all (e.g. a bare HTTP client default) -- CloudFront/WAF appears to apply a
+// stricter bot rule to that one path than to the rest of the site. Any *identified* client
+// clears it, including this file's own default UA; no need to impersonate a browser. Use the
+// same honest, self-identifying bot UA as the Ireland fetcher (advisories-tier2a.ts) instead --
+// it names the project and links back to it, which is what a polite crawler is supposed to do.
 const SG_SITEMAP_URL = 'https://www.mfa.gov.sg/sitemap.xml';
-const SG_BROWSER_UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36';
+const SG_BOT_UA = 'Mozilla/5.0 (compatible; IsItSafeToTravelBot/1.0; +https://isitsafetotravel.org)';
 const SG_PATH_PREFIX = '/travelling-overseas/travel-advisories-notices-and-visa-information/';
 
 // Sitemap slugs that don't match a simple slugified English country name -- mfa.gov.sg uses
@@ -374,7 +376,7 @@ async function fetchSgAdvisories(
 
   const sitemapResponse = await fetch(SG_SITEMAP_URL, {
     signal: AbortSignal.timeout(30_000),
-    headers: { ...FETCH_HEADERS, 'User-Agent': SG_BROWSER_UA },
+    headers: { ...FETCH_HEADERS, 'User-Agent': SG_BOT_UA },
   });
 
   if (!sitemapResponse.ok) {
