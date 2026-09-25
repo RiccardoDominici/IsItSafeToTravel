@@ -113,24 +113,54 @@ jobs:
           const client = await auth.getClient();
           console.log(`Authenticated as ${key.client_email}`);
 
-          // --- Read sitemap ---
-          const sitemapPath = 'dist/client/sitemap-0.xml';
-          let sitemapXml;
+          // --- Read sitemap index, then every per-language child it lists ---
+          // The site now ships sitemap-index.xml fanning out to one
+          // sitemap-{lang}-0.xml per locale (multilingual split); the old
+          // flat sitemap-0.xml this script used to read no longer exists
+          // (found in the 2026-09-25 SEO audit, findings/sitemap.md SM3).
+          // Mirrors the same index-then-children logic seo-indexnow.yml
+          // already uses (scripts/indexnow/submit-changed.sh).
+          function extractLocs(xml) {
+            const regex = /<loc>([^<]+)<\/loc>/g;
+            const urls = [];
+            let m;
+            while ((m = regex.exec(xml)) !== null) {
+              urls.push(m[1]);
+            }
+            return urls;
+          }
+
+          const SITE_HOST = 'isitsafetotravel.org';
+          const sitemapIndexPath = 'dist/client/sitemap-index.xml';
+          let sitemapIndexXml;
           try {
-            sitemapXml = readFileSync(sitemapPath, 'utf8');
+            sitemapIndexXml = readFileSync(sitemapIndexPath, 'utf8');
           } catch (e) {
-            console.error(`::error::Sitemap not found at ${sitemapPath}`);
+            console.error(`::error::Sitemap index not found at ${sitemapIndexPath}`);
             process.exit(1);
           }
 
-          const locRegex = /<loc>([^<]+)<\/loc>/g;
-          const allUrls = [];
-          let match;
-          while ((match = locRegex.exec(sitemapXml)) !== null) {
-            allUrls.push(match[1]);
+          const sitemapFiles = extractLocs(sitemapIndexXml).map((loc) =>
+            loc.replace(`https://${SITE_HOST}/`, 'dist/client/')
+          );
+          if (sitemapFiles.length === 0) {
+            console.error(`::error::No sitemaps found in ${sitemapIndexPath}`);
+            process.exit(1);
           }
 
-          console.log(`Found ${allUrls.length} URLs in sitemap`);
+          const allUrls = [];
+          for (const sitemapFile of sitemapFiles) {
+            let sitemapXml;
+            try {
+              sitemapXml = readFileSync(sitemapFile, 'utf8');
+            } catch (e) {
+              console.warn(`::warning::Sitemap referenced but missing: ${sitemapFile}`);
+              continue;
+            }
+            allUrls.push(...extractLocs(sitemapXml));
+          }
+
+          console.log(`Found ${allUrls.length} URLs across ${sitemapFiles.length} sitemap file(s)`);
 
           // --- Prioritize URLs ---
           // Homepage and /en/ pages first, then other languages
