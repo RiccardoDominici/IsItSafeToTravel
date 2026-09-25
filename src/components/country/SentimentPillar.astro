@@ -24,6 +24,23 @@ function formatSignedDelta(n: number): string {
 }
 
 const label = t('country.pillar.sentiment');
+
+// Inviting empty-state copy, replacing the flat "Not enough votes yet" ui.ts
+// keys (2026-09-25 audit, C12/Action Plan #17): a deficiency notice reads as a
+// dead end, not an invitation to vote — the voting UI right below it is the
+// whole point of the section. No ui.ts edit in this fix round, so this is a
+// small component-local table (CitePage.astro / RegionsIndex.astro pattern).
+const emptyStateCopy: Record<Lang, { title: string; body: string }> = {
+  en: { title: 'Have you been here? Rate this destination', body: 'No community votes yet — be the first to say whether this score matches your experience.' },
+  it: { title: 'Sei stato qui? Vota questa destinazione', body: 'Nessun voto della community per ora — sii il primo a dire se questo punteggio corrisponde alla tua esperienza.' },
+  es: { title: '¿Has estado aquí? Valora este destino', body: 'Todavía no hay votos de la comunidad — sé el primero en decir si esta puntuación coincide con tu experiencia.' },
+  fr: { title: 'Vous y êtes déjà allé ? Notez cette destination', body: 'Aucun vote de la communauté pour l’instant — soyez le premier à dire si ce score correspond à votre expérience.' },
+  pt: { title: 'Já esteve aqui? Avalie este destino', body: 'Ainda não há votos da comunidade — seja o primeiro a dizer se esta pontuação combina com a sua experiência.' },
+  zh: { title: '去过这里吗？为这个目的地打分', body: '目前还没有社区投票——成为第一个告诉我们这个评分是否符合你的实际体验的人。' },
+  de: { title: 'Waren Sie schon hier? Bewerten Sie dieses Reiseziel', body: 'Noch keine Stimmen aus der Community — seien Sie die oder der Erste, die oder der sagt, ob diese Bewertung Ihrer Erfahrung entspricht.' },
+};
+const emptyState = emptyStateCopy[lang];
+
 const displayScore = hasEnough ? sentiment!.perceived.toFixed(1) : null;
 const barWidth = hasEnough ? Math.max((sentiment!.perceived / 10) * 180, 2) : 0;
 const color = hasEnough ? pillarToColor(sentiment!.perceived / 10) : '';
@@ -66,8 +83,8 @@ const voteCountText = hasEnough
     </div>
   ) : (
     <div class="space-y-1">
-      <p class="text-sm font-medium text-sand-700 dark:text-sand-300">{t('sentiment.empty_title')}</p>
-      <p class="text-xs text-sand-500 dark:text-sand-400">{t('sentiment.empty_body')}</p>
+      <p class="text-sm font-medium text-sand-700 dark:text-sand-300">{emptyState.title}</p>
+      <p class="text-xs text-sand-500 dark:text-sand-400">{emptyState.body}</p>
     </div>
   )}
 
