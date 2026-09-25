@@ -11,6 +11,16 @@
 import fs from "node:fs";
 import path from "node:path";
 import { regionMap as libRegionMap } from "../src/lib/regions.js";
+import { routes, type Lang } from "../src/i18n/ui.js";
+
+// The 6 non-English locales, in the order shown next to every country entry
+// and in llms.txt's "## Languages" section (GEO-02: both files used to be
+// 100% English-URL, 258/258, even though every country page exists in 7
+// languages with locale-specific slugs, e.g. "country" -> "paese"/"land").
+const NON_EN_LANGS: Lang[] = ["it", "es", "fr", "pt", "zh", "de"];
+const LANG_LABEL: Record<Lang, string> = {
+  en: "English", it: "Italian", es: "Spanish", fr: "French", pt: "Portuguese", zh: "Chinese", de: "German",
+};
 
 // ── paths ────────────────────────────────────────────────────────────────────
 const ROOT = path.resolve(import.meta.dirname, "..");
@@ -221,6 +231,15 @@ function main() {
     // fifth conflicting source count (2026-08 SEO audit follow-up).
     lines.push(`- **Data inputs:** ${sourceCount} indicators across 5 pillars, updated daily`);
     lines.push(`- **More info:** https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`);
+    // GEO-02: this same page also exists in 6 other languages, at a locale-specific
+    // slug (routes[lang].country — e.g. "paese" for it, "land" for de). One compact
+    // line keeps the per-country block a fixed height instead of a full extra
+    // section per language.
+    const iso3Lower = c.iso3.toLowerCase();
+    const otherLangLinks = NON_EN_LANGS
+      .map((lang) => `[${lang.toUpperCase()}](https://isitsafetotravel.org/${lang}/${routes[lang].country}/${iso3Lower}/)`)
+      .join(" · ");
+    lines.push(`- **Other languages:** ${otherLangLinks}`);
     lines.push("");
   }
 
@@ -305,6 +324,18 @@ function main() {
   fs.writeFileSync(OUT_FULL, lines.join("\n"), "utf-8");
   console.log(`✔  wrote ${OUT_FULL} (${lines.length} lines)`);
 
+  // "## Languages" section (GEO-02): the old version was `Available in: [English](/en/), ...`
+  // — relative hrefs with no base URL, useless to a crawler reading raw text, and it
+  // never showed that the URL *pattern* also changes per locale (e.g. "country" is
+  // "paese" in Italian, "land" in German). Each entry now links the locale home plus
+  // one worked country-page example (Japan, matching "Sample Country Pages" above)
+  // so an AI reader can both discover and construct any other localized URL.
+  const languageLines = (["en", ...NON_EN_LANGS] as Lang[]).map((lang) => {
+    const home = `https://isitsafetotravel.org/${lang}/`;
+    const example = `https://isitsafetotravel.org/${lang}/${routes[lang].country}/jpn/`;
+    return `- **${LANG_LABEL[lang]}**: [Home](${home}) · [Japan example](${example})`;
+  }).join("\n");
+
   // ────── build llms.txt ──────
   const llms = `# IsItSafeToTravel.org
 
@@ -338,8 +369,8 @@ function main() {
 - [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
 - [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — updated daily
 - Scores updated daily via automated GitHub Actions pipeline
-- Sources: Global Peace Index (GPI), INFORM Risk Index, ReliefWeb, GDACS, US/UK/CA/AU government travel advisories
-- Composite scoring uses weighted average across 5 safety pillars
+- Sources: government travel advisories, Global Peace Index (GPI), World Bank intentional-homicide rate, INFORM Risk Index, UCDP conflict-event data, V-Dem, ReliefWeb, GDACS
+- Composite scoring uses an uncertainty-weighted (Bayesian shrinkage) weighted geometric mean across 5 safety pillars, not a simple average — a single very-low pillar pulls the composite down more than an average would
 - All data is from publicly available sources, licensed CC BY-NC 4.0
 
 ## Full Content
@@ -348,7 +379,9 @@ function main() {
 
 ## Languages
 
-Available in: [English](/en/), [Italian](/it/), [Spanish](/es/), [French](/fr/), [Portuguese](/pt/), [Chinese](/zh/), [German](/de/)
+This site is fully translated into 7 languages; every country page exists in all of them at a locale-specific URL (path segments like "country" are localized too, e.g. "paese" in Italian, "land" in German — swap the ISO3 code in any link below to reach a different country in that language).
+
+${languageLines}
 
 ## Open Source
 
