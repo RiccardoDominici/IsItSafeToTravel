@@ -10,7 +10,7 @@
  * and the 1-10 scale.
  */
 import type { Lang } from '../i18n/ui';
-import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY } from './site-stats';
+import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT } from './site-stats';
 
 export type HubType =
   | 'safest-countries'
@@ -281,7 +281,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Which government advisories does this list rely on?',
         answer:
-          `We aggregate official travel advisories from multiple governments, including the United States, Canada, Australia and several European foreign ministries. Together with ${OTHER_SOURCE_COUNT_DISPLAY} other public sources they feed the five weighted pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%), refreshed daily.`,
+          `We aggregate official travel advisories from multiple governments, including the United States, Canada, Australia and several European foreign ministries. Together with ${OTHER_SOURCE_COUNT === 1 ? '1 other public source' : `${OTHER_SOURCE_COUNT_DISPLAY} other public sources`} they feed the five weighted pillars (conflict 30%, crime 25%, health 20%, governance 15%, environment 10%), refreshed daily.`,
       },
       {
         question: 'How current is this list of countries to avoid?',
@@ -298,7 +298,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Su quali avvisi governativi si basa questa lista?',
         answer:
-          `Aggreghiamo gli avvisi di viaggio ufficiali di più governi, tra cui Stati Uniti, Canada, Australia e diversi ministeri degli esteri europei. Insieme ad altre ${OTHER_SOURCE_COUNT_DISPLAY} fonti pubbliche alimentano i cinque pilastri ponderati (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%), aggiornati ogni giorno.`,
+          `Aggreghiamo gli avvisi di viaggio ufficiali di più governi, tra cui Stati Uniti, Canada, Australia e diversi ministeri degli esteri europei. Insieme ${OTHER_SOURCE_COUNT === 1 ? "a un'altra fonte pubblica alimenta" : `ad altre ${OTHER_SOURCE_COUNT_DISPLAY} fonti pubbliche alimentano`} i cinque pilastri ponderati (conflitti 30%, criminalità 25%, sanità 20%, governance 15%, ambiente 10%), aggiornati ogni giorno.`,
       },
       {
         question: 'Quanto è aggiornata questa lista di paesi da evitare?',
@@ -315,7 +315,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: '¿En qué avisos gubernamentales se basa esta lista?',
         answer:
-          `Agregamos los avisos de viaje oficiales de varios gobiernos, incluidos Estados Unidos, Canadá, Australia y varios ministerios de exteriores europeos. Junto con otras ${OTHER_SOURCE_COUNT_DISPLAY} fuentes públicas alimentan los cinco pilares ponderados (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), actualizados a diario.`,
+          `Agregamos los avisos de viaje oficiales de varios gobiernos, incluidos Estados Unidos, Canadá, Australia y varios ministerios de exteriores europeos. Junto con ${OTHER_SOURCE_COUNT === 1 ? 'otra fuente pública alimenta' : `otras ${OTHER_SOURCE_COUNT_DISPLAY} fuentes públicas alimentan`} los cinco pilares ponderados (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, medio ambiente 10%), actualizados a diario.`,
       },
       {
         question: '¿Qué tan actualizada está esta lista de países a evitar?',
@@ -332,7 +332,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: "Sur quels avis gouvernementaux cette liste s'appuie-t-elle ?",
         answer:
-          `Nous agrégeons les avis aux voyageurs officiels de plusieurs gouvernements, dont les États-Unis, le Canada, l'Australie et plusieurs ministères européens des Affaires étrangères. Avec ${OTHER_SOURCE_COUNT_DISPLAY} autres sources publiques, ils alimentent les cinq piliers pondérés (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %), actualisés chaque jour.`,
+          `Nous agrégeons les avis aux voyageurs officiels de plusieurs gouvernements, dont les États-Unis, le Canada, l'Australie et plusieurs ministères européens des Affaires étrangères. Avec ${OTHER_SOURCE_COUNT === 1 ? 'une autre source publique' : `${OTHER_SOURCE_COUNT_DISPLAY} autres sources publiques`}, ils alimentent les cinq piliers pondérés (conflits 30 %, criminalité 25 %, santé 20 %, gouvernance 15 %, environnement 10 %), actualisés chaque jour.`,
       },
       {
         question: 'Cette liste de pays à éviter est-elle à jour ?',
@@ -349,7 +349,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Em quais avisos governamentais esta lista se baseia?',
         answer:
-          `Agregamos os avisos de viagem oficiais de vários governos, incluindo Estados Unidos, Canadá, Austrália e diversos ministérios de relações exteriores europeus. Junto com ${OTHER_SOURCE_COUNT_DISPLAY} outras fontes públicas, eles alimentam os cinco pilares ponderados (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%), atualizados diariamente.`,
+          `Agregamos os avisos de viagem oficiais de vários governos, incluindo Estados Unidos, Canadá, Austrália e diversos ministérios de relações exteriores europeus. Junto com ${OTHER_SOURCE_COUNT === 1 ? 'outra fonte pública' : `${OTHER_SOURCE_COUNT_DISPLAY} outras fontes públicas`}, eles alimentam os cinco pilares ponderados (conflitos 30%, criminalidade 25%, saúde 20%, governança 15%, meio ambiente 10%), atualizados diariamente.`,
       },
       {
         question: 'Quão atualizada é esta lista de países a evitar?',
@@ -383,7 +383,7 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
       {
         question: 'Auf welche staatlichen Reisehinweise stützt sich diese Liste?',
         answer:
-          `Wir aggregieren offizielle Reisehinweise mehrerer Regierungen, darunter die USA, Kanada, Australien und mehrere europäische Außenministerien. Zusammen mit ${OTHER_SOURCE_COUNT_DISPLAY} weiteren öffentlichen Quellen speisen sie die fünf gewichteten Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %), die täglich aktualisiert werden.`,
+          `Wir aggregieren offizielle Reisehinweise mehrerer Regierungen, darunter die USA, Kanada, Australien und mehrere europäische Außenministerien. Zusammen mit ${OTHER_SOURCE_COUNT === 1 ? 'einer weiteren öffentlichen Quelle' : `${OTHER_SOURCE_COUNT_DISPLAY} weiteren öffentlichen Quellen`} speisen sie die fünf gewichteten Säulen (Konflikt 30 %, Kriminalität 25 %, Gesundheit 20 %, Regierungsführung 15 %, Umwelt 10 %), die täglich aktualisiert werden.`,
       },
       {
         question: 'Wie aktuell ist diese Liste der zu meidenden Länder?',

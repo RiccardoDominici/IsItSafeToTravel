@@ -21,20 +21,29 @@ const scoredCountries = loadLatestScores();
 export const COUNTRY_COUNT = scoredCountries.length;
 
 /**
- * Round an exact count DOWN to the nearest multiple of 5 and format as "N+".
+ * Format an exact count for site-wide "+"-style copy.
  *
- * WHY floor-and-plus instead of the exact number: (1) it never overstates —
- * the one hard rule this whole file exists to enforce; (2) it stays true and
- * stable across the day-to-day noise of a live pipeline (a government
- * dropping from 26 to 24 active countries shouldn't flip site copy from
- * "26" to "24" on every rebuild — "25+" absorbs that until a real 5-count
- * swing). Falls back to the bare exact number when it's below 5: a "0+"
- * claim would be true but silly, and rounding UP to "5+" when the real
- * count is, say, 3 would overstate — exactly what this function must not do.
+ * Below 10: show the exact number ("7") — at this size rounding throws away
+ * real precision for no reason (there's no meaningful day-to-day noise to
+ * absorb when the true count is single-digit), and a claim this small reads
+ * as more careful, not less, when it's exact. Callers whose surrounding
+ * sentence pluralizes the noun must special-case count === 1 themselves
+ * (see OTHER_SOURCE_COUNT's callers in hub-faq.ts for the pattern) — this
+ * function only formats the number, it doesn't know the sentence around it.
+ *
+ * From 10 up: round DOWN to the nearest multiple of 5 and add "+". Never
+ * round up or show the bare exact number here — the one hard rule this file
+ * exists to enforce is that a claim must never overstate. Flooring also
+ * keeps the claim stable across a live pipeline's day-to-day noise (a
+ * government dropping from 26 to 24 active countries shouldn't flip site
+ * copy from "26" to "24" on every rebuild — "25+" absorbs that until a real
+ * 5-count swing), and at 10+ a "+"-suffixed claim never needs singular
+ * grammar, so pluralization stops being a concern past this threshold.
  */
-function roundedPlusDisplay(exact: number): string {
-  const floored = Math.floor(exact / 5) * 5;
-  return floored > 0 ? `${floored}+` : String(exact);
+const EXACT_BELOW = 10;
+function countDisplay(exact: number): string {
+  if (exact < EXACT_BELOW) return String(exact);
+  return `${Math.floor(exact / 5) * 5}+`;
 }
 
 /**
@@ -74,7 +83,7 @@ export const ACTIVE_ADVISORY_CODES: AdvisoryCode[] = ADVISORY_CODES.filter(
 export const ADVISORY_GOV_COUNT = ACTIVE_ADVISORY_CODES.length;
 
 /** Site-wide "N+ government sources" display string, e.g. "25+". */
-export const ADVISORY_GOV_COUNT_DISPLAY = roundedPlusDisplay(ADVISORY_GOV_COUNT);
+export const ADVISORY_GOV_COUNT_DISPLAY = countDisplay(ADVISORY_GOV_COUNT);
 
 /**
  * Distinct non-advisory data feeds actually present in the snapshot (today:
@@ -92,8 +101,12 @@ export const OTHER_SOURCE_NAMES: string[] = Array.from(
 /** Exact number of non-advisory data feeds. */
 export const OTHER_SOURCE_COUNT = OTHER_SOURCE_NAMES.length;
 
-/** Site-wide "N+ other data feeds" display string, e.g. "5+". */
-export const OTHER_SOURCE_COUNT_DISPLAY = roundedPlusDisplay(OTHER_SOURCE_COUNT);
+/**
+ * Site-wide "other data feeds" display string — exact below 10 (today: "7",
+ * not "5+"; see countDisplay), "N+" from 10 up. Callers that pluralize the
+ * noun around it must handle the count === 1 case themselves.
+ */
+export const OTHER_SOURCE_COUNT_DISPLAY = countDisplay(OTHER_SOURCE_COUNT);
 
 /** Exact total: active advisory governments + other data feeds. */
 export const SOURCE_COUNT = ADVISORY_GOV_COUNT + OTHER_SOURCE_COUNT;
@@ -104,4 +117,4 @@ export const SOURCE_COUNT = ADVISORY_GOV_COUNT + OTHER_SOURCE_COUNT;
  * of how many were actually live) with a real, conservatively-rounded count
  * of active governments + other feeds. Today that's ~26 + 7 = 33 -> "30+".
  */
-export const SOURCE_COUNT_DISPLAY = roundedPlusDisplay(SOURCE_COUNT);
+export const SOURCE_COUNT_DISPLAY = countDisplay(SOURCE_COUNT);
