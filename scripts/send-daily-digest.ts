@@ -39,6 +39,7 @@ import { execFileSync } from 'node:child_process';
 import { sendBatch, type EmailMessage } from '../functions/lib/email.js';
 import { digestSubjectFallback, wrapperHtml, eventCardHtml, escapeHtml, type Locale, type CardSentiment } from '../functions/lib/newsletter-copy.js';
 import { loadLatestScores, getLocalizedCountryName } from '../src/lib/scores.js';
+import { SOURCE_COUNT_DISPLAY } from '../src/lib/site-stats.js';
 import { routes } from '../src/i18n/ui.js';
 import type { Lang } from '../src/i18n/ui.js';
 import { renderNewsEvent, flagEmoji } from '../src/lib/news.js';
@@ -217,13 +218,13 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     de: { head: "{issuer} gibt eine Warnung '{levelLabel}' für {country} heraus", detail: '{issuer} hat die Reisewarnung für {country} auf Stufe {level} angehoben — {levelLabel}.' },
   },
   new_country: {
-    en: { head: '{country} added to IsItSafeToTravel', detail: '{country} now has a daily safety score, tracked across 40+ global sources.' },
-    it: { head: '{country} aggiunto a IsItSafeToTravel', detail: 'Ora {country} ha un punteggio di sicurezza quotidiano, monitorato da oltre 40 fonti globali.' },
-    es: { head: '{country} se une a IsItSafeToTravel', detail: '{country} ahora tiene un puntaje de seguridad diario, monitoreado por más de 40 fuentes globales.' },
-    fr: { head: '{country} rejoint IsItSafeToTravel', detail: '{country} dispose désormais d\'un score de sécurité quotidien, suivi par plus de 40 sources mondiales.' },
-    pt: { head: '{country} adicionado ao IsItSafeToTravel', detail: '{country} agora tem uma pontuação de segurança diária, monitorizada por mais de 40 fontes globais.' },
-    zh: { head: '{country} 已加入 IsItSafeToTravel', detail: '{country} 现已拥有每日安全评分,由40多个全球数据源持续追踪。' },
-    de: { head: '{country} zu IsItSafeToTravel hinzugefügt', detail: '{country} hat jetzt einen täglichen Sicherheitswert, verfolgt über mehr als 40 globale Quellen.' },
+    en: { head: '{country} added to IsItSafeToTravel', detail: `{country} now has a daily safety score, tracked across ${SOURCE_COUNT_DISPLAY} global sources.` },
+    it: { head: '{country} aggiunto a IsItSafeToTravel', detail: `Ora {country} ha un punteggio di sicurezza quotidiano, monitorato da ${SOURCE_COUNT_DISPLAY} fonti globali.` },
+    es: { head: '{country} se une a IsItSafeToTravel', detail: `{country} ahora tiene un puntaje de seguridad diario, monitoreado por ${SOURCE_COUNT_DISPLAY} fuentes globales.` },
+    fr: { head: '{country} rejoint IsItSafeToTravel', detail: `{country} dispose désormais d'un score de sécurité quotidien, suivi par ${SOURCE_COUNT_DISPLAY} sources mondiales.` },
+    pt: { head: '{country} adicionado ao IsItSafeToTravel', detail: `{country} agora tem uma pontuação de segurança diária, monitorizada por ${SOURCE_COUNT_DISPLAY} fontes globais.` },
+    zh: { head: '{country} 已加入 IsItSafeToTravel', detail: `{country} 现已拥有每日安全评分，由${SOURCE_COUNT_DISPLAY} 个全球数据源持续追踪。` },
+    de: { head: '{country} zu IsItSafeToTravel hinzugefügt', detail: `{country} hat jetzt einen täglichen Sicherheitswert, verfolgt über ${SOURCE_COUNT_DISPLAY} globale Quellen.` },
   },
 };
 
