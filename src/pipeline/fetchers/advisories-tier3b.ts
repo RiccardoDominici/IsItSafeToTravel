@@ -60,11 +60,14 @@ const CZ_LEVEL_TEXT: Record<number, string> = {
   4: 'Nedoporučujeme cestovat',
 };
 
+// Wording matches KKM's own security-classification taxonomy terms verbatim
+// (see HU_CLASSIFICATION_TO_LEVEL below) so the on-page text always agrees
+// with the badge.
 const HU_LEVEL_TEXT: Record<number, string> = {
-  1: 'Legyen oevatos',
-  2: 'Fokozott ovatossag',
-  3: 'Fokozott eloreelatas',
-  4: 'Ne utazzon!',
+  1: 'Biztonságos ország',
+  2: 'Fokozott óvatossággal látogatható',
+  3: 'Kiemelt biztonsági kockázat',
+  4: 'Nem javasolt úti cél',
 };
 
 const PT_LEVEL_TEXT: Record<number, string> = {
@@ -273,44 +276,6 @@ const NORWEGIAN_NAMES: Record<string, string> = {
   'Ukraina': 'Ukraine',
   'Etiopia': 'Ethiopia',
   'Libanon': 'Lebanon',
-};
-
-// Hungarian country names
-const HUNGARIAN_NAMES: Record<string, string> = {
-  'Egyesuelt Allamok': 'United States',
-  'Egyesult Kiralysag': 'United Kingdom',
-  'Nagy-Britannia': 'United Kingdom',
-  'Franciaorszag': 'France',
-  'Nemetorszag': 'Germany',
-  'Olaszorszag': 'Italy',
-  'Spanyolorszag': 'Spain',
-  'Oroszorszag': 'Russia',
-  'India': 'India',
-  'Del-Korea': 'South Korea',
-  'Eszak-Korea': 'North Korea',
-  'Del-Afrika': 'South Africa',
-  'Egyiptom': 'Egypt',
-  'Toerokoeszag': 'Turkey',
-  'Goerogoeszag': 'Greece',
-  'Horvatorszag': 'Croatia',
-  'Romania': 'Romania',
-  'Csehorszag': 'Czech Republic',
-  'Szlovakia': 'Slovakia',
-  'Ausztria': 'Austria',
-  'Hollandia': 'Netherlands',
-  'Dania': 'Denmark',
-  'Svedorszag': 'Sweden',
-  'Norvegia': 'Norway',
-  'Finnorszag': 'Finland',
-  'Uj-Zeland': 'New Zealand',
-  'Kina': 'China',
-  'Fulop-szigetek': 'Philippines',
-  'Feheroroszorszag': 'Belarus',
-  'Szaud-Arabia': 'Saudi Arabia',
-  'Svajc': 'Switzerland',
-  'Lengyelorszag': 'Poland',
-  'Portugalia': 'Portugal',
-  'Ukrajna': 'Ukraine',
 };
 
 /** Try to match a country name using a local name map + fallback to getCountryByName */
@@ -905,10 +870,100 @@ async function fetchCzAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 6: Hungary (KKM) -- CPLX-12
-// Fragility: MEDIUM -- Hungarian text, government page
-// Expected failure modes: Page redesign, Hungarian-only content
+// Sub-fetcher 6: Hungary (KKM, "Konzinfo" portal) -- CPLX-12
+// Fragility: LOW -- explicit structured classification field, ISO3-mappable
+// Repaired 2026-09-25: konzuliszolgalat.kormany.hu 301-redirects to
+// konzinfo.mfa.gov.hu, KKM's new consular-information portal (a domain
+// migration, same class of break as PL/PT/CZ). The old URL's page had no
+// per-country content at all -- just a search widget -- which is why the
+// fetch previously threw outright (network exception, not even an HTTP
+// error). The new portal's "utazasi-tanacsok-orszagonkent" (travel advice
+// by country) hub is a server-rendered Drupal page listing all 199
+// countries as `<a class="dropdown-item use-ajax">` entries; each one's
+// `href` embeds a Drupal node ID (route_params[node]=NN) that resolves
+// directly at /node/NN -- no need to follow the AJAX indirection the site's
+// own JS uses. Each node page carries an explicit
+// "field--name-field-security-classification" taxonomy field (one of four
+// fixed terms, see normalizeHuLevel) instead of free narrative text, so
+// unlike PT/CZ this needs no sentence-level scoping or regional-warning
+// guard -- KKM already collapses each country to a single classification.
 // =============================================================================
+
+const HU_BASE_URL = 'https://konzinfo.mfa.gov.hu';
+const HU_HUB_URL = `${HU_BASE_URL}/utazas/utazasi-tanacsok-orszagonkent`;
+
+interface HuCountryLink {
+  name: string; // Hungarian display name, from the hub's aria-label
+  nodeId: string;
+}
+
+// COUNTRIES' `.en` names, keyed accent-folded -- first-pass fallback for
+// Hungarian names close to their international form (e.g. "Kanada").
+const huEnFallbackMap = new Map<string, (typeof COUNTRIES)[number]>();
+for (const country of COUNTRIES) {
+  huEnFallbackMap.set(stripDiacritics(country.name.en).toLowerCase(), country);
+}
+
+// Most Hungarian country names are Magyar exonyms with no resemblance to
+// English (e.g. "Németország" for Germany, "Görögország" for Greece) --
+// built by fetching the hub page and mapping every one of the 199 names to
+// an ISO3 during the 2026-09-25 repair. A few entries are composite/
+// ambiguous territories with no single-country mapping (France's and the
+// UK's overseas territories, the Dutch Caribbean islands) and are
+// deliberately left out -- skipped, never guessed.
+const HU_NAME_OVERRIDES: Record<string, string> = {
+  'afganisztan': 'AFG', 'amerikai egyesult allamok': 'USA', 'antigua es barbuda': 'ATG',
+  'ausztralia': 'AUS', 'ausztria': 'AUT', 'azerbajdzsan': 'AZE', 'bahama-szigetek': 'BHS',
+  'bahrein': 'BHR', 'banglades': 'BGD', 'belarusz koztarsasag (feheroroszorszag)': 'BLR',
+  'bissau-guinea': 'GNB', 'bosznia-hercegovina': 'BIH', 'brazilia': 'BRA', 'ciprus': 'CYP',
+  'comore-szigeteki unio': 'COM', 'cook-szigetek': 'COK', 'csad': 'TCD', 'csehorszag': 'CZE',
+  'dania': 'DNK', 'del-afrikai koztarsasag': 'ZAF', 'del-szudan': 'SSD',
+  'dominikai kozosseg': 'DMA', 'dominikai koztarsasag': 'DOM', 'dzsibuti': 'DJI',
+  'egyenlitoi-guinea': 'GNQ', 'egyesult arab emirsegek': 'ARE', 'egyiptom': 'EGY',
+  'elefantcsontpart': 'CIV', 'etiopia': 'ETH', 'eszak-macedonia': 'MKD', 'esztorszag': 'EST',
+  'fidzsi-szigetek': 'FJI', 'finnorszag': 'FIN', 'franciaorszag': 'FRA',
+  'fulop-szigetek': 'PHL', 'georgia (gruzia)': 'GEO', 'gorogorszag': 'GRC',
+  'hollandia': 'NLD', 'horvatorszag': 'HRV', 'indonezia': 'IDN', 'irak': 'IRQ',
+  'izland': 'ISL', 'izrael': 'ISR', 'irorszag': 'IRL', 'jemen': 'YEM', 'jordania': 'JOR',
+  'kambodzsa': 'KHM', 'kamerun': 'CMR', 'kanada': 'CAN', 'katar': 'QAT',
+  'kazahsztan': 'KAZ', 'kelet-timor': 'TLS', 'kirgizisztan': 'KGZ',
+  'kiribati (gilbert-, phoenix es line-szigetek)': 'KIR', 'kina': 'CHN', 'kolumbia': 'COL',
+  'kongoi demokratikus koztarsasag': 'COD', 'kongoi koztarsasag (kongo)': 'COG',
+  'koreai koztarsasag, (del-korea)': 'KOR', 'koreai nepi demokratikus koztarsasag (eszak-korea)': 'PRK',
+  'koszovo': 'XKX', 'kozep-afrika': 'CAF', 'kuba': 'CUB', 'kuvait': 'KWT', 'laosz': 'LAO',
+  'lengyelorszag': 'POL', 'lettorszag': 'LVA', 'libanon': 'LBN', 'litvania': 'LTU',
+  'libia allam': 'LBY', 'luxemburg': 'LUX', 'madagaszkar': 'MDG', 'malajzia': 'MYS',
+  'maldiv-szigetek': 'MDV', 'marokko': 'MAR', 'marshall-szigetek': 'MHL', 'mexiko': 'MEX',
+  'mianmar': 'MMR', 'mikronezia': 'FSM', 'mozambik': 'MOZ',
+  'nagy-britannia es eszak-irorszag egyesult kiralysaga': 'GBR', 'nemetorszag': 'DEU',
+  'norvegia': 'NOR', 'olaszorszag': 'ITA', 'oroszorszag': 'RUS', 'ormenyorszag': 'ARM',
+  'pakisztan': 'PAK', 'palesztina': 'PSE', 'papua uj-guinea': 'PNG', 'portugalia': 'PRT',
+  'ruanda': 'RWA', 'saint kitts es nevis': 'KNA', 'saint vincent es a grenadine-szigetek': 'VCT',
+  'salamon-szigetek': 'SLB', 'sao tome es principe': 'STP', 'seychelle-szigetek': 'SYC',
+  'spanyolorszag': 'ESP', 'svajc': 'CHE', 'svedorszag': 'SWE', 'szamoai fuggetlen allam': 'WSM',
+  'szaud-arabia': 'SAU', 'szenegal': 'SEN', 'szerbia': 'SRB', 'szingapur': 'SGP',
+  'sziria': 'SYR', 'szlovakia': 'SVK', 'szlovenia': 'SVN', 'szomalia': 'SOM',
+  'szudan': 'SDN', 'szvazifold': 'SWZ', 'tajvan': 'TWN',
+  'tadzsikisztan': 'TJK', 'thaifold': 'THA', 'torokorszag': 'TUR',
+  'trinidad es tobago': 'TTO', 'tunezia': 'TUN', 'turkmenisztan': 'TKM', 'ukrajna': 'UKR',
+  'uj-zeland': 'NZL', 'uzbegisztan': 'UZB', 'zold-foki koztarsasag': 'CPV',
+};
+
+function resolveHuCountry(name: string): (typeof COUNTRIES)[number] | undefined {
+  const key = stripDiacritics(name).toLowerCase().trim();
+  const overrideIso3 = HU_NAME_OVERRIDES[key];
+  if (overrideIso3) return getCountryByIso3(overrideIso3);
+  return huEnFallbackMap.get(key);
+}
+
+/** Parse KKM's "Biztonsági besorolás utolsó módosítása: YYYY.MM.DD." into an ISO date, if present. */
+function parseHuUpdatedAt(text: string): string | undefined {
+  const m = text.match(/(\d{4})\.(\d{2})\.(\d{2})\.?/);
+  if (!m) return undefined;
+  const [, yyyy, mm, dd] = m;
+  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
 
 async function fetchHuAdvisories(
   rawDir: string,
@@ -919,53 +974,77 @@ async function fetchHuAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   try {
-    const response = await fetch(
-      'https://konzuliszolgalat.kormany.hu/utazasi-tanacsok',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+    // Step 1: discover every country + Drupal node ID from the hub page.
+    const hubResponse = await fetchWithRetry(HU_HUB_URL, 30_000);
+    if (!hubResponse.ok) {
+      console.warn(`[ADVISORIES-T3B] HU: hub HTTP ${hubResponse.status}, no data available`);
+      return { indicators, advisoryInfo };
+    }
+    const hubHtml = await hubResponse.text();
+    const $hub = cheerio.load(hubHtml);
+    const links: HuCountryLink[] = [];
+    $hub('a.dropdown-item.use-ajax').each((_, el) => {
+      const href = $hub(el).attr('href') ?? '';
+      const name = $hub(el).attr('aria-label')?.trim();
+      const nodeMatch = href.match(/route_params(?:%5B|\[)node(?:%5D|\])=(\d+)/);
+      if (!name || !nodeMatch) return;
+      links.push({ name, nodeId: nodeMatch[1] });
+    });
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3B] HU: HTTP ${response.status}, no data available`);
+    if (links.length === 0) {
+      console.warn('[ADVISORIES-T3B] HU: no country entries found on hub page');
       return { indicators, advisoryInfo };
     }
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    // Step 2: fetch each country's node page, <=3 concurrent (rule 4).
+    await fetchBatch(
+      links,
+      async (link) => {
+        try {
+          const country = resolveHuCountry(link.name);
+          if (!country) return;
 
-    // Parse advisory entries from travel advice page
-    $('a, li, h3, h4, td').each((_, el) => {
-      const text = $(el).text().trim();
-      if (text.length < 3 || text.length > 50) return;
+          const response = await fetchWithRetry(`${HU_BASE_URL}/node/${link.nodeId}`, 15_000);
+          if (!response.ok) return;
 
-      const country = matchCountry(text, HUNGARIAN_NAMES);
-      if (!country) return;
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
+          const html = await response.text();
+          const $ = cheerio.load(html);
+          const classification = $('.field--name-field-security-classification .field--name-name')
+            .first()
+            .text()
+            .trim();
+          const level = normalizeHuLevel(classification);
+          if (level === null) return; // no recognised classification -- never guess
 
-      const parentText = $(el).closest('li, div, section, tr, article, p').text();
-      const level = normalizeHuLevel(parentText);
+          const lastModText = $('.field--name-field-sec-rating-last-modfied').first().text();
 
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_hu',
-        value: level,
-        year: currentYear,
-        source: 'advisories_hu',
-        fetchedAt,
-      });
+          indicators.push({
+            countryIso3: country.iso3,
+            indicatorName: 'advisory_level_hu',
+            value: level,
+            year: currentYear,
+            source: 'advisories_hu',
+            fetchedAt,
+          });
 
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].hu = {
-        level,
-        text: HU_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Hungary KKM',
-        url: 'https://konzuliszolgalat.kormany.hu/utazasi-tanacsok',
-      };
-    });
-  } catch {
-    console.warn('[ADVISORIES-T3B] HU: kormany.hu unavailable, returning empty result');
+          if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+          advisoryInfo[country.iso3].hu = {
+            level,
+            text: HU_LEVEL_TEXT[level] || `Level ${level}`,
+            source: 'Hungary KKM',
+            url: `${HU_BASE_URL}/node/${link.nodeId}`,
+            updatedAt: parseHuUpdatedAt(lastModText),
+          };
+        } catch {
+          // Individual country page failed, skip silently -- one bad page
+          // must not abort the whole crawl.
+        }
+      },
+      3,
+    );
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[ADVISORIES-T3B] HU: konzinfo.mfa.gov.hu unavailable (${msg}), returning empty result`);
   }
 
   console.log(`  [HU] Found ${indicators.length} countries`);

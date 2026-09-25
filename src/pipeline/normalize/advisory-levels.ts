@@ -1206,15 +1206,31 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
 }
 
 /**
- * Normalize Hungary (KKM) Hungarian advisory text to unified 1-4 scale.
- * Includes both diacritical and ASCII-folded variants for resilience.
+ * Normalize Hungary (KKM, "Konzinfo" portal) security-classification text to
+ * unified 1-4 scale. Unlike most tier3b sources, KKM (since its 2026 portal
+ * migration to konzinfo.mfa.gov.hu) exposes an EXPLICIT taxonomy field per
+ * country -- no narrative-prose guessing needed -- with four real terms
+ * observed across 21 countries during the 2026-09-25 repair:
+ *   "Biztonságos ország / térség"                                  -> 1
+ *   "Fokozott óvatossággal látogatható ország[, ... térséggel]"     -> 2
+ *   "Kiemelt biztonsági kockázatot rejtő ország/térségekkel"        -> 3
+ *   "Nem javasolt úti cél"                                          -> 4
+ * The two middle terms sometimes fold in a region-specific escalation
+ * ("...utazásra nem javasolt térséggel" / "...kiemelt biztonsági
+ * kockázatot rejtő térségekkel") -- KKM already writes these as ONE
+ * combined classification for the whole country rather than separate
+ * country-wide/regional statements (unlike PT/CZ's free text), so unlike
+ * those sources this is read as a single ordered label, strongest match
+ * first, not decomposed further.
  */
-export function normalizeHuLevel(text: string): UnifiedLevel {
+export function normalizeHuLevel(text: string): UnifiedLevel | null {
+  if (!text || !text.trim()) return null;
   const lower = text.toLowerCase();
-  if (lower.includes('ne utazzon') || lower.includes('utazás nem javasolt') || lower.includes('utazas nem javasolt')) return 4;
-  if (lower.includes('fokozott előrelátás') || lower.includes('fokozott elore-latas') || lower.includes('kiemelt figyelemmel')) return 3;
-  if (lower.includes('fokozott óvatosság') || lower.includes('fokozott ovatossag') || lower.includes('utazás előtt tájékozódjon') || lower.includes('utazas elott tajekodjon')) return 2;
-  return 1;
+  if (lower.startsWith('nem javasolt')) return 4;
+  if (lower.includes('kiemelt biztonsági kockázat')) return 3;
+  if (lower.includes('fokozott óvatossággal')) return 2;
+  if (lower.includes('biztonságos')) return 1;
+  return null;
 }
 
 // Portugal (MNE) has no explicit level badge on its per-country advisory
