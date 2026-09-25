@@ -95,8 +95,14 @@ export const DEFAULT_FORMULA_V9: FormulaV9Config = {
   regionOffset: {},
 };
 
-/** All government advisory codes ScoredCountry.advisories may carry (37). */
-const ADVISORY_CODES = [
+/**
+ * All government advisory codes ScoredCountry.advisories may carry (37).
+ * Exported so src/lib/site-stats.ts can compute how many of them are
+ * actually active in the current snapshot instead of hardcoding "37"
+ * site-wide (2026-09-25 audit, I2/I3/I12) — this array is the one place
+ * the full candidate list is allowed to live.
+ */
+export const ADVISORY_CODES = [
   'us', 'uk', 'ca', 'au', 'de', 'nl', 'jp', 'sk',
   'fr', 'nz', 'ie', 'fi', 'hk', 'br', 'at', 'ph',
   'be', 'dk', 'sg', 'ro', 'rs', 'ee', 'hr', 'ar',
@@ -104,7 +110,9 @@ const ADVISORY_CODES = [
   'ch', 'se', 'no', 'pl', 'cz', 'hu', 'pt',
 ] as const;
 
-type AdvisoriesInput = Partial<Record<(typeof ADVISORY_CODES)[number], AdvisoryInfo>>;
+export type AdvisoryCode = (typeof ADVISORY_CODES)[number];
+
+type AdvisoriesInput = Partial<Record<AdvisoryCode, AdvisoryInfo>>;
 
 function clamp(x: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, x));
@@ -520,7 +528,13 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
   },
   advisories: {
     url: 'https://travel.state.gov/',
-    description: 'Travel advisories from 37 governments worldwide including US, UK, Canada, Australia, Germany, Netherlands, Japan, Slovakia, France, New Zealand, Ireland, Finland, Hong Kong, Brazil, Austria, Philippines, Belgium, Denmark, Singapore, Romania, Serbia, Estonia, Croatia, Argentina, Italy, Spain, South Korea, Taiwan, China, India, Switzerland, Sweden, Norway, Poland, Czech Republic, Hungary, and Portugal',
+    // Generic fallback only -- buildSourcesForCountry always overrides this
+    // with buildAdvisoryDescription(countryAdvisories) below, which lists the
+    // governments that actually published a level for *this* country. Every
+    // one of the 37 ADVISORY_CODES used to be hardcoded here regardless of
+    // real per-country coverage (2026-09-25 audit, I1): Jersey's page said
+    // "Travel advisories from 37 governments" while scores.json carried zero.
+    description: 'Travel advisories from national governments worldwide',
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
@@ -545,21 +559,57 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
 };
 
 /**
+ * Build the 'advisories' SourceMeta description for one country: only the
+ * governments that actually published a level for it, by name -- never the
+ * full static list of all 37 codes (2026-09-25 audit, I1). `countryAdvisories`
+ * already spans every tier (base + tier1..tier3b are merged into one map by
+ * computeAllScores before this runs), so this sees the true per-country
+ * union regardless of which tier fetched it. Government display names come
+ * from AdvisoryInfo.source (e.g. "US State Department"), set by each fetcher
+ * -- no separate code-to-name table to keep in sync.
+ */
+export function buildAdvisoryDescription(countryAdvisories: AdvisoriesInput): string {
+  const govNames = ADVISORY_CODES
+    .map((code) => countryAdvisories[code]?.source)
+    .filter((name): name is string => Boolean(name));
+
+  if (govNames.length === 0) {
+    // Defensive: buildSourcesForCountry only calls this when the 'advisories'
+    // RawSourceData bucket already has an indicator for this country, so this
+    // should be unreachable in practice -- kept as an honest fallback in case
+    // that invariant ever breaks.
+    return SOURCE_CATALOG.advisories.description;
+  }
+  if (govNames.length === 1) {
+    return `Travel advisory from ${govNames[0]}`;
+  }
+  if (govNames.length === 2) {
+    // No Oxford comma for exactly two items ("X and Y", not "X, and Y").
+    return `Travel advisories from 2 governments: ${govNames[0]} and ${govNames[1]}`;
+  }
+  const last = govNames[govNames.length - 1];
+  const rest = govNames.slice(0, -1);
+  return `Travel advisories from ${govNames.length} governments: ${rest.join(', ')}, and ${last}`;
+}
+
+/**
  * Build SourceMeta[] for a given country from the raw data map.
  * Only includes sources that actually have indicators for this country.
  */
 function buildSourcesForCountry(
   iso3: string,
   rawDataBySource: Map<string, RawSourceData>,
+  countryAdvisories: AdvisoriesInput,
 ): SourceMeta[] {
   const sources: SourceMeta[] = [];
   const upperIso3 = iso3.toUpperCase();
 
   for (const [, sourceData] of rawDataBySource) {
     // Skip tiered advisory aggregates: the single 'advisories' SOURCE_CATALOG
-    // entry already describes all 37 governments. Without this skip these
-    // entries render as broken anchors (`<a href="">advisories_tier1</a>`)
-    // because SOURCE_CATALOG has no per-tier metadata.
+    // entry already describes all governments (dynamically, see
+    // buildAdvisoryDescription). Without this skip these entries render as
+    // broken anchors (`<a href="">advisories_tier1</a>`) because
+    // SOURCE_CATALOG has no per-tier metadata.
     if (sourceData.source.startsWith('advisories_tier')) continue;
 
     const hasDataForCountry = sourceData.indicators.some(
@@ -570,11 +620,14 @@ function buildSourcesForCountry(
         url: '',
         description: sourceData.source,
       };
+      const description = sourceData.source === 'advisories'
+        ? buildAdvisoryDescription(countryAdvisories)
+        : catalog.description;
       sources.push({
         name: sourceData.source,
         url: catalog.url,
         fetchedAt: sourceData.fetchedAt,
-        description: catalog.description,
+        description,
       });
     }
   }
@@ -715,8 +768,8 @@ export function computeAllScores(
     const entry = getCountryByIso3(iso3);
     if (!entry) continue; // Skip unknown iso3 codes not in our country list
 
-    const sources = buildSourcesForCountry(iso3, rawDataBySource);
     const countryAdvisories = advisoryInfoMap[iso3] || {};
+    const sources = buildSourcesForCountry(iso3, rawDataBySource, countryAdvisories);
     const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, countryAdvisories, sources, sourcesConfig);
     results.push(scored);
   }
