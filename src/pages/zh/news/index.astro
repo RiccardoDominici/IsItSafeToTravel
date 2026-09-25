@@ -4,7 +4,7 @@ import Base from '../../../layouts/Base.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import NewsCard from '../../../components/news/NewsCard.astro';
 import NewsletterSignup from '../../../components/NewsletterSignup.astro';
-import { loadNewsArchive, nameResolver } from '../../../lib/news';
+import { loadNewsArchive, nameResolver, renderNewsEvent } from '../../../lib/news';
 import { ARCHIVE_DAYS } from '../../../pipeline/news/types';
 import { useTranslations } from '../../../i18n/utils';
 import { routes } from '../../../i18n/ui';
@@ -30,6 +30,7 @@ const jsonLd = {
       itemListElement: flat.map((e, i) => ({
         '@type': 'ListItem',
         position: i + 1,
+        name: renderNewsEvent(e, lang, t, nameOf).headline,
         url: `https://isitsafetotravel.org/${lang}/${routes[lang].country}/${(e.params.country || '').toLowerCase()}/`,
       })),
     },

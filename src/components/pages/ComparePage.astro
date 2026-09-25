@@ -11,6 +11,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
+import { buildWebPageJsonLd } from '../../lib/seo';
 import { useTranslations } from '../../i18n/utils';
 import { routes } from '../../i18n/ui';
 import type { Lang } from '../../i18n/ui';
@@ -23,6 +24,8 @@ const { lang } = Astro.props as Props;
 const t = useTranslations(lang);
 
 const scores = loadLatestScores();
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${routes[lang].compare}/`;
+const jsonLd = buildWebPageJsonLd(t('compare.title'), t('compare.description'), canonicalUrl, lang);
 
 const countryData = scores.map(country => ({
   iso3: country.iso3,
@@ -34,7 +37,7 @@ const countryData = scores.map(country => ({
 }));
 ---
 
-<Base lang={lang} title={t('compare.title')} description={t('compare.description')} ogImage="/og/default.png">
+<Base lang={lang} title={t('compare.title')} description={t('compare.description')} jsonLd={jsonLd} ogImage="/og/default.png">
   <div class="max-w-6xl mx-auto px-4 py-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
