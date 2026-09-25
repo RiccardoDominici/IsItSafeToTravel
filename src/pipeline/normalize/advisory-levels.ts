@@ -81,16 +81,76 @@ export function normalizeToUnified(
 }
 
 /**
- * Normalize France (diplomatie.gouv.fr) color codes to unified 1-4 scale.
- * French advisory colors: vert (green), jaune (yellow), orange, rouge (red).
- * Also matches descriptive text variants.
+ * Extract France's (diplomatie.gouv.fr) whole-country advisory level from the free-text
+ * "Zones de vigilance" section of a per-country "Conseils aux voyageurs - Securite" page.
+ *
+ * Unlike the other normalize* functions in this file, France's page is not a single
+ * classified field (colour/level/flags) that a caller has already isolated -- it is prose
+ * that names one or more "zones", which may be the whole country ("l'ensemble du
+ * territoire...") or a specific province / border strip ("la province du Baloutchistan...",
+ * "les zones frontalieres avec la Colombie..."). Matching a level keyword anywhere on the
+ * page would wrongly promote countries with a small red border zone (verified on Turkey,
+ * Pakistan, Venezuela, Lebanon fiches, 2026-09-25) to "do not travel" for the entire
+ * country. This mirrors why normalizeDeLevel() below caps Germany's Teilreisewarnung
+ * (partial/regional warning) at 2 instead of promoting it to the full warning level.
+ *
+ * Cascade, most confident first (verified against AFG, DEU, GBR, CHE, UKR, HTI, MLI, RUS,
+ * BLR, TUR, PAK, VEN, LBN, USA, JPN fiches, 2026-09-25):
+ *   1. A whole-country subject phrase ("l'ensemble/la totalite/l'integralite du
+ *      territoire/pays", "le reste du territoire", "le territoire <adjectif> est ...")
+ *      within ~120 chars of a level keyword -> that exact level.
+ *   2. No whole-country phrase, but the page names at least one elevated zone (red/orange)
+ *      -> level 2 (increased caution only, never higher -- the province/border-strip cap).
+ *   3. Section present, no elevated keyword anywhere -> level 1. France's own published
+ *      colour legend (see diplomatie.gouv.fr "Que signifient les couleurs des cartes...")
+ *      treats unflagged territory as green/"vigilance normale" by default, so this is
+ *      reading the source's own stated default, not guessing on a parse failure.
+ *   4. The "Zones de vigilance" marker is missing entirely (different template, fetch
+ *      problem, or a fiche this source doesn't publish) -> null, emit nothing for it.
  */
-export function normalizeFrColor(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('rouge') || lower.includes('formellement deconseill')) return 4;
-  if (lower.includes('orange') || (lower.includes('deconseill') && !lower.includes('formellement'))) return 3;
-  if (lower.includes('jaune') || lower.includes('vigilance renforcee') || lower.includes('vigilance renforcée')) return 2;
-  return 1; // vert / vigilance normale
+export function extractFrTerritoryLevel(rawText: string): UnifiedLevel | null {
+  const text = rawText
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '') // strip accents: deconseille, imperative, renforcee...
+    .replace(/[\u2018\u2019'`]/g, '') // strip apostrophes (curly + straight): l'ensemble -> lensemble
+    .replace(/\s+/g, ' ');
+
+  const sectionStart = text.indexOf('zones de vigilance derniere actualisation le');
+  if (sectionStart === -1) return null;
+
+  const riskHeadingIdx = text.indexOf('risques encourus', sectionStart);
+  const sectionEnd = riskHeadingIdx > sectionStart ? riskHeadingIdx : Math.min(text.length, sectionStart + 6000);
+  const section = text.slice(sectionStart, sectionEnd);
+
+  const LEVEL_KEYWORDS: [RegExp, UnifiedLevel][] = [
+    [/formellement deconseill|classe[e]? en zone rouge/, 4],
+    [/deconseille[a-z]{0,2} sauf raison imperative/, 3],
+    [/vigilance renforcee/, 2],
+    [/vigilance normale/, 1],
+  ];
+
+  // Deliberately specific so a named province/city can never satisfy this on its own.
+  const wholeCountryRe = /(la totalite|lintegralite|lensemble) du (territoire|pays)|reste du (territoire|pays)|le territoire [a-z-]+ est/g;
+
+  let subjectMatch: RegExpExecArray | null;
+  while ((subjectMatch = wholeCountryRe.exec(section)) !== null) {
+    const windowStart = Math.max(0, subjectMatch.index - 120);
+    const windowEnd = Math.min(section.length, subjectMatch.index + subjectMatch[0].length + 120);
+    const window = section.slice(windowStart, windowEnd);
+    for (const [re, level] of LEVEL_KEYWORDS) {
+      if (re.test(window)) return level;
+    }
+  }
+
+  // No whole-country statement: a named zone is still flagged somewhere in the section,
+  // so this is a real (sub-national) warning -- cap it at "increased caution".
+  if (/formellement deconseill|deconseille[a-z]{0,2} sauf raison imperative|vigilance renforcee/.test(section)) {
+    return 2;
+  }
+
+  // Section is present and genuinely silent on any elevated risk -> normal precautions.
+  return 1;
 }
 
 /**

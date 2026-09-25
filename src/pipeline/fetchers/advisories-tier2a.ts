@@ -4,7 +4,7 @@ import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
-  normalizeFrColor,
+  extractFrTerritoryLevel,
   normalizeHkAlert,
   normalizeIeRating,
   normalizeFiLevel,
@@ -167,6 +167,43 @@ async function fetchAtAdvisories(
 // Sub-fetcher 2: France (diplomatie.gouv.fr) -- HTML-01
 // =============================================================================
 
+// The old backend (spip.php?page=backend_fcv) was the RSS feed of the site's previous
+// SPIP CMS. The site has since migrated to Drupal: that endpoint now returns a branded
+// 403 for every request, browser User-Agent or not (verified 2026-09-25 -- it is dead,
+// not a datacenter-IP block). There is also no JSON/GeoJSON API behind the interactive
+// map: the only other known scraper (github.com/vmttn/conseils-aux-voyageurs) just
+// downloads the rasterized map JPEG and does not attempt per-country parsing. Per-country
+// HTML is therefore the only option, and it works fine with this project's normal
+// identifying User-Agent (no spoofing needed -- only the dead RSS endpoint 403s).
+//
+// URL pattern (verified against 20+ countries, 2026-09-25):
+//   https://www.diplomatie.gouv.fr/fr/information-par-pays/<slug>/conseils-aux-voyageurs-securite
+// <slug> is `country.name.fr`, lower-cased, accents stripped, non-alphanumerics -> hyphens.
+// A full-coverage dry run against all 248 COUNTRIES slugs got 182 hits; nearly every miss
+// is a fiche France genuinely does not publish (its own overseas territories -- Guadeloupe,
+// Mayotte, French Polynesia... -- plus micro-states like Nauru/Tuvalu/Liechtenstein and
+// France itself). FR_SLUG_ALIASES below fixes the handful of real name mismatches found
+// in that run (confirmed against the site's own country <select>, which is a Drupal POST
+// form keyed by node id, not slug, so it cannot be used directly to build URLs).
+const FR_SLUG_ALIASES: Partial<Record<string, string>> = {
+  SLV: 'salvador', // France's fiche is "Salvador", not "El Salvador"
+  KGZ: 'kirghizstan', // France drops our config's second "i" (Kirghizistan -> Kirghizstan)
+  VNM: 'vietnam', // France uses one word; our config has "Viet Nam"
+  ISR: 'israel-palestine', // France publishes one joint fiche for both
+  PSE: 'israel-palestine',
+};
+
+function frSlug(country: typeof COUNTRIES[number]): string {
+  const alias = FR_SLUG_ALIASES[country.iso3];
+  if (alias) return alias;
+  return country.name.fr
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}
+
 async function fetchFrAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -175,85 +212,29 @@ async function fetchFrAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  // Build French name -> CountryEntry map
-  const frNameMap = new Map<string, typeof COUNTRIES[number]>();
-  for (const country of COUNTRIES) {
-    frNameMap.set(country.name.fr.toLowerCase(), country);
-    // Also add without accents for fuzzy matching
-    frNameMap.set(country.name.fr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), country);
-  }
-
-  // Fetch RSS feed to get country list and URLs
-  const rssResponse = await fetch('https://www.diplomatie.gouv.fr/spip.php?page=backend_fcv', {
-    signal: AbortSignal.timeout(30_000),
-    headers: FETCH_HEADERS,
-  });
-
-  if (!rssResponse.ok) {
-    throw new Error(`RSS HTTP ${rssResponse.status}: ${rssResponse.statusText}`);
-  }
-
-  const rssXml = await rssResponse.text();
-  const $ = cheerio.load(rssXml, { xmlMode: true });
-
-  // Extract country entries from RSS items
-  const countryEntries: { name: string; url: string; country: typeof COUNTRIES[number] }[] = [];
-
-  $('item').each((_, item) => {
-    const title = $(item).find('title').text().trim();
-    const link = $(item).find('link').text().trim();
-    if (!title || !link) return;
-
-    const nameLower = title.toLowerCase();
-    const nameNormalized = nameLower.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-
-    const country = frNameMap.get(nameLower) || frNameMap.get(nameNormalized);
-    if (country) {
-      countryEntries.push({ name: title, url: link, country });
-    }
-  });
-
-  // Batch-crawl per-country pages to extract advisory color/level
   await fetchBatch(
-    countryEntries,
-    async (entry) => {
+    COUNTRIES,
+    async (country) => {
+      const url = `https://www.diplomatie.gouv.fr/fr/information-par-pays/${frSlug(country)}/conseils-aux-voyageurs-securite`;
       try {
-        const pageResponse = await fetch(entry.url, {
+        const response = await fetch(url, {
           signal: AbortSignal.timeout(15_000),
           headers: FETCH_HEADERS,
         });
-        if (!pageResponse.ok) return;
+        // 404 is expected for countries/territories France does not publish a fiche for
+        // (see comment above) -- not an error, just skip.
+        if (!response.ok) return;
 
-        const pageHtml = await pageResponse.text();
-        const pageLower = pageHtml.toLowerCase();
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        $('script, style').remove();
+        const bodyText = $('body').text();
 
-        // Look for color keywords in advisory text
-        let level: UnifiedLevel;
-        if (pageLower.includes('formellement déconseillé') || pageLower.includes('formellement deconseille') || pageLower.includes('rouge')) {
-          level = normalizeFrColor('rouge');
-        } else if (pageLower.includes('déconseillé sauf') || pageLower.includes('deconseille sauf') || pageLower.includes('orange')) {
-          level = normalizeFrColor('orange');
-        } else if (pageLower.includes('vigilance renforcée') || pageLower.includes('vigilance renforcee') || pageLower.includes('jaune')) {
-          level = normalizeFrColor('jaune');
-        } else if (pageLower.includes('vigilance normale') || pageLower.includes('vert')) {
-          level = normalizeFrColor('vert');
-        } else {
-          // Try CSS classes or image references
-          const page$ = cheerio.load(pageHtml);
-          const imgSrcs = page$('img').map((_, el) => page$(el).attr('src') || '').get().join(' ').toLowerCase();
-          if (imgSrcs.includes('rouge') || imgSrcs.includes('red')) {
-            level = 4;
-          } else if (imgSrcs.includes('orange')) {
-            level = 3;
-          } else if (imgSrcs.includes('jaune') || imgSrcs.includes('yellow')) {
-            level = 2;
-          } else {
-            level = 1;
-          }
-        }
+        const level = extractFrTerritoryLevel(bodyText);
+        if (level === null) return; // no "Zones de vigilance" section found: emit nothing
 
         indicators.push({
-          countryIso3: entry.country.iso3,
+          countryIso3: country.iso3,
           indicatorName: 'advisory_level_fr',
           value: level,
           year: currentYear,
@@ -261,18 +242,18 @@ async function fetchFrAdvisories(
           fetchedAt,
         });
 
-        if (!advisoryInfo[entry.country.iso3]) advisoryInfo[entry.country.iso3] = {};
-        advisoryInfo[entry.country.iso3].fr = {
+        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+        advisoryInfo[country.iso3].fr = {
           level,
           text: FR_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'French Ministry of Foreign Affairs',
-          url: entry.url,
+          url,
         };
       } catch {
-        // Individual country page failed, skip silently
+        // Individual country page failed (timeout, network), skip silently
       }
     },
-    5, // Concurrency 5 for politeness
+    3, // Concurrency 3 for politeness, per source-repair-brief rule 4 (248 requests total)
   );
 
   console.log(`[ADVISORIES-T2A] FR: ${indicators.length} countries from diplomatie.gouv.fr`);
