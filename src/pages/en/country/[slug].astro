@@ -29,6 +29,7 @@ import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/se
 import { getLastmodMap } from '../../../lib/lastmod';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
+import { getEnglishCountryPhrase } from '../../../i18n/country-grammar';
 
 const lang: Lang = 'en';
 const t = useTranslations(lang);
@@ -84,8 +85,11 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
 }));
 const iata = getMainCityIata(country.iso3);
 const cityName = iata ? getMainCityName(country.iso3, lang) : null;
+// Title needs "the" for plural/union names (the United States, the
+// Philippines, the Netherlands) — see src/i18n/country-grammar.ts.
+const titleName = getEnglishCountryPhrase(country.iso3, getLocalizedCountryName(country, lang));
 ---
-<Base lang={lang} title={`Is ${getLocalizedCountryName(country, lang)} Safe? ${country.score.toFixed(1)}/10 Safety Score (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`Is ${titleName} Safe? ${country.score.toFixed(1)}/10 Safety Score (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

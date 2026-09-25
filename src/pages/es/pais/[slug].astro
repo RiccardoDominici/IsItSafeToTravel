@@ -86,8 +86,11 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
 }));
 const iata = getMainCityIata(country.iso3);
 const cityName = iata ? getMainCityName(country.iso3, lang) : null;
+// Old title was Title-Cased English-style ("Es Seguro Viajar a") and dropped
+// the opening inverted question mark Spanish requires. "a {name}" itself
+// needs no gender agreement, so no country-grammar helper is needed here.
 ---
-<Base lang={lang} title={`Es Seguro Viajar a ${getLocalizedCountryName(country, lang)}? ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`¿Es seguro viajar a ${getLocalizedCountryName(country, lang)}? ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

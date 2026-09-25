@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor, readableTextColor } from '../../lib/colors';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { getH1CountryPhrase } from '../../i18n/country-grammar';
 import { getBand } from '../../lib/bands';
 import type { BandKey } from '../../pipeline/news/types';
 import { getBandVerdictCopy } from '../../lib/band-copy';
@@ -58,7 +59,9 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
       the query as H1, and our yes/no verdict used to sit ~60% down the page in
       a small italic line (2026-08 SXO audit, HIGH). */}
   <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
-    {t('country.h1_question').replace('{name}', getLocalizedCountryName(country, lang))}
+    {/* {name} needs an article/preposition/case in it/pt/de (and "the" in en)
+        that the bare localized name doesn't carry — see country-grammar.ts. */}
+    {t('country.h1_question').replace('{name}', getH1CountryPhrase(lang, country.iso3, getLocalizedCountryName(country, lang)))}
   </h1>
 
   {/* Block wrapper: the pill itself is inline-flex, so without this it would

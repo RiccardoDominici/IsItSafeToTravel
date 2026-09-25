@@ -30,6 +30,7 @@ import { getLastmodMap } from '../../../lib/lastmod';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
+import { getItalianLocative } from '../../../i18n/country-grammar';
 
 const lang: Lang = 'it';
 const r = routes[lang];
@@ -86,8 +87,13 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
 }));
 const iata = getMainCityIata(country.iso3);
 const cityName = iata ? getMainCityName(country.iso3, lang) : null;
+// Old title "{name} è Sicura?" hardcoded feminine-singular agreement, wrong
+// for e.g. "Stati Uniti" (plural: would need "sono Sicuri") — routing
+// through "viaggiare in/a {name}" needs only the it locative form, no
+// adjective agreement at all. See src/i18n/country-grammar.ts.
+const titleLocative = getItalianLocative(country.iso3, getLocalizedCountryName(country, lang));
 ---
-<Base lang={lang} title={`${getLocalizedCountryName(country, lang)} è Sicura? Punteggio ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`È sicuro viaggiare ${titleLocative}? ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

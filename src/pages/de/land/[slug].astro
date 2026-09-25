@@ -30,6 +30,7 @@ import { getLastmodMap } from '../../../lib/lastmod';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
+import { getGermanNominative, getGermanCopula } from '../../../i18n/country-grammar';
 
 const lang: Lang = 'de';
 const r = routes[lang];
@@ -86,8 +87,16 @@ const advisorySources = Object.keys(country.advisories || {}).map(key => ({
 }));
 const iata = getMainCityIata(country.iso3);
 const cityName = iata ? getMainCityName(country.iso3, lang) : null;
+// Old title dropped the article entirely ("Ist Türkei sicher?"), wrong for
+// the ~25 countries that grammatically require one (die Türkei, der Iran,
+// die USA, das Vereinigte Königreich...). See country-grammar.ts. Copula is
+// separate from the article: plural names (die Vereinigten Staaten, die
+// Niederlande...) need "Sind", not "Ist" ("Ist die Vereinigten Staaten
+// sicher?" is a verb-agreement error even once the article is right).
+const titleNominative = getGermanNominative(country.iso3, getLocalizedCountryName(country, lang));
+const titleCopula = getGermanCopula(country.iso3, getLocalizedCountryName(country, lang));
 ---
-<Base lang={lang} title={`Ist ${getLocalizedCountryName(country, lang)} sicher? Score ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+<Base lang={lang} title={`${titleCopula} ${titleNominative} sicher? Score ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },

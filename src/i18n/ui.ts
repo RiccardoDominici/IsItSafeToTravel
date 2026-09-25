@@ -642,7 +642,11 @@ export const ui = {
     'country.faq_title': 'Domande Frequenti',
     'country.answer_first': '{name} ha un punteggio di sicurezza di {score}/10 al {date}, classificato come {riskLevel}, {rank} su {total} paesi al mondo. La maggiore preoccupazione è {weakestPillar} ({weakestScore}/10), mentre il punto di forza è {strongestPillar} ({strongestScore}/10). Questo punteggio viene calcolato quotidianamente da {sourceCount} fonti pubbliche indipendenti.',
     'country.updated_daily_badge': 'Aggiornato quotidianamente',
-    'country.h1_question': 'È sicuro viaggiare in {name} adesso?',
+    // {name} is filled with the full "in/negli/alle/a {name}" phrase by
+    // getH1CountryPhrase (src/i18n/country-grammar.ts) — the template must
+    // NOT repeat "in " itself, or plural/archipelago countries would read
+    // "viaggiare in negli Stati Uniti".
+    'country.h1_question': 'È sicuro viaggiare {name} adesso?',
     'country.compare_title': 'Come si confronta {name} con i paesi vicini?',
     'country.neighbors_title': '{name} e i paesi confinanti',
     'country.compare_country': 'Paese',
@@ -2400,7 +2404,9 @@ export const ui = {
     'country.faq_title': 'Perguntas Frequentes',
     'country.answer_first': '{name} tem uma pontuação de segurança de {score}/10 em {date}, classificado como {riskLevel}, {rank} entre {total} países do mundo. A maior preocupação é {weakestPillar} ({weakestScore}/10), enquanto o ponto mais forte e {strongestPillar} ({strongestScore}/10). Esta pontuação e calculada diariamente a partir de {sourceCount} fontes públicas independentes.',
     'country.updated_daily_badge': 'Atualizado diariamente',
-    'country.h1_question': 'É seguro viajar para {name} agora?',
+    // {name} is filled with the full "para {article} {name}" phrase by
+    // getH1CountryPhrase — do not repeat "para " here (see the it entry above).
+    'country.h1_question': 'É seguro viajar {name} agora?',
     'country.compare_title': 'Como {name} se compara aos países vizinhos?',
     'country.neighbors_title': '{name} e os seus países vizinhos',
     'country.compare_country': 'País',
@@ -3568,7 +3574,10 @@ export const ui = {
     'country.faq_title': 'Häufig gestellte Fragen',
     'country.answer_first': '{name} hat zum {date} eine Sicherheitsbewertung von {score}/10 und ist als {riskLevel} eingestuft, weltweit Rang {rank} von {total} Ländern. Die größte Sorge betrifft {weakestPillar} ({weakestScore}/10), während der stärkste Bereich {strongestPillar} ({strongestScore}/10) ist. Diese Bewertung wird täglich aus {sourceCount} unabhängigen öffentlichen Quellen berechnet.',
     'country.updated_daily_badge': 'Täglich aktualisiert',
-    'country.h1_question': 'Ist es aktuell sicher, nach {name} zu reisen?',
+    // {name} is filled with the full directional phrase ("nach Japan" /
+    // "in die Türkei" / "ins Vereinigte Königreich") by getH1CountryPhrase —
+    // do not repeat "nach " here (see the it entry above).
+    'country.h1_question': 'Ist es aktuell sicher, {name} zu reisen?',
     'country.compare_title': 'Wie schneidet {name} im Vergleich zu Nachbarländern ab?',
     'country.neighbors_title': '{name} und seine Nachbarländer',
     'country.compare_country': 'Land',
