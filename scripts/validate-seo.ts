@@ -766,45 +766,73 @@ function validateLlmsFullTxt() {
 function validateCanonicalCounts() {
   console.log("\n--- Canonical Count Claims ---");
 
-  // The "7 …" family is regex-guarded against digit prefixes so legitimate
-  // claims like "17 indicators" or "37 governments" never substring-match.
-  // The Italian pattern additionally guards against a preceding "altre "
-  // ("other") -- 2026-09-25 phase-2 audit: once OTHER_SOURCE_COUNT_DISPLAY
-  // started showing the exact count below 10 instead of always rounding to
-  // "5+", "ad altre 7 fonti pubbliche" (legitimately 7 non-advisory feeds
-  // today) started substring-matching this guard, which was written to catch
-  // the OLD "7 trusted sources"-style bug, not a real qualified sub-count.
-  // The other 5 sibling language patterns don't need the same guard: their
-  // qualifier word (autres/outras/其他/weiteren) sits between the number and
-  // the noun, or the accented noun doesn't byte-match the unaccented pattern
-  // (es/pt) -- verified against the actual rendered hub-faq.ts text, not
-  // assumed.
+  // Source-count stale literals ("7 trusted", "9+", "40+" -- the 2026-08
+  // audit's four contradictory variants, plus "40+" once it too went stale
+  // in phase 2) used to be hand-enumerated here as a blocklist. Replaced by
+  // validateComputedCounts() below: a static list can only catch numbers
+  // someone thought to type in by hand, and phase 2 hit that limit directly
+  // -- "ad altre 7 fonti pubbliche" (legitimately 7 non-advisory feeds once
+  // OTHER_SOURCE_COUNT_DISPLAY started showing exact counts below 10)
+  // substring-matched the old `/(?<!\d)7 fonti pubbliche/` guard, which was
+  // written years before that value could ever legitimately be single-digit.
+  // A check against the live SOURCE_COUNT_DISPLAY/OTHER_SOURCE_COUNT_DISPLAY
+  // catches that same class of bug (and any future one) without needing a
+  // new pattern added by hand every time the computed value's shape changes.
+  //
+  // Country-count stale literals stay here: COUNTRY_COUNT has none of the
+  // source-count axis's ambiguity (single exact value, always 248 today, no
+  // "total vs. other subset" split) and no report of it going stale, so a
+  // blocklist remains the simplest correct guard for it.
+  //
+  // Government-count stale literals ALSO stay here as a blocklist, not a
+  // computed check: unlike the source-count axis, "N governments"/"N
+  // government travel advisories" is also a legitimate, CORRECT *per-country*
+  // claim (engine.ts's buildAdvisoryDescription, hub.blurb_advisories,
+  // country-faq-copy.ts's advisoryCountNoun each vary this number by design,
+  // one country at a time) -- a positive check like validateComputedCounts()
+  // below would fail every country page instead of catching a real
+  // regression. "37" itself is safe to blocklist outright, site-wide or
+  // per-country: it's ADVISORY_CODES.length, the dead static array size no
+  // real computation (aggregate or per-country) has produced since this
+  // audit shipped. NOTE: this axis had NO guard at all before this comment
+  // was written -- an earlier commit on this branch claimed a "37
+  // governments"-family blocklist already existed here "for that axis";
+  // it did not, the pre-existing comment just explained why the "7 …"
+  // regexes below use a digit lookbehind. Fixed the actual gap here instead
+  // of leaving the incorrect claim standing.
+  //
+  // "37 governments" excludes a trailing "worldwide" on purpose: that exact
+  // phrase ("Travel advisories from 37 governments worldwide including...")
+  // is SOURCE_CATALOG.advisories.description in engine.ts, fixed in code
+  // (I1, buildAdvisoryDescription now lists only the real issuers per
+  // country) but still live in the already-committed data/scores/latest.json
+  // and public/scores.json this exact snapshot ships with -- out of scope to
+  // regenerate here (never hand-edit committed data), and it resolves itself
+  // automatically on the next scheduled pipeline run. Blocking the bare
+  // phrase would fail this check against every already-built page today for
+  // a staleness that isn't a code regression and needs no code change.
   const FORBIDDEN: (string | RegExp)[] = [
-    // "40+" was the canonical value until the 2026-09-25 phase-2 fix replaced
-    // it with computed, floor-to-5 display strings (today 30+/25+/7) -- now a
-    // dead literal like "37" or "9+", never reproducible by countDisplay().
-    "40+ public sources",
-    "40+ trusted public sources",
-    "40+ independent sources",
-    "40+ data sources",
-    "40+ fonti pubbliche",
-    "40+ fuentes públicas",
-    "40+ sources publiques",
-    "40+ fontes públicas",
-    "40+ 个公开来源",
-    "40+ 个公开数据源",
-    "40+ öffentlichen Quellen",
-    /(?<!\d)7 trusted public sources/,
-    /(?<!\d)7 public sources/,
-    "9+ public sources",
-    /(?<!\d)(?<!altre )7 fonti pubbliche/,
-    /(?<!\d)7 fuentes publicas/,
-    /(?<!\d)7 sources publiques/,
-    /(?<!\d)7 fontes publicas/,
-    /(?<!\d)7 vertrauenswürdigen öffentlichen Quellen/,
-    /aus (?<!\d)7 täglich aktualisierten/,
-    /(?<!\d)7 个可信公开来源/,
-    /(?<!\d)7 个公开来源/,
+    /(?<!\d)37 governments\b(?! worldwide)/,
+    /(?<!\d)37 government sources/,
+    /(?<!\d)37 government foreign affairs ministries/,
+    /(?<!\d)37 government travel advisories/,
+    /(?<!\d)37 governi\b/,
+    /(?<!\d)37 fonti governative/,
+    /(?<!\d)37 gobiernos\b/,
+    /(?<!\d)37 fuentes gubernamentales/,
+    /(?<!\d)37 ministerios de asuntos exteriores gubernamentales/,
+    /(?<!\d)37 gouvernements\b/,
+    /(?<!\d)37 sources gouvernementales/,
+    /(?<!\d)37 governos\b/,
+    /(?<!\d)37 fontes governamentais/,
+    /(?<!\d)37 ministérios de relações exteriores governamentais/,
+    /(?<!\d)37 个政府/,
+    /(?<!\d)37 个政府来源/,
+    /(?<!\d)37 个政府外交部/,
+    /(?<!\d)37 Regierungen/,
+    /(?<!\d)37 staatlich(e|en) Quellen/,
+    /(?<!\d)37 Außenministerien/,
+    /(?<!\d)37 Ländern\b/,
     "200+ countries",
     "240+ countries",
     "240+ Countries",
@@ -901,16 +929,23 @@ function validateComputedCounts() {
     "globalen Quellen", "weltweiten Quellen", "Datenquellen", "Quellen",
   ];
 
-  // Both are legitimate site-wide claims (total vs. the "N other/additional
-  // feeds" sub-count in one hub-faq.ts sentence per language) -- this only
-  // rejects a THIRD, unrecognized number, not the choice between the two.
-  // "4+" is also accepted: generate-llms-full.ts's ranking-eligibility
-  // footnotes ("only countries with N+ independent sources are ranked")
-  // reuse the same "independent sources" noun phrase for MIN_RANKING_SOURCES
-  // (hub-data.ts), an intentionally-fixed data-coverage floor documented in
-  // CLAUDE.md -- a genuinely different claim that happens to share a noun
-  // with the site-wide source-count claim, not a stale/wrong number.
-  const VALID = new Set([SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY, "4+"]);
+  // A number is valid only for the ONE context its sentence actually is --
+  // not "any currently-computed value" -- otherwise a stray "7 trusted
+  // public sources" would slip through today simply because 7 happens to
+  // also be the unrelated OTHER_SOURCE_COUNT_DISPLAY, defeating the point.
+  // it/es/zh put their "other/additional" qualifier (altre/otra(s)/其他)
+  // directly before the NUMBER ("ad altre 7 fonti pubbliche", "其他 7 个公开
+  // 数据源"); en/fr/pt/de put it between the number and noun instead ("7
+  // other public sources"), which already never matches SOURCE_NOUNS's
+  // "number immediately before noun" shape -- those 4 languages' "other"
+  // sentences simply aren't captured by this check either way, a known gap,
+  // not a false accept.
+  const OTHER_QUALIFIER_BEFORE_NUMBER = /(altre|otras?|其他)\s*$/i;
+  // "independent sources" is also generate-llms-full.ts's noun for the
+  // unrelated, intentionally-fixed MIN_RANKING_SOURCES=4 ranking-eligibility
+  // footnote (hub-data.ts, documented in CLAUDE.md) -- accepted alongside
+  // whichever count the context otherwise expects, not instead of it.
+  const RANKING_FLOOR_DISPLAY = "4+";
 
   // Longest-first so "trusted public sources" matches before the bare
   // "sources" alternative would otherwise win inside the same regex. The
@@ -950,8 +985,11 @@ function validateComputedCounts() {
     const content = fs.readFileSync(file, "utf-8");
     let m: RegExpExecArray | null;
     while ((m = re.exec(content)) !== null) {
-      if (!VALID.has(m[1])) {
-        bad.push(`"${m[1]} ${m[2]}" in ${path.relative(DIST, file)}`);
+      const before = content.slice(Math.max(0, m.index - 20), m.index);
+      const isOtherContext = OTHER_QUALIFIER_BEFORE_NUMBER.test(before);
+      const expected = isOtherContext ? OTHER_SOURCE_COUNT_DISPLAY : SOURCE_COUNT_DISPLAY;
+      if (m[1] !== expected && m[1] !== RANKING_FLOOR_DISPLAY) {
+        bad.push(`"${m[1]} ${m[2]}" in ${path.relative(DIST, file)} (expected ${expected})`);
       }
     }
   }
