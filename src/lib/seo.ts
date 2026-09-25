@@ -5,7 +5,7 @@ import { getLocalizedCountryName, loadGlobalHistory } from './scores';
 import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
-import { COUNTRY_COUNT } from './site-stats';
+import { COUNTRY_COUNT, SOURCE_COUNT_DISPLAY } from './site-stats';
 import wikidataMapJson from '../data/countries-wikidata.json';
 // 2026-09-25 audit fix round (I4/C2/I1/C7): buildCountryMetaDescription and the
 // country-FAQ functions below now derive their risk label, strongest/weakest
@@ -189,11 +189,6 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
 
   const weakestScore = (weakest.score * 10).toFixed(1);
   const weakestLabel = pillarLabels[lang][weakest.name];
-  // Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
-  // NOTE: unlike AnswerFirstParagraph/the FAQ (see provenance-copy.ts), this
-  // site-wide claim is intentionally left as-is here — it's a separate,
-  // out-of-scope decision (site-stats.ts) for this fix round.
-  const sourceCount = 40;
   const name = getLocalizedCountryName(country, lang);
 
   const roundedScore = score.toFixed(1);
@@ -227,14 +222,23 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
         zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）。`,
         de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
       };
+  // Computed, not hardcoded: this "tails" block used to declare its own
+  // `const sourceCount = 40` right above, a second hardcoded "40+" the 2026-09
+  // count-claim sweep initially missed because the literal string "40+" never
+  // appeared in source (it was assembled from a bare `40` plus a template
+  // literal's own "+") — every grep for the string "40+" walked right past it.
+  // Meta descriptions are what Google shows in search results, so this was
+  // live on all 1,918 country pages. Caught while building the validate-seo.ts
+  // computed-count guard below, which is exactly the kind of drift it exists
+  // to catch.
   const tails: Record<Lang, string> = {
-    en: ` Free data from ${sourceCount}+ sources, updated daily.`,
-    it: ` Dati gratuiti da ${sourceCount}+ fonti, aggiornati ogni giorno.`,
-    es: ` Datos gratuitos de ${sourceCount}+ fuentes, actualizados a diario.`,
-    fr: ` Données gratuites de ${sourceCount}+ sources, mises à jour chaque jour.`,
-    pt: ` Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente.`,
-    zh: `数据来自 ${sourceCount}+ 个公开来源，每日更新，免费查询。`,
-    de: ` Kostenlose Daten aus ${sourceCount}+ Quellen, täglich aktualisiert.`,
+    en: ` Free data from ${SOURCE_COUNT_DISPLAY} sources, updated daily.`,
+    it: ` Dati gratuiti da ${SOURCE_COUNT_DISPLAY} fonti, aggiornati ogni giorno.`,
+    es: ` Datos gratuitos de ${SOURCE_COUNT_DISPLAY} fuentes, actualizados a diario.`,
+    fr: ` Données gratuites de ${SOURCE_COUNT_DISPLAY} sources, mises à jour chaque jour.`,
+    pt: ` Dados gratuitos de ${SOURCE_COUNT_DISPLAY} fontes, atualizados diariamente.`,
+    zh: `数据来自 ${SOURCE_COUNT_DISPLAY} 个公开来源，每日更新，免费查询。`,
+    de: ` Kostenlose Daten aus ${SOURCE_COUNT_DISPLAY} Quellen, täglich aktualisiert.`,
   };
 
   const base = bases[lang];
@@ -321,19 +325,19 @@ const datasetDescriptions: Record<Lang, (name: string) => string> = {
   es: (n) => `Puntuaciones de seguridad actualizadas diariamente para ${n}, que cubren conflicto, criminalidad, salud, gobernanza y medio ambiente.`,
   fr: (n) => `Scores de sécurité mis à jour quotidiennement pour ${n}, couvrant conflit, criminalité, santé, gouvernance et environnement.`,
   pt: (n) => `Pontuações de segurança atualizadas diariamente para ${n}, cobrindo conflito, criminalidade, saúde, governança e meio ambiente.`,
-  zh: (n) => `${n} 每日更新的安全评分，基于 40 多个公开来源，涵盖武装冲突、犯罪、健康、治理和自然灾害五大风险类别。`,
+  zh: (n) => `${n} 综合安全评分，基于冲突、犯罪、健康、治理和环境五大风险类别加权计算，数据来源公开透明，每日自动更新，供出行前参考。`,
   de: (n) => `Täglich aktualisierte Sicherheits-Scores für ${n}, die Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt abdecken.`,
 };
 
 // Dataset.measurementTechnique
 const measurementTechniqueByLang: Record<Lang, string> = {
-  en: 'Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from 40+ public sources including government advisories, World Bank, INFORM, UCDP and GPI indices',
-  it: "Media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di 5 punteggi di categoria da oltre 40 fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM, UCDP e indici GPI",
-  es: 'Media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de 5 puntuaciones por categoría de más de 40 fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM, UCDP e índices GPI',
-  fr: "Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de plus de 40 sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM, UCDP et les indices GPI",
-  pt: 'Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de mais de 40 fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM, UCDP e índices GPI',
-  zh: '基于来自 40 多个公开来源（包括政府旅行警告、世界银行、INFORM、UCDP 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值',
-  de: 'Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus über 40 öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes',
+  en: `Uncertainty-weighted (Bayesian shrinkage) weighted geometric mean of 5 category scores from ${SOURCE_COUNT_DISPLAY} public sources including government advisories, World Bank, INFORM, UCDP and GPI indices`,
+  it: `Media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di 5 punteggi di categoria da ${SOURCE_COUNT_DISPLAY} fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM, UCDP e indici GPI`,
+  es: `Media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de 5 puntuaciones por categoría de ${SOURCE_COUNT_DISPLAY} fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM, UCDP e índices GPI`,
+  fr: `Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de ${SOURCE_COUNT_DISPLAY} sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM, UCDP et les indices GPI`,
+  pt: `Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de ${SOURCE_COUNT_DISPLAY} fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM, UCDP e índices GPI`,
+  zh: `基于来自 ${SOURCE_COUNT_DISPLAY} 个公开来源（包括政府旅行警告、世界银行、INFORM、UCDP 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值`,
+  de: `Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes`,
 };
 
 // Dataset.variableMeasured entries (PropertyValue name + description)
@@ -976,13 +980,13 @@ const methodologyDatasetNames: Record<Lang, string> = {
   de: 'IsItSafeToTravel Globale Sicherheits-Scores',
 };
 const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
-  en: (n) => `Daily updated composite safety scores for ${n} countries, aggregating 40+ public data sources.`,
-  it: (n) => `Punteggi di sicurezza compositi aggiornati ogni giorno per ${n} paesi, aggregando oltre 40 fonti pubbliche.`,
-  es: (n) => `Puntuaciones de seguridad compuestas actualizadas a diario para ${n} países, con más de 40 fuentes públicas agregadas.`,
-  fr: (n) => `Scores de sécurité composites mis à jour chaque jour pour ${n} pays, agrégeant plus de 40 sources publiques.`,
-  pt: (n) => `Pontuações de segurança compostas atualizadas diariamente para ${n} países, agregando mais de 40 fontes públicas.`,
-  zh: (n) => `每日更新的 ${n} 个国家综合安全评分，汇总 40 多个公开数据来源。`,
-  de: (n) => `Täglich aktualisierte zusammengesetzte Sicherheits-Scores für ${n} Länder, aggregiert aus über 40 öffentlichen Datenquellen.`,
+  en: (n) => `Daily updated composite safety scores for ${n} countries, aggregating ${SOURCE_COUNT_DISPLAY} public data sources.`,
+  it: (n) => `Punteggi di sicurezza compositi aggiornati ogni giorno per ${n} paesi, aggregando ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
+  es: (n) => `Puntuaciones de seguridad compuestas actualizadas a diario para ${n} países, con ${SOURCE_COUNT_DISPLAY} fuentes públicas agregadas.`,
+  fr: (n) => `Scores de sécurité composites mis à jour chaque jour pour ${n} pays, agrégeant ${SOURCE_COUNT_DISPLAY} sources publiques.`,
+  pt: (n) => `Pontuações de segurança compostas atualizadas diariamente para ${n} países, agregando ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
+  zh: (n) => `每日更新的 ${n} 个国家综合安全评分，汇总 ${SOURCE_COUNT_DISPLAY} 个公开数据来源。`,
+  de: (n) => `Täglich aktualisierte zusammengesetzte Sicherheits-Scores für ${n} Länder, aggregiert aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
 };
 
 /**
