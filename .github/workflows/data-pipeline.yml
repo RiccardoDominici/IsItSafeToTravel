@@ -177,6 +177,13 @@ jobs:
             echo "- DE Level 3 countries (global): **$de_l3**"
           } >> "$GITHUB_STEP_SUMMARY"
 
+          # Advisory-quality monitor (audit 2026-09-25) — WARN-ONLY, separate from the
+          # hard pass/fail checks above. Emits its own ::warning:: lines and appends its
+          # own Markdown summary straight to $GITHUB_STEP_SUMMARY. Runs before the
+          # possible `exit 1` below so its findings are visible even on a hard failure;
+          # `|| true` belt-and-suspenders on top of the script's own "always exit 0".
+          npx tsx scripts/check-advisory-quality.ts "$SNAP" || true
+
           if [ -n "$FAILURES" ]; then
             echo "" >> "$GITHUB_STEP_SUMMARY"
             echo "### ❌ Quality failures" >> "$GITHUB_STEP_SUMMARY"
