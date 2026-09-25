@@ -72,16 +72,16 @@ describe('Phase 1: IT page renders locale-appropriate content', () => {
   });
 
   it('contains Italian title', () => {
-    assert.ok(html.includes('Si Puo Viaggiare in Sicurezza?'), 'IT page must contain Italian site title');
+    assert.ok(html.includes('Si Può Viaggiare in Sicurezza?'), 'IT page must contain Italian site title');
   });
 
   it('contains Italian hero heading', () => {
-    assert.ok(html.includes('La tua destinazione e sicura?'), 'IT page must contain Italian hero text');
+    assert.ok(html.includes('La tua destinazione è sicura?'), 'IT page must contain Italian hero text');
   });
 
   it('contains Italian meta description', () => {
     assert.ok(
-      html.includes('Punteggi di sicurezza gratuiti e aggiornati ogni giorno per 248 paesi'),
+      html.includes('Punteggi di sicurezza gratuiti per 248 paesi, aggiornati ogni giorno'),
       'IT page must contain Italian meta description'
     );
   });
@@ -179,10 +179,21 @@ describe('Phase 1: root page detects language and redirects', () => {
     html = readFileSync(join(DIST_CLIENT, 'index.html'), 'utf-8');
   });
 
-  it('contains meta refresh fallback to /en/', () => {
+  // The real redirect is now a 302 from the Cloudflare Pages Function
+  // (functions/index.ts), keyed off Accept-Language — no meta-refresh exists
+  // anymore. This static page is only the fallback for environments where
+  // the Function doesn't run, and it redirects via JS instead.
+  it('has no meta-refresh tag (redirect is server-side via functions/index.ts, 302)', () => {
     assert.ok(
-      html.includes('url=/en/'),
-      'Root page must have meta refresh fallback to /en/'
+      !html.includes('http-equiv="refresh"'),
+      'Root page must not rely on meta-refresh for the primary redirect'
+    );
+  });
+
+  it('contains a JS client-side fallback redirect (window.location.replace)', () => {
+    assert.ok(
+      html.includes('window.location.replace'),
+      'Root page fallback must redirect via window.location.replace, not meta-refresh'
     );
   });
 
@@ -254,9 +265,9 @@ describe('Phase 1: CI/CD pipeline configured for Cloudflare deployment', () => {
     assert.ok(existsSync(join(ROOT, '.github', 'workflows', 'deploy.yml')));
   });
 
-  it('triggers on push to main', () => {
+  it('triggers on push to master', () => {
     assert.ok(yml.includes('push:'), 'Must trigger on push');
-    assert.ok(yml.includes('main'), 'Must target main branch');
+    assert.ok(yml.includes('master'), 'Must target master branch (project renamed default branch from main)');
   });
 
   it('uses cloudflare/wrangler-action', () => {
@@ -280,22 +291,25 @@ describe('Phase 1: CI/CD pipeline configured for Cloudflare deployment', () => {
   });
 });
 
-// --- Cloudflare adapter ---
+// --- Static output, no SSR adapter ---
+// The project is pure Astro SSG (CLAUDE.md: "No SSR") — `wrangler pages deploy`
+// ships the prerendered dist/client/ directly, and functions/ covers the few
+// dynamic bits (root redirect, API routes) as plain Cloudflare Pages Functions,
+// which don't require Astro's @astrojs/cloudflare SSR adapter at all.
 
-describe('Phase 1: Cloudflare adapter configured in Astro', () => {
+describe('Phase 1: pure static site deployed directly to Cloudflare Pages (no SSR adapter)', () => {
   let config: string;
 
   before(() => {
     config = readFileSync(join(ROOT, 'astro.config.mjs'), 'utf-8');
   });
 
-  it('imports cloudflare adapter', () => {
-    assert.ok(config.includes('@astrojs/cloudflare'), 'Must import cloudflare adapter');
+  it('does not import the Cloudflare SSR adapter', () => {
+    assert.ok(!config.includes('@astrojs/cloudflare'), 'Must not import an SSR adapter on a pure-SSG site');
   });
 
-  it('sets adapter to cloudflare', () => {
-    assert.ok(config.includes('adapter:'), 'Must set adapter configuration');
-    assert.ok(config.includes('cloudflare'), 'Adapter must be cloudflare');
+  it('does not configure an `adapter:`', () => {
+    assert.ok(!config.includes('adapter:'), 'Must not set adapter configuration — default static output');
   });
 
   it('wrangler.toml exists with project config', () => {

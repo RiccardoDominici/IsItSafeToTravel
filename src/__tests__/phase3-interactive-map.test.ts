@@ -29,10 +29,13 @@ describe('MAP-01: EN homepage contains SafetyMap component structure', () => {
     );
   });
 
-  it('container has data-scores attribute for score data', () => {
+  // Score data used to be inlined as a data-scores attribute; it's now fetched
+  // client-side from /map-data.json instead (perf commit f29cacfd, lazy-load
+  // map d3), so the container only carries its i18n config inline.
+  it('container has data-translations attribute for client-side i18n config', () => {
     assert.ok(
-      html.includes('data-scores='),
-      'Map container must have data-scores attribute for client-side rendering'
+      html.includes('data-translations='),
+      'Map container must have data-translations attribute; score data itself now loads from /map-data.json'
     );
   });
 
@@ -95,9 +98,9 @@ describe('MAP-01: IT homepage contains SafetyMap with Italian locale', () => {
     );
   });
 
-  it('Italian legend shows "Meno sicuro" and "Piu sicuro"', () => {
+  it('Italian legend shows "Meno sicuro" and "Più sicuro"', () => {
     assert.ok(html.includes('Meno sicuro'), 'IT legend must show "Meno sicuro"');
-    assert.ok(html.includes('Piu sicuro'), 'IT legend must show "Piu sicuro"');
+    assert.ok(html.includes('Più sicuro'), 'IT legend must show "Più sicuro"');
   });
 
   it('Italian tagline is displayed', () => {
@@ -145,10 +148,13 @@ describe('MAP-02: zoom and pan controls are present in build output', () => {
     );
   });
 
-  it('map container fills viewport height', () => {
+  // Switched from 100vh to 100dvh: dvh tracks the *dynamic* viewport, so the
+  // map section doesn't overflow under mobile browser chrome (address bar)
+  // the way a static 100vh does.
+  it('map section fills the dynamic viewport height', () => {
     assert.ok(
-      html.includes('100vh'),
-      'Map section must use viewport height for full-screen display'
+      html.includes('100dvh'),
+      'Map hero section must use dvh (not vh) for full-screen display on mobile'
     );
   });
 });
@@ -225,8 +231,14 @@ describe('MAP-01: i18n translation keys exist for map component', () => {
   });
 
   it('IT section also has all map keys', () => {
-    // Split file at 'it:' section and check keys are present in second half
-    const itSection = uiTs.substring(uiTs.lastIndexOf("'map.tooltip.nodata'"));
+    // Locate the it: {...} locale block specifically. `ui.ts` now lists 7
+    // locale blocks (en, it, es, fr, pt, zh, de) — a naive lastIndexOf of a
+    // key shared by every block grabs the LAST one (de) instead of it, ever
+    // since zh/de were appended after it in the file.
+    const itStart = uiTs.indexOf('\n  it: {');
+    const esStart = uiTs.indexOf('\n  es: {');
+    assert.ok(itStart > -1 && esStart > itStart, 'must find the it: {...} locale block boundaries');
+    const itSection = uiTs.slice(itStart, esStart);
     assert.ok(itSection.includes('Dati non disponibili'), 'IT must have Italian nodata text');
   });
 });

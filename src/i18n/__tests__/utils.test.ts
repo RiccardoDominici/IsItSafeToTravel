@@ -42,7 +42,9 @@ describe('getLangFromUrl', () => {
   });
 
   it('returns default en for unknown locale prefix', () => {
-    const url = new URL('https://example.com/de/something');
+    // 'de' used to be unsupported and is now a real published locale
+    // (Plan 38-02 added /de/) — use a genuinely unknown code instead.
+    const url = new URL('https://example.com/xx/something');
     assert.equal(getLangFromUrl(url), 'en');
   });
 
@@ -57,12 +59,14 @@ describe('getLangFromUrl', () => {
 describe('useTranslations', () => {
   it('returns English translation for en locale', () => {
     const t = useTranslations('en');
-    assert.equal(t('site.title'), 'Is It Safe to Travel?');
+    // site.title carries an SEO-optimized tail (year + country count) —
+    // see AP2/AP3 in the 2026-08-29 audit.
+    assert.equal(t('site.title'), 'Is It Safe to Travel? Safety Scores for 248 Countries [2026]');
   });
 
   it('returns Italian translation for it locale', () => {
     const t = useTranslations('it');
-    assert.equal(t('site.title'), 'Si Puo Viaggiare in Sicurezza?');
+    assert.equal(t('site.title'), 'Si Può Viaggiare in Sicurezza? Punteggi per 248 Paesi [2026]');
   });
 
   it('returns locale-appropriate nav text for en', () => {
@@ -86,7 +90,7 @@ describe('useTranslations', () => {
 
   it('returns Italian hero text', () => {
     const t = useTranslations('it');
-    assert.equal(t('hero.title'), 'La tua destinazione e sicura?');
+    assert.equal(t('hero.title'), 'La tua destinazione è sicura?');
   });
 });
 
@@ -103,28 +107,29 @@ describe('getLocalizedPath', () => {
 
   it('translates known route slug from en to it', () => {
     const result = getLocalizedPath('/en/about/', 'it');
-    // Implementation strips trailing slash via .filter(Boolean)
-    assert.equal(result, '/it/chi-siamo');
+    // Implementation always appends a trailing slash (matches astro.config.mjs
+    // trailingSlash: 'always') — see the comment on getLocalizedPath.
+    assert.equal(result, '/it/chi-siamo/');
   });
 
   it('translates known route slug from it to en', () => {
     const result = getLocalizedPath('/it/chi-siamo/', 'en');
-    assert.equal(result, '/en/about');
+    assert.equal(result, '/en/about/');
   });
 
   it('translates methodology slug from en to it', () => {
     const result = getLocalizedPath('/en/methodology/', 'it');
-    assert.equal(result, '/it/metodologia');
+    assert.equal(result, '/it/metodologia/');
   });
 
   it('translates country slug from en to it', () => {
     const result = getLocalizedPath('/en/country/', 'it');
-    assert.equal(result, '/it/paese');
+    assert.equal(result, '/it/paese/');
   });
 
   it('preserves unknown segments unchanged', () => {
     const result = getLocalizedPath('/en/unknown-page/', 'it');
-    assert.equal(result, '/it/unknown-page');
+    assert.equal(result, '/it/unknown-page/');
   });
 });
 
@@ -133,28 +138,36 @@ describe('getLocalizedPath', () => {
 describe('getAlternateLinks', () => {
   it('returns links for all locales', () => {
     const links = getAlternateLinks('/en/');
-    assert.equal(links.length, 5);
+    // Plan 38-02 published /zh/ and /de/ page trees, growing publishedLanguages
+    // from 5 to 7 (en, it, es, fr, pt, zh, de).
+    assert.equal(links.length, 7);
 
     const enLink = links.find((l) => l.lang === 'en');
     const itLink = links.find((l) => l.lang === 'it');
     const frLink = links.find((l) => l.lang === 'fr');
     const ptLink = links.find((l) => l.lang === 'pt');
+    const zhLink = links.find((l) => l.lang === 'zh');
+    const deLink = links.find((l) => l.lang === 'de');
 
     assert.ok(enLink, 'should have en link');
     assert.ok(itLink, 'should have it link');
     assert.ok(frLink, 'should have fr link');
     assert.ok(ptLink, 'should have pt link');
+    assert.ok(zhLink, 'should have zh link');
+    assert.ok(deLink, 'should have de link');
     assert.equal(enLink.href, '/en/');
     assert.equal(itLink.href, '/it/');
     assert.equal(frLink.href, '/fr/');
     assert.equal(ptLink.href, '/pt/');
+    assert.equal(zhLink.href, '/zh/');
+    assert.equal(deLink.href, '/de/');
   });
 
   it('translates route slugs in alternate links', () => {
     const links = getAlternateLinks('/en/about/');
     const itLink = links.find((l) => l.lang === 'it');
     assert.ok(itLink);
-    assert.equal(itLink.href, '/it/chi-siamo');
+    assert.equal(itLink.href, '/it/chi-siamo/');
   });
 });
 
