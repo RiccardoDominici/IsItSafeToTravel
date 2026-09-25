@@ -3,6 +3,7 @@ import type { PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../../pipeline/scoring/engine';
+import { getIndicatorLabel } from '../../i18n/indicator-labels';
 import PillarCoverageTip from './PillarCoverageTip.astro';
 
 interface Props {
@@ -61,7 +62,7 @@ const pillarKeys: Record<string, string> = {
             <tbody>
               {pillar.indicators.map((ind) => (
                 <tr class="border-b border-sand-100 dark:border-sand-800">
-                  <td class="py-1.5 text-sand-600 dark:text-sand-300">{ind.name.replace(/_/g, ' ')}</td>
+                  <td class="py-1.5 text-sand-600 dark:text-sand-300">{getIndicatorLabel(ind.name, t)}</td>
                   <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{(ind.normalizedValue * 10).toFixed(1)}/10</td>
                   <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.source}</td>
                   <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.year}</td>
