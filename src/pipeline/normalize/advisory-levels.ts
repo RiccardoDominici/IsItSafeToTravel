@@ -834,6 +834,19 @@ export function normalizeArAlert(text: string): UnifiedLevel {
  *  Shared by every Tier 3a free-text normalizer (IT today, ES below). */
 function normalizeAdvisoryText(text: string): string {
   return text
+    // DOM-to-text extraction (see fetchEsAdvisories / fetchItAdvisories) concatenates sibling block
+    // elements -- headings, paragraphs -- with no separator, so "...aviso.Se ruega..." is really TWO
+    // sentences glued into one string with no space at the join. Left alone, splitIntoSentences()
+    // below reads the glued pair as a SINGLE sentence, and an unrelated qualifier later in that merged
+    // blob can veto a real match earlier in it. Repair 2026-09-25: Spain's Central African Republic
+    // page glues its whole-country evacuation banner ("...LO ANTES POSIBLE.") straight onto the next
+    // paragraph; a nighttime-curfew "de noche" aside three sentences later in the same merged blob then
+    // tripped ES_ZONE_MARKERS and suppressed the banner, producing level 1 for a country under a
+    // do-not-travel order. Must run BEFORE toLowerCase() -- it keys off the capital letter that starts
+    // the next real sentence. Gated on >=4 letters before the punctuation so short abbreviations
+    // ("EE.UU.", "Sr.", "D.F.") are left alone -- real sentence-final words are practically never that
+    // short, ALL-CAPS banners (as in the CAF case, "...POSIBLE.Se...") included.
+    .replace(/(\p{L}{4,})([.!?])(?=\p{Lu})/gu, '$1$2 ')
     .toLowerCase()
     .replace(/[​﻿ ]/g, ' ')
     .replace(/\s+/g, ' ')
@@ -954,10 +967,11 @@ const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
  * reading as Italy's.
  *
  * Calibrated 2026-09-25 against ~45 countries' live "Notas importantes" (Corea del Norte, Haití, Irán, Israel,
- * Líbano, Mali, Palestina, Somalia, Sudán, Ucrania, Yemen -> 4; Etiopía, Libia, México, Myanmar, Nigeria,
- * Pakistán, RD Congo, Ruanda, Rusia, Siria, Sudáfrica, Venezuela -> 3; Bielorrusia, Brasil, China, Colombia,
- * Egipto, Filipinas, India, Indonesia, Kenia, Marruecos, Perú, Sri Lanka, Tailandia, Turquía, Vietnam -> 2;
- * Alemania, Argentina, Chile, Corea, Estados Unidos, Italia, Japón -> 1):
+ * Líbano, Mali, Palestina, Somalia, Sudán, Ucrania, Yemen, República Centroafricana -> 4; Etiopía, Libia, México,
+ * Myanmar, Nigeria, Pakistán, RD Congo, Ruanda, Rusia, Siria, Sudáfrica, Venezuela, Arabia Saudí, Bahréin, Catar,
+ * Emiratos Árabes Unidos, Jordania, Kuwait, Omán -> 3; Bielorrusia, Brasil, China, Colombia, Egipto, Filipinas,
+ * India, Indonesia, Kenia, Marruecos, Perú, Sri Lanka, Tailandia, Turquía, Vietnam -> 2; Alemania, Argentina,
+ * Chile, Corea, Estados Unidos, Italia, Japón -> 1):
  *  - "NO HAY RESTRICCIONES ESPECÍFICAS" is Spain's own explicit all-clear and wins outright, even when a narrow
  *    logistical aside follows it in the same notice (Corea still flags its DMZ as off-limits).
  *  - Level 4 ("bajo cualquier/ninguna circunstancia", "desaconseja ... completamente/totalmente/encarecidamente",
@@ -965,13 +979,29 @@ const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
  *    neither zone-scoped (ES_ZONE_MARKERS) nor carry a same-sentence "salvo/excepto" exception -- both
  *    false-positived in calibration: Kenya's Lamu-county and Egypt's "viajes de aventura a lugares remotos" are
  *    scoped, not whole-country; Libya's and Nigeria's "salvo caso de necesidad" is conditional, i.e. level 3.
+ *    Repair 2026-09-25: the Central African Republic's banner ("SE DESACONSEJA EL VIAJE BAJO CUALQUIER
+ *    CIRCUNSTANCIA...") was silently landing on level 1 in production -- not a wording gap but a text-extraction
+ *    one, fixed in normalizeAdvisoryText() above (see its own comment): the banner sentence was glued, with no
+ *    separator, to the next paragraph, and an unrelated "de noche" curfew aside three sentences further into that
+ *    merged blob was zone-scoping the WHOLE thing via ES_ZONE_MARKERS.
  *  - Level 3: "extremar/extrema/mucha precaución" (Spain's own intensified-caution wording, distinct from the
- *    bare "precaución" used for level 2), "no esencial", "valorar no viajar", or exactly the level-4 verbs
- *    ("desaconseja"/"recomienda no viajar") downgraded by their own "salvo/excepto" clause.
+ *    bare "precaución" used for level 2), "no esencial", "valorar no viajar", the level-4 verbs
+ *    ("desaconseja"/"recomienda no viajar") downgraded by their own "salvo/excepto" clause, or "aconseja aplazar
+ *    (su) viaje" (Spain's "postpone your trip" banner, verified 2026-09-25 on all 7 Gulf/Middle-East states in
+ *    the current "conflicto de alcance regional" cluster -- Arabia Saudí, Bahréin, Catar, EAU, Jordania, Kuwait,
+ *    Omán -- as a distinct, weaker tier below "se desaconseja": it recommends citizens already there leave only
+ *    "si lo desean" (conditionally), never orders it, and confirmed absent from calibrated level-1/2 neighbours
+ *    Marruecos, Rusia, Turquía).
  *  - Level 2: the bare "viajar con precaución" banner (no intensifier), or an explicit zone/border warning.
  *
- * Returns null when no "Notas importantes" section was found at all (fetch failure / page shape changed) --
- * never default a missing notice to level 1.
+ * Returns null when no "Notas importantes" section was found at all (fetch failure / page shape changed), AND
+ * when a substantive notice was found but none of the above patterns fired. The latter used to fall back to
+ * level 1 (a comprehensive-source assumption -- Spain publishes one page per country, so "nothing matched" read
+ * as "nothing to report"), but Cuba's page disproved that: 2026-09-25's live notice is ~1700 characters
+ * describing a genuine hardship (island-wide blackouts, fuel shortage, shuttered hotels, daily protests) using
+ * none of Spain's fixed severity verbs (no "aconseja"/"desaconseja" anywhere) -- proof that an unmatched notice
+ * can be a real, substantive advisory Spain simply didn't phrase in the vocabulary this parser looks for, not an
+ * all-clear. Per project rule (SOURCE-REPAIR-BRIEF), an unrecognized banner must emit nothing, never guess 1.
  */
 export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
   const notas = normalizeAdvisoryText(notasTextRaw);
@@ -994,6 +1024,11 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     /\bextrema\s+precauci[oó]n/, /\bmucha\s+precauci[oó]n/,
     /no esencial/,
     /valorar no viajar/, /valor[eo]n?\s+.{0,25}no viajar/,
+    // Spain's "postpone your trip" banner -- see calibration note above. "su" is optional: Bahréin and
+    // Kuwait's pages omit it ("SE ACONSEJA APLAZAR SU VIAJE A BAHRÉIN" still has it; kept here anyway
+    // for the rare page that might not). Checked against the whole notice, not per-sentence, since the
+    // banner always names the country directly (never a "zona") -- no ES_ZONE_MARKERS guard needed.
+    /aconseja\w*\s+aplazar\w*\s+(su\s+)?viaje/,
   ];
   const LEVEL2_PATTERNS = [
     /viajar\s+con\s+(\w+\s+)?precauci[oó]n/,
@@ -1020,7 +1055,10 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
   if (sawLevel3) return 3;
   if (LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
   if (LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
-  return 1;
+  // A substantive notice that matched none of the above is Cuba's case (see calibration note): a real
+  // advisory Spain didn't phrase with any of its fixed severity verbs, not an all-clear. Emit nothing
+  // rather than guess -- the caller (fetchEsAdvisories) already skips a null and reports no ES level.
+  return null;
 }
 
 /**
