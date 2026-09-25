@@ -30,7 +30,7 @@ function mkCountry(iso3: string, score: number, overrides: Partial<ScoredCountry
   };
 }
 
-function mkSnapshot(date: string, countries: ScoredCountry[]): DailySnapshot {
+function mkSnapshot(date: string, countries: ScoredCountry[], overrides: Partial<DailySnapshot> = {}): DailySnapshot {
   return {
     date,
     generatedAt: `${date}T00:00:00Z`,
@@ -39,6 +39,7 @@ function mkSnapshot(date: string, countries: ScoredCountry[]): DailySnapshot {
     globalScore: 6.6,
     countries,
     fetchResults: [],
+    ...overrides,
   };
 }
 
@@ -229,6 +230,58 @@ describe('cooldownKey: severe_advisory level escalation', () => {
     const cooldowns = { [cooldownKey(evt(3))]: '2026-07-05' };
     const kept = filterSortCap([evt(3)], cooldowns, '2026-07-10');
     assert.equal(kept.length, 0);
+  });
+});
+
+describe('computeNews: dataRevision guard (audit 2026-09-25 data-revision.ts)', () => {
+  it('suppresses score_jump and band_change across a dataRevision bump', () => {
+    // prev has no dataRevision (implicit 1, pre-2026-09-25 shape); curr is rev 2 — a
+    // real mismatch, exactly the boundary the 2026-09-25 cleanup crosses.
+    const prev = mkSnapshot('2026-09-24', [mkCountry('AAA', 6.8)]);
+    const curr = mkSnapshot('2026-09-25', [mkCountry('AAA', 7.3)], { dataRevision: 2 });
+    const events = computeNews(prev, curr, '2026-09-25');
+    assert.equal(events.find((e) => e.type === 'score_jump'), undefined, 'score_jump must be suppressed');
+    assert.equal(events.find((e) => e.type === 'band_change'), undefined, 'band_change must be suppressed');
+  });
+
+  it('suppresses rank_overtake and top10_change across a dataRevision bump', () => {
+    const filler = Array.from({ length: 38 }, (_, i) => mkCountry(`F${i.toString().padStart(2, '0')}`, 7.0 - i * 0.01));
+    const prev = mkSnapshot('2026-09-24', [mkCountry('ITA', 8.0), mkCountry('FRA', 7.9), ...filler]);
+    const curr = mkSnapshot(
+      '2026-09-25',
+      [mkCountry('FRA', 8.0), mkCountry('ITA', 7.85), ...filler],
+      { dataRevision: 2 },
+    );
+    const events = computeNews(prev, curr, '2026-09-25');
+    assert.equal(events.find((e) => e.type === 'rank_overtake'), undefined, 'rank_overtake must be suppressed');
+    assert.equal(events.find((e) => e.type === 'top10_change'), undefined, 'top10_change must be suppressed');
+  });
+
+  it('does NOT suppress new_country or severe_advisory across a dataRevision bump', () => {
+    const adv = (level: number) => ({ us: { level, text: '', source: '', url: '', updatedAt: '' } });
+    const prev = mkSnapshot('2026-09-24', [mkCountry('AAA', 6.0, { advisories: adv(2) })]);
+    const curr = mkSnapshot(
+      '2026-09-25',
+      [mkCountry('AAA', 6.0, { advisories: adv(4) }), mkCountry('ZZZ', 6.0)],
+      { dataRevision: 2 },
+    );
+    const events = computeNews(prev, curr, '2026-09-25');
+    assert.ok(events.find((e) => e.type === 'new_country' && e.params.country === 'ZZZ'), 'new_country should still fire');
+    assert.ok(events.find((e) => e.type === 'severe_advisory' && e.params.country === 'AAA'), 'severe_advisory should still fire');
+  });
+
+  it('does NOT suppress score_jump when both snapshots share the same dataRevision', () => {
+    const prev = mkSnapshot('2026-09-26', [mkCountry('AAA', 6.8)], { dataRevision: 2 });
+    const curr = mkSnapshot('2026-09-27', [mkCountry('AAA', 7.3)], { dataRevision: 2 });
+    const events = computeNews(prev, curr, '2026-09-27');
+    assert.ok(events.find((e) => e.type === 'score_jump'), 'same-revision runs must behave normally');
+  });
+
+  it('treats a missing dataRevision on both sides as matching (implicit revision 1)', () => {
+    const prev = mkSnapshot('2026-07-09', [mkCountry('AAA', 6.0)]); // no dataRevision, like every pre-fix test above
+    const curr = mkSnapshot('2026-07-10', [mkCountry('AAA', 6.3)]);
+    const events = computeNews(prev, curr, '2026-07-10');
+    assert.ok(events.find((e) => e.type === 'score_jump'), 'two revision-less snapshots must not be treated as mismatched');
   });
 });
 

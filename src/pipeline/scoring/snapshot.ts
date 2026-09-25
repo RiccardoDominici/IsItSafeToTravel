@@ -3,6 +3,7 @@ import { join } from 'node:path';
 import { readdirSync, existsSync } from 'node:fs';
 import { readFileSync } from 'node:fs';
 import type { DailySnapshot, ScoredCountry, FetchResult } from '../types.js';
+import { DATA_REVISION } from '../config/data-revision.js';
 
 /**
  * Read the pipeline version from package.json.
@@ -41,6 +42,7 @@ export function writeSnapshot(
     globalScore,
     countries,
     fetchResults,
+    dataRevision: DATA_REVISION,
   };
 
   const scoresDir = getScoresDir();

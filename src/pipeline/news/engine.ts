@@ -61,6 +61,27 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
   const prevByIso = new Map((prev?.countries ?? []).map((c) => [c.iso3, c] as const));
   const gap = prev ? daysBetween(prev.date, date) : Infinity;
 
+  // A dataRevision bump (data-revision.ts) marks a one-time correction to
+  // score inputs (e.g. audit 2026-09-25: bounding source-floor.ts restores
+  // + fixing parsers that defaulted to a false level 1) rather than a real
+  // change in conditions on the ground. Diffing across that boundary would
+  // manufacture "movement" out of the correction itself — score_jump,
+  // band_change, rank_overtake and top10_change are all derived from the
+  // score delta between prev and curr, so all four are suppressed. new_country
+  // and severe_advisory are existence/threshold checks, not deltas, and stay
+  // meaningful (and useful — a severe advisory is still worth surfacing)
+  // across a revision boundary, so they are exempt. This does not affect the
+  // function's determinism: same (prev, curr, date) in, same events out —
+  // only a diagnostic log is a side effect.
+  const revisionMismatch = prev !== null && (prev.dataRevision ?? 1) !== (curr.dataRevision ?? 1);
+  if (revisionMismatch) {
+    console.log(
+      `[NEWS] dataRevision changed ${prev!.dataRevision ?? 1} -> ${curr.dataRevision ?? 1} between ` +
+      `${prev!.date} and ${curr.date} — suppressing score_jump/band_change/rank_overtake/top10_change ` +
+      `for this run (new_country and severe_advisory are unaffected)`,
+    );
+  }
+
   // new_country: iso3 present today (with sufficient data) & absent yesterday. Needs prev set.
   if (prev) {
     const prevSet = new Set(prev.countries.map((c) => c.iso3));
@@ -85,7 +106,7 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
     const sNew = Number(c.score.toFixed(1));
     const cConf = round2(conf(c));
 
-    if (Math.abs(d) >= SCORE_JUMP_MIN && isConfident(c)) {
+    if (Math.abs(d) >= SCORE_JUMP_MIN && isConfident(c) && !revisionMismatch) {
       events.push(
         mk(
           'score_jump',
@@ -103,7 +124,7 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
       );
     }
 
-    if (bandCrossConfirmed(p.score, c.score) && isConfident(c)) {
+    if (bandCrossConfirmed(p.score, c.score) && isConfident(c) && !revisionMismatch) {
       const from = getBand(p.score);
       const to = getBand(c.score);
       events.push(
@@ -125,7 +146,7 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
 
     const rt = rankT.get(c.iso3);
     const rp = rankP.get(c.iso3);
-    if (isConfident(c)) {
+    if (isConfident(c) && !revisionMismatch) {
       if (rt !== undefined && rt <= 10 && (rp === undefined || rp > 10)) {
         events.push(mk('top10_change', c.iso3, { country: c.iso3, direction: 'enter', rank: rt, confidence: cConf }, date));
       }
@@ -143,7 +164,7 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
     }
   }
 
-  events.push(...computeOvertakes(prevByIso, rankP, rankT, curr, date));
+  if (!revisionMismatch) events.push(...computeOvertakes(prevByIso, rankP, rankT, curr, date));
   return events;
 }
 
