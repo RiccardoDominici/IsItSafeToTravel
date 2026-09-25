@@ -3,8 +3,10 @@ import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import type { UnifiedLevel } from '../normalize/advisory-levels.js';
 import {
   normalizeDeLevel,
+  normalizeDeContentText,
   normalizeNlColor,
   normalizeJpLevel,
   normalizeSkSecurityText,
@@ -12,6 +14,13 @@ import {
 import { join } from 'node:path';
 
 // --- API URLs ---
+// DE_API_URL doubles as the per-country content endpoint's base:
+// `${DE_API_URL}/{contentId}` (e.g. .../opendata/travelwarning/203814)
+// returns that one country's "content" HTML field — same opendata API
+// family, official AA data, not the public website. See
+// normalizeDeContentText's doc comment (normalize/advisory-levels.ts) for
+// why the bulk endpoint's 4 booleans alone are not enough (repair 2026-09-25,
+// SOURCE-REPAIR-BRIEF).
 const DE_API_URL = 'https://www.auswaertiges-amt.de/opendata/travelwarning';
 const NL_API_BASE =
   'https://opendata.nederlandwereldwijd.nl/v2/sources/nederlandwereldwijd/infotypes/countries';
@@ -35,10 +44,16 @@ const SK_COUNTRY_PACKAGE_URL =
 const SK_DATASTORE_BASE = 'https://opendata.mzv.sk/api/3/action/datastore_search';
 
 // --- Level text maps ---
+// Level 3 relabeled 2026-09-25: it used to say "Teilreisewarnung" (a FORMAL
+// partial travel warning), but that concept is now explicitly capped at
+// Level 2 (SOURCE-REPAIR-BRIEF: "partial/sub-national warnings must stay <=
+// 2"). Level 3 is produced by normalizeDeContentText's whole-country "wird
+// (dringend) abgeraten" text match instead — "travel advised against" is
+// the accurate label for that.
 const DE_LEVEL_TEXT: Record<number, string> = {
   1: 'Keine Reisewarnung',
   2: 'Sicherheitshinweis',
-  3: 'Teilreisewarnung',
+  3: 'Von Reisen wird abgeraten',
   4: 'Reisewarnung',
 };
 
@@ -184,6 +199,14 @@ function delay(ms: number): Promise<void> {
 // Sub-fetcher 1: Germany (Auswaertiges Amt)
 // =============================================================================
 
+interface DeCountryEntry {
+  id: number;
+  iso3: string;
+  countryName: string;
+  boolLevel: UnifiedLevel;
+  lastModified: string | undefined;
+}
+
 async function fetchDeAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -210,6 +233,8 @@ async function fetchDeAdvisories(
   const contentList = r.contentList as number[];
   if (!Array.isArray(contentList)) throw new Error('No contentList in Germany API response');
 
+  // Pass 1: parse the bulk list (country identity + the 4 legacy booleans).
+  const entries: DeCountryEntry[] = [];
   for (const id of contentList) {
     const entry = r[String(id)] as Record<string, unknown> | undefined;
     if (!entry) continue;
@@ -220,36 +245,96 @@ async function fetchDeAdvisories(
     const country = getCountryByIso3(iso3);
     if (!country) continue;
 
-    const level = normalizeDeLevel({
-      warning: Boolean(entry.warning),
-      partialWarning: Boolean(entry.partialWarning),
-      situationWarning: Boolean(entry.situationWarning),
-      situationPartWarning: Boolean(entry.situationPartWarning),
+    entries.push({
+      id,
+      iso3: country.iso3,
+      countryName: String(entry.countryName || country.name.en),
+      boolLevel: normalizeDeLevel({
+        warning: Boolean(entry.warning),
+        partialWarning: Boolean(entry.partialWarning),
+        situationWarning: Boolean(entry.situationWarning),
+        situationPartWarning: Boolean(entry.situationPartWarning),
+      }),
+      lastModified: entry.lastModified
+        ? new Date(Number(entry.lastModified) * 1000).toISOString()
+        : undefined,
     });
-
-    indicators.push({
-      countryIso3: country.iso3,
-      indicatorName: 'advisory_level_de',
-      value: level,
-      year: currentYear,
-      source: 'advisories_de',
-      fetchedAt,
-    });
-
-    // Build advisory info — no source timestamp means no updatedAt (never the fetch time)
-    const lastModified = entry.lastModified
-      ? new Date(Number(entry.lastModified) * 1000).toISOString()
-      : undefined;
-
-    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-    advisoryInfo[country.iso3].de = {
-      level,
-      text: DE_LEVEL_TEXT[level] || `Level ${level}`,
-      source: 'German Federal Foreign Office',
-      url: 'https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise',
-      updatedAt: lastModified,
-    };
   }
+
+  // Pass 2: per-country content fetch, escalating the boolean-derived level
+  // with normalizeDeContentText (see its doc comment — the booleans alone
+  // miss AA's informal "wird (dringend) abgeraten" tier entirely). A
+  // per-country fetch failure degrades gracefully to the boolean-only level
+  // rather than dropping the country: the bulk call already gave us valid
+  // indicator data for it.
+  const textEscalated: string[] = []; // countries where text pushed the level above the boolean
+  const contentFetchFailed: string[] = [];
+
+  await fetchBatch(
+    entries,
+    async (entry) => {
+      let finalLevel: UnifiedLevel = entry.boolLevel;
+      try {
+        const cr = await fetch(`${DE_API_URL}/${entry.id}`, {
+          signal: AbortSignal.timeout(15_000),
+          headers: { 'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)' },
+        });
+        if (cr.ok) {
+          const cData = (await cr.json()) as Record<string, unknown>;
+          const cResult = cData.response as Record<string, unknown> | undefined;
+          const cEntry = cResult?.[String(entry.id)] as Record<string, unknown> | undefined;
+          const content = cEntry?.content as string | undefined;
+          if (content) {
+            const textLevel = normalizeDeContentText(content, entry.countryName);
+            if (textLevel > finalLevel) {
+              finalLevel = textLevel;
+              textEscalated.push(entry.iso3);
+            }
+          }
+        } else {
+          contentFetchFailed.push(entry.iso3);
+        }
+      } catch {
+        contentFetchFailed.push(entry.iso3);
+      }
+
+      indicators.push({
+        countryIso3: entry.iso3,
+        indicatorName: 'advisory_level_de',
+        value: finalLevel,
+        year: currentYear,
+        source: 'advisories_de',
+        fetchedAt,
+      });
+
+      if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
+      advisoryInfo[entry.iso3].de = {
+        level: finalLevel,
+        text: DE_LEVEL_TEXT[finalLevel] || `Level ${finalLevel}`,
+        source: 'German Federal Foreign Office',
+        url: 'https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise',
+        updatedAt: entry.lastModified,
+      };
+
+      // Be polite to the opendata API: ~200 requests follow the single bulk
+      // call. A concurrency-8, no-delay version of this loop (200 requests
+      // in ~1.4s) tripped auswaertiges-amt.de's bot-challenge ("Enodia")
+      // mid-investigation on 2026-09-25 after repeated runs in a short
+      // window — SOURCE-REPAIR-BRIEF rule 4 caps this at <=3 anyway.
+      await delay(150);
+    },
+    3, // Concurrency <=3 per SOURCE-REPAIR-BRIEF rule 4
+  );
+
+  writeJson(join(rawDir, 'advisories-de-content-diagnostics.json'), {
+    fetchedAt,
+    countriesChecked: entries.length,
+    textEscalatedAboveBoolean: textEscalated,
+    contentFetchFailed,
+  });
+  console.log(
+    `[ADVISORIES-T1] DE: ${textEscalated.length} countries escalated above their warning/partialWarning boolean by the "wird abgeraten" text check (${contentFetchFailed.length} content fetches failed, boolean-only fallback used)`,
+  );
 
   return { indicators, advisoryInfo };
 }

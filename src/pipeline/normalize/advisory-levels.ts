@@ -32,6 +32,221 @@ export function normalizeDeLevel(flags: {
 }
 
 /**
+ * Words that mark an "abgeraten"/"gewarnt" object clause as scoped to a named
+ * SUB-region of a country, not the country itself (Priority 2 below relies on
+ * their ABSENCE to call a clause "whole-country" — see the doc comment there).
+ * Stems (not exact words): German declines these (Region -> Regionen,
+ * Provinz -> Provinzen), so each is followed by \w* rather than a fixed word
+ * boundary — an EXACT-word list missed Saudi Arabia's "alle weiteren
+ * REGIONEN Saudi-Arabiens" (plural) during validation.
+ */
+const DE_REGIONAL_WORDS =
+  /\b(Norden|Süden|Osten|Westen|Nordosten|Nordwesten|Südosten|Südwesten|Teil\w*|Region\w*|Gebiet\w*|Grenz\w*|Provinz\w*|Distrikt\w*|Bezirk\w*|Insel\w*|Küste\w*|Exklave\w*|Zone\w*|Departement\w*|Gouvernorat\w*|Bundesstaat\w*|Bundesland\w*|Stadt\w*|Vorort\w*|Lager\w*|streifen)\b/i;
+
+/**
+ * "andere(n)/weitere(n)/übrige(n) Landesteile/Regionen/Teile des Landes" — a
+ * German idiom for "the REST of the country" — BUT ONLY when what follows it
+ * is the country itself, not a re-scope to a named SUB-region: the
+ * Philippines' real page reads "von nicht erforderlichen Reisen in ANDERE
+ * REGIONEN VON MINDANAO ... wird abgeraten" (other regions OF MINDANAO, one
+ * island group, not "of the Philippines") — the bare regex below matches
+ * that identically to Israel's genuine "andere Landesteile ISRAELS", so
+ * matchesRestOfCountry() must additionally verify what follows.
+ */
+const DE_REST_OF_COUNTRY =
+  /(?:anderen?|weiteren?|übrigen?|restlichen?)\s+(?:landesteil\w*|regionen?|teile?\s+des\s+landes)/i;
+
+/**
+ * Word-boundary "Reise"/"Reisen" — NOT a bare substring match. German
+ * compounds "Einreise" (entry), "Ausreise" (exit), "Weiterreise" (onward
+ * travel), "Durchreise" (transit) and "Rückreise" (return trip) all CONTAIN
+ * "reise" as a substring but are bureaucratic/consular terms (document and
+ * vehicle rules), not safety statements — a bare /reise/i match produced
+ * false Level-3 hits during validation (Serbia's "Von einer Einreise nach
+ * Serbien mit einem Fahrzeug ohne gültige Hauptuntersuchung... wird
+ * abgeraten" is about missing roadworthiness certificates, not danger).
+ * \b correctly rejects these: there is no word boundary between "Ein" and
+ * "reise" inside one compound word.
+ */
+const DE_TRAVEL_WORD = /\b(?:reise|reisen)\b/i;
+
+/**
+ * Normalize Germany (Auswaertiges Amt) per-country advisory TEXT (the
+ * "content" field from the structured `/opendata/travelwarning/{contentId}`
+ * endpoint — NOT the public HTML site, still part of AA's own opendata API)
+ * to unified 1-4 scale. Repair 2026-09-25: the warning/partialWarning/
+ * situationWarning/situationPartWarning booleans normalizeDeLevel reads are
+ * NOT a complete signal. Audit of the live 2026-09-25 feed found
+ * situationWarning/situationPartWarning true for 0/200 countries (dead
+ * fields in the current feed) — AA's real 3rd tier, "Von Reisen ... wird
+ * (dringend) abgeraten" (advised against, short of a formal Reisewarnung),
+ * is not exposed as a boolean AT ALL, only as prose. Even `warning` can
+ * under-report: Israel's page reads "wird gewarnt" for Gaza/West Bank but
+ * `warning=false` at the API level, because the formal flag apparently only
+ * fires for a Reisewarnung covering the ENTIRE country, while Israel's is
+ * partial (see the whole-country "wird abgeraten" catch-all elsewhere on the
+ * same page, which this function DOES catch — verified below).
+ *
+ * Call this ALONGSIDE normalizeDeLevel and take the MAX of both results: text
+ * detection only ever ESCALATES what the booleans already established, never
+ * downgrades it (a Pattern-2 miss on an already `warning=true` country is
+ * harmless — the boolean alone still yields 4).
+ *
+ * Classification (checked per "<object> wird [derzeit/dringend] (abgeraten|
+ * gewarnt)" sentence that mentions "Reise" — sentences that don't are
+ * unrelated advice like drone rules, e.g. Congo-Brazzaville's page, and are
+ * skipped):
+ *  1. "andere(n) Landesteile(n)"/"andere(n) Teile(n) des Landes" — a FIXED
+ *     idiom meaning "the rest of the country" regardless of what regions were
+ *     already named earlier on the page — the clause is whole-country by
+ *     definition. Verified: Israel ("andere Landesteile Israels... wird
+ *     abgeraten"), Jordan ("andere Landesteile Jordaniens... wird
+ *     abgeraten"), Lebanon ("andere Landesteile Libanons... wird DRINGEND
+ *     abgeraten"), Saudi Arabia ("alle weiteren Regionen Saudi-Arabiens...
+ *     wird abgeraten" — same idiom, "Regionen" instead of "Landesteile").
+ *  2. The object clause names the country ITSELF (namesCountry() below —
+ *     stem-matched, so it survives German adjective declension inside
+ *     multi-word names) with NOTHING else: no DE_REGIONAL_WORDS, no "und"/
+ *     "sowie"/comma (which would mean multiple named things, e.g. Georgia's
+ *     "Abchasien, Südossetien und ... Konfliktregionen" — regional, doesn't
+ *     even name Georgia). Verified whole-country hits: Bahrain, Kuwait,
+ *     Cuba, Qatar, North Korea, Afghanistan (cross-checks warning=true), the
+ *     UAE ("in die Vereinigten Arabischen Emirate" — the declined adjective
+ *     forms are why an exact-string match on countryName is not enough).
+ *     Verified CORRECT rejections (stay regional): Moldova's "Von Reisen
+ *     nach TRANSNISTRIEN" (a short bare object too, but doesn't name
+ *     Moldova at all — this is why country-name matching is required and a
+ *     short/no-conjunction check alone is NOT enough); Lebanon's "den Süden
+ *     LIBANONS" (contains "Libanon" as a possessive of "Süden", but
+ *     DE_REGIONAL_WORDS catches "Süden" and rejects it).
+ *  3. Neither 1 nor 2, but a travel-related "wird abgeraten"/"wird gewarnt"
+ *     clause exists somewhere -> 2 (a real regional signal exists; matches
+ *     "partial/sub-national warnings must stay <= 2"). Verified: Oman
+ *     (Musandam exclave + Yemen border only), Georgia (Abkhazia/South
+ *     Ossetia only), Burundi (named provinces/park only), Mozambique/Côte
+ *     d'Ivoire (existing partialWarning=true cases — confirms this doesn't
+ *     regress them).
+ *  4. Nothing found -> 1. Verified: Congo-Brazzaville (its only "wird
+ *     abgeraten" sentences are about drone equipment).
+ *  Verb picked per matching clause: "gewarnt" (Reisewarnung wording) -> 4,
+ *  "abgeraten" (incl. "dringend abgeraten") -> 3 — SOURCE-REPAIR-BRIEF's
+ *  explicit rule (it does not create a separate tier for "dringend").
+ *
+ * A first version of this function filtered clauses with a bare /reise/i
+ * substring check instead of DE_TRAVEL_WORD's word boundary, and matched
+ * countryName as one exact (undeclined) string instead of namesCountry()'s
+ * per-word stemming. Both produced wrong results on the FULL 200-country
+ * feed (caught by re-running against all of it, not just the originally
+ * flagged countries): Serbia/Hungary/Bulgaria were false-escalated to
+ * Level 3 by "Einreise"/"Ausreise" (entry/exit document and vehicle rules,
+ * not safety text) matching /reise/i; the UAE was under-classified to Level
+ * 2 because its declined multi-word name didn't match the exact-string
+ * countryName check.
+ */
+/**
+ * Does `objectClause` name `countryName` itself? German adjectives inside a
+ * multi-word official name decline with the surrounding sentence's case
+ * ("Vereinigte Arabische Emirate" nominative -> "die Vereinigten Arabischen
+ * Emirate" accusative after "in die..."), so an exact-string match on the
+ * API's own (nominative) countryName misses these — validation found this
+ * under-classified the UAE. Instead: split the name into significant words
+ * (>=4 letters), strip each word's likely inflection suffix (en/er/es/e) to
+ * get a rough stem, and require EVERY stem to prefix-match some word in the
+ * object clause. "Vereinigte Arabische Emirate" -> stems ["Vereinigt",
+ * "Arabisch", "Emirat"], all three prefix-match "Vereinigten Arabischen
+ * Emirate".
+ */
+function namesCountry(objectClause: string, countryName: string): boolean {
+  const bare = countryName.replace(/\s*\([^)]*\)\s*$/, '').trim();
+  const stems = bare
+    .split(/[\s-]+/)
+    .filter((w) => w.length >= 4)
+    .map((w) => w.replace(/(en|er|es|e)$/i, ''));
+  if (stems.length === 0) return false;
+  return stems.every((stem) => {
+    const escaped = stem.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`\\b${escaped}`, 'i').test(objectClause);
+  });
+}
+
+/**
+ * Does `objectClause` contain the DE_REST_OF_COUNTRY idiom AND does it
+ * genuinely mean the rest of the whole COUNTRY (not the rest of some named
+ * sub-region, e.g. the Philippines' "andere Regionen VON MINDANAO")? Looks
+ * at what immediately follows the matched idiom for a "von <ProperNoun>"
+ * re-scope (a preposition + capitalized name is how AA names a SPECIFIC
+ * other place — "von Mindanao", not a generic category). Deliberately
+ * narrow: an EARLIER version of this check also rejected whenever
+ * DE_REGIONAL_WORDS appeared anywhere in the following ~60 characters, but
+ * that broke the equally-plausible "alle weiteren Regionen UND PROVINZEN
+ * <Country>" (regions AND provinces, both used as generic categories
+ * enumerating the SAME whole-country catch-all, not naming one specific
+ * other province) — a real construction pattern given Chad's confirmed
+ * "regions and provinces" wording. Accepts: a bare "des Landes"
+ * (country-agnostic placeholder for "of this country"), the country's own
+ * (genitive) name, or nothing else recognizable at all.
+ */
+function matchesRestOfCountry(objectClause: string, countryName: string): boolean {
+  const m = DE_REST_OF_COUNTRY.exec(objectClause);
+  if (!m) return false;
+  if (/\bdes\s+landes\b/i.test(m[0])) return true; // "...Teile DES LANDES" already names the whole country generically
+
+  const tail = objectClause.slice(m.index + m[0].length, m.index + m[0].length + 60);
+  const vonMatch = tail.match(/^\s*von\s+([A-ZÄÖÜ][\wÀ-ÿ-]*)/);
+  if (vonMatch && !namesCountry(vonMatch[0], countryName)) return false;
+
+  return true;
+}
+
+export function normalizeDeContentText(contentHtml: string, countryName: string): UnifiedLevel {
+  if (!contentHtml) return 1;
+  // Headings never end in a period, so a bare tag strip merges them into the
+  // FOLLOWING paragraph with nothing to stop the "sentence" regex below at
+  // the true sentence boundary — found on Japan's real page: "<h2>Sicherheit
+  // - Teilreisewarnung</h2><p>Vor Aufenthalten... wird gewarnt.</p>"
+  // collapsed into one run-on "sentence" that included the heading text (and
+  // "Teilreisewarnung" contains "reise" as a substring, which the OLD,
+  // non-word-boundary travel filter matched). Insert a period at each
+  // heading close to make it its own (harmless, non-matching) segment.
+  // Deliberately NOT done for <p>/<li>/<br> etc: AA's own paragraphs already
+  // end in a period before their closing tag (confirmed across every
+  // sample), and Mozambique's real page proves a single sentence CAN span
+  // <p>/<li> when a province list is bulleted mid-sentence ("<p>Vor Reisen
+  // in die</p><ul><li>Provinz Cabo Delgado...</li>...</ul><p>wird
+  // gewarnt.</p>") — inserting periods there would wrongly sever "Reisen"
+  // from "wird gewarnt" and lose the match entirely.
+  const text = contentHtml
+    .replace(/<\/h[1-6]>/gi, '. ')
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/\s+/g, ' ');
+
+  let best: UnifiedLevel = 1;
+  const sentenceRe = /([^.]*?\bwird\b[^.]*?\b(abgeraten|gewarnt)\b[^.]*)\./g;
+  let m: RegExpExecArray | null;
+  while ((m = sentenceRe.exec(text)) !== null) {
+    const sentence = m[1];
+    const verb = m[2].toLowerCase();
+    if (!DE_TRAVEL_WORD.test(sentence)) continue; // not a travel statement (e.g. drone rules, document/vehicle entry rules)
+
+    const wordIdx = sentence.toLowerCase().indexOf('wird');
+    const objectClause = wordIdx >= 0 ? sentence.slice(0, wordIdx) : sentence;
+
+    const isRestOfCountry = matchesRestOfCountry(objectClause, countryName);
+    const isBareCountry =
+      !isRestOfCountry &&
+      namesCountry(objectClause, countryName) &&
+      !DE_REGIONAL_WORDS.test(objectClause) &&
+      !/\bund\b|\bsowie\b|,/i.test(objectClause);
+
+    const level: UnifiedLevel =
+      isRestOfCountry || isBareCountry ? (verb === 'gewarnt' ? 4 : 3) : 2;
+    if (level > best) best = level;
+  }
+
+  return best;
+}
+
+/**
  * Normalize Netherlands (BZ) color codes to unified 1-4 scale.
  * Accepts both Dutch and English color names, case-insensitive.
  */
