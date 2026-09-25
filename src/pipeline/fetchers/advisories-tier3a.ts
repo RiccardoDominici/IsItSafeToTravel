@@ -349,11 +349,62 @@ async function fetchItAdvisories(
 
 // =============================================================================
 // Sub-fetcher 2: Spain (Exteriores) -- CPLX-02
-// Fragility: HIGH -- no formal level system
-// Expected failure modes: No structured advisory levels on listing page
-// Why sparse results are acceptable: Spain has no formal advisory level system;
-//   results will be sparse and text-based only
+// Fragility: MEDIUM -- server-rendered SharePoint pages, but two-step (index
+//   page for the country->URL map, then one detail page per country).
+// Repaired 2026-09-25: the previous version only matched `<a>` tags containing
+//   "recomendaciones", then read the *closest ancestor's* text as the level
+//   signal -- almost always the wrong container, since the index page's per-
+//   country modal is mostly fixed legal boilerplate ("La presente recomendacion
+//   carece de efecto vinculante...", identical for all 197 countries) and only
+//   the single most severe country of the moment gets a banner sentence there
+//   at all (currently Ucrania). Every other country's real, current assessment
+//   is a "Notas importantes" banner on that country's OWN detail page
+//   (`Detalle-recomendaciones-de-viaje.aspx?trc=<pais>`), found by fetching one
+//   by hand (Afghanistan) and reading past the same boilerplate. See
+//   normalizeEsLevel() for how the level is read from that banner.
 // =============================================================================
+
+const ES_INDEX_URL = 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx';
+
+/** Spain's own Spanish country names occasionally diverge from `COUNTRIES[].name.es` (a different transliteration,
+ *  or a bare/qualified form) -- accent-folding closes most of the gap; this closes the rest. Keys are
+ *  accent-folded + lowercased site names, values are `COUNTRIES[].name.es` (also accent-folded) to key off. */
+const ES_NAME_ALIASES: Record<string, string> = {
+  'bahrein': 'barein', // site "Bahréin" vs our "Barein"
+  'republica del congo': 'congo', // site disambiguates DRC vs RoC; ours only has "Congo" (RoC)
+  'guinea-bissau': 'guinea-bisau', // one 's' in ours
+  'kazajstan': 'kazajistan', // extra 'i' in ours
+  'corea': 'corea del sur', // bare "Corea" on this site always means South Korea (North has its own entry)
+  'malawi': 'malaui', // Spanish transliteration in ours
+  'arabia saudi': 'arabia saudita',
+  'santa sede': 'ciudad del vaticano', // Holy See's diplomatic name vs our "Vatican City"
+  'puerto rico (eeuu)': 'puerto rico',
+};
+
+function foldAccents(s: string): string {
+  return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+}
+
+/** Retry with growing backoff on HTTP 429/503 -- exteriores.gob.es rate-limits aggressively under
+ *  sustained concurrent load (measured on a full 197-country run: a single 2s retry still left 1-in-4
+ *  requests 429'd, including some severe-advisory countries like Ucrania/Siria -- three attempts closed
+ *  that gap without raising concurrency, i.e. without hitting the site any harder per unit time). 503 is
+ *  retried too: the 2026-09-25 production run got "ES: HTTP 503" from the GitHub-hosted runner on the
+ *  very first (uncontended) request to the index page -- this site sits behind an Azure Application
+ *  Gateway, which uses 503 the same way others use 429 when it's rate-limiting or warming up. */
+async function fetchWithRetry(url: string): Promise<Response | null> {
+  for (const delayMs of [0, 2000, 5000]) {
+    if (delayMs) await new Promise((r) => setTimeout(r, delayMs));
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(20_000), headers: FETCH_HEADERS });
+      if (response.status === 429 || response.status === 503) continue;
+      return response;
+    } catch {
+      // network error -- fall through to retry (or give up after the loop)
+    }
+  }
+  return null;
+}
 
 async function fetchEsAdvisories(
   rawDir: string,
@@ -363,64 +414,72 @@ async function fetchEsAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  try {
-    const response = await fetch(
-      'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+  // Build a Spanish-name lookup once: accent-folded `COUNTRIES[].name.es`, plus the small alias
+  // table above for the handful of countries where the site's own wording diverges from ours.
+  const esNameMap = new Map<string, typeof COUNTRIES[number]>();
+  for (const country of COUNTRIES) {
+    esNameMap.set(foldAccents(country.name.es), country);
+  }
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3A] ES: HTTP ${response.status}, no data available`);
+  const countryLinks: { name: string; url: string }[] = [];
+  try {
+    const response = await fetchWithRetry(ES_INDEX_URL);
+    if (!response?.ok) {
+      console.warn(`[ADVISORIES-T3A] ES: index page HTTP ${response?.status ?? 'error'}, no data available`);
       return { indicators, advisoryInfo };
     }
 
     const html = await response.text();
     const $ = cheerio.load(html);
 
-    // Look for country recommendation links
-    $('a[href*="Recomendaciones"], a[href*="recomendaciones"]').each((_, el) => {
-      const text = $(el).text().trim();
-      const parentText = $(el).closest('li, div, tr, td').text().trim();
-      const country = getCountryByName(text);
-      if (!country) return;
-
-      // Avoid duplicates
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
-
-      const level = normalizeEsLevel(parentText);
-
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_es',
-        value: level,
-        year: currentYear,
-        source: 'advisories_es',
-        fetchedAt,
-      });
-
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].es = {
-        level,
-        text: ES_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Spain Exteriores',
-        url: 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx',
-      };
+    // Each country has a "modal-flagCountry" block with its display name (h2) and a link to its
+    // own detail page, which is the actual source of truth for its current recommendation.
+    $('.modal-flagCountry').each((_, el) => {
+      const name = $(el).find('h2').first().text().trim();
+      const href = $(el).find('a[href*="Detalle-recomendaciones"]').first().attr('href');
+      if (name && href) {
+        countryLinks.push({ name, url: new URL(href, ES_INDEX_URL).href });
+      }
     });
+  } catch {
+    console.warn('[ADVISORIES-T3A] ES: index page unavailable, returning empty result');
+    return { indicators, advisoryInfo };
+  }
 
-    // Also try to extract country names from any visible listing
-    if (indicators.length < 5) {
-      $('a').each((_, el) => {
-        const text = $(el).text().trim();
-        if (text.length < 3 || text.length > 40) return;
-        const country = getCountryByName(text);
-        if (!country) return;
-        if (indicators.find(i => i.countryIso3 === country.iso3)) return;
+  if (countryLinks.length === 0) {
+    console.warn('[ADVISORIES-T3A] ES: no country links found on index page (page shape changed?)');
+    return { indicators, advisoryInfo };
+  }
 
-        const parentText = $(el).closest('li, div, tr, td, p').text().trim();
-        const level = normalizeEsLevel(parentText);
+  await fetchBatch(
+    countryLinks,
+    async (entry) => {
+      try {
+        const key = foldAccents(entry.name);
+        const country = esNameMap.get(key) ?? esNameMap.get(foldAccents(ES_NAME_ALIASES[key] ?? ''));
+        if (!country) return; // not one of our 248 (e.g. Puerto Rico's own listing, disputed territories)
+
+        const response = await fetchWithRetry(entry.url);
+        if (!response?.ok) return;
+
+        const html = await response.text();
+        const $ = cheerio.load(html);
+        $('script, style, noscript').remove();
+        const text = $('body').text().replace(/\s+/g, ' ').trim();
+
+        // "Notas importantes" is the section heading right before the current banner; the next
+        // standard section on every country page is "Documentacion y visados". Between them is
+        // exactly the country's own current assessment (falls back to a fixed window if the next
+        // heading isn't found, so a template tweak degrades gracefully instead of grabbing nothing).
+        const startIdx = text.indexOf('Notas importantes');
+        if (startIdx < 0) return;
+        const endIdx = text.indexOf('Documentación y visados', startIdx);
+        const notas = endIdx > startIdx
+          ? text.slice(startIdx + 'Notas importantes'.length, endIdx)
+          : text.slice(startIdx + 'Notas importantes'.length, startIdx + 'Notas importantes'.length + 1500);
+
+        const level = normalizeEsLevel(notas);
+        if (level === null) return; // no "Notas importantes" content -- don't guess a level
 
         indicators.push({
           countryIso3: country.iso3,
@@ -436,16 +495,16 @@ async function fetchEsAdvisories(
           level,
           text: ES_LEVEL_TEXT[level] || `Level ${level}`,
           source: 'Spain Exteriores',
-          url: 'https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Recomendaciones-de-viaje.aspx',
+          url: entry.url,
         };
-      });
-    }
-  } catch {
-    console.warn('[ADVISORIES-T3A] ES: Exteriores page unavailable, returning empty result');
-  }
+      } catch {
+        // Individual country page failed, skip silently
+      }
+    },
+    3,
+  );
 
-  // Spain has no formal advisory level system; results will be sparse
-  console.log(`[ADVISORIES-T3A] ES: ${indicators.length} countries from Exteriores`);
+  console.log(`[ADVISORIES-T3A] ES: ${indicators.length} countries from Exteriores (${countryLinks.length} listed)`);
   return { indicators, advisoryInfo };
 }
 

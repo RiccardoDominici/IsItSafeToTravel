@@ -399,15 +399,90 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
   return 1;
 }
 
+/** Named-subdivision and time-of-day qualifiers that cap a sentence at level 2 (mirrors IT_SUBNATIONAL_MARKERS;
+ *  "de noche"/"nocturno" excludes activity-scoped tips like "avoid inter-city road travel at night", which is
+ *  not a "leave the country" signal even when it uses the same "se desaconseja" verb). */
+const ES_ZONE_MARKERS =
+  /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|frontera con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno/;
+const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
+
 /**
  * Normalize Spain (Exteriores) advisory text to unified 1-4 scale.
- * Spanish text patterns: "se desaconseja todo viaje", "precaucion", etc.
+ *
+ * Spain has no numeric level either, but -- unlike Italy -- publishes a consistent per-country "Notas
+ * importantes" banner sentence on each country's detail page (`Detalle-recomendaciones-de-viaje.aspx?trc=<pais>`,
+ * found by inspecting the page: the homepage's country-index modals only carry this banner for the single most
+ * severe case at a time, e.g. Ucrania; every other country's real assessment lives on its own detail page --
+ * see fetchEsAdvisories). That banner is graduated prose, not a fixed enum, so it needs the same sentence-level
+ * reading as Italy's.
+ *
+ * Calibrated 2026-09-25 against ~45 countries' live "Notas importantes" (Corea del Norte, Haití, Irán, Israel,
+ * Líbano, Mali, Palestina, Somalia, Sudán, Ucrania, Yemen -> 4; Etiopía, Libia, México, Myanmar, Nigeria,
+ * Pakistán, RD Congo, Ruanda, Rusia, Siria, Sudáfrica, Venezuela -> 3; Bielorrusia, Brasil, China, Colombia,
+ * Egipto, Filipinas, India, Indonesia, Kenia, Marruecos, Perú, Sri Lanka, Tailandia, Turquía, Vietnam -> 2;
+ * Alemania, Argentina, Chile, Corea, Estados Unidos, Italia, Japón -> 1):
+ *  - "NO HAY RESTRICCIONES ESPECÍFICAS" is Spain's own explicit all-clear and wins outright, even when a narrow
+ *    logistical aside follows it in the same notice (Corea still flags its DMZ as off-limits).
+ *  - Level 4 ("bajo cualquier/ninguna circunstancia", "desaconseja ... completamente/totalmente/encarecidamente",
+ *    plain "se desaconseja el viaje/viajar" or "recomienda no viajar") requires the trigger sentence to be
+ *    neither zone-scoped (ES_ZONE_MARKERS) nor carry a same-sentence "salvo/excepto" exception -- both
+ *    false-positived in calibration: Kenya's Lamu-county and Egypt's "viajes de aventura a lugares remotos" are
+ *    scoped, not whole-country; Libya's and Nigeria's "salvo caso de necesidad" is conditional, i.e. level 3.
+ *  - Level 3: "extremar/extrema/mucha precaución" (Spain's own intensified-caution wording, distinct from the
+ *    bare "precaución" used for level 2), "no esencial", "valorar no viajar", or exactly the level-4 verbs
+ *    ("desaconseja"/"recomienda no viajar") downgraded by their own "salvo/excepto" clause.
+ *  - Level 2: the bare "viajar con precaución" banner (no intensifier), or an explicit zone/border warning.
+ *
+ * Returns null when no "Notas importantes" section was found at all (fetch failure / page shape changed) --
+ * never default a missing notice to level 1.
  */
-export function normalizeEsLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('se desaconseja todo viaje') || lower.includes('no viajar')) return 4;
-  if (lower.includes('se desaconseja') || lower.includes('evitar')) return 3;
-  if (lower.includes('precaucion') || lower.includes('prudencia')) return 2;
+export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
+  const notas = normalizeAdvisoryText(notasTextRaw);
+  if (notas.length < 20) return null;
+
+  if (/no hay restricciones espec[ií]ficas/.test(notas)) return 1;
+
+  const LEVEL4_PATTERNS = [
+    /bajo (cualquier|ninguna) circunstancia/,
+    /desaconseja\w*.{0,25}completamente/, /completamente.{0,25}desaconseja/,
+    /desaconseja\w*.{0,25}totalmente/, /totalmente.{0,25}desaconseja/,
+    /desaconseja\w*.{0,25}encarecidamente/, /encarecidamente.{0,25}desaconseja/,
+    /\bse desaconseja (el viaje|viajar)\b/,
+    /\brecomienda\s+no\s+viajar\b/,
+  ];
+  // A sentence using either level-4 verb, downgraded by its own "salvo/excepto" clause, is level 3.
+  const LEVEL3_EXCEPTION_VERB = /desaconseja|recomienda\s+no\s+viajar/;
+  const LEVEL3_PATTERNS = [
+    /extremar\w*.{0,15}precauci[oó]n/, /precauci[oó]n\w*.{0,15}extrem/,
+    /\bextrema\s+precauci[oó]n/, /\bmucha\s+precauci[oó]n/,
+    /no esencial/,
+    /valorar no viajar/, /valor[eo]n?\s+.{0,25}no viajar/,
+  ];
+  const LEVEL2_PATTERNS = [
+    /viajar\s+con\s+(\w+\s+)?precauci[oó]n/,
+    /abstenerse.{0,20}zona/,
+    /evitar.{0,20}zona/,
+    /\bzona(s)? fronteriza(s)?\b/,
+  ];
+
+  let sawLevel4 = false;
+  let sawLevel3 = false;
+
+  for (const s of splitIntoSentences(notas)) {
+    const zoneScoped = ES_ZONE_MARKERS.test(s);
+    const hasException = ES_EXCEPTION_MARKER.test(s);
+
+    if (!zoneScoped && !hasException && LEVEL4_PATTERNS.some((re) => re.test(s))) {
+      sawLevel4 = true;
+      continue;
+    }
+    if (hasException && LEVEL3_EXCEPTION_VERB.test(s)) sawLevel3 = true;
+  }
+
+  if (sawLevel4) return 4;
+  if (sawLevel3) return 3;
+  if (LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
+  if (LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
   return 1;
 }
 
