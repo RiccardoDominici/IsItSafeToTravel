@@ -16,6 +16,7 @@ import {
   AUTHOR_ID,
   SITE_DATASET_ID,
 } from "../src/lib/seo.js";
+import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY } from "../src/lib/site-stats.js";
 
 const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
@@ -767,11 +768,36 @@ function validateCanonicalCounts() {
 
   // The "7 …" family is regex-guarded against digit prefixes so legitimate
   // claims like "17 indicators" or "37 governments" never substring-match.
+  // The Italian pattern additionally guards against a preceding "altre "
+  // ("other") -- 2026-09-25 phase-2 audit: once OTHER_SOURCE_COUNT_DISPLAY
+  // started showing the exact count below 10 instead of always rounding to
+  // "5+", "ad altre 7 fonti pubbliche" (legitimately 7 non-advisory feeds
+  // today) started substring-matching this guard, which was written to catch
+  // the OLD "7 trusted sources"-style bug, not a real qualified sub-count.
+  // The other 5 sibling language patterns don't need the same guard: their
+  // qualifier word (autres/outras/其他/weiteren) sits between the number and
+  // the noun, or the accented noun doesn't byte-match the unaccented pattern
+  // (es/pt) -- verified against the actual rendered hub-faq.ts text, not
+  // assumed.
   const FORBIDDEN: (string | RegExp)[] = [
+    // "40+" was the canonical value until the 2026-09-25 phase-2 fix replaced
+    // it with computed, floor-to-5 display strings (today 30+/25+/7) -- now a
+    // dead literal like "37" or "9+", never reproducible by countDisplay().
+    "40+ public sources",
+    "40+ trusted public sources",
+    "40+ independent sources",
+    "40+ data sources",
+    "40+ fonti pubbliche",
+    "40+ fuentes públicas",
+    "40+ sources publiques",
+    "40+ fontes públicas",
+    "40+ 个公开来源",
+    "40+ 个公开数据源",
+    "40+ öffentlichen Quellen",
     /(?<!\d)7 trusted public sources/,
     /(?<!\d)7 public sources/,
     "9+ public sources",
-    /(?<!\d)7 fonti pubbliche/,
+    /(?<!\d)(?<!altre )7 fonti pubbliche/,
     /(?<!\d)7 fuentes publicas/,
     /(?<!\d)7 sources publiques/,
     /(?<!\d)7 fontes publicas/,
@@ -827,6 +853,117 @@ function validateCanonicalCounts() {
     [...offenders.entries()].map(([p, f]) => `"${p}" in ${f}`).join("; ")
   );
   console.log(`  (scanned ${targets.length} files for ${FORBIDDEN.length} stale patterns)`);
+}
+
+// =====================================================================
+// 4c. COMPUTED SOURCE-COUNT CONSISTENCY
+// =====================================================================
+// Positive complement to the blocklist above: instead of only rejecting
+// specific OLD known-bad numbers, assert that wherever a number appears
+// directly before one of the "public sources" noun phrases this fix round
+// actually used, that number is one of the values site-stats.ts currently
+// computes -- catches ANY wrong number, not just the ones enumerated by
+// hand, so a future regression doesn't need a new blocklist entry to be
+// caught.
+//
+// Deliberately scoped to SOURCE/OTHER-SOURCE counts only, not government
+// counts: "N governments" and "N government travel advisories" are also
+// legitimate, CORRECT *per-country* claims (buildAdvisoryDescription in
+// engine.ts, hub.blurb_advisories, country-faq-copy.ts's advisoryCountNoun
+// all vary this number by design, one country at a time) — a generic regex
+// can't tell "this is the site-wide ADVISORY_GOV_COUNT_DISPLAY claim" apart
+// from "this is Japan's real count of 14," so a positive check there would
+// fail every country page instead of catching a real regression. The
+// blocklist's exact "37 governments"-family patterns above remain the
+// guard for that axis: safe specifically because 37 is a dead number no
+// correct value (site-wide or per-country) can legitimately produce.
+function validateComputedCounts() {
+  console.log("\n--- Computed Source-Count Consistency ---");
+
+  // Noun-phrase families actually used for "how many public sources" claims
+  // across this fix round's edits (ui.ts, about-copy.ts, hub-faq.ts,
+  // CitePage.astro, seo.ts, ApiDocs.astro, generate-llms-full.ts,
+  // send-daily-digest.ts, HubPageLayout.astro). Best-effort, not exhaustive:
+  // covers the noun phrases already in use, not every phrasing a future edit
+  // might introduce — a new sentence shape needs its noun phrase added here
+  // to stay covered.
+  const SOURCE_NOUNS = [
+    "trusted public sources", "public data sources", "public sources",
+    "independent sources", "global sources", "data sources", "sources",
+    "fonti pubbliche", "fonti",
+    "fuentes públicas", "fuentes",
+    "sources publiques",
+    "fontes públicas", "fontes",
+    "个可信公开来源", "个公开数据源", "个公开来源", "个数据来源", "个数据源",
+    "个全球信息源", "个全球数据源", "个独立数据源", "个官方与公开数据源",
+    "个官方与公开来源", "个来源",
+    "vertrauenswürdigen öffentlichen Quellen", "öffentlichen Quellen",
+    "globalen Quellen", "weltweiten Quellen", "Datenquellen", "Quellen",
+  ];
+
+  // Both are legitimate site-wide claims (total vs. the "N other/additional
+  // feeds" sub-count in one hub-faq.ts sentence per language) -- this only
+  // rejects a THIRD, unrecognized number, not the choice between the two.
+  // "4+" is also accepted: generate-llms-full.ts's ranking-eligibility
+  // footnotes ("only countries with N+ independent sources are ranked")
+  // reuse the same "independent sources" noun phrase for MIN_RANKING_SOURCES
+  // (hub-data.ts), an intentionally-fixed data-coverage floor documented in
+  // CLAUDE.md -- a genuinely different claim that happens to share a noun
+  // with the site-wide source-count claim, not a stale/wrong number.
+  const VALID = new Set([SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY, "4+"]);
+
+  // Longest-first so "trusted public sources" matches before the bare
+  // "sources" alternative would otherwise win inside the same regex. The
+  // trailing negative lookahead excludes "N fuentes/fonti/fontes/sources
+  // gubernamentales/governative/governamentais/gouvernementales" -- es/it/pt/fr
+  // put the "government" qualifier AFTER the noun (unlike en/de, where it
+  // comes before and so never collides with these alternatives at all): that
+  // compound is the ADVISORY_GOV_COUNT_DISPLAY claim, a different metric this
+  // function deliberately doesn't check (see the file comment above) --
+  // without the guard this function false-failed its own author's correct
+  // Phase 1 output ("25+ fuentes gubernamentales" etc.), caught by actually
+  // running it against the real build rather than assuming the regex was safe.
+  const escaped = [...SOURCE_NOUNS]
+    .sort((a, b) => b.length - a.length)
+    .map((n) => n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+  const re = new RegExp(
+    `(\\d+\\+?) (${escaped.join("|")})(?!\\s*(gubernamentales|governative|governativi|governamentais|gouvernementales))`,
+    "g"
+  );
+
+  const targets: string[] = [
+    path.join(DIST, "llms.txt"),
+    path.join(DIST, "llms-full.txt"),
+  ];
+  const walk = (dir: string) => {
+    for (const entry of fs.readdirSync(dir)) {
+      const full = path.join(dir, entry);
+      if (fs.statSync(full).isDirectory()) walk(full);
+      else if (entry.endsWith(".html")) targets.push(full);
+    }
+  };
+  walk(DIST);
+
+  const bad: string[] = [];
+  for (const file of targets) {
+    if (!fs.existsSync(file)) continue;
+    const content = fs.readFileSync(file, "utf-8");
+    let m: RegExpExecArray | null;
+    while ((m = re.exec(content)) !== null) {
+      if (!VALID.has(m[1])) {
+        bad.push(`"${m[1]} ${m[2]}" in ${path.relative(DIST, file)}`);
+      }
+    }
+  }
+
+  check(
+    "counts: every source-count claim matches a currently computed value",
+    bad.length === 0,
+    [...new Set(bad)].slice(0, 15).join("; ")
+  );
+  console.log(
+    `  (live values: total=${SOURCE_COUNT_DISPLAY}, other-feeds=${OTHER_SOURCE_COUNT_DISPLAY}; scanned ${targets.length} files)`
+  );
 }
 
 // =====================================================================
@@ -1060,6 +1197,7 @@ function main() {
   validateMeta();
   validateLlmsFullTxt();
   validateCanonicalCounts();
+  validateComputedCounts();
   validateAdvisoryCoverage();
   validateAdvisoryIntegrity();
   validateDatasetDescriptionLength();
