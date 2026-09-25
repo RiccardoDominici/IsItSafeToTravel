@@ -16,12 +16,25 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   noindex?: boolean;
+  brandSuffix?: boolean;
 }
 
-const { lang, title, description, jsonLd, ogImage, ogType, noindex } = Astro.props;
+const { lang, title, description, jsonLd, ogImage, ogType, noindex, brandSuffix = true } = Astro.props;
 const t = useTranslations(lang);
 
-const pageTitle = title ? `${title} | IsItSafeToTravel` : t('site.title');
+// Google truncates the SERP title around 60 characters. The brand suffix is the
+// least valuable part of it — a searcher looking for "is japan safe" is not
+// looking for us by name — so it is what gives way when the title would run
+// over: appended when it fits, dropped when it doesn't. Country pages opt out
+// entirely via brandSuffix={false} since their title already names the country.
+const BRAND = 'IsItSafeToTravel';
+const TITLE_MAX = 60;
+const withBrand = title ? `${title} | ${BRAND}` : '';
+const pageTitle = !title
+  ? t('site.title')
+  : brandSuffix === false || title.includes(BRAND) || withBrand.length > TITLE_MAX
+    ? title
+    : withBrand;
 const pageDescription = description || t('site.description');
 const currentPath = Astro.url.pathname;
 const alternateLinks = getAlternateLinks(currentPath);

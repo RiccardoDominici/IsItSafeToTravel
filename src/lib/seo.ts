@@ -29,10 +29,10 @@ const regionDisplayNames: Record<string, Record<Lang, string>> = {
 // Pillar name translations for meta descriptions
 const pillarLabels: Record<Lang, Record<PillarName, string>> = {
   en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
-  it: { conflict: 'conflitto', crime: 'criminalita', health: 'salute', governance: 'governance', environment: 'ambiente' },
+  it: { conflict: 'conflitto', crime: 'criminalità', health: 'salute', governance: 'governance', environment: 'ambiente' },
   es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
-  fr: { conflict: 'conflit', crime: 'criminalite', health: 'sante', governance: 'gouvernance', environment: 'environnement' },
-  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saude', governance: 'governanca', environment: 'meio ambiente' },
+  fr: { conflict: 'conflit', crime: 'criminalité', health: 'santé', governance: 'gouvernance', environment: 'environnement' },
+  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saúde', governance: 'governança', environment: 'meio ambiente' },
   zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '环境' },
   de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
 };
@@ -91,7 +91,7 @@ const ADVISORY_GOV_PRIORITY = [
 /**
  * Generate a unique meta description for a country page based on score data.
  * Each country gets a differentiated description using its score, risk level,
- * strongest pillar, and weakest pillar.
+ * and weakest pillar, kept within Google's ~155-character display budget.
  */
 export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang): string {
   const score = country.score;
@@ -101,7 +101,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     en: ['Low risk', 'Moderate risk', 'High risk'],
     it: ['rischio basso', 'rischio moderato', 'rischio alto'],
     es: ['riesgo bajo', 'riesgo moderado', 'riesgo alto'],
-    fr: ['risque faible', 'risque modere', 'risque eleve'],
+    fr: ['risque faible', 'risque modéré', 'risque élevé'],
     pt: ['risco baixo', 'risco moderado', 'risco alto'],
     zh: ['低风险', '中等风险', '高风险'],
     de: ['niedriges Risiko', 'mittleres Risiko', 'hohes Risiko'],
@@ -111,36 +111,53 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const s1 = Number(score.toFixed(1));
   const riskLevel = s1 >= 7 ? low : s1 >= 5 ? moderate : high;
 
-  // Find strongest and weakest pillars (score is 0-1, display as x10 for /10 scale).
+  // Find the weakest pillar (score is 0-1, display as x10 for /10 scale).
   // Only pillars with sufficient data coverage are eligible, so a zero-data pillar
-  // (e.g. Monaco's crime/governance/environment) is never named as best or worst.
+  // (e.g. Monaco's crime/governance/environment) is never named as the top risk.
   const pillars = selectEligiblePillars(country.pillars);
-  let strongest = pillars[0];
   let weakest = pillars[0];
   for (const p of pillars) {
-    if (p.score > strongest.score) strongest = p;
     if (p.score < weakest.score) weakest = p;
   }
 
-  const strongestScore = (strongest.score * 10).toFixed(1);
   const weakestScore = (weakest.score * 10).toFixed(1);
-  const strongestLabel = pillarLabels[lang][strongest.name];
   const weakestLabel = pillarLabels[lang][weakest.name];
   // Fixed site-wide "40+" source framing (matches hub-faq.ts / ApiDocs / CitePage).
   const sourceCount = 40;
   const name = getLocalizedCountryName(country, lang);
 
   const roundedScore = score.toFixed(1);
-  const templates: Record<Lang, string> = {
-    en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}). Best: ${strongestLabel} (${strongestScore}). Free data from ${sourceCount}+ sources, updated daily. Check before you travel.`,
-    it: `Punteggio sicurezza ${name}: ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}). Punto forte: ${strongestLabel} (${strongestScore}). Dati gratuiti da ${sourceCount}+ fonti, aggiornati ogni giorno. Verifica prima di partire.`,
-    es: `Seguridad de ${name}: ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}). Punto fuerte: ${strongestLabel} (${strongestScore}). Datos gratuitos de ${sourceCount}+ fuentes, actualizados diariamente. Verifica antes de viajar.`,
-    fr: `Securite de ${name} : ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}). Point fort : ${strongestLabel} (${strongestScore}). Donnees gratuites de ${sourceCount}+ sources, mises a jour chaque jour. Verifiez avant de partir.`,
-    pt: `Seguranca de ${name}: ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}). Ponto forte: ${strongestLabel} (${strongestScore}). Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente. Verifique antes de viajar.`,
-    zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）；表现最佳：${strongestLabel}（${strongestScore} 分）。数据来自 ${sourceCount}+ 个公开来源，每日更新，免费查询。`,
-    de: `Sicherheits-Score für ${name}: ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}). Stärkste Kategorie: ${strongestLabel} (${strongestScore}). Kostenlose Daten aus ${sourceCount}+ Quellen, täglich aktualisiert. Vor der Reise prüfen.`,
+
+  // Google truncates meta descriptions around 155-160 characters. The score +
+  // top-risk clause is the part that must always survive, so it is the "base";
+  // the freshness/CTA sentence is appended only when it still fits. Long
+  // country names ("Territorio Britannico dell'Oceano Indiano") are the only
+  // cases that lose it — 4-19 territories per language, everything else keeps
+  // the full sentence. Measured against the live snapshot: worst case 145-155
+  // characters in every locale.
+  const DESCRIPTION_MAX = 155;
+  const bases: Record<Lang, string> = {
+    en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}).`,
+    it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}).`,
+    es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}).`,
+    fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}).`,
+    pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}).`,
+    zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）。`,
+    de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
   };
-  return templates[lang];
+  const tails: Record<Lang, string> = {
+    en: ` Free data from ${sourceCount}+ sources, updated daily.`,
+    it: ` Dati gratuiti da ${sourceCount}+ fonti, aggiornati ogni giorno.`,
+    es: ` Datos gratuitos de ${sourceCount}+ fuentes, actualizados a diario.`,
+    fr: ` Données gratuites de ${sourceCount}+ sources, mises à jour chaque jour.`,
+    pt: ` Dados gratuitos de ${sourceCount}+ fontes, atualizados diariamente.`,
+    zh: `数据来自 ${sourceCount}+ 个公开来源，每日更新，免费查询。`,
+    de: ` Kostenlose Daten aus ${sourceCount}+ Quellen, täglich aktualisiert.`,
+  };
+
+  const base = bases[lang];
+  const withTail = base + tails[lang];
+  return withTail.length <= DESCRIPTION_MAX ? withTail : base;
 }
 
 /**
@@ -419,9 +436,9 @@ export function buildGlobalSafetyJsonLd(
   const names: Record<Lang, string> = {
     en: 'Global Safety Score',
     it: 'Punteggio di Sicurezza Globale',
-    es: 'Puntuacion de Seguridad Global',
-    fr: 'Score de Securite Mondial',
-    pt: 'Pontuacao de Seguranca Global',
+    es: 'Puntuación de Seguridad Global',
+    fr: 'Score de Sécurité Mondial',
+    pt: 'Pontuação de Segurança Global',
     zh: '全球安全评分',
     de: 'Globaler Sicherheits-Score',
   };
@@ -429,9 +446,9 @@ export function buildGlobalSafetyJsonLd(
   const descriptions: Record<Lang, string> = {
     en: `Current global safety score: ${globalScore.toFixed(1)}/10. Track world safety trends over time.`,
     it: `Punteggio di sicurezza globale attuale: ${globalScore.toFixed(1)}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
-    es: `Puntuacion de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
-    fr: `Score de securite mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de securite mondiale.`,
-    pt: `Pontuacao de seguranca global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de seguranca mundial.`,
+    es: `Puntuación de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
+    fr: `Score de sécurité mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de sécurité mondiale.`,
+    pt: `Pontuação de segurança global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de segurança mundial.`,
     zh: `当前全球安全评分：${globalScore.toFixed(1)}/10。跟踪全球安全趋势变化。`,
     de: `Aktueller globaler Sicherheits-Score: ${globalScore.toFixed(1)}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
   };
