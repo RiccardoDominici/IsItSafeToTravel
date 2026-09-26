@@ -576,18 +576,23 @@ export function extractFrTerritoryLevel(rawText: string): UnifiedLevel | null {
  * Normalize Hong Kong OTA alert levels to unified 1-4 scale.
  * HK uses 3 levels: Amber (signs of threat), Red (significant), Black (severe).
  * Callers must only invoke this for a country actually carrying one of those
- * classes — the OTA listing page includes generic "info-" pages for
- * countries HK hasn't assessed at all, so "not in the red/amber set" is NOT
- * evidence of "normal precautions" and must not be mapped here (audit
- * 2026-09-25: the fetcher used to default unclassified countries to 1,
- * asserting "no alert" for Afghanistan, Iraq, Sudan, Ukraine...).
+ * classes — the OTA's own JSON lists plenty of countries with no alert at
+ * all, so "not in the red/amber/black buckets" is NOT evidence of "normal
+ * precautions" and must not be mapped here (audit 2026-09-25: the fetcher
+ * used to default unclassified countries to 1, asserting "no alert" for
+ * Afghanistan, Iraq, Sudan, Ukraine...).
+ *
+ * Repaired 2026-09-26: returns null instead of falling back to 1 for an
+ * unrecognised level string too (repair brief rule 1 — never guess level 1).
+ * HK has only ever used these three; a fourth would mean the source changed
+ * shape and the fetcher should skip it and log, not silently invent a level.
  */
-export function normalizeHkAlert(alert: string): UnifiedLevel {
+export function normalizeHkAlert(alert: string): UnifiedLevel | null {
   const lower = alert.toLowerCase();
   if (lower.includes('black')) return 4;
   if (lower.includes('red')) return 3;
   if (lower.includes('amber') || lower.includes('yellow')) return 2;
-  return 1;
+  return null;
 }
 
 /**

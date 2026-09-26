@@ -263,6 +263,111 @@ async function fetchFrAdvisories(
 // =============================================================================
 // Sub-fetcher 3: Hong Kong (Security Bureau OTA) -- HTML-05
 // =============================================================================
+//
+// Repaired 2026-09-26 (SOURCE-REPAIR-BRIEF.md). The OTA index page
+// (https://www.sb.gov.hk/eng/ota/) renders its whole alert table client-side:
+// the server HTML has no .redAlert/.amberAlert/.yellowAlert class anywhere
+// (confirmed live -- grep found zero), so the old parser always found
+// nothing. Found the real data source by reading the page's own
+// `ota_index.js` (linked in a plain <script src>, not obfuscated): it fetches
+// one static JSON file, `GET /json/ota_index/ota_index.json` (a second
+// candidate in the same script, `ota_index_2022.json`, is commented out in
+// the live page -- confirmed with `grep -n` on the raw HTML, not a guess).
+// That JSON is the OTA's own source of truth: one object per alert LEVEL
+// (black/red/amber, occasionally split further by `levelExt`, e.g. a
+// "Significant threat (Ebola Disease related)" bucket carrying only DRC),
+// each with a `countries` array giving `countryCode` (ISO2 -- no name-
+// matching needed at all) and, crucially, `showInIndex`: the array also
+// keeps every SUPERSEDED alert for the site's own history (confirmed live
+// 2026-09-26 -- e.g. Ireland/Italy/Korea still listed under "red" from 2021,
+// Türkiye listed twice with the stale copy's title literally suffixed
+// "- old"); only showInIndex-true entries are currently in effect, exactly
+// the filter the page's own rendering script applies.
+//
+// A second, independent trap in the raw JSON: some ACTIVE entries are
+// sub-national ("Myanmar (south-eastern regions)", "Türkiye (south-eastern
+// provinces)", "Japan (areas near the Fukushima Dai-ichi nuclear power
+// plant)") rather than whole-country -- HK marks this with a parenthetical
+// suffix on the title, confirmed against every one of the 25 live active
+// entries 2026-09-26 (every whole-country title is a bare name, every
+// regional one has "("). Per the repair brief's rule 2 (partial/sub-national
+// warnings must not promote the whole country above 2), a regional entry's
+// contribution is capped at 2 regardless of its own bucket's severity --
+// Myanmar and Türkiye both also carry a separate whole-country amber (2)
+// entry today so this cap does not currently change their outcome, but the
+// code must not assume that stays true.
+// =============================================================================
+
+const HK_INDEX_JSON_URL = 'https://www.sb.gov.hk/json/ota_index/ota_index.json';
+
+interface HkOtaCountry {
+  countryCode: string;
+  titleEn: string;
+  countryFileName?: string;
+  // The live JSON encodes this as 1/0, not true/false -- checked with plain
+  // truthiness below, which handles both.
+  showInIndex: boolean | number;
+  updateDate?: string;
+}
+
+interface HkOtaLevelBucket {
+  level: string; // 'black' | 'red' | 'amber' -- see normalizeHkAlert
+  levelExt?: string;
+  countries?: HkOtaCountry[];
+}
+
+interface HkOtaIndex {
+  otas: HkOtaLevelBucket[];
+}
+
+/** HK's own updateDate format, "YYYYMMDDHHmmss" -> ISO, or undefined if unparseable. */
+export function parseHkUpdateDate(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  const m = raw.match(/^(\d{4})(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
+  if (!m) return undefined;
+  const [, yyyy, mm, dd, hh, min, ss] = m;
+  const parsed = new Date(`${yyyy}-${mm}-${dd}T${hh}:${min}:${ss}Z`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
+
+/** HK marks sub-national scope with a parenthetical suffix on the title --
+ *  confirmed against every live active entry 2026-09-26 (see doc comment
+ *  above). A bare name is whole-country. */
+export function isHkWholeCountryTitle(titleEn: string): boolean {
+  return !titleEn.includes('(');
+}
+
+export interface HkCountryHit {
+  level: UnifiedLevel;
+  wholeCountry: boolean;
+  url: string;
+  updatedAt?: string;
+}
+
+/**
+ * Reduce every currently-active hit for one country to a single final level.
+ * Whole-country hits count at face value; a regional-only hit is capped at 2
+ * (repair brief rule 2: partial/sub-national warnings must not promote the
+ * whole country above 2) and can only win if no whole-country hit reaches
+ * that. On a tie (e.g. Myanmar/Türkiye 2026-09-26: a regional "red" capped to
+ * 2 alongside a separate whole-country "amber" already at 2), prefer the
+ * whole-country hit so the URL/date surfaced to users points at the general
+ * advisory, not an incidentally-processed-first regional one.
+ */
+export function resolveHkCountryLevel(hits: HkCountryHit[]): { level: UnifiedLevel; hit: HkCountryHit } | null {
+  let bestLevel: UnifiedLevel | null = null;
+  let bestHit: HkCountryHit | null = null;
+  for (const hit of hits) {
+    const contribution = (hit.wholeCountry ? hit.level : Math.min(hit.level, 2)) as UnifiedLevel;
+    const improves =
+      bestLevel === null || contribution > bestLevel || (contribution === bestLevel && hit.wholeCountry && !bestHit?.wholeCountry);
+    if (improves) {
+      bestLevel = contribution;
+      bestHit = hit;
+    }
+  }
+  return bestLevel === null || !bestHit ? null : { level: bestLevel, hit: bestHit };
+}
 
 async function fetchHkAdvisories(
   rawDir: string,
@@ -272,123 +377,71 @@ async function fetchHkAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  const response = await fetch('https://www.sb.gov.hk/eng/ota/', {
+  const response = await fetch(HK_INDEX_JSON_URL, {
     signal: AbortSignal.timeout(30_000),
-    headers: FETCH_HEADERS,
+    headers: { ...FETCH_HEADERS, Accept: 'application/json' },
   });
 
   if (!response.ok) {
     throw new Error(`HTTP ${response.status}: ${response.statusText}`);
   }
 
-  const html = await response.text();
-  const $ = cheerio.load(html);
+  const data = (await response.json()) as HkOtaIndex;
+  writeJson(join(rawDir, 'advisories-hk-raw.json'), data);
 
-  // Check for blanket alert
-  const pageText = $('body').text().toLowerCase();
-  let blanketLevel: UnifiedLevel | null = null;
+  // A country can legitimately appear more than once (a regional entry at
+  // one level plus a separate whole-country entry at another) -- collect
+  // every currently-active hit before picking each country's final level.
+  const hitsByCountry = new Map<string, HkCountryHit[]>();
 
-  if (pageText.includes('black outbound travel alert') && pageText.includes('all overseas')) {
-    blanketLevel = 4;
-  } else if (pageText.includes('red outbound travel alert') && pageText.includes('all overseas')) {
-    blanketLevel = 3;
-  } else if (pageText.includes('amber outbound travel alert') && pageText.includes('all overseas')) {
-    blanketLevel = 2;
+  for (const bucket of data.otas ?? []) {
+    const level = normalizeHkAlert(bucket.level);
+    if (level === null) {
+      console.warn(`[ADVISORIES-T2A] HK: unrecognised OTA level "${bucket.level}", skipping its countries`);
+      continue;
+    }
+
+    for (const c of bucket.countries ?? []) {
+      if (!c.showInIndex) continue; // superseded/archived alert, not current
+      const hit: HkCountryHit = {
+        level,
+        wholeCountry: isHkWholeCountryTitle(c.titleEn),
+        url: c.countryFileName
+          ? `https://www.sb.gov.hk/eng/ota/${c.countryFileName}`
+          : 'https://www.sb.gov.hk/eng/ota/',
+        updatedAt: parseHkUpdateDate(c.updateDate),
+      };
+      const existing = hitsByCountry.get(c.countryCode);
+      if (existing) existing.push(hit);
+      else hitsByCountry.set(c.countryCode, [hit]);
+    }
   }
 
-  // Find all country links
-  const countryLinks: { name: string; url: string }[] = [];
-  $('a[href]').each((_, el) => {
-    const href = $(el).attr('href') || '';
-    if (href.includes('/eng/ota/note-') || href.includes('/eng/ota/info-')) {
-      const name = $(el).text().trim();
-      if (name && name.length > 1 && name.length < 60) {
-        countryLinks.push({
-          name,
-          url: href.startsWith('http') ? href : `https://www.sb.gov.hk${href.startsWith('/') ? '' : '/eng/ota/'}${href}`,
-        });
-      }
-    }
-  });
+  for (const [countryCode, hits] of hitsByCountry) {
+    const country = getCountryByIso2(countryCode);
+    if (!country) continue;
 
-  if (blanketLevel) {
-    // Apply blanket alert to all listed countries
-    for (const link of countryLinks) {
-      const country = getCountryByName(link.name);
-      if (!country) continue;
+    const resolved = resolveHkCountryLevel(hits);
+    if (!resolved) continue;
+    const { level: bestLevel, hit: bestHit } = resolved;
 
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_hk',
-        value: blanketLevel,
-        year: currentYear,
-        source: 'advisories_hk',
-        fetchedAt,
-      });
-
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].hk = {
-        level: blanketLevel,
-        text: HK_LEVEL_TEXT[blanketLevel] || `Level ${blanketLevel}`,
-        source: 'Hong Kong Security Bureau',
-        url: 'https://www.sb.gov.hk/eng/ota/',
-      };
-    }
-
-    if (indicators.length > 0) {
-      console.log(`[ADVISORIES-T2A] HK: Blanket ${HK_LEVEL_TEXT[blanketLevel]} for ${indicators.length} countries`);
-    }
-  } else {
-    // Check CSS classes for alert levels on the main page
-    const yellowAlerts = new Set<string>();
-    const redAlerts = new Set<string>();
-
-    $('.yellowAlert a, .amberAlert a').each((_, el) => {
-      const name = $(el).text().trim();
-      if (name) yellowAlerts.add(name);
+    indicators.push({
+      countryIso3: country.iso3,
+      indicatorName: 'advisory_level_hk',
+      value: bestLevel,
+      year: currentYear,
+      source: 'advisories_hk',
+      fetchedAt,
     });
 
-    $('.redAlert a').each((_, el) => {
-      const name = $(el).text().trim();
-      if (name) redAlerts.add(name);
-    });
-
-    for (const link of countryLinks) {
-      const country = getCountryByName(link.name);
-      if (!country) continue;
-
-      // countryLinks comes from generic "/eng/ota/note-|info-" hrefs, most of
-      // which are plain background-info pages HK publishes for nearly every
-      // destination — NOT a safety assessment. Only redAlerts/yellowAlerts
-      // membership is an actual OTA judgement; anything else means "HK has
-      // not classified this destination", which must not become "level 1"
-      // (audit 2026-09-25: this used to default to 1, asserting "no alert"
-      // for Afghanistan, Iraq, Sudan, Ukraine, Venezuela, Colombia...).
-      let level: UnifiedLevel | null = null;
-      if (redAlerts.has(link.name)) {
-        level = normalizeHkAlert('red');
-      } else if (yellowAlerts.has(link.name)) {
-        level = normalizeHkAlert('amber');
-      }
-      if (level === null) continue;
-
-      indicators.push({
-        countryIso3: country.iso3,
-        indicatorName: 'advisory_level_hk',
-        value: level,
-        year: currentYear,
-        source: 'advisories_hk',
-        fetchedAt,
-      });
-
-      if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-      advisoryInfo[country.iso3].hk = {
-        level,
-        text: HK_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Hong Kong Security Bureau',
-        url: 'https://www.sb.gov.hk/eng/ota/',
-      };
-    }
+    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+    advisoryInfo[country.iso3].hk = {
+      level: bestLevel,
+      text: HK_LEVEL_TEXT[bestLevel] || `Level ${bestLevel}`,
+      source: 'Hong Kong Security Bureau',
+      url: bestHit.url,
+      updatedAt: bestHit.updatedAt,
+    };
   }
 
   console.log(`[ADVISORIES-T2A] HK: ${indicators.length} countries from OTA`);
