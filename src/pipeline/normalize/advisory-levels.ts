@@ -1355,6 +1355,95 @@ const IT_SUBNATIONAL_MARKERS = [
 ];
 
 /**
+ * Word-stem regional markers, added in the 2026-09-26 regional-promotion repair (mirrors
+ * DE_REGIONAL_WORDS' stem approach, needed because Italian declines these nouns by number:
+ * regione -> regioni, confine -> confini). A fixed-phrase list (IT_SUBNATIONAL_MARKERS above)
+ * missed real border/exclave/separatist-region wording that DOES precede a level-4 trigger
+ * phrase on the live 2026-09-26 dossiers:
+ *  - Armenia: "si continuano a sconsigliare i viaggi a qualsiasi titolo nei pressi dell'EXCLAVE
+ *    azera di Nakhchivan e ... lungo le FRONTIERE con l'Azerbaigian" -- border/exclave wording
+ *    the old list didn't have (it only had "lungo il confine", not "frontiere").
+ *  - Georgia/Moldova: "le REGIONI separatiste dell'Ossezia del Sud e dell'Abkhazia" / "la
+ *    REGIONE separatista della Transnistria" -- both already contain "regione/i" as a NOUN
+ *    naming a specific place, caught by `\bregion[ei]\b`; "separatist\w*" is kept anyway as a
+ *    second, independent signal for a future case that names a breakaway region without the
+ *    word "regione" at all.
+ *  - Cameroon: "nella parte orientale del Camerun (REGIONI Adamaoua e Est)" -- plural noun,
+ *    caught by the same `\bregion[ei]\b`.
+ *  - Oman: "non recarsi nella zona a ridosso del CONFINE con lo Yemen" -- generalizing the old
+ *    fixed "zona/area di confine" phrases to a bare `confin\w*` stem catches this different
+ *    word order too.
+ * `\bregion[ei]\b` is deliberately narrower than a bare `region\w*` stem, and drops the
+ * `ragione`-typo tolerance an earlier version of this pattern had (Cameroon's OWN page also
+ * misspells "regione" as "ragione" once, in "nell'intera ragione dell'Estremo Nord" -- but that
+ * sentence is independently caught via "provincia"/"confine" a few words later, so tolerating
+ * the typo isn't load-bearing). Both restrictions were forced by the full 223-country
+ * before/after run, not by inspection: a bare `r[ae]gion\w*` stem also matches "ragione" as in
+ * "IN RAGIONE della situazione di sicurezza..." (DR Congo -- "by reason of", not a place) and
+ * "regionale/i" as in "instabilità REGIONALE"/"tensioni REGIONALI" (Iran, Lebanon -- describing
+ * the wider Middle East's geopolitical climate, not a sub-region of the country itself); all
+ * three real sentences use "regione"/"ragione" as ordinary Italian words unrelated to a named
+ * sub-national place, and all three sit right next to an otherwise-correct whole-country
+ * LEVEL3 trigger ("rimandare qualsiasi viaggio verso la Repubblica Democratica del Congo",
+ * "sconsigliare qualsiasi viaggio in Iran", "rinviare i viaggi nel Paese") that a
+ * `r[ae]gion\w*` stem would have wrongly suppressed. `\bregion[ei]\b` (exact noun forms only,
+ * no adjective suffix, no "ragione") matches none of the three.
+ * Deliberately NOT genericized: "zona"/"area" (bare stems would swallow LEVEL4_PATTERNS' own
+ * "qualunque ZONA del paese" whole-country idiom -- Haiti's real page uses that exact phrase for
+ * a GENUINE country-wide ban, verified 2026-09-26) and "stato" (the past participle of "essere"
+ * makes a bare stem match almost every sentence in the corpus; the existing "nello stato di"
+ * phrase already covers the federated-country case, e.g. Nigeria/Mexico/India/USA states).
+ */
+const IT_REGIONAL_STEM_MARKERS = /\bregion[ei]\b|\bprovinc\w*|\bdistrett\w*|\bconfin\w*|\bfrontier\w*|\bexclav\w*|\benclav\w*|\bseparatist\w*/i;
+
+/**
+ * Does `sentence` contain "a qualsiasi titolo" ("for whatever reason") used as Farnesina's
+ * travel-ban intensifier ("viaggi/recarsi/... a qualsiasi titolo" = "travel/go for ANY reason
+ * whatsoever, no exceptions") rather than its OTHER, unrelated use scoping WHO an unrelated
+ * piece of advice is for ("connazionali/cittadini presenti a qualsiasi titolo" = "nationals
+ * present for whatever reason [they're there]")? The bare substring match this replaces treated
+ * both identically -- verified wrong on two independent live 2026-09-26 dossiers, neither of
+ * which contains ANY avoidance verb (sconsigliare/evitare/non recarsi) anywhere in the flagged
+ * sentence:
+ *  - Mozambique: "si suggerisce ai connazionali ivi PRESENTI A QUALSIASI TITOLO di adottare
+ *    particolari cautele evitando assembramenti, manifestazioni e viaggi non essenziali..." --
+ *    "presenti a qualsiasi titolo" scopes the advice to whoever is already in Pemba (named two
+ *    sentences earlier); the sentence's own verb is "suggerisce... di adottare cautele" (weak
+ *    advice), not a ban. The later, unrelated "viaggi non essenziali" a few clauses on is NOT
+ *    what "a qualsiasi titolo" modifies -- proximity alone (matching anywhere in the sentence)
+ *    would still false-positive here, which is why this checks immediate LEFT adjacency only.
+ *  - Guinea: "Ai connazionali PRESENTI A QUALSIASI TITOLO nel Paese consigliamo la massima
+ *    prudenza negli spostamenti" -- again "presenti", again the verb is "consigliamo" (we
+ *    advise), the opposite of "sconsigliamo" (we advise against).
+ * Genuine whole-country bans never put "presente/i" immediately to the left: Afghanistan
+ * ("viaggi a qualsiasi titolo"), Syria ("sconsigliati... a qualsiasi titolo"), Somalia ("sia i
+ * viaggi, sia la permanenza nel Paese, a qualsiasi titolo"), Mali ("viaggi, a qualsiasi titolo,
+ * verso il Mali") all qualify a travel/stay NOUN directly, never "presente/i" -- verified on all
+ * four live dossiers 2026-09-26.
+ */
+function hasBanningQualsiasiTitolo(sentence: string): boolean {
+  if (!/a qualsiasi titolo/.test(sentence)) return false;
+  if (/present\w*\s+a qualsiasi titolo/.test(sentence)) return false;
+  return true;
+}
+
+/**
+ * Strip parenthetical asides before pattern matching. Farnesina's prose sometimes tucks a
+ * remark about a DIFFERENT country into a parenthetical inside the current country's own
+ * dossier (mentioned only for cross-border context) -- that remark must never be read as
+ * describing the page's own country. Verified 2026-09-26: Mauritania's dossier reads
+ * "Eventuali trasferimenti via terra con il Mali (che resta, comunque, una destinazione
+ * SCONSIGLIATA A QUALSIASI TITOLO) potrebbero avvenire solo attraverso il territorio
+ * senegalese" -- the level-4 ban in that parenthetical is MALI's, not Mauritania's own. None of
+ * the verified genuine whole-country trigger phrases (Afghanistan, Syria, Ukraine, Somalia,
+ * Mali, Burkina Faso, CAR, Niger, Haiti, North Korea -- all checked live 2026-09-26) sit inside
+ * a parenthetical, so this has no effect on them.
+ */
+function stripParentheticals(sentence: string): string {
+  return sentence.replace(/\([^)]*\)/g, ' ');
+}
+
+/**
  * Normalize Italy (Viaggiare Sicuri) advisory text to unified 1-4 scale.
  *
  * Farnesina has no single "level" field in its per-country dossier (confirmed against the SPA's own JSON API,
@@ -1385,14 +1474,23 @@ const IT_SUBNATIONAL_MARKERS = [
  *
  * Returns null when both sections are empty/too short to be a real dossier (fetch got a stub, or Farnesina
  * doesn't publish one for this ISO3) -- per project rule, "no data" must never be reported as "level 1".
+ *
+ * Repaired 2026-09-26 (regional-promotion audit): three more false-4s survived the 2026-09-25 calibration
+ * above, each needing its own guard (see the doc comments on IT_REGIONAL_STEM_MARKERS,
+ * hasBanningQualsiasiTitolo and stripParentheticals for the live evidence): Armenia/Georgia/Moldova/Oman/
+ * Cameroon's border-and-separatist-region wording (IT_REGIONAL_STEM_MARKERS, added to isSubNational),
+ * Mozambique/Guinea's "connazionali presenti a qualsiasi titolo" idiom (hasBanningQualsiasiTitolo, replaces
+ * the old bare `/a qualsiasi titolo/` pattern), and Mauritania's parenthetical aside about Mali
+ * (stripParentheticals, applied to every sentence before any pattern check below).
  */
 export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): UnifiedLevel | null {
   const general = normalizeAdvisoryText(generalTextRaw);
   const area = normalizeAdvisoryText(areaTextRaw);
   if (general.length + area.length < 40) return null;
 
+  // "a qualsiasi titolo" is handled separately (hasBanningQualsiasiTitolo) since it needs more than a bare
+  // substring test -- see that function's doc comment.
   const LEVEL4_PATTERNS = [
-    /a qualsiasi titolo/,
     /\bnon recarsi\b/,
     /qualunque zona del paese/,
     /viagg\w*\s+(a\s+|in\s+)+tutto\s+il\s+(paese|territorio)/,
@@ -1402,7 +1500,8 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
     /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi|sconsigli/;
   const LEVEL2_PATTERNS = /sconsigli|evitare\s+(i\s+)?viaggi|evitare di recarsi|non recarsi|interdett/;
 
-  const isSubNational = (sentence: string) => IT_SUBNATIONAL_MARKERS.some((m) => sentence.includes(m));
+  const isSubNational = (sentence: string) =>
+    IT_SUBNATIONAL_MARKERS.some((m) => sentence.includes(m)) || IT_REGIONAL_STEM_MARKERS.test(sentence);
 
   const tagged = [
     ...splitIntoSentences(general).map((s) => ({ s, section: 'general' as const })),
@@ -1413,10 +1512,14 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
   let sawLevel3 = false;
   let sawLevel2 = false;
 
-  for (const { s, section } of tagged) {
+  for (const { s: rawSentence, section } of tagged) {
+    // Strip parenthetical asides first (Mauritania/Mali case) -- everything below reads the
+    // cleaned sentence, so a foreign country's ban tucked into a "(...)" aside can never be
+    // misread as this country's own.
+    const s = stripParentheticals(rawSentence);
     const subNational = isSubNational(s);
 
-    if (!subNational && LEVEL4_PATTERNS.some((re) => re.test(s))) {
+    if (!subNational && (hasBanningQualsiasiTitolo(s) || LEVEL4_PATTERNS.some((re) => re.test(s)))) {
       sawLevel4 = true;
       continue;
     }
@@ -1435,7 +1538,30 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
 
 /** Named-subdivision and time-of-day qualifiers that cap a sentence at level 2 (mirrors IT_SUBNATIONAL_MARKERS;
  *  "de noche"/"nocturno" excludes activity-scoped tips like "avoid inter-city road travel at night", which is
- *  not a "leave the country" signal even when it uses the same "se desaconseja" verb). */
+ *  not a "leave the country" signal even when it uses the same "se desaconseja" verb).
+ *
+ * Broadened 2026-09-26 (regional-promotion audit) with `\bzonas?\b` and `\bregi[oó]n(es)?\b` -- generic NOUN
+ * stems, mirroring IT_REGIONAL_STEM_MARKERS's `\bregion[ei]\b` fix and the SAME false-friend it had to dodge:
+ * "región de"/"zona(s) fronteriza(s)" etc. already in this list only matched FIXED multi-word phrases and missed
+ * real sub-national wording on the live 2026-09-26 corpus --
+ *  - Azerbaijan: the heading "ZONAS A LAS QUE SE RECOMIENDA NO VIAJAR" (introducing a list of named districts)
+ *    has no period before the paragraph that follows it (a DOM-concatenation glue exactly like the CAF case
+ *    normalizeAdvisoryText already patches, just with no punctuation at all to hook a fix onto this time) -- the
+ *    bare NOUN "zonas" in the heading itself is what a generic stem needs to catch, since the specific wording of
+ *    whichever paragraph it glues to varies.
+ *  - Nepal: "se desaconseja viajar a LA ZONA del siniestro (Rasuwa, Gorkha...)" -- anaphoric "la zona" (not
+ *    "dicha/alguna/determinada zona", the only determiners the old list recognized).
+ *  - Algeria: "se recomienda NO viajar A LA ZONA" (the Tindouf Sahrawi refugee camps, named earlier in the same
+ *    sentence) -- same anaphoric "la zona" gap.
+ *  - Togo: "son zonas de riesgo muy alto (se recomienda no viajar) las zonas de las Triples Fronteras..." --
+ *    neither "zonas de riesgo" nor "Triples Fronteras" is "zona(s) fronteriza(s)" or "frontera con".
+ *  `\bregi[oó]n(es)?\b` is the noun form ONLY (no adjective suffix) for the exact reason IT_REGIONAL_STEM_MARKERS
+ *  dropped "regionale": Iran's own genuine whole-country trigger ("ante el CONTEXTO DE CONFLICTO REGIONAL, se
+ *  desaconseja completamente viajar a Irán") uses "regional" as an adjective for the wider Middle East's
+ *  geopolitical climate, not a sub-region of Iran itself -- a bare `region\w*` stem would wrongly block it
+ *  (verified against the existing Iran fixture below, which must stay Level 4).
+ * Cameroon needed one more, non-generic addition: "se desaconseja viajar a la PENÍNSULA de Bakassi" names a
+ * specific peninsula, a word neither stem covers. */
 const ES_ZONE_MARKERS =
   /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|frontera con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno/;
 const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
