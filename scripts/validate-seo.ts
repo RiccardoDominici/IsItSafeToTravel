@@ -1215,6 +1215,71 @@ function validateNewsPages() {
 }
 
 // =====================================================================
+// 8. COMMUNITY VS DATA PAGE (2026-09-26 visibility-pages batch)
+// =====================================================================
+// /community-vs-data/: ranks every country with enough sentiment votes by the
+// gap between our score and community sentiment (CommunityVsDataPage.astro).
+// Thin-page guard: fewer than 3 ranked countries must noindex
+// (VISIBILITY-BRIEF-COMMON.md) -- both directions of that rule are asserted
+// here, kept in sync with the identical `ranked.length < 3` check in
+// CommunityVsDataPage.astro (the source of truth; this just guards against
+// the two drifting apart).
+
+function validateCommunityVsDataPage() {
+  console.log("\n--- Community vs Data Page ---");
+
+  for (const lang of LANGUAGES) {
+    const slug = routeSlug(lang, "community-vs-data");
+    if (!slug) {
+      check(`community-vs-data(${lang}): route slug configured`, false, "missing routes[lang]['community-vs-data']");
+      continue;
+    }
+    const filePath = path.join(DIST, lang, slug, "index.html");
+    const label = `${lang}/${slug}`;
+    if (!fs.existsSync(filePath)) {
+      check(`community-vs-data(${label}): file exists`, false);
+      continue;
+    }
+
+    const html = readHtml(filePath);
+    const nodes = extractGraphNodes(html);
+    const webPage = findNode(nodes, "WebPage");
+    const breadcrumbList = findNode(nodes, "BreadcrumbList");
+    const itemList = findNode(nodes, "ItemList");
+
+    check(`community-vs-data(${label}): has WebPage node`, !!webPage);
+    check(`community-vs-data(${label}): has BreadcrumbList node`, !!breadcrumbList);
+    check(`community-vs-data(${label}): has ItemList node`, !!itemList);
+    if (webPage) {
+      check(
+        `community-vs-data(${label}): WebPage.dateModified is a date`,
+        typeof webPage.dateModified === "string" && /^\d{4}-\d{2}-\d{2}$/.test(webPage.dateModified),
+        `got ${webPage.dateModified}`
+      );
+      check(`community-vs-data(${label}): WebPage.isPartOf -> WebSite`, webPage.isPartOf?.["@id"] === WEBSITE_ID);
+    }
+
+    const numberOfItems = typeof itemList?.numberOfItems === "number" ? itemList.numberOfItems : -1;
+    check(
+      `community-vs-data(${label}): ItemList.numberOfItems is a number`,
+      numberOfItems >= 0,
+      `got ${itemList?.numberOfItems}`
+    );
+
+    const robotsMatch = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
+    const isNoindexed = !!robotsMatch && /noindex/i.test(robotsMatch[1]);
+
+    // Whichever side of the 3-country line today's live data happens to land
+    // on, only the matching direction of the rule is asserted.
+    if (numberOfItems >= 0 && numberOfItems < 3) {
+      check(`community-vs-data(${label}): noindex below 3 ranked countries (today: ${numberOfItems})`, isNoindexed);
+    } else if (numberOfItems >= 3) {
+      check(`community-vs-data(${label}): indexable at 3+ ranked countries (today: ${numberOfItems})`, !isNoindexed);
+    }
+  }
+}
+
+// =====================================================================
 // MAIN
 // =====================================================================
 
@@ -1240,6 +1305,7 @@ function main() {
   validateAdvisoryIntegrity();
   validateDatasetDescriptionLength();
   validateNewsPages();
+  validateCommunityVsDataPage();
 
   // Summary
   console.log("\n========================================");
