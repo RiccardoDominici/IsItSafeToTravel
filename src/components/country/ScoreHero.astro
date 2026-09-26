@@ -80,7 +80,13 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
     <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
       {country.scoreDisplay}
     </span>
-    <span class="text-lg md:text-xl font-medium mt-1 opacity-90">
+    {/* No opacity fade here (was opacity-90): this text is normal-weight and
+        under 24px, so it needs the full 4.5:1, not the 3:1 large-text
+        exemption the big number above gets. At mid-gradient scores the best
+        available text color already sits close to the 4.5:1 floor (jpn's 8.2
+        measured 5.13:1 before any fade) -- any alpha blend risks dropping
+        below AA (2026-09 contrast fix). */}
+    <span class="text-lg md:text-xl font-medium mt-1">
       {country.score.toFixed(1)} {t('country.out_of')}
     </span>
   </div>
@@ -101,7 +107,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
       IT page showed a green up-arrow "+0.0"). Gate on the raw delta so the
       badge only ever appears when the displayed digit is non-zero. */}
   {scoreDelta && Math.abs(scoreDelta.delta) >= 0.05 && (
-    <p class={`mt-2 inline-flex items-center gap-1 text-sm font-medium ${scoreDelta.delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+    <p class={`mt-2 inline-flex items-center gap-1 text-sm font-medium ${scoreDelta.delta > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
       {scoreDelta.delta > 0 ? (
         <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 4l4 6H4l4-6z"/></svg>
       ) : (
@@ -113,7 +119,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
     </p>
   )}
 
-  <div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-sand-500 dark:text-sand-400">
+  <div class="mt-3 flex flex-col sm:flex-row items-center justify-center gap-2 text-sm text-sand-600 dark:text-sand-400">
     <span>{t('country.last_updated').replace('{date}', formattedDate)}</span>
     <span class="hidden sm:inline" aria-hidden="true">&middot;</span>
     <span>{t('country.data_completeness').replace('{percent}', String(completenessPercent))}</span>

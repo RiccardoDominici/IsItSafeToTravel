@@ -86,17 +86,17 @@ const voteCountText = hasEnough
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[calc(7rem+0.75rem)]">
         <span class="text-xs font-medium text-sand-600 dark:text-sand-400">{correctionText}</span>
-        <span class="text-xs text-sand-500 dark:text-sand-400">{voteCountText}</span>
+        <span class="text-xs text-sand-600 dark:text-sand-400">{voteCountText}</span>
       </div>
     </div>
   ) : (
     <div class="space-y-1">
       <p class="text-sm font-medium text-sand-700 dark:text-sand-300">{emptyState.title}</p>
-      <p class="text-xs text-sand-500 dark:text-sand-400">{emptyState.body}</p>
+      <p class="text-xs text-sand-600 dark:text-sand-400">{emptyState.body}</p>
     </div>
   )}
 
-  <p class="text-xs text-sand-500 dark:text-sand-400 mt-3">
+  <p class="text-xs text-sand-600 dark:text-sand-400 mt-3">
     {t('sentiment.disclaimer')}
   </p>
 

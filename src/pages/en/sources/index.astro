@@ -98,7 +98,7 @@ const signalSources = [
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">
                   {src.name}
                   {src.citation && (
-                    <div class="text-xs text-sand-500 dark:text-sand-400 mt-1 font-normal">{src.citation}</div>
+                    <div class="text-xs text-sand-600 dark:text-sand-400 mt-1 font-normal">{src.citation}</div>
                   )}
                 </td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{getLocalizedSourceMeasures(lang, src.key, src.measures)}</td>
@@ -109,7 +109,7 @@ const signalSources = [
           </tbody>
         </table>
       </div>
-      <p class="text-xs text-sand-500 dark:text-sand-400 mt-3 italic">
+      <p class="text-xs text-sand-600 dark:text-sand-400 mt-3 italic">
         V-Dem data: Coppedge et al., V-Dem Country-Year Dataset v16, V-Dem Institute (DOI 10.23696/vdemds26). Distributed under <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer" class="underline">CC-BY-SA 4.0</a>.
       </p>
     </section>
@@ -171,7 +171,7 @@ const signalSources = [
                 <td class="py-3 min-h-[24px]">
                   {activeCount > 0
                     ? <span class="text-green-700 dark:text-green-400 font-medium">{(activeCount === 1 ? t('sources.status_active_one') : t('sources.status_active').replace('{n}', String(activeCount)))}</span>
-                    : <span class="text-sand-400 dark:text-sand-500 italic">{t('sources.status_unavailable')}</span>}
+                    : <span class="text-sand-600 dark:text-sand-400 italic">{t('sources.status_unavailable')}</span>}
                 </td>
               </tr>
               );

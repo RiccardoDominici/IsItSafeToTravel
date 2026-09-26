@@ -2,6 +2,7 @@
 import type { AdvisoryInfo } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
+import { readableTextColor } from '../../lib/colors';
 
 // `restoredFrom` is being added to the pipeline's AdvisoryInfo type by a
 // concurrent workstream (fetchers/advisories.ts already writes it there when a
@@ -41,6 +42,11 @@ function getAdvisoryColor(advisory: AdvisoryInfo, source: string): string {
 }
 
 const borderColor = getAdvisoryColor(advisory, sourceKey);
+// The level pill previously hardcoded white text: fine on the red/orange
+// levels but #22c55e (level 1, green) only measures 2.28:1 with white (WCAG
+// AA needs 4.5:1 for this text-xs size) — same fix LevelBadge.astro already
+// applies for the gov-advisories pages (2026-09 contrast fix).
+const badgeFg = readableTextColor(borderColor);
 
 // Sources that don't expose a real advisory date have no updatedAt — show nothing
 // rather than a fabricated "updated today".
@@ -86,8 +92,8 @@ const summaryText = advisory.text.length > 200
       {sourceName}
     </h3>
     <span
-      class="shrink-0 text-xs font-medium px-2 py-1 rounded-full text-white"
-      style={`background-color: ${borderColor};`}
+      class="shrink-0 text-xs font-medium px-2 py-1 rounded-full"
+      style={`background-color: ${borderColor}; color: ${badgeFg};`}
     >
       {levelText}
     </span>
@@ -97,21 +103,21 @@ const summaryText = advisory.text.length > 200
     {summaryText}
   </p>
 
-  <div class="flex items-center justify-between text-xs text-sand-500 dark:text-sand-400">
+  <div class="flex items-center justify-between text-xs text-sand-600 dark:text-sand-400">
     <span>{updatedText ?? ''}</span>
     {/* inline-flex + min-h-6: tap target was under the WCAG 2.5.8 24px minimum (audit V3). */}
     <a
       href={advisory.url}
       target="_blank"
       rel="noopener noreferrer"
-      class="inline-flex items-center min-h-6 text-terracotta-500 hover:text-terracotta-600 underline"
+      class="inline-flex items-center min-h-6 text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline"
     >
       {t('country.pillar_source')}
     </a>
   </div>
 
   {restoredText && (
-    <p class="text-xs text-sand-400 dark:text-sand-500 mt-1 italic">
+    <p class="text-xs text-sand-600 dark:text-sand-400 mt-1 italic">
       {restoredText}
     </p>
   )}

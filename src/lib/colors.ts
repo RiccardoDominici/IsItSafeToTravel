@@ -22,6 +22,35 @@ function hexToRgb(hex: string): [number, number, number] {
   ];
 }
 
+/** Parses either our own "rgb(r, g, b)" mixer output or a "#rrggbb" hex anchor. */
+function parseColorToRgb(color: string): [number, number, number] {
+  if (color.startsWith('#')) return hexToRgb(color);
+  const parts = color.match(/\d+/g);
+  if (!parts || parts.length < 3) return [255, 255, 255];
+  return [Number(parts[0]), Number(parts[1]), Number(parts[2])];
+}
+
+function srgbChannelToLinear(c: number): number {
+  const s = c / 255;
+  return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+}
+
+/** WCAG relative luminance of an 8-bit sRGB triple. */
+function relLuminance(r: number, g: number, b: number): number {
+  return (
+    0.2126 * srgbChannelToLinear(r) + 0.7152 * srgbChannelToLinear(g) + 0.0722 * srgbChannelToLinear(b)
+  );
+}
+
+/** WCAG contrast ratio between two relative luminances. */
+function contrastRatio(l1: number, l2: number): number {
+  const lighter = Math.max(l1, l2);
+  const darker = Math.min(l1, l2);
+  return (lighter + 0.05) / (darker + 0.05);
+}
+
+const DARK_TEXT_LUM = relLuminance(28, 25, 23); // relative luminance of #1c1917
+
 function mix(a: string, b: string, t: number): string {
   const ca = hexToRgb(a);
   const cb = hexToRgb(b);
@@ -54,28 +83,24 @@ export function pillarToColor(normalizedScore: number): string {
 }
 
 /**
- * Pick readable text (WCAG) for a background produced by the scale above.
+ * Pick readable text (WCAG) for an arbitrary background: white or near-black,
+ * whichever gives the higher contrast ratio against `bg`.
  *
- * The moderate band (#d4b83c yellow) fails WCAG contrast with white text
- * (~1.9:1) — it needs dark text; the danger/safe bands keep white (their large
- * bold score numbers pass AA-large at ~8:1 and ~4:1 respectively). Threshold is
- * relative luminance 0.30: between SAFE_HEX (≈0.21 → white) and MODERATE_HEX
- * (≈0.46 → dark).
+ * Originally a fixed relative-luminance threshold (0.30) tuned only for the
+ * 3-stop score scale above (its comment: "danger/safe bands keep white, their
+ * large bold score numbers pass AA-large at ~8:1 and ~4:1"). This function is
+ * now also called for *small* badge text (advisory-level pills, table score
+ * chips) that needs the full 4.5:1, not just 3:1 — and the fixed threshold
+ * picked the wrong (lower-contrast) option for some inputs, e.g. the level-4
+ * advisory red #ef4444 (white -> 3.76:1, FAIL; dark -> 4.65:1, PASS). Always
+ * computing both ratios and returning the winner is strictly better or equal
+ * for every existing caller and correct for any future one (2026-09 contrast
+ * fix; see verify-contrast measurements in that commit).
  */
 export function readableTextColor(bg: string): '#ffffff' | '#1c1917' {
-  let rgb: [number, number, number];
-  if (bg.startsWith('#')) {
-    rgb = hexToRgb(bg);
-  } else {
-    // Parse "rgb(r, g, b)" output of our own mixer.
-    const parts = bg.match(/\d+/g);
-    if (!parts || parts.length < 3) return '#ffffff';
-    rgb = [Number(parts[0]), Number(parts[1]), Number(parts[2])];
-  }
-  const lin = (c: number): number => {
-    const s = c / 255;
-    return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
-  };
-  const L = 0.2126 * lin(rgb[0]) + 0.7152 * lin(rgb[1]) + 0.0722 * lin(rgb[2]);
-  return L > 0.3 ? '#1c1917' : '#ffffff';
+  const [r, g, b] = parseColorToRgb(bg);
+  const L = relLuminance(r, g, b);
+  const whiteRatio = contrastRatio(L, 1.0);
+  const darkRatio = contrastRatio(L, DARK_TEXT_LUM);
+  return darkRatio >= whiteRatio ? '#1c1917' : '#ffffff';
 }

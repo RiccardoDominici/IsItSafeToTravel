@@ -283,14 +283,14 @@ const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
       <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
         {title}
       </h1>
-      <p class="text-sm text-sand-500 dark:text-sand-400">
+      <p class="text-sm text-sand-600 dark:text-sand-400">
         {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', SOURCE_COUNT_DISPLAY) || `Rankings updated daily from ${SOURCE_COUNT_DISPLAY} data sources`}
       </p>
       {/* SXO-07: a visible, secondary "cite this ranking" link right by the H1 -- the
           journalist/risk-manager persona looks for this before reading the list. */}
       <a
         href={`/${lang}/${r.cite}/`}
-        class="inline-block text-xs text-sand-400 dark:text-sand-500 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline underline-offset-2 transition-colors"
+        class="inline-block text-xs text-sand-600 dark:text-sand-400 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline underline-offset-2 transition-colors"
       >
         {citeThisRanking[lang]}
       </a>
@@ -360,7 +360,7 @@ const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
                 class="inline-flex items-center gap-1.5 text-sm text-sand-700 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
               >
                 <span>{getLocalizedCountryName(country, lang)}</span>
-                <span class={`text-xs font-semibold ${delta > 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}`}>
+                <span class={`text-xs font-semibold ${delta > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
                   {delta > 0 ? '+' : ''}{delta.toFixed(2)}
                 </span>
               </a>
@@ -378,7 +378,7 @@ const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
               {group.heading}
             </h2>
             {group.intro && (
-              <p class="text-sm text-sand-500 dark:text-sand-400 mb-2">
+              <p class="text-sm text-sand-600 dark:text-sand-400 mb-2">
                 {group.intro}
               </p>
             )}

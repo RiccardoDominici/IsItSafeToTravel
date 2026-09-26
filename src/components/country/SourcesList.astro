@@ -126,7 +126,7 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
                   href={source.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="inline-flex items-center min-h-6 text-terracotta-500 hover:text-terracotta-600 underline font-medium"
+                  class="inline-flex items-center min-h-6 text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline font-medium"
                 >
                   {source.name}
                 </a>
@@ -146,7 +146,7 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
               {localizedDescription}
             </p>
             {(vintageStr || fetchedDate) && (
-              <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
+              <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">
                 {vintageStr && t('country.source_data_year').replace('{year}', vintageStr)}
                 {vintageStr && fetchedDate && <span aria-hidden="true"> &middot; </span>}
                 {fetchedDate && t('country.source_fetched').replace('{date}', fetchedDate)}

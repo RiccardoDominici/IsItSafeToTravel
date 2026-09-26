@@ -129,7 +129,7 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
         {title}
       </h1>
       {issuerCountry && (
-        <p class="text-sm text-sand-500 dark:text-sand-400">
+        <p class="text-sm text-sand-600 dark:text-sand-400">
           <a href={countryHref(issuerCountry)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 underline">
             {getLocalizedCountryName(issuerCountry, lang)}
           </a>
@@ -163,11 +163,11 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
               <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer select-none font-heading font-bold text-sand-800 dark:text-sand-100">
                 <LevelBadge level={group.level} lang={lang} compact />
                 <span>{copy.issuer.levelHeadings[group.level - 1]}</span>
-                <span class="text-xs font-normal text-sand-400 dark:text-sand-500">({group.entries.length})</span>
+                <span class="text-xs font-normal text-sand-600 dark:text-sand-400">({group.entries.length})</span>
               </summary>
               <div class="border-t border-sand-200 dark:border-sand-700 px-4 py-3">
                 {group.entries.length === 0 ? (
-                  <p class="text-sm text-sand-500 dark:text-sand-400 italic py-2">
+                  <p class="text-sm text-sand-600 dark:text-sand-400 italic py-2">
                     {copy.issuer.emptyLevelNote.replace('{agency}', agencyName).replace('{n}', String(group.level))}
                   </p>
                 ) : (
@@ -179,12 +179,12 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
                             {getLocalizedCountryName(country, lang)}
                           </a>
                           {info.updatedAt && Number.isFinite(new Date(info.updatedAt).getTime()) && (
-                            <span class="text-xs text-sand-400 dark:text-sand-500 whitespace-nowrap shrink-0">
+                            <span class="text-xs text-sand-600 dark:text-sand-400 whitespace-nowrap shrink-0">
                               {shortDateFormatter.format(new Date(info.updatedAt))}
                             </span>
                           )}
                         </div>
-                        <p class="text-xs text-sand-500 dark:text-sand-400">
+                        <p class="text-xs text-sand-600 dark:text-sand-400">
                           <span class="font-medium">{copy.issuer.ownWordingLabel.replace('{agency}', agencyName)}:</span>{' '}
                           <span>&ldquo;{info.text}&rdquo;</span>
                           {' — '}
@@ -207,7 +207,7 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
       </Fragment>
     )}
 
-    <p class="max-w-2xl mx-auto text-sm text-sand-500 dark:text-sand-400 text-center">
+    <p class="max-w-2xl mx-auto text-sm text-sand-600 dark:text-sand-400 text-center">
       {copy.methodologyNote.split('{link}')[0]}<a href={methodologyUrl} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{copy.methodologyLinkText}</a>{copy.methodologyNote.split('{link}')[1]}
     </p>
 

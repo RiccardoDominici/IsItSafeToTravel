@@ -148,7 +148,7 @@ const ec = emptyStateCopy[lang];
           <div id="search-dropdown" class="hidden absolute z-50 left-0 right-0 top-full mt-1 max-h-64 overflow-y-auto rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-50 dark:bg-sand-800 shadow-lg"></div>
         </div>
         <div id="empty-state">
-          <div class="text-center py-8 text-sand-500 dark:text-sand-400">
+          <div class="text-center py-8 text-sand-600 dark:text-sand-400">
             <p class="text-lg mb-2 text-sand-700 dark:text-sand-300">{t('compare.empty_title')}</p>
             <p class="text-sm max-w-xl mx-auto mb-4">{ec.explainer}</p>
             <div class="flex justify-center gap-3">
@@ -163,7 +163,7 @@ const ec = emptyStateCopy[lang];
               <table class="w-full text-sm border-collapse">
                 <thead>
                   <tr>
-                    <th class="text-left py-2 pr-3 text-sand-500 dark:text-sand-400 font-medium"></th>
+                    <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium"></th>
                     {exampleCountries.map((c) => (
                       <th class="text-center py-2 px-3 font-heading font-bold text-sand-800 dark:text-sand-100 whitespace-nowrap">
                         <span class="block">{c.name}</span>
@@ -193,7 +193,7 @@ const ec = emptyStateCopy[lang];
                   ))}
                 </tbody>
               </table>
-              <p class="mt-4 text-center text-sm text-sand-500 dark:text-sand-400">{ec.exampleCta}</p>
+              <p class="mt-4 text-center text-sm text-sand-600 dark:text-sand-400">{ec.exampleCta}</p>
             </div>
           )}
         </div>
@@ -216,6 +216,7 @@ const ec = emptyStateCopy[lang];
 <script>
   import Fuse from 'fuse.js';
   import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat, brushX, select, easeCubicOut } from 'd3';
+  import { readableTextColor } from '../../lib/colors';
 
   function smartDateFormat(dates: Date[]): (d: Date) => string {
     const first = dates[0], last = dates[dates.length - 1];
@@ -322,7 +323,7 @@ const ec = emptyStateCopy[lang];
     currentResults = items;
     activeIndex = -1;
     if (items.length === 0 && searchInput.value.length >= 2) {
-      searchDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${t.no_results}</div>`;
+      searchDropdown.innerHTML = `<div class="px-4 py-3 text-sm text-sand-600 dark:text-sand-400">${t.no_results}</div>`;
       searchDropdown.classList.remove('hidden');
       return;
     }
@@ -420,8 +421,13 @@ const ec = emptyStateCopy[lang];
 
     selectedCountries.forEach((country, index) => {
       const chip = document.createElement('span');
-      chip.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium text-white';
-      chip.style.backgroundColor = PALETTE[index % PALETTE.length];
+      // 4/5 PALETTE colors fail 4.5:1 with a hardcoded white chip text
+      // (2026-09 contrast fix; e.g. #d4a03c only reaches 2.36:1) -- pick
+      // whichever of white/#1c1917 actually has more contrast per chip.
+      const chipBg = PALETTE[index % PALETTE.length];
+      chip.className = 'inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-medium';
+      chip.style.backgroundColor = chipBg;
+      chip.style.color = readableTextColor(chipBg);
       chip.innerHTML = `${country.name} <button class="ml-1 hover:opacity-70 text-lg leading-none" aria-label="${t.remove.replace('{name}', country.name)}">&times;</button>`;
       chip.querySelector('button')!.addEventListener('click', () => {
         selectedCountries = selectedCountries.filter(c => c.iso3 !== country.iso3);
@@ -515,7 +521,7 @@ const ec = emptyStateCopy[lang];
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2';
         row.innerHTML = `
-          <span class="w-20 shrink-0 text-xs text-sand-500 dark:text-sand-400 text-right truncate">${country.name}</span>
+          <span class="w-20 shrink-0 text-xs text-sand-600 dark:text-sand-400 text-right truncate">${country.name}</span>
           <div class="flex-1 h-5 bg-sand-200 dark:bg-sand-700 rounded">
             <div class="h-5 rounded transition-all duration-300" style="width: ${score * 100}%; background-color: ${PALETTE[i % PALETTE.length]}; min-width: 2px;"></div>
           </div>
@@ -547,7 +553,7 @@ const ec = emptyStateCopy[lang];
     if (fullCountriesWithHistory.length === 0) {
       section.appendChild(heading);
       const msg = document.createElement('p');
-      msg.className = 'text-sm text-sand-500 dark:text-sand-400 italic';
+      msg.className = 'text-sm text-sand-600 dark:text-sand-400 italic';
       msg.textContent = t.history_accumulating;
       section.appendChild(msg);
       return;
@@ -700,7 +706,7 @@ const ec = emptyStateCopy[lang];
         const val = yDomainMin + i * yTickStep;
         const yPos = y(val);
         gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
       }
 
       // X axis ticks - smart format, remove overlapping labels (keep most recent)
@@ -723,7 +729,7 @@ const ec = emptyStateCopy[lang];
       for (let ti = 0; ti < ticks.length; ti++) {
         const t = ticks[ti];
         const anchor = ti === ticks.length - 1 ? 'end' : ti === 0 ? 'start' : 'middle';
-        xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
+        xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${t.label}</text>`;
       }
 
       // Country paths (using filtered data)

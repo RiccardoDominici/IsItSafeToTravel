@@ -186,7 +186,7 @@ const methodologyParts = c.methodologyText.split('{link}');
       <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
         {c.title}
       </h1>
-      <p class="text-sm text-sand-500 dark:text-sand-400">{dataAsOfText}</p>
+      <p class="text-sm text-sand-600 dark:text-sand-400">{dataAsOfText}</p>
     </header>
 
     {/* Left-aligned body copy (design polish pass, 2026-09-26) -- long centred
@@ -210,22 +210,22 @@ const methodologyParts = c.methodologyText.split('{link}');
       <div class="max-w-2xl mx-auto grid grid-cols-3 gap-3">
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
           <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{ranked.length}</p>
-          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statCountriesLabel}</p>
+          <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statCountriesLabel}</p>
         </div>
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
           <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{totalVotes}</p>
-          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statVotesLabel}</p>
+          <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statVotesLabel}</p>
         </div>
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
           {headlineEntry && (
             <p class="text-base sm:text-lg font-heading font-bold text-sand-800 dark:text-sand-100 truncate">
               {headlineEntry.name}{' '}
-              <span class={headlineEntry.gap >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}>
+              <span class={headlineEntry.gap >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}>
                 {formatSigned(headlineEntry.gap)}
               </span>
             </p>
           )}
-          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statGapLabel}</p>
+          <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statGapLabel}</p>
         </div>
       </div>
     )}
@@ -279,7 +279,7 @@ const methodologyParts = c.methodologyText.split('{link}');
         </p>
         {suggested.length > 0 && (
           <div>
-            <p class="text-xs font-semibold uppercase tracking-wide text-sand-500 dark:text-sand-400 mb-2">
+            <p class="text-xs font-semibold uppercase tracking-wide text-sand-600 dark:text-sand-400 mb-2">
               {c.suggestedLabel}
             </p>
             {/* Wrapping flex, not a fixed-column grid (design polish pass,
@@ -308,7 +308,7 @@ const methodologyParts = c.methodologyText.split('{link}');
       <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP1}</p>
       <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP2}</p>
       <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP3}</p>
-      <p class="text-sm text-sand-500 dark:text-sand-400">
+      <p class="text-sm text-sand-600 dark:text-sand-400">
         {methodologyParts[0]}<a
           href={`/${lang}/${r.methodology}/`}
           class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline"

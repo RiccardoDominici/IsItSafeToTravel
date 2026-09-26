@@ -86,7 +86,7 @@ const showChart = globalHistory.length >= 2;
           </div>
         </div>
       ) : (
-        <p class="text-sm text-sand-500 dark:text-sand-400 italic">
+        <p class="text-sm text-sand-600 dark:text-sand-400 italic">
           {t('global.trend_accumulating')}
         </p>
       )}
@@ -101,7 +101,7 @@ const showChart = globalHistory.length >= 2;
         {t('global.methodology_text')}
       </p>
       <p class="mt-4">
-        <a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 underline">
+        <a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
           {t('global.methodology_link')}
         </a>
       </p>
@@ -229,7 +229,7 @@ const showChart = globalHistory.length >= 2;
             const val = yMin + i * yTickStep;
             const yPos = yScale(val);
             gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-            yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+            yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
           }
 
           const tickCount = Math.min(6, dates.length);
@@ -249,7 +249,7 @@ const showChart = globalHistory.length >= 2;
           for (let ti = 0; ti < ticks.length; ti++) {
             const t = ticks[ti];
             const anchor = ti === ticks.length - 1 ? 'end' : ti === 0 ? 'start' : 'middle';
-            xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-500 dark:fill-sand-400" font-size="11">${t.label}</text>`;
+            xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${t.label}</text>`;
           }
 
           svg.innerHTML = `

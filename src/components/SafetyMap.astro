@@ -153,7 +153,7 @@ const nc = noscriptCopy[lang];
         ))}
       </div>
       <div class="border-t border-sand-200 dark:border-sand-700 my-2"></div>
-      <div class="text-[10px] font-medium text-sand-500 dark:text-sand-400 px-1 mb-1" id="source-filter-header">
+      <div class="text-[10px] font-medium text-sand-600 dark:text-sand-400 px-1 mb-1" id="source-filter-header">
         {t('filter.sources')}
       </div>
       <div class="flex flex-col gap-0 max-h-[200px] overflow-y-auto" id="source-filter-list">
@@ -296,7 +296,7 @@ const nc = noscriptCopy[lang];
       for (const [key, count] of sortedSources) {
         const label = document.createElement('label');
         label.className = 'flex items-center gap-2 px-2 py-0.5 text-xs rounded-md hover:bg-sand-200 dark:hover:bg-sand-700 cursor-pointer';
-        label.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3 source-checkbox" data-source="${key}" /><span class="text-sand-600 dark:text-sand-300 truncate">${sourceLabelsData[key] || key.toUpperCase()}</span><span class="ml-auto text-[10px] text-sand-400 shrink-0">(${count})</span>`;
+        label.innerHTML = `<input type="checkbox" checked class="accent-terracotta-500 w-3 h-3 source-checkbox" data-source="${key}" /><span class="text-sand-600 dark:text-sand-300 truncate">${sourceLabelsData[key] || key.toUpperCase()}</span><span class="ml-auto text-[10px] text-sand-600 dark:text-sand-400 shrink-0">(${count})</span>`;
         sourceFilterList.appendChild(label);
       }
 
@@ -581,7 +581,7 @@ const nc = noscriptCopy[lang];
           if (visibleAdvisories.length > 4) {
             lines.push(`<div>+${visibleAdvisories.length - 4} more</div>`);
           }
-          advisoryHtml = `<div class="text-[10px] text-sand-500 dark:text-sand-400 mt-1 border-t border-sand-200 dark:border-sand-700 pt-1">${lines.join('')}</div>`;
+          advisoryHtml = `<div class="text-[10px] text-sand-600 dark:text-sand-400 mt-1 border-t border-sand-200 dark:border-sand-700 pt-1">${lines.join('')}</div>`;
         }
       }
 

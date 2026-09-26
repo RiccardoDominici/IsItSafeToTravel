@@ -125,7 +125,7 @@ const LEVEL_COLS: Array<{ level: 1 | 2 | 3 | 4; label: string }> = [
       <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
         {title}
       </h1>
-      <p class="text-sm text-sand-500 dark:text-sand-400">
+      <p class="text-sm text-sand-600 dark:text-sand-400">
         {copy.hub.updatedDaily.replace('{count}', String(rows.length)).replace('{date}', dateFormatter.format(new Date(snapshotDate)))}
       </p>
     </header>
@@ -183,7 +183,7 @@ const LEVEL_COLS: Array<{ level: 1 | 2 | 3 | 4; label: string }> = [
                 <td class="px-3 py-2 text-right tabular-nums text-sand-700 dark:text-sand-300">{row.byLevel[col.level]}</td>
               ))}
               <td class="px-3 py-2 text-right tabular-nums font-semibold text-sand-800 dark:text-sand-100">{row.coverage}</td>
-              <td class="px-3 py-2 text-sand-500 dark:text-sand-400 whitespace-nowrap">
+              <td class="px-3 py-2 text-sand-600 dark:text-sand-400 whitespace-nowrap">
                 {row.latestUpdate ? shortDateFormatter.format(new Date(row.latestUpdate)) : copy.hub.noDate}
               </td>
               <td class="px-3 py-2 text-right whitespace-nowrap">
@@ -197,7 +197,7 @@ const LEVEL_COLS: Array<{ level: 1 | 2 | 3 | 4; label: string }> = [
       </table>
     </section>
 
-    <p class="max-w-2xl mx-auto text-sm text-sand-500 dark:text-sand-400 text-center">
+    <p class="max-w-2xl mx-auto text-sm text-sand-600 dark:text-sand-400 text-center">
       {copy.methodologyNote.split('{link}')[0]}<a href={methodologyUrl} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{copy.methodologyLinkText}</a>{copy.methodologyNote.split('{link}')[1]}
     </p>
 

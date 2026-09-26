@@ -49,11 +49,11 @@ const jsonLd = {
     <NewsletterSignup lang={lang} placement="news" />
 
     {archive.length === 0 ? (
-      <p class="text-center text-sand-500 dark:text-sand-400 py-12">{t('news.page.empty' as any)}</p>
+      <p class="text-center text-sand-600 dark:text-sand-400 py-12">{t('news.page.empty' as any)}</p>
     ) : (
       archive.map((group) => (
         <section class="space-y-3">
-          <h2 class="text-sm font-semibold text-sand-500 dark:text-sand-400">
+          <h2 class="text-sm font-semibold text-sand-600 dark:text-sand-400">
             {new Date(group.date).toLocaleDateString(lang, {
               year: 'numeric',
               month: 'long',

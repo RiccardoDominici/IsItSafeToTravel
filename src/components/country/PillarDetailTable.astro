@@ -42,7 +42,7 @@ const pillarKeys: Record<string, string> = {
       <div class="mb-6">
         <h3 class="text-sm font-semibold text-sand-700 dark:text-sand-200 mb-2">
           {label}
-          <span class="ml-2 font-normal text-sand-500 dark:text-sand-400">
+          <span class="ml-2 font-normal text-sand-600 dark:text-sand-400">
             {displayScore}/10{lowCoverage && (
               <PillarCoverageTip text={t('country.pillar_low_coverage_note')} />
             )} · {riskLevel} · {t('country.pillar_coverage')}: {coveragePercent}%
@@ -53,10 +53,10 @@ const pillarKeys: Record<string, string> = {
           <table class="w-full text-xs border-collapse">
             <thead>
               <tr class="border-b border-sand-200 dark:border-sand-700">
-                <th class="text-left py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_indicators')}</th>
-                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_value')}</th>
-                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_source')}</th>
-                <th class="text-right py-1.5 text-sand-500 dark:text-sand-400">{t('country.pillar_year')}</th>
+                <th class="text-left py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_indicators')}</th>
+                <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_value')}</th>
+                <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_source')}</th>
+                <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_year')}</th>
               </tr>
             </thead>
             <tbody>

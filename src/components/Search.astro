@@ -141,7 +141,7 @@ const searchData = COUNTRIES.map(c => {
       currentResults = items;
       activeIndex = -1;
       if (items.length === 0 && input.value.length >= 2) {
-        listbox.innerHTML = `<li class="px-4 py-3 text-sm text-sand-500 dark:text-sand-400">${noResultsText}</li>`;
+        listbox.innerHTML = `<li class="px-4 py-3 text-sm text-sand-600 dark:text-sand-400">${noResultsText}</li>`;
         return;
       }
       listbox.innerHTML = items
