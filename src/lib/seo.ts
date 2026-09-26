@@ -17,10 +17,12 @@ import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { selectPillarExtremes } from './pillar-extremes';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
 import {
+  getEnglishCountryPhrase,
   getItalianLocative,
   getPortuguesePhrase,
   getPortugueseWithArticle,
   getGermanDirectional,
+  isGermanPlural,
   getFrenchPreposition,
 } from '../i18n/country-grammar';
 
@@ -702,6 +704,14 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
 export function getCountryFaqData(country: ScoredCountry, lang: Lang): { question: string; answer: string }[] {
   const copy = countryFaqCopy[lang];
   const name = getLocalizedCountryName(country, lang);
+  // English needs "the" for the ~15 plural/union country names (the United
+  // States, the Philippines...) in EVERY subject-position sentence in this
+  // file's "en" entry (q1/q2, a1Verdict, a2, a3Intro...), not just after a
+  // preposition — unlike it/pt/de, a bare "United States is one of the
+  // safest destinations" is not valid English at all. displayName is what
+  // actually goes in the {name} slot; the bare `name` is still what the
+  // other locales' preposition/article wrappers below take as input.
+  const displayName = lang === 'en' ? getEnglishCountryPhrase(country.iso3, name) : name;
   const score = country.score;
   const now = new Date();
   const year = now.getFullYear().toString();
@@ -744,8 +754,13 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     }
   }
 
+  // German verb-agreement slots (a1Verdict, a1Drivers.allStrong): predicate
+  // adjectives don't inflect for number in German, but the finite verb still
+  // must agree with a plural subject — see isGermanPlural's docstring.
+  const dePlural = isGermanPlural(country.iso3, name);
+
   const slots: Record<string, string> = {
-    name,
+    name: displayName,
     year,
     monthYear,
     score: score.toFixed(1),
@@ -759,16 +774,21 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     meaning: copy.pillarMeaning[weakest.name],
     drivers: driverClause,
     // Locale-specific phrases for the templates that put the country name
-    // after a preposition or need an article — {name} itself stays the bare
-    // localized name (used in the many subject-position sentences above).
-    // Harmless to compute for every language: each locale's templates only
-    // ever reference the one slot(s) it actually needs (see country-grammar.ts).
+    // after a preposition or need an article — computed from the bare `name`
+    // (not `displayName`, which only applies to English). Harmless to compute
+    // for every language: each locale's templates only ever reference the
+    // slot(s) it actually needs (see country-grammar.ts).
     nameIn: getItalianLocative(country.iso3, name),
     namePara: getPortuguesePhrase(country.iso3, name, 'para'),
     nameA: getPortuguesePhrase(country.iso3, name, 'a'),
     nameArt: getPortugueseWithArticle(country.iso3, name),
     nameDir: getGermanDirectional(country.iso3, name),
     namePrep: getFrenchPreposition(country.iso3, name),
+    deZaehlt: dePlural ? 'zählen' : 'zählt',
+    deGilt: dePlural ? 'gelten' : 'gilt',
+    deIstSind: dePlural ? 'sind' : 'ist',
+    deBirgt: dePlural ? 'bergen' : 'birgt',
+    deSchneidet: dePlural ? 'schneiden' : 'schneidet',
   };
   const fill = (tpl: string) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
   const joiner = lang === 'zh' ? '' : ' ';
@@ -782,7 +802,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // (2026-09-25 audit, I1/I12).
   const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
   const verdictOpener = isLowConfidence ? copy.a1VerdictLowConfidence : copy.a1Verdict[band];
-  const provenance = buildProvenanceSentence(getProvenanceCounts(country), name, lang, country.iso3);
+  const provenance = buildProvenanceSentence(getProvenanceCounts(country), displayName, lang, country.iso3);
   const a1 = tidy([verdictOpener, copy.a1Formula, drivers, provenance].map(fill).join(joiner));
 
   // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only

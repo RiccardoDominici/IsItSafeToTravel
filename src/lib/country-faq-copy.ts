@@ -334,13 +334,20 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     // (getItalianLocative in country-grammar.ts, wired in via getCountryFaqData
     // in seo.ts), not the bare name — {name} itself stays bare for the many
     // subject-position uses elsewhere in this file (a1Verdict, a2, a3Intro...).
-    "q1": "E sicuro viaggiare {nameIn} nel {year}?",
-    "q2": "Qual e il rischio maggiore viaggiando {nameIn}?",
+    "q1": "È sicuro viaggiare {nameIn} nel {year}?",
+    "q2": "Qual è il rischio maggiore viaggiando {nameIn}?",
     "q3": "Cosa dicono gli avvisi di viaggio governativi su {name}?",
     "a1Verdict": {
       "excellent": "Sì — {name} è una delle destinazioni più sicure del nostro indice: a {monthYear} ottiene {score}/10, un punteggio classificato come {riskLevel}.",
       "good": "Sì, in genere — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}.",
-      "moderate": "Sì, con qualche cautela — {name} è ragionevolmente sicura per la maggior parte dei viaggiatori: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. Presta attenzione ai rischi specifici indicati più sotto.",
+      // Reworded from the old "{name} è ragionevolmente sicura" (a DIRECT
+      // predicate adjective on {name}, always feminine regardless of the
+      // country's own gender/number — wrong for e.g. "Giappone" [masc] or
+      // "Stati Uniti" [masc plural]). Mediating through "una destinazione"
+      // (always feminine singular) matches the good/danger bands above/below,
+      // which already use this pattern, and needs no gender/number agreement
+      // with {name} at all.
+      "moderate": "Sì, con qualche cautela — {name} è una destinazione ragionevolmente sicura per la maggior parte dei viaggiatori: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. Presta attenzione ai rischi specifici indicati più sotto.",
       "high_caution": "Sì, ma solo con vera cautela — {name} presenta un rischio significativo: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. Molti viaggi si svolgono senza problemi, ma non è una destinazione a basso rischio.",
       "danger": "No — {name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
     },
@@ -381,13 +388,18 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     }
   },
   "es": {
-    "q1": "Es seguro viajar a {name} en {year}?",
-    "q2": "Cual es el mayor riesgo al viajar a {name}?",
+    "q1": "¿Es seguro viajar a {name} en {year}?",
+    "q2": "¿Cuál es el mayor riesgo al viajar a {name}?",
     "q3": "¿Qué dicen los avisos de viaje gubernamentales sobre {name}?",
     "a1Verdict": {
       "excellent": "Sí — {name} es uno de los destinos más seguros de nuestro índice: a fecha de {monthYear} obtiene {score}/10, clasificado como {riskLevel}.",
       "good": "Sí, en general — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}.",
-      "moderate": "Sí, con cierta precaución — {name} es razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. Presta atención a los riesgos específicos indicados más abajo.",
+      // Reworded from "{name} es razonablemente seguro" (a DIRECT predicate
+      // adjective on {name}, always masculine regardless of the country's own
+      // gender/number — wrong for e.g. "Francia" [fem] or feminine-plural
+      // names). "un destino" (always masculine singular) matches the good/
+      // danger bands above/below and needs no agreement with {name}.
+      "moderate": "Sí, con cierta precaución — {name} es un destino razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. Presta atención a los riesgos específicos indicados más abajo.",
       "high_caution": "Sí, pero solo con verdadera precaución — {name} presenta un riesgo considerable: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. La mayoría de los viajes salen bien, pero no es un destino de bajo riesgo.",
       "danger": "No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
     },
@@ -484,13 +496,18 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     // (getPortuguesePhrase in country-grammar.ts, wired in via
     // getCountryFaqData in seo.ts) — {name} itself stays bare for the many
     // subject-position uses elsewhere in this file.
-    "q1": "E seguro viajar {namePara} em {year}?",
-    "q2": "Qual e o maior risco ao viajar {namePara}?",
+    "q1": "É seguro viajar {namePara} em {year}?",
+    "q2": "Qual é o maior risco ao viajar {namePara}?",
     "q3": "O que dizem os avisos de viagem governamentais sobre {name}?",
     "a1Verdict": {
       "excellent": "Sim — {name} é um dos destinos mais seguros do nosso índice: em {monthYear}, obtém {score}/10, com classificação de {riskLevel}.",
       "good": "Sim, em geral — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}.",
-      "moderate": "Sim, com alguma cautela — {name} é razoavelmente seguro para a maioria dos viajantes: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. Fique atento aos riscos específicos indicados mais abaixo.",
+      // Reworded from "{name} é razoavelmente seguro" (a DIRECT predicate
+      // adjective on {name}, always masculine regardless of the country's own
+      // gender/number — wrong for e.g. "França" [fem] or feminine-plural
+      // names). "um destino" (always masculine singular) matches the good/
+      // danger bands above/below and needs no agreement with {name}.
+      "moderate": "Sim, com alguma cautela — {name} é um destino razoavelmente seguro para a maioria dos viajantes: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. Fique atento aos riscos específicos indicados mais abaixo.",
       "high_caution": "Sim, mas apenas com cautela real — {name} apresenta um risco considerável: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. A maioria das viagens corre bem, mas não é um destino de baixo risco.",
       "danger": "Não — {name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
     },
@@ -531,8 +548,13 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     }
   },
   "zh": {
-    "q1": "{year} 年前往 {name} 旅行安全吗？",
-    "q2": "前往 {name} 旅行的最大风险是什么？",
+    // No spaces around {name}: Chinese doesn't use spaces between characters,
+    // even around an inserted proper noun (matches country.h1_question in
+    // ui.ts, "现在前往{name}旅行安全吗？", which never had this space bug).
+    // The space before "年" stays — that ASCII digit + Chinese character
+    // boundary does conventionally take one.
+    "q1": "{year} 年前往{name}旅行安全吗？",
+    "q2": "前往{name}旅行的最大风险是什么？",
     "q3": "各国政府的旅行警告对 {name} 有何评价？",
     "a1Verdict": {
       "excellent": "是的——{name}是我们指数中最安全的目的地之一：截至{monthYear}，其得分为 {score}/10，被评为{riskLevel}。",
@@ -563,15 +585,16 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "governance": "该支柱评估法治水平和公共机构的可靠程度——得分较低意味着一旦出现问题，警方和法院可能只能提供有限的帮助。",
       "environment": "该支柱追踪该国面临风暴、洪水和地震等自然灾害的风险程度，以及其应对这些灾害的准备水平。"
     },
-    "a3Intro": "截至{monthYear}，我们已收录 {name} 的{advisoryCount}。",
+    // No spaces around {name} anywhere below either — same fix as q1/q2 above.
+    "a3Intro": "截至{monthYear}，我们已收录{name}的{advisoryCount}。",
     "a3Consensus": {
-      "normal": "总体情况令人安心：多数政府对 {name} 仅建议采取正常预防措施，没有任何一国将其提升至低级别以上的警告。",
-      "caution": "主流建议是前往 {name} 时提高警惕；目前最严厉的警告——{govLevel}——来自{governments}。",
-      "reconsider": "主流建议是重新考虑前往 {name} 的行程：最严厉的警告——{govLevel}——由{governments}发布。",
-      "avoid": "多数政府目前建议完全避免前往 {name}：最高级别的警告——{govLevel}——已由{governments}等国发布。"
+      "normal": "总体情况令人安心：多数政府对{name}仅建议采取正常预防措施，没有任何一国将其提升至低级别以上的警告。",
+      "caution": "主流建议是前往{name}时提高警惕；目前最严厉的警告——{govLevel}——来自{governments}。",
+      "reconsider": "主流建议是重新考虑前往{name}的行程：最严厉的警告——{govLevel}——由{governments}发布。",
+      "avoid": "多数政府目前建议完全避免前往{name}：最高级别的警告——{govLevel}——已由{governments}等国发布。"
     },
     "a3Cap": "这些警告严重到足以在我们的指数中占据很大权重：当多数政府发布切勿前往的警告时，{name}的总分会被明显拉低，这还是在其他支柱已有表现的基础之上。",
-    "a3None": "截至{monthYear}，我们的数据集中没有任何政府发布针对 {name} 的旅行警告——这在面积很小或偏远的地区很常见。请参考上方各支柱的得分，并在出行前查阅你所在国家政府的最新指引。",
+    "a3None": "截至{monthYear}，我们的数据集中没有任何政府发布针对{name}的旅行警告——这在面积很小或偏远的地区很常见。请参考上方各支柱的得分，并在出行前查阅你所在国家政府的最新指引。",
     "advisoryCountNoun": {
       "one": "1 条政府旅行警告",
       "other": "{n} 条政府旅行警告"
@@ -586,18 +609,35 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q1": "Ist es {year} sicher, {nameDir} zu reisen?",
     "q2": "Was ist das größte Risiko bei einer Reise {nameDir}?",
     "q3": "Was sagen staatliche Reisehinweise über {name}?",
+    // {deZaehlt}/{deGilt}/{deIstSind}/{deBirgt} are verb-form slots, separate
+    // from {name}: German predicate adjectives don't inflect for number, but
+    // the FINITE VERB always must agree with its subject — these were
+    // hardcoded singular ("zählt", "gilt", "ist", "birgt"), wrong for the
+    // ~15 plural country names (die Vereinigten Staaten, die Niederlande...).
+    // isGermanPlural/getCountryFaqData (seo.ts) pick "zählt"/"zählen" etc.
+    // Later "das Land erreicht {score}/10 ... ist als {riskLevel} eingestuft"
+    // sentences are unaffected: "das Land" (the country) is itself always
+    // singular regardless of the actual country's own number.
     "a1Verdict": {
-      "excellent": "Ja — {name} zählt zu den sichersten Reisezielen in unserem Index: Stand {monthYear} erreicht das Land {score}/10 und ist als {riskLevel} eingestuft.",
-      "good": "Ja, im Allgemeinen — {name} gilt als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
-      "moderate": "Ja, mit etwas Vorsicht — {name} ist für die meisten Reisenden ausreichend sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Achten Sie auf die weiter unten genannten spezifischen Risiken.",
-      "high_caution": "Ja, aber nur mit wirklicher Vorsicht — {name} birgt ein spürbares Risiko: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen gut, doch dies ist kein risikoarmes Reiseziel.",
-      "danger": "Nein — {name} ist derzeit ein Hochrisiko-Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
+      "excellent": "Ja — {name} {deZaehlt} zu den sichersten Reisezielen in unserem Index: Stand {monthYear} erreicht das Land {score}/10 und ist als {riskLevel} eingestuft.",
+      "good": "Ja, im Allgemeinen — {name} {deGilt} als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
+      "moderate": "Ja, mit etwas Vorsicht — {name} {deIstSind} für die meisten Reisenden ausreichend sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Achten Sie auf die weiter unten genannten spezifischen Risiken.",
+      "high_caution": "Ja, aber nur mit wirklicher Vorsicht — {name} {deBirgt} ein spürbares Risiko: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen gut, doch dies ist kein risikoarmes Reiseziel.",
+      // Reworded to reuse "{deZaehlt} zu den Hochrisiko-Reisezielen" (matches
+      // "excellent" above) instead of "ist ... ein Hochrisiko-Reiseziel",
+      // which — beyond the verb — would ALSO need the predicate noun itself
+      // to go plural ("sind ... Hochrisiko-Reiseziele") for a fully plural
+      // subject; "zählt/zählen zu den X" sidesteps that second agreement too.
+      "danger": "Nein — {name} {deZaehlt} derzeit zu den Hochrisiko-Reisezielen: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
     },
     "a1VerdictLowConfidence": "Für {name} liegen nur wenige Daten vor, betrachten Sie diese Bewertung daher mit Vorsicht: Stand {monthYear} liegt sie bei {score}/10 und ist vorläufig als {riskLevel} eingestuft — basierend vor allem auf regionalen Mustern statt auf länderspezifischen Belegen.",
     "a1Formula": "Der Wert ist ein unsicherheitsgewichtetes (Bayesian Shrinkage) geometrisches Mittel aus fünf Säulen: Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %). Eine schwache Säule zieht den Gesamtwert stärker nach unten, als eine starke ihn anhebt, und die Berechnung bezieht zudem einen kalibrierten Konsens staatlicher Reisehinweise mit ein. Sind die Daten spärlich oder veraltet, nähert sich der Wert eines Landes einem vorsichtigen regionalen Richtwert an, statt geschätzt zu werden — die vollständigen statistischen Details finden Sie auf unserer Methodik-Seite.",
     "a1Drivers": {
       "normal": "Die stärkste Säule von {name} ist {strongest} ({strongestScore}/10), während {second} ({secondScore}/10) und vor allem {weakest} ({weakestScore}/10) den Wert nach unten ziehen. {meaning}",
-      "allStrong": "{name} schneidet in allen fünf Säulen gut ab: Selbst die schwächste Säule, {weakest} ({weakestScore}/10), liegt im risikoarmen Bereich, während {strongest} ({strongestScore}/10) an der Spitze steht."
+      // {deSchneidet}: separable verb "abschneiden" ("zählt/schneidet ... ab"),
+      // same plural-verb-agreement fix as a1Verdict above ("schneidet" was
+      // hardcoded singular, wrong for plural country names).
+      "allStrong": "{name} {deSchneidet} in allen fünf Säulen gut ab: Selbst die schwächste Säule, {weakest} ({weakestScore}/10), liegt im risikoarmen Bereich, während {strongest} ({strongestScore}/10) an der Spitze steht."
     },
     "a2": {
       "critical": "Die größte Sorge für {name} ist die Säule {weakest} — mit {weakestScore}/10 die schwächste des Landes. {meaning} {drivers} Der zweitschwächste Bereich ist {second} mit {secondScore}/10 und verdient daher ebenfalls Aufmerksamkeit. Im Gegensatz dazu kommt {strongest} auf {strongestScore}/10 — in diesem Bereich ist {name} am stärksten.",

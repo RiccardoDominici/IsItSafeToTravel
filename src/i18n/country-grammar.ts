@@ -357,6 +357,20 @@ export function getGermanNominative(iso3: string, bareName: string): string {
 }
 
 /**
+ * True for the ~15 plural German country names (die Vereinigten Staaten, die
+ * Niederlande, die Philippinen, die Malediven...). Any sentence that puts
+ * {name} in subject position needs this to pick the right verb form — German
+ * predicate adjectives don't inflect for number, but the FINITE VERB always
+ * must agree with its subject's number, plural country names included
+ * ("Sind die Vereinigten Staaten sicher?", "{name} zählen zu..." not "zählt
+ * zu..."). Reused by getGermanCopula below and by the a1Verdict/a1Drivers
+ * verb-pair slots in getCountryFaqData (src/lib/seo.ts).
+ */
+export function isGermanPlural(iso3: string, bareName: string): boolean {
+  return getDeForm(iso3, bareName)?.gender === 'p';
+}
+
+/**
  * "Ist" | "Sind" — the copula the title needs ("Ist {nominative} sicher?").
  * German predicate adjectives don't inflect for number ("sicher" stays
  * "sicher" either way), but the VERB still must agree with a plural subject
@@ -369,7 +383,7 @@ export function getGermanNominative(iso3: string, bareName: string): string {
  * subject position, per the implementation brief.
  */
 export function getGermanCopula(iso3: string, bareName: string): 'Ist' | 'Sind' {
-  return getDeForm(iso3, bareName)?.gender === 'p' ? 'Sind' : 'Ist';
+  return isGermanPlural(iso3, bareName) ? 'Sind' : 'Ist';
 }
 
 /** "nach Japan" | "in die Türkei" | "in den Iran" | "ins Vereinigte Königreich".
