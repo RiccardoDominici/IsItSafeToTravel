@@ -8,6 +8,8 @@ import {
   normalizeHkAlert,
   normalizeIeRating,
   normalizeFiLevel,
+  normalizeAtLevel,
+  extractAtRestOfCountryLevel,
 } from '../normalize/advisory-levels.js';
 import type { UnifiedLevel } from '../normalize/advisory-levels.js';
 import * as cheerio from 'cheerio';
@@ -135,11 +137,42 @@ async function fetchAtAdvisories(
     title?: string;
   }>;
 
+  // Second pass: for every country whose peak level is a REGIONAL escalation
+  // (securityPartial=1), fetch that country's own detail page and read
+  // BMEIA's explicit "rest of the country" statement (see
+  // extractAtRestOfCountryLevel's doc comment) -- capping blindly at 2 would
+  // under-report real conflict countries whose own baseline is 3 (Pakistan,
+  // Burkina Faso, Israel, Russia, Nigeria, Venezuela, verified 2026-09-26).
+  // Polite: <=3 concurrent requests (rule 4), only for the subset that needs it.
+  const restOfCountryLevels = new Map<string, UnifiedLevel | null>();
+  const partialEntries = Object.entries(data).filter(([, entry]) => entry.securityPartial);
+  await fetchBatch(
+    partialEntries,
+    async ([iso2, entry]) => {
+      try {
+        const detailUrl = `https://www.bmeia.gv.at${entry.link || '/reise-services/reisewarnungen'}`;
+        const detailResponse = await fetch(detailUrl, {
+          signal: AbortSignal.timeout(20_000),
+          headers: FETCH_HEADERS,
+        });
+        if (!detailResponse.ok) return;
+        const detailHtml = await detailResponse.text();
+        restOfCountryLevels.set(iso2, extractAtRestOfCountryLevel(detailHtml));
+      } catch {
+        // Leave unset -- normalizeAtLevel falls back to the cap-at-2 default.
+      }
+    },
+    3,
+  );
+
   for (const [iso2, entry] of Object.entries(data)) {
     const country = getCountryByIso2(iso2.toUpperCase());
     if (!country) continue;
 
-    const level = Math.min(4, Math.max(1, Math.max(entry.security, entry.securityPartial || 0))) as UnifiedLevel;
+    // See normalizeAtLevel's doc comment: `securityPartial` is a boolean
+    // "this is a regional peak, not the whole country" flag, not a second
+    // competing level -- repair 2026-09-26 (PARSER-REGIONAL-BRIEF).
+    const level = normalizeAtLevel(entry, restOfCountryLevels.get(iso2));
 
     indicators.push({
       countryIso3: country.iso3,

@@ -627,6 +627,79 @@ export function normalizeFiLevel(text: string): UnifiedLevel {
   return 1;
 }
 
+/**
+ * Extract BMEIA's own explicit "rest of the country" level from a country's
+ * detail page HTML (only meaningful when `securityPartial=1`, see
+ * normalizeAtLevel). BMEIA always states this as "Sicherheitsstufe N ..."
+ * FOLLOWED, within the same clause, by one of three fixed idioms for "what's
+ * left over" -- verified live 2026-09-26 across 17 countries:
+ *   - "(im/für den) Rest des Landes" (Turkey, Thailand, Egypt, India,
+ *     Cambodia, Mexico, Brazil, Georgia, Armenia, Kosovo, Pakistan, Burkina
+ *     Faso, Nigeria)
+ *   - "restlichen Landesteile(n)" / "restlichen Regionen" (Israel: "Hohes
+ *     Sicherheitsrisiko (Sicherheitsstufe 3) für die restlichen Landesteile
+ *     Israels"; Russia: "...(Sicherheitsstufe 3) gilt in den restlichen
+ *     Regionen"; Venezuela: "...(Sicherheitsstufe 3) in den restlichen
+ *     Landesteilen")
+ *   - "übrigen Landesteile(n)" (Ethiopia: "Sicherheitsrisiko (Sicherheitsstufe
+ *     2) in Addis Abeba und in den übrigen Landesteilen")
+ * Returns null when none of these appear -- e.g. Chad and Palestine, whose
+ * pages name a capital/border-region split (or, for Palestine, a Gaza/West-
+ * Bank split covering the whole area BMEIA tracks) with no separate residual
+ * statement at all: normalizeAtLevel's cap-at-2 fallback applies there, never
+ * a guessed number.
+ */
+export function extractAtRestOfCountryLevel(html: string): UnifiedLevel | null {
+  const text = html
+    .replace(/<[^>]+>/g, ' ')
+    .replace(/&nbsp;/gi, ' ')
+    .replace(/\s+/g, ' ');
+  const m = /Sicherheitsstufe\s*(\d)[^.!]{0,60}?(?:Rest des Landes|restlichen?\s+(?:Landesteil\w*|Regionen?)|übrigen?\s+Landesteil\w*)/i.exec(
+    text,
+  );
+  if (!m) return null;
+  return Math.min(4, Math.max(1, parseInt(m[1], 10))) as UnifiedLevel;
+}
+
+/**
+ * Normalize Austria (BMEIA) advisory data to unified 1-4 scale.
+ *
+ * BMEIA's own per-country JSON object (`bmeiaCountrySecurityInfos`, see
+ * fetchAtAdvisories in advisories-tier2a.ts) carries two fields: `security`
+ * (1-4, the WORST level found anywhere on that country's page) and
+ * `securityPartial` (0/1). Repair 2026-09-26 (PARSER-REGIONAL-BRIEF): the OLD
+ * code took `Math.max(security, securityPartial)` -- but `securityPartial`
+ * is not a competing level at all, it is a BOOLEAN flag meaning "the
+ * `security` value above is a REGIONAL peak, not the whole-country level".
+ * BMEIA's own sidebar badge literally reads "Sicherheitsstufe N (regional)"
+ * whenever it is set.
+ *
+ * A first version of this fix capped every `securityPartial=1` country at 2
+ * outright. Verified live 2026-09-26 against the FULL set of 48
+ * `securityPartial=1` countries (not just the 10 originally flagged in
+ * PARSER-REGIONAL-BRIEF) that this UNDER-reports several real conflict
+ * countries whose own page states a "rest of the country" baseline of 3, not
+ * 2: Pakistan ("Hohes Sicherheitsrisiko Sicherheitsstufe 3 (von 4) gilt im
+ * Rest des Landes" -- the regional level 4 is only "entlang der ...Line of
+ * Control"), Burkina Faso, Israel, Russia, Nigeria and Venezuela all read the
+ * same way. A blanket cap would have silently turned these into "increased
+ * caution" countries, exactly the "war zone shown as safe" failure mode
+ * SOURCE-REPAIR-BRIEF warns against. Fix: read BMEIA's own explicit
+ * statement via extractAtRestOfCountryLevel (the detail page fetch the AT
+ * sub-fetcher does for every `securityPartial=1` country) and use it
+ * directly; only fall back to the cap when no such statement is found
+ * (Chad, Palestine -- never guessed higher than 2 without one).
+ */
+export function normalizeAtLevel(
+  entry: { security: number; securityPartial: number },
+  restOfCountryLevel?: UnifiedLevel | null,
+): UnifiedLevel {
+  const rawLevel = Math.min(4, Math.max(1, entry.security)) as UnifiedLevel;
+  if (!entry.securityPartial) return rawLevel;
+  if (restOfCountryLevel != null) return restOfCountryLevel;
+  return Math.min(2, rawLevel) as UnifiedLevel;
+}
+
 // --- Tier 2b normalization functions ---
 
 // Countries whose own French (or English) name is a strong signal that a sentence is
