@@ -5,7 +5,7 @@
  * axis, a signed gap chip, the vote count, and one data-derived sentence
  * naming the pillar behind our score.
  *
- * Two bar layouts, swapped by breakpoint (design polish pass, 2026-09-26):
+ * Two layouts, swapped by breakpoint (design polish passes, 2026-09-26):
  *  - <sm: stacked (label+number on their own line, full-width bar below).
  *    Works well narrow because the label has its own line to itself.
  *  - >=sm: a 3-column grid per metric (label | track | value) so the label,
@@ -16,10 +16,11 @@
  *    della community" would overflow a fixed ~8rem column, which is exactly
  *    why the very first version of this component used the stacked layout
  *    for both breakpoints instead.
- * Both layouts share the same barWidth()/BAND_TICK_X scale, so the two bars
- * stay visually comparable at a glance regardless of viewport.
+ * The track itself (ScoreBarTrack.astro) is identical either way -- see that
+ * file for why it's a plain CSS width, not an SVG.
  */
 import { scoreToColor } from '../lib/colors';
+import ScoreBarTrack from './ScoreBarTrack.astro';
 
 interface Props {
   rank: number;
@@ -52,17 +53,6 @@ const {
   communityScoreLabel,
 } = Astro.props;
 
-/** Bar fill width on a 0-200 viewBox for a 1-10 score (matches PillarBreakdown's scale). */
-function barWidth(score: number): number {
-  return Math.max((score / 10) * 200, 2);
-}
-
-// Light reference ticks at the band thresholds (bands.ts: <5 danger / 5-6 high
-// caution / 6-7 moderate / 7-8 good / >=8 excellent) so the bar's length reads
-// against the site's own scale, not just against the other bar.
-const BAND_TICK_X = [5, 6, 7, 8].map((v) => v * 20);
-const TICK_CLASS = 'text-sand-500/60 dark:text-sand-300/40';
-
 const chipClasses =
   gapDirection === 'safer'
     ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
@@ -72,6 +62,8 @@ const chipClasses =
 
 const officialColor = scoreToColor(official);
 const communityColor = scoreToColor(community);
+const officialLabel = `${ourScoreLabel}: ${official.toFixed(1)}/10`;
+const communityLabel = `${communityScoreLabel}: ${community.toFixed(1)}/10`;
 ---
 
 <li class="list-none">
@@ -94,51 +86,38 @@ const communityColor = scoreToColor(community);
       </span>
     </div>
 
-    {/* <sm: stacked bars (unchanged from the original mobile layout). */}
+    {/* <sm: stacked bars (unchanged layout from the original mobile pass). */}
     <div class="sm:hidden space-y-2 pl-9">
       <div>
         <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
           <span>{ourScoreLabel}</span>
           <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{official.toFixed(1)}/10</span>
         </div>
-        <svg viewBox="0 0 200 16" class="w-full h-3.5" role="img" aria-label={`${ourScoreLabel}: ${official.toFixed(1)}/10`}>
-          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-          {BAND_TICK_X.map((x) => <line x1={x} x2={x} y1="0" y2="16" stroke="currentColor" stroke-width="1" class={TICK_CLASS} />)}
-          <rect x="0" y="0" width={barWidth(official)} height="16" rx="4" fill={officialColor} />
-        </svg>
+        <ScoreBarTrack score={official} color={officialColor} label={officialLabel} />
       </div>
       <div>
         <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
           <span>{communityScoreLabel}</span>
           <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{community.toFixed(1)}/10</span>
         </div>
-        <svg viewBox="0 0 200 16" class="w-full h-3.5" role="img" aria-label={`${communityScoreLabel}: ${community.toFixed(1)}/10`}>
-          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-          {BAND_TICK_X.map((x) => <line x1={x} x2={x} y1="0" y2="16" stroke="currentColor" stroke-width="1" class={TICK_CLASS} />)}
-          <rect x="0" y="0" width={barWidth(community)} height="16" rx="4" fill={communityColor} />
-        </svg>
+        <ScoreBarTrack score={community} color={communityColor} label={communityLabel} />
       </div>
     </div>
 
     {/* >=sm: one row per metric -- label | track | value, so the track actually
-        uses the card's width instead of sharing a line with the label. */}
+        uses the card's width instead of sharing a line with the label. Label
+        is left-aligned so it lines up with the vote count/driver text below
+        (a right-aligned label in this same 8rem column used to float away
+        from the card's left edge). */}
     <div class="hidden sm:block space-y-2 pl-9">
       <div class="grid grid-cols-[8rem_1fr_3.5rem] items-center gap-3">
-        <span class="text-xs text-sand-600 dark:text-sand-400 text-right">{ourScoreLabel}</span>
-        <svg viewBox="0 0 200 16" class="w-full h-4" role="img" aria-label={`${ourScoreLabel}: ${official.toFixed(1)}/10`}>
-          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-          {BAND_TICK_X.map((x) => <line x1={x} x2={x} y1="0" y2="16" stroke="currentColor" stroke-width="1" class={TICK_CLASS} />)}
-          <rect x="0" y="0" width={barWidth(official)} height="16" rx="4" fill={officialColor} />
-        </svg>
+        <span class="text-xs text-sand-600 dark:text-sand-400 text-left">{ourScoreLabel}</span>
+        <ScoreBarTrack score={official} color={officialColor} label={officialLabel} />
         <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{official.toFixed(1)}/10</span>
       </div>
       <div class="grid grid-cols-[8rem_1fr_3.5rem] items-center gap-3">
-        <span class="text-xs text-sand-600 dark:text-sand-400 text-right">{communityScoreLabel}</span>
-        <svg viewBox="0 0 200 16" class="w-full h-4" role="img" aria-label={`${communityScoreLabel}: ${community.toFixed(1)}/10`}>
-          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-          {BAND_TICK_X.map((x) => <line x1={x} x2={x} y1="0" y2="16" stroke="currentColor" stroke-width="1" class={TICK_CLASS} />)}
-          <rect x="0" y="0" width={barWidth(community)} height="16" rx="4" fill={communityColor} />
-        </svg>
+        <span class="text-xs text-sand-600 dark:text-sand-400 text-left">{communityScoreLabel}</span>
+        <ScoreBarTrack score={community} color={communityColor} label={communityLabel} />
         <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{community.toFixed(1)}/10</span>
       </div>
     </div>

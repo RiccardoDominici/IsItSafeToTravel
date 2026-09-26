@@ -1,0 +1,43 @@
+---
+/**
+ * Plain-CSS score track for CommunityGapCard.astro (1-10 axis).
+ *
+ * NOT an SVG (bug found in review, 2026-09-26): an
+ * `<svg viewBox="0 0 200 16" class="w-full h-4">` never actually fills a wide
+ * grid column -- with the default preserveAspectRatio (xMidYMid meet), the
+ * browser fits the WHOLE 200x16 viewBox inside the box without distorting its
+ * aspect ratio, so a 16px-tall box can only ever render 200px of content
+ * (16 * 200/16 = 200), centred, no matter how wide `w-full` actually is. That
+ * is exactly why the bars looked like a ~200px sliver floating in the middle
+ * of a much wider desktop card. A plain `width: X%` div has no such ceiling.
+ *
+ * Shared by both of CommunityGapCard's layouts (stacked on <sm, one-row grid
+ * on >=sm) -- the track itself is now visually identical either way; only
+ * what wraps it (label position, whether a value sits inline) differs.
+ */
+interface Props {
+  score: number; // 1-10
+  color: string; // CSS color for the fill
+  label: string; // accessible label, e.g. "Data: 6.8/10"
+}
+
+const { score, color, label } = Astro.props;
+
+// 1-10 axis (not 0-10: a score can never actually go below 1, so anchoring the
+// scale there uses the bar's full width meaningfully). Floored at 1% so a
+// genuinely bottom-of-scale score still shows a visible sliver rather than
+// nothing at all.
+const fillPercent = Math.min(100, Math.max(((score - 1) / 9) * 100, 1));
+
+// Light reference ticks at the band thresholds (bands.ts: <5 danger / 5-6 high
+// caution / 6-7 moderate / 7-8 good / >=8 excellent) so the bar's length reads
+// against the site's own scale, not just against the other bar.
+const BAND_TICKS = [5, 6, 7, 8].map((v) => ((v - 1) / 9) * 100);
+---
+
+<div class="relative w-full h-3 rounded-full overflow-hidden bg-sand-200 dark:bg-sand-700" role="img" aria-label={label}>
+  {BAND_TICKS.map((pct) => (
+    <div class="absolute inset-y-0 w-px bg-sand-500/60 dark:bg-sand-300/40" style={`left: ${pct}%`} />
+  ))}
+  <div class="absolute inset-y-0 left-0 rounded-full" style={`width: ${fillPercent}%; background-color: ${color};`} />
+</div>
