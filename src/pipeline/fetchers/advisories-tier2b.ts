@@ -626,6 +626,36 @@ async function fetchRoAdvisories(
 // Sub-fetcher 5: Serbia (MFA) -- HTML-13
 // =============================================================================
 
+/**
+ * Repair 2026-09-25 (SOURCE-REPAIR-BRIEF): the 2026-09-25 11:17 UTC run pulled 183 countries
+ * from mfa.gov.rs with the exact request pattern below (bare single `fetch`, no retry); the
+ * 22:35 UTC run of the SAME code (unrelated changes only touched level-extraction, not this
+ * request) failed the very FIRST, uncontended request with "fetch failed" -- undici's generic
+ * wrapper for a network-layer failure (DNS/TCP/TLS), never reaching an HTTP response at all, so
+ * it is not the site rate-limiting or blocking us (that would surface as a clean 403/429 on
+ * `response.ok`, handled separately below). Since the request/URL/headers/concurrency are
+ * unchanged from the run that worked hours earlier, the likeliest explanation is a transient
+ * blip on mfa.gov.rs's side (or the runner's egress path to it) rather than a change on our end
+ * -- exactly the class of failure retry-with-backoff exists for. Mirrors the ES fetcher's
+ * fetchWithRetry (advisories-tier3a.ts): swallow network errors and 429/503/5xx into a retry
+ * with growing backoff, return null only once every attempt is exhausted, so one bad request
+ * degrades to "skip this country" instead of aborting 183 countries' worth of work.
+ */
+async function fetchRsWithRetry(url: string, timeoutMs: number): Promise<Response | null> {
+  for (const delayMs of [0, 2_000, 5_000]) {
+    if (delayMs) await new Promise((r) => setTimeout(r, delayMs));
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(timeoutMs), headers: FETCH_HEADERS });
+      if (response.status === 429 || response.status === 503 || response.status >= 500) continue;
+      return response;
+    } catch {
+      // Network-level failure ("fetch failed": DNS/TCP/TLS) -- fall through to retry, or give up
+      // after the loop and let the caller treat it the same as an unreachable site.
+    }
+  }
+  return null;
+}
+
 async function fetchRsAdvisories(
   rawDir: string,
   fetchedAt: string,
@@ -636,11 +666,12 @@ async function fetchRsAdvisories(
 
   const baseUrl = 'https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory';
 
-  const response = await fetch(baseUrl, {
-    signal: AbortSignal.timeout(30_000),
-    headers: FETCH_HEADERS,
-  });
+  const response = await fetchRsWithRetry(baseUrl, 30_000);
 
+  if (!response) {
+    console.warn('[ADVISORIES-T2B] RS: listing page unreachable after retries, returning empty');
+    return { indicators, advisoryInfo };
+  }
   if (!response.ok) {
     console.warn(`[ADVISORIES-T2B] RS: HTTP ${response.status}, returning empty`);
     return { indicators, advisoryInfo };
@@ -672,16 +703,17 @@ async function fetchRsAdvisories(
     return { indicators, advisoryInfo };
   }
 
-  // Batch-crawl per-country pages
+  // Batch-crawl per-country pages. Retry-with-backoff per page too (not just the listing page):
+  // the same transient-failure risk applies to any one of ~190 individual requests, and losing a
+  // single severe-advisory country (e.g. a war zone) to one bad connection is exactly the silent
+  // failure mode this repair targets. Concurrency lowered 3 -> 2 (SOURCE-REPAIR-BRIEF: "lower
+  // concurrency" as an additional politeness margin) -- still well within the project's <= 3 cap.
   await fetchBatch(
     countryEntries,
     async (entry) => {
       try {
-        const pageResponse = await fetch(entry.url, {
-          signal: AbortSignal.timeout(15_000),
-          headers: FETCH_HEADERS,
-        });
-        if (!pageResponse.ok) return;
+        const pageResponse = await fetchRsWithRetry(entry.url, 15_000);
+        if (!pageResponse || !pageResponse.ok) return;
 
         const pageHtml = await pageResponse.text();
         // RS writes free-form prose reusing the same generic safety tips
@@ -716,7 +748,7 @@ async function fetchRsAdvisories(
         // Individual country page failed, skip silently
       }
     },
-    3,
+    2,
   );
 
   console.log(`[ADVISORIES-T2B] RS: ${indicators.length} countries from MFA`);

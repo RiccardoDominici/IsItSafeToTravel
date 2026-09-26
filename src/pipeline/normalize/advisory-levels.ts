@@ -892,6 +892,25 @@ export function extractRsSecuritySection(bodyText: string): string | null {
  * matches RS's real vocabulary (confirmed against live pages for Afghanistan,
  * Israel, Jordan, Palestine, Oman, Iraq, Somalia, CAR, Haiti, Nigeria, Sudan)
  * and returns null instead of defaulting when nothing matches.
+ *
+ * Repair 2026-09-25 (SOURCE-REPAIR-BRIEF, second pass): the audit above fixed
+ * the ESCALATED end but left this function with NO path to Level 1 at all —
+ * every calm country (nothing in the 4/3/2 keyword lists) fell through to
+ * the closing `return null`, silently dropping most of the source's normal-
+ * risk countries (verified: Switzerland "the security situation ... is good
+ * ... relatively little crime", Canada "high security level in the whole
+ * territory", China "High-level security." — a real production run measured
+ * this at 97/183 countries, roughly half the source, before this fix).
+ * Level 1 patterns below are checked LAST (only once 4/3/2 have already
+ * failed to match), so a country using both a calm phrase AND a real caution
+ * one (Greece: "overall security situation ... is good" but ALSO "advised to
+ * exercise caution due to potential risk of theft") still correctly resolves
+ * to the higher level — verified live, not just reasoned about.
+ *
+ * Also added to Level 4: "advised not to travel" (Ukraine: "citizens ... are
+ * advised not to travel to Ukraine due to the war situation" — a wording
+ * variant of the already-handled "refrain from (all/any) travel" that the
+ * 2026-09-25 audit above did not yet cover).
  */
 export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
   const lower = sectionText.toLowerCase();
@@ -899,7 +918,8 @@ export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
     lower.includes('do not travel') ||
     lower.includes('extremely high') ||
     lower.includes('leave immediately') ||
-    /refrain from (all |any(?: type of)? )?travel/.test(lower)
+    /refrain from (all |any(?: type of)? )?travel/.test(lower) ||
+    /advis\w*\s+not\s+to\s+travel/.test(lower)
   ) return 4;
   if (
     lower.includes('not recommended') ||
@@ -909,6 +929,12 @@ export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
     lower.includes('high level')
   ) return 3;
   if (lower.includes('increased') || lower.includes('caution') || lower.includes('elevated')) return 2;
+  if (
+    /security situation.{0,30}is good/.test(lower) ||
+    /high[\s-]level(?:\s+of)?\s+security|high security level/.test(lower) ||
+    lower.includes('public peace and order') ||
+    lower.includes('safest countries')
+  ) return 1;
   return null;
 }
 
