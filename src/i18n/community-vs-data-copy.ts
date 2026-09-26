@@ -43,8 +43,15 @@ export interface CommunityVsDataCopy {
   /** {date} */
   dataAsOf: string;
 
+  /** Stat strip under the intro (design polish pass, 2026-09-26) -- shown only when countries are ranked. */
+  statCountriesLabel: string;
+  statVotesLabel: string;
+  statGapLabel: string;
+
   rankingTitle: string;
+  /** Deliberately short (one word) -- CommunityGapCard.astro's desktop bar rows put this in a fixed ~8rem column. */
   ourScoreLabel: string;
+  /** Same length constraint as ourScoreLabel; reuses ui.ts's sentiment.badge wording per locale for consistency with the country page's own "Community" pill. */
   communityScoreLabel: string;
   /** {gap} — short, prominent per-row chip. */
   gapChipSafer: string;
@@ -109,9 +116,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'Travelers rate {name} {gap} points less safe than our data — the widest gap among the {count} {countryNoun} with enough votes so far.',
     dataAsOf: 'Data as of {date}.',
+    statCountriesLabel: 'Countries ranked',
+    statVotesLabel: 'Total votes',
+    statGapLabel: 'Widest gap',
     rankingTitle: 'Countries Ranked by Gap',
-    ourScoreLabel: 'Our score',
-    communityScoreLabel: 'Community score',
+    ourScoreLabel: 'Data',
+    communityScoreLabel: 'Community',
     gapChipSafer: '{gap} safer, per travelers',
     gapChipLessSafe: '{gap} less safe, per travelers',
     gapChipNeutral: 'Matches our score',
@@ -155,9 +165,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'I voti della community collocano {name} {gap} punti sotto il nostro punteggio — il distacco più ampio tra i {count} {countryNoun} con voti sufficienti finora.',
     dataAsOf: 'Dati aggiornati al {date}.',
+    statCountriesLabel: 'Paesi in classifica',
+    statVotesLabel: 'Voti totali',
+    statGapLabel: 'Divario più ampio',
     rankingTitle: 'Paesi in Classifica per Divario',
-    ourScoreLabel: 'Il nostro punteggio',
-    communityScoreLabel: 'Punteggio della community',
+    ourScoreLabel: 'Dati',
+    communityScoreLabel: 'Community',
     gapChipSafer: '{gap} sopra il punteggio',
     gapChipLessSafe: '{gap} sotto il punteggio',
     gapChipNeutral: 'In linea con i nostri dati',
@@ -201,9 +214,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'Los votos de la comunidad sitúan a {name} {gap} puntos por debajo de nuestra puntuación — la mayor diferencia entre los {count} {countryNoun} con votos suficientes hasta ahora.',
     dataAsOf: 'Datos actualizados a fecha de {date}.',
+    statCountriesLabel: 'Países clasificados',
+    statVotesLabel: 'Votos totales',
+    statGapLabel: 'Mayor diferencia',
     rankingTitle: 'Países Clasificados por Diferencia',
-    ourScoreLabel: 'Nuestra puntuación',
-    communityScoreLabel: 'Puntuación de la comunidad',
+    ourScoreLabel: 'Datos',
+    communityScoreLabel: 'Comunidad',
     gapChipSafer: '{gap} por encima',
     gapChipLessSafe: '{gap} por debajo',
     gapChipNeutral: 'Coincide con nuestros datos',
@@ -247,9 +263,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'Les votes de la communauté placent {name} {gap} points en dessous de notre score — le plus grand écart parmi les {count} {countryNoun} ayant assez de votes à ce jour.',
     dataAsOf: 'Données à jour au {date}.',
+    statCountriesLabel: 'Pays classés',
+    statVotesLabel: 'Votes au total',
+    statGapLabel: 'Plus grand écart',
     rankingTitle: 'Pays Classés par Écart',
-    ourScoreLabel: 'Notre score',
-    communityScoreLabel: 'Score de la communauté',
+    ourScoreLabel: 'Données',
+    communityScoreLabel: 'Communauté',
     gapChipSafer: '{gap} au-dessus',
     gapChipLessSafe: '{gap} en dessous',
     gapChipNeutral: 'Conforme à nos données',
@@ -293,9 +312,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'Os votos da comunidade colocam {name} {gap} pontos abaixo da nossa pontuação — a maior diferença entre os {count} {countryNoun} com votos suficientes até agora.',
     dataAsOf: 'Dados atualizados em {date}.',
+    statCountriesLabel: 'Países classificados',
+    statVotesLabel: 'Votos totais',
+    statGapLabel: 'Maior diferença',
     rankingTitle: 'Países Classificados por Diferença',
-    ourScoreLabel: 'Nossa pontuação',
-    communityScoreLabel: 'Pontuação da comunidade',
+    ourScoreLabel: 'Dados',
+    communityScoreLabel: 'Comunidade',
     gapChipSafer: '{gap} acima',
     gapChipLessSafe: '{gap} abaixo',
     gapChipNeutral: 'Alinhado com os nossos dados',
@@ -336,9 +358,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineSafer: '旅行者投票认为{name}比我们的评分高 {gap} 分——这是目前有足够投票的 {count} {countryNoun}中差距最大的一个。',
     headlineLessSafe: '旅行者投票认为{name}比我们的评分低 {gap} 分——这是目前有足够投票的 {count} {countryNoun}中差距最大的一个。',
     dataAsOf: '数据截至 {date}。',
+    statCountriesLabel: '已排名国家',
+    statVotesLabel: '总票数',
+    statGapLabel: '最大差距',
     rankingTitle: '按差距排名的国家',
-    ourScoreLabel: '我们的评分',
-    communityScoreLabel: '社区评分',
+    ourScoreLabel: '数据',
+    communityScoreLabel: '社区',
     gapChipSafer: '{gap} 更安全',
     gapChipLessSafe: '{gap} 较不安全',
     gapChipNeutral: '与我们的评分基本一致',
@@ -380,9 +405,12 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe:
       'Community-Stimmen sehen {name} {gap} Punkte unter unserer Bewertung — der größte Unterschied unter den {count} {countryNoun} mit bisher ausreichend Stimmen.',
     dataAsOf: 'Stand der Daten: {date}.',
+    statCountriesLabel: 'Eingestufte Länder',
+    statVotesLabel: 'Stimmen insgesamt',
+    statGapLabel: 'Größte Abweichung',
     rankingTitle: 'Länder nach Abweichung Sortiert',
-    ourScoreLabel: 'Unsere Bewertung',
-    communityScoreLabel: 'Community-Bewertung',
+    ourScoreLabel: 'Daten',
+    communityScoreLabel: 'Community',
     gapChipSafer: '{gap} höher',
     gapChipLessSafe: '{gap} niedriger',
     gapChipNeutral: 'Entspricht unserer Bewertung',

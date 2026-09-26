@@ -106,6 +106,7 @@ const ranked: RankedEntry[] = sentimentEntries
   .sort((a, b) => b.gap - a.gap);
 
 const hasEntries = ranked.length > 0;
+const totalVotes = ranked.reduce((sum, e) => sum + e.votes, 0);
 const isShortList = ranked.length < 10; // brief's threshold for the "more countries are joining" CTA block
 // Thin-page guard: a 1-2 row ranking is not a page worth indexing. Rule lives
 // here (not just in copy) -- scripts/validate-seo.ts asserts it stays wired up.
@@ -188,7 +189,10 @@ const methodologyParts = c.methodologyText.split('{link}');
       <p class="text-sm text-sand-500 dark:text-sand-400">{dataAsOfText}</p>
     </header>
 
-    <div class="max-w-2xl mx-auto space-y-3 text-center">
+    {/* Left-aligned body copy (design polish pass, 2026-09-26) -- long centred
+        paragraphs are hard to read; the column itself stays centred on the
+        page via mx-auto, matching the H1/date above. */}
+    <div class="max-w-2xl mx-auto space-y-3 text-left">
       {headlineText && (
         <p class="text-lg font-medium text-sand-800 dark:text-sand-100 leading-relaxed">
           {headlineText}
@@ -198,6 +202,33 @@ const methodologyParts = c.methodologyText.split('{link}');
         {c.introLead}
       </p>
     </div>
+
+    {/* Compact stat strip (design polish pass, 2026-09-26) -- every number
+        computed above, nothing invented; hidden entirely when there is
+        nothing to summarize (emptyState covers that case instead). */}
+    {hasEntries && (
+      <div class="max-w-2xl mx-auto grid grid-cols-3 gap-3">
+        <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
+          <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{ranked.length}</p>
+          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statCountriesLabel}</p>
+        </div>
+        <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
+          <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{totalVotes}</p>
+          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statVotesLabel}</p>
+        </div>
+        <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
+          {headlineEntry && (
+            <p class="text-base sm:text-lg font-heading font-bold text-sand-800 dark:text-sand-100 truncate">
+              {headlineEntry.name}{' '}
+              <span class={headlineEntry.gap >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-red-600 dark:text-red-400'}>
+                {formatSigned(headlineEntry.gap)}
+              </span>
+            </p>
+          )}
+          <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">{c.statGapLabel}</p>
+        </div>
+      </div>
+    )}
 
     <section>
       <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
@@ -251,11 +282,15 @@ const methodologyParts = c.methodologyText.split('{link}');
             <p class="text-xs font-semibold uppercase tracking-wide text-sand-500 dark:text-sand-400 mb-2">
               {c.suggestedLabel}
             </p>
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+            {/* Wrapping flex, not a fixed-column grid (design polish pass,
+                2026-09-26): country names vary a lot in length across 7
+                locales ("Vote on United Kingdom →" vs "Vota Giappone →"),
+                so each link sizes to its own content instead of truncating. */}
+            <div class="flex flex-wrap gap-2">
               {suggested.map((country) => (
                 <a
                   href={`/${lang}/${r.country}/${country.iso3.toLowerCase()}/#community-sentiment`}
-                  class="text-sm text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-700 dark:hover:text-terracotta-300 hover:underline rounded-lg border border-sand-200 dark:border-sand-700 px-3 py-2 truncate transition-colors"
+                  class="text-sm whitespace-nowrap text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-700 dark:hover:text-terracotta-300 hover:underline rounded-lg border border-sand-200 dark:border-sand-700 px-3 py-2 transition-colors"
                 >
                   {c.voteLinkText.replace('{name}', getLocalizedCountryName(country, lang))}
                 </a>
