@@ -482,8 +482,93 @@ async function fetchHkAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 4: New Zealand (SafeTravel.govt.nz) -- HTML-02
+// Sub-fetcher 4: New Zealand (SafeTravel.govt.nz) -- repair 2026-09-26
+// (PARSER-REGIONAL-BRIEF)
 // =============================================================================
+//
+// The OLD implementation had TWO bugs, both from reading unstructured page TEXT instead of
+// the site's own structured data:
+//  1. Primary path: `<a href*="/destinations/">` link scraping. The live site's listing page
+//     is NOT server-rendered that way at all (verified 2026-09-26: only ONE such link exists
+//     on the whole page, an "about our travel advice" nav item) -- this path always produced
+//     <=5 indicators and always fell through to bug 2.
+//  2. Fallback path: fetched each (of a 50-country SAMPLE) per-country page and did
+//     `pageHtml.toLowerCase().includes('do not travel')` ANYWHERE on the page. SafeTravel
+//     states an OVERALL level for the country PLUS separate "do not travel"/"avoid non-
+//     essential travel" call-outs for named border zones and regions -- a bare substring
+//     search matches those regional call-outs too and promotes the WHOLE country. Verified
+//     live: Armenia's own page has an "in Armenia overall" section stating "Exercise normal
+//     safety and security precautions ... (level 1 of 4)" AND a separate "within 5km of the
+//     border with Azerbaijan or to the Nagorno-Karabakh region" section stating "Do not
+//     travel ... (level 4 of 4)" -- the old fallback saw the second string and reported
+//     Armenia as Level 4 for the whole country.
+//
+// The fix uses the site's OWN structured data instead of either page's free text (repair
+// rule: prefer structured endpoints over HTML scraping). The `/destinations` listing page
+// server-renders a `<div id="js-country-listing" data-content="{...}">` JSON blob (NOT
+// JS-fetched -- a Kentico CMS hydration pattern) with one entry per country: an ISO2 `code`,
+// the country name/URL, and -- critically -- an `adviceLevel` bucket ("avoid" / "high" /
+// "medium" / "low" / "normal") that IS ALREADY the overall level, unaffected by regional
+// call-outs. Verified 2026-09-26 by cross-checking all of ARM/AZE/CMR/COL/DJI/DZA/KHM/TJK
+// (the countries flagged by the peer-median evidence check) plus AUS/AFG/BHR/ALB against
+// each country's own per-country page, which separately states the SAME overall level in
+// its "in <Country> overall" accordion section as an explicit "(level N of 4)" -- 12/12
+// matched. One JSON fetch also means far better coverage (222 countries vs a 50-country
+// sample) and is far more polite to the server (1 request instead of up to 50).
+export const NZ_ADVICE_LEVEL_MAP: Record<string, UnifiedLevel> = {
+  avoid: 4, // "Do not travel"
+  high: 3, // "Avoid non-essential travel"
+  medium: 2, // "Exercise increased caution"
+  low: 1, // "Exercise normal precautions" (countries with a written low-risk assessment)
+  normal: 1, // "Exercise normal precautions" (countries with no separate written assessment)
+};
+
+interface NzListingEntry {
+  code: string;
+  link: { title: string; href: string };
+  region?: string;
+  adviceLevel: string;
+  updatedDate?: string;
+}
+
+/**
+ * Extract the per-country listing array from a live `/destinations` page. The page is
+ * server-rendered (Kentico CMS), not JS-fetched: `<div id="js-country-listing"
+ * data-content="{&quot;data&quot;:[...]}">` carries the full JSON already, HTML-entity
+ * escaped for the double-quoted attribute -- cheerio decodes that for us when reading the
+ * attribute, no manual unescaping needed. Throws (never returns a guessed/empty result) if
+ * the element or its JSON is missing or malformed, so a markup change fails loudly instead
+ * of silently reporting zero countries.
+ */
+export function extractNzListingEntries(html: string): NzListingEntry[] {
+  const $ = cheerio.load(html);
+  const rawContent = $('#js-country-listing').attr('data-content');
+  if (!rawContent) {
+    throw new Error('js-country-listing data-content not found — SafeTravel markup may have changed');
+  }
+  const parsed: { data: NzListingEntry[] } = JSON.parse(rawContent);
+  return parsed.data;
+}
+
+/** NZ's own "D Month YYYY" update-date format (e.g. "27 July 2026") -> ISO, or undefined if
+ * unparseable. Built explicitly at UTC midnight (never `new Date(raw).toISOString()`
+ * directly) -- that would parse the string in the RUNNER's local timezone first and could
+ * silently shift the calendar date by a day once converted to UTC. */
+export function parseNzUpdateDate(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  const m = raw.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (!m) return undefined;
+  const [, day, monthName, year] = m;
+  const month = NZ_MONTH_INDEX[monthName.toLowerCase()];
+  if (month === undefined) return undefined;
+  const parsed = new Date(Date.UTC(Number(year), month, Number(day)));
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
+
+const NZ_MONTH_INDEX: Record<string, number> = {
+  january: 0, february: 1, march: 2, april: 3, may: 4, june: 5,
+  july: 6, august: 7, september: 8, october: 9, november: 10, december: 11,
+};
 
 async function fetchNzAdvisories(
   rawDir: string,
@@ -493,128 +578,73 @@ async function fetchNzAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  // First try the destinations listing page
-  let gotListingData = false;
-  try {
-    const response = await fetch('https://www.safetravel.govt.nz/destinations', {
-      signal: AbortSignal.timeout(30_000),
-      headers: FETCH_HEADERS,
+  const response = await fetch('https://www.safetravel.govt.nz/destinations', {
+    signal: AbortSignal.timeout(30_000),
+    headers: FETCH_HEADERS,
+  });
+  if (!response.ok) {
+    throw new Error(`destinations listing: HTTP ${response.status}`);
+  }
+
+  const html = await response.text();
+  const entries = extractNzListingEntries(html);
+  writeJson(join(rawDir, 'advisories-nz-listing.json'), {
+    fetchedAt,
+    totalEntries: entries.length,
+    entries,
+  });
+
+  const unmatchedCountries: string[] = [];
+  const unrecognizedLevels: string[] = [];
+
+  for (const entry of entries) {
+    // Kosovo's own listing entry ships an EMPTY `code` (verified live 2026-09-26 -- not a
+    // parsing bug on our end, NZ's own data has no ISO2 for it, presumably because Kosovo
+    // has no official ISO 3166-1 alpha-2 assignment); its `link.title` ("Kosovo") still
+    // matches our config's name exactly, so fall back to a name lookup before giving up.
+    const country = getCountryByIso2(entry.code.toUpperCase()) ?? getCountryByName(entry.link?.title ?? '');
+    if (!country) {
+      unmatchedCountries.push(`${entry.code} (${entry.link?.title ?? '?'})`);
+      continue;
+    }
+
+    const level = NZ_ADVICE_LEVEL_MAP[entry.adviceLevel];
+    if (level === undefined) {
+      unrecognizedLevels.push(`${country.iso3}: adviceLevel="${entry.adviceLevel}"`);
+      continue; // never guess — emit nothing for this country
+    }
+
+    indicators.push({
+      countryIso3: country.iso3,
+      indicatorName: 'advisory_level_nz',
+      value: level,
+      year: currentYear,
+      source: 'advisories_nz',
+      fetchedAt,
     });
 
-    if (response.ok) {
-      const html = await response.text();
-      const $ = cheerio.load(html);
-
-      // Look for country entries with advisory levels
-      $('a[href*="/destinations/"]').each((_, el) => {
-        const text = $(el).text().trim();
-        const parentText = $(el).parent().text().trim().toLowerCase();
-        const country = getCountryByName(text);
-        if (!country) return;
-
-        let level: UnifiedLevel = 1;
-        if (parentText.includes('do not travel')) {
-          level = 4;
-        } else if (parentText.includes('avoid non-essential') || parentText.includes('avoid unnecessary')) {
-          level = 3;
-        } else if (parentText.includes('increased caution') || parentText.includes('high degree')) {
-          level = 2;
-        }
-
-        indicators.push({
-          countryIso3: country.iso3,
-          indicatorName: 'advisory_level_nz',
-          value: level,
-          year: currentYear,
-          source: 'advisories_nz',
-          fetchedAt,
-        });
-
-        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-        advisoryInfo[country.iso3].nz = {
-          level,
-          text: NZ_LEVEL_TEXT[level] || `Level ${level}`,
-          source: 'New Zealand SafeTravel',
-          url: `https://www.safetravel.govt.nz/destinations/${text.toLowerCase().replace(/\s+/g, '-')}`,
-        };
-      });
-
-      if (indicators.length > 5) {
-        gotListingData = true;
-      }
-    }
-  } catch {
-    // Listing page failed, will try per-country pages
+    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+    advisoryInfo[country.iso3].nz = {
+      level,
+      text: NZ_LEVEL_TEXT[level] || `Level ${level}`,
+      source: 'New Zealand SafeTravel',
+      url: `https://www.safetravel.govt.nz${entry.link.href}`,
+      updatedAt: parseNzUpdateDate(entry.updatedDate),
+    };
   }
 
-  // If listing page was empty (JS-rendered), try per-country pages
-  if (!gotListingData) {
-    const countrySlugEntries = COUNTRIES.map(c => ({
-      country: c,
-      slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-    }));
-
-    // Only sample a subset to avoid hammering the server
-    const sampleEntries = countrySlugEntries.slice(0, 50);
-
-    await fetchBatch(
-      sampleEntries,
-      async (entry) => {
-        try {
-          const url = `https://www.safetravel.govt.nz/destinations/${entry.slug}`;
-          const r = await fetch(url, {
-            signal: AbortSignal.timeout(15_000),
-            headers: FETCH_HEADERS,
-          });
-
-          if (!r.ok) return;
-
-          const html = await r.text();
-          const pageLower = html.toLowerCase();
-
-          // Look for level text
-          let level: UnifiedLevel = 1;
-          if (pageLower.includes('do not travel')) {
-            level = 4;
-          } else if (pageLower.includes('avoid non-essential travel') || pageLower.includes('avoid unnecessary travel')) {
-            level = 3;
-          } else if (pageLower.includes('exercise increased caution') || pageLower.includes('increased caution')) {
-            level = 2;
-          } else if (pageLower.includes('exercise normal precautions') || pageLower.includes('normal precautions')) {
-            level = 1;
-          } else {
-            return; // Could not determine level, skip
-          }
-
-          indicators.push({
-            countryIso3: entry.country.iso3,
-            indicatorName: 'advisory_level_nz',
-            value: level,
-            year: currentYear,
-            source: 'advisories_nz',
-            fetchedAt,
-          });
-
-          if (!advisoryInfo[entry.country.iso3]) advisoryInfo[entry.country.iso3] = {};
-          advisoryInfo[entry.country.iso3].nz = {
-            level,
-            text: NZ_LEVEL_TEXT[level] || `Level ${level}`,
-            source: 'New Zealand SafeTravel',
-            url: `https://www.safetravel.govt.nz/destinations/${entry.slug}`,
-          };
-        } catch {
-          // Individual country page failed, skip silently
-        }
-      },
-      5,
+  if (unmatchedCountries.length > 0) {
+    console.warn(
+      `[ADVISORIES-T2A] NZ: ${unmatchedCountries.length} listing entries did not match a known country (skipped): ${unmatchedCountries.join(', ')}`,
     );
-
-    if (indicators.length === 0) {
-      console.warn('[ADVISORIES-T2A] NZ: SafeTravel appears to be JS-rendered, returning empty result');
-    }
+  }
+  if (unrecognizedLevels.length > 0) {
+    console.warn(
+      `[ADVISORIES-T2A] NZ: ${unrecognizedLevels.length} entries had an unrecognized adviceLevel value — skipped, never guessed: ${unrecognizedLevels.join(', ')}`,
+    );
   }
 
-  console.log(`[ADVISORIES-T2A] NZ: ${indicators.length} countries from SafeTravel`);
+  console.log(`[ADVISORIES-T2A] NZ: ${indicators.length} countries from SafeTravel's structured listing`);
   return { indicators, advisoryInfo };
 }
 
