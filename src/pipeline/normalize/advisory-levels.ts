@@ -1181,16 +1181,50 @@ export function extractRsSecuritySection(bodyText: string): string | null {
  * advised not to travel to Ukraine due to the war situation" — a wording
  * variant of the already-handled "refrain from (all/any) travel" that the
  * 2026-09-25 audit above did not yet cover).
+ *
+ * Repair 2026-09-26 (PARSER-REGIONAL-BRIEF spot check): the "refrain from
+ * .../advised not to travel" checks above ran on the WHOLE section with a
+ * bare substring/regex test, so a REGIONAL "refrain from travel" sentence
+ * wrongly promoted the whole country to 4 — found on Panama, whose real page
+ * reads "citizens ... are advised to refrain from traveling to the Caribbean
+ * PROVINCE OF BOCAS DEL TORO in the Republic of Panama until further
+ * notice", a single province, while the rest of the section is ordinary
+ * level-2 crime-caution prose ("the crime rate ... is high, and travellers
+ * are advised to exercise a high degree of caution"). Fixed by scoping these
+ * two checks to individual sentences and skipping (not un-escalating to
+ * null — see sawScoped4 below) any hit whose OWN "travel(l)?ing? to (the)?"
+ * object names a sub-national unit (RS_REGIONAL_TRAVEL_TARGET) rather than a
+ * country. Anchored to right after "to", not a sentence-wide scan, so it
+ * does not misfire on a country whose own official name contains one of
+ * these words well before the "travel to" clause — verified against
+ * Palestine's real page, "in the STATE of Palestine, caused by the ongoing
+ * war, citizens ... are advised to refrain from traveling TO THIS COUNTRY"
+ * (the object right after "to" is the generic "this country", not "State"),
+ * which still correctly resolves to 4. Also re-verified live against every
+ * other country this doc comment's own history calls out as genuine
+ * (Afghanistan, Israel, Jordan, Oman, Ukraine): all name the country itself
+ * (or a generic "this country") immediately after "to", none regress.
  */
+const RS_REGIONAL_TRAVEL_TARGET =
+  /travel(?:l?ing)?\s+to\s+(?:the\s+)?(?:[a-z'-]+\s+){0,2}(?:province|region|state|prefecture|governorate|district|county|zone|island|peninsula|coast\w*)\b/i;
+
 export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
   const lower = sectionText.toLowerCase();
-  if (
-    lower.includes('do not travel') ||
-    lower.includes('extremely high') ||
-    lower.includes('leave immediately') ||
-    /refrain from (all |any(?: type of)? )?travel/.test(lower) ||
-    /advis\w*\s+not\s+to\s+travel/.test(lower)
-  ) return 4;
+  if (lower.includes('do not travel') || lower.includes('extremely high') || lower.includes('leave immediately')) {
+    return 4;
+  }
+
+  // Sentence-scoped: either construction can name a sub-national destination
+  // instead of the country (see the repair note above).
+  let sawScoped4 = false;
+  for (const sentence of lower.split(/(?<=[.!?])\s+/)) {
+    const hit =
+      /refrain from (all |any(?: type of)? )?travel/.test(sentence) || /advis\w*\s+not\s+to\s+travel/.test(sentence);
+    if (!hit) continue;
+    if (RS_REGIONAL_TRAVEL_TARGET.test(sentence)) sawScoped4 = true;
+    else return 4; // genuine, unscoped -- no need to keep scanning
+  }
+
   if (
     lower.includes('not recommended') ||
     lower.includes('not advise') ||
@@ -1205,6 +1239,12 @@ export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
     lower.includes('public peace and order') ||
     lower.includes('safest countries')
   ) return 1;
+  // A regionally-scoped "refrain from travel" was found but nothing else in
+  // the section matched a lower tier either -- a real regional warning
+  // exists (Panama), so per this project's "partial warning never promotes
+  // past increased caution" rule (mirrors DE/NL/BE/FR/CH/AT elsewhere in
+  // this file) this is 2, never the unscoped 4 and never a guessed null.
+  if (sawScoped4) return 2;
   return null;
 }
 

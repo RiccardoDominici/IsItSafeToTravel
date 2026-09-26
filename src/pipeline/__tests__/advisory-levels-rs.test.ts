@@ -70,6 +70,38 @@ describe('normalizeRsLevel (RS/MFA "SECURITY SITUATION" section)', () => {
       'The overall security situation in Greece is good. Due to the austerity measures of the Government of Greece, protests are frequent in large cities. Serbian citizens are advised to exercise caution due to the potential risk of theft, particularly during tourist season.';
     assert.equal(normalizeRsLevel(text), 2);
   });
+
+  // Repair 2026-09-26 (PARSER-REGIONAL-BRIEF spot check): a REGIONAL "refrain from travel"
+  // sentence was wrongly promoting the whole country to Level 4 -- found on Panama.
+  it('Panama: "refrain from traveling to the Caribbean province of Bocas del Toro" (a single province) is NOT a whole-country Level 4 -- falls through to the section\'s own Level 2 crime-caution text', () => {
+    const text =
+      "Citizens of the Republic of Serbia are advised to refrain from traveling to the Caribbean province of Bocas del Toro in the Republic of Panama until further notice. In recent times, this area has seen violent protests and road blockades. The crime rate in Panama is high, and travellers are advised to exercise a high degree of caution.";
+    assert.equal(normalizeRsLevel(text), 2);
+  });
+
+  it('Panama-shaped regional warning with NO other section content at all -> capped at 2, never null and never the regional 4', () => {
+    const text =
+      'Citizens of the Republic of Serbia are advised to refrain from traveling to the border region of a neighbouring country until further notice.';
+    assert.equal(normalizeRsLevel(text), 2);
+  });
+
+  it('Israel: "refrain from all travel to Israel" (the country itself, not a region) -> still Level 4, unaffected by the Panama fix', () => {
+    const text =
+      'Due to the deterioration of the security situation following the outbreak of hostilities, citizens of the Republic of Serbia are advised to refrain from all travel to Israel until further notice.';
+    assert.equal(normalizeRsLevel(text), 4);
+  });
+
+  it('Jordan: "refrain from any type of travel to Jordan" -> still Level 4', () => {
+    const text =
+      'Due to the deterioration of the security situation and hostilities in the Middle East region, a warning and recommendation is given that citizens of the Republic of Serbia should refrain from any type of travel to Jordan until further notice.';
+    assert.equal(normalizeRsLevel(text), 4);
+  });
+
+  it('Palestine: "refrain from traveling to this country" -- "State of Palestine" appears earlier in the SAME sentence, but the object right after "to" is the generic "this country", not "State" -> still Level 4 (guards against a naive sentence-wide regional-word scan)', () => {
+    const text =
+      'Due to the deteriorating security situation in the State of Palestine, caused by the ongoing war, citizens of the Republic of Serbia are advised to refrain from traveling to this country.';
+    assert.equal(normalizeRsLevel(text), 4);
+  });
 });
 
 describe('extractRsSecuritySection', () => {
