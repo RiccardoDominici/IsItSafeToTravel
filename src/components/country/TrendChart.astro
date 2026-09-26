@@ -14,6 +14,25 @@ interface Props {
 const { data, pillarData, lang, iso3 } = Astro.props;
 const t = useTranslations(lang);
 
+// Small, page-local labels for the chart chrome (loading state, time-range
+// buttons, reset) -- these were hardcoded English strings, invisible to a
+// server-rendered fetch since the chart itself is client-side D3 (2026-09-26,
+// found while measuring zh vs en content parity, content.md follow-up). Local
+// table rather than new ui.ts keys, same pattern as AuthorityLinks.astro /
+// SentimentPillar.astro (ui.ts is a merge hot spot this round). Button
+// data-range values / ids are untouched -- the client script keys off those,
+// never off the visible text.
+const chartLabels: Record<Lang, { loading: string; range1m: string; range6m: string; range1y: string; range10y: string; rangeMax: string; reset: string; rangeGroup: string }> = {
+  en: { loading: 'Loading chart…', range1m: '1M', range6m: '6M', range1y: '1Y', range10y: '10Y', rangeMax: 'MAX', reset: 'Reset', rangeGroup: 'Time range' },
+  it: { loading: 'Caricamento grafico…', range1m: '1M', range6m: '6M', range1y: '1A', range10y: '10A', rangeMax: 'MAX', reset: 'Reimposta', rangeGroup: 'Intervallo di tempo' },
+  es: { loading: 'Cargando gráfico…', range1m: '1M', range6m: '6M', range1y: '1A', range10y: '10A', rangeMax: 'MÁX', reset: 'Restablecer', rangeGroup: 'Intervalo de tiempo' },
+  fr: { loading: 'Chargement du graphique…', range1m: '1M', range6m: '6M', range1y: '1A', range10y: '10A', rangeMax: 'MAX', reset: 'Réinitialiser', rangeGroup: 'Plage temporelle' },
+  pt: { loading: 'Carregando gráfico…', range1m: '1M', range6m: '6M', range1y: '1A', range10y: '10A', rangeMax: 'MÁX', reset: 'Redefinir', rangeGroup: 'Intervalo de tempo' },
+  zh: { loading: '图表加载中…', range1m: '1个月', range6m: '6个月', range1y: '1年', range10y: '10年', rangeMax: '最长', reset: '重置', rangeGroup: '时间范围' },
+  de: { loading: 'Diagramm wird geladen…', range1m: '1M', range6m: '6M', range1y: '1J', range10y: '10J', rangeMax: 'MAX', reset: 'Zurücksetzen', rangeGroup: 'Zeitraum' },
+};
+const cl = chartLabels[lang];
+
 const uniqueScores = new Set(data.map(d => d.score));
 const isFlat = uniqueScores.size <= 1;
 const showChart = data.length >= 2 && !isFlat;
@@ -74,20 +93,20 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
       )}
       <div id="trend-chart-container" class="relative" data-iso3={iso3.toLowerCase()} data-lang={lang}>
         <div id="trend-chart-placeholder" class="flex items-center justify-center w-full bg-sand-50 dark:bg-sand-900 rounded" style="aspect-ratio: 800/240;">
-          <span class="text-sm text-sand-400 dark:text-sand-500 animate-pulse">Loading chart...</span>
+          <span class="text-sm text-sand-400 dark:text-sand-500 animate-pulse">{cl.loading}</span>
         </div>
         <svg id="trend-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300 hidden" role="img" aria-label={t('country.trend_title')}></svg>
         <div id="trend-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
       </div>
       <div class="flex flex-wrap items-center gap-2 mt-2">
-        <div class="time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5" role="group" aria-label="Time range">
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="1m" type="button" aria-pressed="true">1M</button>
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="6m" type="button">6M</button>
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="1y" type="button">1Y</button>
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="10y" type="button">10Y</button>
-          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="max" type="button">MAX</button>
+        <div class="time-range-selector inline-flex bg-sand-100 dark:bg-sand-800 border border-sand-300 dark:border-sand-600 rounded-lg p-0.5" role="group" aria-label={cl.rangeGroup}>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-terracotta-500 text-white" data-range="1m" type="button" aria-pressed="true">{cl.range1m}</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="6m" type="button">{cl.range6m}</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="1y" type="button">{cl.range1y}</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="10y" type="button">{cl.range10y}</button>
+          <button class="time-range-btn px-2.5 py-1 text-xs font-medium rounded-md transition-colors cursor-pointer bg-transparent text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" data-range="max" type="button">{cl.rangeMax}</button>
         </div>
-        <button id="trend-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" type="button">Reset</button>
+        <button id="trend-reset-btn" class="hidden px-2.5 py-1 text-xs font-medium rounded-md border border-sand-300 dark:border-sand-600 transition-colors cursor-pointer bg-sand-100 dark:bg-sand-800 text-sand-600 dark:text-sand-300 hover:bg-sand-200 dark:hover:bg-sand-700" type="button">{cl.reset}</button>
       </div>
 
       {showAccumulating && (
