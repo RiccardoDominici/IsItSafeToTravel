@@ -3,6 +3,9 @@ import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { selectPillarExtremes } from '../../lib/pillar-extremes';
+import { faqPillarLabels } from '../../lib/country-faq-copy';
+import { riskDriverBadge } from '../../i18n/hub-enrichment-copy';
 
 interface Props {
   rank: number;
@@ -17,6 +20,22 @@ interface Props {
 const { rank, country, lang, showDelta = false, delta = 0, blurb } = Astro.props;
 const r = routes[lang];
 const countryUrl = `/${lang}/${r.country}/${country.iso3.toLowerCase()}/`;
+
+// Risk-driver chip (2026-09-26, SXO-07): the pillar pulling the score down
+// most, on every row of every ranking hub -- not just the top BLURB_COUNT
+// entries that get a full prose blurb from the parent. Self-contained (reads
+// only the `country` prop already passed in) so it drops cleanly into every
+// hub that renders this row. Suppressed on isNearTie countries (all-prior,
+// near-zero-data territories, e.g. Bouvet Island): naming an arbitrary
+// "weakest" pillar when all five are statistically indistinguishable would
+// repeat the exact contradiction class already fixed elsewhere (2026-09-25
+// audit C2, see pillar-extremes.ts).
+const extremes = selectPillarExtremes(country.pillars);
+const riskDriverText = extremes.isNearTie
+  ? ''
+  : riskDriverBadge[lang]
+      .replace('{pillar}', faqPillarLabels[lang][extremes.weakest.name])
+      .replace('{score}', (extremes.weakest.score * 10).toFixed(1));
 
 function getScoreBadgeClasses(rawScore: number): string {
   const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
@@ -59,9 +78,18 @@ function getDeltaClasses(d: number): string {
       {country.score.toFixed(1)}
     </span>
   </span>
-  {blurb && (
-    <span class="block mt-1.5 pl-11 text-xs leading-relaxed text-sand-500 dark:text-sand-400">
-      {blurb}
+  {(riskDriverText || blurb) && (
+    <span class="flex flex-wrap items-center gap-x-2 gap-y-1 mt-1.5 pl-11">
+      {riskDriverText && (
+        <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[11px] font-medium bg-sand-100 dark:bg-sand-700/60 text-sand-600 dark:text-sand-300 shrink-0">
+          {riskDriverText}
+        </span>
+      )}
+      {blurb && (
+        <span class="text-xs leading-relaxed text-sand-500 dark:text-sand-400">
+          {blurb}
+        </span>
+      )}
     </span>
   )}
 </a>
