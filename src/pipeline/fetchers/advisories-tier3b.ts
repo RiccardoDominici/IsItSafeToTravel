@@ -4,7 +4,7 @@ import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
-  normalizeChLevel,
+  normalizeChAssessment,
   normalizeSeLevel,
   normalizeNoLevel,
   normalizeCzLevel,
@@ -133,60 +133,6 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
 // Country name mappings for non-English sources
 // =============================================================================
 
-// German country names (Switzerland EDA uses German)
-const GERMAN_NAMES: Record<string, string> = {
-  'Vereinigte Staaten': 'United States',
-  'Vereinigte Staaten von Amerika': 'United States',
-  'Grossbritannien': 'United Kingdom',
-  'Vereinigtes Koenigreich': 'United Kingdom',
-  'Frankreich': 'France',
-  'Deutschland': 'Germany',
-  'Italien': 'Italy',
-  'Spanien': 'Spain',
-  'Russland': 'Russia',
-  'Brasilien': 'Brazil',
-  'Indien': 'India',
-  'Suedkorea': 'South Korea',
-  'Nordkorea': 'North Korea',
-  'Suedafrika': 'South Africa',
-  'Aegypten': 'Egypt',
-  'Tuerkei': 'Turkey',
-  'Griechenland': 'Greece',
-  'Kroatien': 'Croatia',
-  'Rumaenien': 'Romania',
-  'Ungarn': 'Hungary',
-  'Tschechien': 'Czech Republic',
-  'Slowakei': 'Slovakia',
-  'Oesterreich': 'Austria',
-  'Belgien': 'Belgium',
-  'Niederlande': 'Netherlands',
-  'Daenemark': 'Denmark',
-  'Schweden': 'Sweden',
-  'Norwegen': 'Norway',
-  'Finnland': 'Finland',
-  'Neuseeland': 'New Zealand',
-  'Mexiko': 'Mexico',
-  'Kolumbien': 'Colombia',
-  'Argentinien': 'Argentina',
-  'Kamerun': 'Cameroon',
-  'Elfenbeinkueste': "Cote d'Ivoire",
-  'Marokko': 'Morocco',
-  'Algerien': 'Algeria',
-  'Tunesien': 'Tunisia',
-  'Libyen': 'Libya',
-  'Saudi-Arabien': 'Saudi Arabia',
-  'Vereinigte Arabische Emirate': 'United Arab Emirates',
-  'Philippinen': 'Philippines',
-  'Kambodscha': 'Cambodia',
-  'Georgien': 'Georgia',
-  'Serbien': 'Serbia',
-  'Weissrussland': 'Belarus',
-  'Moldawien': 'Moldova',
-  'Litauen': 'Lithuania',
-  'Lettland': 'Latvia',
-  'Estland': 'Estonia',
-};
-
 // Swedish country names
 const SWEDISH_NAMES: Record<string, string> = {
   'Foerenade staterna': 'United States',
@@ -291,9 +237,102 @@ function matchCountry(name: string, localNames: Record<string, string>) {
 
 // =============================================================================
 // Sub-fetcher 1: Switzerland (EDA) -- CPLX-07
-// Fragility: MEDIUM -- English version available, structured listing
-// Expected failure modes: Page redesign, URL changes
+// Fragility: LOW -- structured JSON API (bulk, cursor-paginated), ISO2-keyed
 // =============================================================================
+//
+// Repaired 2026-09-26 (SOURCE-REPAIR-BRIEF.md). eda.admin.ch was rebuilt as a
+// Nuxt SSR site; the old fetcher scraped country-name links + free-text level
+// keywords from the travel-advice LISTING page, which no longer exists (the
+// listing is now a plain A-Z glossary of country cards with zero risk info --
+// confirmed live, no advisory text or class names anywhere on that page).
+// Investigated with a Playwright network capture (repair brief rule 6): the
+// actual per-country content is loaded by a `fetch()` the Nuxt app makes to a
+// JSON API, `GET .../reisehinweise/id/{ISO2}-{lang}` -- and, better, the bare
+// collection endpoint (no id) returns EVERY country in one call, cursor-
+// paginated via a `nextLink` (6 requests of 100 rows for 196 countries x 3
+// languages, ~2s total measured 2026-09-26) -- no per-country requests, no
+// browser needed in production, mirroring the PL/Odyseusz bulk-API pattern
+// above. The API rejects `$top`/`$skip` outright; `$after` (the opaque cursor
+// value from the previous page's `nextLink`) is the only supported paging
+// parameter. `nextLink` itself points at an internal origin host
+// (`api.eda.admin.ch`) that is not reachable from outside -- only the
+// `$after` value is reusable, re-applied to the public gateway host below.
+//
+// See normalizeChAssessment for how the API's own `advice_against` enum
+// ('general' | 'tourists' | 'regional' | 'none') maps to our four levels --
+// confirmed by probing all 248 project countries against the live API
+// 2026-09-26 (general=20 e.g. Afghanistan/Syria/Ukraine/Yemen, tourists=9
+// e.g. Israel/Myanmar/Venezuela, regional=43 e.g. Mexico/Egypt/Thailand,
+// none=104 of which only 74 carry FDFA's fixed calm-country phrase).
+// `has_travel_advice=false` (20 countries, all micro-states: Andorra, San
+// Marino, Vatican, Nauru...) means literally "the FDFA does not publish a
+// specific travel advisory for this destination" -- rule 1's "no specific
+// advisory published" case, not a safety statement -- skipped entirely.
+// =============================================================================
+
+const CH_API_URL = 'https://cb-api-gateway.scs.scs-sdweb.ch/eda-prod/reisehinweise';
+
+interface ChChapter {
+  code?: string;
+  title?: string;
+  html?: string;
+}
+
+interface ChReisehinweiseEntry {
+  id: string;
+  iso_code: string;
+  language: string;
+  published_at?: string; // "DD.MM.YYYY", the FDFA's own last-updated date
+  advice_against: string; // 'general' | 'tourists' | 'regional' | 'none' -- see normalizeChAssessment
+  has_travel_advice: boolean;
+  chapters?: ChChapter[];
+}
+
+interface ChApiPage {
+  value: ChReisehinweiseEntry[];
+  nextLink?: string;
+}
+
+/** "DD.MM.YYYY" (the FDFA's own publish-date format) -> ISO, or undefined if unparseable. */
+function parseChPublishedAt(dateStr: string | undefined): string | undefined {
+  if (!dateStr) return undefined;
+  const m = dateStr.match(/^(\d{2})\.(\d{2})\.(\d{4})$/);
+  if (!m) return undefined;
+  const [, dd, mm, yyyy] = m;
+  const parsed = new Date(`${yyyy}-${mm}-${dd}`);
+  return Number.isNaN(parsed.getTime()) ? undefined : parsed.toISOString();
+}
+
+/**
+ * Fetch every page of the bulk reisehinweise collection, following the
+ * cursor-based `nextLink` (see the fetcher's doc comment for why `$after` is
+ * the only usable pagination parameter, and why the gateway host is reused
+ * instead of the internal host the API itself returns).
+ */
+async function fetchAllChEntries(): Promise<ChReisehinweiseEntry[]> {
+  const entries: ChReisehinweiseEntry[] = [];
+  let url: string | undefined = CH_API_URL;
+  const seenCursors = new Set<string>();
+
+  while (url) {
+    const response = await fetch(url, {
+      signal: AbortSignal.timeout(30_000),
+      headers: { ...FETCH_HEADERS, Accept: 'application/json' },
+    });
+    if (!response.ok) throw new Error(`HTTP ${response.status} on ${url}`);
+
+    const page = (await response.json()) as ChApiPage;
+    entries.push(...page.value);
+
+    if (!page.nextLink) break;
+    const after = new URL(page.nextLink).searchParams.get('$after');
+    if (!after || seenCursors.has(after)) break; // no progress -- stop rather than loop forever
+    seenCursors.add(after);
+    url = `${CH_API_URL}?$after=${after}`;
+  }
+
+  return entries;
+}
 
 async function fetchChAdvisories(
   rawDir: string,
@@ -304,33 +343,28 @@ async function fetchChAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   try {
-    const response = await fetch(
-      'https://www.eda.admin.ch/eda/en/fdfa/representations-and-travel-advice.html',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+    const allEntries = await fetchAllChEntries();
+    writeJson(join(rawDir, 'advisories-ch-raw.json'), allEntries);
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3B] CH: HTTP ${response.status}, no data available`);
-      return { indicators, advisoryInfo };
-    }
+    const deEntries = allEntries.filter((e) => e.language === 'de');
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    for (const entry of deEntries) {
+      const country = getCountryByIso2(entry.iso_code);
+      if (!country) continue;
 
-    // Parse country links from travel advice listing
-    $('a[href*="travel-advice"], a[href*="reisehinweise"], a[href*="representations"]').each((_, el) => {
-      const text = $(el).text().trim();
-      const country = matchCountry(text, GERMAN_NAMES);
-      if (!country) return;
-      if (indicators.find(i => i.countryIso3 === country.iso3)) return;
+      const chapters = entry.chapters ?? [];
+      // Search every chapter's text -- some countries prepend an "Aktuelles"
+      // (current events) or "Regionale Risiken" bulletin ahead of
+      // "Grundsätzliche Einschätzung" (confirmed for AZ/BH/GM/JO/KW/NP/OM/
+      // PK/QA/SA/VE 2026-09-26), so position/title cannot be assumed.
+      const assessmentText = cheerio.load(chapters.map((c) => c.html ?? '').join(' ')).text();
 
-      // Extract advisory level from parent context
-      const parentText = $(el).closest('li, div, tr, td, article').text();
-      const level = normalizeChLevel(parentText);
-      if (level === null) return; // no recognizable level in this context — don't guess
+      const level = normalizeChAssessment({
+        adviceAgainst: entry.advice_against,
+        hasTravelAdvice: entry.has_travel_advice,
+        assessmentText,
+      });
+      if (level === null) continue;
 
       indicators.push({
         countryIso3: country.iso3,
@@ -346,43 +380,13 @@ async function fetchChAdvisories(
         level,
         text: CH_LEVEL_TEXT[level] || `Level ${level}`,
         source: 'Switzerland EDA',
-        url: 'https://www.eda.admin.ch/eda/en/fdfa/representations-and-travel-advice.html',
+        url: 'https://www.eda.admin.ch/en/countryterritory-overview',
+        updatedAt: parseChPublishedAt(entry.published_at),
       };
-    });
-
-    // Also try generic country-name links
-    if (indicators.length < 5) {
-      $('a').each((_, el) => {
-        const text = $(el).text().trim();
-        if (text.length < 3 || text.length > 40) return;
-        const country = matchCountry(text, GERMAN_NAMES);
-        if (!country) return;
-        if (indicators.find(i => i.countryIso3 === country.iso3)) return;
-
-        const parentText = $(el).closest('li, div, tr, td, p').text();
-        const level = normalizeChLevel(parentText);
-        if (level === null) return; // no recognizable level in this context — don't guess
-
-        indicators.push({
-          countryIso3: country.iso3,
-          indicatorName: 'advisory_level_ch',
-          value: level,
-          year: currentYear,
-          source: 'advisories_ch',
-          fetchedAt,
-        });
-
-        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-        advisoryInfo[country.iso3].ch = {
-          level,
-          text: CH_LEVEL_TEXT[level] || `Level ${level}`,
-          source: 'Switzerland EDA',
-          url: 'https://www.eda.admin.ch/eda/en/fdfa/representations-and-travel-advice.html',
-        };
-      });
     }
-  } catch {
-    console.warn('[ADVISORIES-T3B] CH: EDA page unavailable, returning empty result');
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.warn(`[ADVISORIES-T3B] CH: reisehinweise API unavailable (${msg}), returning empty result`);
   }
 
   console.log(`  [CH] Found ${indicators.length} countries`);

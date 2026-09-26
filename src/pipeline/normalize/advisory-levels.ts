@@ -1458,28 +1458,72 @@ export function normalizeInLevel(text: string): UnifiedLevel | null {
 // --- Tier 3b normalization functions ---
 
 /**
- * Normalize Switzerland (EDA) German/English advisory text to unified 1-4 scale.
- * Includes both diacritical and ASCII-folded variants for resilience.
+ * Normalize Switzerland (EDA) advisory data from the site's own "reisehinweise"
+ * JSON API (see fetchChAdvisories in advisories-tier3b.ts) to unified 1-4 scale.
  *
- * Audit 2026-09-25: eda.admin.ch was rebuilt as a Nuxt/card-grid site (image
- * cards linking to `/en/country-<name>`, no `travel-advice`/`reisehinweise`
- * hrefs anymore) and the real advisory level is loaded client-side, absent
- * from the server-rendered HTML entirely — confirmed live for Afghanistan:
- * neither the country page nor its linked "Travel advice for Afghanistan"
- * page contains any of this function's keywords, or any recognizable level
- * signal at all. The fetcher's old CSS selectors matched nothing, fell back
- * to a generic link scan, and this function's unconditional `return 1`
- * default turned that into a confident (and often wrong — e.g. Afghanistan,
- * Bahrain) "Grundsaetzliche Vorsicht" for every country it happened to find
- * a link for. Returns null instead when no keyword matches; a full fix needs
- * a rewritten fetcher able to read whatever now serves the real content.
+ * Audit 2026-09-25 found eda.admin.ch rebuilt as a Nuxt SSR site with no
+ * server-rendered advisory text at all on the listing page it used to scrape.
+ * Repaired 2026-09-26 (SOURCE-REPAIR-BRIEF.md): a Playwright network capture
+ * of a country's real "Reisehinweise für X" page found the app calls a JSON
+ * API (`cb-api-gateway.scs.scs-sdweb.ch/eda-prod/reisehinweise`) that also
+ * has a bulk, cursor-paginated collection endpoint — no per-country requests,
+ * no browser needed in production. That API exposes a structured
+ * `advice_against` enum, far more reliable than matching free German prose:
+ *
+ *   - 'general'  -> 4. Whole-country "Von Reisen ... wird abgeraten".
+ *   - 'tourists' -> 3. Literally "Von touristischen und ... nicht dringenden
+ *      Reisen ... wird abgeraten" — our own level-3 definition verbatim.
+ *   - 'regional' -> 2, unconditionally. A sub-national warning; per this
+ *      project's rule that partial/regional warnings must never promote a
+ *      whole country above 2 (mirrors the DE/NL guards elsewhere), it is
+ *      capped regardless of how the regional text itself reads.
+ *   - 'none' is NOT reliably "safe" on its own. Checked live 2026-09-26: North
+ *     Korea, South Africa, Zimbabwe, Algeria and 26 others also get 'none',
+ *     but their "Grundsätzliche Einschätzung" (basic assessment) text
+ *     describes real elevated-caution conditions (crime spikes, states of
+ *     emergency, armed unrest — "[grosse/erhöhte/höchste] Aufmerksamkeit ist
+ *     der persönlichen Sicherheit zu schenken") with no safety claim at all.
+ *     The FDFA's own fixed phrase for a genuinely calm country — "Reisen
+ *     nach/in X gelten/gilt grundsätzlich als sicher" — is present in 74 of
+ *     104 'none' countries checked and absent from all 30 elevated-caution
+ *     ones, with no false positive either way. Only that exact phrase earns
+ *     level 1; everything else gets 2 — never a guessed 1 (repair brief
+ *     rule 1: "a parser NEVER falls back to level 1").
+ *
+ * `hasTravelAdvice=false` ("Für diese Destination veröffentlicht das EDA
+ * keine spezifischen Reisehinweise" — 20 micro-states: Andorra, San Marino,
+ * Vatican, Nauru...) is the source's own "no specific advisory published"
+ * case: rule 1 again, not a safety statement, so this returns null regardless
+ * of `adviceAgainst`.
  */
-export function normalizeChLevel(text: string): UnifiedLevel | null {
-  const lower = text.toLowerCase();
-  if (lower.includes('von reisen wird abgeraten') || lower.includes('grundsätzlich abgeraten') || lower.includes('grundsaetzlich abgeraten') || lower.includes('do not travel')) return 4;
-  if (lower.includes('von nicht dringenden reisen') || lower.includes('nicht dringenden reisen wird abgeraten') || lower.includes('avoid non-essential')) return 3;
-  if (lower.includes('erhöhte vorsicht') || lower.includes('erhoehte vorsicht') || lower.includes('increased caution')) return 2;
-  return null;
+export function normalizeChAssessment(params: {
+  adviceAgainst: string;
+  hasTravelAdvice: boolean;
+  assessmentText: string;
+}): UnifiedLevel | null {
+  if (!params.hasTravelAdvice) return null;
+
+  switch (params.adviceAgainst) {
+    case 'general':
+      return 4;
+    case 'tourists':
+      return 3;
+    case 'regional':
+      return 2;
+    case 'none': {
+      const lower = params.assessmentText
+        .toLowerCase()
+        .replace(/ä/g, 'ae')
+        .replace(/ö/g, 'oe')
+        .replace(/ü/g, 'ue');
+      const affirmedSafe =
+        lower.includes('gelten grundsaetzlich als sicher') || lower.includes('gilt grundsaetzlich als sicher');
+      return affirmedSafe ? 1 : 2;
+    }
+    default:
+      // Unrecognised enum value (API change) -- don't guess.
+      return null;
+  }
 }
 
 /**
