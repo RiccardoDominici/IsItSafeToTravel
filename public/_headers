@@ -38,6 +38,17 @@
 /scores.json
   X-Robots-Tag: noindex
 
+# CSV twin of scores.json (src/lib/dataset-csv.ts / src/pages/scores.csv.ts). No
+# server adapter is configured, so Astro's static build discards the Response's
+# own headers at build time (see the doc comment in scores.csv.ts) — Content-Type
+# must be declared here or Cloudflare Pages' extension-based guess for .csv would
+# omit the charset.
+/scores.csv
+  Content-Type: text/csv; charset=utf-8
+  Cache-Control: public, max-age=3600
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
+
 # Same public-JSON-endpoint pattern as above (496 URLs: 248 countries x 2)
 # but missing this header — found in the 2026-09-25 SEO audit
 # (findings/technical.md T6): unlike scores.json/map-data.json these were
