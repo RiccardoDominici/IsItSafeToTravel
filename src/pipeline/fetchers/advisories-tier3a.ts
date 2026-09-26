@@ -7,7 +7,6 @@ import {
   normalizeItLevel,
   normalizeEsLevel,
   normalizeKrLevel,
-  normalizeTwLevel,
   normalizeCnLevel,
   normalizeInLevel,
 } from '../normalize/advisory-levels.js';
@@ -597,10 +596,160 @@ async function fetchKrAdvisories(
 }
 
 // =============================================================================
-// Sub-fetcher 4: Taiwan (BOCA) -- CPLX-04
-// Fragility: LOW -- structured HTML with clear levels
-// Expected failure modes: Page structure changes, new color levels
+// Sub-fetcher 4: Taiwan (BOCA) -- repair 2026-09-26 (PARSER-REGIONAL-BRIEF)
 // =============================================================================
+//
+// Source semantics: BOCA's list page (sp-trwa-list-1.html) is a real server-rendered
+// `<table>`, one `<tr>` per PUBLISHED ALERT -- NOT one row per country. Most countries have
+// exactly one row (their whole-country color), but some have SEVERAL: one "bare" row (the
+// `td[data-title="\u570B\u5BB6\u5730\u5340"]` text is just the country's own name, e.g. "\u5580\u9EA5\u9686") stating the
+// OVERALL colour, plus additional rows scoped to a NAMED sub-region (a dash after the
+// country name, a list of provinces, a border description, "\u534A\u5CF6" (peninsula), etc.) whose
+// colour can be WORSE. The OLD parser combined every `tr`/`li`/`a` element's own text with
+// its closest ancestor's text and grepped for "\u7D05\u8272"/"red" ANYWHERE in that blob, then
+// name-matched arbitrary whitespace-split tokens -- so a country whose OWN overall colour
+// is yellow/orange still got promoted to Red the moment ANY row mentioning it also
+// mentioned a worse regional colour, and (independently) an unrelated country name that
+// happened to appear inside another country's parent element could be mismatched entirely.
+//
+// Verified live 2026-09-26 against all 220 ISO3-mappable rows: Israel's OWN "\u4EE5\u8272\u5217 Israel"
+// row is Yellow (Level 2) -- ONLY a separate "\u4EE5\u8272\u5217\uFF0D\u9ECE\u5DF4\u5AE9\u908A\u754C\u5730\u5340" (Israel-Lebanon
+// BORDER AREA) row is Red; same pattern for T\u00FCrkiye (Yellow overall, Red only within 10km of
+// the Syria border), Egypt (Orange overall, Red only in Sinai/the Libya-Sudan border),
+// Mozambique (Yellow overall, Red only in Cabo Delgado province), Cambodia/Jordan/Tanzania/
+// Tunisia (Orange overall, Red only in named border provinces). Myanmar goes one step
+// further: its bare row is Orange, but a THIRD row explicitly states "\u7DEC\u7538\u4EF0\u5149\u7701...\u5948\u6BD4\u90FD
+// ...\u4EE5\u53CA\u5176\u5B83\u5217\u793A\u7B2C\u4E09\u7D1A...\u53CA\u7B2C\u56DB\u7D1A...\u4EE5\u5916\u5730\u5340" ("Yangon Region, Naypyidaw, AND OTHER AREAS
+// NOT LISTED as Level 3 or Level 4") at Level 2 -- an explicit catch-all naming the CAPITAL,
+// exactly like the JP/NZ repairs' doctrine: an explicit "the rest of the country" statement
+// beats the bare row whenever both exist.
+//
+// Fix: parseTwListingRows reads the table structurally (cheerio, not string concatenation +
+// substring search) into one row per (country id, region text, colour). resolveTwCountryLevel
+// then picks, per country id: (1) a row whose region text is an explicit catch-all ("\u4EE5\u5916
+// \u5730\u5340"/"\u5176\u4ED6\u5730\u5340"/"\u5176\u9918\u5730\u5340"), highest priority; else (2) the first row whose region text
+// does NOT look sub-national (see isTwRegionalText) -- verified BOTH signals agree in 24/25
+// multi-row countries found live, and the one exception (Myanmar) is resolved by (1) instead.
+// A country with ONLY sub-national rows and no catch-all (Palestine: only "West Bank"/"Gaza
+// Strip", BOCA never publishes a unified bare entry for it at all) uses their level when it
+// agrees across all of them, and is skipped -- never guessed -- if it does not (has not
+// happened live, but the code must not silently invent an answer if it ever does).
+const TW_ADVICE_LEVEL_MAP: Record<string, UnifiedLevel> = {
+  red: 4,
+  orange: 3,
+  yellow: 2,
+  gray: 1,
+  grey: 1,
+};
+
+/**
+ * BOCA's own `id` attribute (e.g. "Cameroon", "Cote_d'Ivoire", "Democratic_Republic_of_the_
+ * Congo") normalizes to our COUNTRIES config's `name.en` for all but a small set of BOCA's
+ * own typos ("Argentine", "Naoero", "Italia"), formal/alternate names ("The_Gambia",
+ * "Republic_of_the_Congo", "Kingdom_of_Eswatini"), and different conventions ("T\u00FCrkiye" vs
+ * our "Turkey", "Korea" meaning South Korea specifically since North Korea has its own
+ * separate id) -- found by running EVERY id in the live 2026-09-26 listing through
+ * getCountryByName and manually resolving the misses. Four ids (Bermuda, Saba, Saint
+ * Eustatius, Somaliland) are genuinely outside our 248-country scope, same as NZ's Bermuda
+ * gap -- not aliased, left to fall through to "unmatched" and get skipped.
+ */
+const TW_NAME_ALIASES: Record<string, string> = {
+  argentine: 'Argentina',
+  bosnia: 'Bosnia and Herzegovina',
+  cape_verde: 'Cabo Verde',
+  dominican: 'Dominican Republic',
+  holy_see: 'Vatican City',
+  italia: 'Italy',
+  kingdom_of_eswatini: 'Eswatini',
+  korea: 'South Korea',
+  lao: 'Laos',
+  naoero: 'Nauru',
+  republic_of_the_congo: 'Congo',
+  saint_christopher_and_nevis: 'Saint Kitts and Nevis',
+  the_commonwealth_of_puerto_rico: 'Puerto Rico',
+  the_czech_republic: 'Czech Republic',
+  the_gambia: 'Gambia',
+  the_slovak_republic: 'Slovakia',
+  't\u00FCrkiye': 'Turkey',
+  united_states_of_america: 'United States',
+  'virgin_islands_(british)': 'British Virgin Islands',
+  'virgin_islands_(u.s.)': 'US Virgin Islands',
+};
+
+function resolveTwCountry(id: string) {
+  const alias = TW_NAME_ALIASES[id.toLowerCase()];
+  if (alias) return getCountryByName(alias);
+  return getCountryByName(id.replace(/_/g, ' '));
+}
+
+export interface TwListingRow {
+  id: string;
+  region: string;
+  level: UnifiedLevel | null;
+  href: string;
+}
+
+/** Parse BOCA's list page into one row per published alert (see the section doc comment
+ * for why this is NOT one row per country). Returns rows with `level: null` for any colour
+ * class this file doesn't recognize -- callers must skip those, never guess. */
+export function parseTwListingRows(html: string): TwListingRow[] {
+  const $ = cheerio.load(html);
+  const rows: TwListingRow[] = [];
+  $('tr').each((_, tr) => {
+    const $tr = $(tr);
+    const link = $tr.find('td[data-title="\u570B\u5BB6"] a');
+    const id = link.attr('id');
+    if (!id) return; // header row or a row missing the expected structure
+    const href = link.attr('href') ?? '';
+    const region = $tr.find('td[data-title="\u570B\u5BB6\u5730\u5340"]').text().trim();
+    const colorClass = $tr.find('td[data-title="\u6700\u65B0\u8B66\u793A\u5206\u7D1A"] span.square').attr('class') ?? '';
+    const colorMatch = /(\w+)block/.exec(colorClass);
+    const level = colorMatch ? (TW_ADVICE_LEVEL_MAP[colorMatch[1]] ?? null) : null;
+    rows.push({ id, region, level, href });
+  });
+  return rows;
+}
+
+const TW_CATCHALL_RE = /(?:\u4EE5\u5916|\u5176\u4ED6|\u5176\u5B83|\u5176\u9918).{0,4}\u5730\u5340/;
+const TW_DASH_RE = /[-\u2010-\u2015\uFF0D]/;
+
+/** Does `region` name a SUB-national area rather than the whole country? Heuristics found by
+ * reading every multi-row country live 2026-09-26 (see the section doc comment): a dash
+ * after the country name (Cameroon's "\u5580\u9EA5\u9686 - \u5317\u90E8\u6975\u5317\u7701..."), 2+ named provinces/states
+ * (Tanzania's 5-province border list), "\u534A\u5CF6" peninsula (Egypt's Sinai), "\u908A\u5883"/"\u908A\u754C" border
+ * wording (Jordan's "\u8207\u6558\u5229\u4E9E\u53CA\u4F0A\u62C9\u514B\u908A\u5883"), or a comma-separated enumeration (Cambodia's 6
+ * named provinces). Not exhaustive by design -- position (the bare/overall row is always
+ * listed FIRST, verified in 24/25 multi-row countries) is the primary signal in
+ * resolveTwCountryLevel; this only needs to catch the common cases well enough that the
+ * first non-regional-looking row is usually also the semantically correct one. */
+function isTwRegionalText(region: string): boolean {
+  if (TW_DASH_RE.test(region)) return true;
+  if ((region.match(/\u7701/g) ?? []).length >= 2) return true;
+  if ((region.match(/\u5DDE/g) ?? []).length >= 2) return true;
+  if (region.includes('\u534A\u5CF6')) return true;
+  if (region.includes('\u908A\u5883') || region.includes('\u908A\u754C')) return true;
+  if (region.includes('\u3001')) return true;
+  return false;
+}
+
+/**
+ * Resolve one country id's overall level from all of its published rows (see the section
+ * doc comment for the full doctrine). Returns null if every row is sub-national, none is an
+ * explicit catch-all, AND they disagree on level -- never guessed (has not happened live).
+ */
+export function resolveTwCountryLevel(rows: TwListingRow[]): UnifiedLevel | null {
+  const withLevel = rows.filter((r): r is TwListingRow & { level: UnifiedLevel } => r.level !== null);
+  if (withLevel.length === 0) return null;
+
+  const catchall = withLevel.find((r) => TW_CATCHALL_RE.test(r.region));
+  if (catchall) return catchall.level;
+
+  const bare = withLevel.find((r) => !isTwRegionalText(r.region));
+  if (bare) return bare.level;
+
+  const levels = new Set(withLevel.map((r) => r.level));
+  return levels.size === 1 ? withLevel[0].level : null;
+}
 
 async function fetchTwAdvisories(
   rawDir: string,
@@ -610,79 +759,77 @@ async function fetchTwAdvisories(
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
 
-  try {
-    const response = await fetch(
-      'https://www.boca.gov.tw/sp-trwa-list-1.html',
-      {
-        signal: AbortSignal.timeout(30_000),
-        headers: FETCH_HEADERS,
-      },
-    );
+  const response = await fetch('https://www.boca.gov.tw/sp-trwa-list-1.html', {
+    signal: AbortSignal.timeout(30_000),
+    headers: FETCH_HEADERS,
+  });
+  if (!response.ok) {
+    throw new Error(`sp-trwa-list-1: HTTP ${response.status}`);
+  }
 
-    if (!response.ok) {
-      console.warn(`[ADVISORIES-T3A] TW: HTTP ${response.status}, no data available`);
-      return { indicators, advisoryInfo };
+  const html = await response.text();
+  const rows = parseTwListingRows(html);
+  writeJson(join(rawDir, 'advisories-tw-listing.json'), {
+    fetchedAt,
+    totalRows: rows.length,
+    rows,
+  });
+
+  const byId = new Map<string, TwListingRow[]>();
+  for (const row of rows) {
+    const group = byId.get(row.id);
+    if (group) group.push(row);
+    else byId.set(row.id, [row]);
+  }
+
+  const unmatchedCountries: string[] = [];
+  const unresolved: string[] = [];
+
+  for (const [id, group] of byId) {
+    const country = resolveTwCountry(id);
+    if (!country) {
+      unmatchedCountries.push(id);
+      continue;
     }
 
-    const html = await response.text();
-    const $ = cheerio.load(html);
+    const level = resolveTwCountryLevel(group);
+    if (level === null) {
+      unresolved.push(`${country.iso3} (${id}): ${group.map((r) => `${r.region}=${r.level}`).join(', ')}`);
+      continue; // never guess \u2014 emit nothing for this country
+    }
 
-    // Tables have countries grouped by region with level text/colors
-    $('tr, li, div.country-item, a').each((_, el) => {
-      const text = $(el).text().trim();
-      if (!text || text.length < 3) return;
+    // The bare/overall row's own URL when we found one (matches what the level itself came
+    // from); otherwise the first row's, so the link at least points at a real BOCA page for
+    // this country instead of always the generic list page.
+    const overallRow = group.find((r) => TW_CATCHALL_RE.test(r.region) || !isTwRegionalText(r.region)) ?? group[0];
 
-      // Look for color/level indicators in the element or its context
-      const fullText = text;
-      const parentText = $(el).closest('tr, div, section').text().trim();
-      const combinedText = fullText + ' ' + parentText;
-
-      // Try to determine the level from color keywords
-      let level: UnifiedLevel | null = null;
-      if (combinedText.includes('\u7D05\u8272') || combinedText.includes('red')) {
-        level = 4;
-      } else if (combinedText.includes('\u6A59\u8272') || combinedText.includes('orange')) {
-        level = 3;
-      } else if (combinedText.includes('\u9EC3\u8272') || combinedText.includes('yellow')) {
-        level = 2;
-      } else if (combinedText.includes('\u7070\u8272') || combinedText.includes('gray') || combinedText.includes('grey')) {
-        level = 1;
-      }
-
-      if (level === null) return;
-
-      // Try to extract country name (may have both Chinese and English names)
-      // Split by common separators and try each token
-      const tokens = text.split(/[,\s\u3001\uFF0C\u00B7]+/).filter(t => t.length >= 2);
-      for (const token of tokens) {
-        const country = getCountryByName(token.trim());
-        if (!country) continue;
-
-        // Avoid duplicates
-        if (indicators.find(i => i.countryIso3 === country.iso3)) continue;
-
-        const normalizedLevel = normalizeTwLevel(combinedText);
-
-        indicators.push({
-          countryIso3: country.iso3,
-          indicatorName: 'advisory_level_tw',
-          value: normalizedLevel,
-          year: currentYear,
-          source: 'advisories_tw',
-          fetchedAt,
-        });
-
-        if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
-        advisoryInfo[country.iso3].tw = {
-          level: normalizedLevel,
-          text: TW_LEVEL_TEXT[normalizedLevel] || `Level ${normalizedLevel}`,
-          source: 'Taiwan BOCA',
-          url: 'https://www.boca.gov.tw/sp-trwa-list-1.html',
-        };
-      }
+    indicators.push({
+      countryIso3: country.iso3,
+      indicatorName: 'advisory_level_tw',
+      value: level,
+      year: currentYear,
+      source: 'advisories_tw',
+      fetchedAt,
     });
-  } catch {
-    console.warn('[ADVISORIES-T3A] TW: BOCA page unavailable, returning empty result');
+
+    if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
+    advisoryInfo[country.iso3].tw = {
+      level,
+      text: TW_LEVEL_TEXT[level] || `Level ${level}`,
+      source: 'Taiwan BOCA',
+      url: overallRow.href ? `https://www.boca.gov.tw${overallRow.href}` : 'https://www.boca.gov.tw/sp-trwa-list-1.html',
+    };
+  }
+
+  if (unmatchedCountries.length > 0) {
+    console.warn(
+      `[ADVISORIES-T3A] TW: ${unmatchedCountries.length} listing ids did not match a known country (skipped): ${unmatchedCountries.join(', ')}`,
+    );
+  }
+  if (unresolved.length > 0) {
+    console.warn(
+      `[ADVISORIES-T3A] TW: ${unresolved.length} countries had only conflicting sub-national rows and no catch-all \u2014 skipped, never guessed: ${unresolved.join('; ')}`,
+    );
   }
 
   console.log(`[ADVISORIES-T3A] TW: ${indicators.length} countries from BOCA`);

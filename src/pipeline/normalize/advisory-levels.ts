@@ -2298,19 +2298,6 @@ export function normalizeKrLevel(level: number): UnifiedLevel {
 }
 
 /**
- * Normalize Taiwan (BOCA) color/text advisory to unified 1-4 scale.
- * Taiwan uses color codes: red (紅色), orange (橙色), yellow (黃色), gray (灰色).
- */
-export function normalizeTwLevel(text: string): UnifiedLevel {
-  const lower = text.toLowerCase();
-  if (lower.includes('紅色') || lower.includes('red')) return 4;
-  if (lower.includes('橙色') || lower.includes('orange')) return 3;
-  if (lower.includes('黃色') || lower.includes('yellow')) return 2;
-  // 灰色 / gray / default -> normal precautions
-  return 1;
-}
-
-/**
  * Normalize China (MFA) advisory text to unified 1-4 scale.
  * Chinese text patterns: "暂勿前往" (do not travel), "谨慎前往" (proceed with caution), etc.
  */
