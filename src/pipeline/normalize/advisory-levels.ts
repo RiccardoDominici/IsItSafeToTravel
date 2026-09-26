@@ -267,6 +267,342 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
   return Math.min(4, Math.max(1, Math.round(level))) as UnifiedLevel;
 }
 
+// =============================================================================
+// Japan (MOFA anzen.mofa.go.jp) whole-country vs. regional repair (2026-09-26,
+// PARSER-REGIONAL-BRIEF)
+// =============================================================================
+//
+// Source semantics: MOFA publishes danger levels PER REGION ONLY -- there is no separate
+// "country-wide" field anywhere in the page or its structured `.kiken_levels` CSS-class
+// legend (which just lists which of the 4 levels are used SOMEWHERE on the page, e.g. all
+// 4 for India). parseJpKikenLevel (advisories-tier1.ts) reads that legend and takes the MAX
+// across whatever levels are present -- correct for the legend's OWN purpose (a discovery-
+// anchor sanity check that the scrape hit the right page), but wrong as the country's
+// advisory level: it turns ANY single named border strip or separatist enclave into a
+// whole-country "do not travel" (verified live 2026-09-26 on Armenia: a real Level-4 border
+// strip with Azerbaijan promoted the WHOLE COUNTRY to 4, even though MOFA's own text
+// separately states "上記以外の地域（首都エレバンを含む。）レベル1" -- "the area other than
+// the above [INCLUDING THE CAPITAL YEREVAN]: Level 1"; same root cause independently
+// reproduced Georgia's and Moldova's known IT/Farnesina-style bugs -- see
+// PARSER-REGIONAL-BRIEF's evidence table).
+//
+// The fix parses the free-text region breakdown (the `<a class="underline">` link inside
+// `#kikendetail` -- the ONLY place that pairs a region NAME with its level; the CSS legend
+// has no names at all) into (region descriptor, level) entries, classifies each descriptor
+// as either the WHOLE-COUNTRY catch-all or a named SUB-region, and applies the project's
+// standing doctrine: a sub-national entry never promotes the country above Level 2, unless
+// the country's OWN catch-all/main-area statement is already higher. Validated 2026-09-26
+// against a full sweep of all 205 ISO3-mapped MOFA country pages (throwaway harness, not
+// committed) -- 154 unchanged, 49 corrected (19 of them former Level 4s), only 2 countries
+// (Croatia, North Macedonia) still return null, both because their pages have JUST had
+// their advisory formally LIFTED ("危険レベル解除") with no numeric level stated anywhere,
+// which parseJpKikenLevel's legend ALSO can't resolve -- not a regression.
+
+/** One (region descriptor, level, enclosing-group-context) entry parsed out of MOFA's
+ * free-text region breakdown. `outerContext` is documented on classifyJpDescriptor. */
+interface JpLevelEntry {
+  descriptor: string;
+  level: UnifiedLevel;
+  outerContext: string;
+}
+
+/** Minimal HTML-entity decode for MOFA's free text. Only the handful of entities its pages
+ * actually use (verified 2026-09-26 across the full country sweep: just "&copy;" in an
+ * unrelated footer) plus the standard universally-reserved five, so a stray "&amp;" inside
+ * an organization name never survives into the parsed descriptor text. */
+function decodeJpEntities(s: string): string {
+  return s
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#(\d+);/g, (_m, code: string) => String.fromCharCode(Number(code)))
+    .replace(/&#x([0-9a-fA-F]+);/g, (_m, code: string) => String.fromCharCode(parseInt(code, 16)));
+}
+
+/** Scope the search window to the `#kikendetail` div's contents -- same fixed-window +
+ * triple-`</div>` heuristic as parseJpKikenLevel (advisories-tier1.ts); duplicated rather
+ * than shared because that function's own contract (and its regression tests) is the
+ * legend-class MAX, a deliberately different, still-needed concept from this one (see the
+ * section doc comment above) -- keep both in sync if MOFA ever changes this markup. */
+function extractJpKikendetailWindow(html: string): string | null {
+  const detailIdx = html.indexOf('<div id="kikendetail">');
+  if (detailIdx === -1) return null;
+  const window = html.slice(detailIdx, detailIdx + 8000);
+  const closeMatch = window.match(/<\/div>\s*<\/div>\s*<\/div>/);
+  return closeMatch && closeMatch.index !== undefined ? window.slice(0, closeMatch.index) : window;
+}
+
+/** Extract the free-text region breakdown: the ONE `<a class="underline">` link inside the
+ * kikendetail window, `<br>`-to-newline, tags stripped, entities decoded. Returns null when
+ * absent (a page whose #kikendetail div carries no such link at all -- callers must treat
+ * this the same as "unparseable", never guess). */
+function extractJpDetailText(window: string): string | null {
+  const m = window.match(/<a class="underline"[^>]*>([\s\S]*?)<\/a>/);
+  if (!m) return null;
+  return decodeJpEntities(m[1].replace(/<br\s*\/?>/gi, '\n').replace(/<[^>]+>/g, ''));
+}
+
+const JP_WHOLE_HEAD_NOUN = '(?:地域|全域|全土|全国|国内)';
+/** "The capital, X, is INCLUDED" -- unambiguous at country scope; "首都" (national capital)
+ * is never used for a mere provincial capital (that word is "県都"/"州都", different). */
+const JP_CAPITAL_RE = /首都[^\n]{0,30}を含む/;
+/** All of "the above, excluded" / "that, excluded" / "other than that" / a NAMED zone,
+ * excluded -- REQUIRING the generic head noun (area / whole-territory / the nation) to
+ * follow immediately (an optional possessive "の"/country name may sit in between). This is
+ * deliberate, not merely "上記以外"/"それ以外" alone: Mauritania's real page has "上記を除く
+ * ティリス・ゼムール州（...）、アドラール州東部（...）、タガント州..." ("EXCLUDING what was
+ * named above, [here is another list of 6 SPECIFIC provinces]") -- "上記を除く" there
+ * modifies a PROPER-NOUN enumeration, not a generic "the rest of the territory" noun, so it
+ * must NOT count as a whole-country marker just because the "excluding the above" words are
+ * present; requiring the generic head noun right after correctly excludes it. */
+function jpWholeMarkerRe(countryInfix: string): RegExp {
+  return new RegExp(
+    `(?:上記(?:以外|を除く)|それ以外|を除く|以外の|その他)(?:の)?(?:${countryInfix})?${JP_WHOLE_HEAD_NOUN}`,
+  );
+}
+/** Parenthetical asides -- a NAMED sub-region's own internal carve-out (CMR's real page:
+ * "北部州（ナイジェリア国境地帯及びチャド国境地帯を除く）" = "Northern Province (EXCLUDING
+ * the Nigeria/Chad border strip)") lives entirely inside one of these and must be stripped
+ * away before hunting for a whole-country marker, or its "を除く" wrongly reads as top-level. */
+const JP_PAREN_RE = /[(（][^()（）]*[)）]/g;
+
+function stripJpParens(s: string): string {
+  let prev: string | null = null;
+  let cur = s;
+  while (prev !== cur) {
+    prev = cur;
+    cur = cur.replace(JP_PAREN_RE, '');
+  }
+  return cur;
+}
+
+/**
+ * Does `before` contain an admin-suffixed name possessively ("...の") governing a clause
+ * that runs, UNPUNCTUATED (no "、"/"。" list-break), all the way to the end of `before` --
+ * i.e. right up to the candidate marker? Deliberately unbounded in LENGTH: Ethiopia's real
+ * page has the possessive "の" immediately before the marker ("アファール州の上記以外の
+ * 地域"), but Pakistan's real page inserts a much longer relative clause in between
+ * ("ハイバル・パフトゥンハー州の以下レベル３及びレベル２で指定した以外の地域" = "KP
+ * province's [the area OTHER THAN what is designated Level 3 and Level 2 BELOW]") -- both
+ * are structurally the SAME "province's [...] excluded area" construction, still scoped to
+ * that ONE province either way; a fixed character cutoff between them missed the second
+ * during the full-country-sweep harness (Pakistan wrongly gained a second, spurious
+ * "whole" candidate). A genuine "の" earlier in `before` that is followed by a comma/period
+ * before reaching the end (i.e. that clause already CLOSED) does not count.
+ */
+function jpHasUnpunctuatedPossessivePrefix(before: string): boolean {
+  const possessiveRe = /(?:州|県|省|道|準州|郡)の/g;
+  let lastEnd = -1;
+  let m: RegExpExecArray | null;
+  while ((m = possessiveRe.exec(before)) !== null) {
+    lastEnd = m.index + m[0].length;
+  }
+  if (lastEnd === -1) return false;
+  return !/[、。]/.test(before.slice(lastEnd));
+}
+
+/**
+ * True unless `before` (the text preceding a candidate whole-country marker) itself
+ * possessively names/groups a SPECIFIC sub-region ("Ararat/Gegharkunik/Vayots Dzor/Tavush
+ * provinceS's [level-4-and-level-2-excluded] area" -- Armenia's real page: still just those
+ * 4 named provinces minus their own internal hotspots, not the whole country; or "the
+ * NORTHEASTERN STATES's [other-than-the-above] area" -- India's real page: still just that
+ * one regional group; or Ethiopia's/Pakistan's real pages, "<ONE province>'s above-excluded
+ * area" -- ONE province is already enough there, since "の" directly possessively binds the
+ * marker to that ONE name). Rejects when EITHER >=2 admin-suffix words (or a "諸-"
+ * (various/multiple) collective prefix) appear anywhere before the marker, OR a single
+ * admin-suffixed name possessively ("...の") governs an unpunctuated clause running up to
+ * the marker. Genuine whole-country markers (Russia's "the area OTHER THAN the
+ * Ukraine-border-strip", Belarus's "ALL OF BELARUS other than...", India's top-level "the
+ * above-EXCLUDED area OF INDIA") never have either in front of them.
+ */
+function jpNotPossessivelyScoped(before: string): boolean {
+  const adminCount = (before.match(/州|県|省|道|準州|郡/g) ?? []).length;
+  const isGroupRef = /諸(?:州|県|島|地域)/.test(before);
+  return adminCount < 2 && !isGroupRef && !jpHasUnpunctuatedPossessivePrefix(before);
+}
+
+/**
+ * Return true if `descriptor` denotes the WHOLE-COUNTRY catch-all scope. `outerContext` is
+ * everything back to the nearest ENCLOSING "●" group bullet that ISN'T part of this
+ * descriptor itself (empty when the descriptor already starts at its own "●") -- needed
+ * because a nested sub-clause with no bullet of its own inherits its outer group's
+ * possessive scope (Egypt's real page: "...oasis list.../Level 1/上記以外の地域/Level 2"
+ * sits, unbulleted, right under "●西部及び南部の砂漠地帯" (Western/Southern desert areas),
+ * so its "above-excluded area" still means "the rest of THAT DESERT ZONE", not of Egypt --
+ * the admin-list guard must see the desert group's own region enumeration even though it
+ * lives outside this narrow descriptor's own bullet-anchored text).
+ */
+function classifyJpDescriptor(descriptor: string, countryNameJa: string, outerContext: string): boolean {
+  const stripped = stripJpParens(descriptor);
+  const guardPrefix = stripJpParens(outerContext);
+
+  if (JP_CAPITAL_RE.test(stripped)) return true;
+
+  const countryInfix = countryNameJa ? escapeRegexLiteral(countryNameJa) : '';
+  const wholeMatch = jpWholeMarkerRe(countryInfix).exec(stripped);
+  if (wholeMatch && jpNotPossessivelyScoped(guardPrefix + stripped.slice(0, wholeMatch.index))) {
+    return true;
+  }
+
+  // Bare "<CountryName>全土" / bare "全土" (nothing else) = the country's OWN whole
+  // territory. Deliberately NEVER bare "全域" here -- empirically that instead means "the
+  // ENTIRETY of a named SUB-region" (Armenia's real page: "シュニク州全域" = "the entirety
+  // of Syunik Province", not of Armenia); 全域's genuine whole-country uses are already
+  // covered by the exclusion-clause check above (e.g. India's "上記以外のインド全域").
+  //
+  // No trailing `\b` here (unlike this file's Latin-script word-boundary checks elsewhere):
+  // JavaScript's `\b` is ASCII-word-only and never matches around Japanese characters, so
+  // `/全土\b/` silently fails to match "全土（ミスラタ県ミスラタ市を除く）" (Libya's real
+  // page — found by the full-country-sweep harness comparing this port against the
+  // validated Python prototype, where Python's Unicode-aware `\b` had masked the same bug).
+  // The leading `^` anchor already does the job `\b` was meant for here.
+  const head = stripped.replace(/^[●・\s]+/, '');
+  return new RegExp(`^(?:${countryInfix})?全土`).test(head);
+}
+
+/** LINE-INITIAL "●" or "・" bullet markers only: "・" (U+30FB nakaguro) is also used INSIDE
+ * foreign proper nouns as a word-part separator (India's real page has "東カシ・ヒルズ県" =
+ * "East Khasi Hills district", "ジャインティア・ヒルズ県") -- treating every "・" as a bullet
+ * mis-anchored a descriptor onto "・ヒルズ県を除く地域）" (a mid-name fragment) during
+ * validation. Requiring line-start excludes those inline occurrences while still matching
+ * every genuine "・sub-item" list bullet observed (each starts its own line after a `<br>`). */
+const JP_BULLET_RE = /^[●・]/gm;
+const JP_OUTER_BULLET_RE = /^●/gm;
+const JP_LEVEL_NUM_RE = /レベル\s*([1-4１-４])/g;
+const JP_FULLWIDTH_DIGIT: Record<string, string> = { '１': '1', '２': '2', '３': '3', '４': '4' };
+const JP_ACTION_PREFIXES = ['退避', '渡航', '不要不急', '十分注意'];
+
+/**
+ * Is the "レベルN" match ending at `posAfterDigit` (within `body`) a REAL declaration (this
+ * region/the country IS level N), not a back-reference to a PAST level ("...これまでレベル3
+ * であった地域" = "the area that USED TO BE level 3", found on Iran's real page) or a
+ * noun-modifier aside ("レベル３地域へ渡航...することは妨げません" = "traveling to Level-3
+ * AREAS is not prohibited", found on Iraq's real page -- both mention a level number
+ * without declaring a NEW one for a NEW region)? Genuine declarations are always
+ * immediately followed (modulo whitespace/punctuation) by either a colon, a Japanese
+ * open-quote, a change-tag bracket ("《継続》"/"（引き上げ）"/...), or start directly with
+ * one of the four canonical action phrases (JP_LEVEL_TEXT's own wording, advisories-
+ * tier1.ts) -- back-references/asides never have any of these right after the number, they
+ * continue directly into ordinary prose.
+ */
+function isGenuineJpDeclaration(body: string, posAfterDigit: number): boolean {
+  const after = body.slice(posAfterDigit, posAfterDigit + 20).trimStart();
+  if ([':', '：', '「', '《', '(', '（'].includes(after[0])) return true;
+  return JP_ACTION_PREFIXES.some((p) => after.startsWith(p));
+}
+
+/**
+ * Parse (descriptor, level, outerContext) entries out of MOFA's free-text region
+ * breakdown. Each descriptor starts at the NEAREST PRECEDING bullet marker, never at
+ * wherever the previous entry's trailing action-phrase happened to end -- otherwise
+ * leftover prose ("...(continued) <NEXT-BULLET>region name") gets glued onto the FRONT of
+ * the next descriptor and can hide a leading whole-country marker from the classifier
+ * (found on Belarus/Russia during validation: the catch-all bullet's own text was pushed
+ * past the "must be the first token" check by the previous entry's dangling continuation
+ * text).
+ *
+ * The region-breakdown section is whatever comes right after a "【危険レベル】"/"【危険度】"
+ * header, up to the NEXT 【...】 header (usually "【ポイント】", but NOT always first --
+ * Egypt's real page puts 【ポイント】 BEFORE 【危険レベル】, so this anchors on the LEVEL
+ * header itself rather than assuming a fixed section order). Some pages (Belarus) have NO
+ * leading header at all -- the region list is the very first thing in the block -- so the
+ * header is OPTIONAL; only the "stop at the next 【...】" end boundary is not.
+ */
+function parseJpLevelEntries(text: string): JpLevelEntry[] {
+  const headerMatch = /【(?:危険レベル|危険度)】/.exec(text);
+  const rest = headerMatch ? text.slice(headerMatch.index + headerMatch[0].length) : text;
+  const nextHeaderMatch = /【[^】]*】/.exec(rest);
+  const body = (nextHeaderMatch ? rest.slice(0, nextHeaderMatch.index) : rest).trim();
+
+  const bullets = [...body.matchAll(JP_BULLET_RE)].map((m) => m.index as number);
+  const outerBullets = [...body.matchAll(JP_OUTER_BULLET_RE)].map((m) => m.index as number);
+  const levelMatches = [...body.matchAll(JP_LEVEL_NUM_RE)].filter((m) =>
+    isGenuineJpDeclaration(body, (m.index as number) + m[0].length),
+  );
+
+  const entries: JpLevelEntry[] = [];
+  let prevEnd = 0;
+  for (const m of levelMatches) {
+    const matchStart = m.index as number;
+    const candidates = bullets.filter((b) => b >= prevEnd && b < matchStart);
+    const start = candidates.length ? candidates[candidates.length - 1] : prevEnd;
+    const descriptor = body.slice(start, matchStart).trim();
+    // Text from the nearest ENCLOSING "●" group bullet (which may be BEFORE `start`, when
+    // this entry is an unbulleted sub-clause riding on a previous entry's group -- see
+    // classifyJpDescriptor's outerContext doc) up to `start` itself.
+    const enclosingCandidates = outerBullets.filter((b) => b <= start);
+    const enclosing = enclosingCandidates.length ? Math.max(...enclosingCandidates) : start;
+    const outerContext = body.slice(enclosing, start);
+    const digit = m[1];
+    const level = Number(JP_FULLWIDTH_DIGIT[digit] ?? digit) as UnifiedLevel;
+    entries.push({ descriptor, level, outerContext });
+    prevEnd = matchStart + m[0].length;
+  }
+  return entries;
+}
+
+/**
+ * Normalize Japan (MOFA anzen.mofa.go.jp) per-country hazard page to unified 1-4 scale,
+ * applying the whole-country / regional-cap doctrine (see the section doc comment above).
+ * `html` is the full per-country detail page (same input as parseJpKikenLevel); `countryNameJa`
+ * is that country's JP_NAME_TO_ISO3 key (advisories-tier1.ts), used to recognize
+ * "<CountryName>全土" and let the country's own name sit between an exclusion clause and its
+ * head noun (Belarus: "the area other than the Ukraine border strip, ALL OF BELARUS").
+ *
+ * Returns null (never guess) when there is no `#kikendetail` div at all is handled by the
+ * CALLER exactly like parseJpKikenLevel's own "no div -> Level 1" case (this function only
+ * runs once a div is already known to exist); returns null when a div exists but no region
+ * text can be parsed from it AND the legend has no classes either (`legendMaxLevel` is
+ * null) -- otherwise (no structured breakdown, e.g. Madagascar's real page: pure prose
+ * about a political crisis, no "level N" statement anywhere) there is no regional-vs-whole
+ * ambiguity to resolve in the first place, so it falls back to the legend's own MAX, exactly
+ * like the pre-fix behaviour.
+ */
+export function normalizeJpRegionalLevel(
+  html: string,
+  countryNameJa: string,
+  legendMaxLevel: UnifiedLevel | null,
+): UnifiedLevel | null {
+  const window = extractJpKikendetailWindow(html);
+  if (window === null) return legendMaxLevel;
+
+  const text = extractJpDetailText(window);
+  if (text === null) return legendMaxLevel;
+
+  const entries = parseJpLevelEntries(text);
+  if (entries.length === 0) return legendMaxLevel;
+
+  const wholeCandidates = entries.filter((e) => classifyJpDescriptor(e.descriptor, countryNameJa, e.outerContext));
+  const regional = entries.filter((e) => !classifyJpDescriptor(e.descriptor, countryNameJa, e.outerContext));
+
+  let wholeLevel: UnifiedLevel;
+  let regionalMax: number;
+  if (wholeCandidates.length > 0) {
+    // Conservative: if more than one candidate somehow matches, take the highest.
+    wholeLevel = Math.max(...wholeCandidates.map((e) => e.level)) as UnifiedLevel;
+    regionalMax = regional.length ? Math.max(...regional.map((e) => e.level)) : 0;
+  } else {
+    // No explicit whole-country marker anywhere (Turkey/Mexico/Ecuador style: a list of
+    // notable named provinces per level, with everywhere else -- including the capital,
+    // never explicitly named -- implicitly at the LOWEST level actually published).
+    // Deliberately the MIN across ALL entries, not a hardcoded 1: Lebanon's real page has
+    // exactly two entries (Beirut-area named list = 3, everywhere-else named list = 4) that
+    // jointly exhaust the entire country with NO level-1 area published anywhere --
+    // assuming an unstated "level 1" there would invent a safety claim MOFA never made.
+    // When some entry genuinely IS level 1 (Turkey, Mexico), the min already equals 1, so
+    // this never regresses those cases; it only matters when the source never published a
+    // level-1 entry for the country AT ALL.
+    wholeLevel = Math.min(...entries.map((e) => e.level)) as UnifiedLevel;
+    regionalMax = Math.max(...entries.map((e) => e.level));
+  }
+
+  return Math.max(wholeLevel, Math.min(2, regionalMax)) as UnifiedLevel;
+}
+
 /**
  * Named-region / border-zone / city markers that cap an MZV "neodporúča"
  * (does not recommend) clause at a SUB-national scope rather than the whole

@@ -9,6 +9,7 @@ import {
   normalizeDeContentText,
   normalizeNlColor,
   normalizeJpLevel,
+  normalizeJpRegionalLevel,
   normalizeSkSecurityText,
 } from '../normalize/advisory-levels.js';
 import { join } from 'node:path';
@@ -152,13 +153,23 @@ const JP_NAME_TO_ISO3: Record<string, string> = {
 /** Minimum matched-country floor for the JP dynamic index (T-lb3-02, SHIP-SPEC 1.1d: >=180/206). */
 const JP_MIN_MAPPED = 180;
 
-/** Discovery anchors the rewritten JP fetcher MUST reproduce (SHIP-SPEC 1.1d). */
+/**
+ * Discovery anchors the rewritten JP fetcher MUST reproduce (SHIP-SPEC 1.1d). Checked
+ * against `indicators[].value` (the FINAL, doctrine-compliant level — see
+ * normalizeJpRegionalLevel's doc comment), not the raw per-region legend MAX, so four
+ * values were corrected 2026-09-26 (PARSER-REGIONAL-BRIEF) to match: RUS 4->3 and BLR 4->3
+ * (each country's own catch-all covering the capital, Moscow/Minsk, is genuinely Level 3 —
+ * only a named Ukraine-border strip is 4); MEX 3->2 and ECU 3->2 (each country's own
+ * catch-all covering the capital is genuinely Level 1 — only named cities/provinces are
+ * 2/3, capped at 2 per the regional-cap doctrine). UKR/IRQ/IRN stay 4: each source text
+ * explicitly states or implies the WHOLE country (not just a border strip) is Level 4.
+ */
 const JP_DISCOVERY_ANCHORS: Record<string, number> = {
-  RUS: 4, UKR: 4, IRQ: 4, IRN: 4,
+  UKR: 4, IRQ: 4, IRN: 4,
   FRA: 1, USA: 1, SGP: 1, AUS: 1, CAN: 1, GBR: 1, VAT: 1, CHN: 1,
-  MEX: 3, ECU: 3,
+  MEX: 2, ECU: 2,
   BHR: 2, XKX: 2,
-  BLR: 4,
+  RUS: 3, BLR: 3,
 };
 
 interface FetcherResult {
@@ -591,7 +602,17 @@ async function fetchJpAdvisories(
           kikenLevelUnparseable.push(country.iso3);
           return; // never guess — emit nothing for this country
         }
-        const level = normalizeJpLevel(rawLevel);
+        // parseJpKikenLevel's MAX-across-regions reading is a discovery/legend sanity
+        // check (see its own doc comment), not the country's advisory level: it turns any
+        // single named border strip or separatist enclave into a whole-country "do not
+        // travel" (repair 2026-09-25/26, PARSER-REGIONAL-BRIEF). normalizeJpRegionalLevel
+        // parses the actual region breakdown and applies the project's standing doctrine —
+        // a sub-national entry never promotes the country above Level 2, unless the
+        // country's own catch-all/main-area statement is already higher — falling back to
+        // this same legend MAX when the page has no parseable per-region text at all (e.g.
+        // pure prose with no "Level N" statement anywhere).
+        const legendLevel = normalizeJpLevel(rawLevel);
+        const level = normalizeJpRegionalLevel(html, entry.japaneseName, legendLevel) ?? legendLevel;
 
         indicators.push({
           countryIso3: country.iso3,
