@@ -194,6 +194,20 @@ const ADVISORY_CODES = [
   'ch', 'se', 'no', 'pl', 'cz', 'hu', 'pt',
 ] as const;
 
+/**
+ * Advisory code -> ISO3, for looking up the *issuing country's* own localized name
+ * (distinct from the agency name in 'country.advisory.<code>') via
+ * getLocalizedCountryName (src/lib/scores.ts) — used by the /sources/ methodology
+ * page's government-advisory table (issuing-country column), not by SourcesList.
+ */
+export const ADVISORY_ISO3: Record<(typeof ADVISORY_CODES)[number], string> = {
+  us: 'USA', uk: 'GBR', ca: 'CAN', au: 'AUS', de: 'DEU', nl: 'NLD', jp: 'JPN', sk: 'SVK',
+  fr: 'FRA', nz: 'NZL', ie: 'IRL', fi: 'FIN', hk: 'HKG', br: 'BRA', at: 'AUT', ph: 'PHL',
+  be: 'BEL', dk: 'DNK', sg: 'SGP', ro: 'ROU', rs: 'SRB', ee: 'EST', hr: 'HRV', ar: 'ARG',
+  it: 'ITA', es: 'ESP', kr: 'KOR', tw: 'TWN', cn: 'CHN', in: 'IND',
+  ch: 'CHE', se: 'SWE', no: 'NOR', pl: 'POL', cz: 'CZE', hu: 'HUN', pt: 'PRT',
+};
+
 interface AdvisoryGrammar {
   /** Exactly 1 issuing government. */
   one: (name: string) => string;

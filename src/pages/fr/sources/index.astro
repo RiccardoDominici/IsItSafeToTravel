@@ -6,7 +6,8 @@ import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
 import { ADVISORY_STATUS } from '../../../lib/site-stats';
-import { getLocalizedSourceMeasures } from '../../../i18n/source-descriptions';
+import { getLocalizedSourceMeasures, ADVISORY_ISO3 } from '../../../i18n/source-descriptions';
+import { getLocalizedCountryName } from '../../../lib/scores';
 
 const lang: Lang = 'fr';
 const t = useTranslations(lang);
@@ -155,7 +156,7 @@ const signalSources = [
               return (
               <tr class="border-b border-sand-200 dark:border-sand-700">
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`country.advisory.${src.key}` as any)}</td>
-                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.country}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{getLocalizedCountryName({ iso3: ADVISORY_ISO3[src.key as keyof typeof ADVISORY_ISO3], name: { en: src.country } }, lang)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`sources.tier.${src.tier}` as any)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.weight}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.format}</td>
