@@ -641,6 +641,76 @@ function foldFr(s: string): string {
   return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 }
 
+/** Escape a plain string for safe interpolation into a `new RegExp(...)` source. */
+function escapeRegexLiteral(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Affirmative "this is calm" statements Belgium actually uses (repair 2026-09-26 -- see the doc
+ * comment on normalizeBeLevel for why Level 1 now REQUIRES one of these instead of defaulting to
+ * it). Belgium has no single fixed template -- these were found by running the FIRST version of
+ * this list (patterns 2/4/5/6 below only) against all 177 live BE country pages: it correctly
+ * caught Portugal/Bahrain/Japan/UAE but dropped 52 obviously-calm countries (France, Netherlands,
+ * Sweden, Canada, Czechia, Greece, Iceland, Luxembourg, Malta, Romania, Singapore, Taiwan...) to
+ * null because their pages use a handful of OTHER templates entirely. Patterns 1/3/7/8/9 below
+ * were added from that same full-corpus run, not guessed:
+ *  1. "il n'y a pas de risque(s)/problème(s) particulier(s)/spécifique(s)" or "ne présente pas de
+ *     risque(s)/difficulté(s) particulier(s)/spécifique(s)/majeur(s)" -- by far the most common
+ *     template (Netherlands, Canada, Croatia, Mauritius, Latvia, Brunei, Bhutan, Czechia,
+ *     Liechtenstein, Malta, Singapore all use one or the other almost verbatim).
+ *  2. "il est (généralement/en général) possible de voyager/se rendre/vivre ... en (toute)
+ *     sécurité" -- Portugal, Bahrain, Luxembourg, Iceland, Turkmenistan, Mongolia.
+ *  3. "les voyages ... se déroulent en toute sécurité" / "se font sans problème" -- Greece, Malta.
+ *  4. "un des pays les plus sûrs (du monde)" -- Japan.
+ *  5. "vigilance normale" -- Belgium's OWN explicit "normal" (as opposed to elevated) vigilance
+ *     phrase, verified on Taiwan ("une vigilance normale reste néanmoins de mise").
+ *  6. "sans rencontrer/connaître de problème(s)/risque(s) particulier(s)" -- Hungary.
+ *  7. "situation générale/sécuritaire ... (est/demeure/reste) (relativement) stable" -- Bosnia,
+ *     Romania. "stable" specifically, not "sûr" -- see the Cuba note below for why.
+ *  8. "les précautions d'usage sont d'application" (Bahrain) -- Belgium's own "normal vigilance"
+ *     phrase for crime specifically (low crime rate, standard precautions, nothing more).
+ *  9. "la vie quotidienne et l'espace public sont sûrs" (UAE).
+ * Deliberately NOT a pattern: a bare "relativement sûr/faible" -- Cuba's own page uses almost
+ * that exact wording ("Cuba EST un pays RELATIVEMENT sûr") immediately hedged by "la vigilance
+ * reste TOUTEFOIS de mise" (nonetheless remains advisable) in the SAME sentence; a loose
+ * "relativement (sûr|faible)" match would have wrongly classified Cuba's hedged, qualified claim
+ * as calm -- confirmed by re-running the full 177-country comparison after adding pattern 7
+ * (which uses "stable", a different adjective, specifically to avoid this collision) and checking
+ * Cuba still resolves to null.
+ */
+const BE_CALM_PATTERNS = [
+  // .{0,20} between the noun and its qualifier, not a direct adjacency requirement: Latvia's real
+  // page inserts "de sécurité" in between -- "il n'y a pas de risques DE SÉCURITÉ particuliers".
+  /(il n.?y a pas|ne presente pas) de (risques?|difficultes?|problemes?).{0,20}(particuliers?|specifiques?|majeurs?)/s,
+  // .{0,60}, not .{0,30}: Luxembourg's real page reads "voyager OU DE VIVRE au Grand-Duché de
+  // Luxembourg en toute sécurité" -- a compound "travel or live" clause plus the country's own
+  // (sometimes multi-word) name pushes the gap to "voyager" past a narrower cap, which is what
+  // caused Luxembourg to wrongly land on null in the same full-corpus run that added this list.
+  // "tout a fait" (completely) added alongside "generalement"/"en general"/"habituellement":
+  // Lesotho's real page reads "il est TOUT A FAIT possible de voyager au Lesotho, a condition de
+  // respecter les precautions d'usage..." -- no "en securite" suffix at all, so that suffix is
+  // now optional too (still a strong, specific enough claim on its own not to need it).
+  /il est (generalement |en general |habituellement |tout a fait )?possible de (voyager|se rendre|vivre|se deplacer)\b(.{0,60}(en toute )?securite)?/s,
+  /voyages?.{0,40}(se deroulent.{0,20}(en toute )?securite|se font.{0,20}sans probleme)/s,
+  /un des pays les plus surs/,
+  // Namibia "un pays stable", Finland "un pays tres sur" -- a plainer version of "un des pays les
+  // plus surs" above (no superlative), still a genuine calm claim about the country as a whole.
+  /un pays (tres )?(stable|surs?)\b/,
+  /vigilance normale/,
+  /sans (rencontrer|connaitre) de (problemes?|risques?) particuliers?/,
+  // "bonne", not just "stable": Seychelles reads "la situation securitaire ... est, dans son
+  // ensemble, bonne". .{0,60}, not .{0,30}: Bosnia's own multi-word name ("... en Bosnie et
+  // Herzegovine est relativement stable") pushes the gap past a narrower cap, same reason as the
+  // Luxembourg fix above.
+  /situation (generale|securitaire).{0,60}(est |demeure |reste )?(dans son ensemble )?(relativement )?(stable|bonnes?)/s,
+  // Sweden's own "prendre les precautions habituelles" -- a plainer synonym of "precautions
+  // d'usage" below, same "nothing beyond standard vigilance" meaning.
+  /precautions habituelles/,
+  /precautions d.?usage sont d.?application/,
+  /vie quotidienne et l.?espace public sont surs?/,
+];
+
 /**
  * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
  *
@@ -679,22 +749,89 @@ function foldFr(s: string): string {
  *     NAMES) — otherwise "il ne faut pas...en raison de l'insécurité qui règne dans le pays"
  *     about Myanmar, quoted on Thailand's own page, would wrongly confirm Thailand.
  *
- * Levels (unchanged from pass 1, re-verified against Afghanistan/Mali/Syria -> 4;
- * Ukraine/Niger/North Korea/Haiti -> 3-4; Egypt/Turkey/Thailand/Pakistan/Kenya/Mexico
- * regional-only mentions -> capped at 2; Portugal/Italy/Japan -> 1):
- *  - "formellement/fortement/strictement/fermement déconseillé", "ne pas se rendre", "quitter
- *    le pays" -> 4 (whole-country-confirmed) or 2 (not confirmed / regional).
+ * Levels (re-verified 2026-09-26 against a FULL run over all 177 live BE country pages, not just
+ * a sample -- see the repair note below for why that mattered; Afghanistan/Mali/Syria/North
+ * Korea/Sudan/Lebanon/Ukraine -> 4; Egypt/Turkey/Thailand/Pakistan/Kenya/Mexico/Philippines/
+ * Somalia regional-only mentions -> capped at 2; Portugal/Bahrain/Japan/Netherlands/Canada/
+ * Czechia/Greece/Finland/Sweden -> 1; Cuba/Italy/France -> null):
+ *  - "formellement/fortement/strictement/fermement déconseillé", "ne pas se rendre", or "quitter"
+ *    GOVERNED by an advisory verb (déconseille/conseillons/recommandé -- see hasQuitter below,
+ *    NOT bare "quitter") -> 4 (whole-country-confirmed) or 2 (not confirmed / regional).
  *  - any other "déconseillé" root, or "reporter tous les voyages" -> 3 or 2, same rule.
  *  - vigilance/prudence/attention qualified by "accrue"/"renforcée"/"particulière"/
  *    "soutenue"/"extrême", or an explicitly elevated crime rate ("criminalité" + "élevé") -> 2
  *    (these never need the whole-country check — 2 is already the cap either way).
- *  - none of the above, but the article has real content -> 1 (this page genuinely is a
- *    comprehensive one-page-per-country baseline, so silence here is itself "normal
- *    precautions" — unlike the old shell-page bug this replaces).
+ *  - Level 1 ONLY on an affirmative calm statement (BE_CALM_PATTERNS, see its own doc comment for
+ *    the full list and why it ended up this large) -- otherwise null, never a guess.
  *
- * Returns null only when there's no real content to classify (empty input, or fewer than 3
- * blocks — a redesigned/broken page) so a fetch failure can never be silently published as
- * "no restrictions".
+ * Repair 2026-09-26 (SOURCE-REPAIR-BRIEF, second pass): production found South Sudan reporting
+ * level 1 despite its page opening "Il est conseillé aux compatriotes de quitter le Soudan du
+ * Sud" and closing "nous vous déconseillons d'y retourner" -- an active "leave the country"
+ * order. Two real wording gaps, not one: (a) "quitter" NEVER co-occurs with a TRAVEL_WORDS verb
+ * in the same sentence ("quitter le Soudan du Sud" / "quitter le pays le plus tôt possible tant
+ * qu'il y a encore des vols commerciaux" -- no "voyage"/"se rendre" anywhere), so the existing
+ * `hasTravelWord && LEVEL4_STRONG` gate always skipped it even though the OLD code already had a
+ * ('quitter le pays') entry; (b) "déconseillons d'y RETOURNER" (we advise against RETURNING) --
+ * "retourner" was simply missing from TRAVEL_WORDS, so "déconseillons" (the 1st-person-plural
+ * conjugation, which the "deconseill" stem itself already matched fine) never got to fire either.
+ *
+ * Fixed by adding "retourner"/"naviguer" to TRAVEL_WORDS (retourner is an unconditional travel act
+ * in its own right; naviguer -- "il est déconseillé de naviguer vers ces îles", UAE's disputed
+ * Abu Musa/Tunb islands -- lets a real, region-scoped warning register at its correct capped
+ * level 2 instead of silently registering nothing) and handling "quitter" as its OWN dedicated
+ * check (hasQuitter), NOT folded into TRAVEL_WORDS/LEVEL4_STRONG like the original 'quitter le
+ * pays' entry was. Verifying the first version of this fix (bare 'quitter' added straight to
+ * LEVEL4_STRONG, exactly like retourner/naviguer) against a FULL run over all 177 live BE pages --
+ * not just the handful sampled for the initial fix -- surfaced two real false positives that a
+ * small sample missed entirely: China's page reads "l'obligation de QUITTER LE PAYS dans un délai
+ * très court" as a drug-law VISA consequence, nothing to do with travel safety, and the generic
+ * "le pays" confirmation phrase (designed for "déconseillé", which realistically never appears in
+ * an official advisory except as a travel verdict) is far too weak a signal for "quitter" specif-
+ * ically, which has this and other common non-safety senses ("quitter le groupe" during a guided
+ * DMZ tour, South Korea's page). hasQuitter now requires (a) the SAME sentence to also contain an
+ * advisory verb (déconseill.../conseill.../recommand...) -- exactly the construction both real
+ * South Sudan sentences use, never a bare consequence-of-something-else clause -- and (b)
+ * confirmation via the country's OWN name specifically (requireCountryNameOnly), never the
+ * generic "le pays" fallback other triggers use.
+ *
+ * That same full-corpus run also caught a confirmation bug pre-dating this repair entirely:
+ * `window.includes(countryFold)` is a bare substring test, and Somalia's own adjective
+ * "somaliennes" ("côtes somaliennes" -- a COASTAL/maritime reference) contains "somalie" as a
+ * literal prefix, wrongly confirming a maritime piracy warning as whole-country. Fixed with a
+ * word-boundary-aware regex instead (countryFold is already accent-folded to plain ASCII by
+ * foldFr, so JS's ASCII-only \b is safe here -- unlike the SK repair's diacritic-\b trap). A
+ * separate, SPECULATIVE addition from the same round -- escalating "tous/tout les voyages ...
+ * déconseillés" (blanket, "not even humanitarian" wording) straight to LEVEL4_STRONG on the
+ * reasoning that it reads stronger than a plain "déconseillé" -- was reverted after the full run
+ * showed it firing on Somalia's and the Philippines' own region-scoped instances (Puntland,
+ * western Mindanao: proper nouns REGIONAL_WORDS can't enumerate, a known limitation of the
+ * confirmation check below) and pushing them to a firmer, wrongly-confident 4. The plain
+ * 'deconseill' stem (pre-existing, unchanged) already reaches every country that genuinely needs
+ * this phrase without that added risk -- North Korea's "Tous les voyages sont déconseillés" was
+ * never missed by it.
+ *
+ * Also, per the SK repair (2026-09-25) precedent: the "none of the above -> 1" default used to be
+ * unconditional -- comprehensive-source reasoning that Cuba's page disproved. Its 2026-09-26 live
+ * text is ~1900 characters describing a genuine energy/fuel crisis, hedged as "Cuba EST un pays
+ * RELATIVEMENT sûr, la vigilance reste TOUTEFOIS de mise" (Cuba IS a relatively safe country,
+ * vigilance nonetheless remains advisable) -- a hedged, qualified safety claim, not an unqualified
+ * one, and never any of Belgium's own "déconseillé"/"quitter"/"retourner" verdict verbs applied to
+ * Cuba as a destination. Monaco's page uses the SAME hedge shape ("le taux de criminalité est
+ * faible ... la vigilance est TOUTEFOIS de mise") and is null for the same reason. Contrast
+ * Bahrain's UNQUALIFIED "il est possible de s'y rendre en sécurité" (it is possible to go there
+ * safely) -- Portugal's near-identical "il est généralement possible de voyager ... en toute
+ * sécurité" confirms this is Belgium's own reusable calm template, not a one-off, and it is
+ * genuinely absent from Cuba's and Monaco's hedged versions. Level 1 now requires a
+ * BE_CALM_PATTERNS match; otherwise the function returns null, never guessing 1 on an unrecognized
+ * notice -- this also correctly leaves Denmark null despite its low crime rate, because Belgium's
+ * OWN page separately puts its national terror-threat level at "4 sur une échelle de 5" (serious),
+ * a real elevated signal this parser has no dedicated pattern for yet, better left unclassified
+ * than reported as "normal precautions".
+ *
+ * Returns null when there's no real content to classify (empty input, or fewer than 3 blocks — a
+ * redesigned/broken page), AND when a substantive article matched neither an escalation pattern
+ * nor a calm one (Cuba, Italy -- Italy's page is pure pickpocket/consular-admin boilerplate with
+ * no "déconseillé" and no calm phrase either) — never guess 1 on an unrecognized notice.
  */
 export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
@@ -714,16 +851,40 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     'le pays', 'tout le pays', 'ensemble du pays', 'ensemble du territoire',
     'tout le territoire', 'interieur du pays',
   ];
-  const TRAVEL_WORDS = ['voyage', 'voyager', 'se rendre', 'deplacement', 'deplacer', 'sejour'];
+  // "quitter"/"retourner" are unconditional travel acts (leaving/returning to a place IS the
+  // travel act, not a separate one that needs a co-occurring "voyage"/"se rendre" to confirm --
+  // see the South Sudan repair note above). "naviguer" (sail to/toward) is the same idea applied
+  // to a specific mode, evidenced on the UAE's disputed-islands warning.
+  // "retourner" is an unconditional travel act (returning to a place IS the travel act, not a
+  // separate one that needs a co-occurring "voyage"/"se rendre" to confirm -- see the South Sudan
+  // repair note above). "naviguer" (sail to/toward) is the same idea applied to a specific mode,
+  // evidenced on the UAE's disputed-islands warning. "quitter" is deliberately NOT here: it is
+  // handled as its own branch below with a stricter confirmation rule (see hasQuitter).
+  const TRAVEL_WORDS = ['voyage', 'voyager', 'se rendre', 'deplacement', 'deplacer', 'sejour', 'retourner', 'naviguer'];
   const LEVEL4_STRONG = [
     'formellement deconseill', 'fortement deconseill', 'strictement deconseill',
-    'fermement deconseill', 'ne pas se rendre', 'quitter le pays',
+    'fermement deconseill', 'ne pas se rendre',
   ];
+  // "reporter tous les voyages" (postpone) and a bare "deconseill" stem both already cover "tous
+  // les voyages ... sont déconseillés" (North Korea's real page: "Tous les voyages sont
+  // déconseillés", satisfied by 'deconseill' + hasTravelWord via "voyages" itself, both PRE-
+  // EXISTING) -- checked, and deliberately NOT special-cased any further here. An earlier version
+  // of this repair added a dedicated "blanket, no exceptions" -> LEVEL4_STRONG escalation for
+  // exactly that phrase, on the reasoning that "no exceptions, not even humanitarian" (Somalia's
+  // real wording) is stronger than a plain "déconseillé". Reverted: verified live on the SAME
+  // 177-country run that this phrase almost always names a SUB-region right in the same clause --
+  // Somalia's own instance is "Tous les voyages ... sont strictement déconseillés" about PUNTLAND,
+  // Philippines' is "tout voyage est déconseillé dans la partie occidentale de MINDANAO" -- and
+  // both are proper nouns REGIONAL_WORDS can't enumerate (a known, documented limitation of the
+  // whole-country check below), so the extra escalation pushed two REGIONAL warnings to a firmer,
+  // wrongly-confident level 4 instead of leaving them at whatever the confirmation logic already
+  // (imperfectly) resolved them to. The plain 'deconseill' stem already reaches every country that
+  // genuinely needs it without adding this extra risk.
   const LEVEL3_WORDS = ['deconseill', 'reporter tous les voyages', 'reporter le voyage'];
   const LEVEL2_BASE = ['vigilance', 'prudence', 'attention'];
   const LEVEL2_INTENSIFIERS = ['accrue', 'accru', 'renforcee', 'particuliere', 'soutenue', 'extreme'];
 
-  let level: UnifiedLevel = 1;
+  let level: UnifiedLevel | 0 = 0;
 
   for (const rawBlock of blocks) {
     // Sentence-level, not block-level: a paragraph mixing a travel verdict with an unrelated
@@ -733,10 +894,30 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     for (let i = 0; i < sentences.length; i++) {
       const cur = foldFr(sentences[i]);
       const hasTravelWord = TRAVEL_WORDS.some((w) => cur.includes(w));
+      // "quitter" alone, without requiring a co-occurring TRAVEL_WORDS verb (leaving IS the travel
+      // act) -- evidenced on South Sudan's "conseillé ... de quitter le Soudan du Sud" / "quitter
+      // le pays le plus tôt possible", neither of which names a separate travel verb. Two extra
+      // guards found necessary against real false positives in the same 177-country corpus run
+      // that added this: (1) "quitter" is common enough in OTHER senses -- a visa/legal
+      // "obligation de quitter le pays" (China's OWN page, in a paragraph about drug-law
+      // consequences that also happens to say "en Chine" moments earlier, so the country's-own-
+      // name confirmation below is trivially satisfied on every single-country page and can't
+      // filter it out) or "quitter le groupe" during a guided DMZ tour (South Korea) -- so this
+      // only counts when GOVERNED by an advisory verb in the same sentence (conseillé/conseillons/
+      // recommandé), exactly the construction both real South Sudan sentences use, never a bare
+      // consequence-of-something-else clause; (2) it still requires its OWN stricter whole-country
+      // check below (requireCountryNameOnly) -- the generic "le pays" fallback other triggers use
+      // is too weak a signal on its own for this specific verb.
+      const hasQuitter = /\bquitter\b/.test(cur) && /conseil|recommand/.test(cur);
 
       let sentenceLevel = 0;
-      if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) sentenceLevel = 4;
-      else if (hasTravelWord && LEVEL3_WORDS.some((w) => cur.includes(w))) sentenceLevel = 3;
+      let requireCountryNameOnly = false;
+      if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) {
+        sentenceLevel = 4;
+      } else if (hasQuitter) {
+        sentenceLevel = 4;
+        requireCountryNameOnly = true;
+      } else if (hasTravelWord && LEVEL3_WORDS.some((w) => cur.includes(w))) sentenceLevel = 3;
       else if (LEVEL2_BASE.some((base) => cur.includes(base)) && LEVEL2_INTENSIFIERS.some((mod) => cur.includes(mod))) sentenceLevel = 2;
       else if (cur.includes('criminalit') && /elev/.test(cur)) sentenceLevel = 2; // "taux [de criminalité] élevé" in either word order
 
@@ -747,9 +928,16 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
         // "en Corée du Nord... Tous les voyages sont déconseillés" names the country once and
         // refers back to it implicitly, which is normal French, not a scope expansion.
         const window = foldFr((i > 0 ? sentences[i - 1] + ' ' : '') + sentences[i]);
+        // Word-boundary, not a bare substring test: Somalia's own adjective "somaliennes" (as in
+        // "côtes somaliennes", a COASTAL/maritime reference, not a whole-country one) contains
+        // "somalie" as a literal PREFIX -- a bare .includes(countryFold) wrongly confirmed it as
+        // whole-country. countryFold is already accent-folded to plain ASCII (foldFr), so JS's
+        // ASCII-only \b is safe here (unlike the SK repair's diacritic-\b trap).
+        const countryNameConfirmed = new RegExp(`\\b${escapeRegexLiteral(countryFold)}\\b`).test(window);
         const mentionsOtherCountry = BE_OTHER_COUNTRY_NAMES.some((n) => n !== countryFold && window.includes(n));
-        const wholeCountryConfirmed = window.includes(countryFold)
-          || (!mentionsOtherCountry && WHOLE_COUNTRY_PHRASES.some((p) => window.includes(p)));
+        const wholeCountryConfirmed = requireCountryNameOnly
+          ? countryNameConfirmed
+          : countryNameConfirmed || (!mentionsOtherCountry && WHOLE_COUNTRY_PHRASES.some((p) => window.includes(p)));
         const regionalHit = REGIONAL_WORDS.some((w) => window.includes(w));
 
         if (!wholeCountryConfirmed || regionalHit) sentenceLevel = 2;
@@ -759,6 +947,10 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     }
   }
 
+  if (level === 0) {
+    const flat = foldFr(text).replace(/\n/g, ' ');
+    return BE_CALM_PATTERNS.some((re) => re.test(flat)) ? 1 : null;
+  }
   return level;
 }
 
