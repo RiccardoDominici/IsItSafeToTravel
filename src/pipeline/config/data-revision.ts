@@ -94,8 +94,25 @@
  *     whole-country name check (Somalia's "somaliennes" had matched "somalie"), and the same
  *     level-1-only-when-affirmed rule as SK: 25 countries 1 -> no data, SSD 1 -> 4, ARE 1 -> 2.
  *     Bumped so the correction lands without news events, like revs 2 and 3.
+ *   5 (2026-09-26) — two issuers that had been silently contributing nothing start contributing:
+ *       a) HK (Hong Kong OTA): the index page renders its alert table client-side, so the
+ *          server HTML the old fetcher parsed never contained a single alert. Now read from the
+ *          OTA's own JSON (`/json/ota_index/ota_index.json`, `showInIndex` entries only — the
+ *          same array keeps superseded alerts back to 2021); regional entries are capped at 2.
+ *          Coverage 0 -> 27 countries (black 4 / red 3 / amber 2; HK never states "no risk", so
+ *          countries without an alert stay no-data rather than level 1).
+ *       b) CH (Swiss FDFA): eda.admin.ch was rebuilt on Nuxt and the scraped listing page no
+ *          longer carries any risk information. Now read from the site's own JSON API
+ *          (`advice_against` enum: general 4 / tourists 3 / regional 2; 'none' is level 1 only
+ *          with the FDFA's explicit "gilt grundsätzlich als sicher" phrase, otherwise 2).
+ *          Coverage ~3 -> 176 countries.
+ *     Both change the advisory consensus for many countries at once — a correction in our
+ *     inputs, not an overnight change on the ground — so the run that picks them up must not
+ *     emit news. DATA_REVISION_SINCE stays 2026-09-26: every cache from that date on was
+ *     written by rev-4 code for all other issuers, and HK/CH caches from before the fix are
+ *     far below the new high-water marks, so the floor check can never restore them.
  */
-export const DATA_REVISION = 4;
+export const DATA_REVISION = 5;
 
 /**
  * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes
