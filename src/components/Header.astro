@@ -99,6 +99,12 @@ const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régi
               {t('hub.families.title' as any)}
             </a>
             <hr class="my-1 border-sand-200 dark:border-sand-700" />
+            <a href={`/${lang}/${r['government-advisories']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {nx.governmentAdvisories}
+            </a>
+            <a href={`/${lang}/${r['governments-disagree']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+              {nx.governmentsDisagree}
+            </a>
             <a href={`/${lang}/${r['community-vs-data']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
               {nx.communityVsData}
             </a>
@@ -167,6 +173,9 @@ const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régi
           </a>
           <a href={`/${lang}/${r['regions']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
             {regionsLabel}
+          </a>
+          <a href={`/${lang}/${r['government-advisories']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
+            {nx.governmentAdvisories}
           </a>
           <a href={`/${lang}/${r['community-vs-data']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
             {nx.communityVsData}
