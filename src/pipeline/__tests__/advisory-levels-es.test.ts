@@ -92,4 +92,60 @@ describe('normalizeEsLevel (ES/Exteriores "Notas importantes" banner)', () => {
       ' ANTE EL CONTEXTO DE CONFLICTO REGIONAL, SE DESACONSEJA COMPLETAMENTE VIAJAR A IRÁN.Si se encuentra usted en Irán, debe permanecer en su domicilio tratando de reducir al máximo sus desplazamientos.';
     assert.equal(normalizeEsLevel(notas), 4);
   });
+
+  /**
+   * Regression coverage for the 2026-09-26 regional-promotion repair
+   * (isitsafetotravel.org-audit/2026-09-25/PARSER-REGIONAL-BRIEF.md). Five countries were found
+   * promoted to a whole-country Level 4 by wording ES_ZONE_MARKERS' fixed phrase list didn't
+   * recognize as zone-scoped, plus one unrelated double-negation bug the fix exposed. Fixtures
+   * are VERBATIM excerpts from the live "Notas importantes" banner, fetched 2026-09-26.
+   */
+
+  it('Azerbaijan: the heading "ZONAS A LAS QUE SE RECOMIENDA NO VIAJAR" (introducing a list of named districts) has no separating period before the next paragraph -> 2, not 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. ZONAS A LAS QUE SE RECOMIENDA NO VIAJAR Desde la Declaración de paz de Washington del 8 de agosto de 2025, Azerbaiyán y Armenia continúan avanzando en el proceso de normalización de sus relaciones. Por este motivo, se recomienda evitar los desplazamientos a las áreas próximas a la frontera. ZONAS A LAS QUE SE RECOMIENDA NO VIAJAR EXCEPTO NECESIDADEsta recomendación se aplica a las regiones o “rayons” de Kelbajar, Loachin, Qubadli, Zengilan, Jabrayil, Fuzuli, Khojavand, Shusha, Khojali, Khankendi, Aghdam y Tartar. EL RESTO DE LAS ZONAS DE AZERBAIYÁN SON CONSIDERADAS SEGURAS PARA VIAJAR.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Azerbaijan: "SI BIEN NO SE DESACONSEJA TOTALMENTE su uso por pasajeros" (Caspian Sea ferries) is a NEGATED "desaconseja", not a ban -> does not by itself produce Level 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. Los barcos que operan están pensados, fundamentalmente, para el tráfico de mercancías por lo que - si bien no se desaconseja totalmente su uso por pasajeros - hay que tener presente que los viajes no son predecibles en cuanto a duración ni frecuencia.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Cameroon: "se desaconseja viajar a la PENÍNSULA de Bakassi" names a specific peninsula, not the whole country -> 3 (from the "extrema precaución" banner), not 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON EXTREMA PRECAUCIÓN Y ABSTENERSE DE HACERLO EN LAS REGIONES NOROESTE, SUDOESTE Y EXTREMO NORTE, ASÍ COMO EN LAS ZONAS FRONTERIZAS. El Golfo de Guinea recibe gran atención por el problema existente con la piratería. Se desaconseja viajar a la península de Bakassi, así como tomar el ferry de Tiko o Limbe hacia Nigeria por el importante riesgo de ataques de piratería.';
+    assert.equal(normalizeEsLevel(notas), 3);
+  });
+
+  it('Algeria: "se recomienda NO viajar a LA ZONA" (the Tindouf Sahrawi refugee camps, named earlier in the same sentence) is anaphoric zone-scoping, not a whole-country ban -> 2, not 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. Ante la posibilidad de secuestros y atentados contra españoles en los campamentos saharauis de Tinduf, se recomienda NO viajar a la zona y que todos los viajeros españoles cuya presencia no sea imprescindible la abandonen en cuanto sea posible.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Nepal: "se desaconseja viajar a LA ZONA del siniestro" (named flood-affected districts) is anaphoric zone-scoping, not a whole-country ban -> 2 (from the plain caution banner), not 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. Como consecuencia de las inundaciones ocurridas en el país se desaconseja viajar a la zona del siniestro (Rasuwa, Gorkha, Nuwakot y Dhading así como zonas situadas a lo largo de los ríos Bhota Koshi y Trishuli). La situación está en constante evolución.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Togo: "(se recomienda no viajar)" is a parenthetical inside a sentence already scoped to "zonas de riesgo" / the Triple-Border area -> 2 (from the plain caution banner), not 4', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. Son zonas de riesgo muy alto (se recomienda no viajar) las zonas de las Triples Fronteras (Burkina/Togo/Benín y Burkina/Togo/Ghana), así como el paso fronterizo en Cinkassé y en Mandouri. Es zona de riesgo alto (se recomienda no viajar salvo razón imperiosa) la región de Savanes, donde el gobierno togolés ha declarado estado de urgencia desde 2022.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Togo: "se recomienda EXTREMAR LA PRECAUCIÓN y adoptar medidas de HIGIENE" (a Sanidad/hygiene tip) must not count as the security "extrema precaución" whole-country intensifier -> 2, not 3', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. Para viajar a Togo es obligatorio contar con la pauta de la fiebre amarilla. Se recomienda extremar la precaución y adoptar medidas de higiene, lavarse frecuentemente las manos y vigilar el consumo de alimentos frescos.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Ethiopia (regression guard): "mucha precaución... por determinadas zonas" is STILL the whole-country Level 3 banner even though it mentions "zonas" -- the intensity check is deliberately not zone-gated', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. ÚLTIMA HORA: Se ha producido un grave deterioro de la situación de seguridad en la región de Tigray.';
+    assert.equal(normalizeEsLevel(notas), 3);
+  });
 });

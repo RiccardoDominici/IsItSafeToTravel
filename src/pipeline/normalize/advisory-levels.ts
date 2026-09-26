@@ -1563,7 +1563,7 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
  * Cameroon needed one more, non-generic addition: "se desaconseja viajar a la PENÍNSULA de Bakassi" names a
  * specific peninsula, a word neither stem covers. */
 const ES_ZONE_MARKERS =
-  /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|frontera con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno/;
+  /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|fronter\w* con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno|\bzonas?\b|\bregi[oó]n(es)?\b|pen[ií]nsula/;
 const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
 
 /**
@@ -1627,11 +1627,31 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     /\bse desaconseja (el viaje|viajar)\b/,
     /\brecomienda\s+no\s+viajar\b/,
   ];
+  // "NO se desaconseja ..." (it is NOT discouraged) is the literal negation of the LEVEL4_PATTERNS
+  // "desaconseja" family above -- without this guard, Azerbaijan's own hedge about Caspian Sea
+  // ferries ("los barcos... por lo que, SI BIEN NO SE DESACONSEJA TOTALMENTE su uso por
+  // pasajeros, hay que tener presente que los viajes no son predecibles...") -- reassurance that
+  // FERRIES aren't discouraged, not a country-wide ban -- matched `desaconseja\w*.{0,25}totalmente`
+  // by ignoring its own "no se" prefix and produced a false Level 4. Verified 2026-09-26 this is
+  // the only "no se desaconseja" occurrence anywhere in the calibration corpus.
+  const NEGATED_DESACONSEJA = /\bno\s+se\s+desaconseja\b/;
   // A sentence using either level-4 verb, downgraded by its own "salvo/excepto" clause, is level 3.
   const LEVEL3_EXCEPTION_VERB = /desaconseja|recomienda\s+no\s+viajar/;
-  const LEVEL3_PATTERNS = [
+  // "Extremar/mucha precaución" is Spain's own whole-country Level 3 intensifier (Ethiopia:
+  // "SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" --
+  // deliberately NOT gated on ES_ZONE_MARKERS like the Level 4 checks above: that "zonas" clause
+  // is a SEPARATE, additional caveat, not what "mucha precaución" itself is scoped to; the banner
+  // as a whole is Spain's overall country assessment). Checked per SENTENCE (not the whole
+  // notice) only to exclude a health/hygiene use of the same words -- Togo's page reads "se
+  // recomienda EXTREMAR LA PRECAUCIÓN y adoptar medidas de HIGIENE, lavarse frecuentemente las
+  // manos..." in its own Sanidad section, about disease prevention, not a security assessment;
+  // ES_HEALTH_CONTEXT excludes just that sentence.
+  const PRECAUCION_INTENSITY_PATTERNS = [
     /extremar\w*.{0,15}precauci[oó]n/, /precauci[oó]n\w*.{0,15}extrem/,
     /\bextrema\s+precauci[oó]n/, /\bmucha\s+precauci[oó]n/,
+  ];
+  const ES_HEALTH_CONTEXT = /higiene|lavarse|vacun\w*|enfermedad|malaria|c[oó]lera|dengue|fiebre amarilla/;
+  const LEVEL3_PATTERNS = [
     /no esencial/,
     /valorar no viajar/, /valor[eo]n?\s+.{0,25}no viajar/,
     // Spain's "postpone your trip" banner -- see calibration note above. "su" is optional: Bahréin and
@@ -1653,17 +1673,27 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
   for (const s of splitIntoSentences(notas)) {
     const zoneScoped = ES_ZONE_MARKERS.test(s);
     const hasException = ES_EXCEPTION_MARKER.test(s);
+    const negated = NEGATED_DESACONSEJA.test(s);
 
-    if (!zoneScoped && !hasException && LEVEL4_PATTERNS.some((re) => re.test(s))) {
+    if (!zoneScoped && !hasException && !negated && LEVEL4_PATTERNS.some((re) => re.test(s))) {
       sawLevel4 = true;
       continue;
     }
-    if (hasException && LEVEL3_EXCEPTION_VERB.test(s)) sawLevel3 = true;
+    // Same zone guard as the Level 4 branch above: a "desaconseja/recomienda no viajar ...
+    // salvo/excepto ..." sentence that ALSO names a zone/region (Togo's Savanes region, "es
+    // zona de riesgo alto (se recomienda no viajar salvo razon imperiosa) la region de
+    // Savanes...") is a conditional REGIONAL warning, not a whole-country one downgraded by its
+    // own exception clause -- must stay capped at whatever LEVEL2_PATTERNS finds, not jump to 3.
+    if (!zoneScoped && hasException && LEVEL3_EXCEPTION_VERB.test(s)) sawLevel3 = true;
   }
+
+  const hasSecurityPrecautionIntensity = splitIntoSentences(notas).some(
+    (s) => !ES_HEALTH_CONTEXT.test(s) && PRECAUCION_INTENSITY_PATTERNS.some((re) => re.test(s)),
+  );
 
   if (sawLevel4) return 4;
   if (sawLevel3) return 3;
-  if (LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
+  if (hasSecurityPrecautionIntensity || LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
   if (LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
   // A substantive notice that matched none of the above is Cuba's case (see calibration note): a real
   // advisory Spain didn't phrase with any of its fixed severity verbs, not an all-clear. Emit nothing
