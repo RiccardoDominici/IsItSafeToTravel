@@ -159,7 +159,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     methodologyLinkText: 'metodologia',
     breadcrumbLabel: 'Avvisi di viaggio governativi',
     hub: {
-      title: 'Avvisi di Viaggio di {count} Governi, a Confronto',
+      title: 'Avvisi di viaggio di {count} governi, a confronto',
       description: 'Confronta come {count} governi valutano il rischio di viaggio per le stesse destinazioni, su un\'unica scala 1–4 ricalcolata ogni giorno.',
       intro1: "I governi pubblicano avvisi di viaggio per avvertire i propri cittadini dei rischi all'estero, dalla piccola criminalità ai conflitti armati. Ogni avviso qui sotto è stato convertito sulla stessa scala da 1 a 4 usata in tutto il sito, così elenchi che usano formulazioni molto diverse — colori, frasi, livelli numerati — diventano direttamente confrontabili.",
       intro2: 'Nessun governo è d\'accordo su ogni singolo paese. Le reti diplomatiche, la propensione al rischio, i rapporti bilaterali e i tempi di aggiornamento differiscono, così la stessa destinazione può essere "normali precauzioni" per un governo e "non recarsi" per un altro. Nessuna delle due letture è automaticamente quella giusta: la nostra {link} spiega come le combiniamo in un unico punteggio di sicurezza.',
@@ -209,7 +209,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     methodologyLinkText: 'metodología',
     breadcrumbLabel: 'Avisos de viaje gubernamentales',
     hub: {
-      title: 'Avisos de Viaje de {count} Gobiernos, Comparados',
+      title: 'Avisos de viaje de {count} gobiernos, comparados',
       description: 'Compara cómo {count} gobiernos valoran el riesgo de viaje para los mismos destinos, en una única escala 1-4 recalculada a diario.',
       intro1: 'Los gobiernos publican avisos de viaje para advertir a sus ciudadanos de los riesgos en el extranjero, desde la delincuencia común hasta los conflictos armados. Cada aviso de abajo se ha traducido a la misma escala del 1 al 4 usada en todo el sitio, de modo que listas con redacciones muy distintas —colores, frases, niveles numerados— se vuelven directamente comparables.',
       intro2: 'Ningún gobierno coincide con los demás en todos los países. Cada uno se apoya en su propia red de embajadas, su tolerancia al riesgo, sus relaciones diplomáticas y su propio calendario de actualización, así que el mismo destino puede ser "precauciones normales" para un gobierno y "no viajar" para otro. Ninguna lectura es automáticamente la correcta: nuestra {link} explica cómo las combinamos en una sola puntuación de seguridad.',
@@ -259,7 +259,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     methodologyLinkText: 'méthodologie',
     breadcrumbLabel: 'Conseils aux voyageurs',
     hub: {
-      title: "Conseils aux Voyageurs de {count} Gouvernements, Comparés",
+      title: "Conseils aux voyageurs de {count} gouvernements, comparés",
       description: 'Comparez la façon dont {count} gouvernements évaluent le risque de voyage pour les mêmes destinations, sur une échelle commune de 1 à 4 recalculée chaque jour.',
       intro1: "Les gouvernements publient des conseils aux voyageurs pour avertir leurs citoyens des risques à l'étranger, de la petite délinquance aux conflits armés. Chaque avis ci-dessous a été converti sur la même échelle de 1 à 4 utilisée sur tout le site, afin que des listes formulées très différemment — couleurs, formules, niveaux numérotés — deviennent directement comparables.",
       intro2: "Aucun gouvernement ne s'accorde avec les autres sur tous les pays. Réseaux diplomatiques, tolérance au risque, relations bilatérales et calendriers de mise à jour diffèrent, si bien que la même destination peut être en « précautions normales » pour un gouvernement et « fortement déconseillée » pour un autre. Aucune des deux lectures n'est automatiquement la bonne — notre {link} explique comment nous les combinons en un seul score de sécurité.",
@@ -310,7 +310,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     methodologyLinkText: 'metodologia',
     breadcrumbLabel: 'Alertas de viagem governamentais',
     hub: {
-      title: 'Alertas de Viagem de {count} Governos, Comparados',
+      title: 'Alertas de viagem de {count} governos, comparados',
       description: 'Veja como {count} governos avaliam o risco de viagem para os mesmos destinos, numa única escala 1-4 recalculada todos os dias.',
       intro1: 'Os governos publicam alertas de viagem para avisar os próprios cidadãos sobre riscos no exterior, da pequena criminalidade aos conflitos armados. Cada alerta abaixo foi convertido para a mesma escala de 1 a 4 usada em todo o site, para que listas com redações muito diferentes — cores, frases, níveis numerados — fiquem diretamente comparáveis.',
       intro2: 'Nenhum governo concorda com os demais sobre todos os países. Redes diplomáticas, tolerância ao risco, relações bilaterais e calendários de atualização diferem, então o mesmo destino pode ser "precaução normal" para um governo e "não viajar" para outro. Nenhuma das duas leituras está automaticamente certa — veja nossa {link} para entender como as combinamos num único índice de segurança.',

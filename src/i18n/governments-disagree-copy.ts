@@ -91,7 +91,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
   },
 
   it: {
-    title: 'Dove i Governi Non Concordano sulla Sicurezza',
+    title: 'Dove i governi non concordano sulla sicurezza',
     description: 'Classifica di {count} paesi ampiamente valutati in base a quanto i governi si dividono sui loro avvisi di viaggio, aggiornata ogni giorno.',
     intro: "Ogni governo pubblica un proprio avviso di viaggio, e nella maggior parte dei casi sono grosso modo d'accordo. Questa pagina classifica i paesi in cui non lo sono, indicando quali governi si discostano dagli altri.",
     measureExplainer: "Il punteggio di disaccordo è lo scarto — il livello di avviso più alto registrato per un paese meno il più basso — e a parità di scarto i paesi sono ordinati in base a quanto i livelli sono dispersi (deviazione standard).",
@@ -125,7 +125,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
   },
 
   es: {
-    title: 'Dónde los Gobiernos Discrepan sobre la Seguridad',
+    title: 'Dónde los gobiernos discrepan sobre la seguridad',
     description: 'Clasificación de {count} países ampliamente evaluados según cuánto discrepan los gobiernos en sus avisos de viaje, actualizada a diario.',
     intro: 'Cada gobierno publica su propio aviso de viaje y, la mayoría de las veces, coinciden a grandes rasgos. Esta página clasifica los países en los que no coinciden, señalando qué gobiernos se apartan del resto.',
     measureExplainer: 'La puntuación de discrepancia es el rango: el nivel de aviso más alto registrado para un país menos el más bajo. En caso de empate, los países se ordenan según cuán dispersos están los niveles (desviación estándar).',
@@ -159,7 +159,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
   },
 
   fr: {
-    title: 'Où les Gouvernements Divergent sur la Sécurité',
+    title: 'Où les gouvernements divergent sur la sécurité',
     description: 'Classement de {count} pays largement évalués selon le degré de désaccord entre gouvernements sur leurs avis aux voyageurs, mis à jour chaque jour.',
     intro: "Chaque gouvernement publie son propre avis aux voyageurs et, la plupart du temps, ils sont globalement d'accord. Cette page classe les pays où ce n'est pas le cas, en nommant les gouvernements qui s'écartent des autres.",
     measureExplainer: "Le score de désaccord est l'écart : le niveau d'avis le plus élevé enregistré pour un pays moins le plus bas ; à écart égal, les pays sont classés selon la dispersion des niveaux (écart-type).",
@@ -193,7 +193,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
   },
 
   pt: {
-    title: 'Onde os Governos Discordam sobre Segurança',
+    title: 'Onde os governos discordam sobre segurança',
     description: 'Classificação de {count} países amplamente avaliados conforme o grau de discordância entre os alertas de viagem dos governos, atualizada todos os dias.',
     intro: 'Cada governo publica o seu próprio alerta de viagem e, na maioria das vezes, concordam a grandes traços. Esta página classifica os países em que isso não acontece, apontando quais governos se destacam dos demais.',
     measureExplainer: 'A pontuação de discordância é a amplitude — o nível de alerta mais alto registado para um país menos o mais baixo —, com empates desempatados por quão dispersos estão os níveis (desvio padrão).',
