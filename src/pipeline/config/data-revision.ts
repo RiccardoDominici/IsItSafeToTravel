@@ -87,8 +87,15 @@
  *          any dataRevision mismatch, not just the four score-delta ones.
  *     Countries affected by (a)-(d) see a score/advisory change that reflects the correction, not
  *     a real overnight change in safety; (e) is why none of that shows up as "news" regardless.
+ *   4 (2026-09-26) — BE (Belgium): the rev-3 production data still showed level 1 "Pas de
+ *     restrictions" for South Sudan, whose page orders Belgians to leave the country. Added the
+ *     missing "quitter"/"retourner" travel verbs (with a governing advisory verb required, so
+ *     China's drug-law "obligation de quitter le pays" stays out), a word-boundary fix for the
+ *     whole-country name check (Somalia's "somaliennes" had matched "somalie"), and the same
+ *     level-1-only-when-affirmed rule as SK: 25 countries 1 -> no data, SSD 1 -> 4, ARE 1 -> 2.
+ *     Bumped so the correction lands without news events, like revs 2 and 3.
  */
-export const DATA_REVISION = 3;
+export const DATA_REVISION = 4;
 
 /**
  * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes
