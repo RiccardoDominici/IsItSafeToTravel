@@ -166,7 +166,7 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_safety_security": "seguridad social (Global Peace Index)",
     "gpi_militarisation": "militarización (Global Peace Index)",
     "ucdp_conflict_deaths": "muertes por conflicto (UCDP)",
-    "vdem_rule_of_law": "Estado de derecho (V-Dem)",
+    "vdem_rule_of_law": "estado de derecho (V-Dem)",
     "inform_health": "capacidad del sistema sanitario (INFORM)",
     "inform_epidemic": "riesgo de epidemias y enfermedades (INFORM)",
     "wb_child_mortality": "mortalidad infantil (Banco Mundial)",
@@ -422,7 +422,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "conflict": "Este pilar mide los conflictos armados, el terrorismo y la violencia política — una puntuación baja significa que la inestabilidad puede afectar a la seguridad personal y trastocar los planes de viaje.",
       "crime": "Este pilar refleja los delitos violentos, los robos y la actividad criminal organizada — una puntuación baja exige mayor atención en la calle, sobre todo fuera de las principales zonas turísticas.",
       "health": "Este pilar abarca la calidad de la asistencia sanitaria, el riesgo de enfermedades y la capacidad de respuesta ante emergencias — una puntuación baja significa que puede ser difícil acceder a ayuda médica fiable fuera de las grandes ciudades.",
-      "governance": "Este pilar evalúa el Estado de derecho y la fiabilidad de las instituciones — una puntuación baja significa que la policía y los tribunales pueden ofrecer una ayuda limitada si algo sale mal.",
+      "governance": "Este pilar evalúa el estado de derecho y la fiabilidad de las instituciones — una puntuación baja significa que la policía y los tribunales pueden ofrecer una ayuda limitada si algo sale mal.",
       "environment": "Este pilar registra la exposición a riesgos naturales como tormentas, inundaciones y terremotos, así como el grado de preparación del país para responder a ellos."
     },
     "a3Intro": "A fecha de {monthYear}, {name} cuenta con {advisoryCount}.",

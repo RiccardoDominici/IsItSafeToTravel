@@ -592,7 +592,7 @@ export function buildGlobalSafetyJsonLd(
   const names: Record<Lang, string> = {
     en: 'Global Safety Score',
     it: 'Punteggio di sicurezza globale',
-    es: 'Puntuación de Seguridad Global',
+    es: 'Puntuación de seguridad global',
     fr: 'Score de Sécurité Mondial',
     pt: 'Pontuação de Segurança Global',
     zh: '全球安全评分',
