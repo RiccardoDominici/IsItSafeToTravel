@@ -1439,6 +1439,101 @@ function validateTravelSafetyIndexPage() {
 }
 
 // =====================================================================
+// 10. GOVERNMENT ADVISORIES + GOVERNMENTS DISAGREE (2026-09 visibility pages)
+// =====================================================================
+// Task-specific invariants for the new government-advisories hub/issuer
+// pages and the governments-disagree page: existence across locales, the
+// required JSON-LD node types (BreadcrumbList comes from <Breadcrumb>'s own
+// script tag, not the page's main @graph -- extractGraphNodes already
+// aggregates every <script type="application/ld+json"> on the page, so this
+// finds it either way), and the coverage-floor honesty gate: an issuer with
+// too little data in today's snapshot (src/lib/advisory-views.ts,
+// MIN_ISSUER_COVERAGE) must get NO page at all, never a near-empty one.
+
+function validateGovernmentAdvisoriesPages() {
+  console.log("\n--- Government Advisories / Governments Disagree Pages ---");
+  const SAMPLE_LANGS: Language[] = ["en", "it", "de"];
+
+  // 8a. Hub + disagreement page: exist in ALL 7 locales, correct JSON-LD node types.
+  for (const lang of LANGUAGES) {
+    const hubSlug = routeSlug(lang, "government-advisories");
+    const disagreeSlug = routeSlug(lang, "governments-disagree");
+    if (!hubSlug || !disagreeSlug) {
+      check(`gov-advisories(${lang}): route slugs registered`, false, `hub=${hubSlug} disagree=${disagreeSlug}`);
+      continue;
+    }
+
+    const hubFile = path.join(DIST, lang, hubSlug, "index.html");
+    const hubLabel = `${lang}/${hubSlug}`;
+    if (fs.existsSync(hubFile)) {
+      const nodes = extractGraphNodes(readHtml(hubFile));
+      check(`gov-advisories-hub(${hubLabel}): has WebPage`, !!findNode(nodes, "WebPage"));
+      check(`gov-advisories-hub(${hubLabel}): has BreadcrumbList`, !!findNode(nodes, "BreadcrumbList"));
+      check(`gov-advisories-hub(${hubLabel}): has ItemList`, !!findNode(nodes, "ItemList"));
+    } else {
+      check(`gov-advisories-hub(${hubLabel}): file exists`, false);
+    }
+
+    const disagreeFile = path.join(DIST, lang, disagreeSlug, "index.html");
+    const disagreeLabel = `${lang}/${disagreeSlug}`;
+    if (fs.existsSync(disagreeFile)) {
+      const nodes = extractGraphNodes(readHtml(disagreeFile));
+      check(`governments-disagree(${disagreeLabel}): has WebPage`, !!findNode(nodes, "WebPage"));
+      check(`governments-disagree(${disagreeLabel}): has BreadcrumbList`, !!findNode(nodes, "BreadcrumbList"));
+      check(`governments-disagree(${disagreeLabel}): has ItemList`, !!findNode(nodes, "ItemList"));
+    } else {
+      check(`governments-disagree(${disagreeLabel}): file exists`, false);
+    }
+  }
+
+  // 8b. Issuer pages: sample a few well-known issuers across a few locales.
+  const SAMPLE_ISSUERS = ["usa", "ita", "deu"];
+  for (const lang of SAMPLE_LANGS) {
+    const hubSlug = routeSlug(lang, "government-advisories");
+    if (!hubSlug) continue;
+    for (const iso3 of SAMPLE_ISSUERS) {
+      const file = path.join(DIST, lang, hubSlug, iso3, "index.html");
+      const label = `${lang}/${hubSlug}/${iso3}`;
+      if (!fs.existsSync(file)) {
+        check(`gov-advisories-issuer(${label}): file exists`, false);
+        continue;
+      }
+      const nodes = extractGraphNodes(readHtml(file));
+      check(`gov-advisories-issuer(${label}): has WebPage`, !!findNode(nodes, "WebPage"));
+      check(`gov-advisories-issuer(${label}): has BreadcrumbList`, !!findNode(nodes, "BreadcrumbList"));
+    }
+  }
+
+  // 8c. Coverage-floor honesty gate: issuers with too little data (ar/br/cn --
+  // always single digits in the live dataset) must NOT get their own page.
+  const EXCLUDED_ISSUER_ISO3 = ["arg", "bra", "chn"];
+  const enHubSlug = routeSlug("en", "government-advisories");
+  if (enHubSlug) {
+    for (const iso3 of EXCLUDED_ISSUER_ISO3) {
+      const file = path.join(DIST, "en", enHubSlug, iso3, "index.html");
+      check(
+        `gov-advisories: low-coverage issuer ${iso3} has NO page (coverage-floor honesty gate)`,
+        !fs.existsSync(file),
+        fs.existsSync(file) ? `unexpectedly built ${file}` : undefined
+      );
+    }
+  }
+
+  // 8d. Honesty canary: the absence-of-advisory sentence must say the
+  // missing country is NOT thereby "safe" -- never let this silently regress
+  // into an implied-safe reading (VISIBILITY-BRIEF-COMMON.md Task A.2).
+  if (enHubSlug) {
+    const usaFile = path.join(DIST, "en", enHubSlug, "usa", "index.html");
+    if (fs.existsSync(usaFile)) {
+      check(
+        "gov-advisories-issuer(en/usa): absence-of-advisory honesty note present",
+        readHtml(usaFile).includes("not the same as being declared safe")
+      );
+    }
+  }
+}
+
+// =====================================================================
 // MAIN
 // =====================================================================
 
@@ -1468,6 +1563,7 @@ function main() {
   validateNewsPages();
   validateCommunityVsDataPage();
   validateTravelSafetyIndexPage();
+  validateGovernmentAdvisoriesPages();
 
   // Summary
   console.log("\n========================================");
