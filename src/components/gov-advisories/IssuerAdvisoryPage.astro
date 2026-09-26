@@ -16,8 +16,7 @@ import { getLocalizedCountryName } from '../../lib/scores';
 import { getLastmodMap } from '../../lib/lastmod';
 import {
   buildWebPageJsonLd,
-  buildItemListJsonLd,
-} from '../../lib/seo';
+  buildItemListJsonLd, VISIBILITY_PAGES_PUBLISHED } from '../../lib/seo';
 import {
   getIssuerCoverage,
   getIssuerCountry,
@@ -74,7 +73,7 @@ const level4Group = groups.find((g) => g.level === 4);
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
-    buildWebPageJsonLd(title, description, canonicalUrl, lang, snapshotDate),
+    buildWebPageJsonLd(title, description, canonicalUrl, lang, snapshotDate, VISIBILITY_PAGES_PUBLISHED),
     // BreadcrumbList is NOT duplicated here -- <Breadcrumb> below already
     // emits its own (Home -> hub -> agency), same convention as the country
     // page and HubPageLayout.astro.

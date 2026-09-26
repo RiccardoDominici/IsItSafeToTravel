@@ -642,10 +642,15 @@ export function buildPersonJsonLd(): Record<string, unknown> {
   };
 }
 
+/** Ship date of the 2026-09-26 visibility pages (index, government advisories, disagreement,
+ *  community-vs-data). Their datePublished must be the day they went live, not the site's launch. */
+export const VISIBILITY_PAGES_PUBLISHED = '2026-09-26';
+
 /**
  * Build simple WebPage JSON-LD for static pages (methodology, legal).
+ * `datePublished` defaults to the site launch; pages that went live later pass their own date.
  */
-export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang, dateModified?: string): Record<string, unknown> {
+export function buildWebPageJsonLd(title: string, description: string, canonicalUrl: string, lang: Lang, dateModified?: string, datePublished = '2026-03-19'): Record<string, unknown> {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebPage',
@@ -655,7 +660,7 @@ export function buildWebPageJsonLd(title: string, description: string, canonical
     url: canonicalUrl,
     inLanguage: localeMap[lang],
     isPartOf: { '@id': WEBSITE_ID },
-    ...(dateModified && { dateModified, datePublished: '2026-03-19' }),
+    ...(dateModified && { dateModified, datePublished }),
   };
 }
 
@@ -1156,7 +1161,7 @@ export function buildCommunityVsDataJsonLd(
         description,
         inLanguage: localeMap[lang],
         isPartOf: { '@id': WEBSITE_ID },
-        ...(dateModified && { dateModified, datePublished: '2026-09-26' }),
+        ...(dateModified && { dateModified, datePublished: VISIBILITY_PAGES_PUBLISHED }),
       },
       {
         '@type': 'BreadcrumbList',
@@ -1220,6 +1225,7 @@ export function buildTravelSafetyIndexJsonLd(
         isPartOf: { '@id': WEBSITE_ID },
         mainEntity: { '@id': SITE_DATASET_ID },
         dateModified,
+        datePublished: VISIBILITY_PAGES_PUBLISHED,
       },
       {
         ...buildDatasetJsonLd(lang, dateModified),

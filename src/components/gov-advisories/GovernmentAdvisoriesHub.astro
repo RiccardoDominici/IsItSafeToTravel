@@ -16,8 +16,7 @@ import { getLocalizedCountryName } from '../../lib/scores';
 import { getLastmodMap } from '../../lib/lastmod';
 import {
   buildWebPageJsonLd,
-  buildItemListJsonLd,
-} from '../../lib/seo';
+  buildItemListJsonLd, VISIBILITY_PAGES_PUBLISHED } from '../../lib/seo';
 import {
   getEligibleIssuers,
   getIssuerCountry,
@@ -92,7 +91,7 @@ const methodologyUrl = `/${lang}/${r.methodology}/`;
 const jsonLd = {
   '@context': 'https://schema.org',
   '@graph': [
-    buildWebPageJsonLd(title, description, canonicalUrl, lang, snapshotDate),
+    buildWebPageJsonLd(title, description, canonicalUrl, lang, snapshotDate, VISIBILITY_PAGES_PUBLISHED),
     // BreadcrumbList is NOT duplicated here: <Breadcrumb> below already emits
     // its own standalone BreadcrumbList JSON-LD script (see Breadcrumb.astro)
     // -- same convention as HubPageLayout.astro and the country page, neither
