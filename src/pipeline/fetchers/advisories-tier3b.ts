@@ -328,7 +328,9 @@ async function fetchAllChEntries(): Promise<ChReisehinweiseEntry[]> {
     const after = new URL(page.nextLink).searchParams.get('$after');
     if (!after || seenCursors.has(after)) break; // no progress -- stop rather than loop forever
     seenCursors.add(after);
-    url = `${CH_API_URL}?$after=${after}`;
+    // searchParams.get() decoded the cursor; re-encode it so an opaque token
+    // containing '+', '/' or '=' survives the round trip intact.
+    url = `${CH_API_URL}?$after=${encodeURIComponent(after)}`;
   }
 
   return entries;
