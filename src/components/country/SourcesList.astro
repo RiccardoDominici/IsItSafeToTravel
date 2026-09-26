@@ -1,7 +1,8 @@
 ---
-import type { SourceMeta, PillarScore } from '../../pipeline/types';
+import type { SourceMeta, PillarScore, ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations, type TranslationKey } from '../../i18n/utils';
+import { getLocalizedSourceDescription, buildLocalizedAdvisoryDescription } from '../../i18n/source-descriptions';
 
 interface Props {
   sources: SourceMeta[];
@@ -14,9 +15,17 @@ interface Props {
    * the data date — a trust defect for a data publisher.
    */
   pillars?: PillarScore[];
+  /**
+   * The country's raw advisories map (ScoredCountry['advisories']). When provided,
+   * the 'advisories' source's description is rebuilt in the page language from these
+   * per-government levels (see buildLocalizedAdvisoryDescription) instead of showing
+   * the English sentence baked into data/scores/*.json by the pipeline. Optional for
+   * backwards compatibility — omitting it just falls back to the stored description.
+   */
+  advisories?: ScoredCountry['advisories'];
 }
 
-const { sources, lang, pillars } = Astro.props;
+const { sources, lang, pillars, advisories } = Astro.props;
 const t = useTranslations(lang);
 
 type FreshnessLevel = 'fresh' | 'recent' | 'stale' | 'outdated' | 'unknown';
@@ -99,6 +108,14 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
             }).format(new Date(source.fetchedAt))
           : null;
 
+        // 'advisories' is per-country (which governments actually published a level for
+        // THIS country) so it's rebuilt from live data rather than looked up in a static
+        // table; every other source has one fixed English description per catalog key.
+        // Both paths fall back to the stored (English) text — never blank.
+        const localizedDescription = source.name === 'advisories'
+          ? buildLocalizedAdvisoryDescription(lang, advisories) ?? source.description
+          : getLocalizedSourceDescription(lang, source.name, source.description);
+
         return (
           <li class="pt-3 first:pt-0">
             <div class="flex items-center gap-2 flex-wrap">
@@ -126,7 +143,7 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
               </span>
             </div>
             <p class="text-sm text-sand-600 dark:text-sand-400 mt-1">
-              {source.description}
+              {localizedDescription}
             </p>
             {(vintageStr || fetchedDate) && (
               <p class="text-xs text-sand-500 dark:text-sand-400 mt-1">
