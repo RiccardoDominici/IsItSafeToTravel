@@ -263,7 +263,7 @@ async function fetchFrAdvisories(
         $('script, style').remove();
         const bodyText = $('body').text();
 
-        const level = extractFrTerritoryLevel(bodyText);
+        const level = extractFrTerritoryLevel(bodyText, country.name.fr);
         if (level === null) return; // no "Zones de vigilance" section found: emit nothing
 
         indicators.push({

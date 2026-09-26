@@ -516,8 +516,8 @@ export function normalizeToUnified(
  * Cascade, most confident first (verified against AFG, DEU, GBR, CHE, UKR, HTI, MLI, RUS,
  * BLR, TUR, PAK, VEN, LBN, USA, JPN fiches, 2026-09-25):
  *   1. A whole-country subject phrase ("l'ensemble/la totalite/l'integralite du
- *      territoire/pays", "le reste du territoire", "le territoire <adjectif> est ...")
- *      within ~120 chars of a level keyword -> that exact level.
+ *      territoire/pays", "le reste du territoire", "le territoire <adjectif> est ...") -> the
+ *      level of the section it falls in (see levelNearWholeCountryMatch below).
  *   2. No whole-country phrase, but the page names at least one elevated zone (red/orange)
  *      -> level 2 (increased caution only, never higher -- the province/border-strip cap).
  *   3. Section present, no elevated keyword anywhere -> level 1. France's own published
@@ -526,8 +526,190 @@ export function normalizeToUnified(
  *      reading the source's own stated default, not guessing on a parse failure.
  *   4. The "Zones de vigilance" marker is missing entirely (different template, fetch
  *      problem, or a fiche this source doesn't publish) -> null, emit nothing for it.
+ *
+ * Repaired 2026-09-26 (regional-promotion audit): step 1 used to search a fixed +-120
+ * CHARACTER window around the whole-country phrase for a level keyword, which bled across
+ * sentence AND section boundaries -- two confirmed bugs on the live 2026-09-26 site:
+ *  - Kazakhstan: "...un taux de radioactivite particulierement eleve. Il est FORMELLEMENT
+ *    DECONSEILLE de s'y rendre. Zones de vigilance renforcee LE RESTE DU PAYS est place en
+ *    zone de vigilance renforcee." -- the window around "le reste du pays" reached BACKWARD
+ *    across the sentence period into the PRECEDING, unrelated zone's "formellement
+ *    deconseille", read as if it qualified the whole country. Fixed by levelNearWholeCountryMatch
+ *    tracking which named SECTION (red/orange/yellow -- see sectionKeywordBoundaries) a match
+ *    falls in, rather than a raw character radius: a keyword belonging to an already-closed
+ *    section can no longer leak in.
+ *  - Kenya: "...Zones en vigilance renforcee (jaune) A L'EXCEPTION DES ZONES FORMELLEMENT
+ *    DECONSEILLEES ET DECONSEILLEES SAUF RAISON IMPERATIVE, LE RESTE DU TERRITOIRE KENYAN est
+ *    place en vigilance renforcee." -- section-tracking alone is not enough here: the
+ *    exception clause's OWN "formellement deconseillees" sits, textually, inside the SAME
+ *    "vigilance renforcee" section as "le reste du territoire", so it would still register as
+ *    the closest boundary. Fixed by excludeExceptionClauses, which drops any keyword
+ *    occurrence inside an "a l'exception de(s) ...," clause before boundaries are built --
+ *    that clause describes what's EXCLUDED from "le reste", not what "le reste" itself is.
+ *  - Georgia: "Les deplacements sont formellement deconseilles en Abkhazie... il est
+ *    toutefois formellement deconseille de se rendre dans L'ENSEMBLE DU TERRITOIRE DE LA
+ *    RUSSIE." -- a real whole-country phrase, correctly inside the red section, but naming
+ *    RUSSIA (mentioned only for shared-border context), not Georgia. Section-tracking alone
+ *    reads this as Georgia's own level 4. Fixed by namesAnotherCountry, which rejects a
+ *    whole-country match immediately followed by "de la/du/des <name>" identifying a
+ *    DIFFERENT country in our own config -- the scan then continues to Georgia's OWN, later
+ *    "l'ensemble du pays, dont la capitale Tbilissi..." match, correctly level 2 (inside the
+ *    yellow section).
  */
-export function extractFrTerritoryLevel(rawText: string): UnifiedLevel | null {
+function foldFrName(s: string): string {
+  return s
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u2018\u2019'`]/g, '');
+}
+
+/**
+ * Does the text immediately following a whole-country match ("...du territoire/pays<tail>")
+ * explicitly name a DIFFERENT country than `ownNameFolded` (the Georgia/Russia case above)?
+ * Only rejects on a POSITIVE match against another country's own French name in our config --
+ * an unnamed or generic continuation (", dont la capitale Tbilissi", " est calme") is accepted,
+ * the same fail-open posture as every other guard in this file.
+ */
+function namesAnotherCountry(tail: string, ownNameFolded: string): boolean {
+  const m = /^[,\s]*(?:de la |du |des |de l[\s]?)\s*([a-z][a-z-]{3,})/.exec(tail);
+  if (!m) return false;
+  const named = m[1];
+  if (ownNameFolded.startsWith(named) || named.startsWith(ownNameFolded)) return false; // names itself
+  return COUNTRIES.some((c) => {
+    const folded = foldFrName(c.name.fr);
+    return folded !== ownNameFolded && folded.length > 3 && (folded.startsWith(named) || named.startsWith(folded));
+  });
+}
+
+/**
+ * Every occurrence of a level keyword in `section`, EXCLUDING ones that fall inside an "a
+ * l'exception de(s) ...," clause (the Kenya bug -- that clause names what's carved OUT of the
+ * "reste"/"ensemble" statement it precedes, not a level for that statement itself). Sorted by
+ * position: this is the ordered set levelNearWholeCountryMatch scans to find the level
+ * "active" at a given position (the LAST heading/keyword before it), exactly like a
+ * table-of-contents built from a document's own section headings.
+ */
+function sectionKeywordBoundaries(section: string): { index: number; level: UnifiedLevel }[] {
+  const exceptionSpans: [number, number][] = [];
+  // "a lexception d" + up to 3 more lowercase letters covers "de"/"des"/"du"; a following
+  // "la"/"l" (as in "de la Colombie") just becomes part of the [^,]{0,200} sweep up to the
+  // clause's own closing comma, so it does not need its own branch.
+  for (const m of section.matchAll(/a lexception d[a-z]{0,3}\s+[^,]{0,200},/g)) {
+    exceptionSpans.push([m.index, m.index + m[0].length]);
+  }
+  const insideException = (pos: number) => exceptionSpans.some(([start, end]) => pos >= start && pos < end);
+
+  const KEYWORD_RES: [RegExp, UnifiedLevel][] = [
+    [/formellement deconseill|classe[e]? en zone rouge/g, 4],
+    [/deconseille[a-z]{0,2} sauf raison imperative/g, 3],
+    [/vigilance renforcee/g, 2],
+    [/vigilance normale/g, 1],
+  ];
+  const boundaries: { index: number; level: UnifiedLevel }[] = [];
+  for (const [re, level] of KEYWORD_RES) {
+    for (const m of section.matchAll(re)) {
+      if (!insideException(m.index)) boundaries.push({ index: m.index, level });
+    }
+  }
+  boundaries.sort((a, b) => a.index - b.index);
+  return boundaries;
+}
+
+/** Colour/classification vocabulary France's own template uses when a whole-country sentence's
+ *  OWN level trails in a LATER sentence rather than its own (see tier 3 below) -- gates that
+ *  tier so it only ever completes a genuine, already-in-progress classification statement,
+ *  never "borrows" an unrelated later paragraph's level for an unrelated remark. */
+const FR_CLASSIFICATION_WORDS = /\b(rouge|orange|jaune|vert[e]?|classe[e]?|place[e]?)\b/;
+
+function levelNearWholeCountryMatch(
+  boundaries: { index: number; level: UnifiedLevel }[],
+  matchEnd: number,
+  sentenceEnd: number,
+  ownSentence: string,
+): UnifiedLevel | null {
+  // Tier 1: the match's OWN sentence, searched forward from the match itself -- the most
+  // direct evidence available ("... est en vigilance renforcee", trailing right after the
+  // whole-country phrase in the very same clause). Deliberately forward-only, never backward
+  // within the sentence: an "a l'exception de(s) <zones>, le reste du territoire est ..."
+  // sentence (Kenya) has ITS OWN excepted zones' keywords sitting BEFORE the match, and those
+  // must never be read as this clause's level (sectionKeywordBoundaries already drops them for
+  // tier 2 too, but tier 1 avoids them structurally, just by only looking ahead).
+  const sameSentence = boundaries.find((b) => b.index >= matchEnd && b.index <= sentenceEnd);
+  if (sameSentence) return sameSentence.level;
+
+  // Tier 2: backward, UNBOUNDED -- the last section heading (or earlier inline use of the same
+  // wording) at or before this match, however far back (Georgia's case: the match's own
+  // sentence has no keyword at all -- "ne posent pas de problemes" -- so its level comes from
+  // the "Zone en vigilance renforcee" heading several sentences earlier).
+  let backward: UnifiedLevel | null = null;
+  for (const b of boundaries) {
+    if (b.index < matchEnd) backward = b.level;
+    else break;
+  }
+  if (backward !== null) return backward;
+
+  // Tier 3: forward, UNBOUNDED, and ONLY when this match's own sentence already uses
+  // colour/classification vocabulary (FR_CLASSIFICATION_WORDS) -- reached when NEITHER of the
+  // above found anything, i.e. this match is before any section heading has appeared at all.
+  // Iran: "L'ENSEMBLE DU TERRITOIRE IRANIEN est PLACE EN ROUGE sur la carte..." is the very
+  // first sentence of the page (contains "place"/"rouge", passing the gate) and the
+  // recognizable "formellement deconseille" keyword only appears in the NEXT sentence.
+  // Without the gate, this tier wrongly resolved DR Congo's "les voyages touristiques sont
+  // deconseilles sur l'ensemble du territoire" (a general tourism caution using none of
+  // France's four colour keywords, also the page's first sentence) to a much-later, unrelated
+  // paragraph's "formellement deconseille" (about specific eastern provinces) -- that sentence
+  // has no colour word, so the gate now leaves it unresolved instead, and the scan correctly
+  // continues to DR Congo's OWN explicit, later "le reste du pays est place en zone
+  // deconseillee sauf raison imperative" statement (level 3).
+  if (!FR_CLASSIFICATION_WORDS.test(ownSentence)) return null;
+  const forward = boundaries.find((b) => b.index > sentenceEnd);
+  return forward ? forward.level : null;
+}
+
+/**
+ * Does `sentence` (the WHOLE sentence enclosing a whole-country phrase match, not just the
+ * text after it) contain a copula (est/sont/pose/posent)? Distinguishes a genuine
+ * level-assertion from the SAME "l'ensemble/le reste du territoire" wording used as a location
+ * modifier for something else entirely -- all confirmed live 2026-09-26. Two different
+ * genuine-assertion shapes both need the WHOLE sentence, not just the tail after the match,
+ * because the copula sits on different sides of the phrase in each:
+ *  - Subject-first ("le reste du territoire EST en vigilance renforcee" -- Kazakhstan, Kenya):
+ *    copula trails the phrase.
+ *  - Object-embedded ("il EST formellement deconseille de se rendre dans l'ensemble du
+ *    territoire de la Russie" -- Russia, Sudan): the whole-country phrase is the OBJECT of "se
+ *    rendre dans", and the copula belongs to the clause's own main verb, BEFORE the phrase.
+ * Both false-positive cases have no copula anywhere in their sentence, before or after:
+ *  - Lebanon: "les camps palestiniens et leurs abords, sur l'ensemble du territoire." -- these
+ *    are Palestinian refugee camps, red-listed wherever in the country they sit, not a "whole
+ *    country is red" claim. Without this guard, the RED section heading many sentences earlier
+ *    (the nearest backward boundary) wrongly attaches to it.
+ *  - Venezuela: "reste du territoire venezuelien DES RECOMMANDATIONS SIMILAIRES ...
+ *    S'APPLIQUENT dans toutes les grandes villes venezueliennes." -- reads like a heading label
+ *    ("Rest of Venezuelan territory:") followed by unrelated advice; "s'appliquent" is not
+ *    est/sont/pose/posent.
+ */
+function hasLevelAssertionVerb(sentence: string): boolean {
+  return /\b(est|sont|pose|posent)\b/.test(sentence);
+}
+
+/** Start/end offsets (within `text`) of the "sentence" containing `pos`, where a "sentence"
+ *  ends at [.!?] followed by whitespace/end-of-string -- same boundary rule as splitIntoSentences,
+ *  computed with offsets here because a heading with no trailing period (France's own template)
+ *  merges with the paragraph that follows it, which is exactly the span levelNearWholeCountryMatch's
+ *  forward fallback needs (Germany/Switzerland/UK's one-line pages have no heading at all, just
+ *  one sentence combining the country-phrase and the keyword). */
+function sentenceBoundsAt(text: string, pos: number): [number, number] {
+  const enders = [...text.matchAll(/[.!?](?=\s|$)/g)].map((m) => m.index + 1);
+  let start = 0;
+  for (const idx of enders) {
+    if (idx <= pos) start = idx;
+    else return [start, idx];
+  }
+  return [start, text.length];
+}
+
+export function extractFrTerritoryLevel(rawText: string, countryNameFr: string): UnifiedLevel | null {
   const text = rawText
     .toLowerCase()
     .normalize('NFD')
@@ -541,28 +723,42 @@ export function extractFrTerritoryLevel(rawText: string): UnifiedLevel | null {
   const riskHeadingIdx = text.indexOf('risques encourus', sectionStart);
   const sectionEnd = riskHeadingIdx > sectionStart ? riskHeadingIdx : Math.min(text.length, sectionStart + 6000);
   const section = text.slice(sectionStart, sectionEnd);
+  const ownNameFolded = foldFrName(countryNameFr);
+  const boundaries = sectionKeywordBoundaries(section);
 
-  const LEVEL_KEYWORDS: [RegExp, UnifiedLevel][] = [
-    [/formellement deconseill|classe[e]? en zone rouge/, 4],
-    [/deconseille[a-z]{0,2} sauf raison imperative/, 3],
-    [/vigilance renforcee/, 2],
-    [/vigilance normale/, 1],
-  ];
-
-  // Deliberately specific so a named province/city can never satisfy this on its own.
-  const wholeCountryRe = /(la totalite|lintegralite|lensemble) du (territoire|pays)|reste du (territoire|pays)|le territoire [a-z-]+ est/g;
+  // Deliberately specific so a named province/city can never satisfy this on its own. The
+  // adjective-qualified alternative ("le territoire ADJ est") structurally already names a
+  // territory via its own demonym adjective, so -- unlike the other two -- it is not run
+  // through namesAnotherCountry below (that guard's "de la/du <name>" shape does not apply to
+  // it, and no live bug has ever been found through this alternative).
+  const wholeCountryRe = /(?<ensemble>(?:la totalite|lintegralite|lensemble) du (?:territoire|pays))|(?<reste>reste du (?:territoire|pays))|(?<adj>le territoire [a-z-]+ est)/g;
 
   let subjectMatch: RegExpExecArray | null;
   while ((subjectMatch = wholeCountryRe.exec(section)) !== null) {
-    const windowStart = Math.max(0, subjectMatch.index - 120);
-    const windowEnd = Math.min(section.length, subjectMatch.index + subjectMatch[0].length + 120);
-    const window = section.slice(windowStart, windowEnd);
-    for (const [re, level] of LEVEL_KEYWORDS) {
-      if (re.test(window)) return level;
+    const matchEnd = subjectMatch.index + subjectMatch[0].length;
+    const [sentenceStart, sentenceEnd] = sentenceBoundsAt(section, subjectMatch.index);
+
+    if (!subjectMatch.groups?.adj) {
+      // The adjective-qualified alternative ("le territoire ADJ est") already bakes its own
+      // demonym adjective and copula into the match itself, so neither guard below applies to
+      // it -- both are specific to the bare "l'ensemble/le reste du territoire/pays" wording.
+      const tail = section.slice(matchEnd, matchEnd + 50);
+      if (namesAnotherCountry(tail, ownNameFolded)) continue; // e.g. Georgia's Russia aside
+      // Whole sentence, not just after the match: "Il EST formellement deconseille de se
+      // rendre dans l'ensemble du territoire..." (Russia, Sudan) puts the copula BEFORE the
+      // whole-country phrase (it's the OBJECT of "se rendre dans"), while "le reste du
+      // territoire EST en vigilance renforcee" (Kazakhstan, Kenya...) puts it after (the
+      // phrase IS the subject) -- hasLevelAssertionVerb must catch both constructions.
+      if (!hasLevelAssertionVerb(section.slice(sentenceStart, sentenceEnd))) continue; // e.g. Lebanon's camps, Venezuela's heading-label
     }
+
+    const level = levelNearWholeCountryMatch(boundaries, matchEnd, sentenceEnd, section.slice(sentenceStart, sentenceEnd));
+    if (level !== null) return level;
+    // No keyword resolvable for THIS match at all (same-sentence, backward AND forward) --
+    // keep scanning for another whole-country match rather than giving up immediately.
   }
 
-  // No whole-country statement: a named zone is still flagged somewhere in the section,
+  // No usable whole-country statement: a named zone is still flagged somewhere in the section,
   // so this is a real (sub-national) warning -- cap it at "increased caution".
   if (/formellement deconseill|deconseille[a-z]{0,2} sauf raison imperative|vigilance renforcee/.test(section)) {
     return 2;
