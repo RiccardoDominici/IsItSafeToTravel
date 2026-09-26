@@ -59,12 +59,27 @@ describe('normalizeItLevel (IT/Viaggiare Sicuri) -- regional-promotion repair', 
     assert.equal(normalizeItLevel(general, area), 2);
   });
 
-  it('Guinea: "connazionali presenti a qualsiasi titolo" is the ONLY hit in the whole dossier and is not a ban -> 1, not 4', () => {
+  it('Guinea: "connazionali presenti a qualsiasi titolo" is not a ban (not 4), but "massima prudenza negli spostamenti" after the protest-violence paragraph is a real Level 2 caution (not 1)', () => {
     const general =
       'Il fenomeno della delinquenza comune ed organizzata è relativamente raro, tuttavia presente in tutta la Guinea. Con minore frequenza rispetto al passato, vengono talvolta indette manifestazioni nell’area della grande Conakry che possono sfociare in violenze urbane. Ai connazionali presenti a qualsiasi titolo nel Paese consigliamo la massima prudenza negli spostamenti, e costante monitoraggio dei mezzi informativi locali.';
     const area =
       'Si consiglia di evitare nella capitale le zone dei mercati, soprattutto in orari prossimi a quelli della chiusura. Sono stati segnalati episodi di banditismo, anche violenti, nelle zone di confine con la Guinea Bissau e il Senegal.';
+    assert.equal(normalizeItLevel(general, area), 2);
+  });
+
+  it('Guinea (regression guard): the SAME dossier with "massima prudenza negli spostamenti" removed correctly falls all the way to 1 -- confirms hasMovementCaution, not some other pattern, is what promotes it to 2', () => {
+    const general =
+      'Il fenomeno della delinquenza comune ed organizzata è relativamente raro, tuttavia presente in tutta la Guinea. Con minore frequenza rispetto al passato, vengono talvolta indette manifestazioni nell’area della grande Conakry che possono sfociare in violenze urbane. Ai connazionali presenti a qualsiasi titolo nel Paese consigliamo di seguire gli sviluppi tramite i mezzi informativi locali.';
+    const area =
+      'Si consiglia di evitare nella capitale le zone dei mercati, soprattutto in orari prossimi a quelli della chiusura. Sono stati segnalati episodi di banditismo, anche violenti, nelle zone di confine con la Guinea Bissau e il Senegal.';
     assert.equal(normalizeItLevel(general, area), 1);
+  });
+
+  it('bare "massima prudenza"/"particolare attenzione" WITHOUT "spostamenti" is Farnesina\'s default petty-crime boilerplate, not a Level 2 signal (regression guard for the calibration set)', () => {
+    // Denmark's real pickpocketing note, live 2026-09-26 -- verbatim except trimmed.
+    const general =
+      "Ai connazionali viene raccomandato di mantenere un atteggiamento ed un comportamento ispirati alla massima prudenza, soprattutto a Copenaghen, dove si sono recentemente verificati frequenti episodi di microcriminalità, in particolare borseggi ed aggressioni personali, ad opera di bande di giovani di minore età.";
+    assert.equal(normalizeItLevel(general, ''), 1);
   });
 
   it('Mauritania: the level-4 ban in the Mali parenthetical aside is MALI\'s, not Mauritania\'s -> falls to 3 (from its own genuine "sconsigliati i viaggi nel deserto"), not 4', () => {
@@ -173,5 +188,12 @@ describe('normalizeItLevel (IT/Viaggiare Sicuri) -- regional-promotion repair', 
     const area =
       'Beirut: è altamente sconsigliato recarsi nella periferia sud di Beirut. Zone di confine con la Siria: sono sconsigliati tutti i viaggi nelle zone di confine con la Siria.';
     assert.equal(normalizeItLevel(general, area), 3);
+  });
+
+  it('Japan (real calm sentence, part of the file\'s own 13-country calibration set): "Paese sicuro"/"normali precauzioni", no avoidance verb anywhere -> 1 via the fallback, confirming it is correct to KEEP that fallback rather than switch to an "affirmed calm only" rule', () => {
+    // Verbatim, live 2026-09-26.
+    const general =
+      "Sebbene il Giappone sia ritenuto un Paese sicuro, è sempre opportuno usare le normali precauzioni, a salvaguardia della propria sicurezza. Nelle aree della vita notturna delle grandi città si registrano occasionalmente truffe e rapine a danno di turisti.";
+    assert.equal(normalizeItLevel(general, ''), 1);
   });
 });

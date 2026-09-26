@@ -1640,6 +1640,40 @@ function stripParentheticals(sentence: string): string {
 }
 
 /**
+ * Farnesina's "increased caution" idiom family ("massima prudenza/cautela/attenzione/vigilanza",
+ * "particolare/elevata/alta attenzione|prudenza|cautela", "alto livello di attenzione") -- ONLY
+ * counts as a Level 2 signal when the SAME sentence also says it is about MOVEMENT
+ * ("spostamenti"), never bare. Added 2026-09-26 after Guinea's own dossier was found resolving
+ * to Level 1 with no Level 2 signal at all: "Ai connazionali presenti a qualsiasi titolo nel
+ * Paese consigliamo la MASSIMA PRUDENZA NEGLI SPOSTAMENTI, e costante monitoraggio... per
+ * allerte su eventuali blocchi della circolazione o manifestazioni in corso" -- following a
+ * paragraph about protests degenerating into stray-bullet/stone-throwing violence in the
+ * capital. That is a genuine, elevated-caution statement Level 2 should catch.
+ *
+ * Requiring "spostamenti" in the same sentence is load-bearing, not optional: measured against
+ * all 223 published dossiers, this exact vocabulary used BARE (with no movement qualifier) is
+ * Farnesina's default big-city PETTY-CRIME boilerplate ("prestare la massima prudenza" against
+ * pickpockets in Copenhagen, "particolare attenzione" against bag-snatchers in Vienna/Lisbon/
+ * Amsterdam) and appears in 66/223 dossiers, including 9 of the 13 countries this file's own
+ * calibration explicitly requires to stay Level 1 (France, Germany, the UK, Greece, the
+ * Netherlands, Portugal, Spain, the USA, Belgium) -- an ungated match on the bare phrase family
+ * would have wrongly promoted all of them to Level 2. Gating on "spostamenti" (movement/travel,
+ * as opposed to "keep an eye on your belongings") narrows this to Farnesina's OTHER, distinct
+ * use of the same words for a movement-specific caution tied to unrest or a security incident --
+ * verified zero false positives against the 13-country calibration set, and only 2 unrelated
+ * Level 1 flips across all 223 dossiers (Dominican Republic: kidnapping-for-ransom and two
+ * Italian nationals murdered, cited in the same dossier; Uganda: rebel-group incursions across
+ * the DR Congo border), both independently defensible as real Level 2 concerns on their own
+ * text, not by-products of an over-broad pattern.
+ */
+const IT_MOVEMENT_CAUTION_WORDS =
+  /massima (prudenza|cautela|attenzione|vigilanza)|particolare (attenzione|prudenza|cautela)|(elevata|alta) (attenzione|prudenza|cautela)|alto livello di attenzione/;
+
+function hasMovementCaution(sentence: string): boolean {
+  return IT_MOVEMENT_CAUTION_WORDS.test(sentence) && /\bspostament\w*/.test(sentence);
+}
+
+/**
  * Normalize Italy (Viaggiare Sicuri) advisory text to unified 1-4 scale.
  *
  * Farnesina has no single "level" field in its per-country dossier (confirmed against the SPA's own JSON API,
@@ -1678,6 +1712,28 @@ function stripParentheticals(sentence: string): string {
  * Mozambique/Guinea's "connazionali presenti a qualsiasi titolo" idiom (hasBanningQualsiasiTitolo, replaces
  * the old bare `/a qualsiasi titolo/` pattern), and Mauritania's parenthetical aside about Mali
  * (stripParentheticals, applied to every sentence before any pattern check below).
+ *
+ * Repaired again 2026-09-26 (same day, follow-up review): fixing the qualsiasi-titolo idiom above
+ * revealed Guinea had NO remaining Level 2/3/4 signal at all, landing on the Level 1 fallback despite a
+ * real "massima prudenza negli spostamenti" caution following a stray-bullet protest-violence paragraph
+ * -- see hasMovementCaution's doc comment for that fix and why it is gated on "spostamenti" co-occurrence.
+ *
+ * Also considered, per review, REPLACING the Level 1 fallback below with an "affirmed calm only" rule
+ * (mirroring SK_CALM_PATTERNS/normalizeBeLevel/normalizeChAssessment) that would return null instead of 1
+ * for a dossier with no negative signal AND no explicit calm phrase. Measured against all 223 dossiers,
+ * even a generous calm-phrase set (non si segnala/registra/presenta particolari criticità and its
+ * subjunctive/inserted-clause variants, "Paese sicuro", "situazione stabile/buona", "criminalità bassa",
+ * "normali precauzioni", "nessuna controindicazione") is present in only 44/128 (34%) of today's Level 1
+ * dossiers -- and MISSES 9 of this file's own 13-country calibration set (France, Germany, the UK, Greece,
+ * the Netherlands, Portugal, Spain, the USA, Belgium), each of which simply describes routine petty crime
+ * with no summary catchphrase at all (Germany's whole dossier: "Il livello di sicurezza nel Paese permane
+ * elevato, sebbene... si assista ad un sensibile aumento di borseggi e di furti" -- no fixed idiom this
+ * source repeats reliably). Unlike SK (whose Level 1 default asserted "no contraindications" for
+ * countries the source had simply not written an assessment for yet) or BE/CH (similarly gapped feeds),
+ * Farnesina's dossier is comprehensive and descriptive by default: the absence of an avoidance verb in a
+ * substantive, feed-per-country dossier IS the source's own "nothing to report" signal, not a parsing
+ * gap. Adopting an affirmed-only rule would have dropped roughly two-thirds of today's genuinely-calm
+ * countries to no-data -- far above what a >=10% loss threshold would tolerate -- so the fallback stays.
  */
 export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): UnifiedLevel | null {
   const general = normalizeAdvisoryText(generalTextRaw);
@@ -1723,7 +1779,7 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
       sawLevel3 = true;
       continue;
     }
-    if (LEVEL2_PATTERNS.test(s)) sawLevel2 = true;
+    if (LEVEL2_PATTERNS.test(s) || hasMovementCaution(s)) sawLevel2 = true;
   }
 
   if (sawLevel4) return 4;
