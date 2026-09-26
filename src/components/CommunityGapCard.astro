@@ -1,0 +1,113 @@
+---
+/**
+ * One row of the /community-vs-data/ ranking: an ISO badge, the country name
+ * (linked), our score vs. the community score as two stacked bars on the same
+ * 1-10 axis, a signed gap chip, the vote count, and one data-derived sentence
+ * naming the pillar behind our score.
+ *
+ * Bars are stacked (label+number on their own line, full-width bar below)
+ * rather than the side-label layout PillarBreakdown.astro/SentimentPillar.astro
+ * use — those work because every pillar name is a single short word in all 7
+ * locales; "Our score" vs. "Punteggio della community" / "Pontuação da
+ * comunidade" vary too much in length for a fixed-width side label to stay
+ * readable everywhere, and a full-width bar also reads better on narrow
+ * screens (see VISIBILITY-BRIEF-COMMON.md's 390px no-scroll requirement).
+ */
+import { scoreToColor } from '../lib/colors';
+
+interface Props {
+  rank: number;
+  name: string;
+  url: string;
+  iso3: string;
+  official: number; // 1-10
+  community: number; // 1-10
+  gapText: string; // already-resolved chip text, e.g. "+0.7 safer, per travelers"
+  /** 'neutral' when |gap| rounds to 0.0 — see CommunityVsDataPage.astro's GAP_NEGLIGIBLE_THRESHOLD. */
+  gapDirection: 'safer' | 'less_safe' | 'neutral';
+  votesText: string; // already-resolved, e.g. "55 votes"
+  driverText: string; // already-resolved sentence naming the weakest pillar
+  ourScoreLabel: string;
+  communityScoreLabel: string;
+}
+
+const {
+  rank,
+  name,
+  url,
+  iso3,
+  official,
+  community,
+  gapText,
+  gapDirection,
+  votesText,
+  driverText,
+  ourScoreLabel,
+  communityScoreLabel,
+} = Astro.props;
+
+/** Bar fill width on a 0-200 viewBox for a 1-10 score (matches PillarBreakdown's scale). */
+function barWidth(score: number): number {
+  return Math.max((score / 10) * 200, 2);
+}
+
+const chipClasses =
+  gapDirection === 'safer'
+    ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300'
+    : gapDirection === 'less_safe'
+      ? 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300'
+      : 'bg-sand-200 text-sand-700 dark:bg-sand-700 dark:text-sand-300';
+
+const officialColor = scoreToColor(official);
+const communityColor = scoreToColor(community);
+---
+
+<li class="list-none">
+  <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 p-4 space-y-3">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-1.5">
+      <span class="text-sm font-bold text-sand-400 dark:text-sand-500 w-6 text-right shrink-0" aria-hidden="true">
+        {rank}
+      </span>
+      <span class="inline-flex items-center justify-center px-2 h-6 rounded-md bg-sand-100 dark:bg-sand-700 text-[11px] font-bold tracking-wide text-sand-600 dark:text-sand-300 shrink-0">
+        {iso3}
+      </span>
+      <a
+        href={url}
+        class="text-sm font-semibold text-sand-800 dark:text-sand-100 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors truncate flex-1 min-w-[6rem]"
+      >
+        {name}
+      </a>
+      <span class={`inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold whitespace-nowrap shrink-0 ${chipClasses}`}>
+        {gapText}
+      </span>
+    </div>
+
+    <div class="space-y-2 pl-9">
+      <div>
+        <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
+          <span>{ourScoreLabel}</span>
+          <span class="font-medium text-sand-700 dark:text-sand-300">{official.toFixed(1)}/10</span>
+        </div>
+        <svg viewBox="0 0 200 16" class="w-full h-3.5" role="img" aria-label={`${ourScoreLabel}: ${official.toFixed(1)}/10`}>
+          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+          <rect x="0" y="0" width={barWidth(official)} height="16" rx="4" fill={officialColor} />
+        </svg>
+      </div>
+      <div>
+        <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
+          <span>{communityScoreLabel}</span>
+          <span class="font-medium text-sand-700 dark:text-sand-300">{community.toFixed(1)}/10</span>
+        </div>
+        <svg viewBox="0 0 200 16" class="w-full h-3.5" role="img" aria-label={`${communityScoreLabel}: ${community.toFixed(1)}/10`}>
+          <rect x="0" y="0" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+          <rect x="0" y="0" width={barWidth(community)} height="16" rx="4" fill={communityColor} />
+        </svg>
+      </div>
+    </div>
+
+    <div class="pl-9 space-y-1">
+      <p class="text-xs text-sand-500 dark:text-sand-400">{votesText}</p>
+      <p class="text-xs text-sand-500 dark:text-sand-400 leading-relaxed">{driverText}</p>
+    </div>
+  </div>
+</li>

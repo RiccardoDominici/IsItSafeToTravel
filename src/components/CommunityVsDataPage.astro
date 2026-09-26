@@ -1,0 +1,293 @@
+---
+/**
+ * /community-vs-data/ (route key `community-vs-data`, 2026-09-26 visibility-pages
+ * batch): ranks every country with enough community-sentiment votes by the gap
+ * between our data-driven score and what travelers say on that country's own
+ * voting widget (src/components/country/SentimentVote.astro). One shared
+ * component driving all 7 locale pages (same pattern as CitePage.astro) so the
+ * ranking/copy logic lives in exactly one place.
+ *
+ * Every number here is computed at build time from data/scores/latest.json and
+ * data/sentiment/latest.json -- nothing is hardcoded, per CLAUDE.md's YMYL
+ * honesty rule and this page's own subject matter (it would be more than a
+ * little ironic to fabricate a page about how our data compares to reality).
+ */
+import type { Lang } from '../i18n/ui';
+import { routes } from '../i18n/ui';
+import { useTranslations } from '../i18n/utils';
+import type { ScoredCountry } from '../pipeline/types';
+import Base from '../layouts/Base.astro';
+import Breadcrumb from './Breadcrumb.astro';
+import CommunityGapCard from './CommunityGapCard.astro';
+import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
+import { loadAllSentiment, MIN_VOTE_FLOOR } from '../lib/sentiment';
+import { selectPillarExtremes } from '../lib/pillar-extremes';
+import { faqPillarLabels } from '../lib/country-faq-copy';
+import { getLastmodMap } from '../lib/lastmod';
+import { buildCommunityVsDataJsonLd } from '../lib/seo';
+import { communityVsDataCopy, pickCountryNoun } from '../i18n/community-vs-data-copy';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const c = communityVsDataCopy[lang];
+const siteUrl = 'https://isitsafetotravel.org';
+
+const countries = loadLatestScores();
+const countryByIso3 = new Map(countries.map((co) => [co.iso3, co]));
+const sentimentEntries = loadAllSentiment();
+
+/** Signed delta, U+2212 minus (never a bare hyphen) -- matches SentimentPillar.astro's formatSignedDelta. */
+function formatSigned(n: number): string {
+  return `${n < 0 ? '−' : '+'}${Math.abs(n).toFixed(1)}`;
+}
+
+/**
+ * Below this, a gap rounds to display "0.0" -- same guard and same value as
+ * ScoreHero.astro's `Math.abs(scoreDelta.delta) >= 0.05` (2026-09-25 audit,
+ * V4: Mexico's IT page showed a green up-arrow badge reading "+0.0", which
+ * reads as a rendering bug rather than information). USA/CAN currently sit
+ * exactly in this band (community and official are, in effect, in agreement),
+ * so this isn't a hypothetical edge case -- it fires on live data today.
+ */
+const GAP_NEGLIGIBLE_THRESHOLD = 0.05;
+
+interface RankedEntry {
+  iso3: string;
+  name: string;
+  url: string;
+  official: number;
+  community: number;
+  gap: number; // community - official; positive = travelers feel it's safer than our score
+  votes: number;
+  driverText: string;
+}
+
+const ranked: RankedEntry[] = sentimentEntries
+  .map((s): RankedEntry | null => {
+    const country = countryByIso3.get(s.iso3);
+    if (!country) return null; // sentiment references a country absent from today's snapshot (defensive, shouldn't happen)
+
+    // "Our score" always comes from TODAY's live snapshot, never sentiment.official
+    // (the value the aggregation pipeline had on hand when IT last ran) -- so this
+    // page and the linked country page's ScoreHero always show the identical
+    // number, even on the rare day Stage 6 fails non-fatally and keeps a stale
+    // sentiment file (src/pipeline/run.ts, "keeping last-known data/sentiment/
+    // latest.json"). The gap is recomputed against that same live value, so the
+    // two bars and the chip below are always internally consistent.
+    const official = country.score;
+    const community = s.perceived;
+    const gap = community - official;
+
+    const { weakest, isNearTie } = selectPillarExtremes(country.pillars);
+    const driverText = isNearTie
+      ? c.driverNeutral
+      : c.driverTemplate
+          .replace('{pillar}', faqPillarLabels[lang][weakest.name])
+          .replace('{score}', (weakest.score * 10).toFixed(1))
+          .replace('{note}', c.pillarNote[weakest.name]);
+
+    return {
+      iso3: s.iso3,
+      name: getLocalizedCountryName(country, lang),
+      url: `/${lang}/${r.country}/${s.iso3.toLowerCase()}/`,
+      official,
+      community,
+      gap,
+      votes: s.count,
+      driverText,
+    };
+  })
+  .filter((e): e is RankedEntry => e !== null)
+  // Largest positive gap (community feels safer) first, down to the most negative.
+  .sort((a, b) => b.gap - a.gap);
+
+const hasEntries = ranked.length > 0;
+const isShortList = ranked.length < 10; // brief's threshold for the "more countries are joining" CTA block
+// Thin-page guard: a 1-2 row ranking is not a page worth indexing. Rule lives
+// here (not just in copy) -- scripts/validate-seo.ts asserts it stays wired up.
+const shouldNoindex = ranked.length < 3;
+
+// Headline: the single largest ABSOLUTE gap, whichever direction. `ranked` is
+// already sorted descending by signed gap, so it's always one of the two ends
+// -- no extra scan needed. Also correct when ranked.length === 1 (both ends
+// are the same element).
+const headlineEntry = hasEntries
+  ? Math.abs(ranked[0].gap) >= Math.abs(ranked[ranked.length - 1].gap)
+    ? ranked[0]
+    : ranked[ranked.length - 1]
+  : null;
+
+const dateLocaleMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+const snapshotDate = getLastmodMap().snapshotDate;
+const formattedDate = new Date(`${snapshotDate}T00:00:00Z`).toLocaleDateString(dateLocaleMap[lang], {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+const dataAsOfText = c.dataAsOf.replace('{date}', formattedDate);
+
+const countryNounForCount = pickCountryNoun(ranked.length, c.countryNoun);
+// No headline at all when even the LARGEST gap is negligible -- an all-but-
+// exact agreement between community and data across the board isn't a
+// meaningful "widest gap" to call out (and would hit the same "0.0" problem
+// GAP_NEGLIGIBLE_THRESHOLD exists to avoid). Not reachable with today's data
+// (China's gap dominates), but cheap to guard against.
+const headlineText =
+  headlineEntry && Math.abs(headlineEntry.gap) >= GAP_NEGLIGIBLE_THRESHOLD
+    ? (headlineEntry.gap >= 0 ? c.headlineSafer : c.headlineLessSafe)
+        .replace('{name}', headlineEntry.name)
+        .replace('{gap}', Math.abs(headlineEntry.gap).toFixed(1))
+        .replace('{count}', String(ranked.length))
+        .replace('{countryNoun}', countryNounForCount)
+    : null;
+
+/**
+ * "The 8 countries with the most advisory sources that are not yet listed"
+ * (brief) -- simplest honest, data-only proxy for "big, well-known
+ * destinations": a country accumulates advisories from many governments only
+ * when enough of them consider it worth publishing one, which correlates with
+ * how much travel/attention it draws. No editorial picking involved.
+ */
+function advisoryCount(country: ScoredCountry): number {
+  return Object.values(country.advisories ?? {}).filter(Boolean).length;
+}
+const listedIso3 = new Set(ranked.map((e) => e.iso3));
+const suggested = isShortList
+  ? [...countries]
+      .filter((co) => !listedIso3.has(co.iso3))
+      .sort((a, b) => advisoryCount(b) - advisoryCount(a))
+      .slice(0, 8)
+  : [];
+
+const growingBodyText = c.growingBody
+  .replace('{floor}', String(MIN_VOTE_FLOOR))
+  .replace('{count}', String(ranked.length))
+  .replace('{countryNoun}', countryNounForCount);
+const emptyStateBodyText = c.emptyStateBody.replace('{floor}', String(MIN_VOTE_FLOOR));
+
+const canonicalUrl = `${siteUrl}/${lang}/${r['community-vs-data']}/`;
+const breadcrumbItems = [
+  { label: t('nav.home'), href: `/${lang}/` },
+  { label: c.title, href: '' },
+];
+const jsonLdBreadcrumb = [
+  { name: t('nav.home'), url: `${siteUrl}/${lang}/` },
+  { name: c.title, url: canonicalUrl },
+];
+const jsonLdItems = ranked.map((e) => ({ name: e.name, url: `${siteUrl}${e.url}` }));
+const jsonLd = buildCommunityVsDataJsonLd(c.title, c.description, canonicalUrl, lang, jsonLdBreadcrumb, jsonLdItems, snapshotDate);
+
+// Single {link} token convention shared with about-copy.ts / CitePage.astro.
+const methodologyParts = c.methodologyText.split('{link}');
+---
+
+<Base lang={lang} title={c.title} description={c.description} jsonLd={jsonLd} ogImage="/og/default.png" noindex={shouldNoindex}>
+  <div class="max-w-3xl mx-auto px-4 py-8 space-y-10">
+    <Breadcrumb lang={lang} items={breadcrumbItems} />
+
+    <header class="text-center space-y-4">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {c.title}
+      </h1>
+      <p class="text-sm text-sand-500 dark:text-sand-400">{dataAsOfText}</p>
+    </header>
+
+    <div class="max-w-2xl mx-auto space-y-3 text-center">
+      {headlineText && (
+        <p class="text-lg font-medium text-sand-800 dark:text-sand-100 leading-relaxed">
+          {headlineText}
+        </p>
+      )}
+      <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">
+        {c.introLead}
+      </p>
+    </div>
+
+    <section>
+      <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+        {c.rankingTitle}
+      </h2>
+      {hasEntries ? (
+        <ol class="space-y-3 list-none p-0 m-0">
+          {ranked.map((entry, i) => {
+            const isNegligible = Math.abs(entry.gap) < GAP_NEGLIGIBLE_THRESHOLD;
+            const isSafer = entry.gap >= 0;
+            const gapDirection = isNegligible ? 'neutral' : isSafer ? 'safer' : 'less_safe';
+            const gapText = isNegligible
+              ? c.gapChipNeutral
+              : (isSafer ? c.gapChipSafer : c.gapChipLessSafe).replace('{gap}', formatSigned(entry.gap));
+            const votesText = c.votesLabel.replace('{count}', String(entry.votes));
+            return (
+              <CommunityGapCard
+                rank={i + 1}
+                name={entry.name}
+                url={entry.url}
+                iso3={entry.iso3}
+                official={entry.official}
+                community={entry.community}
+                gapText={gapText}
+                gapDirection={gapDirection}
+                votesText={votesText}
+                driverText={entry.driverText}
+                ourScoreLabel={c.ourScoreLabel}
+                communityScoreLabel={c.communityScoreLabel}
+              />
+            );
+          })}
+        </ol>
+      ) : (
+        <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed max-w-xl mx-auto text-center">
+          <strong class="text-sand-800 dark:text-sand-100">{c.emptyStateTitle}.</strong> {emptyStateBodyText}
+        </p>
+      )}
+    </section>
+
+    {isShortList && (
+      <section class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 p-5 space-y-4">
+        <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100">
+          {c.growingTitle}
+        </h2>
+        <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed">
+          {growingBodyText}
+        </p>
+        {suggested.length > 0 && (
+          <div>
+            <p class="text-xs font-semibold uppercase tracking-wide text-sand-500 dark:text-sand-400 mb-2">
+              {c.suggestedLabel}
+            </p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {suggested.map((country) => (
+                <a
+                  href={`/${lang}/${r.country}/${country.iso3.toLowerCase()}/#community-sentiment`}
+                  class="text-sm text-terracotta-600 dark:text-terracotta-400 hover:text-terracotta-700 dark:hover:text-terracotta-300 hover:underline rounded-lg border border-sand-200 dark:border-sand-700 px-3 py-2 truncate transition-colors"
+                >
+                  {c.voteLinkText.replace('{name}', getLocalizedCountryName(country, lang))}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </section>
+    )}
+
+    <section class="max-w-2xl mx-auto space-y-4">
+      <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {c.howToReadTitle}
+      </h2>
+      <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP1}</p>
+      <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP2}</p>
+      <p class="text-base text-sand-700 dark:text-sand-300 leading-relaxed">{c.howToReadP3}</p>
+      <p class="text-sm text-sand-500 dark:text-sand-400">
+        {methodologyParts[0]}<a
+          href={`/${lang}/${r.methodology}/`}
+          class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline"
+        >{c.methodologyLinkText}</a>{methodologyParts[1]}
+      </p>
+    </section>
+  </div>
+</Base>
