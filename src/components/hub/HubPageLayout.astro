@@ -14,6 +14,7 @@ import { getBiggestMovers } from '../../lib/hub-data';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
 import { hubBlurbTemplates } from '../../i18n/hub-blurbs';
+import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
 import { getRegion, type Region } from '../../lib/regions';
 import { SOURCE_COUNT_DISPLAY } from '../../lib/site-stats';
 
@@ -115,7 +116,11 @@ function pillarScore(country: ScoredCountry, name: PillarName): number {
  */
 function buildBlurb(country: ScoredCountry): string {
   const labels = faqPillarLabels[lang];
-  const name = getLocalizedCountryName(country, lang);
+  // English needs "the" for the ~15 plural/union country names in this
+  // subject-position blurb ("the United States scores 8/10", not "United
+  // States scores 8/10") — same fix as getCountryFaqData in seo.ts.
+  const bareName = getLocalizedCountryName(country, lang);
+  const name = lang === 'en' ? getEnglishCountryPhrase(country.iso3, bareName) : bareName;
   const score = country.score.toFixed(1);
   let text: string;
   // countries-to-avoid already names the advisory count in its own sentence —

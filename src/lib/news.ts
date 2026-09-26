@@ -7,6 +7,7 @@ import type { NewsEvent, NewsIndex, BandKey } from '../pipeline/news/types';
 import type { Lang } from '../i18n/ui';
 import { loadLatestScores, getLocalizedCountryName } from './scores';
 import { getCountryByIso3 } from '../pipeline/config/countries';
+import { getEnglishCountryPhrase } from '../i18n/country-grammar';
 
 const NEWS_DIR = join(process.cwd(), 'data', 'news');
 
@@ -70,13 +71,24 @@ export function flagEmoji(iso3: string): string | null {
   return String.fromCodePoint(...codePoints);
 }
 
-/** iso3 -> localized name, using the latest scores snapshot (handles zh/de via Intl fallback). */
+/**
+ * iso3 -> localized name, using the latest scores snapshot (handles zh/de via
+ * Intl fallback). English news headlines put the country name in subject
+ * position ("{country} enters the world's 10 safest countries") or as the
+ * object of "for"/"to" — both need "the" for the ~15 plural/union country
+ * names (the United States, the Philippines...), same fix as the country-page
+ * FAQ (getCountryFaqData in seo.ts). Wrapping it here, in the single shared
+ * resolver every news template's {a}/{b}/{country}/{other} slot goes through
+ * (renderNewsEvent below), fixes all of them at once instead of touching each
+ * news.* template string individually.
+ */
 export function nameResolver(lang: Lang): (iso3: string) => string {
   const countries = loadLatestScores();
   const map = new Map(countries.map((c) => [c.iso3, c]));
   return (iso3: string) => {
     const c = map.get(iso3);
-    return c ? getLocalizedCountryName(c, lang) : iso3;
+    const bare = c ? getLocalizedCountryName(c, lang) : iso3;
+    return lang === 'en' ? getEnglishCountryPhrase(iso3, bare) : bare;
   };
 }
 
