@@ -268,6 +268,99 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
 }
 
 /**
+ * Named-region / border-zone / city markers that cap an MZV "neodporúča"
+ * (does not recommend) clause at a SUB-national scope rather than the whole
+ * country, mirroring ES_ZONE_MARKERS / IT_SUBNATIONAL_MARKERS above and the
+ * DE/NL partial-warning-caps-at-2 doctrine (SOURCE-REPAIR-BRIEF rule 2).
+ * Verified 2026-09-25 against the live MZV corpus: Niger's "severných
+ * oblastí", Chad's "okrajových oblastí", Mauritania's "oblastí na východe",
+ * Burundi's "provinciách Bubanza a Cibitoke", DR Congo's "mestách Goma a
+ * Bukavu" and Eritrea's "25 km od hraníc..." are all real "neodporúča
+ * cestovať" clauses scoped to a named area, never the whole country.
+ */
+const SK_REGIONAL_MARKERS =
+  /\boblast\w*|\bprovinci\w*|\bregión\w*|\bmest\w*|\bhranic\w*|\bsever\w*|\bjuh\w*|\bvýchod\w*|\bzápad\w*|\bkm\s+od\b/i;
+/** "žiadn[e/y/a]"/"aké(ho)koľvek" (no/any [travel] whatsoever) turns a whole-country "neodporúča"
+ *  clause from Level 3 into Level 4 -- verified on Haiti ("absolútne neodporúča ... AKÉHOKOĽVEK
+ *  dôvodu", genitive case) and South Sudan ("dôrazne sa neodporúča ŽIADNE cestovanie"), both
+ *  country-wide, both using this "no exceptions" qualifier the merely-cautionary Myanmar/Cuba(ES)
+ *  cases below never do. "\w*koľvek\b" (not a literal "akékoľvek") is deliberate: Haiti's page
+ *  declines it to "akéhokoľvek", a different ending an exact-string match would have missed --
+ *  same diacritic-declension trap as the \S{0,4} stems elsewhere in this file, generalized here to
+ *  the whole "aký/aká/aké + koľvek" ("what-/who-/whichever") family via its invariant suffix.
+ *  No leading \b on "žiadn" either: JS's ASCII-only \w treats the leading "ž" itself as a
+ *  NON-word character, so \b (a word/non-word transition) never fires between a preceding space
+ *  and "ž" -- found by a failing test against the real South Sudan excerpt, not by inspection. */
+const SK_WHOLE_COUNTRY_ALL_TRAVEL = /žiadn\w*|\w*koľvek\b/i;
+/** Thailand's "neodporúča cestovať do Thajska BEZ CESTOVNÉHO POISTENIA" is an insurance reminder,
+ *  not a security warning -- ported forward from the old Priority-4 doc comment's reasoning (see
+ *  git history) into this repair's new whole-country "neodporúča" scan, which would otherwise
+ *  wrongly treat it as a real avoid-travel clause. */
+const SK_INSURANCE_GUARD = /poisten\w*/i;
+
+/** Affirmative "this is calm" statements MZV actually uses (2026-09-25 repair -- see the doc
+ *  comment on normalizeSkSecurityText for why Priority 5 now REQUIRES one of these instead of
+ *  defaulting to 1 on anything unmatched). Each is tied to a real live-page excerpt:
+ *   - Japan: "veľmi bezpečnú krajinu" (a very safe country). \S{0,3}, not \w{0,3}: the case ending
+ *     on "bezpečnú" is the diacritic "ú" alone, which ASCII-only \w does not cross (same trap the
+ *     Priority 2/4 comment above already documents for "zvýšenú"/"opustiť" -- caught here by a
+ *     failing test against the real Japan excerpt, not just reasoning by analogy).
+ *   - Kuwait/Qatar: "vysokou/najvyššou úrovňou bezpečnosti" (high / the world's highest security).
+ *   - Belarus: "je vo všeobecnosti stabilná" -- \b before "stabiln" is load-bearing: Slovak writes
+ *     "not stable" as ONE word, "nestabilná", with no internal word boundary for \b to stop at, so
+ *     unlike a bare substring test this correctly still REJECTS Burkina Faso/South Sudan/Haiti/DR
+ *     Congo's "(zostáva/je) nestabilná" (verified: all four test `false` against this pattern).
+ *   - Belarus (2nd clause): "nepredstavuje výrazné bezpečnostné riziko" (does not represent a
+ *     significant security risk).
+ *   - Cuba: "nie sú známe žiadne závažnejšie bezpečnostné riziká" (no known more-serious risks).
+ *   - Italy: "najčastejšie vyskytuje drobná kriminalita" -- requires the abstract noun
+ *     "kriminalita" (crime AS A CATEGORY), not the concrete "krádeže" (thefts): Ethiopia's "Drobné
+ *     krádeže ... SÚ NA VZOSTUPE" (petty thefts ... ARE ON THE RISE) uses the same adjective for a
+ *     WORSENING trend, and must NOT be read as the same all-clear signal.
+ */
+const SK_CALM_PATTERNS = [
+  /veľmi bezpečn\S{0,3}\s+krajin/i,
+  /(vysok|najvyšš)\w{0,4}\s+úrovň\w{0,3}\s+bezpečnosti/i,
+  /\bstabiln\S{0,3}\b/i,
+  /nepredstavuje\s+(\S+\s+){0,4}bezpečnostné riziko/i,
+  /nie sú\s+(\S+\s+){0,4}bezpečnostné riziká/i,
+  /\bdrobná?\s+kriminalita\b/i,
+];
+
+/**
+ * Scan for a whole-country MZV "neodporúča ... cestov(ať/anie) do/na <destination>" (does not
+ * recommend travel(ling) TO) clause -- added 2026-09-25 (SOURCE-REPAIR-BRIEF), see the
+ * classification-priority list on normalizeSkSecurityText below. Sentence-scoped (not a single
+ * whole-text regex) because word order varies with the construction MZV uses for a given country
+ * -- verb-first ("neodporúča cestovať do Mjanmarska"), topicalized ("Cestovanie na Haiti sa
+ * absolútne neodporúča") -- and the co-occurrence of "neodporúča" and a "cestov ... do/na" clause
+ * ANYWHERE in the same sentence catches both without needing to enumerate every word order.
+ * Requiring the "do"/"na" destination preposition (not bare "cestov") is load-bearing: Nigeria's
+ * page reads "Kvôli možnosti ozbrojených prepadov ... NEODPORÚČAME CESTOVAŤ miestnou verejnou
+ * DOPRAVOU" (we do not recommend travelling BY local public transport) -- a transport-MODE
+ * caveat, not a "don't go to this destination" clause, and a bare "cestov\w*" presence check
+ * would have wrongly promoted it. "cestov\S*", not "cestov\w*", for the same reason as the
+ * calm-pattern comment above: ASCII-only \w cannot cross "cestovAŤ"'s own accented ending, so
+ * \w* alone stops at "cestova" and the required "\s+" never finds it (Myanmar's exact sentence,
+ * "neodporúča cestovať do Mjanmarska", silently failed to match until this was \S). A sentence
+ * naming a region/border/city (SK_REGIONAL_MARKERS) or the insurance clause (SK_INSURANCE_GUARD)
+ * is skipped, never promoted.
+ */
+function scanSkWholeCountryAvoidTravel(text: string): UnifiedLevel | null {
+  let sawLevel3 = false;
+  let sawLevel4 = false;
+  for (const sentence of splitIntoSentences(text)) {
+    if (!/neodporúča/i.test(sentence) || !/cestov\S*\s+(do|na)\b/i.test(sentence)) continue;
+    if (SK_REGIONAL_MARKERS.test(sentence) || SK_INSURANCE_GUARD.test(sentence)) continue;
+    if (SK_WHOLE_COUNTRY_ALL_TRAVEL.test(sentence)) sawLevel4 = true;
+    else sawLevel3 = true;
+  }
+  if (sawLevel4) return 4;
+  if (sawLevel3) return 3;
+  return null;
+}
+
+/**
  * Normalize Slovakia (MZV) "Bezpecnostna situacia" per-country free text to
  * unified 1-4 scale. Repair 2026-09-25 (SOURCE-REPAIR-BRIEF): replaces the
  * old normalizeSkLevel, which matched literal ASCII "stupen" and so never
@@ -284,9 +377,13 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
  * publishing "no risk" — collapsing that gap to Level 1 would fabricate a
  * safety statement the source never made.
  *
- * Classification priority (highest first), calibrated against 18 real
- * country pages spanning AFG/SYR/UKR/EGY/LBN/ISR (elevated) through
- * MEX/TUR/KEN/FRA (caution) to ITA/USA/JPN/THA/NIC (baseline):
+ * Classification priority (highest first), calibrated 2026-09-25 against the
+ * live MZV corpus, both the original 18-country sample (AFG/SYR/UKR/EGY/
+ * LBN/ISR elevated, MEX/TUR/KEN/FRA caution, ITA/USA/JPN/THA/NIC baseline)
+ * AND a second-pass repair sample flagged because Level 1 was the ONLY
+ * outcome this function ever produced for them despite other governments'
+ * median rating them 3+ (BFA, NER, SSD, HTI, MMR, PSE, COD, TCD, NGA, ETH,
+ * ERI, BDI, BLR, CUB, JOR, KWT, MRT, QAT, SAU):
  *  1. An explicit "<digit>. stupeň" — MZV's own official degree label,
  *     always present when a formal advisory is active (verified: AFG="4.
  *     stupeň" -> opustiť krajinu; EGY="3. stupeň" -> necestovať do určitých
@@ -302,21 +399,31 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
  *     "opustite miesto ohrozenia" = leave the scene of danger; Israel's own
  *     rocket-alert instructions later in the SAME page: "opustite vozidlo"
  *     = leave the vehicle).
- *  3. A direct "increased caution" recommendation ("zvýšenú/zvýšená
- *     opatrnosť") with no digit stated -> Level 2 (verified: Mexico, Turkey,
- *     Kenya all lack an explicit degree but explicitly ask for heightened
- *     vigilance; confirmed ABSENT from the Level-1 baseline samples).
- *  4. Otherwise Level 1 — MZV's own baseline reading for a country it HAS
- *     written content for (this source is comprehensive: one page per
- *     country), the same convention Japan's "no #kikendetail div" uses.
- *
- * Deliberately NOT a signal: bare "neodporúča(me) cestovať" ("does not
- * recommend travelling"). Thailand's page reads "neodporúča cestovať do
- * Thajska BEZ CESTOVNÉHO POISTENIA" (does not recommend travelling to
- * Thailand WITHOUT TRAVEL INSURANCE) — an insurance reminder, not a security
- * warning. A plain substring match on that phrase would have misclassified
- * a normal-risk country as Level 3+, which is exactly the false-positive
- * SOURCE-REPAIR-BRIEF rule 1 warns is worse than no data.
+ *  3. A whole-country "neodporúča ... cestov(ať/anie)" (does not recommend
+ *     travel(ling)) clause, scanned sentence-by-sentence and never counted
+ *     when the same sentence names a region/border/city or is the insurance
+ *     clause (scanSkWholeCountryAvoidTravel) -> Level 4 when it also says
+ *     "žiadne"/"akékoľvek" (no/any travel whatsoever -- Haiti, South Sudan),
+ *     else Level 3 (Myanmar's plain "neodporúča cestovať do Mjanmarska").
+ *     This is the fix for the second-pass sample above: MMR, HTI, SSD were
+ *     landing on Level 1 purely because this clause used to be deliberately
+ *     ignored (see git history) to dodge the Thailand insurance false
+ *     positive -- SK_INSURANCE_GUARD now dodges that same false positive
+ *     without ignoring the whole clause family.
+ *  4. A direct "increased caution" recommendation, no digit stated:
+ *     "zvýšenú/zvýšená opatrnosť" (Mexico, Turkey, Kenya) or MZV's other
+ *     fixed "Level 2" phrase, "zvážiť nevyhnutnosť cestovania" (consider the
+ *     necessity of travel -- Niger, Chad, Ethiopia, Jordan all use it,
+ *     verbatim, as the residual/whole-country clause below their own
+ *     region-scoped Level-3-shaped warnings) -> Level 2.
+ *  5. Level 1 ONLY when the text affirmatively describes a calm situation
+ *     (SK_CALM_PATTERNS -- Japan, Kuwait, Qatar, Belarus, Cuba, Italy all
+ *     verified live 2026-09-25). Otherwise return null: the second-pass
+ *     sample proved "nothing matched" does NOT mean "nothing to report" for
+ *     this source (Burkina Faso's own page opens "situácia ... je dlhodobo
+ *     vážna a nestabilná" -- long-term serious and unstable -- and used to
+ *     land on Level 1 for want of a matching pattern). Per project rule, an
+ *     unrecognized notice must emit nothing, never guess 1.
  */
 export function normalizeSkSecurityText(rawHtml: string | null | undefined): UnifiedLevel | null {
   if (!rawHtml || !rawHtml.trim()) return null;
@@ -337,7 +444,7 @@ export function normalizeSkSecurityText(rawHtml: string | null | undefined): Uni
     return Math.min(4, Math.max(1, digit)) as UnifiedLevel;
   }
 
-  // Priority 2/3 below use \S{0,4} (up to 4 trailing NON-space characters),
+  // Priority 2/4 below use \S{0,4} (up to 4 trailing NON-space characters),
   // not \w*: Slovak case endings on these stems are themselves diacritics
   // ("zvýšenú", "opustiť", "územie"/"územia") sitting directly before the
   // required \s+ word boundary, and ASCII-only \w matches zero of them —
@@ -356,13 +463,24 @@ export function normalizeSkSecurityText(rawHtml: string | null | undefined): Uni
     return 4;
   }
 
-  // Priority 3: "increased caution" recommendation, no digit stated.
-  if (/zvýšen\S{0,4}\s+opatrnos\S{0,4}/i.test(text)) {
+  // Priority 3: whole-country "neodporúča ... cestov(ať/anie)", region/border/city-scoped and
+  // insurance-clause sentences excluded (see scanSkWholeCountryAvoidTravel doc comment).
+  const wholeCountryAvoid = scanSkWholeCountryAvoidTravel(text);
+  if (wholeCountryAvoid !== null) return wholeCountryAvoid;
+
+  // Priority 4: "increased caution" / "consider necessity of travel" recommendation, no digit
+  // stated -- MZV's own two ways of phrasing its Level-2 tier.
+  if (
+    /zvýšen\S{0,4}\s+opatrnos\S{0,4}/i.test(text) ||
+    /zvá[žz]i\S{0,4}\s+nevyhnutnos\S{0,4}\s+cestovani\S{0,4}/i.test(text)
+  ) {
     return 2;
   }
 
-  // Priority 4: comprehensive source, content published, nothing elevated found.
-  return 1;
+  // Priority 5: Level 1 only on an affirmative calm statement -- never a bare fallback (repair
+  // 2026-09-25, see the doc comment above for why "nothing matched" used to silently become 1).
+  if (SK_CALM_PATTERNS.some((re) => re.test(text))) return 1;
+  return null;
 }
 
 /**

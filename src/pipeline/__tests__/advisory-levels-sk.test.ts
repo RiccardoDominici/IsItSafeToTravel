@@ -4,16 +4,36 @@ import { normalizeSkSecurityText } from '../normalize/advisory-levels.js';
 
 /**
  * Regression coverage for the 2026-09-25 SK (Slovakia MZV) repair
- * (SOURCE-REPAIR-BRIEF.md). The old normalizeSkLevel matched literal ASCII
+ * (SOURCE-REPAIR-BRIEF.md), in two passes.
+ *
+ * Pass 1 (same day, earlier): the old normalizeSkLevel matched literal ASCII
  * "stupen" and so never matched the real field, which always spells the word
  * "stupeň" (U+0148 ň) — this silently defaulted every country to Level 1.
+ *
+ * Pass 2 (this file's later cases): the first production run of the Pass-1
+ * fix found 139 countries STILL permanently on Level 1, because Priority 5
+ * (the branch below the digit/opustiť/opatrnosť checks) was an unconditional
+ * fallback rather than a real classification — including countries whose own
+ * MZV text describes serious instability (South Sudan, Haiti), a plain
+ * whole-country "does not recommend travel" (Myanmar), or MZV's OWN "Level 2"
+ * phrase, "zvážiť nevyhnutnosť cestovania" (Niger/Chad/Ethiopia/Jordan). Fixed
+ * by (a) scanning for a whole-country "neodporúča ... cestov(ať/anie) do/na"
+ * clause, guarded against region/border/city scoping and the Thailand
+ * insurance false-positive, and (b) requiring an AFFIRMATIVE calm statement
+ * for Level 1 instead of defaulting to it. Both passes surfaced the same
+ * underlying trap repeatedly: JS's ASCII-only \w and \b silently fail to
+ * cross or bound on Slovak diacritics (ň, ú, á, ž, ť...) — several cases below
+ * (Belarus/"nestabilná", South Sudan/"žiadne", Myanmar/"cestovať") exist
+ * because a first version of the Pass-2 patterns fell into this exact trap
+ * and a failing test against the real excerpt is what caught it.
  *
  * Fixtures below are VERBATIM excerpts (safe tag boundaries, not paraphrased)
  * pulled from the live `staty-sveta-podmienky-cestovania-a-pobytu` CKAN
  * package on 2026-09-25, one per classification branch. The false-positive
- * controls (France, Thailand) are the reason a naive keyword search is not
- * safe for this source — see the exact same excerpts and reasoning in the
- * doc comment above normalizeSkSecurityText.
+ * controls (France, Thailand, Nigeria, Mauritania) are the reason a naive
+ * keyword search is not safe for this source — see the exact same excerpts
+ * and reasoning in the doc comments above normalizeSkSecurityText and
+ * scanSkWholeCountryAvoidTravel.
  */
 
 describe('normalizeSkSecurityText (SK/MZV per-country page)', () => {
@@ -84,15 +104,92 @@ describe('normalizeSkSecurityText (SK/MZV per-country page)', () => {
     assert.equal(normalizeSkSecurityText(html), 1);
   });
 
-  it('Thailand: "neodporúča cestovať ... BEZ cestovného poistenia" is an insurance reminder, not a travel warning -> Level 1, not 3/4', () => {
+  it('Thailand: "neodporúča cestovať ... BEZ cestovného poistenia" is an insurance reminder, not a travel warning -> not 3/4, and NOT a false Level 1 either (repair 2026-09-25: Priority 5 no longer defaults to 1 on an unmatched notice)', () => {
     const html =
       '<p>Veľvyslanectvo Slovenskej republiky v Bangkoku <strong>neodporúča cestovať do Thajska bez cestovného poistenia</strong>, ktoré pokrýva všetky zdravotné náklady, náklady na stratu alebo odcudzenie osobných vecí alebo škodu spôsobenú iným osobám.</p>\n\n<p>V prípade, že nemáte dostatok finančných prostriedkov na zaplatenie zdravotnej starostlivosti, nemusí byť zdravotná starostlivosť poskytnutá.</p>';
+    // Before the 2026-09-25 repair this asserted Level 1 (the old catch-all default). This short
+    // excerpt carries no whole-country avoid-travel clause (correctly guarded by
+    // SK_INSURANCE_GUARD) AND no affirmative calm statement either, so the honest answer is now
+    // null -- verified against the REAL live Thailand page too (2026-09-25, ~9100 characters,
+    // deep-south provinces region-scoped, no country-wide "neodporúča" or calm phrase anywhere),
+    // which resolves the same way end to end.
+    assert.equal(normalizeSkSecurityText(html), null);
+  });
+
+  it('Nicaragua: region-specific caution advice without a whole-country degree or caution statement -> null, not a false Level 1 (repair 2026-09-25)', () => {
+    const html =
+      '<p>Úroveň kriminality v Nikarague je nižšia ako v ostatných krajinách Strednej Ameriky, avšak stále je dôležité dodržiavať základné bezpečnostné pravidlá.</p>\n\n<p><strong>Vyhýbajte sa cestám do odľahlých oblastí na severe</strong> (Nueva Segovia, Madriz, Estelí, Jinotega, Matagalpa, Boaco) a do oblastí atlantických departementov.</p>';
+    // "lower than neighbouring countries" is a RELATIVE claim, not an affirmative "this country is
+    // calm" statement (SK_CALM_PATTERNS correctly does not treat it as one), and the only concrete
+    // instruction here ("avoid trips to remote northern areas") is region-scoped. Before the repair
+    // this landed on 1 by default; it should now emit nothing rather than guess.
+    assert.equal(normalizeSkSecurityText(html), null);
+  });
+
+  // --- Repair 2026-09-25 (SOURCE-REPAIR-BRIEF): second-pass sample. Production found 139
+  // countries permanently on Level 1 because Priority 5 used to be an unconditional fallback --
+  // including these, whose OWN MZV text describes something well past "no specific warning".
+  // Fixtures are VERBATIM excerpts pulled from the live opendata.mzv.sk datastore, 2026-09-25.
+
+  it('South Sudan: "Dôrazne sa neodporúča žiadne cestovanie do Južného Sudánu" -> Level 4 (whole country, "žiadne" = no travel whatsoever)', () => {
+    const html =
+      'Bezpečnostná situácia v Južnom Sudáne zostáva nestabilná. Dôrazne sa neodporúča žiadne cestovanie do Južného Sudánu, ak sa však rozhodnete cestovať, mali by ste sa uistiť, že ste dôkladne zvážili hrozbu a zaviedli primerané opatrenia v prípade potreby.';
+    assert.equal(normalizeSkSecurityText(html), 4);
+  });
+
+  it('Haiti: "Cestovanie na Haiti sa absolútne neodporúča, a to z akéhokoľvek dôvodu" -> Level 4 (topicalized word order, declined "akéhokoľvek")', () => {
+    const html =
+      'Cestovanie na Haiti sa absolútne neodporúča, a to z akéhokoľvek dôvodu. V dôsledku zrážok medzi ozbrojenými gangmi a národnou políciou sú prítomní občania vyzvaní, aby zostali doma.';
+    assert.equal(normalizeSkSecurityText(html), 4);
+  });
+
+  it('Myanmar: plain "neodporúča cestovať do Mjanmarska" (no "žiadne/akékoľvek" qualifier) -> Level 3, not 4', () => {
+    const html =
+      'Slovenské veľvyslanectvo v Bangkoku neodporúča cestovať do Mjanmarska vzhľadom na pretrvávajúci vnútorný konflikt v krajine a časté ozbrojené strety, ktoré majú za následok zranenia, poškodenia majetku a straty na životoch aj civilného obyvateľstva.';
+    assert.equal(normalizeSkSecurityText(html), 3);
+  });
+
+  it('Mauritania: "sa neodporúča cestovať do oblastí na východe Mauritánie" is region-scoped -> does not promote past null (caps at 2 territory, no whole-country trigger here)', () => {
+    const html =
+      'Bezpečnostná situácia v Mauritánii je poznačená zvýšenou teroristickou hrozbou v celom regióne Západnej Afriky. Z uvedených dôvodov sa neodporúča cestovať do oblastí na východe Mauritánie a pri hranici so Západnou Saharou.';
+    assert.equal(normalizeSkSecurityText(html), null);
+  });
+
+  it('Nigeria: "neodporúčame cestovať miestnou verejnou dopravou" is a transport-MODE caveat, not a destination clause -> does not fire the whole-country scan', () => {
+    const html =
+      'Kvôli možnosti ozbrojených prepadov a krádeží neodporúčame cestovať miestnou verejnou dopravou. V prípade zdravotných problémov odporúčame navštíviť súkromné kliniky.';
+    assert.equal(normalizeSkSecurityText(html), null);
+  });
+
+  it('Niger/Chad/Ethiopia family: "odporúča(me) zvážiť nevyhnutnosť cestovania" (MZV\'s own Level-2 phrase) applied to the whole country -> Level 2', () => {
+    const html =
+      'Pre ostatné oblasti krajiny ministerstvo odporúča slovenským občanom zvážiť nevyhnutnosť cestovania. V týchto oblastiach hrozí nebezpečenstvo teroristických útokov a únosov.';
+    assert.equal(normalizeSkSecurityText(html), 2);
+  });
+
+  it('Belarus: "je vo všeobecnosti stabilná" -> Level 1, and is NOT confused with "nestabilná" (Burkina Faso/South Sudan/Haiti/DR Congo all describe their OWN situation as "nestabilná" and must stay unmatched by this pattern)', () => {
+    const html =
+      'Bezpečnostná situácia v Bielorusku je vo všeobecnosti stabilná. Úroveň bežnej kriminality nepredstavuje výrazné bezpečnostné riziko pre miestne obyvateľstvo ani pre cudzincov.';
+    assert.equal(normalizeSkSecurityText(html), 1);
+    const nestabilnaOnly = 'Bezpečnostná situácia v krajine zostáva nestabilná, vysoká kriminalita, únosy či hrozba teroristických útokov.';
+    assert.equal(normalizeSkSecurityText(nestabilnaOnly), null);
+  });
+
+  it('Cuba (SK/MZV, distinct from Spain\'s own Cuba text): "nie sú známe žiadne závažnejšie bezpečnostné riziká" -> Level 1', () => {
+    const html =
+      'Na Kube nie sú známe žiadne závažnejšie bezpečnostné riziká, vyskytujú sa však drobné krádeže obzvlášť na turisticky frekventovaných miestach.';
     assert.equal(normalizeSkSecurityText(html), 1);
   });
 
-  it('Nicaragua: region-specific caution advice without a whole-country degree or caution statement -> Level 1 (conservative: no false Level 2)', () => {
+  it('Qatar: "patrí medzi štáty s najvyššou úrovňou bezpečnosti na svete" -> Level 1 despite a generic, unrealized terrorism-risk disclaimer in the same notice', () => {
     const html =
-      '<p>Úroveň kriminality v Nikarague je nižšia ako v ostatných krajinách Strednej Ameriky, avšak stále je dôležité dodržiavať základné bezpečnostné pravidlá.</p>\n\n<p><strong>Vyhýbajte sa cestám do odľahlých oblastí na severe</strong> (Nueva Segovia, Madriz, Estelí, Jinotega, Matagalpa, Boaco) a do oblastí atlantických departementov.</p>';
+      'Katar patrí medzi štáty s najvyššou úrovňou bezpečnosti na svete. Napriek tomu nie je možné vylúčiť všeobecné nebezpečenstvo teroristických útokov, a to aj proti cudzincom.';
     assert.equal(normalizeSkSecurityText(html), 1);
+  });
+
+  it('Saudi Arabia: a real, specific (if unrealized) terrorism/rocket-attack acknowledgment with no whole-country "neodporúča" and no calm phrase -> null, not a guessed 1', () => {
+    const html =
+      'Vo všeobecnosti nemožno vylúčiť riziko teroristických útokov, a to ani voči cudzincom. Existuje aj riziko raketových a dronových útokov, pričom väčšina z nich je zachytená ešte pred dopadom. Miera kriminality je nízka, avšak ku krádežiam môže dochádzať predovšetkým na preplnených miestach.';
+    assert.equal(normalizeSkSecurityText(html), null);
   });
 });
