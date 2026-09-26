@@ -288,6 +288,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'It is rebuilt every day from the latest advisory levels and safety scores. A Level 4 "Do Not Travel" advisory weighs heavily toward a low score rather than capping it at a fixed number, so escalations show up within 24 hours.',
       },
+      {
+        question: 'Why is this list grouped by region?',
+        answer:
+          "Advisory levels and armed-conflict data cluster geographically, so grouping by region makes the pattern easier to scan. Each country's number is still its rank in the full worldwide list, not just within its region.",
+      },
     ],
     it: [
       {
@@ -304,6 +309,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Quanto è aggiornata questa lista di paesi da evitare?',
         answer:
           'Viene ricostruita ogni giorno a partire dai livelli di avviso e dai punteggi di sicurezza più recenti. Un avviso di Livello 4 "Do Not Travel" pesa fortemente verso un punteggio basso invece di limitarlo a un numero fisso, quindi gli aggravamenti compaiono entro 24 ore.',
+      },
+      {
+        question: 'Perché questa lista è raggruppata per regione?',
+        answer:
+          "I livelli di avviso e i dati sui conflitti armati si concentrano geograficamente, quindi raggrupparli per regione rende il pattern più facile da scorrere. Il numero accanto a ogni paese resta comunque la sua posizione nella lista mondiale completa, non solo all'interno della propria regione.",
       },
     ],
     es: [
@@ -322,6 +332,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'Se reconstruye cada día a partir de los niveles de aviso y las puntuaciones de seguridad más recientes. Un aviso de Nivel 4 "Do Not Travel" pesa mucho hacia una puntuación baja en lugar de limitarla a un número fijo, por lo que las escaladas aparecen en menos de 24 horas.',
       },
+      {
+        question: '¿Por qué esta lista está agrupada por región?',
+        answer:
+          'Los niveles de aviso y los datos de conflictos armados se concentran geográficamente, así que agruparlos por región facilita ver el patrón. El número junto a cada país sigue siendo su posición en la lista mundial completa, no solo dentro de su región.',
+      },
     ],
     fr: [
       {
@@ -338,6 +353,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Cette liste de pays à éviter est-elle à jour ?',
         answer:
           "Elle est reconstruite chaque jour à partir des niveaux d'avis et des scores de sécurité les plus récents. Un avis de niveau 4 « Do Not Travel » pèse fortement vers un score bas plutôt que de le plafonner à un nombre fixe, de sorte que les aggravations apparaissent sous 24 heures.",
+      },
+      {
+        question: 'Pourquoi cette liste est-elle regroupée par région ?',
+        answer:
+          "Les niveaux d'avis et les données sur les conflits armés se concentrent géographiquement, d'où un regroupement par région pour repérer le schéma plus facilement. Le numéro de chaque pays reste son rang dans la liste mondiale complète, pas seulement au sein de sa région.",
       },
     ],
     pt: [
@@ -356,6 +376,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'Ela é reconstruída todos os dias a partir dos níveis de aviso e das pontuações de segurança mais recentes. Um aviso de Nível 4 "Do Not Travel" pesa fortemente para uma pontuação baixa em vez de limitá-la a um número fixo, então os agravamentos aparecem em até 24 horas.',
       },
+      {
+        question: 'Por que esta lista é agrupada por região?',
+        answer:
+          'Os níveis de aviso e os dados de conflitos armados se concentram geograficamente, então agrupar por região facilita ver o padrão. O número de cada país continua sendo sua posição na lista mundial completa, não apenas dentro da própria região.',
+      },
     ],
     zh: [
       {
@@ -373,6 +398,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           '列表每天根据最新的警告级别和安全评分重新生成。四级"切勿前往"警告会使评分明显向低分倾斜，而不是将其限制在某个固定数值，因此局势恶化会在 24 小时内体现出来。',
       },
+      {
+        question: '为什么这份列表按地区分组？',
+        answer:
+          '警告级别和武装冲突数据在地理上具有明显的聚集性，因此按地区分组能让这种规律更容易被看出来。每个国家旁边的编号仍然是其在全球完整列表中的排名，而不仅仅是地区内的排名。',
+      },
     ],
     de: [
       {
@@ -389,6 +419,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Wie aktuell ist diese Liste der zu meidenden Länder?',
         answer:
           'Sie wird jeden Tag aus den neuesten Warnstufen und Sicherheitswerten neu erstellt. Eine Stufe-4-Warnung "Do Not Travel" lässt den Wert eines Landes stark sinken, statt ihn auf eine feste Zahl zu begrenzen, sodass Verschärfungen innerhalb von 24 Stunden sichtbar werden.',
+      },
+      {
+        question: 'Warum ist diese Liste nach Regionen gruppiert?',
+        answer:
+          'Warnstufen und Daten zu bewaffneten Konflikten häufen sich geografisch, daher lässt sich das Muster gruppiert nach Region leichter erkennen. Die Nummer neben jedem Land bleibt seine Position in der vollständigen weltweiten Liste, nicht nur innerhalb seiner Region.',
       },
     ],
   },
@@ -410,6 +445,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'There is large overlap, but not always: a country can rank high overall yet have weaker healthcare infrastructure, which matters more with children. That is why checking the health and crime pillar scores on each country page is recommended.',
       },
+      {
+        question: 'Does a high rank mean a country has family-friendly tourist infrastructure?',
+        answer:
+          "No — this ranking only reflects the underlying safety pillars (health, governance, crime and the overall score), not tourist infrastructure like childcare, theme parks or family resorts. A strong health-pillar score is a reasonable proxy for care availability if a child needs medical attention, but check each country page for specifics before booking family activities.",
+      },
     ],
     it: [
       {
@@ -426,6 +466,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'I paesi più sicuri per le famiglie sono anche i più sicuri in generale?',
         answer:
           'La sovrapposizione è ampia ma non totale: un paese può avere un punteggio complessivo alto ma infrastrutture sanitarie più deboli, un fattore che pesa di più viaggiando con bambini. Per questo conviene controllare i punteggi dei pilastri sanità e criminalità nella pagina di ogni paese.',
+      },
+      {
+        question: 'Una posizione alta significa che un paese ha infrastrutture turistiche adatte alle famiglie?',
+        answer:
+          "No: questa classifica riflette solo i pilastri di sicurezza sottostanti (sanità, governance, criminalità e punteggio complessivo), non le infrastrutture turistiche come servizi per l'infanzia, parchi a tema o resort per famiglie. Un punteggio alto nel pilastro sanità è un indicatore ragionevole della disponibilità di cure se un bambino ha bisogno di assistenza medica, ma controlla la pagina di ogni paese per i dettagli prima di prenotare attività per famiglie.",
       },
     ],
     es: [
@@ -444,6 +489,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'Hay una gran superposición, pero no siempre: un país puede tener una puntuación global alta y, aun así, una infraestructura sanitaria más débil, algo que pesa más al viajar con niños. Por eso conviene revisar las puntuaciones de los pilares de salud y criminalidad en la página de cada país.',
       },
+      {
+        question: '¿Una posición alta significa que un país tiene infraestructura turística apta para familias?',
+        answer:
+          'No: esta clasificación solo refleja los pilares de seguridad subyacentes (salud, gobernanza, criminalidad y la puntuación general), no la infraestructura turística como guarderías, parques temáticos o resorts familiares. Una puntuación alta en el pilar de salud es un indicador razonable de la disponibilidad de atención médica si un niño la necesita, pero revisa la página de cada país para los detalles antes de reservar actividades familiares.',
+      },
     ],
     fr: [
       {
@@ -460,6 +510,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Les pays les plus sûrs pour les familles sont-ils aussi les plus sûrs en général ?',
         answer:
           'Le recoupement est large, mais pas systématique : un pays peut être très bien classé globalement tout en ayant des infrastructures de santé plus faibles, un facteur qui pèse davantage avec des enfants. Il est donc conseillé de vérifier les scores des piliers santé et criminalité sur la page de chaque pays.',
+      },
+      {
+        question: "Un bon classement signifie-t-il qu'un pays dispose d'infrastructures touristiques adaptées aux familles ?",
+        answer:
+          "Non : ce classement ne reflète que les piliers de sécurité sous-jacents (santé, gouvernance, criminalité et score global), pas les infrastructures touristiques comme la garde d'enfants, les parcs à thème ou les hôtels familiaux. Un bon score sur le pilier santé est un indicateur raisonnable de la disponibilité de soins si un enfant a besoin d'une prise en charge médicale, mais vérifiez la page de chaque pays pour le détail avant de réserver des activités en famille.",
       },
     ],
     pt: [
@@ -478,6 +533,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           'Há grande sobreposição, mas nem sempre: um país pode ter pontuação geral alta e, ainda assim, infraestrutura de saúde mais fraca, o que pesa mais quando se viaja com crianças. Por isso, vale conferir as pontuações dos pilares de saúde e criminalidade na página de cada país.',
       },
+      {
+        question: 'Uma posição alta significa que o país tem infraestrutura turística voltada para famílias?',
+        answer:
+          'Não: este ranking reflete apenas os pilares de segurança subjacentes (saúde, governança, criminalidade e a pontuação geral), não a infraestrutura turística como creches, parques temáticos ou resorts para famílias. Uma pontuação alta no pilar saúde é um indicador razoável da disponibilidade de atendimento caso uma criança precise de cuidados médicos, mas confira a página de cada país para os detalhes antes de reservar atividades em família.',
+      },
     ],
     zh: [
       {
@@ -495,6 +555,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           '两者高度重叠，但并不总是一致：一个国家可能总体评分很高，医疗基础设施却相对薄弱，而带孩子出行时这一点更为关键。因此建议在各国页面上查看医疗和犯罪支柱的具体得分。',
       },
+      {
+        question: '排名靠前是否意味着该国拥有适合家庭的旅游设施？',
+        answer:
+          '不是——该排名只反映底层的安全支柱（医疗、治理、犯罪和总体评分），不涉及托儿服务、主题乐园或家庭度假村等旅游设施。医疗支柱得分高，可以合理反映孩子需要就医时的医疗资源可及性，但预订家庭活动前，请查看各国页面了解具体细节。',
+      },
     ],
     de: [
       {
@@ -511,6 +576,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Sind die sichersten Länder für Familien auch insgesamt die sichersten?',
         answer:
           'Die Überschneidung ist groß, aber nicht immer gegeben: Ein Land kann insgesamt hoch eingestuft sein und dennoch eine schwächere Gesundheitsinfrastruktur haben — ein Faktor, der mit Kindern stärker ins Gewicht fällt. Deshalb lohnt sich der Blick auf die Säulenwerte Gesundheit und Kriminalität auf der jeweiligen Länderseite.',
+      },
+      {
+        question: 'Bedeutet ein guter Platz, dass ein Land familienfreundliche touristische Infrastruktur hat?',
+        answer:
+          'Nein — dieses Ranking spiegelt nur die zugrunde liegenden Sicherheitssäulen wider (Gesundheit, Regierungsführung, Kriminalität und Gesamtwert), nicht touristische Infrastruktur wie Kinderbetreuung, Freizeitparks oder Familienresorts. Ein hoher Wert bei der Gesundheitssäule ist ein vernünftiger Anhaltspunkt für die Verfügbarkeit medizinischer Versorgung, falls ein Kind sie braucht — Details vor der Buchung von Familienaktivitäten finden Sie auf der jeweiligen Länderseite.',
       },
     ],
   },
@@ -532,6 +602,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           `Check the country's daily-updated score and its crime pillar before booking, register with your embassy where possible, and re-check advisories close to departure — scores are recalculated every day from ${SOURCE_COUNT_DISPLAY} public sources, so conditions can shift.`,
       },
+      {
+        question: 'Does this ranking specifically measure safety for solo female travelers?',
+        answer:
+          "Not directly — no public source we use breaks out harassment rates or other risks by gender. The ranking weighs crime and governance, which matter for any solo traveller; see the note above for what that can and can't tell a woman travelling alone.",
+      },
     ],
     it: [
       {
@@ -548,6 +623,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Quali precauzioni basate sui dati dovrebbe prendere chi viaggia da solo?',
         answer:
           `Controlla il punteggio aggiornato quotidianamente e il pilastro criminalità del paese prima di prenotare, registrati presso la tua ambasciata dove possibile e ricontrolla gli avvisi a ridosso della partenza: i punteggi vengono ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche e le condizioni possono cambiare.`,
+      },
+      {
+        question: 'Questa classifica misura in modo specifico la sicurezza per le donne che viaggiano da sole?',
+        answer:
+          'Non direttamente: nessuna delle fonti pubbliche che usiamo distingue i tassi di molestie o altri rischi per genere. La classifica pesa criminalità e governance, rilevanti per chiunque viaggi da solo; vedi la nota qui sopra per cosa questo può e non può dire a una donna che viaggia da sola.',
       },
     ],
     es: [
@@ -566,6 +646,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           `Revisa la puntuación del país, actualizada a diario, y su pilar de criminalidad antes de reservar; regístrate en tu embajada cuando sea posible y vuelve a consultar los avisos cerca de la salida: las puntuaciones se recalculan cada día a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas y las condiciones pueden cambiar.`,
       },
+      {
+        question: '¿Esta clasificación mide específicamente la seguridad para las mujeres que viajan solas?',
+        answer:
+          'No directamente: ninguna de las fuentes públicas que usamos desglosa las tasas de acoso u otros riesgos por género. La clasificación pondera la criminalidad y la gobernanza, relevantes para cualquier viajero en solitario; consulta la nota anterior sobre qué puede y no puede decirte como mujer que viaja sola.',
+      },
     ],
     fr: [
       {
@@ -582,6 +667,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Quelles précautions fondées sur les données un voyageur en solo devrait-il prendre ?',
         answer:
           `Vérifiez le score du pays, mis à jour quotidiennement, et son pilier criminalité avant de réserver ; inscrivez-vous auprès de votre ambassade lorsque c'est possible et revérifiez les avis peu avant le départ : les scores sont recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques et la situation peut évoluer.`,
+      },
+      {
+        question: 'Ce classement mesure-t-il spécifiquement la sécurité des femmes voyageant seules ?',
+        answer:
+          "Pas directement : aucune des sources publiques que nous utilisons ne ventile les taux de harcèlement ou d'autres risques par genre. Le classement pondère la criminalité et la gouvernance, pertinentes pour toute personne voyageant seule ; voir la note ci-dessus sur ce que cela peut et ne peut pas dire à une femme voyageant seule.",
       },
     ],
     pt: [
@@ -600,6 +690,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           `Verifique a pontuação do país, atualizada diariamente, e o pilar de criminalidade antes de reservar; registre-se na sua embaixada quando possível e confira novamente os avisos perto da partida: as pontuações são recalculadas todos os dias a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas e as condições podem mudar.`,
       },
+      {
+        question: 'Este ranking mede especificamente a segurança para mulheres que viajam sozinhas?',
+        answer:
+          'Não diretamente: nenhuma das fontes públicas que usamos separa taxas de assédio ou outros riscos por gênero. O ranking pondera criminalidade e governança, relevantes para qualquer pessoa que viaje sozinha; veja a nota acima sobre o que isso pode e não pode dizer a uma mulher que viaja sozinha.',
+      },
     ],
     zh: [
       {
@@ -617,6 +712,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         answer:
           `预订前查看该国每日更新的评分及其犯罪支柱得分，可能的话向本国使领馆登记行程，并在出发前再次核查旅行警告——评分每天根据 ${SOURCE_COUNT_DISPLAY} 个公开数据源重新计算，局势可能发生变化。`,
       },
+      {
+        question: '这份排名是否专门衡量独自旅行女性的安全？',
+        answer:
+          '不是直接衡量——我们使用的公开数据源都没有按性别拆分骚扰发生率或其他风险。该排名以犯罪和治理为权重，这对任何独自旅行者都很重要；关于这对独自旅行的女性来说意味着什么、又不意味着什么，请参见上方说明。',
+      },
     ],
     de: [
       {
@@ -633,6 +733,11 @@ const HUB_FAQ: Record<HubType, Record<Lang, HubFaqItem[]>> = {
         question: 'Welche datenbasierten Vorsichtsmaßnahmen sollten Alleinreisende treffen?',
         answer:
           `Prüfen Sie vor der Buchung den täglich aktualisierten Länderwert und die Kriminalitätssäule, registrieren Sie sich nach Möglichkeit bei Ihrer Botschaft und kontrollieren Sie die Reisehinweise kurz vor Abreise erneut — die Werte werden jeden Tag aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen neu berechnet, die Lage kann sich also ändern.`,
+      },
+      {
+        question: 'Misst dieses Ranking gezielt die Sicherheit für alleinreisende Frauen?',
+        answer:
+          'Nicht direkt — keine unserer öffentlichen Quellen schlüsselt Belästigungsraten oder andere Risiken nach Geschlecht auf. Das Ranking gewichtet Kriminalität und Regierungsführung, die für jede alleinreisende Person relevant sind; was das einer Frau, die allein reist, sagen kann und was nicht, steht in der Anmerkung oben.',
       },
     ],
   },
