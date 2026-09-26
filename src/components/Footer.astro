@@ -1,4 +1,5 @@
 ---
+import { navExtraCopy } from '../i18n/nav-extra-copy';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
@@ -52,10 +53,22 @@ const affiliateUrl = buildAffiliateUrl();
         {regionsLabel}
       </a>
       <a
+        href={`/${lang}/${r['travel-safety-index']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {navExtraCopy[lang].travelSafetyIndex}
+      </a>
+      <a
         href={`/${lang}/${r['global-safety']}/`}
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
       >
         {globalSafetyLabel}
+      </a>
+      <a
+        href={`/${lang}/${r['community-vs-data']}/`}
+        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
+      >
+        {navExtraCopy[lang].communityVsData}
       </a>
       <a
         href={`/${lang}/${r['news']}/`}
