@@ -15,12 +15,11 @@
 import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
-import type { ScoredCountry } from '../pipeline/types';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 import CommunityGapCard from './CommunityGapCard.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
-import { loadAllSentiment, MIN_VOTE_FLOOR } from '../lib/sentiment';
+import { loadAllSentiment, MIN_VOTE_FLOOR, pickVoteNextSuggestions } from '../lib/sentiment';
 import { selectPillarExtremes } from '../lib/pillar-extremes';
 import { faqPillarLabels } from '../lib/country-faq-copy';
 import { getLastmodMap } from '../lib/lastmod';
@@ -146,23 +145,15 @@ const headlineText =
         .replace('{countryNoun}', countryNounForCount)
     : null;
 
-/**
- * "The 8 countries with the most advisory sources that are not yet listed"
- * (brief) -- simplest honest, data-only proxy for "big, well-known
- * destinations": a country accumulates advisories from many governments only
- * when enough of them consider it worth publishing one, which correlates with
- * how much travel/attention it draws. No editorial picking involved.
- */
-function advisoryCount(country: ScoredCountry): number {
-  return Object.values(country.advisories ?? {}).filter(Boolean).length;
-}
+// "Vote next" CTA: first 8 not-yet-ranked entries of POPULAR_TOURIST_DESTINATIONS
+// (sentiment.ts) that pass hasSufficientData. Replaces an earlier "most
+// advisory-sources" heuristic (team-lead correction, 2026-09-26): checked
+// against live data, that rule surfaced high-scrutiny countries (Afghanistan,
+// Iran, Pakistan...) rather than places most voters have actually visited --
+// governments publish more distinct advisories for places they flag as risky,
+// not for peer countries they wave through.
 const listedIso3 = new Set(ranked.map((e) => e.iso3));
-const suggested = isShortList
-  ? [...countries]
-      .filter((co) => !listedIso3.has(co.iso3))
-      .sort((a, b) => advisoryCount(b) - advisoryCount(a))
-      .slice(0, 8)
-  : [];
+const suggested = isShortList ? pickVoteNextSuggestions(countries, listedIso3) : [];
 
 const growingBodyText = c.growingBody
   .replace('{floor}', String(MIN_VOTE_FLOOR))

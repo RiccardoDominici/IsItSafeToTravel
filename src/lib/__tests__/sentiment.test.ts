@@ -2,7 +2,8 @@ import { describe, it, before, after } from 'node:test';
 import { strict as assert } from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadSentimentForCountry, loadAllSentiment, MIN_VOTE_FLOOR } from '../sentiment.js';
+import { loadSentimentForCountry, loadAllSentiment, MIN_VOTE_FLOOR, pickVoteNextSuggestions, POPULAR_TOURIST_DESTINATIONS } from '../sentiment.js';
+import type { ScoredCountry } from '../../pipeline/types.js';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'sentiment');
 const LATEST_PATH = path.join(DATA_DIR, 'latest.json');
@@ -123,5 +124,74 @@ describe('sentiment.ts: loadAllSentiment graceful degradation', () => {
       assert.doesNotThrow(() => loadAllSentiment());
       assert.deepEqual(loadAllSentiment(), []);
     });
+  });
+});
+
+// --- "Vote next" CTA on /community-vs-data/ (team-lead correction, 2026-09-26:
+// replaces an earlier "most advisory sources" rule that surfaced high-scrutiny
+// countries like Afghanistan/Iran/Pakistan instead of places most voters have
+// actually been to) ---
+
+describe('sentiment.ts: POPULAR_TOURIST_DESTINATIONS', () => {
+  it('is exactly the specified 20 ISO3 codes, in order', () => {
+    assert.deepEqual(POPULAR_TOURIST_DESTINATIONS, [
+      'FRA', 'ESP', 'ITA', 'TUR', 'MEX', 'GBR', 'DEU', 'GRC', 'THA', 'JPN',
+      'PRT', 'AUT', 'NLD', 'ARE', 'HRV', 'EGY', 'MAR', 'IDN', 'VNM', 'BRA',
+    ]);
+  });
+});
+
+describe('sentiment.ts: pickVoteNextSuggestions', () => {
+  /** Minimal ScoredCountry stand-in -- only iso3 and sources.length (hasSufficientData's input) matter here. */
+  function makeCountry(iso3: string, sourceCount = 5): ScoredCountry {
+    return {
+      iso3,
+      sources: Array.from({ length: sourceCount }, () => ({ name: 'stub', url: '', fetchedAt: '', description: '' })),
+    } as unknown as ScoredCountry;
+  }
+
+  const allDestinations = POPULAR_TOURIST_DESTINATIONS.map((iso3) => makeCountry(iso3));
+
+  it('returns the first 8 destinations in list order when none are ranked', () => {
+    const result = pickVoteNextSuggestions(allDestinations, new Set());
+    assert.deepEqual(
+      result.map((c) => c.iso3),
+      POPULAR_TOURIST_DESTINATIONS.slice(0, 8)
+    );
+  });
+
+  it('skips countries already in the ranking, keeping the relative order of the rest', () => {
+    // Excluding ESP (index 1) and MEX (index 4) should backfill from THA/JPN,
+    // still yielding 8 -- FRA, ITA, TUR, GBR, DEU, GRC, THA, JPN.
+    const result = pickVoteNextSuggestions(allDestinations, new Set(['ESP', 'MEX']));
+    assert.deepEqual(
+      result.map((c) => c.iso3),
+      ['FRA', 'ITA', 'TUR', 'GBR', 'DEU', 'GRC', 'THA', 'JPN']
+    );
+  });
+
+  it('skips a destination that fails hasSufficientData and backfills from further down the list', () => {
+    const withThinGbr = allDestinations.map((c) => (c.iso3 === 'GBR' ? makeCountry('GBR', 2) : c));
+    const result = pickVoteNextSuggestions(withThinGbr, new Set());
+    assert.deepEqual(
+      result.map((c) => c.iso3),
+      ['FRA', 'ESP', 'ITA', 'TUR', 'MEX', 'DEU', 'GRC', 'THA']
+    );
+  });
+
+  it('skips a destination missing from the current snapshot entirely', () => {
+    const withoutDeu = allDestinations.filter((c) => c.iso3 !== 'DEU');
+    const result = pickVoteNextSuggestions(withoutDeu, new Set());
+    assert.ok(!result.some((c) => c.iso3 === 'DEU'));
+    assert.equal(result.length, 8);
+  });
+
+  it('returns fewer than 8 when not enough qualifying candidates exist, still in order', () => {
+    const onlyFive = allDestinations.slice(0, 5); // FRA, ESP, ITA, TUR, MEX
+    const result = pickVoteNextSuggestions(onlyFive, new Set());
+    assert.deepEqual(
+      result.map((c) => c.iso3),
+      ['FRA', 'ESP', 'ITA', 'TUR', 'MEX']
+    );
   });
 });
