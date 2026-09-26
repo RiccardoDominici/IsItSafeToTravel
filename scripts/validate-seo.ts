@@ -496,8 +496,10 @@ function validateSchemaConnections() {
     check(`schema(${label}): Dataset.inLanguage matches page locale`, dataset?.inLanguage === localeMap[lang], `got ${dataset?.inLanguage}`);
     check(`schema(${label}): Dataset.isAccessibleForFree === true`, dataset?.isAccessibleForFree === true);
     check(
-      `schema(${label}): Dataset.distribution has the 4 DataDownload entries`,
-      Array.isArray(dataset?.distribution) && dataset.distribution.length === 4,
+      // 5 since 2026-09 (Google Dataset Search pass): scores.json, scores.csv,
+      // map-data.json, llms.txt, llms-full.txt (SITE_DATASET_DISTRIBUTION in seo.ts).
+      `schema(${label}): Dataset.distribution has the 5 DataDownload entries`,
+      Array.isArray(dataset?.distribution) && dataset.distribution.length === 5,
       `got ${JSON.stringify(dataset?.distribution)}`
     );
 
@@ -540,15 +542,16 @@ function validateSchemaConnections() {
     );
   }
 
-  // /en/api/: Dataset.distribution must list all 4 bulk downloads (S4 — used
-  // to declare just scores.json even though the page documents 6 endpoints).
+  // /en/api/: Dataset.distribution must list all 5 bulk downloads (S4 — used
+  // to declare just scores.json even though the page documents 6 endpoints;
+  // grew to 5 in 2026-09 when scores.csv was added alongside scores.json).
   const apiSlug = routeSlug("en", "api") ?? "api";
   const apiPath = path.join(DIST, "en", apiSlug, "index.html");
   if (fs.existsSync(apiPath)) {
     const dataset = findNode(extractGraphNodes(readHtml(apiPath)), "Dataset");
     check(
-      `schema(en/${apiSlug}): Dataset.distribution has the 4 DataDownload entries`,
-      Array.isArray(dataset?.distribution) && dataset.distribution.length === 4,
+      `schema(en/${apiSlug}): Dataset.distribution has the 5 DataDownload entries`,
+      Array.isArray(dataset?.distribution) && dataset.distribution.length === 5,
       `got ${JSON.stringify(dataset?.distribution)}`
     );
   } else {
@@ -1187,6 +1190,105 @@ function validateAdvisoryIntegrity() {
 }
 
 // =====================================================================
+// DATASET COMPLETENESS (Google Dataset Search visibility pass, 2026-09-26)
+// =====================================================================
+// Extends the existing per-country Dataset check above (validateDatasetDescriptionLength)
+// with checks on the SITE-WIDE Dataset node (buildDatasetJsonLd/SITE_DATASET_ID),
+// which homepage/api/cite-this-data/methodology all embed. Verifies the fields
+// added for Google Dataset Search: dateModified, version, includedInDataCatalog,
+// and a CSV entry in `distribution` alongside the pre-existing JSON one.
+
+function findDatasetNode(html: string): Record<string, unknown> | null {
+  const jsonLdRe = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  let m: RegExpExecArray | null;
+  while ((m = jsonLdRe.exec(html)) !== null) {
+    let parsed: { "@graph"?: Array<Record<string, unknown>> };
+    try {
+      parsed = JSON.parse(m[1]);
+    } catch {
+      continue;
+    }
+    for (const node of parsed["@graph"] ?? []) {
+      const t = node["@type"];
+      if (t === "Dataset" || (Array.isArray(t) && t.includes("Dataset"))) return node;
+    }
+  }
+  return null;
+}
+
+function validateSiteDatasetCompleteness() {
+  console.log("\n--- Site-wide Dataset Completeness (Google Dataset Search) ---");
+  const filePath = path.join(DIST, "en", "api", "index.html");
+  if (!fs.existsSync(filePath)) {
+    check("dataset(site-wide): /en/api/ exists", false, filePath);
+    return;
+  }
+  const dataset = findDatasetNode(readHtml(filePath));
+  check("dataset(site-wide): Dataset node present on /en/api/", dataset !== null);
+  if (!dataset) return;
+
+  const dateModified = dataset.dateModified;
+  check(
+    "dataset(site-wide): dateModified present",
+    typeof dateModified === "string" && /^\d{4}-\d{2}-\d{2}/.test(dateModified),
+    `dateModified=${JSON.stringify(dateModified)}`,
+  );
+
+  const version = dataset.version;
+  check(
+    "dataset(site-wide): version present",
+    typeof version === "string" && version.length > 0,
+    `version=${JSON.stringify(version)}`,
+  );
+
+  const catalog = dataset.includedInDataCatalog as { "@type"?: string } | undefined;
+  check(
+    "dataset(site-wide): includedInDataCatalog present",
+    !!catalog && catalog["@type"] === "DataCatalog",
+  );
+
+  const distribution = (dataset.distribution ?? []) as Array<{ encodingFormat?: string; contentUrl?: string }>;
+  const hasJson = distribution.some((d) => d.encodingFormat === "application/json" && d.contentUrl?.endsWith("scores.json"));
+  const hasCsv = distribution.some((d) => d.encodingFormat === "text/csv" && d.contentUrl?.endsWith("scores.csv"));
+  check("dataset(site-wide): distribution includes scores.json", hasJson);
+  check("dataset(site-wide): distribution includes scores.csv", hasCsv);
+}
+
+// =====================================================================
+// SCORES.CSV (tabular twin of scores.json — src/lib/dataset-csv.ts)
+// =====================================================================
+
+function validateScoresCsv() {
+  console.log("\n--- scores.csv ---");
+  const csvPath = path.join(DIST, "scores.csv");
+  const scoresJsonPath = path.join(DIST, "scores.json");
+  if (!fs.existsSync(csvPath)) {
+    check("scores.csv: file exists", false, csvPath);
+    return;
+  }
+  const raw = fs.readFileSync(csvPath, "utf-8");
+  const noBom = raw.charCodeAt(0) === 0xfeff ? raw.slice(1) : raw;
+  check("scores.csv: has UTF-8 BOM", raw.charCodeAt(0) === 0xfeff);
+  const lines = noBom.split("\r\n").filter((l) => l.length > 0);
+  check("scores.csv: uses CRLF line endings", noBom.includes("\r\n"));
+  const header = lines[0] ?? "";
+  check(
+    "scores.csv: header has expected columns",
+    header.startsWith("iso3,name_en,score,band,pillar_conflict,pillar_crime,pillar_health,pillar_governance,pillar_environment,confidence,advisory_sources,data_date"),
+    header,
+  );
+
+  if (fs.existsSync(scoresJsonPath)) {
+    const { countries } = JSON.parse(fs.readFileSync(scoresJsonPath, "utf-8")) as { countries: unknown[] };
+    check(
+      `scores.csv: one row per country (${countries.length} expected)`,
+      lines.length - 1 === countries.length,
+      `got ${lines.length - 1} data rows, scores.json has ${countries.length} countries`,
+    );
+  }
+}
+
+// =====================================================================
 // 7. NEWS PAGES (Daily News / "Safety Movers")
 // =====================================================================
 // Keep NEWS_SLUG in sync with the `news` key in src/i18n/ui.ts `routes` for every locale.
@@ -1280,6 +1382,63 @@ function validateCommunityVsDataPage() {
 }
 
 // =====================================================================
+// 9. TRAVEL SAFETY INDEX PAGE (flagship "travel safety index" head-term page)
+// =====================================================================
+// Keep TSI_SLUG in sync with the `travel-safety-index` key in src/i18n/ui.ts `routes`.
+
+function validateTravelSafetyIndexPage() {
+  console.log("\n--- Travel Safety Index Page ---");
+  const TSI_SLUG: Record<string, string> = {
+    en: "travel-safety-index",
+    it: "indice-sicurezza-viaggi",
+    es: "indice-seguridad-viajes",
+    fr: "indice-securite-voyage",
+    pt: "indice-seguranca-viagem",
+    zh: "travel-safety-index",
+    de: "reisesicherheitsindex",
+  };
+
+  for (const lang of LANGUAGES) {
+    const p = path.join(DIST, lang, TSI_SLUG[lang], "index.html");
+    const ok = fs.existsSync(p);
+    check(`travel-safety-index: ${lang}/${TSI_SLUG[lang]} exists`, ok, ok ? "" : "file not found");
+    if (!ok) continue;
+
+    const html = readHtml(p);
+    check(`travel-safety-index: ${lang} has exactly one <h1>`, (html.match(/<h1[\s>]/g) ?? []).length === 1);
+
+    // Collects @type across BOTH shapes present on this page: the page's own
+    // @graph array (WebPage/Dataset/ItemList/FAQPage) AND the separate bare
+    // '@type': 'BreadcrumbList' object <Breadcrumb>.astro emits on its own
+    // (same dual-shape scan as validateJsonLd above) — BreadcrumbList is
+    // deliberately NOT duplicated inside the page's own @graph (see the
+    // "No inline BreadcrumbList here" comment in ApiDocs.astro: shipping it in
+    // both places was a real regression on every /api/ page previously).
+    const jsonLdRe = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+    const graphTypes = new Set<string>();
+    let m: RegExpExecArray | null;
+    while ((m = jsonLdRe.exec(html)) !== null) {
+      try {
+        const parsed = JSON.parse(m[1]) as { "@type"?: string | string[]; "@graph"?: Array<{ "@type"?: string | string[] }> };
+        const t = parsed["@type"];
+        if (typeof t === "string") graphTypes.add(t);
+        else if (Array.isArray(t)) t.forEach((tt) => graphTypes.add(tt));
+        for (const node of parsed["@graph"] ?? []) {
+          const nt = node["@type"];
+          if (typeof nt === "string") graphTypes.add(nt);
+          else if (Array.isArray(nt)) nt.forEach((tt) => graphTypes.add(tt));
+        }
+      } catch {
+        // ignore non-JSON-LD script blocks
+      }
+    }
+    for (const required of ["WebPage", "BreadcrumbList", "Dataset", "ItemList", "FAQPage"]) {
+      check(`travel-safety-index: ${lang} JSON-LD includes ${required}`, graphTypes.has(required), `found types: ${[...graphTypes].join(", ")}`);
+    }
+  }
+}
+
+// =====================================================================
 // MAIN
 // =====================================================================
 
@@ -1304,8 +1463,11 @@ function main() {
   validateAdvisoryCoverage();
   validateAdvisoryIntegrity();
   validateDatasetDescriptionLength();
+  validateSiteDatasetCompleteness();
+  validateScoresCsv();
   validateNewsPages();
   validateCommunityVsDataPage();
+  validateTravelSafetyIndexPage();
 
   // Summary
   console.log("\n========================================");

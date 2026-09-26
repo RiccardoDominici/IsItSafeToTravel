@@ -1,7 +1,8 @@
 import type { ScoredCountry, PillarName, PillarScore } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
-import { getLocalizedCountryName, loadGlobalHistory } from './scores';
+import { getLocalizedCountryName, loadGlobalHistory, loadLatestSnapshot } from './scores';
+import { getLastmodMap } from './lastmod';
 import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
@@ -97,10 +98,46 @@ const globalPlaceName: Record<Lang, string> = {
 // per-country SVG badge aren't a single static resource so don't fit DataDownload.
 const SITE_DATASET_DISTRIBUTION: Record<string, unknown>[] = [
   { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: 'https://isitsafetotravel.org/scores.json' },
+  // CSV twin of scores.json (src/lib/dataset-csv.ts / src/pages/scores.csv.ts) —
+  // Google Dataset Search's own guidance recommends at least one non-JSON,
+  // spreadsheet-friendly distribution alongside the machine format.
+  { '@type': 'DataDownload', encodingFormat: 'text/csv', contentUrl: 'https://isitsafetotravel.org/scores.csv' },
   { '@type': 'DataDownload', encodingFormat: 'application/json', contentUrl: 'https://isitsafetotravel.org/map-data.json' },
   { '@type': 'DataDownload', encodingFormat: 'text/markdown', contentUrl: 'https://isitsafetotravel.org/llms.txt' },
   { '@type': 'DataDownload', encodingFormat: 'text/markdown', contentUrl: 'https://isitsafetotravel.org/llms-full.txt' },
 ];
+
+/**
+ * The current data-revision number, as Dataset.version (Google Dataset Search:
+ * "Text or Number — dataset version number"). Lazily read from the live
+ * snapshot rather than hardcoded so it can never drift the way the old fixed
+ * source counts did (see site-stats.ts's header comment for that history);
+ * falls back to '1' for the pre-dataRevision snapshot format (see
+ * DailySnapshot.dataRevision's own docstring in pipeline/types.ts).
+ */
+function getCurrentDataVersion(): string {
+  return String(loadLatestSnapshot()?.dataRevision ?? 1);
+}
+
+/**
+ * Minimal DataCatalog node for Dataset.includedInDataCatalog (Google Dataset
+ * Search: "parent repository containing the dataset"). Inlined rather than a
+ * separate top-level @graph node with its own @id: every caller of
+ * buildDatasetJsonLd/buildMethodologyDatasetJsonLd assembles its own ad hoc
+ * @graph array (homepage, /api/, /cite-this-data/, methodology), so a new
+ * required sibling node would mean touching all four call sites; an inline
+ * object is valid JSON-LD and needs none of that. Always points at the
+ * English /api/ page (the one documented entry point for the whole dataset),
+ * regardless of the current page's own language — same non-localized-anchor
+ * pattern as WEBSITE_ID/ORGANIZATION_ID.
+ */
+function buildDataCatalog(): Record<string, unknown> {
+  return {
+    '@type': 'DataCatalog',
+    name: 'IsItSafeToTravel Open Data',
+    url: `https://isitsafetotravel.org/en/${routes.en.api}/`,
+  };
+}
 
 // Human-readable region names for Place.containedInPlace (schema.org), per locale.
 // Keep all 7 langs covered for every region key so non-EN pages don't leak English text.
@@ -925,10 +962,17 @@ const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
 
 /**
  * Build Dataset JSON-LD structured data for the homepage (also reused as-is
- * by /en/api/ and /en/cite-this-data/, which override url/dateModified).
+ * by /en/api/ and /en/cite-this-data/, which override url; ApiDocs.astro also
+ * overrides dateModified explicitly with the same snapshot date this function
+ * now defaults to on its own).
  * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ *
+ * `dateModified` defaults to the live snapshot date (getLastmodMap) rather
+ * than being required from every caller — added 2026-09 (Google Dataset
+ * Search visibility pass) because this Dataset node had NO dateModified at
+ * all on the homepage before this, unlike every other dated node on the site.
  */
-export function buildDatasetJsonLd(lang: Lang): Record<string, unknown> {
+export function buildDatasetJsonLd(lang: Lang, dateModified: string = getLastmodMap().snapshotDate): Record<string, unknown> {
   const year = new Date().getFullYear();
   return {
     '@type': 'Dataset',
@@ -942,9 +986,19 @@ export function buildDatasetJsonLd(lang: Lang): Record<string, unknown> {
     // isn't paywalled (S7) — distinct from the CC BY-NC "non-commercial" use
     // restriction, which is a licensing term, not an access paywall.
     isAccessibleForFree: true,
+    dateModified,
+    version: getCurrentDataVersion(),
     temporalCoverage: buildTemporalCoverage(),
     spatialCoverage: { '@type': 'Place', name: globalPlaceName[lang] },
     creator: { '@id': ORGANIZATION_ID, '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
+    includedInDataCatalog: buildDataCatalog(),
+    // Stable open-source reference for this dataset (Google Dataset Search
+    // "identifier": URL/Text/PropertyValue, repeatable) — there is no DOI, so
+    // the GitHub repository is the closest thing to a persistent identifier.
+    identifier: 'https://github.com/RiccardoDominici/IsItSafeToTravel',
+    // Points citers at the ready-made citation formats instead of leaving them
+    // to invent their own (schema.org Dataset.citation accepts plain text/URL).
+    citation: `https://isitsafetotravel.org/${lang}/${routes[lang].cite}/`,
     variableMeasured: datasetVariablesByLang[lang].map((v) => ({
       '@type': 'PropertyValue',
       name: v.name,
@@ -953,7 +1007,7 @@ export function buildDatasetJsonLd(lang: Lang): Record<string, unknown> {
     })),
     measurementTechnique: measurementTechniqueByLang[lang],
     // S4: was a single DataDownload (scores.json) even though /en/api/ documents
-    // 6 endpoints; now the 4 static bulk-download resources (see SITE_DATASET_DISTRIBUTION).
+    // 6 endpoints; now the static bulk-download resources (see SITE_DATASET_DISTRIBUTION).
     distribution: SITE_DATASET_DISTRIBUTION,
   };
 }
@@ -1032,8 +1086,11 @@ const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = 
 /**
  * Build Dataset JSON-LD for methodology pages.
  * Returns an object WITHOUT @context so it can be added to an existing @graph.
+ * Same dateModified/version/includedInDataCatalog/identifier/citation additions
+ * as buildDatasetJsonLd (2026-09 Google Dataset Search visibility pass) — see
+ * that function's docstring.
  */
-export function buildMethodologyDatasetJsonLd(lang: Lang): Record<string, unknown> {
+export function buildMethodologyDatasetJsonLd(lang: Lang, dateModified: string = getLastmodMap().snapshotDate): Record<string, unknown> {
   return {
     '@type': 'Dataset',
     '@id': SITE_DATASET_ID,
@@ -1043,6 +1100,11 @@ export function buildMethodologyDatasetJsonLd(lang: Lang): Record<string, unknow
     inLanguage: localeMap[lang],
     license: 'https://creativecommons.org/licenses/by-nc/4.0/',
     isAccessibleForFree: true,
+    dateModified,
+    version: getCurrentDataVersion(),
+    includedInDataCatalog: buildDataCatalog(),
+    identifier: 'https://github.com/RiccardoDominici/IsItSafeToTravel',
+    citation: `https://isitsafetotravel.org/${lang}/${routes[lang].cite}/`,
     temporalCoverage: buildTemporalCoverage(),
     spatialCoverage: { '@type': 'Place', name: globalPlaceName[lang] },
     creator: { '@id': ORGANIZATION_ID, '@type': 'Organization', name: 'IsItSafeToTravel', url: 'https://isitsafetotravel.org/' },
@@ -1116,6 +1178,72 @@ export function buildCommunityVsDataJsonLd(
           position: index + 1,
           name: item.name,
           url: item.url,
+        })),
+      },
+    ],
+  };
+}
+
+/**
+ * Build JSON-LD structured data for the Travel Safety Index page
+ * (src/components/TravelSafetyIndexPage.astro) — the flagship "travel safety
+ * index" head-term page (2026-09-25 audit, SXO-05). @graph = WebPage +
+ * Dataset (reused from buildDatasetJsonLd, pointed at this page's own URL) +
+ * ItemList (the visible top-50 ranking) + FAQPage.
+ *
+ * Deliberately does NOT include a BreadcrumbList node: the page also renders
+ * <Breadcrumb>, which emits its own separate BreadcrumbList JSON-LD script —
+ * adding a second one here would reproduce the exact duplicate-BreadcrumbList
+ * regression already fixed once on /api/ (see the "No inline BreadcrumbList
+ * here" comment in ApiDocs.astro). Google/validate-seo.ts see the type either
+ * way since both scripts are read from the same rendered page.
+ */
+export function buildTravelSafetyIndexJsonLd(
+  title: string,
+  description: string,
+  canonicalUrl: string,
+  lang: Lang,
+  dateModified: string,
+  itemListEntries: { name: string; url: string }[],
+  faqItems: { question: string; answer: string }[],
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+        url: canonicalUrl,
+        name: title,
+        description,
+        inLanguage: localeMap[lang],
+        isPartOf: { '@id': WEBSITE_ID },
+        mainEntity: { '@id': SITE_DATASET_ID },
+        dateModified,
+      },
+      {
+        ...buildDatasetJsonLd(lang, dateModified),
+        url: canonicalUrl,
+      },
+      {
+        '@type': 'ItemList',
+        '@id': `${canonicalUrl}#itemlist`,
+        itemListOrder: 'https://schema.org/ItemListOrderDescending',
+        name: title,
+        numberOfItems: itemListEntries.length,
+        itemListElement: itemListEntries.map((entry, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: entry.name,
+          url: entry.url,
+        })),
+      },
+      {
+        '@type': 'FAQPage',
+        mainEntity: faqItems.map((qa) => ({
+          '@type': 'Question',
+          name: qa.question,
+          acceptedAnswer: { '@type': 'Answer', text: qa.answer },
         })),
       },
     ],
