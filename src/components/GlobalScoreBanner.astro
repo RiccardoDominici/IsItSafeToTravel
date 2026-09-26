@@ -3,7 +3,7 @@ import type { Lang } from '../i18n/ui';
 import { routes } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { loadLatestSnapshot } from '../lib/scores';
-import { scoreToColor, readableTextColor } from '../lib/colors';
+import { badgeColors } from '../lib/colors';
 
 interface Props {
   lang: Lang;
@@ -14,10 +14,13 @@ const t = useTranslations(lang);
 
 const snapshot = loadLatestSnapshot();
 const globalScore = snapshot?.globalScore ?? 0;
-const bgColor = scoreToColor(globalScore);
-// WCAG: the moderate band (~yellow) fails contrast with a hardcoded white badge
-// text — same fix already applied in the sibling ScoreHero.astro (PERF-04, 2026-09 audit).
-const fgColor = readableTextColor(bgColor);
+// w-10 h-10 chip at text-lg (18px) font-bold -- one px short of the 18.66px
+// WCAG needs to count as "large", so treated as needing the full 4.5:1.
+// badgeColors() darkens the background when needed (dead zone ~4.7-4.9 and
+// ~8.7-10) instead of just picking the less-bad of white/dark text, unlike
+// the sibling ScoreHero.astro/GlobalSafetyPage.astro hero (>=24px bold, kept
+// on the plain gradient + readableTextColor -- 2026-09 contrast fix).
+const { bg: bgColor, fg: fgColor } = badgeColors(globalScore);
 const href = `/${lang}/${routes[lang]['global-safety']}/`;
 ---
 

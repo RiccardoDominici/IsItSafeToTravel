@@ -104,3 +104,84 @@ export function readableTextColor(bg: string): '#ffffff' | '#1c1917' {
   const darkRatio = contrastRatio(L, DARK_TEXT_LUM);
   return darkRatio >= whiteRatio ? '#1c1917' : '#ffffff';
 }
+
+// --- sRGB <-> OKLCH, for badgeColors' lightness-only darkening step below ---
+// (Matrices: Björn Ottosson's OKLab reference, https://bottosson.github.io/posts/oklab/)
+
+function srgbToOklch(r: number, g: number, b: number): [number, number, number] {
+  const [rl, gl, bl] = [r, g, b].map((c) => srgbChannelToLinear(c));
+  const l = 0.4122214708 * rl + 0.5363325363 * gl + 0.0514459929 * bl;
+  const m = 0.2119034982 * rl + 0.6806995451 * gl + 0.1073969566 * bl;
+  const s = 0.0883024619 * rl + 0.2817188376 * gl + 0.6299787005 * bl;
+  const l_ = Math.cbrt(l);
+  const m_ = Math.cbrt(m);
+  const s_ = Math.cbrt(s);
+  const L = 0.2104542553 * l_ + 0.7936177850 * m_ - 0.0040720468 * s_;
+  const a = 1.9779984951 * l_ - 2.4285922050 * m_ + 0.4505937099 * s_;
+  const bb = 0.0259040371 * l_ + 0.7827717662 * m_ - 0.8086757660 * s_;
+  const C = Math.sqrt(a * a + bb * bb);
+  const H = (Math.atan2(bb, a) * 180) / Math.PI;
+  return [L, C, H];
+}
+
+function oklchToSrgb(L: number, C: number, hDeg: number): [number, number, number] {
+  const h = (hDeg * Math.PI) / 180;
+  const a = C * Math.cos(h);
+  const bb = C * Math.sin(h);
+  const l_ = L + 0.3963377774 * a + 0.2158037573 * bb;
+  const m_ = L - 0.1055613458 * a - 0.0638541728 * bb;
+  const s_ = L - 0.0894841775 * a - 1.2914855480 * bb;
+  const l = l_ ** 3;
+  const m = m_ ** 3;
+  const s = s_ ** 3;
+  const rl = 4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s;
+  const gl = -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s;
+  const bl = -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s;
+  const linearToSrgbByte = (c: number): number => {
+    const clamped = Math.min(1, Math.max(0, c));
+    const s = clamped <= 0.0031308 ? 12.92 * clamped : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055;
+    return Math.round(Math.min(1, Math.max(0, s)) * 255);
+  };
+  return [linearToSrgbByte(rl), linearToSrgbByte(gl), linearToSrgbByte(bl)];
+}
+
+/**
+ * Background + text color for a *small* score chip/badge (table score cells,
+ * the global-score pill, ...) — these need the full 4.5:1, unlike the large
+ * score hero (>=24px bold) which only needs 3:1 and keeps the original
+ * gradient untouched; see readableTextColor above for that case, and never
+ * use this for the map fill or its legend (2026-09 contrast fix).
+ *
+ * Starts from the same scoreToColor/pillarToColor gradient. Around score
+ * ~4.6-4.9, and again from ~8.7 through the clamped 8.9-10 tail, neither
+ * white nor #1c1917 reaches 4.5:1 against it (measured worst case ~4.20:1
+ * and ~4.23:1) — a real gap in the 3-stop DANGER/MODERATE/SAFE gradient, not
+ * something readableTextColor's white-vs-dark choice can fix. When that
+ * happens this darkens the background in small OKLCH lightness steps (same
+ * hue/chroma, so it still reads as "the same colour, just deeper") until
+ * white text clears 4.5:1, and returns that darkened background instead.
+ */
+export function badgeColors(score: number): { bg: string; fg: '#ffffff' | '#1c1917' } {
+  const bg = scoreToColor(score);
+  let [r, g, b] = parseColorToRgb(bg);
+  let L = relLuminance(r, g, b);
+  const bestRatio = Math.max(contrastRatio(L, 1.0), contrastRatio(L, DARK_TEXT_LUM));
+
+  if (bestRatio < 4.5) {
+    const [okL, okC, okH] = srgbToOklch(r, g, b);
+    const STEP = 0.005;
+    for (let stepL = okL - STEP; stepL > 0; stepL -= STEP) {
+      const [nr, ng, nb] = oklchToSrgb(stepL, okC, okH);
+      if (contrastRatio(relLuminance(nr, ng, nb), 1.0) >= 4.5) {
+        r = nr;
+        g = ng;
+        b = nb;
+        L = relLuminance(nr, ng, nb);
+        break;
+      }
+    }
+  }
+
+  const fg = contrastRatio(L, 1.0) >= contrastRatio(L, DARK_TEXT_LUM) ? '#ffffff' : '#1c1917';
+  return { bg: `rgb(${r}, ${g}, ${b})`, fg };
+}
