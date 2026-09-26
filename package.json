@@ -15,7 +15,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "typecheck": "astro check",
-    "test": "node --import tsx --test --test-concurrency=1 src/pipeline/__tests__/*.test.ts src/pipeline/scoring/__tests__/*.test.ts",
+    "test": "node --import tsx --test --test-concurrency=1 src/pipeline/__tests__/*.test.ts src/pipeline/scoring/__tests__/*.test.ts src/pipeline/news/__tests__/*.test.ts src/pipeline/sentiment/__tests__/*.test.ts src/lib/__tests__/*.test.ts src/i18n/__tests__/*.test.ts src/__tests__/*.test.ts functions/__tests__/*.test.ts functions/api/__tests__/*.test.ts",
     "test:pipeline": "node --import tsx --test src/pipeline/scoring/__tests__/engine.test.ts",
     "test:freshness": "node --import tsx --test src/pipeline/scoring/__tests__/freshness.test.ts",
     "pipeline": "tsx src/pipeline/run.ts",
