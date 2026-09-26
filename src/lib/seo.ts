@@ -594,7 +594,7 @@ export function buildGlobalSafetyJsonLd(
     it: 'Punteggio di sicurezza globale',
     es: 'Puntuación de seguridad global',
     fr: 'Score de sécurité mondial',
-    pt: 'Pontuação de Segurança Global',
+    pt: 'Pontuação de segurança global',
     zh: '全球安全评分',
     de: 'Globaler Sicherheits-Score',
   };

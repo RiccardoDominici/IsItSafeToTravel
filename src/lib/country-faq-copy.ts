@@ -204,7 +204,7 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_safety_security": "segurança social (Global Peace Index)",
     "gpi_militarisation": "militarização (Global Peace Index)",
     "ucdp_conflict_deaths": "mortes por conflito (UCDP)",
-    "vdem_rule_of_law": "Estado de Direito (V-Dem)",
+    "vdem_rule_of_law": "estado de direito (V-Dem)",
     "inform_health": "capacidade do sistema de saúde (INFORM)",
     "inform_epidemic": "risco de epidemias e doenças (INFORM)",
     "wb_child_mortality": "mortalidade infantil (Banco Mundial)",
@@ -530,7 +530,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "conflict": "Esse pilar mede conflitos armados, terrorismo e violência política — uma pontuação baixa significa que a instabilidade pode afetar a segurança pessoal e atrapalhar os planos de viagem.",
       "crime": "Esse pilar reflete crimes violentos, furtos e atividade do crime organizado — uma pontuação baixa exige atenção redobrada nas ruas, especialmente fora das principais áreas turísticas.",
       "health": "Esse pilar abrange a qualidade dos serviços de saúde, o risco de doenças e a capacidade de resposta a emergências — uma pontuação baixa significa que pode ser difícil encontrar atendimento médico confiável fora das grandes cidades.",
-      "governance": "Esse pilar avalia o Estado de Direito e a confiabilidade das instituições — uma pontuação baixa significa que a polícia e a justiça podem oferecer ajuda limitada se algo der errado.",
+      "governance": "Esse pilar avalia o estado de direito e a confiabilidade das instituições — uma pontuação baixa significa que a polícia e a justiça podem oferecer ajuda limitada se algo der errado.",
       "environment": "Esse pilar acompanha a exposição a riscos naturais como tempestades, enchentes e terremotos, além do grau de preparo do país para responder a eles."
     },
     "a3Intro": "Em {monthYear}, {name} conta com {advisoryCount}.",
