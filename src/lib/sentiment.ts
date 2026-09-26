@@ -33,3 +33,22 @@ export function loadSentimentForCountry(iso3: string): SentimentEntry | null {
     return null;
   }
 }
+
+/**
+ * Load every published SentimentEntry (community-vs-data ranking page, 39-11).
+ * Same graceful-degradation contract as loadSentimentForCountry: a missing
+ * file or malformed JSON resolves to [] rather than throwing, so a build never
+ * fails on absent or partial sentiment data. Entries are already floor-gated
+ * at aggregation time (aggregateVotes skips anything below SENTIMENT_MIN_VOTES),
+ * so every entry returned here is display-worthy as-is.
+ */
+export function loadAllSentiment(): SentimentEntry[] {
+  const filePath = path.join(DATA_DIR, 'latest.json');
+  if (!fs.existsSync(filePath)) return [];
+  try {
+    const parsed: SentimentLatestFile = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
+    return Object.values(parsed.countries ?? {});
+  } catch {
+    return [];
+  }
+}

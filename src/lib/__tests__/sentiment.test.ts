@@ -2,7 +2,7 @@ import { describe, it, before, after } from 'node:test';
 import { strict as assert } from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadSentimentForCountry, MIN_VOTE_FLOOR } from '../sentiment.js';
+import { loadSentimentForCountry, loadAllSentiment, MIN_VOTE_FLOOR } from '../sentiment.js';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'sentiment');
 const LATEST_PATH = path.join(DATA_DIR, 'latest.json');
@@ -65,6 +65,63 @@ describe('sentiment.ts: loadSentimentForCountry graceful degradation', () => {
       fs.writeFileSync(LATEST_PATH, '{ this is not valid json', 'utf-8');
       assert.doesNotThrow(() => loadSentimentForCountry('ITA'));
       assert.equal(loadSentimentForCountry('ITA'), null);
+    });
+  });
+});
+
+// --- 39-11: loadAllSentiment powers the /community-vs-data/ ranking page ---
+
+describe('sentiment.ts: loadAllSentiment graceful degradation', () => {
+  it('returns [] (not throw) when data/sentiment/latest.json is absent', () => {
+    if (fs.existsSync(LATEST_PATH)) {
+      // File already present in this environment -- covered via the fixture below instead.
+      return;
+    }
+    assert.doesNotThrow(() => loadAllSentiment());
+    assert.deepEqual(loadAllSentiment(), []);
+  });
+
+  describe('with a fixture file at data/sentiment/latest.json', () => {
+    const preexisting = fs.existsSync(LATEST_PATH) ? fs.readFileSync(LATEST_PATH, 'utf-8') : null;
+
+    before(() => {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    });
+
+    after(() => {
+      if (preexisting !== null) {
+        fs.writeFileSync(LATEST_PATH, preexisting, 'utf-8');
+      } else if (fs.existsSync(LATEST_PATH)) {
+        fs.rmSync(LATEST_PATH);
+      }
+    });
+
+    it('returns every country entry as a flat array', () => {
+      const fixture = {
+        generatedAt: '2026-09-26T00:00:00.000Z',
+        countries: {
+          ITA: { iso3: 'ITA', count: 12, avgDelta: 0.4, correction: 0.4, perceived: 8.2, official: 7.8 },
+          CHN: { iso3: 'CHN', count: 55, avgDelta: 1.4, correction: 0.71, perceived: 7.54, official: 6.83 },
+        },
+      };
+      fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
+      const result = loadAllSentiment();
+      assert.equal(result.length, 2);
+      assert.deepEqual(
+        result.find((e) => e.iso3 === 'ITA'),
+        fixture.countries.ITA
+      );
+    });
+
+    it('returns [] when the file has zero countries', () => {
+      fs.writeFileSync(LATEST_PATH, JSON.stringify({ generatedAt: '2026-09-26T00:00:00.000Z', countries: {} }), 'utf-8');
+      assert.deepEqual(loadAllSentiment(), []);
+    });
+
+    it('never throws on malformed JSON -- resolves to []', () => {
+      fs.writeFileSync(LATEST_PATH, '{ this is not valid json', 'utf-8');
+      assert.doesNotThrow(() => loadAllSentiment());
+      assert.deepEqual(loadAllSentiment(), []);
     });
   });
 });
