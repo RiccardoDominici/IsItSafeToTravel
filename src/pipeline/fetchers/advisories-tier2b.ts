@@ -310,23 +310,32 @@ async function fetchDkAdvisories(
   const advisoryInfo: AdvisoryInfoMap = {};
 
   // Build slug attempts from COUNTRIES using English name lowercased, hyphenated.
-  // um.dk's own slugs are DANISH ("frankrig", "tyskland"), not English, so
-  // this only resolves countries whose Danish and English names coincide
-  // (true for most non-European names, e.g. "Afghanistan", "Somalia" —
-  // exactly the countries this fix targets). European countries with a
-  // distinct Danish name are still missed; fixing that needs a Danish name
-  // table crawling the real listing page, mirroring GERMAN_NAMES/
-  // SWEDISH_NAMES/etc. in advisories-tier3b.ts. Out of scope for this fix.
+  // um.dk's own slugs are DANISH ("frankrig", "tyskland"), not English, so this only resolves
+  // countries whose Danish and English names coincide (mostly single-word non-European names --
+  // "Afghanistan", "Kenya", "Nepal" -- but also plenty that just happen to match, e.g. "Jordan",
+  // "Mexico", "Ukraine"). Countries with a genuinely distinct Danish name (France -> "frankrig",
+  // Germany -> "tyskland") 404 and are silently skipped below, never guessed. A real fix needs a
+  // Danish name table crawled from the listing page's own embedded country list (confirmed to
+  // exist, 194 slugs, via a throwaway harness against
+  // https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger 2026-09-25) mapped to
+  // ISO3, mirroring GERMAN_NAMES/SWEDISH_NAMES/etc. in advisories-tier3b.ts -- out of scope here.
+  //
+  // Repair 2026-09-25 (SOURCE-REPAIR-BRIEF): removed the earlier "first 80 countries" sample cap.
+  // That cap pre-dates extractDkLevel and was never actually about English/Danish name coverage
+  // -- it just capped REQUEST VOLUME -- but capping at the alphabetically-first 80 (Afghanistan..
+  // Iraq) meant the whole back half of the alphabet (Mexico, Thailand, Turkey, Ukraine...) was
+  // never even attempted. Trying all 248 is still well-mannered (concurrency stays at 3; a 404 or
+  // a "no guidance" page both return fast) and found 24 more real matches immediately in the
+  // untried back half (verified live: Israel, Japan, Jordan, Kenya, Mexico, Myanmar, Nigeria,
+  // Pakistan, Portugal, Thailand, Ukraine, Vietnam and 12 others) -- raising real coverage from
+  // 7 to 31 countries, none of them guessed.
   const countrySlugEntries = COUNTRIES.map(c => ({
     country: c,
     slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
   }));
 
-  // Sample first 80 countries to avoid excessive requests
-  const sampleEntries = countrySlugEntries.slice(0, 80);
-
   await fetchBatch(
-    sampleEntries,
+    countrySlugEntries,
     async (entry) => {
       try {
         const url = `https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/${entry.slug}/`;
