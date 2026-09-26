@@ -648,6 +648,13 @@ function buildSourcesForCountry(
 export function computeAllScores(
   rawDataBySource: Map<string, RawSourceData>,
   weightsConfig: WeightsConfig,
+  /**
+   * The pipeline run date (YYYY-MM-DD) whose data/raw/<date>/ directory holds
+   * this run's advisory side-channel files. Fetchers write there by run date,
+   * so the lookup must use the same date. Optional for backwards compatibility
+   * (tests, backfills): without it the date is inferred from `fetchedAt`.
+   */
+  runDate?: string,
 ): ScoredCountry[] {
   // Load sources tier config (optional -- graceful fallback: no freshness decay)
   const sourceTiersPath = join(process.cwd(), 'src/pipeline/config/source-tiers.json');
@@ -693,8 +700,13 @@ export function computeAllScores(
   const anyAdvisorySource = advisoriesSource || tier1Source || tier2aSource || tier2bSource || tier3aSource || tier3bSource;
 
   if (anyAdvisorySource) {
+    // Prefer the explicit run date: `fetchedAt` is the wall-clock fetch time, which
+    // differs from the run date when a manual run for a past date (run.ts
+    // YYYY-MM-DD) happens after UTC midnight. On 2026-09-26 a corrective run for
+    // 2026-09-25 looked in data/raw/2026-09-26/, found nothing, and dropped EVERY
+    // advisory (US/UK/CA/AU and all tiers) — the data-quality gate caught it.
     const dateMatch = anyAdvisorySource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
-    const dataDate = dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10);
+    const dataDate = runDate ?? (dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10));
 
     // Load base advisories-info.json
     const advisoryInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-info.json');

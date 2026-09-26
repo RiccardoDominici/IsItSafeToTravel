@@ -83,7 +83,7 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
 
   // Stage 3: Score
   console.log('\n--- Stage 3: Score ---');
-  const scoredCountries = computeAllScores(rawDataMap, weightsConfig);
+  const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date);
   console.log(`Scored ${scoredCountries.length} countries`);
 
   // Log tier contribution summary
