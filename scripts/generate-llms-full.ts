@@ -386,7 +386,7 @@ ${languageLines}
 
 ## Source Code
 
-- Publicly viewable (not open-source licensed — see the repository for terms): https://github.com/RiccardoDominici/IsItSafeToTravel
+- Open source (MIT license): https://github.com/RiccardoDominici/IsItSafeToTravel
 `;
 
   fs.writeFileSync(OUT_LLMS, llms, "utf-8");

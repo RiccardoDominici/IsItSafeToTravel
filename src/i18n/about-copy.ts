@@ -4,20 +4,25 @@
  * WHY this lives here instead of ui.ts's `about.*` keys: those keys repeatedly
  * call the project "open-source" / "código aberto" / "quelloffen" (title
  * description, project intro, author bio, and a whole "Open Source" section
- * inviting readers to view/contribute on GitHub). The linked repository has no
- * LICENSE file — a public repo without one is legally all-rights-reserved, not
- * open-source, regardless of what the site claims (2026-09-25 audit,
- * findings/inconsistencies.md I7). The *dataset* genuinely is open data
- * (CC BY-NC 4.0, correctly stated elsewhere) — the two are different claims
- * about different things, and this file is careful to only ever make the
- * second one. ui.ts is a merge hot spot other workstreams are editing this
- * same round, so this is a fresh module rather than an in-place ui.ts edit.
+ * inviting readers to view/contribute on GitHub). Historically the linked
+ * repository had no LICENSE file — a public repo without one is legally
+ * all-rights-reserved, not open-source, regardless of what the site claims
+ * (2026-09-25 audit, findings/inconsistencies.md I7). As of 2026-09-26 (owner
+ * decision) the repository ships an MIT LICENSE at the root, so the *code*
+ * genuinely is open source now, while the *dataset* remains separately
+ * licensed CC BY-NC 4.0 (correctly stated elsewhere) — two different licenses
+ * for two different things, and this file is careful to state both correctly.
+ * ui.ts is a merge hot spot other workstreams are editing this same round, so
+ * this is a fresh module rather than an in-place ui.ts edit.
  *
  * Also adds the "How this site works", "Corrections" and "Who runs it"
  * sections the audit's content/EEAT review asked for (C8/C10 in the prior
  * 2026-08-25 audit): what's automated vs. reviewed, how to report an error,
  * and who is accountable for the page you're reading — with no invented
- * credentials and no email address (GitHub Issues + the feedback form only).
+ * credentials. The Contact section additionally shows the owner's email
+ * address, small and discreet, at the owner's explicit request (2026-09-26
+ * decision) — on this page only, alongside GitHub Issues and the feedback
+ * form, not promoted as the primary contact channel.
  *
  * Paragraphs that embed exactly one link use a single `{link}` token the page
  * splits on — same convention on every field, so every about/index.astro is
@@ -64,6 +69,8 @@ export interface AboutCopy {
   /** Contains one {link} token -> the feedback page. */
   contactFeedback: string;
   feedbackLinkText: string;
+  /** Label preceding the owner's contact email, shown small/discreet at the end of the Contact section. */
+  contactEmailLabel: string;
 }
 
 export const aboutCopy: Record<Lang, AboutCopy> = {
@@ -81,7 +88,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `We aggregate data from ${SOURCE_COUNT_DISPLAY} public sources updated daily — travel advisories from ${ADVISORY_GOV_COUNT_DISPLAY} governments plus global indices. See our {link} for full details on how scores are calculated.`,
     methodologyLinkText: 'methodology page',
     dataCodeTitle: 'Data & Code',
-    dataCodeText: "The underlying dataset is open data, licensed CC BY-NC 4.0 — free to reuse with attribution. The website's source code is publicly viewable on {link} for transparency, but it is not open-source software: all rights to the code are reserved.",
+    dataCodeText: "The underlying dataset is open data, licensed CC BY-NC 4.0 — free to reuse with attribution. The source code of the website and the data pipeline is open source under the MIT license on {link}: you can read it, reuse it, and propose changes.",
     correctionsTitle: 'Corrections',
     correctionsText: 'Spotted a wrong number, a stale advisory, or a bug? Report it through the feedback form or as a GitHub issue. Data corrections land with the next daily update; anything that needs a code or methodology fix is scheduled and noted in the changelog once it ships.',
     whoRunsItTitle: 'Who Runs This Site',
@@ -92,6 +99,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'You can also send us your thoughts directly through our {link}.',
     feedbackLinkText: 'feedback form',
+    contactEmailLabel: 'Email',
   },
   it: {
     title: 'Chi Siamo - IsItSafeToTravel',
@@ -107,7 +115,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `Aggreghiamo dati da ${SOURCE_COUNT_DISPLAY} fonti pubbliche aggiornate quotidianamente — avvisi di viaggio di ${ADVISORY_GOV_COUNT_DISPLAY} governi più indici globali. Consulta la nostra {link} per tutti i dettagli su come vengono calcolati i punteggi.`,
     methodologyLinkText: 'pagina Metodologia',
     dataCodeTitle: 'Dati e Codice',
-    dataCodeText: "Il dataset alla base del sito è open data, con licenza CC BY-NC 4.0: puoi riutilizzarlo liberamente citando la fonte. Il codice sorgente del sito è visibile pubblicamente su {link} per trasparenza, ma non è software open-source: tutti i diritti sul codice sono riservati.",
+    dataCodeText: "Il dataset alla base del sito è open data, con licenza CC BY-NC 4.0: puoi riutilizzarlo liberamente citando la fonte. Il codice sorgente del sito e della pipeline di dati è open source con licenza MIT su {link}: puoi leggerlo, riutilizzarlo e proporre modifiche.",
     correctionsTitle: 'Correzioni',
     correctionsText: "Hai notato un numero sbagliato, un avviso non aggiornato o un bug? Segnalalo tramite il modulo di feedback o come issue su GitHub. Le correzioni ai dati arrivano con il successivo aggiornamento giornaliero; ciò che richiede una modifica al codice o alla metodologia viene pianificato e annotato nel changelog una volta rilasciato.",
     whoRunsItTitle: 'Chi Gestisce Questo Sito',
@@ -118,6 +126,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'Puoi anche inviarci i tuoi pensieri direttamente tramite il nostro {link}.',
     feedbackLinkText: 'modulo feedback',
+    contactEmailLabel: 'Email',
   },
   es: {
     title: 'Acerca de IsItSafeToTravel',
@@ -133,7 +142,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `Agregamos datos de ${SOURCE_COUNT_DISPLAY} fuentes públicas actualizadas diariamente — avisos de viaje de ${ADVISORY_GOV_COUNT_DISPLAY} gobiernos más índices globales. Consulta nuestra {link} para todos los detalles sobre cómo se calculan las puntuaciones.`,
     methodologyLinkText: 'página de Metodología',
     dataCodeTitle: 'Datos y Código',
-    dataCodeText: 'El conjunto de datos que sustenta el sitio es de datos abiertos, con licencia CC BY-NC 4.0: puedes reutilizarlo libremente citando la fuente. El código fuente del sitio es visible públicamente en {link} por transparencia, pero no es software de código abierto: todos los derechos sobre el código están reservados.',
+    dataCodeText: 'El conjunto de datos que sustenta el sitio es de datos abiertos, con licencia CC BY-NC 4.0: puedes reutilizarlo libremente citando la fuente. El código fuente del sitio y del pipeline de datos es de código abierto bajo licencia MIT en {link}: puedes leerlo, reutilizarlo y proponer cambios.',
     correctionsTitle: 'Correcciones',
     correctionsText: '¿Has detectado un número incorrecto, un aviso desactualizado o un error? Repórtalo a través del formulario de comentarios o como issue en GitHub. Las correcciones de datos se aplican en la siguiente actualización diaria; lo que requiere un cambio de código o de metodología se planifica y se anota en el registro de cambios una vez publicado.',
     whoRunsItTitle: 'Quién Gestiona Este Sitio',
@@ -144,6 +153,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'También puedes enviarnos tus opiniones directamente a través de nuestro {link}.',
     feedbackLinkText: 'formulario de comentarios',
+    contactEmailLabel: 'Correo',
   },
   fr: {
     title: 'À propos de IsItSafeToTravel',
@@ -159,7 +169,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `Nous agrégeons des données de ${SOURCE_COUNT_DISPLAY} sources publiques mises à jour quotidiennement — avis de voyage de ${ADVISORY_GOV_COUNT_DISPLAY} gouvernements plus des indices mondiaux. Consultez notre {link} pour tous les détails sur le calcul des scores.`,
     methodologyLinkText: 'page Méthodologie',
     dataCodeTitle: 'Données et Code',
-    dataCodeText: "Le jeu de données qui alimente le site est une donnée ouverte, sous licence CC BY-NC 4.0 : vous pouvez la réutiliser librement en citant la source. Le code source du site est visible publiquement sur {link} par souci de transparence, mais ce n'est pas un logiciel open source : tous les droits sur le code sont réservés.",
+    dataCodeText: "Le jeu de données qui alimente le site est une donnée ouverte, sous licence CC BY-NC 4.0 : vous pouvez la réutiliser librement en citant la source. Le code source du site et du pipeline de données est open source sous licence MIT sur {link} : vous pouvez le consulter, le réutiliser et proposer des modifications.",
     correctionsTitle: 'Corrections',
     correctionsText: "Vous avez repéré un chiffre erroné, un avis obsolète ou un bug ? Signalez-le via le formulaire de commentaires ou en ouvrant une issue sur GitHub. Les corrections de données sont intégrées à la mise à jour quotidienne suivante ; ce qui nécessite une modification du code ou de la méthodologie est planifié et noté dans le journal des modifications une fois publié.",
     whoRunsItTitle: 'Qui Gère Ce Site',
@@ -170,6 +180,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'Vous pouvez également nous envoyer vos commentaires directement via notre {link}.',
     feedbackLinkText: 'formulaire de commentaires',
+    contactEmailLabel: 'E-mail',
   },
   pt: {
     title: 'Sobre o IsItSafeToTravel',
@@ -185,7 +196,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `Agregamos dados de ${SOURCE_COUNT_DISPLAY} fontes públicas atualizadas diariamente — avisos de viagem de ${ADVISORY_GOV_COUNT_DISPLAY} governos mais índices globais. Consulte nossa {link} para todos os detalhes sobre como as pontuações são calculadas.`,
     methodologyLinkText: 'página de Metodologia',
     dataCodeTitle: 'Dados e Código',
-    dataCodeText: 'O conjunto de dados que sustenta o site é um dado aberto, licenciado sob CC BY-NC 4.0: você pode reutilizá-lo livremente citando a fonte. O código-fonte do site é visível publicamente no {link} por transparência, mas não é software de código aberto: todos os direitos sobre o código são reservados.',
+    dataCodeText: 'O conjunto de dados que sustenta o site é um dado aberto, licenciado sob CC BY-NC 4.0: você pode reutilizá-lo livremente citando a fonte. O código-fonte do site e do pipeline de dados é open source sob licença MIT no {link}: você pode lê-lo, reutilizá-lo e propor mudanças.',
     correctionsTitle: 'Correções',
     correctionsText: 'Encontrou um número errado, um aviso desatualizado ou um bug? Reporte pelo formulário de feedback ou como uma issue no GitHub. Correções de dados entram na próxima atualização diária; o que exige uma mudança de código ou de metodologia é planejado e registrado no changelog assim que é publicado.',
     whoRunsItTitle: 'Quem Mantém Este Site',
@@ -196,6 +207,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'Você também pode nos enviar seus comentários diretamente através do nosso {link}.',
     feedbackLinkText: 'formulário de feedback',
+    contactEmailLabel: 'E-mail',
   },
   zh: {
     title: '关于 IsItSafeToTravel',
@@ -211,7 +223,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `我们聚合每日更新的 ${SOURCE_COUNT_DISPLAY} 个公开来源数据——来自 ${ADVISORY_GOV_COUNT_DISPLAY} 个政府的旅行建议及多项全球指数。详见 {link}，了解评分的完整计算方式。`,
     methodologyLinkText: '方法论页面',
     dataCodeTitle: '数据与代码',
-    dataCodeText: '支撑本网站的数据集为开放数据，采用 CC BY-NC 4.0 许可：只要注明来源即可自由复用。为保持透明，网站的源代码在 {link} 上公开可见，但它并非开源软件：代码的所有权利均予保留。',
+    dataCodeText: '支撑本网站的数据集为开放数据，采用 CC BY-NC 4.0 许可：只要注明来源即可自由复用。网站与数据管道的源代码采用 MIT 许可，在 {link} 上开源：您可以阅读、复用并提出修改建议。',
     correctionsTitle: '更正',
     correctionsText: '发现了错误的数字、过时的警告或程序漏洞？请通过反馈表单或在 GitHub 上提交 issue 告知我们。数据类更正会随下一次每日更新生效；需要修改代码或方法论的问题会被排期处理，并在发布后记录在更新日志中。',
     whoRunsItTitle: '本网站由谁运营',
@@ -222,6 +234,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: '您也可以通过我们的 {link} 直接发送您的想法。',
     feedbackLinkText: '反馈表单',
+    contactEmailLabel: '邮箱',
   },
   de: {
     title: 'Über IsItSafeToTravel',
@@ -237,7 +250,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     sourcesText: `Wir aggregieren Daten aus ${SOURCE_COUNT_DISPLAY} täglich aktualisierten öffentlichen Quellen — Reisehinweise von ${ADVISORY_GOV_COUNT_DISPLAY} Regierungen sowie globale Indizes. Vollständige Details zur Berechnung der Bewertungen finden Sie auf unserer {link}.`,
     methodologyLinkText: 'Methodik-Seite',
     dataCodeTitle: 'Daten & Code',
-    dataCodeText: 'Der zugrunde liegende Datensatz ist offen zugänglich und unter CC BY-NC 4.0 lizenziert — frei nutzbar unter Namensnennung. Der Quellcode der Website ist aus Transparenzgründen öffentlich auf {link} einsehbar, ist aber keine Open-Source-Software: Alle Rechte am Code sind vorbehalten.',
+    dataCodeText: 'Der zugrunde liegende Datensatz ist offen zugänglich und unter CC BY-NC 4.0 lizenziert — frei nutzbar unter Namensnennung. Der Quellcode der Website und der Datenpipeline ist unter der MIT-Lizenz auf {link} quelloffen: Sie können ihn lesen, wiederverwenden und Änderungen vorschlagen.',
     correctionsTitle: 'Korrekturen',
     correctionsText: 'Einen falschen Wert, einen veralteten Hinweis oder einen Fehler entdeckt? Melden Sie ihn über das Feedback-Formular oder als GitHub-Issue. Datenkorrekturen fließen in die nächste tägliche Aktualisierung ein; Änderungen am Code oder an der Methodik werden eingeplant und nach der Veröffentlichung im Änderungsprotokoll vermerkt.',
     whoRunsItTitle: 'Wer Diese Website Betreibt',
@@ -248,5 +261,6 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     githubIssuesText: 'GitHub Issues',
     contactFeedback: 'Sie können uns Ihre Gedanken auch direkt über unser {link} senden.',
     feedbackLinkText: 'Feedback-Formular',
+    contactEmailLabel: 'E-Mail',
   },
 };
