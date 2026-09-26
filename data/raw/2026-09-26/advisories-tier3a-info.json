@@ -1,22 +1,28 @@
 {
-  "DZA": {
+  "AFG": {
     "it": {
-      "level": 2,
-      "text": "Cautela",
+      "level": 4,
+      "text": "Non recarsi",
       "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/DZA"
+      "url": "https://www.viaggiaresicuri.it/find-country/country/AFG"
     },
     "es": {
       "level": 4,
       "text": "Se desaconseja todo viaje",
       "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Argelia"
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Afganist%c3%a1n"
     },
     "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2684-c486e-1.html"
+    },
+    "cn": {
+      "level": 4,
+      "text": "暂勿前往 (Do Not Travel)",
+      "source": "China MFA",
+      "url": "https://cs.mfa.gov.cn/rdgz/202609/t20260914_12021692.shtml"
     }
   },
   "ALB": {
@@ -36,33 +42,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "AFG": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/AFG"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Afganist%c3%a1n"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    },
-    "cn": {
-      "level": 4,
-      "text": "暂勿前往 (Do Not Travel)",
-      "source": "China MFA",
-      "url": "https://cs.mfa.gov.cn/rdgz/202609/t20260914_12021692.shtml"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2615-e64c6-1.html"
     }
   },
   "AND": {
@@ -82,27 +62,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "ARG": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/ARG"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Argentina"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2813-085e1-1.html"
     }
   },
   "AGO": {
@@ -122,7 +82,27 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3018-0ac92-1.html"
+    }
+  },
+  "DZA": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/DZA"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Argelia"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3062-404f5-1.html"
     }
   },
   "ATG": {
@@ -137,12 +117,38 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Antigua+y+Barbuda"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2165-1e3ae-1.html"
+    }
+  },
+  "ARG": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/ARG"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Argentina"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3098-4f996-1.html"
     }
   },
   "ARM": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/ARM"
     },
@@ -156,7 +162,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3077-a56cc-1.html"
     }
   },
   "AUS": {
@@ -176,7 +182,27 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3034-7f1cc-1.html"
+    }
+  },
+  "AZE": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/AZE"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Azerbaiy%c3%a1n"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3078-3cf6f-1.html"
     }
   },
   "AUT": {
@@ -196,27 +222,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "AZE": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/AZE"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Azerbaiy%c3%a1n"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2553-32306-1.html"
     }
   },
   "BHS": {
@@ -236,7 +242,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2046-1cd97-1.html"
     }
   },
   "BHR": {
@@ -256,7 +262,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3040-e2c0b-1.html"
     }
   },
   "BGD": {
@@ -276,7 +282,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2805-64308-1.html"
     }
   },
   "BRB": {
@@ -296,27 +302,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "BLR": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/BLR"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Bielorrusia"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2853-47b35-1.html"
     }
   },
   "BEL": {
@@ -336,7 +322,27 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3115-1d5a7-1.html"
+    }
+  },
+  "BLR": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/BLR"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Bielorrusia"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3074-3f157-1.html"
     }
   },
   "BLZ": {
@@ -356,7 +362,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2873-81eae-1.html"
     }
   },
   "BEN": {
@@ -376,7 +382,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3063-ecc35-1.html"
     }
   },
   "BTN": {
@@ -396,7 +402,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3126-d501e-1.html"
     }
   },
   "BOL": {
@@ -416,7 +422,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3133-e83e4-1.html"
     }
   },
   "BIH": {
@@ -425,6 +431,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/BIH"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2635-0c14f-1.html"
     }
   },
   "BWA": {
@@ -444,7 +456,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2734-329fc-1.html"
     }
   },
   "BRA": {
@@ -464,7 +476,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2461-509e2-1.html"
     }
   },
   "BRN": {
@@ -484,7 +496,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3130-d9291-1.html"
     }
   },
   "BGR": {
@@ -504,7 +516,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2279-3a179-1.html"
     }
   },
   "BFA": {
@@ -519,6 +531,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Burkina+Faso"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2314-2e0e3-1.html"
     }
   },
   "BDI": {
@@ -538,7 +556,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3111-2f975-1.html"
     }
   },
   "CPV": {
@@ -553,6 +571,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Cabo+Verde"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3122-9f4c3-1.html"
     }
   },
   "KHM": {
@@ -572,19 +596,19 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3129-bf284-1.html"
     }
   },
   "CMR": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/CMR"
     },
     "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
+      "level": 3,
+      "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Camer%c3%ban"
     },
@@ -592,61 +616,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "CAF": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/CAF"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rep%c3%bablica+Centroafricana"
-    }
-  },
-  "TCD": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/TCD"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Chad"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "CHL": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/CHL"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Chile"
-    },
-    "tw": {
-      "level": 2,
-      "text": "黃色注意 (Yellow Caution)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3105-70f1e-1.html"
     }
   },
   "CAN": {
@@ -666,7 +636,47 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2868-b84d6-1.html"
+    }
+  },
+  "CAF": {
+    "it": {
+      "level": 4,
+      "text": "Non recarsi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/CAF"
+    },
+    "es": {
+      "level": 4,
+      "text": "Se desaconseja todo viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rep%c3%bablica+Centroafricana"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3107-f0fea-1.html"
+    }
+  },
+  "CHL": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/CHL"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Chile"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3032-c5dbf-1.html"
     }
   },
   "CHN": {
@@ -681,6 +691,26 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=China"
+    }
+  },
+  "TCD": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/TCD"
+    },
+    "es": {
+      "level": 4,
+      "text": "Se desaconseja todo viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Chad"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3064-6e799-1.html"
     }
   },
   "COL": {
@@ -700,27 +730,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "COM": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/COM"
-    },
-    "es": {
-      "level": 3,
-      "text": "Se desaconseja el viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Comoras"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2478-54797-1.html"
     }
   },
   "COG": {
@@ -740,7 +750,27 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3068-86461-1.html"
+    }
+  },
+  "COM": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/COM"
+    },
+    "es": {
+      "level": 3,
+      "text": "Se desaconseja el viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Comoras"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2898-20a52-1.html"
     }
   },
   "COD": {
@@ -755,20 +785,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rep%c3%bablica+Democr%c3%a1tica+del+Congo"
-    }
-  },
-  "CRI": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/CRI"
     },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Costa+Rica"
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3100-f3f00-1.html"
     }
   },
   "CIV": {
@@ -783,6 +805,32 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Costa+de+Marfil"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3097-ab7e8-1.html"
+    }
+  },
+  "CRI": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/CRI"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Costa+Rica"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2798-2ce78-1.html"
     }
   },
   "HRV": {
@@ -802,7 +850,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2555-cb0ac-1.html"
     }
   },
   "CUB": {
@@ -816,7 +864,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2422-e18dd-1.html"
     }
   },
   "CYP": {
@@ -836,7 +884,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2280-d29dd-1.html"
     }
   },
   "CZE": {
@@ -845,100 +893,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/CZE"
-    }
-  },
-  "DJI": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/DJI"
-    },
-    "es": {
-      "level": 3,
-      "text": "Se desaconseja el viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Yibuti"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "DMA": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/DMA"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Dominica"
     },
     "tw": {
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "DOM": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/DOM"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rep%c3%bablica+Dominicana"
-    }
-  },
-  "ECU": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/ECU"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Ecuador"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "EGY": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/EGY"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Egipto"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2640-2e873-1.html"
     }
   },
   "DNK": {
@@ -958,7 +918,107 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2922-cdf13-1.html"
+    }
+  },
+  "DJI": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/DJI"
+    },
+    "es": {
+      "level": 3,
+      "text": "Se desaconseja el viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Yibuti"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2867-1aee3-1.html"
+    }
+  },
+  "DMA": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/DMA"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Dominica"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2969-c912e-1.html"
+    }
+  },
+  "DOM": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/DOM"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rep%c3%bablica+Dominicana"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2237-079d2-1.html"
+    }
+  },
+  "ECU": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/ECU"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Ecuador"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3054-ac15a-1.html"
+    }
+  },
+  "EGY": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/EGY"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Egipto"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3093-4908a-1.html"
     }
   },
   "SLV": {
@@ -973,6 +1033,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=El+Salvador"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2919-1bea6-1.html"
     }
   },
   "GNQ": {
@@ -987,6 +1053,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Guinea+Ecuatorial"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3006-5f0f9-1.html"
     }
   },
   "ERI": {
@@ -1006,27 +1078,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "EST": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/EST"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Estonia"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1903-5d0ea-1.html"
     }
   },
   "SWZ": {
@@ -1046,7 +1098,27 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2892-5ba0b-1.html"
+    }
+  },
+  "EST": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/EST"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Estonia"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2885-a00ae-1.html"
     }
   },
   "ETH": {
@@ -1066,7 +1138,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3019-f75e1-1.html"
     }
   },
   "FJI": {
@@ -1086,7 +1158,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2152-7afe7-1.html"
     }
   },
   "FIN": {
@@ -1106,7 +1178,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2859-45ebf-1.html"
     }
   },
   "FRA": {
@@ -1126,7 +1198,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2644-bf2cb-1.html"
     }
   },
   "GAB": {
@@ -1146,7 +1218,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3065-ea433-1.html"
     }
   },
   "GMB": {
@@ -1166,13 +1238,13 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2870-4da00-1.html"
     }
   },
   "GEO": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/GEO"
     },
@@ -1186,7 +1258,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3082-7c40f-1.html"
     }
   },
   "DEU": {
@@ -1206,7 +1278,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2690-fa480-1.html"
     }
   },
   "GHA": {
@@ -1226,7 +1298,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2871-5335b-1.html"
     }
   },
   "GRC": {
@@ -1246,7 +1318,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2278-bcc34-1.html"
     }
   },
   "GRD": {
@@ -1266,7 +1338,27 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2916-325ec-1.html"
+    }
+  },
+  "GIN": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/GIN"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Guinea"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3112-0bb6d-1.html"
     }
   },
   "GTM": {
@@ -1286,27 +1378,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "GIN": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/GIN"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Guinea"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3113-6e3ec-1.html"
     }
   },
   "GNB": {
@@ -1326,7 +1398,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3124-660fa-1.html"
     }
   },
   "GUY": {
@@ -1346,7 +1418,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2909-04635-1.html"
     }
   },
   "HTI": {
@@ -1366,7 +1438,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3030-a74c6-1.html"
     }
   },
   "HND": {
@@ -1386,7 +1458,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2234-0b2fb-1.html"
     }
   },
   "HUN": {
@@ -1400,7 +1472,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2633-f1d98-1.html"
     }
   },
   "ISL": {
@@ -1420,7 +1492,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2858-20947-1.html"
     }
   },
   "IND": {
@@ -1440,7 +1512,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2803-9a1eb-1.html"
     }
   },
   "IDN": {
@@ -1460,27 +1532,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "IRQ": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/IRQ"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Irak"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2190-4a1bc-1.html"
     }
   },
   "IRN": {
@@ -1500,7 +1552,27 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2961-00288-1.html"
+    }
+  },
+  "IRQ": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/IRQ"
+    },
+    "es": {
+      "level": 4,
+      "text": "Se desaconseja todo viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Irak"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3087-d2a5f-1.html"
     }
   },
   "IRL": {
@@ -1520,7 +1592,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2552-20046-1.html"
     }
   },
   "ISR": {
@@ -1540,7 +1612,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3101-a726d-1.html"
     }
   },
   "JAM": {
@@ -1560,7 +1632,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2981-9cc8c-1.html"
     }
   },
   "JPN": {
@@ -1580,7 +1652,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2137-338f3-1.html"
     }
   },
   "JOR": {
@@ -1600,7 +1672,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3091-d8f91-1.html"
     }
   },
   "KAZ": {
@@ -1620,7 +1692,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3075-698fd-1.html"
     }
   },
   "KEN": {
@@ -1640,7 +1712,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3020-17f1e-1.html"
     }
   },
   "KIR": {
@@ -1660,7 +1732,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2155-8198c-1.html"
     }
   },
   "PRK": {
@@ -1675,20 +1747,12 @@
       "text": "Se desaconseja todo viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Corea+del+Norte"
-    }
-  },
-  "KOR": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/KOR"
     },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Corea"
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1774-8e230-1.html"
     }
   },
   "KWT": {
@@ -1708,7 +1772,27 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3041-fa14f-1.html"
+    }
+  },
+  "KOR": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/KOR"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Corea"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2972-e7941-1.html"
     }
   },
   "KGZ": {
@@ -1728,7 +1812,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3081-f7b19-1.html"
     }
   },
   "LAO": {
@@ -1743,6 +1827,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Laos"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3128-40fcb-1.html"
     }
   },
   "LVA": {
@@ -1762,27 +1852,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "LBN": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/LBN"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=L%c3%adbano"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2884-92547-1.html"
     }
   },
   "LSO": {
@@ -1802,7 +1872,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2895-311ab-1.html"
     }
   },
   "LBR": {
@@ -1822,7 +1892,27 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2872-7f5be-1.html"
+    }
+  },
+  "LBN": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/LBN"
+    },
+    "es": {
+      "level": 4,
+      "text": "Se desaconseja todo viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=L%c3%adbano"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3089-de2f5-1.html"
     }
   },
   "LBY": {
@@ -1842,7 +1932,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3088-36db2-1.html"
     }
   },
   "LIE": {
@@ -1862,7 +1952,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2902-2c011-1.html"
     }
   },
   "LTU": {
@@ -1882,7 +1972,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3056-43139-1.html"
     }
   },
   "LUX": {
@@ -1902,7 +1992,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3116-f6379-1.html"
     }
   },
   "MDG": {
@@ -1922,7 +2012,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2835-28737-1.html"
     }
   },
   "MWI": {
@@ -1942,7 +2032,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2735-05168-1.html"
     }
   },
   "MYS": {
@@ -1962,27 +2052,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "MLI": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/MLI"
-    },
-    "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Mali"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3003-57b5a-1.html"
     }
   },
   "MDV": {
@@ -2002,7 +2072,47 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3131-8f181-1.html"
+    }
+  },
+  "MLI": {
+    "it": {
+      "level": 4,
+      "text": "Non recarsi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/MLI"
+    },
+    "es": {
+      "level": 4,
+      "text": "Se desaconseja todo viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Mali"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3109-13b38-1.html"
+    }
+  },
+  "MHL": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/MHL"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Islas+Marshall"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2492-4aeb4-1.html"
     }
   },
   "MLT": {
@@ -2022,27 +2132,13 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "MHL": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/MHL"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Islas+Marshall"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2617-264b2-1.html"
     }
   },
   "MRT": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/MRT"
     },
@@ -2050,7 +2146,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3067-edbfe-1.html"
     }
   },
   "MUS": {
@@ -2070,67 +2166,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "FSM": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/FSM"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Micronesia"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "MDA": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/MDA"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Moldavia"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "MCO": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/MCO"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=M%c3%b3naco"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2897-b3273-1.html"
     }
   },
   "MEX": {
@@ -2150,7 +2186,67 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3010-d2fab-1.html"
+    }
+  },
+  "FSM": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/FSM"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Micronesia"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2264-bb935-1.html"
+    }
+  },
+  "MCO": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/MCO"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=M%c3%b3naco"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2814-9d0a2-1.html"
+    }
+  },
+  "MDA": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/MDA"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Moldavia"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3080-89f0c-1.html"
     }
   },
   "MNG": {
@@ -2170,7 +2266,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2819-dd563-1.html"
     }
   },
   "MNE": {
@@ -2184,7 +2280,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2667-729fe-1.html"
     }
   },
   "MAR": {
@@ -2204,13 +2300,13 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3066-9f977-1.html"
     }
   },
   "MOZ": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/MOZ"
     },
@@ -2224,7 +2320,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2890-762d3-1.html"
     }
   },
   "MMR": {
@@ -2241,10 +2337,10 @@
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Myanmar"
     },
     "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3084-0c9f8-1.html"
     }
   },
   "NAM": {
@@ -2264,7 +2360,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2875-4cd95-1.html"
     }
   },
   "NRU": {
@@ -2279,6 +2375,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Nauru"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2445-704cf-1.html"
     }
   },
   "NPL": {
@@ -2289,8 +2391,8 @@
       "url": "https://www.viaggiaresicuri.it/find-country/country/NPL"
     },
     "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
+      "level": 3,
+      "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Nepal"
     },
@@ -2298,7 +2400,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3132-10c25-1.html"
     }
   },
   "NLD": {
@@ -2318,7 +2420,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2673-9e661-1.html"
     }
   },
   "NZL": {
@@ -2333,6 +2435,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Nueva+Zelanda"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2440-027bf-1.html"
     }
   },
   "NIC": {
@@ -2352,27 +2460,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "NER": {
-    "it": {
-      "level": 4,
-      "text": "Non recarsi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/NER"
-    },
-    "es": {
-      "level": 3,
-      "text": "Se desaconseja el viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=N%c3%adger"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2235-2fea1-1.html"
     }
   },
   "NGA": {
@@ -2392,7 +2480,27 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2907-24b7c-1.html"
+    }
+  },
+  "NER": {
+    "it": {
+      "level": 4,
+      "text": "Non recarsi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/NER"
+    },
+    "es": {
+      "level": 3,
+      "text": "Se desaconseja el viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=N%c3%adger"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3108-7f208-1.html"
     }
   },
   "MKD": {
@@ -2407,6 +2515,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Macedonia+del+Norte"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2616-20738-1.html"
     }
   },
   "NOR": {
@@ -2426,13 +2540,13 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2671-140ae-1.html"
     }
   },
   "OMN": {
     "it": {
-      "level": 4,
-      "text": "Non recarsi",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/OMN"
     },
@@ -2446,7 +2560,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3055-cdd90-1.html"
     }
   },
   "PAK": {
@@ -2466,7 +2580,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2683-1283a-1.html"
     }
   },
   "PLW": {
@@ -2486,7 +2600,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2724-d2fac-1.html"
     }
   },
   "PSE": {
@@ -2506,7 +2620,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3102-5d8fb-1.html"
     }
   },
   "PAN": {
@@ -2526,7 +2640,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2900-31e77-1.html"
     }
   },
   "PNG": {
@@ -2541,6 +2655,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Pap%c3%baa+Nueva+Guinea"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1753-ab498-1.html"
     }
   },
   "PRY": {
@@ -2560,7 +2680,21 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2597-387f2-1.html"
+    }
+  },
+  "PHL": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/PHL"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2730-bcdd7-1.html"
     }
   },
   "PER": {
@@ -2580,27 +2714,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "PHL": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/PHL"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Filipinas"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3104-21892-1.html"
     }
   },
   "POL": {
@@ -2620,27 +2734,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "PRT": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/PRT"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Portugal"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2560-94031-1.html"
     }
   },
   "QAT": {
@@ -2660,7 +2754,27 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3042-10964-1.html"
+    }
+  },
+  "PRT": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/PRT"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Portugal"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2655-03d5f-1.html"
     }
   },
   "ROU": {
@@ -2680,27 +2794,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "RUS": {
-    "it": {
-      "level": 3,
-      "text": "Sconsigliati i viaggi",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/RUS"
-    },
-    "es": {
-      "level": 3,
-      "text": "Se desaconseja el viaje",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rusia"
-    },
-    "tw": {
-      "level": 4,
-      "text": "紅色儘速離境 (Red Leave Immediately)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2632-41279-1.html"
     }
   },
   "RWA": {
@@ -2720,7 +2814,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3110-e648c-1.html"
     }
   },
   "KNA": {
@@ -2735,6 +2829,32 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=San+Crist%c3%b3bal+y+Nieves"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2749-89037-1.html"
+    }
+  },
+  "RUS": {
+    "it": {
+      "level": 3,
+      "text": "Sconsigliati i viaggi",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/RUS"
+    },
+    "es": {
+      "level": 3,
+      "text": "Se desaconseja el viaje",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Rusia"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3073-e30ce-1.html"
     }
   },
   "LCA": {
@@ -2749,6 +2869,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Santa+Luc%c3%ada"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2968-85640-1.html"
     }
   },
   "VCT": {
@@ -2763,6 +2889,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=San+Vicente+y+las+Granadinas"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2915-5ff36-1.html"
     }
   },
   "WSM": {
@@ -2782,21 +2914,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "STP": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/STP"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Santo+Tom%c3%a9+y+Pr%c3%adncipe"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2785-325ea-1.html"
     }
   },
   "SMR": {
@@ -2811,6 +2929,32 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=San+Marino"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2619-dd33a-1.html"
+    }
+  },
+  "STP": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/STP"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Santo+Tom%c3%a9+y+Pr%c3%adncipe"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3123-f3968-1.html"
     }
   },
   "SAU": {
@@ -2825,6 +2969,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Arabia+Saud%c3%ad"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2965-01ee0-1.html"
     }
   },
   "SEN": {
@@ -2844,7 +2994,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3069-5e7c4-1.html"
     }
   },
   "SRB": {
@@ -2864,7 +3014,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2691-bf18c-1.html"
     }
   },
   "SYC": {
@@ -2884,7 +3034,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2899-3b160-1.html"
     }
   },
   "SLE": {
@@ -2899,6 +3049,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Sierra+Leona"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2689-1545d-1.html"
     }
   },
   "SGP": {
@@ -2918,7 +3074,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2116-3aabf-1.html"
     }
   },
   "SVK": {
@@ -2933,6 +3089,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Eslovaquia"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2886-86664-1.html"
     }
   },
   "SVN": {
@@ -2952,7 +3114,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2554-ae4fa-1.html"
     }
   },
   "SLB": {
@@ -2967,6 +3129,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Islas+Salom%c3%b3n"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1751-6bf4a-1.html"
     }
   },
   "SOM": {
@@ -2986,7 +3154,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2742-d115f-1.html"
     }
   },
   "ZAF": {
@@ -3001,6 +3169,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Sud%c3%a1frica"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3031-3df59-1.html"
     }
   },
   "SSD": {
@@ -3015,6 +3189,12 @@
       "text": "Se desaconseja todo viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Sud%c3%a1n+del+Sur"
+    },
+    "tw": {
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3021-09e0e-1.html"
     }
   },
   "ESP": {
@@ -3028,7 +3208,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3005-1f08d-1.html"
     }
   },
   "LKA": {
@@ -3043,6 +3223,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Sri+Lanka"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3061-c5ffe-1.html"
     }
   },
   "SDN": {
@@ -3062,7 +3248,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2876-b586d-1.html"
     }
   },
   "SUR": {
@@ -3082,7 +3268,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2917-6f95d-1.html"
     }
   },
   "SWE": {
@@ -3102,27 +3288,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "CHE": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/CHE"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Suiza"
-    },
-    "tw": {
-      "level": 1,
-      "text": "灰色提醒 (Gray Alert)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2670-138e8-1.html"
     }
   },
   "SYR": {
@@ -3142,7 +3308,27 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3090-edb19-1.html"
+    }
+  },
+  "CHE": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/CHE"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Suiza"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2901-e8090-1.html"
     }
   },
   "TWN": {
@@ -3167,10 +3353,10 @@
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Tayikist%c3%a1n"
     },
     "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3079-2d407-1.html"
     }
   },
   "TZA": {
@@ -3190,7 +3376,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3027-235a6-1.html"
     }
   },
   "THA": {
@@ -3210,7 +3396,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2936-ae708-1.html"
     }
   },
   "TLS": {
@@ -3230,7 +3416,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3114-f7b8d-1.html"
     }
   },
   "TGO": {
@@ -3241,8 +3427,8 @@
       "url": "https://www.viaggiaresicuri.it/find-country/country/TGO"
     },
     "es": {
-      "level": 4,
-      "text": "Se desaconseja todo viaje",
+      "level": 2,
+      "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Togo"
     },
@@ -3250,7 +3436,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3070-5bfbd-1.html"
     }
   },
   "TON": {
@@ -3270,7 +3456,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2153-72265-1.html"
     }
   },
   "TTO": {
@@ -3285,6 +3471,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Trinidad+y+Tobago"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2908-58147-1.html"
     }
   },
   "TUN": {
@@ -3304,7 +3496,7 @@
       "level": 3,
       "text": "橙色避免前往 (Orange Avoid Travel)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3071-d9b5f-1.html"
     }
   },
   "TUR": {
@@ -3319,6 +3511,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Turqu%c3%ada"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3072-537f6-1.html"
     }
   },
   "TKM": {
@@ -3338,7 +3536,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3083-325f7-1.html"
     }
   },
   "TUV": {
@@ -3358,13 +3556,13 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2812-a3d1e-1.html"
     }
   },
   "UGA": {
     "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
+      "level": 2,
+      "text": "Cautela",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/UGA"
     },
@@ -3378,7 +3576,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3029-6fba9-1.html"
     }
   },
   "UKR": {
@@ -3398,7 +3596,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2983-83669-1.html"
     }
   },
   "ARE": {
@@ -3413,6 +3611,12 @@
       "text": "Se desaconseja el viaje",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Emiratos+%c3%81rabes+Unidos"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2980-7b307-1.html"
     }
   },
   "GBR": {
@@ -3427,6 +3631,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Reino+Unido"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3012-da306-1.html"
     }
   },
   "USA": {
@@ -3441,6 +3651,12 @@
       "text": "Sin restricciones",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Estados+Unidos"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2889-8a4ed-1.html"
     }
   },
   "URY": {
@@ -3460,27 +3676,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "UZB": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/UZB"
-    },
-    "es": {
-      "level": 2,
-      "text": "Precaucion",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Uzbekist%c3%a1n"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3099-a5df9-1.html"
     }
   },
   "VUT": {
@@ -3500,7 +3696,27 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2783-f810b-1.html"
+    }
+  },
+  "UZB": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/UZB"
+    },
+    "es": {
+      "level": 2,
+      "text": "Precaucion",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Uzbekist%c3%a1n"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3076-2a6e5-1.html"
     }
   },
   "VEN": {
@@ -3520,7 +3736,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2925-fb110-1.html"
     }
   },
   "VNM": {
@@ -3540,7 +3756,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3127-c0824-1.html"
     }
   },
   "YEM": {
@@ -3557,30 +3773,10 @@
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Yemen"
     },
     "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "level": 4,
+      "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "ZMB": {
-    "it": {
-      "level": 2,
-      "text": "Cautela",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/ZMB"
-    },
-    "es": {
-      "level": 1,
-      "text": "Sin restricciones",
-      "source": "Spain Exteriores",
-      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Zambia"
-    },
-    "tw": {
-      "level": 3,
-      "text": "橙色避免前往 (Orange Avoid Travel)",
-      "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2449-13d12-1.html"
     }
   },
   "ZWE": {
@@ -3600,7 +3796,7 @@
       "level": 4,
       "text": "紅色儘速離境 (Red Leave Immediately)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2894-32895-1.html"
     }
   },
   "ABW": {
@@ -3614,7 +3810,27 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1703-0f950-1.html"
+    }
+  },
+  "ZMB": {
+    "it": {
+      "level": 2,
+      "text": "Cautela",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/ZMB"
+    },
+    "es": {
+      "level": 1,
+      "text": "Sin restricciones",
+      "source": "Spain Exteriores",
+      "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Zambia"
+    },
+    "tw": {
+      "level": 3,
+      "text": "橙色避免前往 (Orange Avoid Travel)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3022-1f927-1.html"
     }
   },
   "AIA": {
@@ -3628,7 +3844,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2752-d2abe-1.html"
     }
   },
   "BES": {
@@ -3645,6 +3861,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/CYM"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2754-f146b-1.html"
     }
   },
   "COK": {
@@ -3659,6 +3881,12 @@
       "text": "Precaucion",
       "source": "Spain Exteriores",
       "url": "https://www.exteriores.gob.es/es/ServiciosAlCiudadano/Paginas/Detalle-recomendaciones-de-viaje.aspx?trc=Islas+Cook"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2441-716e6-1.html"
     }
   },
   "CUW": {
@@ -3672,7 +3900,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-1702-646bd-1.html"
     }
   },
   "GUF": {
@@ -3681,6 +3909,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/GUF"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3009-f3f92-1.html"
     }
   },
   "PYF": {
@@ -3689,6 +3923,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/PYF"
+    },
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2156-08bb3-1.html"
     }
   },
   "GLP": {
@@ -3702,7 +3942,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2970-507f9-1.html"
     }
   },
   "GUM": {
@@ -3713,20 +3953,20 @@
       "url": "https://www.viaggiaresicuri.it/find-country/country/GUM"
     }
   },
-  "HKG": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/HKG"
-    }
-  },
   "MAC": {
     "it": {
       "level": 1,
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/MAC"
+    }
+  },
+  "HKG": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/HKG"
     }
   },
   "MTQ": {
@@ -3740,7 +3980,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2971-9a040-1.html"
     }
   },
   "MYT": {
@@ -3754,7 +3994,7 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3008-c0a26-1.html"
     }
   },
   "MSR": {
@@ -3768,15 +4008,7 @@
       "level": 2,
       "text": "黃色注意 (Yellow Caution)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
-    }
-  },
-  "NCL": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/NCL"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2757-f9c5b-1.html"
     }
   },
   "NIU": {
@@ -3790,7 +4022,21 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2442-9a833-1.html"
+    }
+  },
+  "NCL": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/NCL"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3125-36802-1.html"
     }
   },
   "MNP": {
@@ -3799,14 +4045,6 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/MNP"
-    }
-  },
-  "PRI": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/PRI"
     }
   },
   "REU": {
@@ -3820,7 +4058,21 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-3007-8ed82-1.html"
+    }
+  },
+  "PRI": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/PRI"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2044-4eeb8-1.html"
     }
   },
   "MAF": {
@@ -3829,6 +4081,26 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/MAF"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2760-199ad-1.html"
+    }
+  },
+  "TCA": {
+    "it": {
+      "level": 1,
+      "text": "Nessuna controindicazione",
+      "source": "Italy Viaggiare Sicuri",
+      "url": "https://www.viaggiaresicuri.it/find-country/country/TCA"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2045-55dce-1.html"
     }
   },
   "SXM": {
@@ -3839,20 +4111,18 @@
       "url": "https://www.viaggiaresicuri.it/find-country/country/SXM"
     }
   },
-  "TCA": {
-    "it": {
-      "level": 1,
-      "text": "Nessuna controindicazione",
-      "source": "Italy Viaggiare Sicuri",
-      "url": "https://www.viaggiaresicuri.it/find-country/country/TCA"
-    }
-  },
   "VIR": {
     "it": {
       "level": 1,
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/VIR"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2043-ecc05-1.html"
     }
   },
   "VGB": {
@@ -3861,6 +4131,12 @@
       "text": "Nessuna controindicazione",
       "source": "Italy Viaggiare Sicuri",
       "url": "https://www.viaggiaresicuri.it/find-country/country/VGB"
+    },
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2759-1b5be-1.html"
     }
   },
   "ITA": {
@@ -3874,7 +4150,23 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2614-ac1b8-1.html"
+    }
+  },
+  "WLF": {
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2158-2fa53-1.html"
+    }
+  },
+  "VAT": {
+    "tw": {
+      "level": 1,
+      "text": "灰色提醒 (Gray Alert)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2604-5f838-1.html"
     }
   },
   "XKX": {
@@ -3882,7 +4174,15 @@
       "level": 1,
       "text": "灰色提醒 (Gray Alert)",
       "source": "Taiwan BOCA",
-      "url": "https://www.boca.gov.tw/sp-trwa-list-1.html"
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2666-542c5-1.html"
+    }
+  },
+  "BLM": {
+    "tw": {
+      "level": 2,
+      "text": "黃色注意 (Yellow Caution)",
+      "source": "Taiwan BOCA",
+      "url": "https://www.boca.gov.tw/sp-trwa-content-2753-fbeab-1.html"
     }
   }
 }

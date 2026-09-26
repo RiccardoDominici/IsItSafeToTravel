@@ -5569,22 +5569,6 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/tonga"
     }
   },
-  "MCO": {
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/monaco",
-      "updatedAt": "2025-12-10T13:45:13Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/monaco",
-      "updatedAt": "2026-09-24"
-    }
-  },
   "MYT": {
     "uk": {
       "level": 1,
@@ -5598,6 +5582,22 @@
       "text": "Exercise a high degree of caution",
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/mayotte",
+      "updatedAt": "2026-09-24"
+    }
+  },
+  "MCO": {
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/monaco",
+      "updatedAt": "2025-12-10T13:45:13Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/monaco",
       "updatedAt": "2026-09-24"
     }
   },
@@ -5624,15 +5624,6 @@
       "source": "UK FCDO",
       "url": "https://www.gov.uk/foreign-travel-advice/british-indian-ocean-territory",
       "updatedAt": "2024-04-08T11:56:22Z"
-    }
-  },
-  "ASM": {
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/american-samoa",
-      "updatedAt": "2026-09-24"
     }
   },
   "COK": {
@@ -5683,6 +5674,15 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/guam"
     }
   },
+  "ASM": {
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/american-samoa",
+      "updatedAt": "2026-09-24"
+    }
+  },
   "NIU": {
     "ca": {
       "level": 1,
@@ -5725,15 +5725,6 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "USA": {
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/united-states",
-      "updatedAt": "2026-09-25"
-    }
-  },
   "TKL": {
     "ca": {
       "level": 1,
@@ -5741,6 +5732,15 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/tokelau",
       "updatedAt": "2026-09-24"
+    }
+  },
+  "USA": {
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/united-states",
+      "updatedAt": "2026-09-25"
     }
   }
 }

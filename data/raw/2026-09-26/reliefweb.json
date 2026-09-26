@@ -1,12 +1,12 @@
 {
-  "time": 71,
+  "time": 30,
   "href": "https://api.reliefweb.int/v2/disasters?appname=RDominici-isitsafetotravelsafetyscoring-a7x2",
   "links": {
     "self": {
       "href": "https://api.reliefweb.int/v2/disasters?appname=RDominici-isitsafetotravelsafetyscoring-a7x2"
     }
   },
-  "took": 48,
+  "took": 12,
   "totalCount": 107,
   "count": 107,
   "data": [
@@ -1267,6 +1267,235 @@
       "href": "https://api.reliefweb.int/v2/disasters/50620"
     },
     {
+      "id": "52435",
+      "score": 1,
+      "fields": {
+        "name": "Bolivia: Wild Fires - Aug 2025",
+        "status": "ongoing",
+        "glide": "WF-2025-000163-BOL",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/39",
+            "id": 39,
+            "name": "Bolivia (Plurinational State of)",
+            "shortname": "Bolivia",
+            "iso3": "bol",
+            "location": {
+              "lat": -16.97,
+              "lon": -64.27
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4648,
+            "name": "Wild Fire",
+            "code": "WF",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52435"
+    },
+    {
+      "id": "52423",
+      "score": 1,
+      "fields": {
+        "name": "Cabo Verde: Flash Floods - Aug 2025",
+        "status": "ongoing",
+        "glide": "FL-2025-000147-CPV",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/52",
+            "id": 52,
+            "name": "Cabo Verde",
+            "shortname": "Cabo Verde",
+            "iso3": "cpv",
+            "location": {
+              "lat": 15.98,
+              "lon": -23.97
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4624,
+            "name": "Flash Flood",
+            "code": "FF",
+            "primary": true
+          },
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL"
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52423"
+    },
+    {
+      "id": "52415",
+      "score": 1,
+      "fields": {
+        "name": "Congo: Cholera Outbreak - Jul 2025",
+        "status": "ongoing",
+        "glide": "EP-2025-000130-COG",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/66",
+            "id": 66,
+            "name": "Congo",
+            "shortname": "Congo",
+            "iso3": "cog",
+            "location": {
+              "lat": -0.31,
+              "lon": 15.99
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52415"
+    },
+    {
+      "id": "52406",
+      "score": 1,
+      "fields": {
+        "name": "Guatemala: Earthquake - Jul 2025",
+        "status": "ongoing",
+        "glide": "EQ-2025-000111-GTM",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/109",
+            "id": 109,
+            "name": "Guatemala",
+            "shortname": "Guatemala",
+            "iso3": "gtm",
+            "location": {
+              "lat": 15.61,
+              "lon": -90.39
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4628,
+            "name": "Earthquake",
+            "code": "EQ",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52406"
+    },
+    {
+      "id": "52388",
+      "score": 1,
+      "fields": {
+        "name": "Côte d'Ivoire: Cholera Outbreak - Jun 2025",
+        "status": "ongoing",
+        "glide": "EP-2025-000087-CIV",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/69",
+            "id": 69,
+            "name": "Côte d'Ivoire",
+            "shortname": "Côte d'Ivoire",
+            "iso3": "civ",
+            "location": {
+              "lat": 7.81,
+              "lon": -5.38
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52388"
+    },
+    {
+      "id": "52372",
+      "score": 1,
+      "fields": {
+        "name": "Zimbabwe: Malaria Outbreak - May 2025",
+        "status": "ongoing",
+        "glide": "EP-2025-000075-ZWE",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/257",
+            "id": 257,
+            "name": "Zimbabwe",
+            "shortname": "Zimbabwe",
+            "iso3": "zwe",
+            "location": {
+              "lat": -19.19,
+              "lon": 29.94
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52372"
+    },
+    {
+      "id": "52318",
+      "score": 1,
+      "fields": {
+        "name": "Ecuador: Oil Spill - Mar 2025",
+        "status": "ongoing",
+        "glide": "AC-2025-000037-ECU",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/81",
+            "id": 81,
+            "name": "Ecuador",
+            "shortname": "Ecuador",
+            "iso3": "ecu",
+            "location": {
+              "lat": -1.16,
+              "lon": -78.43
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4620,
+            "name": "Technological Disaster",
+            "code": "AC",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52318"
+    },
+    {
       "id": "52262",
       "score": 1,
       "fields": {
@@ -1629,235 +1858,6 @@
       "href": "https://api.reliefweb.int/v2/disasters/52462"
     },
     {
-      "id": "52435",
-      "score": 1,
-      "fields": {
-        "name": "Bolivia: Wild Fires - Aug 2025",
-        "status": "ongoing",
-        "glide": "WF-2025-000163-BOL",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/39",
-            "id": 39,
-            "name": "Bolivia (Plurinational State of)",
-            "shortname": "Bolivia",
-            "iso3": "bol",
-            "location": {
-              "lat": -16.97,
-              "lon": -64.27
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4648,
-            "name": "Wild Fire",
-            "code": "WF",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52435"
-    },
-    {
-      "id": "52423",
-      "score": 1,
-      "fields": {
-        "name": "Cabo Verde: Flash Floods - Aug 2025",
-        "status": "ongoing",
-        "glide": "FL-2025-000147-CPV",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/52",
-            "id": 52,
-            "name": "Cabo Verde",
-            "shortname": "Cabo Verde",
-            "iso3": "cpv",
-            "location": {
-              "lat": 15.98,
-              "lon": -23.97
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4624,
-            "name": "Flash Flood",
-            "code": "FF",
-            "primary": true
-          },
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL"
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52423"
-    },
-    {
-      "id": "52415",
-      "score": 1,
-      "fields": {
-        "name": "Congo: Cholera Outbreak - Jul 2025",
-        "status": "ongoing",
-        "glide": "EP-2025-000130-COG",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/66",
-            "id": 66,
-            "name": "Congo",
-            "shortname": "Congo",
-            "iso3": "cog",
-            "location": {
-              "lat": -0.31,
-              "lon": 15.99
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52415"
-    },
-    {
-      "id": "52406",
-      "score": 1,
-      "fields": {
-        "name": "Guatemala: Earthquake - Jul 2025",
-        "status": "ongoing",
-        "glide": "EQ-2025-000111-GTM",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/109",
-            "id": 109,
-            "name": "Guatemala",
-            "shortname": "Guatemala",
-            "iso3": "gtm",
-            "location": {
-              "lat": 15.61,
-              "lon": -90.39
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4628,
-            "name": "Earthquake",
-            "code": "EQ",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52406"
-    },
-    {
-      "id": "52388",
-      "score": 1,
-      "fields": {
-        "name": "Côte d'Ivoire: Cholera Outbreak - Jun 2025",
-        "status": "ongoing",
-        "glide": "EP-2025-000087-CIV",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/69",
-            "id": 69,
-            "name": "Côte d'Ivoire",
-            "shortname": "Côte d'Ivoire",
-            "iso3": "civ",
-            "location": {
-              "lat": 7.81,
-              "lon": -5.38
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52388"
-    },
-    {
-      "id": "52372",
-      "score": 1,
-      "fields": {
-        "name": "Zimbabwe: Malaria Outbreak - May 2025",
-        "status": "ongoing",
-        "glide": "EP-2025-000075-ZWE",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/257",
-            "id": 257,
-            "name": "Zimbabwe",
-            "shortname": "Zimbabwe",
-            "iso3": "zwe",
-            "location": {
-              "lat": -19.19,
-              "lon": 29.94
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52372"
-    },
-    {
-      "id": "52318",
-      "score": 1,
-      "fields": {
-        "name": "Ecuador: Oil Spill - Mar 2025",
-        "status": "ongoing",
-        "glide": "AC-2025-000037-ECU",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/81",
-            "id": 81,
-            "name": "Ecuador",
-            "shortname": "Ecuador",
-            "iso3": "ecu",
-            "location": {
-              "lat": -1.16,
-              "lon": -78.43
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4620,
-            "name": "Technological Disaster",
-            "code": "AC",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52318"
-    },
-    {
       "id": "46459",
       "score": 1,
       "fields": {
@@ -1920,60 +1920,6 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/23101"
-    },
-    {
-      "id": "52562",
-      "score": 1,
-      "fields": {
-        "name": "Typhoon Sinlaku - Apr 2026",
-        "status": "ongoing",
-        "glide": "TC-2026-000050-FSM",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/108",
-            "id": 108,
-            "name": "Guam",
-            "shortname": "Guam",
-            "iso3": "gum",
-            "location": {
-              "lat": 13.44,
-              "lon": 144.78
-            }
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/157",
-            "id": 157,
-            "name": "Micronesia (Federated States of)",
-            "shortname": "Micronesia",
-            "iso3": "fsm",
-            "location": {
-              "lat": 6.08,
-              "lon": 160.4
-            },
-            "primary": true
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/178",
-            "id": 178,
-            "name": "Northern Mariana Islands (The United States of America)",
-            "shortname": "Northern Mariana Islands (The United States of America)",
-            "iso3": "mnp",
-            "location": {
-              "lat": 15.09,
-              "lon": 145.68
-            }
-          }
-        ],
-        "type": [
-          {
-            "id": 4618,
-            "name": "Tropical Cyclone",
-            "code": "TC",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52562"
     },
     {
       "id": "50824",
@@ -2088,38 +2034,6 @@
       "href": "https://api.reliefweb.int/v2/disasters/52603"
     },
     {
-      "id": "23121",
-      "score": 1,
-      "fields": {
-        "name": "Ethiopia: Drought - 2015-2026",
-        "status": "ongoing",
-        "glide": "DR-2015-000109-ETH",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/87",
-            "id": 87,
-            "name": "Ethiopia",
-            "shortname": "Ethiopia",
-            "iso3": "eth",
-            "location": {
-              "lat": 8.63,
-              "lon": 39.62
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4672,
-            "name": "Drought",
-            "code": "DR",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/23121"
-    },
-    {
       "id": "52658",
       "score": 1,
       "fields": {
@@ -2150,6 +2064,92 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/52658"
+    },
+    {
+      "id": "52562",
+      "score": 1,
+      "fields": {
+        "name": "Typhoon Sinlaku - Apr 2026",
+        "status": "ongoing",
+        "glide": "TC-2026-000050-FSM",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/108",
+            "id": 108,
+            "name": "Guam",
+            "shortname": "Guam",
+            "iso3": "gum",
+            "location": {
+              "lat": 13.44,
+              "lon": 144.78
+            }
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/157",
+            "id": 157,
+            "name": "Micronesia (Federated States of)",
+            "shortname": "Micronesia",
+            "iso3": "fsm",
+            "location": {
+              "lat": 6.08,
+              "lon": 160.4
+            },
+            "primary": true
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/178",
+            "id": 178,
+            "name": "Northern Mariana Islands (The United States of America)",
+            "shortname": "Northern Mariana Islands (The United States of America)",
+            "iso3": "mnp",
+            "location": {
+              "lat": 15.09,
+              "lon": 145.68
+            }
+          }
+        ],
+        "type": [
+          {
+            "id": 4618,
+            "name": "Tropical Cyclone",
+            "code": "TC",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52562"
+    },
+    {
+      "id": "23121",
+      "score": 1,
+      "fields": {
+        "name": "Ethiopia: Drought - 2015-2026",
+        "status": "ongoing",
+        "glide": "DR-2015-000109-ETH",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/87",
+            "id": 87,
+            "name": "Ethiopia",
+            "shortname": "Ethiopia",
+            "iso3": "eth",
+            "location": {
+              "lat": 8.63,
+              "lon": 39.62
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4672,
+            "name": "Drought",
+            "code": "DR",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/23121"
     },
     {
       "id": "52299",

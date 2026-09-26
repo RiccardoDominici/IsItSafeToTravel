@@ -43,28 +43,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_130.html"
     }
   },
-  "BTN": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-01-28T15:57:56.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/bhutan",
-      "updatedAt": "2026-06-04T10:16:27.217Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_039.html"
-    }
-  },
   "CAF": {
     "de": {
       "level": 4,
@@ -85,6 +63,28 @@
       "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_112.html"
+    }
+  },
+  "BTN": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-01-28T15:57:56.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/bhutan",
+      "updatedAt": "2026-06-04T10:16:27.217Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_039.html"
     }
   },
   "KNA": {
@@ -132,8 +132,8 @@
       "updatedAt": "2026-09-15T07:09:41.253Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_102.html"
     }
@@ -446,8 +446,8 @@
       "updatedAt": "2026-08-24T11:08:46.566Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_123.html"
     }
@@ -701,8 +701,8 @@
       "updatedAt": "2026-08-17T12:39:39.417Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 3,
+      "text": "Do not travel (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_185.html"
     },
@@ -774,8 +774,8 @@
       "updatedAt": "2026-06-12T12:05:47.451Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_140.html"
     }
@@ -796,8 +796,8 @@
       "updatedAt": "2026-06-17T10:42:42.267Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_101.html"
     },
@@ -847,8 +847,8 @@
       "updatedAt": "2026-09-23T08:06:13.649Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_198.html"
     },
@@ -1096,8 +1096,8 @@
       "updatedAt": "2026-09-18T14:01:54.341Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_201.html"
     }
@@ -1118,8 +1118,8 @@
       "updatedAt": "2026-07-07T09:59:41.826Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_118.html"
     },
@@ -1169,8 +1169,8 @@
       "updatedAt": "2026-05-26T15:35:49.343Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_278.html"
     }
@@ -1563,8 +1563,8 @@
       "updatedAt": "2026-06-25T12:04:02.252Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_141.html"
     },
@@ -1680,8 +1680,8 @@
       "updatedAt": "2026-08-11T07:37:43.535Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_018.html"
     },
@@ -1753,8 +1753,8 @@
       "updatedAt": "2026-09-21T12:51:34.991Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_127.html"
     }
@@ -1797,8 +1797,8 @@
       "updatedAt": "2026-07-31T06:37:11.865Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_091.html"
     }
@@ -1819,8 +1819,8 @@
       "updatedAt": "2026-06-17T11:58:44.064Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 3,
+      "text": "Do not travel (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_137.html"
     },
@@ -1906,8 +1906,8 @@
       "updatedAt": "2026-09-04T08:26:21.793Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_260.html"
     }
@@ -2059,8 +2059,8 @@
       "updatedAt": "2026-07-27T11:19:24.043Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_098.html"
     },
@@ -2146,8 +2146,8 @@
       "updatedAt": "2026-09-01T13:49:29.012Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_109.html"
     }
@@ -2168,8 +2168,8 @@
       "updatedAt": "2026-09-24T07:15:53.695Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 3,
+      "text": "Do not travel (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_117.html"
     }
@@ -2190,8 +2190,8 @@
       "updatedAt": "2026-06-19T09:24:10.629Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_114.html"
     }
@@ -2234,8 +2234,8 @@
       "updatedAt": "2026-06-17T10:39:45.689Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_099.html"
     }
@@ -2300,8 +2300,8 @@
       "updatedAt": "2026-09-15T13:47:41.409Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_131.html"
     }
@@ -2490,8 +2490,8 @@
       "updatedAt": "2026-07-06T11:23:04.360Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_115.html"
     }
@@ -2525,6 +2525,28 @@
       "updatedAt": "2024-01-11T00:00:00Z"
     }
   },
+  "COD": {
+    "de": {
+      "level": 3,
+      "text": "Von Reisen wird abgeraten",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-09-18T13:43:54.000Z"
+    },
+    "nl": {
+      "level": 3,
+      "text": "Alleen noodzakelijke reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/congo-democratische-republiek",
+      "updatedAt": "2026-09-18T12:10:19.950Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_103.html"
+    }
+  },
   "SVN": {
     "de": {
       "level": 1,
@@ -2554,26 +2576,20 @@
       "updatedAt": "2025-07-01T00:00:00Z"
     }
   },
-  "COD": {
+  "PSE": {
     "de": {
-      "level": 3,
-      "text": "Von Reisen wird abgeraten",
+      "level": 4,
+      "text": "Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-09-18T13:43:54.000Z"
+      "updatedAt": "2026-09-21T10:33:44.000Z"
     },
     "nl": {
-      "level": 3,
-      "text": "Alleen noodzakelijke reizen",
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/congo-democratische-republiek",
-      "updatedAt": "2026-09-18T12:10:19.950Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_103.html"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/palestijnse-gebieden",
+      "updatedAt": "2026-09-24T13:48:25.762Z"
     }
   },
   "URY": {
@@ -2620,22 +2636,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_008.html"
     }
   },
-  "PSE": {
-    "de": {
-      "level": 4,
-      "text": "Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-09-21T10:33:44.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/palestijnse-gebieden",
-      "updatedAt": "2026-09-24T13:48:25.762Z"
-    }
-  },
   "KGZ": {
     "de": {
       "level": 1,
@@ -2674,8 +2674,8 @@
       "updatedAt": "2026-09-18T12:44:40.426Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_243.html"
     },
@@ -2760,28 +2760,6 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
-  "GEO": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-02-24T16:18:34.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/georgie",
-      "updatedAt": "2026-06-24T13:35:20.152Z"
-    },
-    "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_200.html"
-    }
-  },
   "HKG": {
     "de": {
       "level": 1,
@@ -2804,6 +2782,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_016.html"
     }
   },
+  "GEO": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-02-24T16:18:34.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/georgie",
+      "updatedAt": "2026-06-24T13:35:20.152Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_200.html"
+    }
+  },
   "EGY": {
     "de": {
       "level": 2,
@@ -2820,8 +2820,8 @@
       "updatedAt": "2026-06-25T12:04:36.079Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_094.html"
     },
@@ -2893,8 +2893,8 @@
       "updatedAt": "2026-04-15T08:06:11.695Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_139.html"
     }
@@ -3325,8 +3325,8 @@
       "updatedAt": "2026-09-09T11:20:06.265Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_011.html"
     },
@@ -3546,8 +3546,8 @@
       "updatedAt": "2026-09-22T09:58:04.832Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_050.html"
     }
@@ -3568,8 +3568,8 @@
       "updatedAt": "2026-09-09T11:43:13.760Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_100.html"
     },
@@ -3597,8 +3597,8 @@
       "updatedAt": "2026-08-12T14:58:08.401Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_199.html"
     }
@@ -3743,8 +3743,8 @@
       "updatedAt": "2026-06-25T10:55:28.726Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_256.html"
     },
@@ -3772,8 +3772,8 @@
       "updatedAt": "2026-09-09T11:46:53.673Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_111.html"
     }
@@ -3794,8 +3794,8 @@
       "updatedAt": "2026-09-25T13:14:50.995Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_095.html"
     },
@@ -3874,8 +3874,8 @@
       "updatedAt": "2026-09-10T11:13:06.097Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_004.html"
     }
@@ -3896,8 +3896,8 @@
       "updatedAt": "2026-09-09T08:53:43.729Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_013.html"
     },
@@ -3947,8 +3947,8 @@
       "updatedAt": "2026-09-18T12:47:11.857Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_261.html"
     }
@@ -4049,8 +4049,8 @@
       "updatedAt": "2026-09-17T14:43:01.845Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_113.html"
     },
@@ -4201,28 +4201,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_010.html"
     }
   },
-  "THA": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-09-25T14:07:32.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/thailand",
-      "updatedAt": "2026-09-24T09:55:24.261Z"
-    },
-    "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_007.html"
-    }
-  },
   "AZE": {
     "de": {
       "level": 2,
@@ -4239,32 +4217,32 @@
       "updatedAt": "2026-09-03T08:33:18.081Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_152.html"
     }
   },
-  "COL": {
+  "THA": {
     "de": {
       "level": 2,
       "text": "Sicherheitshinweis",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-09-23T18:53:57.000Z"
+      "updatedAt": "2026-09-25T14:07:32.000Z"
     },
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/colombia",
-      "updatedAt": "2026-09-25T19:55:54.294Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/thailand",
+      "updatedAt": "2026-09-24T09:55:24.261Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_248.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_007.html"
     }
   },
   "IRN": {
@@ -4341,8 +4319,8 @@
       "updatedAt": "2026-09-09T11:44:20.609Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_093.html"
     }
@@ -4367,6 +4345,28 @@
       "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_222.html"
+    }
+  },
+  "COL": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-09-23T18:53:57.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/colombia",
+      "updatedAt": "2026-09-25T19:55:54.294Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_248.html"
     }
   },
   "CHN": {
@@ -4538,8 +4538,8 @@
       "updatedAt": "2026-09-09T09:11:56.379Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_001.html"
     },
@@ -4662,8 +4662,8 @@
       "updatedAt": "2026-06-25T10:45:32.445Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 3,
+      "text": "Do not travel (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_055.html"
     },
@@ -4713,8 +4713,8 @@
       "updatedAt": "2026-09-24T13:48:13.403Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_044.html"
     },
@@ -4829,8 +4829,8 @@
       "updatedAt": "2026-09-10T12:17:27.189Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_052.html"
     },
@@ -4858,8 +4858,8 @@
       "updatedAt": "2026-09-21T14:59:00.999Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 3,
+      "text": "Do not travel (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_178.html"
     },
@@ -4887,8 +4887,8 @@
       "updatedAt": "2026-09-23T19:34:49.923Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Do not travel (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_264.html"
     },
@@ -4940,15 +4940,6 @@
       "updatedAt": "2026-04-22T14:31:52.582Z"
     }
   },
-  "AIA": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
-      "updatedAt": "2026-03-19T09:26:41.240Z"
-    }
-  },
   "ATA": {
     "nl": {
       "level": 2,
@@ -4974,6 +4965,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/faeroer",
       "updatedAt": "2026-07-02T08:58:20.599Z"
+    }
+  },
+  "CUW": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/curacao",
+      "updatedAt": "2026-06-17T15:21:59.720Z"
     }
   },
   "PYF": {
@@ -5009,22 +5009,13 @@
       "updatedAt": "2026-06-19T10:13:14.486Z"
     }
   },
-  "MTQ": {
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
-      "updatedAt": "2026-07-22T12:35:50.511Z"
-    }
-  },
-  "CUW": {
+  "AIA": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/curacao",
-      "updatedAt": "2026-06-17T15:21:59.720Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
+      "updatedAt": "2026-03-19T09:26:41.240Z"
     }
   },
   "MSR": {
@@ -5045,10 +5036,19 @@
       "updatedAt": "2026-09-18T10:23:23.162Z"
     },
     "jp": {
-      "level": 2,
-      "text": "Avoid non-essential travel",
+      "level": 1,
+      "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_299.html"
+    }
+  },
+  "MTQ": {
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
+      "updatedAt": "2026-07-22T12:35:50.511Z"
     }
   },
   "GUF": {
@@ -5060,15 +5060,6 @@
       "updatedAt": "2026-06-01T14:56:20.981Z"
     }
   },
-  "REU": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
-      "updatedAt": "2026-03-19T09:21:11.246Z"
-    }
-  },
   "PRI": {
     "nl": {
       "level": 2,
@@ -5076,6 +5067,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/puerto-rico",
       "updatedAt": "2026-09-18T12:48:11.269Z"
+    }
+  },
+  "REU": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
+      "updatedAt": "2026-03-19T09:21:11.246Z"
     }
   },
   "SXM": {
@@ -5087,15 +5087,6 @@
       "updatedAt": "2026-08-13T14:52:15.078Z"
     }
   },
-  "TCA": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/turks-en-caicoseilanden",
-      "updatedAt": "2026-06-25T10:55:20.935Z"
-    }
-  },
   "SJM": {
     "nl": {
       "level": 1,
@@ -5105,22 +5096,13 @@
       "updatedAt": "2026-05-11T12:12:10.391Z"
     }
   },
-  "TKL": {
+  "TCA": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tokelau-eilanden",
-      "updatedAt": "2026-06-17T11:25:43.433Z"
-    }
-  },
-  "VIR": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
-      "updatedAt": "2026-06-12T14:37:01.179Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/turks-en-caicoseilanden",
+      "updatedAt": "2026-06-25T10:55:20.935Z"
     }
   },
   "VGB": {
@@ -5130,6 +5112,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/britse-maagdeneilanden",
       "updatedAt": "2026-03-19T09:35:25.181Z"
+    }
+  },
+  "VIR": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
+      "updatedAt": "2026-06-12T14:37:01.179Z"
     }
   },
   "WLF": {
@@ -5148,6 +5139,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/pitcairneilanden",
       "updatedAt": "2026-04-24T07:56:05.606Z"
+    }
+  },
+  "TKL": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tokelau-eilanden",
+      "updatedAt": "2026-06-17T11:25:43.433Z"
     }
   },
   "MNP": {
@@ -5176,8 +5176,8 @@
   },
   "ESH": {
     "jp": {
-      "level": 4,
-      "text": "Evacuate (advisory)",
+      "level": 2,
+      "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_142.html"
     }
