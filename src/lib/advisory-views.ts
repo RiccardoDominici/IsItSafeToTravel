@@ -153,7 +153,17 @@ export function getIssuerCoverage(countries: ScoredCountry[], code: AdvisoryCode
   return { code, total, byLevel };
 }
 
-/** getIssuerCoverage for every known advisory code, in ADVISORY_CODES order. */
+/**
+ * getIssuerCoverage for every known advisory code, in ADVISORY_CODES order --
+ * including codes with zero countries today. Two callers rely on that:
+ * getEligibleIssuers below (filters down to the coverage-floor hub table),
+ * and every `[issuerIso3].astro` getStaticPaths (2026-09-26 hardening: does
+ * NOT filter, so every known issuer stays routable even on a day it happens
+ * to cover nothing -- a URL Google indexed while an issuer was eligible must
+ * never 404 just because that issuer's coverage dips. IssuerAdvisoryPage.astro
+ * renders the full listing when coverage.total >= MIN_ISSUER_COVERAGE and a
+ * short, honest, noindex "not enough current data" fallback otherwise).
+ */
 export function getAllIssuerCoverage(countries: ScoredCountry[]): IssuerCoverage[] {
   return ADVISORY_CODES.map((code) => getIssuerCoverage(countries, code));
 }

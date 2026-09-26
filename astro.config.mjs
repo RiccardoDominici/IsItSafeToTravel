@@ -4,6 +4,9 @@ import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 import { getAlternateLinks, getLocalizedPath } from './src/i18n/utils';
 import { buildLastmodMap } from './src/lib/lastmod';
+import { routes } from './src/i18n/ui';
+import { loadLatestScores } from './src/lib/scores';
+import { getAllIssuerCoverage, getIssuerIso3, MIN_ISSUER_COVERAGE } from './src/lib/advisory-views';
 
 // Smart lastmod (only updates when displayed content actually changes) — shared
 // with the country page templates via src/lib/lastmod.ts so JSON-LD dateModified
@@ -20,6 +23,35 @@ function getCountryIso3FromUrl(url) {
   // Pattern: /{lang}/{countrySlug}/{iso3}/
   if (segments.length >= 3 && countryRouteSlugs.includes(segments[1])) {
     return segments[2].toUpperCase();
+  }
+  return null;
+}
+
+// 2026-09-26 hardening (VISIBILITY-BRIEF task 4a): every issuer code now gets a
+// routable /{lang}/{government-advisories}/{issuerIso3}/ page (see
+// getStaticPaths in each locale's [issuerIso3].astro + advisory-views.ts's
+// getAllIssuerCoverage docstring), so a URL Google indexed while an issuer was
+// eligible never 404s. Issuers below MIN_ISSUER_COVERAGE render a short,
+// honest, noindex fallback instead of the full listing (IssuerAdvisoryPage.astro)
+// — keep those OUT of the sitemap too, so we never submit a noindex URL to
+// Google (a "submitted URL marked noindex" GSC flag). Coverage doesn't depend
+// on locale, so this set is computed once and reused for every language.
+/** @type {Set<string>} */
+const govAdvisoriesSlugs = new Set(Object.values(routes).map((r) => r['government-advisories']));
+const insufficientDataIssuerIso3s = new Set(
+  getAllIssuerCoverage(loadLatestScores())
+    .filter((c) => c.total < MIN_ISSUER_COVERAGE)
+    .map((c) => (getIssuerIso3(c.code) ?? c.code).toLowerCase()),
+);
+
+/** @param {string} url */
+function getGovAdvisoryIssuerIso3FromUrl(url) {
+  const urlPath = new URL(url).pathname;
+  const segments = urlPath.split('/').filter(Boolean);
+  // Pattern: /{lang}/{governmentAdvisoriesSlug}/{issuerIso3}/ (3 segments --
+  // the hub itself is only 2, /{lang}/{governmentAdvisoriesSlug}/).
+  if (segments.length === 3 && govAdvisoriesSlugs.has(segments[1])) {
+    return segments[2].toLowerCase();
   }
   return null;
 }
@@ -46,7 +78,11 @@ export default defineConfig({
       },
       filter(page) {
         // Exclude root URL (it's a 302 redirect handled by Cloudflare Function)
-        return page !== 'https://isitsafetotravel.org/';
+        if (page === 'https://isitsafetotravel.org/') return false;
+        // Exclude below-threshold issuer pages (noindex fallback, see above)
+        const issuerIso3 = getGovAdvisoryIssuerIso3FromUrl(page);
+        if (issuerIso3 && insufficientDataIssuerIso3s.has(issuerIso3)) return false;
+        return true;
       },
       serialize(item) {
         const iso3 = getCountryIso3FromUrl(item.url);

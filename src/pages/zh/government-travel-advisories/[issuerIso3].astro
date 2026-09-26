@@ -3,19 +3,26 @@ export const prerender = true;
 import type { GetStaticPaths } from 'astro';
 import IssuerAdvisoryPage from '../../../components/gov-advisories/IssuerAdvisoryPage.astro';
 import { loadLatestScores } from '../../../lib/scores';
-import { getEligibleIssuers, getIssuerIso3 } from '../../../lib/advisory-views';
+import { getAllIssuerCoverage, getIssuerIso3 } from '../../../lib/advisory-views';
 import type { Lang } from '../../../i18n/ui';
 import type { AdvisoryCode } from '../../../pipeline/scoring/engine';
 
 const lang: Lang = 'zh';
 
+// Every KNOWN issuer code gets a routable page, not just today's
+// MIN_ISSUER_COVERAGE-eligible ones (2026-09-26 hardening): a URL Google
+// indexed while an issuer was eligible must never 404 just because that
+// issuer's coverage dips for a day. IssuerAdvisoryPage.astro itself renders
+// the full listing when coverage.total >= MIN_ISSUER_COVERAGE and a short,
+// honest, noindex "not enough current data" fallback otherwise -- see its
+// own comment and advisory-views.ts's getAllIssuerCoverage docstring.
 export const getStaticPaths: GetStaticPaths = async () => {
   const countries = loadLatestScores();
-  const eligible = getEligibleIssuers(countries);
+  const routable = getAllIssuerCoverage(countries);
   const paths: { params: { issuerIso3: string }; props: { code: AdvisoryCode } }[] = [];
-  for (const issuer of eligible) {
+  for (const issuer of routable) {
     const iso3 = getIssuerIso3(issuer.code);
-    if (!iso3) continue; // defensive: every eligible issuer resolves in the live dataset
+    if (!iso3) continue; // defensive: every known issuer code resolves in the live dataset
     paths.push({ params: { issuerIso3: iso3.toLowerCase() }, props: { code: issuer.code } });
   }
   return paths;

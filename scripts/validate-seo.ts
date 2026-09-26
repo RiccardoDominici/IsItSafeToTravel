@@ -17,6 +17,8 @@ import {
   SITE_DATASET_ID,
 } from "../src/lib/seo.js";
 import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY } from "../src/lib/site-stats.js";
+import { getAllIssuerCoverage, getIssuerIso3, MIN_ISSUER_COVERAGE } from "../src/lib/advisory-views.js";
+import type { ScoredCountry } from "../src/pipeline/types.js";
 
 const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
@@ -1446,9 +1448,15 @@ function validateTravelSafetyIndexPage() {
 // required JSON-LD node types (BreadcrumbList comes from <Breadcrumb>'s own
 // script tag, not the page's main @graph -- extractGraphNodes already
 // aggregates every <script type="application/ld+json"> on the page, so this
-// finds it either way), and the coverage-floor honesty gate: an issuer with
-// too little data in today's snapshot (src/lib/advisory-views.ts,
-// MIN_ISSUER_COVERAGE) must get NO page at all, never a near-empty one.
+// finds it either way), and the coverage-floor honesty gate.
+//
+// 2026-09-26 hardening: the coverage-floor gate USED to mean "no page at all"
+// below MIN_ISSUER_COVERAGE -- but that let a URL Google had already indexed
+// while an issuer WAS eligible 404 the day its coverage dipped. Every known
+// issuer code is now routable (getStaticPaths / getAllIssuerCoverage); below
+// the floor the page renders a short, honest, noindex fallback instead of
+// the full listing (IssuerAdvisoryPage.astro). 8c below asserts the NEW
+// contract: a page exists, but is noindex.
 
 function validateGovernmentAdvisoriesPages() {
   console.log("\n--- Government Advisories / Governments Disagree Pages ---");
@@ -1504,18 +1512,39 @@ function validateGovernmentAdvisoriesPages() {
     }
   }
 
-  // 8c. Coverage-floor honesty gate: issuers with too little data (ar/br/cn --
-  // always single digits in the live dataset) must NOT get their own page.
-  const EXCLUDED_ISSUER_ISO3 = ["arg", "bra", "chn"];
+  // 8c. Coverage-floor honesty gate (2026-09-26 rule, see comment above):
+  // issuers below MIN_ISSUER_COVERAGE must still get a page (never 404 a
+  // once-eligible URL) but it must be the short noindex fallback, not the
+  // full listing. Computed from the SAME scores.json this whole script
+  // already validates elsewhere (validateAdvisoryCoverage), not a hand-picked
+  // list, so this stays correct as coverage shifts day to day.
   const enHubSlug = routeSlug("en", "government-advisories");
   if (enHubSlug) {
-    for (const iso3 of EXCLUDED_ISSUER_ISO3) {
-      const file = path.join(DIST, "en", enHubSlug, iso3, "index.html");
-      check(
-        `gov-advisories: low-coverage issuer ${iso3} has NO page (coverage-floor honesty gate)`,
-        !fs.existsSync(file),
-        fs.existsSync(file) ? `unexpectedly built ${file}` : undefined
-      );
+    const scoresPath = path.join(DIST, "scores.json");
+    if (!fs.existsSync(scoresPath)) {
+      check("gov-advisories: scores.json present for coverage-floor check", false, scoresPath);
+    } else {
+      const scores = JSON.parse(fs.readFileSync(scoresPath, "utf-8")) as { countries?: ScoredCountry[] };
+      const countries = scores.countries ?? [];
+      const lowCoverageIso3s = getAllIssuerCoverage(countries)
+        .filter((c) => c.total < MIN_ISSUER_COVERAGE)
+        .map((c) => (getIssuerIso3(c.code) ?? c.code).toLowerCase());
+
+      check("gov-advisories: at least one low-coverage issuer exists to test against", lowCoverageIso3s.length > 0);
+
+      for (const iso3 of lowCoverageIso3s) {
+        const file = path.join(DIST, "en", enHubSlug, iso3, "index.html");
+        if (!fs.existsSync(file)) {
+          check(`gov-advisories: low-coverage issuer ${iso3} has a page (never 404 a once-eligible URL)`, false, "file not found");
+          continue;
+        }
+        const robotsMatch = readHtml(file).match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i);
+        check(
+          `gov-advisories: low-coverage issuer ${iso3} is noindex`,
+          !!robotsMatch && /noindex/i.test(robotsMatch[1]),
+          `robots meta: ${robotsMatch?.[1] ?? "(none found)"}`
+        );
+      }
     }
   }
 
@@ -1528,6 +1557,79 @@ function validateGovernmentAdvisoriesPages() {
       check(
         "gov-advisories-issuer(en/usa): absence-of-advisory honesty note present",
         readHtml(usaFile).includes("not the same as being declared safe")
+      );
+    }
+  }
+}
+
+// =====================================================================
+// 11. VISIBILITY PAGES: dateModified FRESHNESS (2026-09-26 hardening)
+// =====================================================================
+// travel-safety-index, the government-advisories hub, one issuer page,
+// governments-disagree and community-vs-data each build their own
+// WebPage.dateModified from the same daily snapshot (getLastmodMap() /
+// loadLatestSnapshot() -- see each page's own component), but that's an
+// invariant of today's code, not something the type system enforces. If any
+// one of them ever regresses to a stale/cached/hardcoded date, the page
+// keeps LOOKING fresh in JSON-LD while quietly showing yesterday's data --
+// exactly the kind of thing an AI answer engine or GSC would have no way to
+// catch, and this YMYL site can't afford (CLAUDE.md). Assert every one of
+// them, across all 7 locales, matches data/scores/latest.json's own `date`
+// field exactly -- not just "is a valid date" (validateCommunityVsDataPage
+// above already checks that, more weakly).
+
+function validateVisibilityPagesFreshness() {
+  console.log("\n--- Visibility Pages: dateModified Freshness ---");
+
+  const latestPath = path.resolve(import.meta.dirname ?? ".", "../data/scores/latest.json");
+  if (!fs.existsSync(latestPath)) {
+    check("freshness: data/scores/latest.json present", false, latestPath);
+    return;
+  }
+  let latestDate: unknown;
+  try {
+    latestDate = JSON.parse(fs.readFileSync(latestPath, "utf-8")).date;
+  } catch (err) {
+    check("freshness: data/scores/latest.json parses", false, String(err));
+    return;
+  }
+  if (typeof latestDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(latestDate)) {
+    check("freshness: data/scores/latest.json .date is a YYYY-MM-DD string", false, `got ${JSON.stringify(latestDate)}`);
+    return;
+  }
+
+  // "usa" is comfortably above MIN_ISSUER_COVERAGE on every real snapshot
+  // (same sample issuer validateGovernmentAdvisoriesPages already uses) --
+  // any well-covered issuer would do, this just needs to be one real page.
+  const SAMPLE_ISSUER_ISO3 = "usa";
+  const pages: { key: string; extraSegment?: string }[] = [
+    { key: "travel-safety-index" },
+    { key: "government-advisories" },
+    { key: "government-advisories", extraSegment: SAMPLE_ISSUER_ISO3 },
+    { key: "governments-disagree" },
+    { key: "community-vs-data" },
+  ];
+
+  for (const lang of LANGUAGES) {
+    for (const { key, extraSegment } of pages) {
+      const slug = routeSlug(lang, key);
+      const label = `${lang}/${key}${extraSegment ? "/" + extraSegment : ""}`;
+      if (!slug) {
+        check(`freshness(${label}): route slug configured`, false);
+        continue;
+      }
+      const filePath = extraSegment
+        ? path.join(DIST, lang, slug, extraSegment, "index.html")
+        : path.join(DIST, lang, slug, "index.html");
+      if (!fs.existsSync(filePath)) {
+        check(`freshness(${label}): file exists`, false);
+        continue;
+      }
+      const webPage = findNode(extractGraphNodes(readHtml(filePath)), "WebPage");
+      check(
+        `freshness(${label}): WebPage.dateModified matches latest snapshot (${latestDate})`,
+        webPage?.dateModified === latestDate,
+        `got ${webPage?.dateModified}`
       );
     }
   }
@@ -1564,6 +1666,7 @@ function main() {
   validateCommunityVsDataPage();
   validateTravelSafetyIndexPage();
   validateGovernmentAdvisoriesPages();
+  validateVisibilityPagesFreshness();
 
   // Summary
   console.log("\n========================================");

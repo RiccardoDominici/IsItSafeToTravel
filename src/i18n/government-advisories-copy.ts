@@ -93,6 +93,17 @@ export interface GovernmentAdvisoriesCopy {
     compareMoreLenient: string;
     compareInLine: string;
     compareInsufficientData: string;
+    /**
+     * 2026-09-26 hardening (VISIBILITY-BRIEF task 4a): shown INSTEAD of the
+     * full listing when this issuer's current coverage falls below
+     * advisory-views.ts's MIN_ISSUER_COVERAGE. The page itself still exists
+     * (a URL Google indexed while the issuer was eligible must never 404)
+     * but is marked noindex and left out of the sitemap -- see
+     * IssuerAdvisoryPage.astro. {agency}.
+     */
+    insufficientDataTitle: string;
+    /** {agency}. */
+    insufficientDataBody: string;
   };
 }
 
@@ -151,6 +162,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Compared with other governments rating the same countries, {agency} tends to rate destinations less cautiously — its level matches the consensus among other governments {pct}% of the time.',
       compareInLine: 'Compared with other governments rating the same countries, {agency} tracks closely with the consensus — its level matches other governments {pct}% of the time.',
       compareInsufficientData: "There isn't yet enough overlapping data to compare {agency} with other governments.",
+      insufficientDataTitle: '{agency}: Not Enough Current Data',
+      insufficientDataBody:
+        "We don't have enough current travel-advisory data from {agency} to show a full breakdown today. This page will fill back in automatically once {agency} publishes more countries again — in the meantime, see how every other government rates the same destinations.",
     },
   },
 
@@ -201,6 +215,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Rispetto agli altri governi che valutano gli stessi paesi, {agency} tende a essere più permissivo: il suo livello coincide con il consenso degli altri governi nel {pct}% dei casi.',
       compareInLine: 'Rispetto agli altri governi che valutano gli stessi paesi, {agency} segue da vicino il consenso generale: il suo livello coincide con quello degli altri governi nel {pct}% dei casi.',
       compareInsufficientData: 'Non ci sono ancora abbastanza dati sovrapponibili per confrontare {agency} con gli altri governi.',
+      insufficientDataTitle: '{agency}: dati non ancora sufficienti',
+      insufficientDataBody:
+        "Al momento non abbiamo abbastanza dati aggiornati da {agency} per mostrare un quadro completo. La pagina si ripopolerà automaticamente non appena {agency} pubblicherà di nuovo più paesi — nel frattempo puoi vedere come valutano le stesse destinazioni gli altri governi.",
     },
   },
 
@@ -251,6 +268,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Frente a otros gobiernos que valoran los mismos países, {agency} tiende a ser más permisivo: su nivel coincide con el consenso de los demás gobiernos el {pct}% de las veces.',
       compareInLine: 'Frente a otros gobiernos que valoran los mismos países, {agency} se mantiene muy alineado con el consenso general: su nivel coincide con el de los demás gobiernos el {pct}% de las veces.',
       compareInsufficientData: 'Todavía no hay suficientes datos comparables para comparar a {agency} con otros gobiernos.',
+      insufficientDataTitle: '{agency}: datos actuales insuficientes',
+      insufficientDataBody:
+        'Ahora mismo no tenemos suficientes datos actualizados de {agency} para mostrar un desglose completo. Esta página se completará automáticamente en cuanto {agency} publique de nuevo más países — mientras tanto, consulta cómo valoran los mismos destinos el resto de gobiernos.',
     },
   },
 
@@ -302,6 +322,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Comparé aux autres gouvernements évaluant les mêmes pays, {agency} tend à se montrer plus indulgent : son niveau coïncide avec le consensus des autres gouvernements {pct} % du temps.',
       compareInLine: 'Comparé aux autres gouvernements évaluant les mêmes pays, {agency} suit de près le consensus général : son niveau coïncide avec celui des autres gouvernements {pct} % du temps.',
       compareInsufficientData: "Les données comparables ne sont pas encore suffisantes pour comparer {agency} aux autres gouvernements.",
+      insufficientDataTitle: '{agency} : données actuelles insuffisantes',
+      insufficientDataBody:
+        "Nous ne disposons pas encore d'assez de données récentes de {agency} pour afficher un tableau complet aujourd'hui. Cette page se remplira automatiquement dès que {agency} publiera de nouveau davantage de pays — en attendant, découvrez comment les autres gouvernements évaluent les mêmes destinations.",
     },
   },
 
@@ -350,6 +373,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Em comparação com outros governos que avaliam os mesmos países, {agency} tende a ser mais permissivo: o seu nível coincide com o consenso dos demais governos em {pct}% dos casos.',
       compareInLine: 'Em comparação com outros governos que avaliam os mesmos países, {agency} acompanha de perto o consenso geral: o seu nível coincide com o dos demais governos em {pct}% dos casos.',
       compareInsufficientData: 'Ainda não há dados comparáveis suficientes para comparar {agency} com outros governos.',
+      insufficientDataTitle: '{agency}: dados atuais insuficientes',
+      insufficientDataBody:
+        'Neste momento não temos dados atuais suficientes de {agency} para mostrar um panorama completo. Esta página será atualizada automaticamente assim que {agency} publicar novamente mais países — entretanto, veja como os outros governos avaliam os mesmos destinos.',
     },
   },
 
@@ -401,6 +427,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: '在评估相同国家时，与其他政府相比，{agency}的评估往往更为宽松——其等级与其他政府的共识一致的比例为 {pct}%。',
       compareInLine: '在评估相同国家时，{agency}的判断与整体共识高度接近——其等级与其他政府一致的比例为 {pct}%。',
       compareInsufficientData: '目前可比数据尚不充分，暂时无法将{agency}与其他政府进行对比。',
+      insufficientDataTitle: '{agency}：当前数据不足',
+      insufficientDataBody:
+        '目前{agency}公布的旅行警示国家数量还不足以呈现完整列表。一旦{agency}再次发布更多国家的警示，本页会自动更新——与此同时，您可以查看其他政府如何评估相同的目的地。',
     },
   },
 
@@ -453,6 +482,9 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       compareMoreLenient: 'Im Vergleich zu anderen Regierungen, die dieselben Länder bewerten, schätzt {agency} tendenziell nachsichtiger ein — die Stufe stimmt in {pct}% der Fälle mit dem Konsens der anderen Regierungen überein.',
       compareInLine: 'Im Vergleich zu anderen Regierungen, die dieselben Länder bewerten, liegt {agency} nah am allgemeinen Konsens — die Stufe stimmt in {pct}% der Fälle mit der anderer Regierungen überein.',
       compareInsufficientData: 'Es liegen noch nicht genügend vergleichbare Daten vor, um {agency} mit anderen Regierungen zu vergleichen.',
+      insufficientDataTitle: '{agency}: derzeit nicht genügend Daten',
+      insufficientDataBody:
+        'Aktuell liegen uns nicht genügend Reisewarnungen von {agency} vor, um eine vollständige Übersicht zu zeigen. Diese Seite füllt sich automatisch, sobald {agency} wieder mehr Länder veröffentlicht — in der Zwischenzeit sehen Sie hier, wie andere Regierungen dieselben Reiseziele einschätzen.',
     },
   },
 };

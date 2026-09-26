@@ -22,6 +22,7 @@ import {
   getIssuerCountry,
   getCountriesForIssuer,
   getIssuerComparisonStats,
+  MIN_ISSUER_COVERAGE,
   type IssuerLevelGroup,
 } from '../../lib/advisory-views';
 import { governmentAdvisoriesCopy } from '../../i18n/government-advisories-copy';
@@ -43,12 +44,24 @@ const coverage = getIssuerCoverage(countries, code);
 const groups = getCountriesForIssuer(countries, code, (c) => getLocalizedCountryName(c, lang));
 const [comparison] = getIssuerComparisonStats(countries, [code]);
 
+// 2026-09-26 hardening (VISIBILITY-BRIEF task 4a): this page is now generated
+// for EVERY known issuer code (getStaticPaths / getAllIssuerCoverage), not
+// just today's MIN_ISSUER_COVERAGE-eligible ones -- so a URL Google indexed
+// while an issuer was eligible never 404s just because its coverage dips for
+// a day. Below the floor we render a short, honest, noindex fallback instead
+// of the full listing (which would otherwise show near-empty level groups).
+const isInsufficientData = coverage.total < MIN_ISSUER_COVERAGE;
+
 const lm = getLastmodMap();
 const snapshotDate = lm.snapshotDate.slice(0, 10);
 const shortDateFormatter = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' });
 
-const title = copy.issuer.overrides[code] ?? copy.issuer.genericTitle.replace('{agency}', agencyName);
-const description = copy.issuer.description.replace('{agency}', agencyName).replace('{count}', String(coverage.total));
+const title = isInsufficientData
+  ? copy.issuer.insufficientDataTitle.replaceAll('{agency}', agencyName)
+  : copy.issuer.overrides[code] ?? copy.issuer.genericTitle.replace('{agency}', agencyName);
+const description = isInsufficientData
+  ? copy.issuer.insufficientDataBody.replaceAll('{agency}', agencyName)
+  : copy.issuer.description.replace('{agency}', agencyName).replace('{count}', String(coverage.total));
 const iso3 = issuerCountry?.iso3.toLowerCase() ?? code;
 const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['government-advisories']}/${iso3}/`;
 const hubUrl = `/${lang}/${r['government-advisories']}/`;
@@ -103,7 +116,7 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
 }
 ---
 
-<Base lang={lang} title={title} description={description} jsonLd={jsonLd} ogImage="/og/default.png">
+<Base lang={lang} title={title} description={description} jsonLd={jsonLd} ogImage="/og/default.png" noindex={isInsufficientData}>
   <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
     <Breadcrumb lang={lang} items={[
       { label: t('nav.home'), href: `/${lang}/` },
@@ -124,64 +137,75 @@ function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
       )}
     </header>
 
-    <p class="max-w-2xl mx-auto text-base text-sand-700 dark:text-sand-300 leading-relaxed text-center">
-      {copy.issuer.intro.replaceAll('{agency}', agencyName)}
-    </p>
+    {isInsufficientData ? (
+      // Short, honest fallback (VISIBILITY-BRIEF task 4a) -- this page still
+      // exists so a previously-indexed URL never 404s, but there isn't enough
+      // current data to justify the full listing below MIN_ISSUER_COVERAGE.
+      <p class="max-w-2xl mx-auto text-base text-sand-700 dark:text-sand-300 leading-relaxed text-center">
+        {description}
+      </p>
+    ) : (
+      <Fragment>
+        <p class="max-w-2xl mx-auto text-base text-sand-700 dark:text-sand-300 leading-relaxed text-center">
+          {copy.issuer.intro.replaceAll('{agency}', agencyName)}
+        </p>
 
-    <section class="max-w-2xl mx-auto rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-5 py-4">
-      <h2 class="text-base font-heading font-bold text-sand-800 dark:text-sand-100 mb-1.5">
-        {copy.issuer.compareTitle.replace('{agency}', agencyName)}
-      </h2>
-      <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed">{compareSentence}</p>
-    </section>
+        <section class="max-w-2xl mx-auto rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-5 py-4">
+          <h2 class="text-base font-heading font-bold text-sand-800 dark:text-sand-100 mb-1.5">
+            {copy.issuer.compareTitle.replace('{agency}', agencyName)}
+          </h2>
+          <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed">{compareSentence}</p>
+        </section>
 
-    <div class="space-y-5">
-      {groups.map((group: IssuerLevelGroup) => (
-        <details open={isOpenByDefault(group.level)} class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800">
-          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer select-none font-heading font-bold text-sand-800 dark:text-sand-100">
-            <LevelBadge level={group.level} lang={lang} compact />
-            <span>{copy.issuer.levelHeadings[group.level - 1]}</span>
-            <span class="text-xs font-normal text-sand-400 dark:text-sand-500">({group.entries.length})</span>
-          </summary>
-          <div class="border-t border-sand-200 dark:border-sand-700 px-4 py-3">
-            {group.entries.length === 0 ? (
-              <p class="text-sm text-sand-500 dark:text-sand-400 italic py-2">
-                {copy.issuer.emptyLevelNote.replace('{agency}', agencyName).replace('{n}', String(group.level))}
-              </p>
-            ) : (
-              <ul class="divide-y divide-sand-100 dark:divide-sand-700 list-none p-0 m-0">
-                {group.entries.map(({ country, info }) => (
-                  <li class="py-2.5 flex flex-col gap-1">
-                    <div class="flex items-center justify-between gap-2">
-                      <a href={countryHref(country)} class="font-medium text-sand-800 dark:text-sand-100 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline decoration-sand-300 dark:decoration-sand-600 underline-offset-2">
-                        {getLocalizedCountryName(country, lang)}
-                      </a>
-                      {info.updatedAt && Number.isFinite(new Date(info.updatedAt).getTime()) && (
-                        <span class="text-xs text-sand-400 dark:text-sand-500 whitespace-nowrap shrink-0">
-                          {shortDateFormatter.format(new Date(info.updatedAt))}
-                        </span>
-                      )}
-                    </div>
-                    <p class="text-xs text-sand-500 dark:text-sand-400">
-                      <span class="font-medium">{copy.issuer.ownWordingLabel.replace('{agency}', agencyName)}:</span>{' '}
-                      <span>&ldquo;{info.text}&rdquo;</span>
-                      {' — '}
-                      <a href={info.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
-                        {copy.issuer.officialPageLabel}
-                      </a>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        </details>
-      ))}
-    </div>
+        <div class="space-y-5">
+          {groups.map((group: IssuerLevelGroup) => (
+            <details open={isOpenByDefault(group.level)} class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800">
+              <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer select-none font-heading font-bold text-sand-800 dark:text-sand-100">
+                <LevelBadge level={group.level} lang={lang} compact />
+                <span>{copy.issuer.levelHeadings[group.level - 1]}</span>
+                <span class="text-xs font-normal text-sand-400 dark:text-sand-500">({group.entries.length})</span>
+              </summary>
+              <div class="border-t border-sand-200 dark:border-sand-700 px-4 py-3">
+                {group.entries.length === 0 ? (
+                  <p class="text-sm text-sand-500 dark:text-sand-400 italic py-2">
+                    {copy.issuer.emptyLevelNote.replace('{agency}', agencyName).replace('{n}', String(group.level))}
+                  </p>
+                ) : (
+                  <ul class="divide-y divide-sand-100 dark:divide-sand-700 list-none p-0 m-0">
+                    {group.entries.map(({ country, info }) => (
+                      <li class="py-2.5 flex flex-col gap-1">
+                        <div class="flex items-center justify-between gap-2">
+                          <a href={countryHref(country)} class="font-medium text-sand-800 dark:text-sand-100 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline decoration-sand-300 dark:decoration-sand-600 underline-offset-2">
+                            {getLocalizedCountryName(country, lang)}
+                          </a>
+                          {info.updatedAt && Number.isFinite(new Date(info.updatedAt).getTime()) && (
+                            <span class="text-xs text-sand-400 dark:text-sand-500 whitespace-nowrap shrink-0">
+                              {shortDateFormatter.format(new Date(info.updatedAt))}
+                            </span>
+                          )}
+                        </div>
+                        <p class="text-xs text-sand-500 dark:text-sand-400">
+                          <span class="font-medium">{copy.issuer.ownWordingLabel.replace('{agency}', agencyName)}:</span>{' '}
+                          <span>&ldquo;{info.text}&rdquo;</span>
+                          {' — '}
+                          <a href={info.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
+                            {copy.issuer.officialPageLabel}
+                          </a>
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </details>
+          ))}
+        </div>
 
-    <p class="max-w-2xl mx-auto text-sm text-sand-600 dark:text-sand-300 leading-relaxed text-center">
-      {copy.issuer.absenceNote.replaceAll('{agency}', agencyName)}
-    </p>
+        <p class="max-w-2xl mx-auto text-sm text-sand-600 dark:text-sand-300 leading-relaxed text-center">
+          {copy.issuer.absenceNote.replaceAll('{agency}', agencyName)}
+        </p>
+      </Fragment>
+    )}
 
     <p class="max-w-2xl mx-auto text-sm text-sand-500 dark:text-sand-400 text-center">
       {copy.methodologyNote.split('{link}')[0]}<a href={methodologyUrl} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{copy.methodologyLinkText}</a>{copy.methodologyNote.split('{link}')[1]}
