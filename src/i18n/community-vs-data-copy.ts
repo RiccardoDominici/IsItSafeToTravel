@@ -155,7 +155,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'country', other: 'countries' },
   },
   it: {
-    title: 'Community vs. Dati: Come i Viaggiatori Giudicano i Paesi',
+    title: 'Community vs. dati: come i viaggiatori giudicano i paesi',
     description:
       'Confrontiamo il nostro punteggio di sicurezza basato sui dati con il giudizio reale dei viaggiatori, paese per paese, per ogni destinazione con voti sufficienti.',
     introLead:
@@ -168,7 +168,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     statCountriesLabel: 'Paesi in classifica',
     statVotesLabel: 'Voti totali',
     statGapLabel: 'Divario più ampio',
-    rankingTitle: 'Paesi in Classifica per Divario',
+    rankingTitle: 'Paesi in classifica per divario',
     ourScoreLabel: 'Dati',
     communityScoreLabel: 'Community',
     gapChipSafer: '{gap} sopra il punteggio',
@@ -192,7 +192,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       "Un paese entra in questa classifica solo dopo aver raccolto almeno {floor} voti sul suo punteggio di sicurezza — abbastanza perché la media abbia senso. Al momento sono {count} {countryNoun}. Aiuta la lista a crescere:",
     suggestedLabel: 'Destinazioni popolari in attesa del tuo voto',
     voteLinkText: 'Vota {name} →',
-    howToReadTitle: 'Come Leggere Questa Pagina',
+    howToReadTitle: 'Come leggere questa pagina',
     howToReadP1:
       '«Il nostro punteggio» è il numero basato sui dati che vedi su ogni pagina paese: un composito di indicatori su conflitti, criminalità, salute, governance e ambiente, ricalcolato ogni giorno. «Il punteggio della community» nasce quando vi aggiungiamo ciò che dicono i viaggiatori: ogni voto è un cursore tra «molto meno sicuro» e «molto più sicuro» del nostro punteggio, registrato come una correzione con segno.',
     howToReadP2:
@@ -204,7 +204,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'paese', other: 'paesi' },
   },
   es: {
-    title: 'Community vs. Datos: Cómo Valoran los Viajeros Cada País',
+    title: 'Community vs. datos: cómo valoran los viajeros cada país',
     description:
       'Comparamos nuestra puntuación de seguridad basada en datos con la opinión real de los viajeros, país por país, para cada destino con votos suficientes.',
     introLead:
@@ -217,7 +217,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     statCountriesLabel: 'Países clasificados',
     statVotesLabel: 'Votos totales',
     statGapLabel: 'Mayor diferencia',
-    rankingTitle: 'Países Clasificados por Diferencia',
+    rankingTitle: 'Países clasificados por diferencia',
     ourScoreLabel: 'Datos',
     communityScoreLabel: 'Comunidad',
     gapChipSafer: '{gap} por encima',
@@ -241,7 +241,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Un país solo aparece en esta clasificación cuando ha reunido al menos {floor} votos sobre su puntuación de seguridad — suficientes para que la media tenga sentido. Ahora mismo son {count} {countryNoun}. Ayuda a que la lista crezca:',
     suggestedLabel: 'Destinos populares que esperan tu voto',
     voteLinkText: 'Vota por {name} →',
-    howToReadTitle: 'Cómo Leer Esta Página',
+    howToReadTitle: 'Cómo leer esta página',
     howToReadP1:
       '«Nuestra puntuación» es el número basado en datos que ves en cada página de país: un compuesto de indicadores de conflicto, criminalidad, salud, gobernanza y medio ambiente, recalculado cada día. «La puntuación de la comunidad» surge cuando incorporamos lo que dicen los viajeros: cada voto es un control deslizante entre «mucho menos seguro» y «mucho más seguro» que nuestra puntuación, guardado como un ajuste con signo.',
     howToReadP2:
@@ -253,7 +253,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'país', other: 'países' },
   },
   fr: {
-    title: "Communauté vs Données : l'Avis des Voyageurs sur la Sécurité",
+    title: "Communauté vs données : l'avis des voyageurs sur la sécurité",
     description:
       "Nous comparons notre score de sécurité fondé sur les données à l'avis réel des voyageurs, pays par pays, pour chaque destination ayant assez de votes.",
     introLead:
@@ -266,7 +266,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     statCountriesLabel: 'Pays classés',
     statVotesLabel: 'Votes au total',
     statGapLabel: 'Plus grand écart',
-    rankingTitle: 'Pays Classés par Écart',
+    rankingTitle: 'Pays classés par écart',
     ourScoreLabel: 'Données',
     communityScoreLabel: 'Communauté',
     gapChipSafer: '{gap} au-dessus',
@@ -290,7 +290,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       "Un pays n'apparaît dans ce classement qu'après avoir réuni au moins {floor} votes sur son score de sécurité — assez pour que la moyenne ait un sens. Ce sont pour l'instant {count} {countryNoun}. Aidez la liste à s'allonger :",
     suggestedLabel: 'Destinations populaires en attente de votre vote',
     voteLinkText: 'Votez pour {name} →',
-    howToReadTitle: 'Comment Lire Cette Page',
+    howToReadTitle: 'Comment lire cette page',
     howToReadP1:
       '« Notre score » est le chiffre fondé sur les données que vous voyez sur chaque page pays : un composite d\'indicateurs de conflit, de criminalité, de santé, de gouvernance et d\'environnement, recalculé chaque jour. « Le score de la communauté » apparaît quand nous y ajoutons ce que disent les voyageurs : chaque vote est un curseur entre « bien moins sûr » et « bien plus sûr » que notre score, enregistré comme un ajustement signé.',
     howToReadP2:
@@ -302,7 +302,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'pays', other: 'pays' },
   },
   pt: {
-    title: 'Comunidade vs. Dados: Como os Viajantes Avaliam Cada País',
+    title: 'Comunidade vs. dados: como os viajantes avaliam cada país',
     description:
       'Comparamos a nossa pontuação de segurança baseada em dados com a opinião real dos viajantes, país a país, para cada destino com votos suficientes.',
     introLead:
@@ -315,7 +315,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     statCountriesLabel: 'Países classificados',
     statVotesLabel: 'Votos totais',
     statGapLabel: 'Maior diferença',
-    rankingTitle: 'Países Classificados por Diferença',
+    rankingTitle: 'Países classificados por diferença',
     ourScoreLabel: 'Dados',
     communityScoreLabel: 'Comunidade',
     gapChipSafer: '{gap} acima',
@@ -339,7 +339,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Um país só aparece neste ranking depois de reunir pelo menos {floor} votos sobre a sua pontuação de segurança — o suficiente para que a média faça sentido. Agora mesmo são {count} {countryNoun}. Ajude a lista a crescer:',
     suggestedLabel: 'Destinos populares à espera do seu voto',
     voteLinkText: 'Vote em {name} →',
-    howToReadTitle: 'Como Ler Esta Página',
+    howToReadTitle: 'Como ler esta página',
     howToReadP1:
       '«Nossa pontuação» é o número baseado em dados que você vê em cada página de país: um composto de indicadores de conflito, criminalidade, saúde, governança e meio ambiente, recalculado todos os dias. «A pontuação da comunidade» surge quando incorporamos o que os viajantes dizem: cada voto é um controlo deslizante entre «bem menos seguro» e «bem mais seguro» do que a nossa pontuação, guardado como um ajuste com sinal.',
     howToReadP2:
@@ -371,7 +371,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     driverTemplate: '拉低我们评分最多的是{pillar}（{score}/10 分）——{note}。',
     driverNeutral: '这个国家的五大安全支柱得分非常接近，没有哪一项明显是主要因素。',
     pillarNote: {
-      conflict: '这类风险不易察觉，除非恰好在你出行期间爆发',
+      conflict: '这类风险不易察觉，除非恰好在您出行期间爆发',
       crime: '当地居民比短暂停留的游客更容易感受到这一点',
       health: '大多数旅行者只有在真正出问题时才会真正用到这套系统',
       governance: '这是一种结构性的弱点，在普通的短途旅行中很少显现出来',
@@ -381,11 +381,11 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     emptyStateBody: '目前还没有国家获得 {floor} 票，因此暂时无法排名——不过每个国家页面都有一个简单的投票工具，率先达到门槛的国家会自动出现在这里。',
     growingTitle: '更多国家即将加入',
     growingBody: '只有当一个国家的安全评分获得至少 {floor} 票后，才会出现在这份排行榜中——这样平均值才有意义。目前共有 {count} {countryNoun}。帮助这份榜单继续壮大：',
-    suggestedLabel: '等待你投票的热门目的地',
+    suggestedLabel: '等待您投票的热门目的地',
     voteLinkText: '为{name}投票 →',
     howToReadTitle: '如何解读这个页面',
     howToReadP1:
-      '「我们的评分」就是你在每个国家页面上看到的、基于数据计算出的数字：由冲突、犯罪、健康、治理和环境这五类指标综合而成，每天重新计算。「社区评分」则是在此基础上加入了旅行者的反馈：每一票都是在「比我们的评分低得多」和「比我们的评分高得多」之间的一个滑动值，被记录为一个带正负号的调整量。',
+      '「我们的评分」就是您在每个国家页面上看到的、基于数据计算出的数字：由冲突、犯罪、健康、治理和环境这五类指标综合而成，每天重新计算。「社区评分」则是在此基础上加入了旅行者的反馈：每一票都是在「比我们的评分低得多」和「比我们的评分高得多」之间的一个滑动值，被记录为一个带正负号的调整量。',
     howToReadP2:
       '我们并不是简单地把所有投票取平均。较新的投票权重会略高于较早的投票——其权重大约每月衰减一半——而且无论集体意见有多强烈，最多也只能把评分向任一方向调整 1 分。这个上限可以防止少数意见强烈的投票，压过了本应反映大量、可核实数据的评分。',
     howToReadP3:
@@ -395,7 +395,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: '个国家', other: '个国家' },
   },
   de: {
-    title: 'Community vs. Daten: Wie Reisende die Sicherheit Bewerten',
+    title: 'Community vs. Daten: Wie Reisende die Sicherheit bewerten',
     description:
       'Wir vergleichen unsere datenbasierte Sicherheitsbewertung mit der echten Einschätzung von Reisenden, Land für Land, für jedes Reiseziel mit genügend Stimmen.',
     introLead:
@@ -408,7 +408,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     statCountriesLabel: 'Eingestufte Länder',
     statVotesLabel: 'Stimmen insgesamt',
     statGapLabel: 'Größte Abweichung',
-    rankingTitle: 'Länder nach Abweichung Sortiert',
+    rankingTitle: 'Länder nach Abweichung sortiert',
     ourScoreLabel: 'Daten',
     communityScoreLabel: 'Community',
     gapChipSafer: '{gap} höher',
@@ -432,7 +432,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Ein Land erscheint erst in diesem Ranking, wenn mindestens {floor} Stimmen zu seiner Sicherheitsbewertung vorliegen — genug, damit der Durchschnitt aussagekräftig ist. Aktuell sind das {count} {countryNoun}. Helfen Sie mit, die Liste wachsen zu lassen:',
     suggestedLabel: 'Beliebte Reiseziele, die auf Ihre Stimme warten',
     voteLinkText: 'Für {name} abstimmen →',
-    howToReadTitle: 'So Lesen Sie Diese Seite',
+    howToReadTitle: 'So lesen Sie diese Seite',
     howToReadP1:
       '„Unsere Bewertung" ist die datenbasierte Zahl, die Sie auf jeder Länderseite sehen: ein Composite aus Indikatoren zu Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt, täglich neu berechnet. Die „Community-Bewertung" entsteht, wenn wir hinzufügen, was Reisende berichten: Jede Stimme ist ein Regler zwischen „viel unsicherer" und „viel sicherer" als unsere Bewertung, gespeichert als vorzeichenbehaftete Korrektur.',
     howToReadP2:
