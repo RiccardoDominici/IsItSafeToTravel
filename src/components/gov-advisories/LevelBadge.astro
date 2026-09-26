@@ -1,0 +1,33 @@
+---
+// Small colored pill for a unified advisory level (1-4). Colors mirror
+// src/components/country/AdvisoryCard.astro's existing level->color mapping
+// exactly (green/yellow/orange/red) so the same 1-4 scale reads identically
+// wherever it appears on the site. Text (never color alone) always carries
+// the level number, per the accessibility requirement in
+// VISIBILITY-BRIEF-COMMON.md ("colour is never the only signal").
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { readableTextColor } from '../../lib/colors';
+import { ADVISORY_LEVEL_COLOR } from '../../lib/advisory-level-colors';
+
+interface Props {
+  level: 1 | 2 | 3 | 4;
+  lang: Lang;
+  /** Compact form ("4" instead of "Level 4") for tight spaces like table cells. */
+  compact?: boolean;
+}
+
+const { level, lang, compact = false } = Astro.props;
+const t = useTranslations(lang);
+
+const bg = ADVISORY_LEVEL_COLOR[level];
+const fg = readableTextColor(bg);
+const label = compact ? String(level) : t('country.advisory.level').replace('{level}', String(level));
+---
+
+<span
+  class="inline-flex items-center justify-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap"
+  style={`background-color: ${bg}; color: ${fg};`}
+>
+  {label}
+</span>

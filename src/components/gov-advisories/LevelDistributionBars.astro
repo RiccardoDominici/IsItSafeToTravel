@@ -1,0 +1,52 @@
+---
+// Compact, accessible visual of how many governments landed on each of the
+// 1-4 unified levels for one country: a labelled horizontal stacked bar
+// (level 1 -> 4, left to right) plus a text legend underneath, so the
+// information survives without color (VISIBILITY-BRIEF-COMMON.md: "colour is
+// never the only signal") and without JS (pure CSS widths).
+import { readableTextColor } from '../../lib/colors';
+import { ADVISORY_LEVEL_COLOR } from '../../lib/advisory-level-colors';
+
+interface Props {
+  counts: Record<1 | 2 | 3 | 4, number>;
+  total: number;
+  /** Index 0 = level 1 .. index 3 = level 4 (governmentsDisagreeCopy.levelShortLabels). */
+  shortLabels: [string, string, string, string];
+  /** Accessible group label, e.g. "8 governments rate this destination". */
+  groupLabel: string;
+}
+
+const { counts, total, shortLabels, groupLabel } = Astro.props;
+const levels = [1, 2, 3, 4] as const;
+const segments = levels
+  .map((level) => ({
+    level,
+    count: counts[level],
+    pct: total > 0 ? (counts[level] / total) * 100 : 0,
+    bg: ADVISORY_LEVEL_COLOR[level],
+    label: shortLabels[level - 1],
+  }))
+  .filter((s) => s.count > 0);
+---
+
+<div role="img" aria-label={`${groupLabel}: ${segments.map((s) => `${s.label} ${s.count}`).join(', ')}`}>
+  <div class="flex h-5 w-full overflow-hidden rounded-full border border-sand-200 dark:border-sand-700" aria-hidden="true">
+    {segments.map((s) => (
+      <div
+        class="flex items-center justify-center text-[10px] font-bold leading-none"
+        style={`width: ${s.pct}%; background-color: ${s.bg}; color: ${readableTextColor(s.bg)};`}
+        title={`${s.label}: ${s.count}`}
+      >
+        {s.pct >= 12 ? s.count : ''}
+      </div>
+    ))}
+  </div>
+  <ul class="mt-1.5 flex flex-wrap gap-x-3 gap-y-0.5 list-none p-0 m-0 text-[11px] text-sand-500 dark:text-sand-400" aria-hidden="true">
+    {segments.map((s) => (
+      <li class="inline-flex items-center gap-1">
+        <span class="inline-block w-2 h-2 rounded-full" style={`background-color: ${s.bg};`} />
+        {s.label} ({s.count})
+      </li>
+    ))}
+  </ul>
+</div>

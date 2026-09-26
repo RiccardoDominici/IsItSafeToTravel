@@ -1,0 +1,197 @@
+---
+// One page per issuing government (VISIBILITY-BRIEF Task A.2): countries it
+// currently rates, grouped by level, with its own wording alongside our
+// unified 1-4 scale, and a bias-corrected "how this government compares"
+// read against the median of every OTHER government rating the same
+// countries (see the module docstring in src/lib/advisory-views.ts).
+import type { ScoredCountry } from '../../pipeline/types';
+import type { Lang } from '../../i18n/ui';
+import type { AdvisoryCode } from '../../pipeline/scoring/engine';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../Breadcrumb.astro';
+import LevelBadge from './LevelBadge.astro';
+import { getLocalizedCountryName } from '../../lib/scores';
+import { getLastmodMap } from '../../lib/lastmod';
+import {
+  buildWebPageJsonLd,
+  buildItemListJsonLd,
+} from '../../lib/seo';
+import {
+  getIssuerCoverage,
+  getIssuerCountry,
+  getCountriesForIssuer,
+  getIssuerComparisonStats,
+  type IssuerLevelGroup,
+} from '../../lib/advisory-views';
+import { governmentAdvisoriesCopy } from '../../i18n/government-advisories-copy';
+
+interface Props {
+  lang: Lang;
+  countries: ScoredCountry[];
+  code: AdvisoryCode;
+}
+
+const { lang, countries, code } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const copy = governmentAdvisoriesCopy[lang];
+
+const agencyName = t(`country.advisory.${code}` as any);
+const issuerCountry = getIssuerCountry(countries, code);
+const coverage = getIssuerCoverage(countries, code);
+const groups = getCountriesForIssuer(countries, code, (c) => getLocalizedCountryName(c, lang));
+const [comparison] = getIssuerComparisonStats(countries, [code]);
+
+const lm = getLastmodMap();
+const snapshotDate = lm.snapshotDate.slice(0, 10);
+const shortDateFormatter = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'short', day: 'numeric' });
+
+const title = copy.issuer.overrides[code] ?? copy.issuer.genericTitle.replace('{agency}', agencyName);
+const description = copy.issuer.description.replace('{agency}', agencyName).replace('{count}', String(coverage.total));
+const iso3 = issuerCountry?.iso3.toLowerCase() ?? code;
+const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['government-advisories']}/${iso3}/`;
+const hubUrl = `/${lang}/${r['government-advisories']}/`;
+const methodologyUrl = `/${lang}/${r.methodology}/`;
+const countryHref = (c: ScoredCountry) => `/${lang}/${r.country}/${c.iso3.toLowerCase()}/`;
+
+// "How this government compares" — bias-corrected against the median of every
+// OTHER issuer rating the same country (advisory-views.ts), never against its
+// own raw average. +/-0.15 is a plain "close enough to call it in line"
+// margin: on today's snapshot it splits governments into roughly a third
+// clearly more cautious, a third clearly more lenient, a third in line.
+const COMPARE_MARGIN = 0.15;
+const compareSentence = !comparison
+  ? copy.issuer.compareInsufficientData.replace('{agency}', agencyName)
+  : comparison.meanDeviation > COMPARE_MARGIN
+    ? copy.issuer.compareMoreCautious.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1))
+    : comparison.meanDeviation < -COMPARE_MARGIN
+      ? copy.issuer.compareMoreLenient.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1))
+      : copy.issuer.compareInLine.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1));
+
+const level4Group = groups.find((g) => g.level === 4);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    buildWebPageJsonLd(title, description, canonicalUrl, lang, snapshotDate),
+    // BreadcrumbList is NOT duplicated here -- <Breadcrumb> below already
+    // emits its own (Home -> hub -> agency), same convention as the country
+    // page and HubPageLayout.astro.
+    ...(level4Group && level4Group.entries.length > 0
+      ? [
+          buildItemListJsonLd(
+            `${title} — ${copy.issuer.levelHeadings[3]}`,
+            description,
+            canonicalUrl,
+            level4Group.entries.map((e) => ({
+              name: getLocalizedCountryName(e.country, lang),
+              url: `https://isitsafetotravel.org${countryHref(e.country)}`,
+            })),
+          ),
+        ]
+      : []),
+  ],
+};
+
+// Level 4/3 (the countries most readers come here for) are expanded by
+// default; 2/1 (often the bulk of the list, sometimes 100+ countries) start
+// collapsed behind a native <details> — no JS, and the content is still in
+// the HTML either way (crawlable, and works with in-page find/Ctrl+F once
+// opened).
+function isOpenByDefault(level: 1 | 2 | 3 | 4): boolean {
+  return level >= 3;
+}
+---
+
+<Base lang={lang} title={title} description={description} jsonLd={jsonLd} ogImage="/og/default.png">
+  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+    <Breadcrumb lang={lang} items={[
+      { label: t('nav.home'), href: `/${lang}/` },
+      { label: copy.breadcrumbLabel, href: hubUrl },
+      { label: agencyName, href: '' },
+    ]} />
+
+    <header class="text-center space-y-3">
+      <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100">
+        {title}
+      </h1>
+      {issuerCountry && (
+        <p class="text-sm text-sand-500 dark:text-sand-400">
+          <a href={countryHref(issuerCountry)} class="hover:text-terracotta-500 dark:hover:text-terracotta-400 underline">
+            {getLocalizedCountryName(issuerCountry, lang)}
+          </a>
+        </p>
+      )}
+    </header>
+
+    <p class="max-w-2xl mx-auto text-base text-sand-700 dark:text-sand-300 leading-relaxed text-center">
+      {copy.issuer.intro.replaceAll('{agency}', agencyName)}
+    </p>
+
+    <section class="max-w-2xl mx-auto rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-5 py-4">
+      <h2 class="text-base font-heading font-bold text-sand-800 dark:text-sand-100 mb-1.5">
+        {copy.issuer.compareTitle.replace('{agency}', agencyName)}
+      </h2>
+      <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed">{compareSentence}</p>
+    </section>
+
+    <div class="space-y-5">
+      {groups.map((group: IssuerLevelGroup) => (
+        <details open={isOpenByDefault(group.level)} class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800">
+          <summary class="flex items-center gap-2 px-4 py-3 cursor-pointer select-none font-heading font-bold text-sand-800 dark:text-sand-100">
+            <LevelBadge level={group.level} lang={lang} compact />
+            <span>{copy.issuer.levelHeadings[group.level - 1]}</span>
+            <span class="text-xs font-normal text-sand-400 dark:text-sand-500">({group.entries.length})</span>
+          </summary>
+          <div class="border-t border-sand-200 dark:border-sand-700 px-4 py-3">
+            {group.entries.length === 0 ? (
+              <p class="text-sm text-sand-500 dark:text-sand-400 italic py-2">
+                {copy.issuer.emptyLevelNote.replace('{agency}', agencyName).replace('{n}', String(group.level))}
+              </p>
+            ) : (
+              <ul class="divide-y divide-sand-100 dark:divide-sand-700 list-none p-0 m-0">
+                {group.entries.map(({ country, info }) => (
+                  <li class="py-2.5 flex flex-col gap-1">
+                    <div class="flex items-center justify-between gap-2">
+                      <a href={countryHref(country)} class="font-medium text-sand-800 dark:text-sand-100 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline decoration-sand-300 dark:decoration-sand-600 underline-offset-2">
+                        {getLocalizedCountryName(country, lang)}
+                      </a>
+                      {info.updatedAt && Number.isFinite(new Date(info.updatedAt).getTime()) && (
+                        <span class="text-xs text-sand-400 dark:text-sand-500 whitespace-nowrap shrink-0">
+                          {shortDateFormatter.format(new Date(info.updatedAt))}
+                        </span>
+                      )}
+                    </div>
+                    <p class="text-xs text-sand-500 dark:text-sand-400">
+                      <span class="font-medium">{copy.issuer.ownWordingLabel.replace('{agency}', agencyName)}:</span>{' '}
+                      <span>&ldquo;{info.text}&rdquo;</span>
+                      {' — '}
+                      <a href={info.url} target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
+                        {copy.issuer.officialPageLabel}
+                      </a>
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <p class="max-w-2xl mx-auto text-sm text-sand-600 dark:text-sand-300 leading-relaxed text-center">
+      {copy.issuer.absenceNote.replaceAll('{agency}', agencyName)}
+    </p>
+
+    <p class="max-w-2xl mx-auto text-sm text-sand-500 dark:text-sand-400 text-center">
+      {copy.methodologyNote.split('{link}')[0]}<a href={methodologyUrl} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{copy.methodologyLinkText}</a>{copy.methodologyNote.split('{link}')[1]}
+    </p>
+
+    <section class="pt-6 border-t border-sand-200 dark:border-sand-700 max-w-2xl mx-auto text-center">
+      <a href={hubUrl} class="text-sm font-medium text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
+        &larr; {copy.breadcrumbLabel}
+      </a>
+    </section>
+  </div>
+</Base>
