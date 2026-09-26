@@ -6,10 +6,15 @@
  * correction to score inputs that isn't a real change in conditions on the
  * ground. `writeSnapshot` stamps every new snapshot with the current value;
  * `computeNews` (src/pipeline/news/engine.ts) compares prev vs curr and, on
- * a mismatch, suppresses the four DELTA-derived event types (score_jump,
- * band_change, rank_overtake, top10_change) for that one run — otherwise the
- * correction itself would be reported as "movement". new_country and
- * severe_advisory are existence/threshold checks, not deltas, and are exempt.
+ * a mismatch, suppresses EVERY event type for that one run (score_jump,
+ * band_change, rank_overtake, top10_change, new_country, severe_advisory) —
+ * otherwise the correction itself would be reported as "movement". Rev 2->3
+ * (2026-09-26) is why new_country/severe_advisory are no longer exempt: they
+ * are existence/threshold checks, not score deltas, but they are still
+ * DIFF-derived (present-vs-absent, now-level-vs-was-level), and a frozen or
+ * broken source can make a country's data look "new" or a level look like it
+ * "just became" severe purely because yesterday's snapshot never resolved it
+ * at all — see the rev 3 entry below for the real incident this caused.
  *
  * Changelog:
  *   1 (implicit/default) — every snapshot written before 2026-09-25. No
@@ -48,23 +53,61 @@
  *       - Still not implemented (hr/kr/se): no fetcher exists yet, distinct
  *         from the anti-bot cases above — there is nothing to repair, only
  *         to build.
+ *
+ *   3 (2026-09-26) — first production run of the rev-2 parser repairs surfaced wrong data of its
+ *     own; second-pass fixes for four sources, plus a computeNews rule gap the run exposed:
+ *       a) ES (Spain): a text-extraction bug (DOM blocks glued together, no separator) let an
+ *          unrelated "de noche" curfew aside zone-scope and so suppress the Central African
+ *          Republic's whole-country evacuation banner, reporting level 1 for an active "leave the
+ *          country" order. Fixed in the shared normalizeAdvisoryText (also used by Italy — zero
+ *          regression there, verified against 8 live IT dossiers). Also added Spain's "SE ACONSEJA
+ *          APLAZAR SU VIAJE" (postpone your trip) wording as level 3, live on 7 Gulf/Middle-East
+ *          states that were all wrongly reporting level 1.
+ *       b) SK (Slovakia): 139 countries were stuck on level 1 because the "nothing matched"
+ *          fallback defaulted to it. Added MZV's own whole-country "does not recommend travel"
+ *          and "consider the necessity of travel" phrase families; level 1 now requires an
+ *          affirmative calm statement instead of being the default.
+ *       c) RS (Serbia): the listing-page fetch started failing with a network-level error
+ *          ("fetch failed", not an HTTP status) on the exact request pattern that had worked
+ *          hours earlier — added retry-with-backoff. Separately, normalizeRsLevel had NO path to
+ *          level 1 at all (a rev-2 fix for its escalated end left calm countries — Switzerland,
+ *          Canada, China, confirmed live — falling through to null); added calm-phrase detection.
+ *       d) DK (Denmark): coverage looked like a regression (41 -> 7) but the extractor introduced
+ *          in rev 2 had zero failures — the historical "41" baseline was itself mostly fabricated
+ *          level-1 data for "no guidance published" stub pages the OLD parser never excluded.
+ *          Removed an unrelated "first 80 countries" sample cap that was hiding 168 untried
+ *          countries (including Ukraine, Myanmar) for free; honest coverage: 7 -> 31.
+ *       e) computeNews (src/pipeline/news/engine.ts): the SK/ES/RS/DK repairs above landing in
+ *          this same rev-2->3 run proved new_country and severe_advisory were NOT safe to exempt
+ *          from the dataRevision guard after all (see the doc comment above `computeNews`) — the
+ *          US advisory source had been frozen on a stale cache, its parser never matched Burma/
+ *          North Korea/West Bank and Gaza, and once (a)-(d) let those countries resolve correctly
+ *          the diff read their real, years-old level-4 advisories as 7 brand-new severe_advisory
+ *          events and emailed them as "new today". All six event types are now suppressed across
+ *          any dataRevision mismatch, not just the four score-delta ones.
+ *     Countries affected by (a)-(d) see a score/advisory change that reflects the correction, not
+ *     a real overnight change in safety; (e) is why none of that shows up as "news" regardless.
  */
-export const DATA_REVISION = 2;
+export const DATA_REVISION = 3;
 
 /**
  * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes
  * effect — the first SCHEDULED run using the rev-2 code, not the day the PR
- * merged. `source-floor.ts` uses this as a hard floor on restore eligibility,
- * in addition to MAX_RESTORE_AGE_DAYS: a cache dated before this is NEVER
- * used as a restore source, no matter how high its count or how recent it is
+ * merged. Unchanged by the rev 3 bump: rev 3's parser fixes (a)-(d) above
+ * landed the same day, ahead of the same next scheduled run, so one cutoff
+ * date still correctly excludes every pre-fix cache from both revisions.
+ * `source-floor.ts` uses this as a hard floor on restore eligibility, in
+ * addition to MAX_RESTORE_AGE_DAYS: a cache dated before this is NEVER used
+ * as a restore source, no matter how high its count or how recent it is
  * relative to MAX_RESTORE_AGE_DAYS. Every cache before this date was written
- * by the parsers rev 2 fixed (hk/dk/ch/rs defaulting to level 1, and the
- * unbounded historical-max restore itself) — a "healthy" pre-revision count
- * just means the bug was productive, not that the data is trustworthy. Without
- * this cutoff, the 14-day bound alone still lets a currently-broken issuer's
- * LAST pre-fix day (which always looks recent and healthy) keep getting
- * restored for up to 14 more days after rev 2 ships, before finally erroring
- * — this closes that gap outright: from DATA_REVISION_SINCE's first run
- * onward, a fixed parser's deliberate omissions stay omitted immediately.
+ * by a parser rev 2 or rev 3 fixed (hk/dk/ch/rs defaulting to level 1 and the
+ * unbounded historical-max restore itself in rev 2; the ES/SK/RS/DK second-
+ * pass bugs in rev 3) — a "healthy" pre-revision count just means the bug was
+ * productive, not that the data is trustworthy. Without this cutoff, the
+ * 14-day bound alone still lets a currently-broken issuer's LAST pre-fix day
+ * (which always looks recent and healthy) keep getting restored for up to 14
+ * more days after a fix ships, before finally erroring — this closes that gap
+ * outright: from DATA_REVISION_SINCE's first run onward, a fixed parser's
+ * deliberate omissions stay omitted immediately.
  */
 export const DATA_REVISION_SINCE = '2026-09-26';

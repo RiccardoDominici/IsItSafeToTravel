@@ -257,7 +257,11 @@ describe('computeNews: dataRevision guard (audit 2026-09-25 data-revision.ts)', 
     assert.equal(events.find((e) => e.type === 'top10_change'), undefined, 'top10_change must be suppressed');
   });
 
-  it('does NOT suppress new_country or severe_advisory across a dataRevision bump', () => {
+  it('ALSO suppresses new_country and severe_advisory across a dataRevision bump (repair 2026-09-26)', () => {
+    // Real incident this guards against: the US source was frozen on a stale cache and the old
+    // parser never matched Burma/North Korea/West Bank and Gaza at all; once the rev-2->3 SK/ES/
+    // RS/DK repairs landed, those countries' real (long-standing) level-4 advisories started
+    // resolving, and the diff read that as brand-new severe_advisory + new_country events.
     const adv = (level: number) => ({ us: { level, text: '', source: '', url: '', updatedAt: '' } });
     const prev = mkSnapshot('2026-09-24', [mkCountry('AAA', 6.0, { advisories: adv(2) })]);
     const curr = mkSnapshot(
@@ -266,8 +270,32 @@ describe('computeNews: dataRevision guard (audit 2026-09-25 data-revision.ts)', 
       { dataRevision: 2 },
     );
     const events = computeNews(prev, curr, '2026-09-25');
-    assert.ok(events.find((e) => e.type === 'new_country' && e.params.country === 'ZZZ'), 'new_country should still fire');
-    assert.ok(events.find((e) => e.type === 'severe_advisory' && e.params.country === 'AAA'), 'severe_advisory should still fire');
+    assert.equal(events.find((e) => e.type === 'new_country' && e.params.country === 'ZZZ'), undefined, 'new_country must be suppressed too');
+    assert.equal(events.find((e) => e.type === 'severe_advisory' && e.params.country === 'AAA'), undefined, 'severe_advisory must be suppressed too');
+  });
+
+  it('emits NO events at all across a dataRevision bump, even when every individual condition would otherwise fire', () => {
+    const adv = (level: number) => ({ us: { level, text: '', source: '', url: '', updatedAt: '' } });
+    const filler = Array.from({ length: 38 }, (_, i) => mkCountry(`F${i.toString().padStart(2, '0')}`, 7.0 - i * 0.01));
+    const prev = mkSnapshot('2026-09-24', [
+      mkCountry('AAA', 6.0, { advisories: adv(2) }), // -> would score_jump + severe_advisory
+      mkCountry('ITA', 8.0),
+      mkCountry('FRA', 7.9),
+      ...filler,
+    ]);
+    const curr = mkSnapshot(
+      '2026-09-25',
+      [
+        mkCountry('AAA', 7.3, { advisories: adv(4) }),
+        mkCountry('FRA', 8.0), // overtakes ITA -> would rank_overtake + top10_change
+        mkCountry('ITA', 7.85),
+        mkCountry('ZZZ', 6.0), // -> would new_country
+        ...filler,
+      ],
+      { dataRevision: 2 },
+    );
+    const events = computeNews(prev, curr, '2026-09-25');
+    assert.deepEqual(events, [], 'a revision boundary must suppress every event type, with no exceptions');
   });
 
   it('does NOT suppress score_jump when both snapshots share the same dataRevision', () => {
