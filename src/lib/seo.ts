@@ -1249,3 +1249,34 @@ export function buildTravelSafetyIndexJsonLd(
     ],
   };
 }
+
+/**
+ * Build a generic ItemList JSON-LD node. Returns an object WITHOUT @context
+ * (same convention as buildDatasetJsonLd/buildCountryFaqJsonLd above) so a
+ * caller building its own @graph by hand — the government-advisories hub,
+ * per-issuer pages and the governments-disagree page (2026-09 visibility
+ * pages) — can just push it in next to buildWebPageJsonLd/buildBreadcrumbJsonLd
+ * without re-deriving the same ItemList shape three times.
+ */
+export function buildItemListJsonLd(
+  name: string,
+  description: string,
+  url: string,
+  items: { name: string; url: string }[],
+  order: 'ascending' | 'descending' = 'ascending',
+): Record<string, unknown> {
+  return {
+    '@type': 'ItemList',
+    itemListOrder: order === 'ascending' ? 'https://schema.org/ItemListOrderAscending' : 'https://schema.org/ItemListOrderDescending',
+    name,
+    description,
+    url,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
