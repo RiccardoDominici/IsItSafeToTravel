@@ -8,7 +8,7 @@ import Breadcrumb from '../Breadcrumb.astro';
 import CountryRankRow from './CountryRankRow.astro';
 import HubFaq from './HubFaq.astro';
 import { getHubFaq, type HubType } from '../../lib/hub-faq';
-import { buildFaqPageJsonLd, selectEligiblePillars, WEBSITE_ID, localeMap } from '../../lib/seo';
+import { buildFaqPageJsonLd, WEBSITE_ID, localeMap } from '../../lib/seo';
 import { getLastmodMap } from '../../lib/lastmod';
 import { getBiggestMovers } from '../../lib/hub-data';
 import { getLocalizedCountryName } from '../../lib/scores';
@@ -144,14 +144,16 @@ function buildBlurb(country: ScoredCountry): string {
     // here (safest/most-dangerous only blurb their top 20 by extreme score,
     // and a near-tied pillar profile regresses to the mid-scale prior, never
     // the extremes) but fixed for consistency with every other picker.
-    const { strongest, weakest } = selectPillarExtremes(country.pillars);
+    // Only `strongest` feeds the sentence now -- `weakest` is CountryRankRow's
+    // risk-driver badge on the same row, and naming it twice in EN "area to
+    // watch: environment (8.3/10)" + badge "Weakest: environment 8.3/10" read
+    // as duplicated content (2026-09-26 follow-up).
+    const { strongest } = selectPillarExtremes(country.pillars);
     text = (t('hub.blurb' as any) as string)
       .replace('{name}', name)
       .replace('{score}', score)
       .replace('{strongest}', labels[strongest.name])
-      .replace('{strongestScore}', (strongest.score * 10).toFixed(1))
-      .replace('{weakest}', labels[weakest.name])
-      .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+      .replace('{strongestScore}', (strongest.score * 10).toFixed(1));
   } else if (hubType === 'safest-for-families') {
     // Weighted health 35% + governance 35% + crime 20% + overall 10% (hub-data.ts) — name the two heaviest.
     text = hubBlurbTemplates['safest-for-families'][lang]
@@ -167,20 +169,18 @@ function buildBlurb(country: ScoredCountry): string {
       .replace('{crimeScore}', pillarScore(country, 'crime').toFixed(1))
       .replace('{governanceScore}', pillarScore(country, 'governance').toFixed(1));
   } else if (hubType === 'countries-to-avoid') {
-    // Membership itself is advisory-driven (majority Level 4, hub-data.ts) — say so, plus the weakest pillar.
+    // Membership itself is advisory-driven (majority Level 4, hub-data.ts) —
+    // say so. No weakest-pillar clause here any more: CountryRankRow already
+    // shows it as this row's risk-driver badge, and repeating it in the blurb
+    // read as duplicated content (2026-09-26 follow-up).
     const advisories = Object.values(country.advisories ?? {});
     const total = advisories.length;
     const level4Count = advisories.filter((a) => Number((a as { level: number | string })?.level) === 4).length;
-    const pillars = selectEligiblePillars(country.pillars);
-    let weakest = pillars[0];
-    for (const p of pillars) if (p.score < weakest.score) weakest = p;
     text = hubBlurbTemplates['countries-to-avoid'][lang]
       .replace('{name}', name)
       .replace('{score}', score)
       .replace('{n}', String(level4Count))
-      .replace('{total}', String(total))
-      .replace('{weakest}', labels[weakest.name])
-      .replace('{weakestScore}', (weakest.score * 10).toFixed(1));
+      .replace('{total}', String(total));
     skipAdvisoryAppend = true;
   } else if (hubType === 'improving-safety' || hubType === 'declining-safety') {
     // Reuse the 7-day delta the page already computed (passed via the deltas prop) instead of re-deriving a pillar driver.
@@ -259,16 +259,20 @@ const regionGroups = groupByRegion
     }).filter((g) => g.countries.length > 0)
   : [];
 
-// Hub page cross-links
-const hubLinks: Array<{ key: string; route: string }> = [
-  { key: 'hub.safest_countries.title', route: r['safest-countries'] || 'safest-countries' },
-  { key: 'hub.dangerous_countries.title', route: r['most-dangerous-countries'] || 'most-dangerous-countries' },
-  { key: 'hub.solo_travelers.title', route: r['safest-for-solo-travelers'] || 'safest-for-solo-travelers' },
-  { key: 'hub.families.title', route: r['safest-for-families'] || 'safest-for-families' },
-  { key: 'hub.countries_to_avoid.title', route: r['countries-to-avoid'] || 'countries-to-avoid' },
-  { key: 'hub.improving.title', route: r['improving-safety'] || 'improving-safety' },
-  { key: 'hub.declining.title', route: r['declining-safety'] || 'declining-safety' },
-];
+// Hub page cross-links. Tagged with the HubType they point to and filtered
+// against the current page's hubType so a hub never lists itself under "See
+// Also" (2026-09-26 follow-up) -- region pages pass no hubType, so nothing is
+// filtered there and all 7 still show.
+const ALL_HUB_LINKS = [
+  { key: 'hub.safest_countries.title', route: r['safest-countries'] || 'safest-countries', type: 'safest-countries' },
+  { key: 'hub.dangerous_countries.title', route: r['most-dangerous-countries'] || 'most-dangerous-countries', type: 'most-dangerous-countries' },
+  { key: 'hub.solo_travelers.title', route: r['safest-for-solo-travelers'] || 'safest-for-solo-travelers', type: 'safest-for-solo-travelers' },
+  { key: 'hub.families.title', route: r['safest-for-families'] || 'safest-for-families', type: 'safest-for-families' },
+  { key: 'hub.countries_to_avoid.title', route: r['countries-to-avoid'] || 'countries-to-avoid', type: 'countries-to-avoid' },
+  { key: 'hub.improving.title', route: r['improving-safety'] || 'improving-safety', type: 'improving-safety' },
+  { key: 'hub.declining.title', route: r['declining-safety'] || 'declining-safety', type: 'declining-safety' },
+] as const satisfies Array<{ key: string; route: string; type: HubType }>;
+const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
 ---
 
 <Base lang={lang} title={title} description={description} jsonLd={finalJsonLd} ogImage="/og/default.png">
