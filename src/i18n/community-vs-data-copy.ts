@@ -106,9 +106,16 @@ export function pickCountryNoun(count: number, noun: { one: string; other: strin
 
 export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
   en: {
-    title: 'Community vs. Data: How Travelers Rate Country Safety',
+    // 2026-09-26: renamed from "Community vs. Data: How Travelers Rate Country
+    // Safety" -- owner feedback: "Community vs. dati" (the it title this was
+    // translated from) read as jargon, not a clear promise of what's on the
+    // page. New title leads with what the page actually shows first (what
+    // travelers say), the comparison second. URL/slug unchanged (already
+    // submitted to search engines) -- see nav-extra-copy.ts's whatTravelersSay
+    // for the matching short nav label.
+    title: 'What Travelers Say vs. Our Data',
     description:
-      "See where travelers' real-world experience and our data-driven safety score diverge most, and by how much, for every country with enough votes to be meaningful.",
+      "Compare what real travelers say about a country's safety with our data-driven score, side by side, for every destination with enough votes to be meaningful.",
     introLead:
       'Our safety scores are built from government travel advisories, conflict and crime data, and other structural indicators. But people who have actually been somewhere sometimes see it differently. Every country page invites travelers to say whether our score feels right — this page lines up their answers against our data, for every country with enough votes to be meaningful.',
     headlineSafer:
@@ -155,9 +162,13 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'country', other: 'countries' },
   },
   it: {
-    title: 'Community vs. dati: come i viaggiatori giudicano i paesi',
+    // 2026-09-26: rinominato da "Community vs. dati: come i viaggiatori
+    // giudicano i paesi" -- feedback del titolare: "Community vs. dati" suonava
+    // come gergo interno, non una promessa chiara di cosa contiene la pagina.
+    // URL/slug invariati (già inviati ai motori di ricerca).
+    title: 'Il parere dei viaggiatori a confronto con i nostri dati',
     description:
-      'Confrontiamo il nostro punteggio di sicurezza basato sui dati con il giudizio reale dei viaggiatori, paese per paese, per ogni destinazione con voti sufficienti.',
+      'Il parere reale dei viaggiatori a confronto con il nostro punteggio di sicurezza basato sui dati, paese per paese, per ogni destinazione con voti sufficienti.',
     introLead:
       'I nostri punteggi di sicurezza si basano su avvisi di viaggio governativi, dati su conflitti e criminalità e altri indicatori strutturali. Ma chi è stato davvero in un posto a volte lo vede in modo diverso. Ogni pagina paese chiede ai viaggiatori se il nostro punteggio corrisponde alla realtà: qui confrontiamo le loro risposte con i nostri dati, per ogni paese con voti sufficienti a essere significativo.',
     headlineSafer:
@@ -204,9 +215,9 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'paese', other: 'paesi' },
   },
   es: {
-    title: 'Community vs. datos: cómo valoran los viajeros cada país',
+    title: 'La opinión de los viajeros frente a nuestros datos',
     description:
-      'Comparamos nuestra puntuación de seguridad basada en datos con la opinión real de los viajeros, país por país, para cada destino con votos suficientes.',
+      'La opinión real de los viajeros frente a nuestra puntuación de seguridad basada en datos, país por país, para cada destino con votos suficientes.',
     introLead:
       'Nuestras puntuaciones de seguridad se construyen a partir de avisos de viaje gubernamentales, datos de conflictos y criminalidad, y otros indicadores estructurales. Pero quien ha estado realmente en un lugar a veces lo ve de otra manera. Cada página de país invita a los viajeros a decir si nuestra puntuación les parece acertada — esta página compara sus respuestas con nuestros datos, para cada país con votos suficientes para ser significativos.',
     headlineSafer:
@@ -253,9 +264,9 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'país', other: 'países' },
   },
   fr: {
-    title: "Communauté vs données : l'avis des voyageurs sur la sécurité",
+    title: "L'avis des voyageurs face à nos données",
     description:
-      "Nous comparons notre score de sécurité fondé sur les données à l'avis réel des voyageurs, pays par pays, pour chaque destination ayant assez de votes.",
+      "L'avis réel des voyageurs face à notre score de sécurité fondé sur les données, pays par pays, pour chaque destination ayant assez de votes.",
     introLead:
       "Nos scores de sécurité reposent sur les avis de voyage gouvernementaux, des données de conflit et de criminalité, et d'autres indicateurs structurels. Mais ceux qui sont réellement allés quelque part le voient parfois autrement. Chaque page pays invite les voyageurs à dire si notre score leur semble juste — cette page compare leurs réponses à nos données, pour chaque pays ayant assez de votes pour être significatif.",
     headlineSafer:
@@ -302,9 +313,9 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'pays', other: 'pays' },
   },
   pt: {
-    title: 'Comunidade vs. dados: como os viajantes avaliam cada país',
+    title: 'O que os viajantes dizem vs. nossos dados',
     description:
-      'Comparamos a nossa pontuação de segurança baseada em dados com a opinião real dos viajantes, país a país, para cada destino com votos suficientes.',
+      'A opinião real dos viajantes frente à nossa pontuação de segurança baseada em dados, país a país, para cada destino com votos suficientes.',
     introLead:
       'As nossas pontuações de segurança são construídas a partir de avisos de viagem governamentais, dados de conflito e criminalidade, e outros indicadores estruturais. Mas quem já esteve mesmo num lugar às vezes vê as coisas de outra forma. Cada página de país convida os viajantes a dizer se a nossa pontuação parece correta — esta página compara as respostas deles com os nossos dados, para cada país com votos suficientes para serem significativos.',
     headlineSafer:
@@ -351,8 +362,8 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: 'país', other: 'países' },
   },
   zh: {
-    title: '社区评价 vs 数据评分：旅行者如何评价各国安全',
-    description: '我们将基于数据的安全评分与旅行者的真实反馈逐国对比，展示每个已有足够投票的目的地之间的差异有多大。',
+    title: '旅行者怎么说 vs 我们的评分',
+    description: '旅行者的真实评价与我们基于数据的安全评分逐国对比，涵盖每个已获得足够投票的目的地。',
     introLead:
       '我们的安全评分基于政府旅行警告、冲突与犯罪数据以及其他结构性指标计算得出。但真正去过一个地方的人，感受有时并不一样。每个国家页面都会邀请旅行者说说我们的评分是否符合实际——本页把他们的反馈与我们的数据放在一起比较，涵盖所有已获得足够投票、结果具有参考意义的国家。',
     headlineSafer: '旅行者投票认为{name}比我们的评分高 {gap} 分——这是目前有足够投票的 {count} {countryNoun}中差距最大的一个。',
@@ -395,9 +406,9 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     countryNoun: { one: '个国家', other: '个国家' },
   },
   de: {
-    title: 'Community vs. Daten: Wie Reisende die Sicherheit bewerten',
+    title: 'Was Reisende sagen vs. unsere Daten',
     description:
-      'Wir vergleichen unsere datenbasierte Sicherheitsbewertung mit der echten Einschätzung von Reisenden, Land für Land, für jedes Reiseziel mit genügend Stimmen.',
+      'Die echte Einschätzung von Reisenden im Vergleich zu unserer datenbasierten Sicherheitsbewertung, Land für Land, für jedes Reiseziel mit genügend Stimmen.',
     introLead:
       'Unsere Sicherheits-Scores basieren auf staatlichen Reisehinweisen, Konflikt- und Kriminalitätsdaten sowie weiteren strukturellen Indikatoren. Wer aber wirklich vor Ort war, sieht das manchmal anders. Jede Länderseite lädt Reisende ein zu sagen, ob unsere Bewertung stimmig wirkt — diese Seite stellt ihre Antworten unseren Daten gegenüber, für jedes Land mit genügend Stimmen, um aussagekräftig zu sein.',
     headlineSafer:
