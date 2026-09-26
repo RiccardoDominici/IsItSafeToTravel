@@ -6,6 +6,7 @@ import { getRegion } from './regions';
 import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
 import { COUNTRY_COUNT, SOURCE_COUNT_DISPLAY } from './site-stats';
+import { CONTACT_EMAIL } from './contact';
 import wikidataMapJson from '../data/countries-wikidata.json';
 // 2026-09-25 audit fix round (I4/C2/I1/C7): buildCountryMetaDescription and the
 // country-FAQ functions below now derive their risk label, strongest/weakest
@@ -600,6 +601,7 @@ export function buildPersonJsonLd(): Record<string, unknown> {
     jobTitle: 'Independent developer and data analyst',
     url: 'https://isitsafetotravel.org/en/about/',
     sameAs: ['https://github.com/RiccardoDominici'],
+    email: CONTACT_EMAIL,
   };
 }
 

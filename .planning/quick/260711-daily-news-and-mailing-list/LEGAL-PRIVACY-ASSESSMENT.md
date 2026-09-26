@@ -12,7 +12,7 @@ disclaimer: Practical engineering guidance, not formal legal advice. Operator sh
 
 **Operator / data controller:** Riccardo Dominici, individual, based in Italy (EU). Audience worldwide incl. EU. GDPR + Italian D.Lgs. 196/2003 (as amended by 101/2018) + ePrivacy Directive (2002/58/EC, transposed) apply. German subscribers → BDSG / UWG double-opt-in expectations also apply, which the chosen design already satisfies.
 
-**Existing state (verified against code):** There is ALREADY a combined Terms + Privacy + Imprint page per locale at route `legal` (`src/pages/{lang}/legal/index.astro`), with structured i18n keys under `legal.privacy_*` in `src/i18n/ui.ts` (7 locales). So the task is **additions to an existing policy**, not writing one from scratch. Imprint present: "Operator: Riccardo Dominici / Email: Riccardo.Dominici1999@gmail.com".
+**Existing state (verified against code):** There is ALREADY a combined Terms + Privacy + Imprint page per locale at route `legal` (`src/pages/{lang}/legal/index.astro`), with structured i18n keys under `legal.privacy_*` in `src/i18n/ui.ts` (7 locales). So the task is **additions to an existing policy**, not writing one from scratch. Imprint present: "Operator: Riccardo Dominici / Email: riccardo.dominici19999@gmail.com".
 
 **Verified processor certifications (web, 2026-07-11):**
 - **Resend** (email send) — certified under **EU-US Data Privacy Framework + UK extension**, publishes a DPA (`resend.com/legal/dpa`) and subprocessor list (`resend.com/legal/subprocessors`), SOC 2 + GDPR. US company. Transfer covered.
@@ -149,18 +149,18 @@ Explicitly NOT stored: raw IP, name, browsing history, open/click tracking, prof
 **Confirmation (double opt-in) email — body + footer, EN:**
 "You (or someone using this address) asked to receive the isitsafetotravel.org safety digest. Please confirm your subscription: [Confirm]. If you didn't request this, ignore this email — no messages will be sent without confirmation.
 —
-Sent by Riccardo Dominici, operator of isitsafetotravel.org · Contact: Riccardo.Dominici1999@gmail.com · You are receiving this only to confirm a subscription request; this is not marketing."
+Sent by Riccardo Dominici, operator of isitsafetotravel.org · Contact: riccardo.dominici19999@gmail.com · You are receiving this only to confirm a subscription request; this is not marketing."
 
 **Confirmation email — IT:**
 "Tu (o qualcuno che usa questo indirizzo) hai chiesto di ricevere il riepilogo sulla sicurezza di isitsafetotravel.org. Conferma l'iscrizione: [Conferma]. Se non hai effettuato questa richiesta, ignora questa email: nessun messaggio verra inviato senza conferma.
 —
-Inviata da Riccardo Dominici, gestore di isitsafetotravel.org · Contatto: Riccardo.Dominici1999@gmail.com · Ricevi questo messaggio solo per confermare una richiesta di iscrizione; non e materiale promozionale."
+Inviata da Riccardo Dominici, gestore di isitsafetotravel.org · Contatto: riccardo.dominici19999@gmail.com · Ricevi questo messaggio solo per confermare una richiesta di iscrizione; non e materiale promozionale."
 
 **Recurring digest — footer, EN:**
-"You receive this because you confirmed a subscription at isitsafetotravel.org. · [Unsubscribe with one click] · Sent by Riccardo Dominici (Italy), operator of isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · We never share your address."
+"You receive this because you confirmed a subscription at isitsafetotravel.org. · [Unsubscribe with one click] · Sent by Riccardo Dominici (Italy), operator of isitsafetotravel.org · riccardo.dominici19999@gmail.com · We never share your address."
 
 **Recurring digest — footer, IT:**
-"Ricevi questa email perche hai confermato un'iscrizione su isitsafetotravel.org. · [Annulla iscrizione con un clic] · Inviata da Riccardo Dominici (Italia), gestore di isitsafetotravel.org · Riccardo.Dominici1999@gmail.com · Non condividiamo mai il tuo indirizzo."
+"Ricevi questa email perche hai confermato un'iscrizione su isitsafetotravel.org. · [Annulla iscrizione con un clic] · Inviata da Riccardo Dominici (Italia), gestore di isitsafetotravel.org · riccardo.dominici19999@gmail.com · Non condividiamo mai il tuo indirizzo."
 
 *(A physical postal address is a strict CAN-SPAM requirement for US recipients and good practice; an individual operator may use a contact email + country in lieu of publishing a home address, which is the pragmatic EU-imprint approach already used on the site. If US volume grows, add a mailing address or PO box.)*
 

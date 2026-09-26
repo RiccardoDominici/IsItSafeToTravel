@@ -6,6 +6,7 @@ import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
 import { aboutCopy } from '../../../i18n/about-copy';
 import { buildWebPageJsonLd, buildPersonJsonLd, buildBreadcrumbJsonLd } from '../../../lib/seo';
+import { CONTACT_EMAIL } from '../../../lib/contact';
 
 const lang: Lang = 'zh';
 const t = useTranslations(lang);
@@ -87,6 +88,7 @@ const [feedbackBefore, feedbackAfter] = c.contactFeedback.split('{link}');
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
         {feedbackBefore}<a href={`/${lang}/${r.feedback}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.feedbackLinkText}</a>{feedbackAfter}
       </p>
+      <p class="text-xs text-sand-500 dark:text-sand-400">{c.contactEmailLabel}: <a href={`mailto:${CONTACT_EMAIL}`} class="hover:underline">{CONTACT_EMAIL}</a></p>
     </section>
   </div>
 </Base>
