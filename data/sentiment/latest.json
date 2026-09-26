@@ -1,43 +1,43 @@
 {
-  "generatedAt": "2026-09-26T02:01:25.225Z",
+  "generatedAt": "2026-09-26T11:09:05.689Z",
   "countries": {
+    "CHN": {
+      "iso3": "CHN",
+      "count": 55,
+      "avgDelta": 1.4261491245970883,
+      "correction": 0.7130745622985442,
+      "perceived": 7.538460328758745,
+      "official": 6.825385766460201
+    },
     "USA": {
       "iso3": "USA",
       "count": 22,
-      "avgDelta": -0.05565859727650026,
-      "correction": -0.02782929863825013,
+      "avgDelta": -0.05565859727650034,
+      "correction": -0.02782929863825017,
       "perceived": 7.3954633683411934,
       "official": 7.423292666979443
-    },
-    "CHN": {
-      "iso3": "CHN",
-      "count": 54,
-      "avgDelta": 1.4409958669421978,
-      "correction": 0.7204979334710989,
-      "perceived": 7.5458836999312995,
-      "official": 6.825385766460201
     },
     "JPN": {
       "iso3": "JPN",
       "count": 5,
-      "avgDelta": 0.3743121038336954,
-      "correction": 0.1871560519168477,
+      "avgDelta": 0.3743121038336953,
+      "correction": 0.18715605191684764,
       "perceived": 8.417678235155362,
       "official": 8.230522183238515
     },
     "RUS": {
       "iso3": "RUS",
       "count": 9,
-      "avgDelta": 0.6893883842675225,
-      "correction": 0.34469419213376123,
+      "avgDelta": 0.6893883842675227,
+      "correction": 0.34469419213376135,
       "perceived": 4.293062757196495,
       "official": 3.9483685650627334
     },
     "CAN": {
       "iso3": "CAN",
       "count": 9,
-      "avgDelta": -0.017295694400790464,
-      "correction": -0.008647847200395232,
+      "avgDelta": -0.01729569440079051,
+      "correction": -0.008647847200395254,
       "perceived": 8.301748735740965,
       "official": 8.31039658294136
     },
