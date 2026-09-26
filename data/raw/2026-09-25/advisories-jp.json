@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-09-25T22:36:39.459Z",
+  "fetchedAt": "2026-09-26T01:38:47.337Z",
   "totalMappings": 206,
   "matchedCount": 205,
   "countriesWithData": 203,
@@ -744,19 +744,9 @@
       "iso3": "NIU",
       "level": 1
     },
-    "001": {
-      "japaneseName": "インド",
-      "iso3": "IND",
-      "level": 4
-    },
     "005": {
       "japaneseName": "シンガポール",
       "iso3": "SGP",
-      "level": 1
-    },
-    "035": {
-      "japaneseName": "北朝鮮",
-      "iso3": "PRK",
       "level": 1
     },
     "002": {
@@ -769,6 +759,16 @@
       "iso3": "KHM",
       "level": 3
     },
+    "001": {
+      "japaneseName": "インド",
+      "iso3": "IND",
+      "level": 4
+    },
+    "035": {
+      "japaneseName": "北朝鮮",
+      "iso3": "PRK",
+      "level": 1
+    },
     "006": {
       "japaneseName": "スリランカ",
       "iso3": "LKA",
@@ -779,20 +779,20 @@
       "iso3": "KOR",
       "level": 1
     },
-    "008": {
-      "japaneseName": "台湾",
-      "iso3": "TWN",
-      "level": 1
+    "007": {
+      "japaneseName": "タイ",
+      "iso3": "THA",
+      "level": 3
     },
     "009": {
       "japaneseName": "中華人民共和国（中国）",
       "iso3": "CHN",
       "level": 1
     },
-    "007": {
-      "japaneseName": "タイ",
-      "iso3": "THA",
-      "level": 3
+    "008": {
+      "japaneseName": "台湾",
+      "iso3": "TWN",
+      "level": 1
     },
     "010": {
       "japaneseName": "ネパール",
@@ -819,19 +819,14 @@
       "iso3": "BTN",
       "level": 1
     },
-    "014": {
-      "japaneseName": "ブルネイ",
-      "iso3": "BRN",
-      "level": 1
-    },
     "015": {
       "japaneseName": "ベトナム",
       "iso3": "VNM",
       "level": 1
     },
-    "016": {
-      "japaneseName": "香港",
-      "iso3": "HKG",
+    "014": {
+      "japaneseName": "ブルネイ",
+      "iso3": "BRN",
       "level": 1
     },
     "036": {
@@ -839,15 +834,15 @@
       "iso3": "MAC",
       "level": 1
     },
+    "016": {
+      "japaneseName": "香港",
+      "iso3": "HKG",
+      "level": 1
+    },
     "017": {
       "japaneseName": "マレーシア",
       "iso3": "MYS",
       "level": 2
-    },
-    "018": {
-      "japaneseName": "ミャンマー",
-      "iso3": "MMR",
-      "level": 3
     },
     "024": {
       "japaneseName": "モルディブ",
@@ -858,6 +853,11 @@
       "japaneseName": "モンゴル",
       "iso3": "MNG",
       "level": 1
+    },
+    "018": {
+      "japaneseName": "ミャンマー",
+      "iso3": "MMR",
+      "level": 3
     },
     "020": {
       "japaneseName": "ラオス",
@@ -874,14 +874,14 @@
       "iso3": "WSM",
       "level": 1
     },
-    "079": {
-      "japaneseName": "タヒチ",
-      "iso3": "PYF",
-      "level": 1
-    },
     "072": {
       "japaneseName": "ソロモン諸島",
       "iso3": "SLB",
+      "level": 1
+    },
+    "079": {
+      "japaneseName": "タヒチ",
+      "iso3": "PYF",
       "level": 1
     },
     "074": {
@@ -914,14 +914,14 @@
       "iso3": "ARE",
       "level": 2
     },
-    "043": {
-      "japaneseName": "イエメン",
-      "iso3": "YEM",
-      "level": 4
-    },
     "044": {
       "japaneseName": "イスラエル",
       "iso3": "ISR",
+      "level": 4
+    },
+    "043": {
+      "japaneseName": "イエメン",
+      "iso3": "YEM",
       "level": 4
     },
     "045": {
@@ -934,14 +934,14 @@
       "iso3": "IRN",
       "level": 4
     },
-    "047": {
-      "japaneseName": "オマーン",
-      "iso3": "OMN",
-      "level": 2
-    },
     "048": {
       "japaneseName": "カタール",
       "iso3": "QAT",
+      "level": 2
+    },
+    "047": {
+      "japaneseName": "オマーン",
+      "iso3": "OMN",
       "level": 2
     },
     "049": {
@@ -964,14 +964,14 @@
       "iso3": "TUR",
       "level": 4
     },
-    "053": {
-      "japaneseName": "バーレーン",
-      "iso3": "BHR",
-      "level": 2
-    },
     "054": {
       "japaneseName": "ヨルダン",
       "iso3": "JOR",
+      "level": 2
+    },
+    "053": {
+      "japaneseName": "バーレーン",
+      "iso3": "BHR",
       "level": 2
     },
     "055": {
@@ -989,20 +989,25 @@
       "iso3": "DZA",
       "level": 4
     },
-    "094": {
-      "japaneseName": "エジプト",
-      "iso3": "EGY",
-      "level": 3
-    },
     "093": {
       "japaneseName": "ウガンダ",
       "iso3": "UGA",
+      "level": 3
+    },
+    "094": {
+      "japaneseName": "エジプト",
+      "iso3": "EGY",
       "level": 3
     },
     "095": {
       "japaneseName": "エチオピア",
       "iso3": "ETH",
       "level": 4
+    },
+    "096": {
+      "japaneseName": "ガーナ",
+      "iso3": "GHA",
+      "level": 2
     },
     "097": {
       "japaneseName": "ガボン",
@@ -1013,11 +1018,6 @@
       "japaneseName": "カメルーン",
       "iso3": "CMR",
       "level": 4
-    },
-    "096": {
-      "japaneseName": "ガーナ",
-      "iso3": "GHA",
-      "level": 2
     },
     "099": {
       "japaneseName": "ギニア",

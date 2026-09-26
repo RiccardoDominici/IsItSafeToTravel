@@ -1,62 +1,4 @@
 {
-  "SAU": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.sau.html",
-      "updatedAt": "2026-09-14T00:00:00Z"
-    },
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/saudi-arabia",
-      "updatedAt": "2026-09-20T19:23:47Z"
-    },
-    "ca": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/saudi-arabia",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 3,
-      "text": "Reconsider your need to travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/middle-east/saudi-arabia"
-    }
-  },
-  "KHM": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.khm.html",
-      "updatedAt": "2026-09-14T00:00:00Z"
-    },
-    "uk": {
-      "level": 2,
-      "text": "Exercise caution in some areas — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/cambodia",
-      "updatedAt": "2026-03-19T14:03:23Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/cambodia",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/cambodia"
-    }
-  },
   "ITA": {
     "us": {
       "level": 2,
@@ -122,7 +64,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.sur.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/suriname-travel-advisory.html",
       "updatedAt": "2026-09-07T00:00:00Z"
     },
     "uk": {
@@ -220,64 +162,6 @@
       "url": "https://www.smartraveller.gov.au/destinations/asia/nepal"
     }
   },
-  "MAR": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mar.html",
-      "updatedAt": "2026-09-03T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/morocco",
-      "updatedAt": "2026-08-19T11:00:36Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/morocco",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/morocco"
-    }
-  },
-  "PER": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.per.html",
-      "updatedAt": "2026-09-03T00:00:00Z"
-    },
-    "uk": {
-      "level": 2,
-      "text": "Exercise caution in some areas — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/peru",
-      "updatedAt": "2026-06-22T22:35:12Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/peru",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/peru"
-    }
-  },
   "MAC": {
     "us": {
       "level": 3,
@@ -292,122 +176,6 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/macao",
       "updatedAt": "2026-09-24"
-    }
-  },
-  "PHL": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.phl.html",
-      "updatedAt": "2026-08-31T00:00:00Z"
-    },
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/philippines",
-      "updatedAt": "2026-07-15T08:55:25Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/philippines",
-      "updatedAt": "2026-09-25"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/philippines"
-    }
-  },
-  "BRA": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.bra.html",
-      "updatedAt": "2026-08-30T00:00:00Z"
-    },
-    "uk": {
-      "level": 2,
-      "text": "Exercise caution in some areas — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/brazil",
-      "updatedAt": "2026-09-09T09:06:01Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/brazil",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/brazil"
-    }
-  },
-  "LBY": {
-    "us": {
-      "level": 4,
-      "text": "Do Not Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.lby.html",
-      "updatedAt": "2026-08-30T00:00:00Z"
-    },
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/libya",
-      "updatedAt": "2026-07-21T09:00:09Z"
-    },
-    "ca": {
-      "level": 4,
-      "text": "Avoid all travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/libya",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/libya"
-    }
-  },
-  "OMN": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.omn.html",
-      "updatedAt": "2026-08-29T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/oman",
-      "updatedAt": "2026-07-22T12:46:33Z"
-    },
-    "ca": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/oman",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 3,
-      "text": "Reconsider your need to travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/middle-east/oman"
     }
   },
   "IRQ": {
@@ -671,35 +439,6 @@
       "url": "https://www.smartraveller.gov.au/destinations/middle-east/bahrain"
     }
   },
-  "BIH": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.bih.html",
-      "updatedAt": "2026-08-26T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/bosnia-and-herzegovina",
-      "updatedAt": "2026-08-13T15:28:44Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/bosnia-and-herzegovina",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/europe/bosnia-and-herzegovina"
-    }
-  },
   "MNE": {
     "us": {
       "level": 1,
@@ -729,62 +468,33 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/montenegro"
     }
   },
-  "GUY": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.guy.html",
-      "updatedAt": "2026-08-25T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/guyana",
-      "updatedAt": "2025-12-30T14:37:59Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/guyana",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/guyana"
-    }
-  },
-  "ALB": {
+  "BIH": {
     "us": {
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.alb.html",
-      "updatedAt": "2026-08-25T00:00:00Z"
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/bosinia-and-herzegovina-travel-advisory.html",
+      "updatedAt": "2026-08-26T00:00:00Z"
     },
     "uk": {
       "level": 1,
       "text": "No specific advisory — see latest advice",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/albania",
-      "updatedAt": "2026-08-13T15:28:50Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/bosnia-and-herzegovina",
+      "updatedAt": "2026-08-13T15:28:44Z"
     },
     "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
+      "level": 2,
+      "text": "Exercise a high degree of caution",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/albania",
+      "url": "https://travel.gc.ca/destinations/bosnia-and-herzegovina",
       "updatedAt": "2026-09-24"
     },
     "au": {
       "level": 2,
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/europe/albania"
+      "url": "https://www.smartraveller.gov.au/destinations/europe/bosnia-and-herzegovina"
     }
   },
   "ISR": {
@@ -807,6 +517,35 @@
       "text": "Reconsider your need to travel",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/middle-east/israel"
+    }
+  },
+  "ALB": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/albania-travel-advisory.html",
+      "updatedAt": "2026-08-25T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/albania",
+      "updatedAt": "2026-08-13T15:28:50Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/albania",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/europe/albania"
     }
   },
   "PSE": {
@@ -860,35 +599,6 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/algeria"
     }
   },
-  "HND": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.hnd.html",
-      "updatedAt": "2026-08-24T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/honduras",
-      "updatedAt": "2026-07-29T15:40:19Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/honduras",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/honduras"
-    }
-  },
   "XKX": {
     "us": {
       "level": 2,
@@ -916,22 +626,6 @@
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/europe/kosovo"
-    }
-  },
-  "SXM": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.sxm.html",
-      "updatedAt": "2026-08-23T00:00:00Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/sint-maarten",
-      "updatedAt": "2026-09-24"
     }
   },
   "TKM": {
@@ -990,35 +684,6 @@
       "text": "Do not travel",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/middle-east/lebanon"
-    }
-  },
-  "MOZ": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.moz.html",
-      "updatedAt": "2026-08-20T00:00:00Z"
-    },
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/mozambique",
-      "updatedAt": "2026-08-20T13:50:43Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/mozambique",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/mozambique"
     }
   },
   "AUT": {
@@ -1114,29 +779,6 @@
       "updatedAt": "2026-08-19T00:00:00Z"
     }
   },
-  "ABW": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.abw.html",
-      "updatedAt": "2026-08-19T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/aruba",
-      "updatedAt": "2026-07-07T13:03:43Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/aruba",
-      "updatedAt": "2026-09-24"
-    }
-  },
   "PAN": {
     "us": {
       "level": 2,
@@ -1193,35 +835,6 @@
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/americas/paraguay"
-    }
-  },
-  "CHL": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.chl.html",
-      "updatedAt": "2026-08-18T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/chile",
-      "updatedAt": "2026-08-18T22:18:12Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/chile",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/chile"
     }
   },
   "MRT": {
@@ -1334,35 +947,12 @@
       "url": "https://www.smartraveller.gov.au/destinations/americas/bolivia"
     }
   },
-  "AUS": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.aus.html",
-      "updatedAt": "2026-08-17T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/australia",
-      "updatedAt": "2026-03-19T14:06:09Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/australia",
-      "updatedAt": "2026-09-24"
-    }
-  },
   "KAZ": {
     "us": {
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.kaz.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/kazakhstan-travel-advisory.html",
       "updatedAt": "2026-08-17T00:00:00Z"
     },
     "uk": {
@@ -1384,35 +974,6 @@
       "text": "Exercise normal safety precautions",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/asia/kazakhstan"
-    }
-  },
-  "NLD": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nld.html",
-      "updatedAt": "2026-08-17T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/netherlands",
-      "updatedAt": "2026-08-11T09:20:34Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/netherlands",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/europe/netherlands"
     }
   },
   "CHE": {
@@ -1536,7 +1097,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mng.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/mongolia-travel-advisory.html",
       "updatedAt": "2026-07-28T00:00:00Z"
     },
     "uk": {
@@ -1646,7 +1207,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.lao.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/laos-travel-advisory.html",
       "updatedAt": "2026-07-27T00:00:00Z"
     },
     "uk": {
@@ -1766,41 +1327,12 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "SWZ": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.swz.html",
-      "updatedAt": "2026-07-09T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/eswatini",
-      "updatedAt": "2025-12-10T13:32:46Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/eswatini",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/eswatini"
-    }
-  },
   "HTI": {
     "us": {
       "level": 4,
       "text": "Do Not Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.hti.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/haiti-travel-advisory.html",
       "updatedAt": "2026-07-09T00:00:00Z"
     },
     "uk": {
@@ -1822,6 +1354,35 @@
       "text": "Do not travel",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/americas/haiti"
+    }
+  },
+  "SWZ": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/eswatini-travel-advisory.html",
+      "updatedAt": "2026-07-09T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/eswatini",
+      "updatedAt": "2025-12-10T13:32:46Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/eswatini",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/eswatini"
     }
   },
   "MLT": {
@@ -1887,7 +1448,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.guf.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/french-guiana-travel-advisory.html",
       "updatedAt": "2026-07-07T00:00:00Z"
     },
     "uk": {
@@ -1960,7 +1521,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.gha.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/ghana-travel-advisory.html",
       "updatedAt": "2026-07-06T00:00:00Z"
     },
     "uk": {
@@ -1984,41 +1545,12 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/ghana"
     }
   },
-  "IDN": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.idn.html",
-      "updatedAt": "2026-07-06T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/indonesia",
-      "updatedAt": "2026-09-18T10:54:47Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/indonesia",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/indonesia"
-    }
-  },
   "MDA": {
     "us": {
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mda.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/moldova-travel-advisory.html",
       "updatedAt": "2026-07-06T00:00:00Z"
     },
     "uk": {
@@ -2042,12 +1574,70 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/moldova"
     }
   },
+  "IDN": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/indonesia-travel-advisory.html",
+      "updatedAt": "2026-07-06T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/indonesia",
+      "updatedAt": "2026-09-18T10:54:47Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/indonesia",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/indonesia"
+    }
+  },
+  "THA": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/thailand-travel-advisory.html",
+      "updatedAt": "2026-07-06T00:00:00Z"
+    },
+    "uk": {
+      "level": 2,
+      "text": "Exercise caution in some areas — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/thailand",
+      "updatedAt": "2026-09-18T15:03:52Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/thailand",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/thailand"
+    }
+  },
   "WSM": {
     "us": {
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.wsm.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/samoa-travel-advisory.html",
       "updatedAt": "2026-07-06T00:00:00Z"
     },
     "uk": {
@@ -2076,7 +1666,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.msr.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/montserrat-travel-advisory.html",
       "updatedAt": "2026-07-06T00:00:00Z"
     },
     "uk": {
@@ -2094,41 +1684,12 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "THA": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tha.html",
-      "updatedAt": "2026-07-06T00:00:00Z"
-    },
-    "uk": {
-      "level": 2,
-      "text": "Exercise caution in some areas — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/thailand",
-      "updatedAt": "2026-09-18T15:03:52Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/thailand",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/thailand"
-    }
-  },
   "NOR": {
     "us": {
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nor.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/norway-travel-advisory.html",
       "updatedAt": "2026-07-05T00:00:00Z"
     },
     "uk": {
@@ -2152,41 +1713,12 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/norway"
     }
   },
-  "VEN": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.ven.html",
-      "updatedAt": "2026-06-26T00:00:00Z"
-    },
-    "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/venezuela",
-      "updatedAt": "2026-09-02T14:49:14Z"
-    },
-    "ca": {
-      "level": 4,
-      "text": "Avoid all travel",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/venezuela",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/venezuela"
-    }
-  },
   "SLV": {
     "us": {
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.slv.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/el-salvador-travel-advisory.html",
       "updatedAt": "2026-06-24T00:00:00Z"
     },
     "uk": {
@@ -2215,7 +1747,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.vnm.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/vietnam-travel-advisory.html",
       "updatedAt": "2026-06-23T00:00:00Z"
     },
     "uk": {
@@ -2244,7 +1776,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.jam.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/jamaica-travel-advisory.html",
       "updatedAt": "2026-06-22T00:00:00Z"
     },
     "uk": {
@@ -2302,7 +1834,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.bwa.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/botswana-travel-advisory.html",
       "updatedAt": "2026-06-16T00:00:00Z"
     },
     "uk": {
@@ -2360,7 +1892,7 @@
       "level": 3,
       "text": "Reconsider Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nga.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/nigeria-travel-advisory.html",
       "updatedAt": "2026-06-11T00:00:00Z"
     },
     "uk": {
@@ -2389,7 +1921,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tur.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/turkey-travel-advisory.html",
       "updatedAt": "2026-06-08T00:00:00Z"
     },
     "uk": {
@@ -2405,7 +1937,7 @@
       "level": 4,
       "text": "Do Not Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mli.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/mali-travel-advisory.html",
       "updatedAt": "2026-06-07T00:00:00Z"
     },
     "uk": {
@@ -2478,35 +2010,6 @@
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/africa/uganda"
-    }
-  },
-  "RWA": {
-    "us": {
-      "level": 3,
-      "text": "Reconsider Travel",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.rwa.html",
-      "updatedAt": "2026-06-03T00:00:00Z"
-    },
-    "uk": {
-      "level": 2,
-      "text": "Exercise caution in some areas — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/rwanda",
-      "updatedAt": "2026-09-04T09:15:14Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/rwanda",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/rwanda"
     }
   },
   "CYP": {
@@ -2588,7 +2091,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.aia.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/anguilla-travel-advisory.html",
       "updatedAt": "2026-05-21T00:00:00Z"
     },
     "ca": {
@@ -2599,33 +2102,27 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "SOM": {
+  "AND": {
     "us": {
-      "level": 4,
-      "text": "Do Not Travel",
+      "level": 1,
+      "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.som.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/andorra-travel-advisory.html",
       "updatedAt": "2026-05-20T00:00:00Z"
     },
     "uk": {
-      "level": 3,
-      "text": "Advise against all but essential travel",
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/somalia",
-      "updatedAt": "2026-06-04T14:57:41Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/andorra",
+      "updatedAt": "2025-12-10T12:46:46Z"
     },
     "ca": {
-      "level": 4,
-      "text": "Avoid all travel",
+      "level": 1,
+      "text": "Exercise normal security precautions",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/somalia",
+      "url": "https://travel.gc.ca/destinations/andorra",
       "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/somalia"
     }
   },
   "TUN": {
@@ -2633,7 +2130,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tun.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/tunisia-travel-advisory.html",
       "updatedAt": "2026-05-20T00:00:00Z"
     },
     "uk": {
@@ -2657,58 +2154,33 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/tunisia"
     }
   },
-  "AND": {
+  "SOM": {
     "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
+      "level": 4,
+      "text": "Do Not Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.and.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/somalia-travel-advisory.html",
       "updatedAt": "2026-05-20T00:00:00Z"
     },
     "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
+      "level": 3,
+      "text": "Advise against all but essential travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/andorra",
-      "updatedAt": "2025-12-10T12:46:46Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/somalia",
+      "updatedAt": "2026-06-04T14:57:41Z"
     },
     "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
+      "level": 4,
+      "text": "Avoid all travel",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/andorra",
+      "url": "https://travel.gc.ca/destinations/somalia",
       "updatedAt": "2026-09-24"
-    }
-  },
-  "TLS": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tls.html",
-      "updatedAt": "2026-05-20T00:00:00Z"
     },
     "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
+      "level": 4,
+      "text": "Do not travel",
       "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/asia/timor-leste"
-    }
-  },
-  "CYM": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.cym.html",
-      "updatedAt": "2026-05-20T00:00:00Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/cayman-islands",
-      "updatedAt": "2026-09-24"
+      "url": "https://www.smartraveller.gov.au/destinations/africa/somalia"
     }
   },
   "MHL": {
@@ -2716,7 +2188,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mhl.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/marshall-islands-travel-advisory.html",
       "updatedAt": "2026-05-20T00:00:00Z"
     },
     "uk": {
@@ -2769,6 +2241,37 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/new-caledonia"
     }
   },
+  "TLS": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/timor-leste-travel-advisory.html",
+      "updatedAt": "2026-05-20T00:00:00Z"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/timor-leste"
+    }
+  },
+  "CYM": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/cayman-islands-travel-advisory.html",
+      "updatedAt": "2026-05-20T00:00:00Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/cayman-islands",
+      "updatedAt": "2026-09-24"
+    }
+  },
   "ATG": {
     "us": {
       "level": 1,
@@ -2797,7 +2300,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.dma.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/dominica-travel-advisory.html",
       "updatedAt": "2026-05-19T00:00:00Z"
     },
     "uk": {
@@ -2813,6 +2316,35 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/dominica",
       "updatedAt": "2026-09-24"
+    }
+  },
+  "CHL": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/chile-travel-advisory.html",
+      "updatedAt": "2026-05-19T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/chile",
+      "updatedAt": "2026-08-18T22:18:12Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/chile",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/chile"
     }
   },
   "HRV": {
@@ -2849,7 +2381,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.swe.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/sweden-travel-advisory.html",
       "updatedAt": "2026-05-17T00:00:00Z"
     },
     "uk": {
@@ -2931,41 +2463,12 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/sudan"
     }
   },
-  "SVN": {
-    "us": {
-      "level": 1,
-      "text": "Exercise Normal Precautions",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.svn.html",
-      "updatedAt": "2026-05-14T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/slovenia",
-      "updatedAt": "2026-08-11T09:22:42Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/slovenia",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/europe/slovenia"
-    }
-  },
   "CMR": {
     "us": {
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.cmr.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/cameroon-travel-advisory.html",
       "updatedAt": "2026-05-14T00:00:00Z"
     },
     "uk": {
@@ -2994,7 +2497,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nam.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/namibia-travel-advisory.html",
       "updatedAt": "2026-05-14T00:00:00Z"
     },
     "uk": {
@@ -3016,6 +2519,35 @@
       "text": "Exercise normal safety precautions",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/africa/namibia"
+    }
+  },
+  "SVN": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/slovenia-travel-advisory.html",
+      "updatedAt": "2026-05-14T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/slovenia",
+      "updatedAt": "2026-08-11T09:22:42Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/slovenia",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/europe/slovenia"
     }
   },
   "BRN": {
@@ -3041,41 +2573,12 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "MWI": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mwi.html",
-      "updatedAt": "2026-05-13T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/malawi",
-      "updatedAt": "2026-07-03T09:59:53Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/malawi",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/africa/malawi"
-    }
-  },
   "NIC": {
     "us": {
       "level": 3,
       "text": "Reconsider Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nic.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/nicaragua-travel-advisory.html",
       "updatedAt": "2026-05-13T00:00:00Z"
     },
     "uk": {
@@ -3099,12 +2602,41 @@
       "url": "https://www.smartraveller.gov.au/destinations/americas/nicaragua"
     }
   },
+  "RWA": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/rwanda-travel-advisory.html",
+      "updatedAt": "2026-05-10T00:00:00Z"
+    },
+    "uk": {
+      "level": 2,
+      "text": "Exercise caution in some areas — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/rwanda",
+      "updatedAt": "2026-09-04T09:15:14Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/rwanda",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/rwanda"
+    }
+  },
   "MMR": {
     "us": {
       "level": 4,
       "text": "Do Not Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.mmr.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/burma-travel-advisory.html",
       "updatedAt": "2026-05-07T00:00:00Z"
     },
     "uk": {
@@ -3191,7 +2723,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.nzl.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/new-zealand-travel-advisory.html",
       "updatedAt": "2026-04-28T00:00:00Z"
     },
     "uk": {
@@ -3278,7 +2810,7 @@
       "level": 4,
       "text": "Do Not Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tcd.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/chad-travel-advisory.html",
       "updatedAt": "2026-04-27T00:00:00Z"
     },
     "uk": {
@@ -3336,7 +2868,7 @@
       "level": 3,
       "text": "Reconsider Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tto.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/trinidad-and-tobago-travel-advisory.html",
       "updatedAt": "2026-04-12T00:00:00Z"
     },
     "uk": {
@@ -3381,6 +2913,35 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/barbados",
       "updatedAt": "2026-09-24"
+    }
+  },
+  "OMN": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/oman-travel-advisory.html",
+      "updatedAt": "2026-04-08T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/oman",
+      "updatedAt": "2026-07-22T12:46:33Z"
+    },
+    "ca": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/oman",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 3,
+      "text": "Reconsider your need to travel",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/middle-east/oman"
     }
   },
   "LUX": {
@@ -3580,6 +3141,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/ireland"
     }
   },
+  "VEN": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/venezuela-travel-advisory.html",
+      "updatedAt": "2026-03-18T00:00:00Z"
+    },
+    "uk": {
+      "level": 3,
+      "text": "Advise against all but essential travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/venezuela",
+      "updatedAt": "2026-09-02T14:49:14Z"
+    },
+    "ca": {
+      "level": 4,
+      "text": "Avoid all travel",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/venezuela",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/venezuela"
+    }
+  },
   "FIN": {
     "us": {
       "level": 1,
@@ -3609,12 +3199,41 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/finland"
     }
   },
+  "SAU": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/saudi-arabia-travel-advisory.html",
+      "updatedAt": "2026-03-12T00:00:00Z"
+    },
+    "uk": {
+      "level": 3,
+      "text": "Advise against all but essential travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/saudi-arabia",
+      "updatedAt": "2026-09-20T19:23:47Z"
+    },
+    "ca": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/saudi-arabia",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 3,
+      "text": "Reconsider your need to travel",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/middle-east/saudi-arabia"
+    }
+  },
   "GTM": {
     "us": {
       "level": 3,
       "text": "Reconsider Travel",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.gtm.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/guatemala-travel-advisory.html",
       "updatedAt": "2026-03-11T00:00:00Z"
     },
     "uk": {
@@ -3636,35 +3255,6 @@
       "text": "Exercise a high degree of caution",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/americas/guatemala"
-    }
-  },
-  "BLZ": {
-    "us": {
-      "level": 2,
-      "text": "Exercise Increased Caution",
-      "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.blz.html",
-      "updatedAt": "2026-03-11T00:00:00Z"
-    },
-    "uk": {
-      "level": 1,
-      "text": "No specific advisory — see latest advice",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/belize",
-      "updatedAt": "2026-06-12T09:40:30Z"
-    },
-    "ca": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/belize",
-      "updatedAt": "2026-09-24"
-    },
-    "au": {
-      "level": 2,
-      "text": "Exercise a high degree of caution",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/americas/belize"
     }
   },
   "SGP": {
@@ -3701,7 +3291,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.tgo.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/togo-travel-advisory.html",
       "updatedAt": "2026-03-08T00:00:00Z"
     },
     "uk": {
@@ -3777,6 +3367,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/guinea"
     }
   },
+  "MWI": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/malawi-travel-advisory.html",
+      "updatedAt": "2026-02-24T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/malawi",
+      "updatedAt": "2026-07-03T09:59:53Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/malawi",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/malawi"
+    }
+  },
   "MYS": {
     "us": {
       "level": 1,
@@ -3835,6 +3454,15 @@
       "url": "https://www.smartraveller.gov.au/destinations/asia/afghanistan"
     }
   },
+  "CIV": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/cote-d-ivoire-travel-advisory.html",
+      "updatedAt": "2026-02-17T00:00:00Z"
+    }
+  },
   "SVK": {
     "us": {
       "level": 1,
@@ -3869,7 +3497,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.kgz.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/the-kyrgyz-republic-travel-advisory.html",
       "updatedAt": "2026-02-09T00:00:00Z"
     },
     "uk": {
@@ -4026,7 +3654,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.ben.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/benin-travel-advisory.html",
       "updatedAt": "2026-01-06T00:00:00Z"
     },
     "uk": {
@@ -4233,7 +3861,7 @@
       "level": 2,
       "text": "Exercise Increased Caution",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.lbr.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/liberia-travel-advisory.html",
       "updatedAt": "2025-12-10T00:00:00Z"
     },
     "uk": {
@@ -4731,6 +4359,64 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/armenia"
     }
   },
+  "KHM": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/cambodia-travel-advisory.html",
+      "updatedAt": "2025-07-24T00:00:00Z"
+    },
+    "uk": {
+      "level": 2,
+      "text": "Exercise caution in some areas — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/cambodia",
+      "updatedAt": "2026-03-19T14:03:23Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/cambodia",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/cambodia"
+    }
+  },
+  "LBY": {
+    "us": {
+      "level": 4,
+      "text": "Do Not Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/libya-travel-advisory.html",
+      "updatedAt": "2025-07-15T00:00:00Z"
+    },
+    "uk": {
+      "level": 3,
+      "text": "Advise against all but essential travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/libya",
+      "updatedAt": "2026-07-21T09:00:09Z"
+    },
+    "ca": {
+      "level": 4,
+      "text": "Avoid all travel",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/libya",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/libya"
+    }
+  },
   "EGY": {
     "us": {
       "level": 2,
@@ -4789,6 +4475,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/asia/india"
     }
   },
+  "MOZ": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/mozambique-travel-advisory.html",
+      "updatedAt": "2025-06-15T00:00:00Z"
+    },
+    "uk": {
+      "level": 3,
+      "text": "Advise against all but essential travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/mozambique",
+      "updatedAt": "2026-08-20T13:50:43Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/mozambique",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/mozambique"
+    }
+  },
   "DOM": {
     "us": {
       "level": 2,
@@ -4823,7 +4538,7 @@
       "level": 1,
       "text": "Exercise Normal Precautions",
       "source": "US State Department",
-      "url": "https://travel.state.gov/content/tsg_aem/us/en/home/international-travel/travel-advisories/destination.pol.html",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/poland-travel-advisory.html",
       "updatedAt": "2025-06-04T00:00:00Z"
     },
     "uk": {
@@ -4845,6 +4560,29 @@
       "text": "Exercise normal safety precautions",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/europe/poland"
+    }
+  },
+  "AUS": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/australia-travel-advisory.html",
+      "updatedAt": "2025-05-29T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/australia",
+      "updatedAt": "2026-03-19T14:06:09Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/australia",
+      "updatedAt": "2026-09-24"
     }
   },
   "FRA": {
@@ -4986,6 +4724,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/asia/tajikistan"
     }
   },
+  "PER": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/peru-travel-advisory.html",
+      "updatedAt": "2025-05-15T00:00:00Z"
+    },
+    "uk": {
+      "level": 2,
+      "text": "Exercise caution in some areas — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/peru",
+      "updatedAt": "2026-06-22T22:35:12Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/peru",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/peru"
+    }
+  },
   "JPN": {
     "us": {
       "level": 1,
@@ -5042,6 +4809,64 @@
       "text": "Exercise normal safety precautions",
       "source": "Australian Government",
       "url": "https://www.smartraveller.gov.au/destinations/europe/germany"
+    }
+  },
+  "GUY": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/guyana-travel-advisory.html",
+      "updatedAt": "2025-05-11T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/guyana",
+      "updatedAt": "2025-12-30T14:37:59Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/guyana",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/guyana"
+    }
+  },
+  "PHL": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/philippines-travel-advisory.html",
+      "updatedAt": "2025-05-07T00:00:00Z"
+    },
+    "uk": {
+      "level": 3,
+      "text": "Advise against all but essential travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/philippines",
+      "updatedAt": "2026-07-15T08:55:25Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/philippines",
+      "updatedAt": "2026-09-25"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/asia/philippines"
     }
   },
   "CUB": {
@@ -5176,6 +5001,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/solomon-islands"
     }
   },
+  "MAR": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/morocco-travel-advisory.html",
+      "updatedAt": "2025-04-20T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/morocco",
+      "updatedAt": "2026-08-19T11:00:36Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/morocco",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/africa/morocco"
+    }
+  },
   "GEO": {
     "us": {
       "level": 1,
@@ -5263,6 +5117,35 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/north-macedonia"
     }
   },
+  "HND": {
+    "us": {
+      "level": 3,
+      "text": "Reconsider Travel",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/honduras-travel-advisory.html",
+      "updatedAt": "2024-12-09T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/honduras",
+      "updatedAt": "2026-07-29T15:40:19Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/honduras",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/honduras"
+    }
+  },
   "TUV": {
     "us": {
       "level": 1,
@@ -5307,6 +5190,35 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/kiribati",
       "updatedAt": "2026-09-24"
+    }
+  },
+  "TON": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/tonga-travel-advisory.html",
+      "updatedAt": "2024-12-01T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/tonga",
+      "updatedAt": "2026-03-19T14:02:58Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/tonga",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/pacific/tonga"
     }
   },
   "PYF": {
@@ -5451,6 +5363,74 @@
       "url": "https://www.smartraveller.gov.au/destinations/europe/denmark"
     }
   },
+  "ABW": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/aruba-travel-advisory.html",
+      "updatedAt": "2024-08-18T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/aruba",
+      "updatedAt": "2026-07-07T13:03:43Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/aruba",
+      "updatedAt": "2026-09-24"
+    }
+  },
+  "SXM": {
+    "us": {
+      "level": 1,
+      "text": "Exercise Normal Precautions",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/sint-maarten-travel-advisory.html",
+      "updatedAt": "2024-08-18T00:00:00Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/sint-maarten",
+      "updatedAt": "2026-09-24"
+    }
+  },
+  "NLD": {
+    "us": {
+      "level": 2,
+      "text": "Exercise Increased Caution",
+      "source": "US State Department",
+      "url": "https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories/netherlands-travel-advisory.html",
+      "updatedAt": "2024-08-08T00:00:00Z"
+    },
+    "uk": {
+      "level": 1,
+      "text": "No specific advisory — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/netherlands",
+      "updatedAt": "2026-08-11T09:20:34Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/netherlands",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/europe/netherlands"
+    }
+  },
   "ZMB": {
     "us": {
       "level": 1,
@@ -5538,6 +5518,28 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/zimbabwe"
     }
   },
+  "BRA": {
+    "uk": {
+      "level": 2,
+      "text": "Exercise caution in some areas — see latest advice",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/brazil",
+      "updatedAt": "2026-09-09T09:06:01Z"
+    },
+    "ca": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/brazil",
+      "updatedAt": "2026-09-24"
+    },
+    "au": {
+      "level": 2,
+      "text": "Exercise a high degree of caution",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/americas/brazil"
+    }
+  },
   "ESH": {
     "uk": {
       "level": 3,
@@ -5547,26 +5549,26 @@
       "updatedAt": "2026-06-29T13:34:01Z"
     }
   },
-  "TON": {
+  "BLZ": {
     "uk": {
       "level": 1,
       "text": "No specific advisory — see latest advice",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/tonga",
-      "updatedAt": "2026-03-19T14:02:58Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/belize",
+      "updatedAt": "2026-06-12T09:40:30Z"
     },
     "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
+      "level": 2,
+      "text": "Exercise a high degree of caution",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/tonga",
+      "url": "https://travel.gc.ca/destinations/belize",
       "updatedAt": "2026-09-24"
     },
     "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
+      "level": 2,
+      "text": "Exercise a high degree of caution",
       "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/pacific/tonga"
+      "url": "https://www.smartraveller.gov.au/destinations/americas/belize"
     }
   },
   "MCO": {
@@ -5650,21 +5652,21 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/cook-islands"
     }
   },
-  "GIB": {
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/gibraltar",
-      "updatedAt": "2026-09-24"
-    }
-  },
   "FLK": {
     "ca": {
       "level": 1,
       "text": "Exercise normal security precautions",
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/falkland-islands",
+      "updatedAt": "2026-09-24"
+    }
+  },
+  "GIB": {
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/gibraltar",
       "updatedAt": "2026-09-24"
     }
   },
@@ -5707,21 +5709,21 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "STP": {
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/sao-tome-and-principe",
-      "updatedAt": "2026-09-24"
-    }
-  },
   "MAF": {
     "ca": {
       "level": 1,
       "text": "Exercise normal security precautions",
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/saint-martin",
+      "updatedAt": "2026-09-24"
+    }
+  },
+  "STP": {
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/sao-tome-and-principe",
       "updatedAt": "2026-09-24"
     }
   },
