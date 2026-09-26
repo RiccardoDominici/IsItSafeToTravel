@@ -1059,3 +1059,65 @@ export function buildMethodologyDatasetJsonLd(lang: Lang): Record<string, unknow
     distribution: SITE_DATASET_DISTRIBUTION,
   };
 }
+
+/**
+ * Build JSON-LD for the /community-vs-data/ page (route key `community-vs-data`,
+ * 2026-09-26 visibility-pages batch).
+ * @graph = WebPage (dateModified = today's snapshot date) + BreadcrumbList (same
+ * pattern as buildCitePageJsonLd — the visible trail is ALSO rendered by
+ * Breadcrumb.astro, which emits its own separate BreadcrumbList script; that
+ * duplication is the established convention on this site, not a bug) +
+ * ItemList (the gap-sorted ranking). No FAQPage: this page has no visible FAQ.
+ *
+ * datePublished is pinned to this page's real ship date, NOT the site-wide
+ * '2026-03-19' launch constant every other builder in this file uses — those
+ * pages genuinely existed since launch; this one did not, and claiming
+ * otherwise would be a fabricated date on a YMYL site.
+ */
+export function buildCommunityVsDataJsonLd(
+  title: string,
+  description: string,
+  canonicalUrl: string,
+  lang: Lang,
+  breadcrumbItems: { name: string; url: string }[],
+  rankedItems: { name: string; url: string }[],
+  dateModified?: string,
+): Record<string, unknown> {
+  return {
+    '@context': 'https://schema.org',
+    '@graph': [
+      {
+        '@type': 'WebPage',
+        '@id': canonicalUrl,
+        url: canonicalUrl,
+        name: title,
+        description,
+        inLanguage: localeMap[lang],
+        isPartOf: { '@id': WEBSITE_ID },
+        ...(dateModified && { dateModified, datePublished: '2026-09-26' }),
+      },
+      {
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbItems.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          item: item.url,
+        })),
+      },
+      {
+        '@type': 'ItemList',
+        '@id': `${canonicalUrl}#itemlist`,
+        itemListOrder: 'https://schema.org/ItemListOrderDescending',
+        name: title,
+        numberOfItems: rankedItems.length,
+        itemListElement: rankedItems.map((item, index) => ({
+          '@type': 'ListItem',
+          position: index + 1,
+          name: item.name,
+          url: item.url,
+        })),
+      },
+    ],
+  };
+}
