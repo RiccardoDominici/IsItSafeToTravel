@@ -1076,7 +1076,7 @@ const methodologyDatasetNames: Record<Lang, string> = {
   fr: 'Scores de sécurité mondiaux IsItSafeToTravel',
   pt: 'Pontuações de segurança globais IsItSafeToTravel',
   zh: 'IsItSafeToTravel 全球安全评分',
-  de: 'IsItSafeToTravel Globale Sicherheits-Scores',
+  de: 'IsItSafeToTravel globale Sicherheits-Scores',
 };
 const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
   en: (n) => `Daily updated composite safety scores for ${n} countries, aggregating ${SOURCE_COUNT_DISPLAY} public data sources.`,
