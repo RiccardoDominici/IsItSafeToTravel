@@ -1,6 +1,6 @@
 # IsItSafeToTravel.org
 
-> Free, open-source travel safety platform providing composite safety scores for 248 countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
+> Free, independently run travel safety platform providing composite safety scores for 248 countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
 
 ## Main Pages
 
@@ -30,8 +30,8 @@
 - [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
 - [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All 248 countries with composite score, pillar scores, indicators, and government advisories — updated daily
 - Scores updated daily via automated GitHub Actions pipeline
-- Sources: Global Peace Index (GPI), INFORM Risk Index, ReliefWeb, GDACS, US/UK/CA/AU government travel advisories
-- Composite scoring uses weighted average across 5 safety pillars
+- Sources: government travel advisories, Global Peace Index (GPI), World Bank intentional-homicide rate, INFORM Risk Index, UCDP conflict-event data, V-Dem, ReliefWeb, GDACS
+- Composite scoring uses an uncertainty-weighted (Bayesian shrinkage) weighted geometric mean across 5 safety pillars, not a simple average — a single very-low pillar pulls the composite down more than an average would
 - All data is from publicly available sources, licensed CC BY-NC 4.0
 
 ## Full Content
@@ -40,8 +40,16 @@
 
 ## Languages
 
-Available in: [English](/en/), [Italian](/it/), [Spanish](/es/), [French](/fr/), [Portuguese](/pt/), [Chinese](/zh/), [German](/de/)
+This site is fully translated into 7 languages; every country page exists in all of them at a locale-specific URL (path segments like "country" are localized too, e.g. "paese" in Italian, "land" in German — swap the ISO3 code in any link below to reach a different country in that language).
 
-## Open Source
+- **English**: [Home](https://isitsafetotravel.org/en/) · [Japan example](https://isitsafetotravel.org/en/country/jpn/)
+- **Italian**: [Home](https://isitsafetotravel.org/it/) · [Japan example](https://isitsafetotravel.org/it/paese/jpn/)
+- **Spanish**: [Home](https://isitsafetotravel.org/es/) · [Japan example](https://isitsafetotravel.org/es/pais/jpn/)
+- **French**: [Home](https://isitsafetotravel.org/fr/) · [Japan example](https://isitsafetotravel.org/fr/pays/jpn/)
+- **Portuguese**: [Home](https://isitsafetotravel.org/pt/) · [Japan example](https://isitsafetotravel.org/pt/pais/jpn/)
+- **Chinese**: [Home](https://isitsafetotravel.org/zh/) · [Japan example](https://isitsafetotravel.org/zh/country/jpn/)
+- **German**: [Home](https://isitsafetotravel.org/de/) · [Japan example](https://isitsafetotravel.org/de/land/jpn/)
 
-- Source code: https://github.com/RiccardoDominici/IsItSafeToTravel
+## Source Code
+
+- Publicly viewable (not open-source licensed — see the repository for terms): https://github.com/RiccardoDominici/IsItSafeToTravel
