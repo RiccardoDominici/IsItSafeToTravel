@@ -111,8 +111,34 @@
  *     emit news. DATA_REVISION_SINCE stays 2026-09-26: every cache from that date on was
  *     written by rev-4 code for all other issuers, and HK/CH caches from before the fix are
  *     far below the new high-water marks, so the floor check can never restore them.
+ *   6 (2026-09-26) — regional warnings were being promoted to a whole-country "do not travel": ten
+ *     parsers read a warning about ONE region (a border strip, a separatist territory, a single
+ *     province) as level 4 for the entire country, inflating the advisory consensus of popular
+ *     destinations. Found by comparing every issuer's level 4s against the median of the other
+ *     governments for the same country, then checked sentence by sentence against the live sources:
+ *       - AT: BMEIA's `securityPartial` peak was maxed with the country level; now the page's own
+ *         "Rest des Landes" level is read (a partial warning alone caps at 2). L4 40 -> 17
+ *         (Thailand, Turkey, Egypt, Morocco, India, Kenya... were all regional).
+ *       - HU: KKM's multi-value badge lists every tier on the page; the country's own residual tier is
+ *         now read from the body. L4 35 -> 28.
+ *       - JP: MOFA only publishes per-region levels and the parser took the worst region; sub-national
+ *         entries now cap at 2 unless the country-wide catch-all is higher. L4 34 -> 14.
+ *       - NZ: now reads SafeTravel's own structured overall `adviceLevel` (coverage 14 -> 220).
+ *       - TW: one table row per alert; the country's bare/catch-all row now wins over regional rows
+ *         (coverage 166 -> 216; YEM 3 -> 4 was under-counted via Saudi Arabia's row).
+ *       - IT: border/exclave/separatist wording, "presenti a qualsiasi titolo", parenthetical mentions
+ *         of other countries (Mauritania's text bans Mali); Guinea's "massima prudenza negli
+ *         spostamenti" is now 2, not a fallback 1. L4 20 -> 11.
+ *       - ES: zone markers (península, anaphoric "la zona", glued headings). L4 22 -> 17.
+ *       - FR: the ±120-char window crossed section, exception and country boundaries. L4 18 -> 15.
+ *       - BE: Liberia's "voyager seul à l'intérieur du pays" (a manner tip) no longer reads as a
+ *         whole-country verdict. RS: Panama's Bocas del Toro-only warning. SG: Tajikistan's border /
+ *         Gorno-Badakhshan warning. Each 4 -> 2 or 3.
+ *     Every level 4 that still sits against a calm peer median has a quoted country-wide sentence.
+ *     Scores move for many countries because our inputs were wrong, not because anything changed on
+ *     the ground — bumped so that run emits no news, like revs 2-5.
  */
-export const DATA_REVISION = 5;
+export const DATA_REVISION = 6;
 
 /**
  * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes
