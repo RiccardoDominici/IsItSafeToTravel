@@ -147,11 +147,15 @@ function main() {
   lines.push("");
   lines.push("### Rankings & Guides");
   lines.push("");
+  lines.push("- [Travel Safety Index](https://isitsafetotravel.org/en/travel-safety-index/): The complete daily index — every country with enough data, ranked, with the 5 pillar scores, map and CSV/JSON download");
   lines.push("- [Safest Countries](https://isitsafetotravel.org/en/safest-countries/): Ranked list of the safest countries to travel right now");
   lines.push("- [Most Dangerous Countries](https://isitsafetotravel.org/en/most-dangerous-countries/): Ranked list of the highest-risk countries");
   lines.push("- [Safest Countries for Families](https://isitsafetotravel.org/en/safest-for-families/): Family-friendly safe destinations");
   lines.push("- [Safest Countries for Solo Travelers](https://isitsafetotravel.org/en/safest-for-solo-travelers/): Best-rated destinations for solo travel");
   lines.push("- [Countries to Avoid](https://isitsafetotravel.org/en/countries-to-avoid/): Destinations with active 'Do Not Travel' advisories");
+  lines.push("- [Government Travel Advisories](https://isitsafetotravel.org/en/government-travel-advisories/): Each government's current advisory list on a common 1-4 scale, one page per government");
+  lines.push("- [Where Governments Disagree](https://isitsafetotravel.org/en/where-governments-disagree/): Countries on which governments' advisory levels diverge most, and which governments are the outliers");
+  lines.push("- [Community vs. Data](https://isitsafetotravel.org/en/community-vs-data/): How travellers' own ratings compare with the data-driven score, country by country");
   lines.push("");
 
   // Methodology
@@ -351,11 +355,15 @@ function main() {
 
 ## Rankings & Guides
 
+- [Travel Safety Index](https://isitsafetotravel.org/en/travel-safety-index/): The complete daily index — every country with enough data, ranked, with pillar scores and CSV/JSON download
 - [Safest Countries](https://isitsafetotravel.org/en/safest-countries/): Ranked safest countries to travel right now
 - [Most Dangerous Countries](https://isitsafetotravel.org/en/most-dangerous-countries/): Ranked highest-risk countries
 - [Safest for Families](https://isitsafetotravel.org/en/safest-for-families/): Family-friendly safe destinations
 - [Safest for Solo Travelers](https://isitsafetotravel.org/en/safest-for-solo-travelers/): Best-rated destinations for solo travel
 - [Countries to Avoid](https://isitsafetotravel.org/en/countries-to-avoid/): Destinations with active "Do Not Travel" advisories
+- [Government Travel Advisories](https://isitsafetotravel.org/en/government-travel-advisories/): Each government's current advisory list on a common 1-4 scale
+- [Where Governments Disagree](https://isitsafetotravel.org/en/where-governments-disagree/): Countries on which governments' advisory levels diverge most
+- [Community vs. Data](https://isitsafetotravel.org/en/community-vs-data/): Travellers' own ratings compared with the data-driven score
 
 ## Sample Country Pages
 
@@ -368,6 +376,7 @@ function main() {
 ## Data
 
 - [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
+- [Full dataset (CSV)](https://isitsafetotravel.org/scores.csv): One row per country — score, band, 5 pillar scores, confidence, advisory count, data date
 - [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — updated daily
 - Scores updated daily via automated GitHub Actions pipeline
 - Sources: government travel advisories, Global Peace Index (GPI), World Bank intentional-homicide rate, INFORM Risk Index, UCDP conflict-event data, V-Dem, ReliefWeb, GDACS
