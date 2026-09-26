@@ -1,0 +1,10 @@
+---
+export const prerender = true;
+import GovernmentsDisagreePage from '../../../components/gov-advisories/GovernmentsDisagreePage.astro';
+import { loadLatestScores } from '../../../lib/scores';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'de';
+const countries = loadLatestScores();
+---
+<GovernmentsDisagreePage lang={lang} countries={countries} />

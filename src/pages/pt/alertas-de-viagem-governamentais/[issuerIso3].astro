@@ -1,0 +1,32 @@
+---
+export const prerender = true;
+import type { GetStaticPaths } from 'astro';
+import IssuerAdvisoryPage from '../../../components/gov-advisories/IssuerAdvisoryPage.astro';
+import { loadLatestScores } from '../../../lib/scores';
+import { getEligibleIssuers, getIssuerIso3 } from '../../../lib/advisory-views';
+import type { Lang } from '../../../i18n/ui';
+import type { AdvisoryCode } from '../../../pipeline/scoring/engine';
+
+const lang: Lang = 'pt';
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const countries = loadLatestScores();
+  const eligible = getEligibleIssuers(countries);
+  const paths: { params: { issuerIso3: string }; props: { code: AdvisoryCode } }[] = [];
+  for (const issuer of eligible) {
+    const iso3 = getIssuerIso3(issuer.code);
+    if (!iso3) continue; // defensive: every eligible issuer resolves in the live dataset
+    paths.push({ params: { issuerIso3: iso3.toLowerCase() }, props: { code: issuer.code } });
+  }
+  return paths;
+};
+
+interface Props {
+  code: AdvisoryCode;
+}
+
+// getStaticPaths props are not inferred by astro check -- cast once, same pattern as src/pages/en/country/[slug].astro.
+const { code } = Astro.props as unknown as Props;
+const countries = loadLatestScores();
+---
+<IssuerAdvisoryPage lang={lang} countries={countries} code={code} />

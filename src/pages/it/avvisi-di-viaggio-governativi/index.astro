@@ -1,0 +1,10 @@
+---
+export const prerender = true;
+import GovernmentAdvisoriesHub from '../../../components/gov-advisories/GovernmentAdvisoriesHub.astro';
+import { loadLatestScores } from '../../../lib/scores';
+import type { Lang } from '../../../i18n/ui';
+
+const lang: Lang = 'it';
+const countries = loadLatestScores();
+---
+<GovernmentAdvisoriesHub lang={lang} countries={countries} />
