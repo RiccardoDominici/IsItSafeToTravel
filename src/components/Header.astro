@@ -16,7 +16,16 @@ const { lang, currentPath } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
 const nx = navExtraCopy[lang];
-const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
+// Shared link classes -- desktop dropdown items and mobile menu items reuse
+// the same look so the two never drift apart (2026-09-26 restructure).
+const itemClass = 'rounded px-2.5 py-1.5 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700';
+const emphasisedItemClass = 'rounded px-2.5 py-1.5 text-sm font-semibold text-sand-800 dark:text-sand-100 hover:bg-sand-100 dark:hover:bg-sand-700';
+// Contrast fix (2026-09-26, contrast agent's measurement pass): sand-400/500
+// on these backgrounds fails WCAG AA for small text (2.5-2.7:1 light,
+// 3.4-4.4:1 dark) -- sand-600 light / sand-400 dark clears it in both modes.
+const groupHeadingClass = 'px-2.5 pb-1 text-[11px] font-semibold uppercase tracking-wide text-sand-600 dark:text-sand-400';
+const mobileItemClass = 'block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700';
+const mobileGroupHeadingClass = 'block px-4 py-1 text-xs font-semibold text-sand-600 dark:text-sand-400 uppercase';
 ---
 
 <header class="bg-sand-50/80 dark:bg-sand-900/80 backdrop-blur-sm border-b border-sand-200 dark:border-sand-700 sticky top-0 z-50">
@@ -49,68 +58,57 @@ const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régi
       >
         {t('nav.compare')}
       </a>
-      {/* Rankings dropdown */}
-      <div class="relative group">
+
+      {/* Rankings dropdown -- a compact two-column panel (2026-09-26 restructure,
+          owner feedback: the old single-column list mixing long SEO titles with
+          short labels had grown too cluttered). Opens on hover AND on keyboard
+          focus (group-focus-within, not just group-hover -- the previous
+          hover-only version was unreachable by keyboard, since a `hidden`
+          (display:none) panel can't itself receive focus). aria-expanded is
+          kept in sync by the tiny script below, mirroring Search.astro's own
+          toggle pattern elsewhere in this file. */}
+      <div class="relative group" id="rankings-dropdown">
         <button
+          id="rankings-trigger"
+          aria-expanded="false"
+          aria-controls="rankings-panel"
           class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2 gap-1"
         >
           {t('nav.rankings' as any)}
           <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"></path></svg>
         </button>
-        <div class="absolute left-0 top-full pt-1 hidden group-hover:block z-50">
-          <div class="w-56 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-2">
-            <a href={`/${lang}/${r['travel-safety-index']}/`} class="block px-4 py-2 text-sm font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {nx.travelSafetyIndex}
-            </a>
-            <hr class="my-1 border-sand-200 dark:border-sand-700" />
-            <a href={`/${lang}/${r['safest-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.safest_countries.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['most-dangerous-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.dangerous_countries.title' as any)}
-            </a>
-            <hr class="my-1 border-sand-200 dark:border-sand-700" />
-            <a href={`/${lang}/${r['regions']}/`} class="block px-4 py-2 text-sm font-medium text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {regionsLabel}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['europe']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.europe.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['asia']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.asia.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['africa']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.africa.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['americas']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.americas.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['oceania']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.oceania.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['regions']}/${r['middle-east']}/`} class="block px-4 py-1.5 text-sm text-sand-600 dark:text-sand-300 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.region.middle_east.title' as any)}
-            </a>
-            <hr class="my-1 border-sand-200 dark:border-sand-700" />
-            <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.solo_travelers.title' as any)}
-            </a>
-            <a href={`/${lang}/${r['safest-for-families']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {t('hub.families.title' as any)}
-            </a>
-            <hr class="my-1 border-sand-200 dark:border-sand-700" />
-            <a href={`/${lang}/${r['government-advisories']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {nx.governmentAdvisories}
-            </a>
-            <a href={`/${lang}/${r['governments-disagree']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {nx.governmentsDisagree}
-            </a>
-            <a href={`/${lang}/${r['community-vs-data']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-              {nx.communityVsData}
-            </a>
+        <div
+          id="rankings-panel"
+          class="absolute left-0 top-full pt-1 hidden group-hover:block group-focus-within:block z-50"
+        >
+          <div class="w-[27rem] max-w-[90vw] bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg p-3 grid grid-cols-2 gap-x-4">
+            {/* Column 1 -- Rankings (7 items, "Full ranking" first + emphasised) */}
+            <div class="flex flex-col">
+              <span class={groupHeadingClass}>{t('nav.rankings' as any)}</span>
+              <a href={`/${lang}/${r['travel-safety-index']}/`} class={emphasisedItemClass}>{nx.fullRanking}</a>
+              <a href={`/${lang}/${r['safest-countries']}/`} class={itemClass}>{nx.safestCountries}</a>
+              <a href={`/${lang}/${r['most-dangerous-countries']}/`} class={itemClass}>{nx.mostDangerousCountries}</a>
+              <a href={`/${lang}/${r['countries-to-avoid']}/`} class={itemClass}>{nx.countriesToAvoid}</a>
+              <a href={`/${lang}/${r['regions']}/`} class={itemClass}>{nx.byRegion}</a>
+              <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class={itemClass}>{nx.forSoloTravelers}</a>
+              <a href={`/${lang}/${r['safest-for-families']}/`} class={itemClass}>{nx.forFamilies}</a>
+            </div>
+            {/* Column 2 -- Government advisories, then Travelers */}
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-col">
+                <span class={groupHeadingClass}>{nx.governmentGroup}</span>
+                <a href={`/${lang}/${r['government-advisories']}/`} class={itemClass}>{nx.allGovernmentsCompared}</a>
+                <a href={`/${lang}/${r['governments-disagree']}/`} class={itemClass}>{nx.whereTheyDisagree}</a>
+              </div>
+              <div class="flex flex-col">
+                <span class={groupHeadingClass}>{nx.travelersGroup}</span>
+                <a href={`/${lang}/${r['community-vs-data']}/`} class={itemClass}>{nx.whatTravelersSay}</a>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <a
         href={`/${lang}/${r.about}/`}
         class="text-sm text-sand-600 dark:text-sand-300 hover:text-sand-900 dark:hover:text-sand-50 transition-colors inline-flex items-center min-h-[44px] px-2"
@@ -136,59 +134,69 @@ const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régi
           </svg>
         </summary>
         <nav
-          class="absolute right-0 top-12 w-48 bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-2"
+          class="absolute right-0 top-12 w-56 max-w-[90vw] max-h-[75vh] overflow-y-auto bg-sand-50 dark:bg-sand-800 border border-sand-200 dark:border-sand-700 rounded-lg shadow-lg py-2"
           aria-label="Mobile navigation"
         >
-          <a
-            href={`/${lang}/`}
-            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
-          >
-            {t('nav.home')}
-          </a>
-          <a
-            href={`/${lang}/${r.methodology}/`}
-            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
-          >
-            {t('nav.methodology')}
-          </a>
-          <a
-            href={`/${lang}/${r.compare}/`}
-            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
-          >
-            {t('nav.compare')}
-          </a>
+          <a href={`/${lang}/`} class={mobileItemClass}>{t('nav.home')}</a>
+          <a href={`/${lang}/${r.methodology}/`} class={mobileItemClass}>{t('nav.methodology')}</a>
+          <a href={`/${lang}/${r.compare}/`} class={mobileItemClass}>{t('nav.compare')}</a>
+
           <hr class="my-1 border-sand-200 dark:border-sand-700" />
-          <span class="block px-4 py-1 text-xs font-semibold text-sand-400 dark:text-sand-500 uppercase">{t('nav.rankings' as any)}</span>
-          <a href={`/${lang}/${r['travel-safety-index']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {nx.travelSafetyIndex}
-          </a>
-          <a href={`/${lang}/${r['safest-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {t('hub.safest_countries.title' as any)}
-          </a>
-          <a href={`/${lang}/${r['most-dangerous-countries']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {t('hub.dangerous_countries.title' as any)}
-          </a>
-          <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {t('hub.solo_travelers.title' as any)}
-          </a>
-          <a href={`/${lang}/${r['regions']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {regionsLabel}
-          </a>
-          <a href={`/${lang}/${r['government-advisories']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {nx.governmentAdvisories}
-          </a>
-          <a href={`/${lang}/${r['community-vs-data']}/`} class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700">
-            {nx.communityVsData}
-          </a>
+          <span class={mobileGroupHeadingClass}>{t('nav.rankings' as any)}</span>
+          <a href={`/${lang}/${r['travel-safety-index']}/`} class={`${mobileItemClass} font-semibold`}>{nx.fullRanking}</a>
+          <a href={`/${lang}/${r['safest-countries']}/`} class={mobileItemClass}>{nx.safestCountries}</a>
+          <a href={`/${lang}/${r['most-dangerous-countries']}/`} class={mobileItemClass}>{nx.mostDangerousCountries}</a>
+          <a href={`/${lang}/${r['countries-to-avoid']}/`} class={mobileItemClass}>{nx.countriesToAvoid}</a>
+          <a href={`/${lang}/${r['regions']}/`} class={mobileItemClass}>{nx.byRegion}</a>
+          <a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class={mobileItemClass}>{nx.forSoloTravelers}</a>
+          <a href={`/${lang}/${r['safest-for-families']}/`} class={mobileItemClass}>{nx.forFamilies}</a>
+
           <hr class="my-1 border-sand-200 dark:border-sand-700" />
-          <a
-            href={`/${lang}/${r.about}/`}
-            class="block px-4 py-2 text-sm text-sand-700 dark:text-sand-200 hover:bg-sand-100 dark:hover:bg-sand-700"
-          >
-            {t('nav.about')}
-          </a>
+          <span class={mobileGroupHeadingClass}>{nx.governmentGroup}</span>
+          <a href={`/${lang}/${r['government-advisories']}/`} class={mobileItemClass}>{nx.allGovernmentsCompared}</a>
+          <a href={`/${lang}/${r['governments-disagree']}/`} class={mobileItemClass}>{nx.whereTheyDisagree}</a>
+
+          <hr class="my-1 border-sand-200 dark:border-sand-700" />
+          <span class={mobileGroupHeadingClass}>{nx.travelersGroup}</span>
+          <a href={`/${lang}/${r['community-vs-data']}/`} class={mobileItemClass}>{nx.whatTravelersSay}</a>
+
+          <hr class="my-1 border-sand-200 dark:border-sand-700" />
+          <a href={`/${lang}/${r.about}/`} class={mobileItemClass}>{t('nav.about')}</a>
         </nav>
       </details>
     </div>
   </div>
 </header>
+
+<script>
+  // Keeps the Rankings trigger's aria-expanded in sync with the CSS-driven
+  // open state (group-hover / group-focus-within in the markup above), so
+  // assistive tech gets an accurate announcement even though no JS is
+  // required for the panel to actually open/close (same
+  // dataset.jsInit + astro:after-swap guard pattern as Footer.astro's
+  // cookie-prefs-link script).
+  function initRankingsMenuA11y() {
+    const wrapper = document.getElementById('rankings-dropdown');
+    const trigger = document.getElementById('rankings-trigger');
+    if (!wrapper || !trigger || (wrapper as HTMLElement).dataset.jsInit === '1') return;
+    (wrapper as HTMLElement).dataset.jsInit = '1';
+
+    let hovering = false;
+    let focused = false;
+    function sync() {
+      trigger!.setAttribute('aria-expanded', hovering || focused ? 'true' : 'false');
+    }
+    wrapper.addEventListener('pointerenter', () => { hovering = true; sync(); });
+    wrapper.addEventListener('pointerleave', () => { hovering = false; sync(); });
+    wrapper.addEventListener('focusin', () => { focused = true; sync(); });
+    wrapper.addEventListener('focusout', (e) => {
+      if (!wrapper.contains((e as FocusEvent).relatedTarget as Node)) {
+        focused = false;
+        sync();
+      }
+    });
+  }
+
+  initRankingsMenuA11y();
+  document.addEventListener('astro:after-swap', initRankingsMenuA11y);
+</script>

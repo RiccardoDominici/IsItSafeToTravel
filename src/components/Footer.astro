@@ -12,17 +12,44 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
-const regionsLabel = ({ en: 'Regions', it: 'Regioni', es: 'Regiones', fr: 'Régions', pt: 'Regiões', zh: '地区', de: 'Regionen' } as Record<Lang, string>)[lang];
+const nx = navExtraCopy[lang];
 const apiLabel = ({ en: 'Data & API', it: 'Dati e API', es: 'Datos y API', fr: 'Données et API', pt: 'Dados e API', zh: '数据与 API', de: 'Daten & API' } as Record<Lang, string>)[lang];
 const citeLabel = ({ en: 'Cite this data', it: 'Cita questi dati', es: 'Citar datos', fr: 'Citer les données', pt: 'Citar dados', zh: '引用数据', de: 'Daten zitieren' } as Record<Lang, string>)[lang];
 // /news/ and /global-safety/ had exactly 1 inlink each (the homepage teaser widget only) —
 // absent from header AND footer, so no page but the homepage links back to them (2026-09
-// audit, IL-1). Labels follow the same component-local per-locale pattern as regionsLabel
-// above (no dedicated short-label i18n key exists yet); route slugs come from routes[lang].
+// audit, IL-1). Labels follow the same component-local per-locale pattern as the other
+// one-off labels below (no dedicated short-label i18n key exists yet); route slugs come
+// from routes[lang]. global-safety is grouped under "Rankings" below (2026-09-26 footer
+// reorganisation) rather than dropped: removing its only sitewide footer link would
+// recreate the exact IL-1 orphan-page problem this const was added to fix.
 const newsLabel = ({ en: 'News', it: 'Notizie', es: 'Noticias', fr: 'Actualités', pt: 'Notícias', zh: '新闻', de: 'Nachrichten' } as Record<Lang, string>)[lang];
 const globalSafetyLabel = ({ en: 'Global Safety', it: 'Sicurezza Globale', es: 'Seguridad Global', fr: 'Sécurité Mondiale', pt: 'Segurança Global', zh: '全球安全', de: 'Globale Sicherheit' } as Record<Lang, string>)[lang];
+// Footer-only column headings (2026-09-26 reorganisation: the first link row had
+// grown to a cluttered ~13-item single row -- split into 4 labelled columns,
+// reusing the same short nav-extra-copy labels as the Header.astro dropdown for
+// the items they share, so the two never say the same link two different ways).
+const governmentTravelersGroupLabel = ({ en: 'Governments & Travelers', it: 'Governi e viaggiatori', es: 'Gobiernos y viajeros', fr: 'Gouvernements et voyageurs', pt: 'Governos e viajantes', zh: '政府与旅行者', de: 'Regierungen & Reisende' } as Record<Lang, string>)[lang];
+const dataGroupLabel = ({ en: 'Data', it: 'Dati', es: 'Datos', fr: 'Données', pt: 'Dados', zh: '数据', de: 'Daten' } as Record<Lang, string>)[lang];
+const projectGroupLabel = ({ en: 'Project', it: 'Progetto', es: 'Proyecto', fr: 'Projet', pt: 'Projeto', zh: '项目', de: 'Projekt' } as Record<Lang, string>)[lang];
 const currentYear = new Date().getFullYear();
 const affiliateUrl = buildAffiliateUrl();
+
+const linkClass = 'text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors';
+// Contrast fix (2026-09-26, contrast agent's measurement pass): sand-400/500
+// on these backgrounds fails WCAG AA for small text (2.5-2.7:1 light,
+// 3.4-4.4:1 dark) -- sand-600 light / sand-400 dark clears it in both modes.
+const headingClass = 'text-xs font-semibold uppercase tracking-wide text-sand-600 dark:text-sand-400 mb-3';
+// The cookie-prefs <button> must look and space exactly like the <a> links
+// around it (owner feedback: visibly larger gaps around it and the item
+// after it). Root cause: global.css's sitewide 44px touch-target rule
+// (`a, button, ... { min-height: 44px }`) is unlayered CSS, so it beats any
+// Tailwind utility -- its own escape hatch (`p a, li a, span a, td a {
+// min-height: auto }`) only lists <a>, not <button>. Rather than touch
+// global.css (owned by the contrast workstream this round), grant this one
+// button the exact same exemption inline, where inline styles always win
+// regardless of layers.
+const linkButtonClass = `${linkClass} block p-0 m-0 border-0 bg-transparent appearance-none text-left cursor-pointer`;
+const linkButtonStyle = { minHeight: 'auto' };
 ---
 
 <footer class="bg-sand-100 dark:bg-sand-800 border-t border-sand-200 dark:border-sand-700 mt-auto">
@@ -32,125 +59,62 @@ const affiliateUrl = buildAffiliateUrl();
       {t('footer.disclaimer')}
     </p>
 
-    <!-- Links -->
-    <div class="flex flex-wrap gap-6 mb-6">
-      <a
-        href={`/${lang}/${r['safest-countries']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('hub.safest_countries.title' as any)}
-      </a>
-      <a
-        href={`/${lang}/${r['most-dangerous-countries']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('hub.dangerous_countries.title' as any)}
-      </a>
-      <a
-        href={`/${lang}/${r['regions']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {regionsLabel}
-      </a>
-      <a
-        href={`/${lang}/${r['travel-safety-index']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {navExtraCopy[lang].travelSafetyIndex}
-      </a>
-      <a
-        href={`/${lang}/${r['global-safety']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {globalSafetyLabel}
-      </a>
-      <a
-        href={`/${lang}/${r['government-advisories']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {navExtraCopy[lang].governmentAdvisories}
-      </a>
-      <a
-        href={`/${lang}/${r['governments-disagree']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {navExtraCopy[lang].governmentsDisagree}
-      </a>
-      <a
-        href={`/${lang}/${r['community-vs-data']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {navExtraCopy[lang].communityVsData}
-      </a>
-      <a
-        href={`/${lang}/${r['news']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {newsLabel}
-      </a>
-      <a
-        href={`/${lang}/${r['embed-badge']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('badge.title' as any)}
-      </a>
-      <a
-        href={`/${lang}/${r.methodology}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('footer.methodology')}
-      </a>
-      <a
-        href={`/${lang}/${r.about}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('footer.about')}
-      </a>
-      <a
-        href={`/${lang}/${r.legal}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('footer.legal')}
-      </a>
-      <button
-        type="button"
-        id="cookie-prefs-link"
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('cookie.prefs')}
-      </button>
-      <a
-        href={`/${lang}/${r.feedback}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('footer.feedback')}
-      </a>
-      <a
-        href={`/${lang}/${r.sources}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('footer.sources')}
-      </a>
-      <a
-        href={`/${lang}/${r['api']}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {apiLabel}
-      </a>
-      <a
-        href={`/${lang}/${r.cite}/`}
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {citeLabel}
-      </a>
-      <a
-        href={affiliateUrl}
-        target="_blank"
-        rel="noopener noreferrer sponsored"
-        class="text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors"
-      >
-        {t('donate.travelpayouts_btn' as any)}
-      </a>
+    <!-- Link columns (2026-09-26: replaced a single cluttered ~13-link row with
+         4 labelled columns; stacks on mobile, no horizontal scroll) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-6">
+      <nav aria-labelledby="footer-heading-rankings">
+        <h2 id="footer-heading-rankings" class={headingClass}>{t('nav.rankings' as any)}</h2>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href={`/${lang}/${r['travel-safety-index']}/`} class={linkClass}>{nx.fullRanking}</a></li>
+          <li><a href={`/${lang}/${r['safest-countries']}/`} class={linkClass}>{nx.safestCountries}</a></li>
+          <li><a href={`/${lang}/${r['most-dangerous-countries']}/`} class={linkClass}>{nx.mostDangerousCountries}</a></li>
+          <li><a href={`/${lang}/${r['countries-to-avoid']}/`} class={linkClass}>{nx.countriesToAvoid}</a></li>
+          <li><a href={`/${lang}/${r['regions']}/`} class={linkClass}>{nx.byRegion}</a></li>
+          <li><a href={`/${lang}/${r['safest-for-solo-travelers']}/`} class={linkClass}>{nx.forSoloTravelers}</a></li>
+          <li><a href={`/${lang}/${r['safest-for-families']}/`} class={linkClass}>{nx.forFamilies}</a></li>
+          <li><a href={`/${lang}/${r['global-safety']}/`} class={linkClass}>{globalSafetyLabel}</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-heading-gov-travelers">
+        <h2 id="footer-heading-gov-travelers" class={headingClass}>{governmentTravelersGroupLabel}</h2>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href={`/${lang}/${r['government-advisories']}/`} class={linkClass}>{nx.allGovernmentsCompared}</a></li>
+          <li><a href={`/${lang}/${r['governments-disagree']}/`} class={linkClass}>{nx.whereTheyDisagree}</a></li>
+          <li><a href={`/${lang}/${r['community-vs-data']}/`} class={linkClass}>{nx.whatTravelersSay}</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-heading-data">
+        <h2 id="footer-heading-data" class={headingClass}>{dataGroupLabel}</h2>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href={`/${lang}/${r.methodology}/`} class={linkClass}>{t('footer.methodology')}</a></li>
+          <li><a href={`/${lang}/${r.sources}/`} class={linkClass}>{t('footer.sources')}</a></li>
+          <li><a href={`/${lang}/${r['api']}/`} class={linkClass}>{apiLabel}</a></li>
+          <li><a href={`/${lang}/${r.cite}/`} class={linkClass}>{citeLabel}</a></li>
+          <li><a href={`/${lang}/${r['embed-badge']}/`} class={linkClass}>{t('badge.title' as any)}</a></li>
+        </ul>
+      </nav>
+
+      <nav aria-labelledby="footer-heading-project">
+        <h2 id="footer-heading-project" class={headingClass}>{projectGroupLabel}</h2>
+        <ul class="space-y-2 list-none p-0 m-0">
+          <li><a href={`/${lang}/${r.about}/`} class={linkClass}>{t('footer.about')}</a></li>
+          <li><a href={`/${lang}/${r.feedback}/`} class={linkClass}>{t('footer.feedback')}</a></li>
+          <li><a href={`/${lang}/${r['news']}/`} class={linkClass}>{newsLabel}</a></li>
+          <li><a href={`/${lang}/${r.legal}/`} class={linkClass}>{t('footer.legal')}</a></li>
+          <li>
+            <button type="button" id="cookie-prefs-link" class={linkButtonClass} style={linkButtonStyle}>
+              {t('cookie.prefs')}
+            </button>
+          </li>
+          <li>
+            <a href={affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" class={linkClass}>
+              {t('donate.travelpayouts_btn' as any)}
+            </a>
+          </li>
+        </ul>
+      </nav>
     </div>
 
     <!-- Copyright -->
