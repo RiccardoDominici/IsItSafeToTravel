@@ -30,6 +30,11 @@ Thumbs.db
 # working file persisted across runs via actions/cache, never committed.
 .indexnow/
 
+# Monthly data-release assets (scripts/generate-data-release.ts /
+# .github/workflows/data-release.yml) — built fresh each run, attached to a
+# GitHub Release, never committed to the repo itself.
+release-assets/
+
 # Logs
 *.log
 npm-debug.log*

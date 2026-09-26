@@ -1,0 +1,76 @@
+name: Monthly Data Release
+
+on:
+  schedule:
+    # 08:00 UTC on the 2nd of each month — a couple of hours after the daily
+    # data pipeline (06:00 UTC, data-pipeline.yml) has had time to land, so the
+    # release always bundles a same-day snapshot rather than racing it.
+    - cron: '0 8 2 * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: master
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Builds release-assets/scores-<date>.csv + .json from data/scores/latest.json
+      # (scripts/generate-data-release.ts — shares its CSV column logic with the
+      # live /scores.csv endpoint via src/lib/dataset-csv.ts) and exposes
+      # date/csv_path/json_path/country_count as step outputs via $GITHUB_OUTPUT.
+      - name: Build dated CSV + JSON snapshot
+        id: build
+        run: npx tsx scripts/generate-data-release.ts
+
+      # Idempotent: a monthly cron can fire more than once for the same
+      # calendar date (manual re-run, retried job) — skip release creation
+      # entirely rather than fail or publish a duplicate tag.
+      - name: Check whether this month's release already exists
+        id: check
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="data-${{ steps.build.outputs.date }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "Release $TAG already exists — skipping (idempotent re-run)."
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        if: steps.check.outputs.exists == 'false'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "data-${{ steps.build.outputs.date }}" \
+            "${{ steps.build.outputs.csv_path }}" \
+            "${{ steps.build.outputs.json_path }}" \
+            --title "Travel safety data — ${{ steps.build.outputs.date }}" \
+            --notes "Full travel-safety dataset for ${{ steps.build.outputs.country_count }} countries, snapshot dated ${{ steps.build.outputs.date }}.
+
+          Licensed under [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/) — free to use, share and adapt for non-commercial purposes, with attribution to IsItSafeToTravel.org.
+
+          Two equivalent formats:
+          - \`scores-${{ steps.build.outputs.date }}.json\` — full nested dataset, same shape as https://isitsafetotravel.org/scores.json
+          - \`scores-${{ steps.build.outputs.date }}.csv\` — flat spreadsheet (iso3, name, score, band, 5 pillar scores, confidence, advisory-source count)
+
+          Ready-made citations: https://isitsafetotravel.org/en/cite-this-data/
+          Methodology: https://isitsafetotravel.org/en/methodology/"
