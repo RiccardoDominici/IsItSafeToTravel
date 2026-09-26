@@ -929,6 +929,23 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     'le pays', 'tout le pays', 'ensemble du pays', 'ensemble du territoire',
     'tout le territoire', 'interieur du pays',
   ];
+  // Repair 2026-09-26: "interieur du pays" (unlike "tout le pays"/"ensemble du
+  // territoire", which are unambiguous) can be a LOCATION adverbial for a
+  // manner- or activity-qualified safety tip ("don't do X when moving around
+  // domestically") rather than confirmation that the country ITSELF is the
+  // travel verdict's object ("don't come here at all"). Verified live on
+  // Liberia's real page: "Il est très fortement déconseillé de déplacer ou
+  // voyager SEUL à l'intérieur du pays, et ce quel que soit le moment de la
+  // journée" -- a solo-travel tip (Liberia's own name is never even mentioned
+  // in this sentence) that was wrongly confirming the whole country at
+  // level 4 via the generic "interieur du pays" fallback. Any of these
+  // qualifiers on the travel verb turns the sentence into advice about HOW/
+  // WHEN to move around, not WHETHER to go: "seul(e)" (alone -- Liberia's
+  // own case), "de nuit"/"la nuit"/"tombee de la nuit" (after dark), "par la
+  // route" (by road, as opposed to organised transport), "en dehors des"
+  // (outside of -- typically "outside of organised tours/main roads").
+  const BE_MANNER_QUALIFIER =
+    /\bseul(?:e|es|s)?\b|\bde nuit\b|\bla nuit\b|tombee de la nuit|\bpar la route\b|\ben dehors des?\b/;
   // "quitter"/"retourner" are unconditional travel acts (leaving/returning to a place IS the
   // travel act, not a separate one that needs a co-occurring "voyage"/"se rendre" to confirm --
   // see the South Sudan repair note above). "naviguer" (sail to/toward) is the same idea applied
@@ -1013,9 +1030,22 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
         // ASCII-only \b is safe here (unlike the SK repair's diacritic-\b trap).
         const countryNameConfirmed = new RegExp(`\\b${escapeRegexLiteral(countryFold)}\\b`).test(window);
         const mentionsOtherCountry = BE_OTHER_COUNTRY_NAMES.some((n) => n !== countryFold && window.includes(n));
+        // "interieur du pays" only counts as whole-country confirmation when the travel verb it
+        // qualifies has no manner/activity modifier of its own (see BE_MANNER_QUALIFIER) -- the
+        // other WHOLE_COUNTRY_PHRASES entries ("tout le pays", "ensemble du territoire", ...) are
+        // unambiguous regardless, so this check is scoped to that one phrase specifically. Tested
+        // against `cur` (the CURRENT sentence only), not the full look-back `window`: the qualifier
+        // has to be part of the SAME clause as "interieur du pays" for the "manner, not destination"
+        // reading to hold -- an unrelated manner word in the PRIOR sentence (a separate safety tip)
+        // must not veto a genuine whole-country confirmation in the current one.
+        const hasGenericWholeCountryPhrase = WHOLE_COUNTRY_PHRASES.some((p) => {
+          if (!window.includes(p)) return false;
+          if (p === 'interieur du pays' && cur.includes(p) && BE_MANNER_QUALIFIER.test(cur)) return false;
+          return true;
+        });
         const wholeCountryConfirmed = requireCountryNameOnly
           ? countryNameConfirmed
-          : countryNameConfirmed || (!mentionsOtherCountry && WHOLE_COUNTRY_PHRASES.some((p) => window.includes(p)));
+          : countryNameConfirmed || (!mentionsOtherCountry && hasGenericWholeCountryPhrase);
         const regionalHit = REGIONAL_WORDS.some((w) => window.includes(w));
 
         if (!wholeCountryConfirmed || regionalHit) sentenceLevel = 2;

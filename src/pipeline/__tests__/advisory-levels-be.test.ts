@@ -38,6 +38,32 @@ describe('normalizeBeLevel (BE/diplomatie.belgium.be "Sécurité générale" art
     assert.equal(normalizeBeLevel(text, 'Soudan du Sud'), 4);
   });
 
+  it('REGRESSION: Liberia\'s "voyager seul à l\'intérieur du pays" (a solo-travel manner tip, Liberia\'s own name never even mentioned in the sentence) must NOT escalate to Level 4 via the generic "interieur du pays" whole-country fallback', () => {
+    const text = [
+      'Depuis la fin de la guerre civile en 2003, la situation sécuritaire dans le pays s’est globalement améliorée et la mission de l\'ONU (MINUL) a pu quitter le pays en 2017.',
+      'La situation sécuritaire au Liberia est actuellement sous contrôle mais reste fragile et instable. Les rassemblements peuvent rapidement devenir violents et doivent être évités, et ce dans tout le pays.',
+      'Les voyages dans les zones frontalières avec la Côte d’Ivoire et la Sierra Leone sont déconseillés.',
+      'Le taux de criminalité au Libéria est élevé et celle-ci s’accompagne souvent de violence.',
+      "Il est très fortement déconseillé de déplacer ou voyager seul à l’intérieur du pays, et ce quel que soit le moment de la journée. Des attaques à main armée et des vols, à la tire et à l’intérieur des véhicules, sont possibles. Les déplacements après la tombée de la nuit sont à éviter, surtout à l’intérieur du pays.",
+      "Il est conseillé d'avoir toujours sur soi une preuve de son identité avec photo.",
+    ].join('\n');
+    const level = normalizeBeLevel(text, 'Libéria');
+    assert.notEqual(level, 4);
+    // The border-zone "déconseillés" sentence and the elevated-crime-rate sentence both cap at 2 --
+    // real content, correctly capped, not silently dropped to null either.
+    assert.equal(level, 2);
+  });
+
+  it('the plain manner-qualifier words alone (no "interieur du pays" nearby) do not suppress a GENUINE whole-country confirmation -- "seul" appearing elsewhere in the same window must not veto a "tout le pays" match', () => {
+    const text = [
+      'Sécurité',
+      "Il est fortement déconseillé de voyager seul la nuit dans les grandes villes. Par ailleurs, tout voyage dans le pays est actuellement déconseillé en raison de la guerre civile.",
+      'Criminalité',
+      'Autre bloc.',
+    ].join('\n');
+    assert.equal(normalizeBeLevel(text, 'Testland'), 3);
+  });
+
   it('Niger: whole-country "tout voyage au Niger est déconseillé" -> Level 3 (plain "déconseillé", no strong intensifier -- unaffected by the repair, existing pattern)', () => {
     const text = ['Sécurité', 'En raison de la situation actuelle, tout voyage au Niger est déconseillé.', 'Autre bloc.'].join('\n');
     assert.equal(normalizeBeLevel(text, 'Niger'), 3);
