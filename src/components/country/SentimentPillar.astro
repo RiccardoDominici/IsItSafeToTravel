@@ -30,16 +30,24 @@ const label = t('country.pillar.sentiment');
 // dead end, not an invitation to vote — the voting UI right below it is the
 // whole point of the section. No ui.ts edit in this fix round, so this is a
 // small component-local table (CitePage.astro / RegionsIndex.astro pattern).
+//
+// 2026-09-26 follow-up (SXO-06): the first version said only "no votes yet" —
+// it never explained WHAT a community score is or when it appears, so on a
+// low-traffic page it still read like a dead end. `body` names the real
+// mechanism (MIN_VOTE_FLOOR, never hardcoded) instead of a bare invitation.
 const emptyStateCopy: Record<Lang, { title: string; body: string }> = {
-  en: { title: 'Have you been here? Rate this destination', body: 'No community votes yet — be the first to say whether this score matches your experience.' },
-  it: { title: 'Sei stato qui? Vota questa destinazione', body: 'Nessun voto della community per ora — sii il primo a dire se questo punteggio corrisponde alla tua esperienza.' },
-  es: { title: '¿Has estado aquí? Valora este destino', body: 'Todavía no hay votos de la comunidad — sé el primero en decir si esta puntuación coincide con tu experiencia.' },
-  fr: { title: 'Vous y êtes déjà allé ? Notez cette destination', body: 'Aucun vote de la communauté pour l’instant — soyez le premier à dire si ce score correspond à votre expérience.' },
-  pt: { title: 'Já esteve aqui? Avalie este destino', body: 'Ainda não há votos da comunidade — seja o primeiro a dizer se esta pontuação combina com a sua experiência.' },
-  zh: { title: '去过这里吗？为这个目的地打分', body: '目前还没有社区投票——成为第一个告诉我们这个评分是否符合你的实际体验的人。' },
-  de: { title: 'Waren Sie schon hier? Bewerten Sie dieses Reiseziel', body: 'Noch keine Stimmen aus der Community — seien Sie die oder der Erste, die oder der sagt, ob diese Bewertung Ihrer Erfahrung entspricht.' },
+  en: { title: 'Have you been here? Rate this destination', body: 'This turns into a community safety score once {n} people have voted — a real-world check on the data-based score above. No votes yet: add yours below to help build it.' },
+  it: { title: 'Sei stato qui? Vota questa destinazione', body: 'Diventa un punteggio di sicurezza della community non appena {n} persone hanno votato — un riscontro reale sul punteggio basato sui dati qui sopra. Nessun voto ancora: aggiungi il tuo qui sotto per aiutare a costruirlo.' },
+  es: { title: '¿Has estado aquí? Valora este destino', body: 'Se convierte en una puntuación de seguridad de la comunidad en cuanto {n} personas hayan votado — un contraste real con la puntuación basada en datos de arriba. Todavía no hay votos: añade el tuyo abajo para ayudar a construirla.' },
+  fr: { title: 'Vous y êtes déjà allé ? Notez cette destination', body: "Cela devient un score de sécurité communautaire dès que {n} personnes ont voté — une vérification concrète du score basé sur les données ci-dessus. Aucun vote pour l'instant : ajoutez le vôtre ci-dessous pour aider à le construire." },
+  pt: { title: 'Já esteve aqui? Avalie este destino', body: 'Isso se torna uma pontuação de segurança da comunidade assim que {n} pessoas tiverem votado — uma checagem real sobre a pontuação baseada em dados acima. Ainda sem votos: adicione o seu abaixo para ajudar a construí-la.' },
+  zh: { title: '去过这里吗？为这个目的地打分', body: '一旦有 {n} 人投票，这里就会显示社区安全评分——作为对上方数据评分的真实世界验证。目前还没有投票：在下面投出你的一票，帮助建立这个评分。' },
+  de: { title: 'Waren Sie schon hier? Bewerten Sie dieses Reiseziel', body: 'Sobald {n} Personen abgestimmt haben, wird daraus ein Community-Sicherheitswert — eine Praxis-Gegenprobe zum datenbasierten Wert oben. Noch keine Stimmen: Geben Sie unten Ihre ab, um ihn mit aufzubauen.' },
 };
-const emptyState = emptyStateCopy[lang];
+const emptyState = {
+  title: emptyStateCopy[lang].title,
+  body: emptyStateCopy[lang].body.replace('{n}', String(MIN_VOTE_FLOOR)),
+};
 
 const displayScore = hasEnough ? sentiment!.perceived.toFixed(1) : null;
 const barWidth = hasEnough ? Math.max((sentiment!.perceived / 10) * 180, 2) : 0;
