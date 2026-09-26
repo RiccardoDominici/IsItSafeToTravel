@@ -1,6 +1,7 @@
 ---
 import type { PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { pillarToColor } from '../../lib/colors';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../../pipeline/scoring/engine';
@@ -14,6 +15,24 @@ interface Props {
 
 const { pillars, lang } = Astro.props;
 const t = useTranslations(lang);
+const r = routes[lang];
+
+// Contextual methodology link (2026-09-26, Task B1 / GD-05): no country page
+// linked to /methodology/ at all before this -- only Header/Footer did, which
+// don't count as contextual internal links for crawl-priority purposes. Right
+// under the pillar scores is the most on-topic spot: "here's what these five
+// numbers mean and how they're weighted." Benefits every locale (including
+// /pt/metodologia/, "Crawled - currently not indexed" per GD-05), not just pt.
+const methodologyLinkLead: Record<Lang, string> = {
+  en: 'See how these scores are calculated on the {methodology_link}.',
+  it: 'Scopri come vengono calcolati questi punteggi nella {methodology_link}.',
+  es: 'Descubre cómo se calculan estas puntuaciones en la {methodology_link}.',
+  fr: 'Découvrez comment ces scores sont calculés sur la {methodology_link}.',
+  pt: 'Veja como estas pontuações são calculadas na {methodology_link}.',
+  zh: '了解这些评分的计算方式，请见{methodology_link}。',
+  de: 'Erfahren Sie, wie diese Werte berechnet werden, auf der {methodology_link}.',
+};
+const [methodologyLeadBefore, methodologyLeadAfter] = methodologyLinkLead[lang].split('{methodology_link}');
 
 // Sort by score ascending (worst first) to draw attention to concerns
 const sorted = [...pillars].sort((a, b) => a.score - b.score);
@@ -111,4 +130,8 @@ const pillarKeys: Record<string, string> = {
       })}
     </div>
   </details>
+
+  <p class="mt-3 text-xs text-sand-500 dark:text-sand-400">
+    {methodologyLeadBefore}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text' as any)}</a>{methodologyLeadAfter}
+  </p>
 </section>
