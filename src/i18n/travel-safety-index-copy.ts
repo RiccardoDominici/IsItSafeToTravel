@@ -179,7 +179,7 @@ export const travelSafetyIndexCopy: Record<Lang, TravelSafetyIndexCopy> = {
     faqExcludedQ: 'Perché alcuni paesi e territori non compaiono?',
     faqExcludedA: "{excludedCount} territori molto piccoli sono esclusi dalla classifica perché non raggiungono la soglia di 4+ fonti indipendenti richiesta — un'evidenza insufficiente per un punteggio affidabile, non un'omissione editoriale.",
     seeAlsoHeading: 'Vedi anche',
-    seeAlsoSafestNote: "Cerchi invece una lista più breve e curata delle mete migliori, senza l'indice completo e i dati scaricabili? Consulta la classifica dedicata dei Paesi Più Sicuri.",
+    seeAlsoSafestNote: "Cerchi invece una lista più breve e curata delle mete migliori, senza l'indice completo e i dati scaricabili? Consulta la classifica dedicata dei paesi più sicuri.",
   },
   es: {
     title: (year) => `Índice de seguridad para viajar ${year}`,

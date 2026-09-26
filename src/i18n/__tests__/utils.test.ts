@@ -66,7 +66,7 @@ describe('useTranslations', () => {
 
   it('returns Italian translation for it locale', () => {
     const t = useTranslations('it');
-    assert.equal(t('site.title'), 'Si Può Viaggiare in Sicurezza? Punteggi per 248 Paesi [2026]');
+    assert.equal(t('site.title'), 'Si può viaggiare in sicurezza? Punteggi per 248 paesi [2026]');
   });
 
   it('returns locale-appropriate nav text for en', () => {
@@ -79,7 +79,7 @@ describe('useTranslations', () => {
   it('returns locale-appropriate nav text for it', () => {
     const t = useTranslations('it');
     assert.equal(t('nav.home'), 'Home');
-    assert.equal(t('nav.about'), 'Chi Siamo');
+    assert.equal(t('nav.about'), 'Chi siamo');
     assert.equal(t('nav.methodology'), 'Metodologia');
   });
 

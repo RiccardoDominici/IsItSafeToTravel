@@ -72,7 +72,7 @@ describe('Phase 1: IT page renders locale-appropriate content', () => {
   });
 
   it('contains Italian title', () => {
-    assert.ok(html.includes('Si Può Viaggiare in Sicurezza?'), 'IT page must contain Italian site title');
+    assert.ok(html.includes('Si può viaggiare in sicurezza?'), 'IT page must contain Italian site title');
   });
 
   it('contains Italian hero heading', () => {
