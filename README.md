@@ -196,7 +196,7 @@ The workflow can also be triggered manually from the GitHub Actions UI with an o
 
 **Code** — MIT. See [LICENSE](LICENSE).
 
-**Data** produced by this project (`data/scores/`, `data/history/`, `data/news/`, `data/sentiment/`, `public/scores.json`, the `/api/` endpoints, `public/llms.txt` / `public/llms-full.txt`) is licensed under [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): free to reuse and adapt for non-commercial purposes, with credit to "IsItSafeToTravel.org" and a link back.
+**Data and published site content** produced by this project (the website's page text, `data/scores/`, `data/history/`, `data/news/`, `data/sentiment/`, `public/scores.json`, the `/api/` endpoints, `public/llms.txt` / `public/llms-full.txt`) is licensed under [Creative Commons BY-NC 4.0](https://creativecommons.org/licenses/by-nc/4.0/): free to reuse and adapt for non-commercial purposes, with credit to "IsItSafeToTravel.org" and a link back.
 
 **Third-party inputs** (`data/raw/`: government travel advisories, Global Peace Index, World Bank, UCDP, INFORM, V-Dem, ReliefWeb, GDACS) remain under their original publishers' own terms — see [Data Sources](#data-sources) above.
 
