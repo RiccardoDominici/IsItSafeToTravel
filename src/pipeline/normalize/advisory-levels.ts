@@ -1702,22 +1702,18 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
 }
 
 /**
- * Normalize Hungary (KKM, "Konzinfo" portal) security-classification text to
- * unified 1-4 scale. Unlike most tier3b sources, KKM (since its 2026 portal
- * migration to konzinfo.mfa.gov.hu) exposes an EXPLICIT taxonomy field per
- * country -- no narrative-prose guessing needed -- with four real terms
- * observed across 21 countries during the 2026-09-25 repair:
+ * Normalize Hungary (KKM, "Konzinfo" portal) security-classification BADGE
+ * text (the "field--name-field-security-classification" taxonomy field) to
+ * unified 1-4 scale, for the case where that badge names exactly ONE of
+ * KKM's four fixed terms:
  *   "Biztonságos ország / térség"                                  -> 1
- *   "Fokozott óvatossággal látogatható ország[, ... térséggel]"     -> 2
+ *   "Fokozott óvatossággal látogatható ország"                     -> 2
  *   "Kiemelt biztonsági kockázatot rejtő ország/térségekkel"        -> 3
  *   "Nem javasolt úti cél"                                          -> 4
- * The two middle terms sometimes fold in a region-specific escalation
- * ("...utazásra nem javasolt térséggel" / "...kiemelt biztonsági
- * kockázatot rejtő térségekkel") -- KKM already writes these as ONE
- * combined classification for the whole country rather than separate
- * country-wide/regional statements (unlike PT/CZ's free text), so unlike
- * those sources this is read as a single ordered label, strongest match
- * first, not decomposed further.
+ * Callers should go through resolveHuAdvisoryLevel below, not call this
+ * directly: it is only safe when the badge tags a SINGLE tier (see that
+ * function's doc comment for why a badge combining two or more of these
+ * terms cannot be read with a simple priority match).
  */
 export function normalizeHuLevel(text: string): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
@@ -1727,6 +1723,178 @@ export function normalizeHuLevel(text: string): UnifiedLevel | null {
   if (lower.includes('fokozott óvatossággal')) return 2;
   if (lower.includes('biztonságos')) return 1;
   return null;
+}
+
+/**
+ * KKM's fixed vocabulary for each of its 4 numbered ("I"-"IV") security
+ * tiers, used by huBadgeTierCount and normalizeHuSecurityBlocks below to
+ * detect which tier(s) a piece of text refers to. LEVEL4's pattern requires
+ * "nem javasolt" (not recommended) to co-occur, within the same clause, with
+ * a travel/destination word -- a bare "nem javasolt" is ALSO KKM's stock
+ * phrase for unrelated behavioural tips ("...mozgás...egyáltalán nem
+ * javasolt" [Benin], "...felszállás nem javasolt" [Italy], "...felkeresése
+ * nem javasolt" [Egypt] -- all verified live 2026-09-26) that must never be
+ * read as a security-tier verdict.
+ */
+const HU_LEVEL4_PHRASE =
+  /(?:utaz\w*|úti\s*cél\w*|célország\w*)[^.!?]{0,30}nem javasolt|nem javasolt[^.!?]{0,30}(?:utaz\w*|úti\s*cél\w*|célország\w*)/i;
+const HU_LEVEL3_PHRASE = /kiemelt biztonsági kockázat/i;
+const HU_LEVEL2_PHRASE = /fokozott óvatossággal látogatható/i;
+const HU_LEVEL1_PHRASE = /\bbiztonságos\b/i;
+
+/** First (highest-severity) of the 4 HU_LEVELn_PHRASE patterns matching `text`, or null. */
+function huPhraseLevel(text: string): UnifiedLevel | null {
+  if (HU_LEVEL4_PHRASE.test(text)) return 4;
+  if (HU_LEVEL3_PHRASE.test(text)) return 3;
+  if (HU_LEVEL2_PHRASE.test(text)) return 2;
+  if (HU_LEVEL1_PHRASE.test(text)) return 1;
+  return null;
+}
+
+/**
+ * Phrases KKM uses to mark a security tier as the COUNTRY-WIDE baseline --
+ * "whatever hasn't been named above / isn't one of the listed areas" -- as
+ * opposed to a named sub-region. Verified live 2026-09-26 across Benin and
+ * Cameroon ("<Country> további részei"), Kenya ("az ország egyéb részei"),
+ * Tajikistan ("a fent nem említett országrészek"), Colombia ("a felsorolt
+ * területeken kívül <Country>"), Egypt ("az alább fel nem sorolt
+ * területek") and Thailand ("az ország további részei").
+ */
+const HU_RESIDUAL_MARKER =
+  /további rész\w*|egyéb rész\w*|nem említett országrész\w*|felsorolt terület\w*\s+kívül|fel nem sorolt terület\w*|nem sorolt terület\w*/i;
+
+/**
+ * Does `block` OPEN a "<N>. biztonsági kategória" section heading (Benin/
+ * Cameroon's template)? Checked separately from huPhraseLevel so that a
+ * roman numeral appearing mid-sentence elsewhere (Kenya/Tajikistan/Colombia
+ * all cite "I."/"II." well into a descriptive sentence, not as a heading)
+ * never overwrites the tracked heading level.
+ */
+function huHeadingLevel(block: string): UnifiedLevel | null {
+  if (/^I\.\s/.test(block)) return 4;
+  if (/^II\.[\s-]/.test(block)) return 3;
+  if (/^III\.\s/.test(block)) return 2;
+  if (/^IV[.\-]/.test(block)) return 1;
+  return null;
+}
+
+/**
+ * Split one DOM block into sentences, so that a single `<p>` combining TWO
+ * clauses -- one naming a region's own tier, the other the residual "rest of
+ * the country" tier -- doesn't let huPhraseLevel's priority scan see both
+ * phrases at once and pick the wrong (higher-severity) one. Real example
+ * (Kenya, verified live 2026-09-26, one `<p>`): "...Laikipia régióit a II.
+ * kiemelt biztonsági kockázatot rejtő... térségek kategóriába helyezte...
+ * miatt. Az ország egyéb részei a III-as, fokozott óvatossággal látogatható
+ * térségek közé tartozik." -- without splitting, the residual sentence's own
+ * "fokozott óvatossággal" would be masked by the EARLIER clause's "kiemelt
+ * biztonsági kockázat" and wrongly resolve to 3 instead of 2.
+ *
+ * A bare period-then-space split would itself mis-fire on KKM's constant
+ * mid-sentence citations of "I."/"II."/"III."/"IV." (Kenya's own "a II.
+ * kiemelt..." above; Tajikistan's "a II. (narancssárga)..."; Colombia's "a
+ * III. fokozott..."), severing the numeral from the very phrase that names
+ * its tier. Fixed by re-merging any split that left a fragment ending in a
+ * BARE roman numeral + period back onto the next fragment -- verified this
+ * correctly restores Kenya/Tajikistan/Colombia/Benin/Cameroon's real
+ * sentences whole while still separating Kenya's two genuine clauses apart.
+ */
+function huSplitSentences(block: string): string[] {
+  const naive = block.split(/(?<=[.!?])\s+/);
+  const merged: string[] = [];
+  for (const piece of naive) {
+    const last = merged.length - 1;
+    if (last >= 0 && /\b(?:I|II|III|IV)\.$/.test(merged[last])) {
+      merged[last] = `${merged[last]} ${piece}`;
+    } else {
+      merged.push(piece);
+    }
+  }
+  return merged.map((s) => s.trim()).filter(Boolean);
+}
+
+/**
+ * Count how many of KKM's 4 fixed tiers the (short) classification badge
+ * text tags. Exactly one -- the common case -- means the country has no
+ * other tier anywhere on its own page (verified 2026-09-26: Guinea-Bissau,
+ * Djibouti, Malawi, USA, Australia, France, Italy, Mexico, Afghanistan,
+ * Syria, Ukraine all tag a single term): normalizeHuLevel can be trusted
+ * directly, no need to open the body text. Two or more means the badge is a
+ * Drupal multi-value tag -- KKM tags a country with EVERY tier that applies
+ * ANYWHERE in it, worst first -- and the true country-wide baseline needs
+ * normalizeHuSecurityBlocks to find which tagged tier is the "rest of the
+ * country" one.
+ */
+function huBadgeTierCount(badge: string): number {
+  return [HU_LEVEL4_PHRASE, HU_LEVEL3_PHRASE, HU_LEVEL2_PHRASE, HU_LEVEL1_PHRASE].filter((re) => re.test(badge))
+    .length;
+}
+
+/**
+ * Resolve KKM's country-wide baseline level from the FULL "Biztonság"
+ * section body (paragraphs + list items, in DOM order) when the
+ * classification badge alone is ambiguous (2+ tagged tiers, see
+ * huBadgeTierCount) -- repair 2026-09-26 (PARSER-REGIONAL-BRIEF). Audit
+ * finding: the OLD normalizeHuLevel, applied to the badge alone with a
+ * strongest-match-first priority, read a country's WORST regional tier as
+ * if it were the whole country's -- e.g. Cameroon's badge, "Nem javasolt úti
+ * cél, kiemelt biztonsági kockázatot rejtő és fokozott óvatossággal
+ * látogatható térséggel", combines all THREE tiers that appear somewhere on
+ * its page (a level-4 strip on the Nigeria/Chad/CAR border and the
+ * Anglophone regions, a level-3 approach strip, and level 2 "Kamerun
+ * további részei" -- Cameroon's OWN words for "the rest of Cameroon") into
+ * one badge with no way to tell which is the baseline -- but the page's own
+ * prose always names exactly one.
+ *
+ * Walks blocks in order, tracking the most recently opened "<N>. biztonsági
+ * kategória" heading, and returns as soon as it finds KKM's own "rest of the
+ * country" marker (HU_RESIDUAL_MARKER). That marker's OWN sentence states
+ * the level directly in most templates -- Kenya: "Az ország egyéb részei a
+ * III-as, fokozott óvatossággal látogatható térségek közé tartozik.";
+ * Tajikistan: "...a fent nem említett országrészek a II. ... kiemelt
+ * biztonsági kockázatot rejtő... térségek"; Colombia: "A felsorolt
+ * területeken kívül Kolumbia a III. fokozott óvatossággal látogatható
+ * országok közé tartozik."; Egypt: "az alább fel nem sorolt területek
+ * biztonsági besorolása a III. kategória: 'fokozott óvatossággal látogatható
+ * területek'." -- while Benin and Cameroon instead put the marker in its own
+ * bullet with no level phrase of its own ("Benin/Kamerun további részei -
+ * minden olyan rész, amely nem került felsorolásra a[z] ... kategóriában."),
+ * right under the heading it belongs to, so the tracked heading level is the
+ * fallback there.
+ *
+ * Never returns null: this is only called once the badge has already proven
+ * the country has real regional variation, so "no explicit marker found"
+ * (not observed in the live 2026-09-26 corpus, but kept as a safety net)
+ * still means real, un-pinpointed regional risk exists -- capped at 2,
+ * mirroring the DE/NL/BE/FR/CH/AT "partial warning never promotes past
+ * increased caution" rule elsewhere in this file, never guessed up to the
+ * worst tagged tier.
+ */
+export function normalizeHuSecurityBlocks(blocks: string[]): UnifiedLevel {
+  let headingLevel: UnifiedLevel | null = null;
+  for (const raw of blocks) {
+    for (const sentence of huSplitSentences(raw)) {
+      const heading = huHeadingLevel(sentence);
+      if (heading !== null) headingLevel = heading;
+
+      if (HU_RESIDUAL_MARKER.test(sentence)) {
+        return huPhraseLevel(sentence) ?? headingLevel ?? 2;
+      }
+    }
+  }
+  return 2;
+}
+
+/**
+ * Top-level entry point for KKM (Hungary): resolve a country's whole-country
+ * advisory level from its classification badge and, when needed, its full
+ * "Biztonság" section body. See huBadgeTierCount and normalizeHuSecurityBlocks
+ * for why a 2+-tier badge cannot be read with normalizeHuLevel alone.
+ */
+export function resolveHuAdvisoryLevel(classification: string, bodyBlocks: string[]): UnifiedLevel | null {
+  if (!classification || !classification.trim()) return null;
+  if (huBadgeTierCount(classification) <= 1) return normalizeHuLevel(classification);
+  return normalizeHuSecurityBlocks(bodyBlocks);
 }
 
 // Portugal (MNE) has no explicit level badge on its per-country advisory

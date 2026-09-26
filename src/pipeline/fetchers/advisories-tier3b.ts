@@ -8,7 +8,7 @@ import {
   normalizeSeLevel,
   normalizeNoLevel,
   normalizeCzLevel,
-  normalizeHuLevel,
+  resolveHuAdvisoryLevel,
   normalizePtLevel,
 } from '../normalize/advisory-levels.js';
 import type { UnifiedLevel } from '../normalize/advisory-levels.js';
@@ -890,9 +890,19 @@ async function fetchCzAdvisories(
 // directly at /node/NN -- no need to follow the AJAX indirection the site's
 // own JS uses. Each node page carries an explicit
 // "field--name-field-security-classification" taxonomy field (one of four
-// fixed terms, see normalizeHuLevel) instead of free narrative text, so
-// unlike PT/CZ this needs no sentence-level scoping or regional-warning
-// guard -- KKM already collapses each country to a single classification.
+// fixed terms, see normalizeHuLevel).
+// Repaired 2026-09-26 (PARSER-REGIONAL-BRIEF): that classification field is
+// NOT always a single term -- it's a Drupal multi-value tag, and KKM tags a
+// country with EVERY tier that applies ANYWHERE in it (worst first), e.g.
+// Cameroon's badge "Nem javasolt úti cél, kiemelt biztonsági kockázatot
+// rejtő és fokozott óvatossággal látogatható térséggel" packs all 3 tiers
+// present on its page into one string. The OLD code read this with a
+// strongest-match-first priority, silently promoting the whole country to
+// its worst NAMED REGION's level. The true country-wide baseline (KKM's own
+// "<Country> további részei" / "az ország egyéb részei" -- the parts NOT
+// named above) needs the free-text "Biztonság" section body, not just the
+// badge -- see resolveHuAdvisoryLevel's doc comment. The badge is still read
+// first and used as-is whenever it names only ONE tier (the common case).
 // =============================================================================
 
 const HU_BASE_URL = 'https://konzinfo.mfa.gov.hu';
@@ -1019,7 +1029,17 @@ async function fetchHuAdvisories(
             .first()
             .text()
             .trim();
-          const level = normalizeHuLevel(classification);
+          // Full "Biztonság" section body (paragraphs + bullets, DOM order) --
+          // only actually read when the badge above names 2+ tiers, see
+          // resolveHuAdvisoryLevel's doc comment.
+          const securityBlocks: string[] = [];
+          $('#collapse--field_security .field__item p, #collapse--field_security .field__item li').each(
+            (_, el) => {
+              const blockText = $(el).text().replace(/\s+/g, ' ').trim();
+              if (blockText) securityBlocks.push(blockText);
+            },
+          );
+          const level = resolveHuAdvisoryLevel(classification, securityBlocks);
           if (level === null) return; // no recognised classification -- never guess
 
           const lastModText = $('.field--name-field-sec-rating-last-modfied').first().text();
