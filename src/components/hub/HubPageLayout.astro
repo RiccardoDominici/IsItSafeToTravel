@@ -17,6 +17,14 @@ import { hubBlurbTemplates } from '../../i18n/hub-blurbs';
 import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
 import { getRegion, type Region } from '../../lib/regions';
 import { SOURCE_COUNT_DISPLAY } from '../../lib/site-stats';
+import { selectPillarExtremes } from '../../lib/pillar-extremes';
+import {
+  regionHeadings,
+  buildRegionIntro,
+  citeThisRanking,
+  soloFemaleGuidance,
+  familyRankingExplainer,
+} from '../../i18n/hub-enrichment-copy';
 
 interface Props {
   lang: Lang;
@@ -128,13 +136,15 @@ function buildBlurb(country: ScoredCountry): string {
   let skipAdvisoryAppend = false;
 
   if (isHeadTermHub) {
-    const pillars = selectEligiblePillars(country.pillars);
-    let strongest = pillars[0];
-    let weakest = pillars[0];
-    for (const p of pillars) {
-      if (p.score > strongest.score) strongest = p;
-      if (p.score < weakest.score) weakest = p;
-    }
+    // Sort-based pick (pillar-extremes.ts), not an ad-hoc max/min loop: under a
+    // tie (every pillar collapsed to the same prior), a `>`/`<` comparison
+    // loop never advances past the first element, so strongest and weakest
+    // resolve to the literal same pillar object -- the exact self-contradiction
+    // bug fixed elsewhere as C2 (2026-09-25 audit). Unreachable in practice
+    // here (safest/most-dangerous only blurb their top 20 by extreme score,
+    // and a near-tied pillar profile regresses to the mid-scale prior, never
+    // the extremes) but fixed for consistency with every other picker.
+    const { strongest, weakest } = selectPillarExtremes(country.pillars);
     text = (t('hub.blurb' as any) as string)
       .replace('{name}', name)
       .replace('{score}', score)
@@ -212,20 +222,41 @@ const movers = isHeadTermHub ? getBiggestMovers(5) : [];
 // by region (Sahel, Middle East…), unlike the other hubs' flat rank order.
 // Rank numbers stay GLOBAL (position in the full avoid-list) even inside a
 // region group, since "how bad, worldwide" is the meaningful number here.
-const REGION_GROUPS: Array<{ type: Region; titleKey: string }> = [
-  { type: 'europe', titleKey: 'hub.region.europe.title' },
-  { type: 'asia', titleKey: 'hub.region.asia.title' },
-  { type: 'africa', titleKey: 'hub.region.africa.title' },
-  { type: 'americas', titleKey: 'hub.region.americas.title' },
-  { type: 'oceania', titleKey: 'hub.region.oceania.title' },
-  { type: 'middle_east', titleKey: 'hub.region.middle_east.title' },
-];
+//
+// Headings and intro sentence use regionHeadings/buildRegionIntro
+// (hub-enrichment-copy.ts), NOT the hub.region.*.title ui.ts keys — those say
+// "Safest Countries in Europe (2026)" (the title of the separate /regions/
+// hubs) and reusing them here produced a heading that contradicted the very
+// list it introduced (2026-09-26 fix).
+const REGION_TYPES: Region[] = ['europe', 'asia', 'africa', 'americas', 'oceania', 'middle_east'];
+
+/** Most common weakest-pillar across a region group — a real aggregate, not a per-country claim, so isNearTie countries are safe to include. */
+function dominantDriver(group: ScoredCountry[]): PillarName {
+  const counts = new Map<PillarName, number>();
+  for (const c of group) {
+    const name = selectPillarExtremes(c.pillars).weakest.name;
+    counts.set(name, (counts.get(name) ?? 0) + 1);
+  }
+  let best: PillarName = 'crime';
+  let bestCount = -1;
+  for (const [name, count] of counts) {
+    if (count > bestCount) { best = name; bestCount = count; }
+  }
+  return best;
+}
+
 const groupByRegion = hubType === 'countries-to-avoid';
 const globalRank = new Map(countries.map((c, i) => [c.iso3, i + 1]));
 const regionGroups = groupByRegion
-  ? REGION_GROUPS.map((rg) => ({ ...rg, countries: countries.filter((c) => getRegion(c.iso3) === rg.type) })).filter(
-      (g) => g.countries.length > 0
-    )
+  ? REGION_TYPES.map((type) => {
+      const groupCountries = countries.filter((c) => getRegion(c.iso3) === type);
+      return {
+        type,
+        heading: regionHeadings[type][lang],
+        intro: groupCountries.length > 0 ? buildRegionIntro(lang, type, groupCountries.length, dominantDriver(groupCountries)) : '',
+        countries: groupCountries,
+      };
+    }).filter((g) => g.countries.length > 0)
   : [];
 
 // Hub page cross-links
@@ -251,11 +282,65 @@ const hubLinks: Array<{ key: string; route: string }> = [
       <p class="text-sm text-sand-500 dark:text-sand-400">
         {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', SOURCE_COUNT_DISPLAY) || `Rankings updated daily from ${SOURCE_COUNT_DISPLAY} data sources`}
       </p>
+      {/* SXO-07: a visible, secondary "cite this ranking" link right by the H1 -- the
+          journalist/risk-manager persona looks for this before reading the list. */}
+      <a
+        href={`/${lang}/${r.cite}/`}
+        class="inline-block text-xs text-sand-400 dark:text-sand-500 hover:text-terracotta-500 dark:hover:text-terracotta-400 underline underline-offset-2 transition-colors"
+      >
+        {citeThisRanking[lang]}
+      </a>
     </header>
 
     <p class="text-base text-sand-700 dark:text-sand-300 max-w-2xl mx-auto text-center leading-relaxed">
       {intro}
     </p>
+
+    {/* safest-for-solo-travelers only (SXO-02): honest scope note -- searchers
+        overwhelmingly mean solo FEMALE travel, and there is no dedicated
+        dataset for it, so this explains what the ranking can and can't say
+        instead of a silent rename. */}
+    {hubType === 'safest-for-solo-travelers' && (
+      <section class="max-w-2xl mx-auto rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-5 py-5">
+        <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">
+          {soloFemaleGuidance[lang].title}
+        </h2>
+        {soloFemaleGuidance[lang].paragraphs.map((p) => {
+          const [before, after] = p.split('{methodology_link}');
+          return (
+            <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed mb-3 last:mb-0">
+              {before}{after !== undefined && (
+                <a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
+                  {t('about.methodology_link_text' as any)}
+                </a>
+              )}{after}
+            </p>
+          );
+        })}
+      </section>
+    )}
+
+    {/* safest-for-families only (SXO-03): 2-3 sentences grounding the ranking
+        in getSafestForFamilies's real weights (hub-data.ts), not a relabeled
+        overall ranking. */}
+    {hubType === 'safest-for-families' && (
+      <section class="max-w-2xl mx-auto">
+        <p class="text-sm text-sand-700 dark:text-sand-300 leading-relaxed text-center">
+          {(() => {
+            const [before, after] = familyRankingExplainer[lang].split('{methodology_link}');
+            return (
+              <>
+                {before}
+                <a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">
+                  {t('about.methodology_link_text' as any)}
+                </a>
+                {after}
+              </>
+            );
+          })()}
+        </p>
+      </section>
+    )}
 
     {/* Biggest movers (head-term hubs only; self-hides on quiet weeks) */}
     {movers.length > 0 && (
@@ -285,9 +370,14 @@ const hubLinks: Array<{ key: string; route: string }> = [
       <div class="space-y-6">
         {regionGroups.map((group) => (
           <section>
-            <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-2">
-              {t(group.titleKey as any)}
+            <h2 class="text-lg font-heading font-bold text-sand-800 dark:text-sand-100 mb-1">
+              {group.heading}
             </h2>
+            {group.intro && (
+              <p class="text-sm text-sand-500 dark:text-sand-400 mb-2">
+                {group.intro}
+              </p>
+            )}
             <ol class="space-y-2 list-none p-0 m-0">
               {group.countries.map((country) => (
                 <CountryRankRow
