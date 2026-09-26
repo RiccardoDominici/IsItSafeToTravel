@@ -1646,11 +1646,26 @@ export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high')
  * (flash floods, post-unrest monitoring, elevated terror threat) use "exercise a high degree
  * of caution" -> 2. Calm/visa-only pages (Japan, Italy, most of the 189-country sitemap) match
  * nothing -> null, correctly emitting no indicator for them.
+ *
+ * 'border area'/'autonomous oblast'/'autonomous region' added 2026-09-26 (PARSER-REGIONAL-
+ * BRIEF spot-check): Tajikistan's real page reads "Singaporeans should avoid all travel to
+ * the Tajikistan-Afghanistan BORDER AREAS and Gorno-Badakhshan AUTONOMOUS OBLAST due to the
+ * security situation there" — a Level-4 phrase ("avoid all travel") naming a specific named
+ * sub-region (Tajikistan's own autonomous oblast, GBAO) and a border strip, not the country,
+ * but the existing REGIONAL_WORDS list only had "border region" (singular, no plural "s")
+ * and nothing at all for a named autonomous division, so this paragraph was NOT capped and
+ * Tajikistan was reported as Level 4 for the whole country. Re-verified against Syria/North
+ * Korea/Libya/Ukraine's real pages (this list's original 2026-09-25 calibration set) that
+ * neither new phrase appears in any of their genuine whole-country paragraphs — no
+ * regression there.
  */
 export function normalizeSgLevel(text: string): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
 
-  const REGIONAL_WORDS = ['the region', 'border region', 'conflict area', 'the following area', 'certain area'];
+  const REGIONAL_WORDS = [
+    'the region', 'border region', 'border area', 'conflict area', 'the following area',
+    'certain area', 'autonomous oblast', 'autonomous region',
+  ];
 
   let level: UnifiedLevel | null = null;
 
