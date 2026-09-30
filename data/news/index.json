@@ -1,12 +1,11 @@
 {
-  "generatedAt": "2026-09-29T12:40:21.110Z",
-  "lastProcessedDate": "2026-09-29",
+  "generatedAt": "2026-09-30T12:34:52.315Z",
+  "lastProcessedDate": "2026-09-30",
   "cooldowns": {
     "jump:KWT": "2026-08-22",
     "jump:BHR": "2026-08-22",
     "band:ZMB": "2026-09-12",
     "band:KWT": "2026-08-26",
-    "jump:RUS": "2026-07-01",
     "jump:VNM": "2026-07-02",
     "band:AND": "2026-07-08",
     "band:BHR": "2026-07-08",
@@ -82,9 +81,21 @@
     "advisory:PSE:us:4": "2026-09-25",
     "advisory:ISR:us:3": "2026-09-25",
     "advisory:JOR:us:3": "2026-09-25",
-    "advisory:MAC:us:3": "2026-09-25"
+    "advisory:MAC:us:3": "2026-09-25",
+    "advisory:BGD:us:3": "2026-09-30"
   },
   "recentEvents": [
+    {
+      "id": "2026-09-30:severe_advisory:BGD:us",
+      "date": "2026-09-30",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BGD",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    },
     {
       "id": "2026-09-12:band_change:BHS",
       "date": "2026-09-12",

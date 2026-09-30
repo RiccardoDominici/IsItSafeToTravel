@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-30",
+  "generatedAt": "2026-09-30T12:34:52.314Z",
+  "events": [
+    {
+      "id": "2026-09-30:severe_advisory:BGD:us",
+      "date": "2026-09-30",
+      "type": "severe_advisory",
+      "params": {
+        "country": "BGD",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    }
+  ]
+}
