@@ -231,7 +231,24 @@ jobs:
 
           Automated daily pipeline run.
           See data/scores/$DATE.json for details."
-            git push
+            # Retry the push: GitHub occasionally answers large data pushes with a
+            # transient "remote rejected (Internal Server Error)" (seen 2026-09-30),
+            # which used to fail the whole run and skip deploy + digest. Between
+            # attempts, rebase onto origin in case master moved meanwhile.
+            for attempt in 1 2 3 4 5; do
+              if git push; then
+                echo "Push succeeded on attempt $attempt"
+                break
+              fi
+              if [ "$attempt" -eq 5 ]; then
+                echo "::error::git push failed after $attempt attempts"
+                exit 1
+              fi
+              DELAY=$((attempt * 20))
+              echo "::warning::git push failed (attempt $attempt), retrying in ${DELAY}s"
+              sleep "$DELAY"
+              git pull --rebase origin master || { git rebase --abort 2>/dev/null; echo "::error::rebase onto origin/master failed"; exit 1; }
+            done
           fi
 
       - name: Trigger deploy
