@@ -1,56 +1,91 @@
 ---
+// Community block on the country page (formula v10, SPEC §5/§7). Wraps the vote widget (<slot/>).
+//
+//  - active (>= MIN_VOTE_FLOOR votes from >= MIN_ORIGIN_FLOOR known countries of origin): the
+//    community rating P, how many votes and origins it rests on and, once the score engine
+//    provides them, the data score, the community adjustment and the final score.
+//  - insufficient (or no votes): a grey progress line "N/30 votes, M/3 countries of origin" with a
+//    call to vote. No number is shown before activation.
+//  - grey country (no official score): P, when active, is shown on its own and labelled as the
+//    travelers' rating; it never stands in for the official score (SPEC §5).
+//
+// Copy: src/i18n/community-copy.ts. Data: data/sentiment/latest.json via loadSentimentForCountry.
 import type { SentimentEntry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
+import {
+  communityCopy,
+  fillCommunityTemplate,
+  formatProseDecimal,
+  formatSignedPoints,
+} from '../../i18n/community-copy';
 import { pillarToColor } from '../../lib/colors';
-import { MIN_VOTE_FLOOR } from '../../lib/sentiment';
+import { MIN_ORIGIN_FLOOR, MIN_VOTE_FLOOR } from '../../lib/sentiment';
+import { isGreyScore } from '../../lib/published-scores';
+import { SENTIMENT_ADJUSTMENT_CAP } from '../../pipeline/sentiment/constants';
 
 interface Props {
   sentiment: SentimentEntry | null;
-  official: number;
+  /** Final published score shown on the page; null for a grey country (no official score). */
+  official: number | null;
   lang: Lang;
+  /**
+   * Formula v10, filled by the score engine (not wired yet): the community adjustment applied to
+   * this country's score, in score points (clamped to ±SENTIMENT_ADJUSTMENT_CAP). Omitted or null
+   * = nothing is shown about the adjustment.
+   */
+  scoreAdjustment?: number | null;
+  /** Formula v10, filled by the score engine: the data score S_data before the adjustment. */
+  dataScore?: number | null;
 }
 
-const { sentiment, lang } = Astro.props;
+const { sentiment, official, lang, scoreAdjustment = null, dataScore = null } = Astro.props;
 const t = useTranslations(lang);
+const copy = communityCopy[lang];
 
-const hasEnough = sentiment !== null && sentiment.status === 'active';
+const isGrey = isGreyScore(official);
+const isActive = sentiment !== null && sentiment.status === 'active';
+const isFiniteNumber = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
 
 const label = t('country.pillar.sentiment');
 
-// Inviting empty-state copy, replacing the flat "Not enough votes yet" ui.ts
-// keys (2026-09-25 audit, C12/Action Plan #17): a deficiency notice reads as a
-// dead end, not an invitation to vote — the voting UI right below it is the
-// whole point of the section. No ui.ts edit in this fix round, so this is a
-// small component-local table (CitePage.astro / RegionsIndex.astro pattern).
-//
-// 2026-09-26 follow-up (SXO-06): the first version said only "no votes yet" —
-// it never explained WHAT a community score is or when it appears, so on a
-// low-traffic page it still read like a dead end. `body` names the real
-// mechanism (MIN_VOTE_FLOOR, never hardcoded) instead of a bare invitation.
-const emptyStateCopy: Record<Lang, { title: string; body: string }> = {
-  en: { title: 'Have you been here? Rate this destination', body: 'This turns into a community safety score once {n} people have voted — a real-world check on the data-based score above. No votes yet: add yours below to help build it.' },
-  it: { title: 'Sei stato qui? Vota questa destinazione', body: 'Diventa un punteggio di sicurezza della community non appena {n} persone hanno votato — un riscontro reale sul punteggio basato sui dati qui sopra. Nessun voto ancora: aggiungi il tuo qui sotto per aiutare a costruirlo.' },
-  es: { title: '¿Has estado aquí? Valora este destino', body: 'Se convierte en una puntuación de seguridad de la comunidad en cuanto {n} personas hayan votado — un contraste real con la puntuación basada en datos de arriba. Todavía no hay votos: añade el tuyo abajo para ayudar a construirla.' },
-  fr: { title: 'Vous y êtes déjà allé ? Notez cette destination', body: "Cela devient un score de sécurité communautaire dès que {n} personnes ont voté — une vérification concrète du score basé sur les données ci-dessus. Aucun vote pour l'instant : ajoutez le vôtre ci-dessous pour aider à le construire." },
-  pt: { title: 'Já esteve aqui? Avalie este destino', body: 'Isso se torna uma pontuação de segurança da comunidade assim que {n} pessoas tiverem votado — uma checagem real sobre a pontuação baseada em dados acima. Ainda sem votos: adicione o seu abaixo para ajudar a construí-la.' },
-  zh: { title: '去过这里吗？为这个目的地打分', body: '一旦有 {n} 人投票，这里就会显示社区安全评分——作为对上方数据评分的真实世界验证。目前还没有投票：在下面投出你的一票，帮助建立这个评分。' },
-  de: { title: 'Waren Sie schon hier? Bewerten Sie dieses Reiseziel', body: 'Sobald {n} Personen abgestimmt haben, wird daraus ein Community-Sicherheitswert — eine Praxis-Gegenprobe zum datenbasierten Wert oben. Noch keine Stimmen: Geben Sie unten Ihre ab, um ihn mit aufzubauen.' },
-};
-const emptyState = {
-  title: emptyStateCopy[lang].title,
-  body: emptyStateCopy[lang].body.replace('{n}', String(MIN_VOTE_FLOOR)),
-};
-
-const displayScore = hasEnough ? sentiment!.perceived.toFixed(1) : null;
-const barWidth = hasEnough ? Math.max((sentiment!.perceived / 10) * 180, 2) : 0;
-const color = hasEnough ? pillarToColor(sentiment!.perceived / 10) : '';
-const voteCountText = hasEnough
-  ? t('sentiment.vote_count').replace('{count}', String(sentiment!.votes))
+// Active: the community rating P on the same 1-10 bar as the pillars.
+const perceived = isActive ? sentiment!.perceived : null;
+const displayScore = perceived !== null ? perceived.toFixed(1) : null;
+const barWidth = perceived !== null ? Math.max((perceived / 10) * 180, 2) : 0;
+const color = perceived !== null ? pillarToColor(perceived / 10) : '';
+const votesText = isActive
+  ? fillCommunityTemplate(copy.votesFromOrigins, { votes: sentiment!.votes, origins: sentiment!.origins })
   : '';
+
+// Score breakdown (scored countries only): shown once the engine passes the adjustment.
+const showAdjustment = isActive && !isGrey && isFiniteNumber(scoreAdjustment);
+const showDataScore = showAdjustment && isFiniteNumber(dataScore);
+
+// Insufficient: progress towards both activation floors (0/30, 0/3 when nobody has voted yet).
+// Each count is clamped at its floor: it is a progress meter, and "9/3 countries of origin" (a
+// floor already met while the other is not) reads as an error; "3/3" says "done" plainly.
+const insufficientText = fillCommunityTemplate(copy.insufficient, {
+  votes: Math.min(sentiment?.votes ?? 0, MIN_VOTE_FLOOR),
+  minVotes: MIN_VOTE_FLOOR,
+  origins: Math.min(sentiment?.origins ?? 0, MIN_ORIGIN_FLOOR),
+  minOrigins: MIN_ORIGIN_FLOOR,
+});
+
+const rulesText = isGrey
+  ? copy.rulesGrey
+  : fillCommunityTemplate(copy.rulesScored, {
+      minVotes: MIN_VOTE_FLOOR,
+      minOrigins: MIN_ORIGIN_FLOOR,
+      cap: formatProseDecimal(lang, SENTIMENT_ADJUSTMENT_CAP),
+    });
 ---
 
-<section id="community-sentiment" class="rounded-lg border border-sand-200 dark:border-sand-700 p-4 bg-white dark:bg-sand-800">
+<section
+  id="community-sentiment"
+  data-community-status={isActive ? 'active' : 'insufficient'}
+  class="rounded-lg border border-sand-200 dark:border-sand-700 p-4 bg-white dark:bg-sand-800"
+>
   <div class="flex flex-wrap items-center gap-2 mb-4">
     <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100">
       {label}
@@ -60,13 +95,13 @@ const voteCountText = hasEnough
     </span>
   </div>
 
-  {hasEnough ? (
+  {isActive ? (
     <div class="space-y-1">
       <div class="flex items-center gap-3">
         <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right">
-          {label}
+          {copy.ratingLabel}
         </span>
-        <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10 (${t('sentiment.badge')})`}>
+        <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${copy.ratingLabel}: ${displayScore}/10`}>
           <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
           <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
         </svg>
@@ -75,18 +110,40 @@ const voteCountText = hasEnough
         </span>
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[calc(7rem+0.75rem)]">
-        <span class="text-xs text-sand-600 dark:text-sand-400">{voteCountText}</span>
+        <span class="text-xs text-sand-600 dark:text-sand-400">{votesText}</span>
       </div>
+      {isGrey && (
+        <p class="text-xs font-medium text-sand-700 dark:text-sand-300 pt-1">{copy.notOfficialNote}</p>
+      )}
+      {showAdjustment && (
+        <dl class="flex flex-wrap gap-x-5 gap-y-1 pt-2 text-sm text-sand-700 dark:text-sand-300">
+          {showDataScore && (
+            <div class="flex gap-1.5">
+              <dt class="text-sand-600 dark:text-sand-400">{copy.dataScoreLabel}</dt>
+              <dd class="font-medium tabular-nums">{dataScore!.toFixed(1)}</dd>
+            </div>
+          )}
+          <div class="flex gap-1.5">
+            <dt class="text-sand-600 dark:text-sand-400">{copy.adjustmentLabel}</dt>
+            <dd class="font-medium tabular-nums">{formatSignedPoints(scoreAdjustment!)}</dd>
+          </div>
+          {showDataScore && (
+            <div class="flex gap-1.5">
+              <dt class="text-sand-600 dark:text-sand-400">{copy.finalScoreLabel}</dt>
+              <dd class="font-medium tabular-nums">{official!.toFixed(1)}/10</dd>
+            </div>
+          )}
+        </dl>
+      )}
     </div>
   ) : (
-    <div class="space-y-1">
-      <p class="text-sm font-medium text-sand-700 dark:text-sand-300">{emptyState.title}</p>
-      <p class="text-xs text-sand-600 dark:text-sand-400">{emptyState.body}</p>
-    </div>
+    <p class="rounded-lg border border-dashed border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-900/40 px-3 py-2.5 text-sm text-sand-600 dark:text-sand-400 tabular-nums">
+      {insufficientText}
+    </p>
   )}
 
   <p class="text-xs text-sand-600 dark:text-sand-400 mt-3">
-    {t('sentiment.disclaimer')}
+    {rulesText}
   </p>
 
   <div class="border-t border-sand-200 dark:border-sand-700 mt-4 pt-4">

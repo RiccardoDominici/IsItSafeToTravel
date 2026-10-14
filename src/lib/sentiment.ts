@@ -28,11 +28,17 @@ interface SentimentLatestFile {
  */
 function isCommunityEntry(x: unknown): x is SentimentEntry {
   const e = x as Partial<SentimentEntry> | null | undefined;
+  const isNum = (v: unknown): v is number => typeof v === 'number' && Number.isFinite(v);
+  // Every field the community block renders must be present: a half-written entry (e.g. no
+  // `origins`) would otherwise print "NaN/3 countries of origin".
   return (
     !!e &&
     typeof e.iso3 === 'string' &&
-    typeof e.votes === 'number' &&
-    typeof e.perceived === 'number' &&
+    isNum(e.votes) &&
+    isNum(e.origins) &&
+    isNum(e.topOriginShare) &&
+    isNum(e.nEff) &&
+    isNum(e.perceived) &&
     (e.status === 'active' || e.status === 'insufficient')
   );
 }

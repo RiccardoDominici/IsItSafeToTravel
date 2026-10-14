@@ -70,6 +70,17 @@ describe('sentiment.ts: loadSentimentForCountry graceful degradation', () => {
       assert.equal(loadSentimentForCountry('ITA'), null);
     });
 
+    it('ignores a v10 entry missing a field the block renders (origins)', () => {
+      const fixture = {
+        generatedAt: '2026-10-14T00:00:00.000Z',
+        countries: {
+          ITA: { iso3: 'ITA', votes: 34, topOriginShare: 0.4, nEff: 21.5, perceived: 8.2, status: 'active' },
+        },
+      };
+      fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
+      assert.equal(loadSentimentForCountry('ITA'), null);
+    });
+
     it('returns null when the file exists but the country is absent', () => {
       const fixture = { generatedAt: '2026-07-02T00:00:00.000Z', countries: {} };
       fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
