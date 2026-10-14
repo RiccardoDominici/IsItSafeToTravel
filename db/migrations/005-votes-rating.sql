@@ -9,10 +9,19 @@
 -- row stores delta = 0 as a placeholder. Readers must branch on `rating IS NOT NULL`, never on
 -- delta, to tell the two vote kinds apart.
 --
--- Apply ONCE, before deploying code that writes or reads `rating`. Migrations 001-004 were
--- applied with `d1 execute --file` (no d1_migrations ledger exists), so use the same form:
+-- When: before the first grey country exists (the formula-v10 engine), since only absolute votes
+-- write `rating`. Code already on this branch tolerates the column being absent: relative votes
+-- never name it in their INSERT (functions/api/vote.ts buildVoteInsert) and the pipeline re-reads
+-- without it on "no such column: rating" (src/pipeline/sentiment/fetch-votes.ts).
+--
+-- How: migrations 001-004 were applied with `d1 execute --file` and the live database has NO
+-- d1_migrations ledger (checked 2026-10-14), so do NOT use `wrangler d1 migrations apply`: it
+-- would treat 001-005 as pending and fail replaying 002 ("duplicate column name: country_iso").
+-- Use the same form as before:
 --   npx wrangler d1 execute isitsafetotravel-sentiment --remote --file=db/migrations/005-votes-rating.sql
--- ALTER TABLE ADD COLUMN is not idempotent: a re-run fails with "duplicate column name: rating",
--- which is safe to ignore (already applied).
+-- Verify afterwards (read-only):
+--   npx wrangler d1 execute isitsafetotravel-sentiment --remote --json --command "SELECT name FROM pragma_table_info('votes')"
+-- ALTER TABLE ADD COLUMN is not idempotent: a re-run fails with "duplicate column name: rating"
+-- and changes nothing, which is safe to ignore (already applied).
 
 ALTER TABLE votes ADD COLUMN rating INTEGER CHECK (rating IS NULL OR rating BETWEEN 1 AND 5);
