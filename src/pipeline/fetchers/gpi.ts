@@ -1,5 +1,5 @@
 import type { FetchResult, RawSourceData, RawIndicator } from '../types.js';
-import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
+import { writeJson, readJson, getRawDir, findLatestCached, ensureDir } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso3 } from '../config/countries.js';
 import { join } from 'node:path';
 import { writeFileSync } from 'node:fs';
@@ -75,14 +75,60 @@ function resolveCountryName(rawName: string): string {
 }
 
 /**
+ * GPI per-year JSON domain fields -> indicator names. The four domain scores (1-5,
+ * higher = less peaceful) are the only GPI JSON values stored. The engine scores
+ * overall, safety and militarisation; gpi_conflict is stored but unscored in v10 (the
+ * conflict pillar kept its v9.1 composition, weights.json _comment_conflict). The `ind`
+ * sub-indicators are deliberately NOT used: their labels disagree between the GPI
+ * manifest and the GPI report (formula v10, SPEC §1.7).
+ */
+export const GPI_JSON_DOMAIN_FIELDS = [
+  { field: 'overall', indicator: 'gpi_overall' },
+  { field: 'safety', indicator: 'gpi_safety_security' },
+  { field: 'militarisation', indicator: 'gpi_militarisation' },
+  { field: 'conflict', indicator: 'gpi_conflict' },
+] as const;
+
+/** One country row of a GPI per-year JSON file. Only the domain fields we read are typed. */
+export interface GpiJsonEntry {
+  iso3?: string;
+  overall?: number;
+  safety?: number;
+  militarisation?: number;
+  /** Ongoing Domestic & International Conflict domain, 1-5 (formula v10 gpi_conflict). */
+  conflict?: number;
+}
+
+/**
+ * Turn one GPI per-year JSON array into RawIndicators. Pure, so the field mapping is
+ * unit-tested without the network. A country outside the project list is skipped, and
+ * so is a non-numeric field: a missing `conflict` never becomes a 0 score.
+ */
+export function gpiEntriesToIndicators(entries: readonly GpiJsonEntry[], year: number): RawIndicator[] {
+  const indicators: RawIndicator[] = [];
+  for (const entry of entries) {
+    const iso3 = (entry.iso3 || '').toUpperCase();
+    if (!iso3 || !getCountryByIso3(iso3)) continue;
+
+    for (const { field, indicator } of GPI_JSON_DOMAIN_FIELDS) {
+      const value = entry[field];
+      if (typeof value === 'number' && Number.isFinite(value)) {
+        indicators.push({ countryIso3: iso3, indicatorName: indicator, value, year, source: 'gpi' });
+      }
+    }
+  }
+  return indicators;
+}
+
+/**
  * v9.1 (SHIP-SPEC 1.1c, D3) — fetch the IEP GPI JSON manifest + every published
  * year's JSON (2008 through whatever the manifest's `years` array currently
  * tops out at, e.g. 2026) into the SAME Map<year, RawIndicator[]> shape as
  * parseGpiExcelAllYears, so selectGpiIndicatorsForYear() works identically
  * regardless of which source produced the map.
  *
- * Field mapping (per-year JSON entry): iso3 -> countryIso3; overall ->
- * gpi_overall; safety -> gpi_safety_security; militarisation -> gpi_militarisation.
+ * Field mapping (per-year JSON entry): iso3 -> countryIso3, then GPI_JSON_DOMAIN_FIELDS
+ * (overall, safety, militarisation, and conflict -> gpi_conflict).
  * A year whose fetch fails is skipped (not fatal) — the manifest lists 19 years
  * as of 2026; losing one still leaves the vintage-selection logic usable.
  */
@@ -107,29 +153,10 @@ export async function parseGpiJsonAllYears(): Promise<Map<number, RawIndicator[]
           console.warn(`[GPI] JSON ${year}.json: HTTP ${res.status} — skipping this year`);
           return;
         }
-        const entries = (await res.json()) as Array<{
-          iso3?: string;
-          overall?: number;
-          safety?: number;
-          militarisation?: number;
-        }>;
+        const entries = (await res.json()) as GpiJsonEntry[];
         if (!Array.isArray(entries)) return;
 
-        const indicators: RawIndicator[] = [];
-        for (const entry of entries) {
-          const iso3 = (entry.iso3 || '').toUpperCase();
-          if (!iso3 || !getCountryByIso3(iso3)) continue;
-
-          if (typeof entry.overall === 'number' && !isNaN(entry.overall)) {
-            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_overall', value: entry.overall, year, source: 'gpi' });
-          }
-          if (typeof entry.safety === 'number' && !isNaN(entry.safety)) {
-            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_safety_security', value: entry.safety, year, source: 'gpi' });
-          }
-          if (typeof entry.militarisation === 'number' && !isNaN(entry.militarisation)) {
-            indicators.push({ countryIso3: iso3, indicatorName: 'gpi_militarisation', value: entry.militarisation, year, source: 'gpi' });
-          }
-        }
+        const indicators = gpiEntriesToIndicators(entries, year);
         if (indicators.length > 0) byYear.set(year, indicators);
       } catch (yearError) {
         const msg = yearError instanceof Error ? yearError.message : String(yearError);
@@ -176,6 +203,10 @@ async function fetchGpiXlsxFallback(rawDir: string, fetchedAt: string): Promise<
 
   const arrayBuffer = await response.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
+  // The fallback can run before any other fetcher has created today's folder (the
+  // fetchers run in parallel), so create it here. Without this the write fails with
+  // ENOENT and the xlsx fallback is lost on exactly the days the JSON manifest is down.
+  ensureDir(rawDir);
   writeFileSync(join(rawDir, 'gpi.xlsx'), buffer);
 
   const indicators = parseGpiExcel(buffer, fetchedAt);
@@ -382,6 +413,10 @@ function resolveGpiSheetMap(workbook: XLSX.WorkBook): [string, string][] {
       sheetMap.push([name, 'gpi_safety_security']);
     } else if (lower.includes('militari')) {
       sheetMap.push([name, 'gpi_militarisation']);
+    } else if (lower.includes('conflict')) {
+      // The "Ongoing Conflict" sheet is the GPI conflict domain (formula v10 gpi_conflict),
+      // the same domain the JSON `conflict` field carries. Its layout matches the other sheets.
+      sheetMap.push([name, 'gpi_conflict']);
     }
   }
   return sheetMap;
@@ -476,7 +511,8 @@ function parseGpiSheetAllYears(
 }
 
 /**
- * Parse a full GPI workbook into per-year indicator sets across all 3 GPI sheets
+ * Parse a full GPI workbook into per-year indicator sets across every mapped GPI sheet
+ * (overall, safety and security, militarisation, ongoing conflict)
  * (gpi_overall / gpi_safety_security / gpi_militarisation). Exported for backfill.
  */
 export function parseGpiExcelAllYears(buffer: Buffer): Map<number, RawIndicator[]> {

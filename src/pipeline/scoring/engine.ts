@@ -1,5 +1,8 @@
 import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
+import { applyMaxAge, formatMaxAgeLog } from './max-age.js';
+import { decideScoreStatus } from './status.js';
+import { computeCommunityComponent, type CommunityEntry, type CommunityLookup } from './community.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
 import { getRegion } from '../../lib/regions.js';
 import { readJson } from '../utils/fs.js';
@@ -18,7 +21,11 @@ import type {
   PillarName,
   SourcesConfig,
   IndicatorScore,
+  CalibrationConfig,
 } from '../types.js';
+
+/** Lower bound of a scale-mapped pillar (formula v10 pillarCalibration), above the ln() floor's input range. */
+export const PILLAR_CALIBRATION_MIN = 0.001;
 
 /**
  * Compute safety score for a single country — Formula v9 (Bayesian synthesis).
@@ -37,6 +44,18 @@ import type {
  *    soft-min term (conflict/crime) + a count-damped severe-advisory modifier.
  * 6. Concave 1-10 calibration: score = 1 + 9*composite^gamma.
  * 7. confidence = sum w_i * n_i/(n_i+K) (NEW output field).
+ *
+ * Formula v10 (SPEC .planning/quick/261014-formula-v10/SPEC.md) keeps 1-7 and adds, in
+ * computeAllScores/computeCountryScore, driven by optional formulaV9 fields:
+ * 8. max-age filter (maxAgeYears) before pillars AND source counting (max-age.ts);
+ * 9. per-pillar scale continuity (pillarCalibration): the shrunk value of a pillar whose
+ *    indicators changed is mapped p' = clamp(alpha + beta * p, 0.001, 1) BEFORE step 5,
+ *    so its mean/spread, and therefore its effective weight, stay those of v9.1;
+ * 10. scoreStatus: < minSources sources => 'insufficient_data' (score null) unless the
+ *    danger guard holds (status.ts);
+ * 11. bounded community adjustment, score = clamp(S_data + adj, 1, 10) (community.ts).
+ * There is no global calibration of the final score.
+ * Without those fields (pre-v10 or synthetic configs) the output equals v9.1 exactly.
  *
  * All formula constants live in weightsConfig.formulaV9 (single source of truth);
  * their VALUES are frozen and must equal the prototype exactly — see
@@ -290,6 +309,28 @@ function computeConfidence(nByPillar: Record<PillarName, number>, pillarDefs: Pi
 }
 
 /**
+ * Formula v10 (SPEC §3) per-pillar scale continuity: p' = clamp(alpha + beta * p, 0.001, 1),
+ * applied to the final (shrunk) pillar value before aggregation. Identity without a map
+ * for that pillar (pre-v10 / synthetic configs, or a pillar whose indicators did not change).
+ */
+export function calibratePillar(p: number, calibration: CalibrationConfig | undefined): number {
+  if (!calibration) return p;
+  return clamp(calibration.alpha + calibration.beta * p, PILLAR_CALIBRATION_MIN, 1);
+}
+
+/** Per-country diagnostics computeAllScores aggregates into its run summary. */
+export interface CountryScoreDiagnostics {
+  sourceCount: number;
+  /** True when only the danger guard kept this data-poor country scored. */
+  guardApplied: boolean;
+  guardReasons: string[];
+  /** The sentiment entry said 'active' but failed the engine's activation floors. */
+  communityRejected: boolean;
+  /** Score from the mapped pillars, before the community adjustment (also computed for grey countries, never published). */
+  rawScore: number;
+}
+
+/**
  * Freshness weight for one indicator, matching the pre-v9 tiered-scoring lookup
  * exactly: source-tiers.json decay params keyed by the RawIndicator's own
  * `.source` (e.g. "advisories_us", "gpi"), age from `dataDate ?? fetchedAt`.
@@ -322,7 +363,25 @@ export function computeCountryScore(
   advisories: { us?: AdvisoryInfo; uk?: AdvisoryInfo; ca?: AdvisoryInfo; au?: AdvisoryInfo; de?: AdvisoryInfo; nl?: AdvisoryInfo; jp?: AdvisoryInfo; sk?: AdvisoryInfo; fr?: AdvisoryInfo; nz?: AdvisoryInfo; ie?: AdvisoryInfo; fi?: AdvisoryInfo; hk?: AdvisoryInfo; br?: AdvisoryInfo; at?: AdvisoryInfo; ph?: AdvisoryInfo; be?: AdvisoryInfo; dk?: AdvisoryInfo; sg?: AdvisoryInfo; ro?: AdvisoryInfo; rs?: AdvisoryInfo; ee?: AdvisoryInfo; hr?: AdvisoryInfo; ar?: AdvisoryInfo; it?: AdvisoryInfo; es?: AdvisoryInfo; kr?: AdvisoryInfo; tw?: AdvisoryInfo; cn?: AdvisoryInfo; in?: AdvisoryInfo; ch?: AdvisoryInfo; se?: AdvisoryInfo; no?: AdvisoryInfo; pl?: AdvisoryInfo; cz?: AdvisoryInfo; hu?: AdvisoryInfo; pt?: AdvisoryInfo },
   sources: SourceMeta[],
   sourcesConfig?: SourcesConfig,
+  /** Formula v10: this country's validated community entry (data/sentiment/latest.json), if any. */
+  communityEntry?: CommunityEntry,
 ): ScoredCountry {
+  return computeCountryScoreDetailed(
+    iso3, allIndicators, weightsConfig, countryEntry, advisories, sources, sourcesConfig, communityEntry,
+  ).country;
+}
+
+/** computeCountryScore plus the diagnostics computeAllScores logs. Same arguments. */
+export function computeCountryScoreDetailed(
+  iso3: string,
+  allIndicators: RawIndicator[],
+  weightsConfig: WeightsConfig,
+  countryEntry: CountryEntry,
+  advisories: AdvisoriesInput,
+  sources: SourceMeta[],
+  sourcesConfig?: SourcesConfig,
+  communityEntry?: CommunityEntry,
+): { country: ScoredCountry; diagnostics: CountryScoreDiagnostics } {
   const upperIso3 = iso3.toUpperCase();
   const countryIndicators = allIndicators.filter((ind) => ind.countryIso3.toUpperCase() === upperIso3);
 
@@ -403,20 +462,41 @@ export function computeCountryScore(
   }
 
   for (const pillarDef of weightsConfig.pillars) {
-    shrunkByPillar[pillarDef.name] = shrinkPillar(
+    const shrunk = shrinkPillar(
       rawByPillar[pillarDef.name] ?? null,
       nByPillar[pillarDef.name] ?? 0,
       mu,
       f9.K,
     );
+    // Formula v10 (SPEC §3): scale continuity for pillars whose indicator set changed. The
+    // mapped value is THE pillar value from here on: it enters the geometric mean and the
+    // acute soft-min, and it is the published pillar score.
+    shrunkByPillar[pillarDef.name] = calibratePillar(shrunk, f9.pillarCalibration?.[pillarDef.name]);
   }
 
   const shrunkComplete = shrunkByPillar as Record<PillarName, number>;
   const nComplete = nByPillar as Record<PillarName, number>;
 
-  const { composite, score, scoreDisplay } = composeScore(shrunkComplete, severeEff, weightsConfig.pillars, f9);
+  const { composite, score: rawScore } = composeScore(shrunkComplete, severeEff, weightsConfig.pillars, f9);
   const confidence = computeConfidence(nComplete, weightsConfig.pillars, f9.K);
   void composite; // retained for potential future diagnostics; not part of ScoredCountry today
+
+  // --- Formula v10: official status (grey rule + danger guard), calibration, community ---
+  // `sources` was built by computeAllScores from the max-age-filtered data, so its length
+  // is the v10 source count (same semantics as the site's hasSufficientData).
+  const level4Governments = Object.values(advisoryLevels).filter((level) => level === 4).length;
+  const ucdpRow = rawByName.get('ucdp_conflict_deaths');
+  const statusDecision = decideScoreStatus(sources.length, f9.minSources, {
+    level4Governments,
+    severeShare,
+    ucdpDeaths: ucdpRow && Number.isFinite(ucdpRow.value) ? ucdpRow.value : null,
+  });
+  const scoreStatus = statusDecision.status;
+  // No global calibration in v10: scale continuity is per pillar (applied above).
+  const dataScore = scoreStatus === 'scored' ? rawScore : null;
+  const { component: community, rejectedActive } = computeCommunityComponent(communityEntry, dataScore, f9.community);
+  const score = dataScore === null ? null : clamp(dataScore + community.adjustment, 1, 10);
+  const scoreDisplay = score === null ? null : Math.round(score);
 
   // --- Build PillarScore[] output. score = SHRUNK value (v9's calibrated, confidence-
   // weighted pillar position). dataCompleteness KEEPS the existing presence-ratio
@@ -439,17 +519,31 @@ export function computeCountryScore(
   const overallCompleteness =
     pillars.length > 0 ? pillars.reduce((acc, p) => acc + p.dataCompleteness, 0) / pillars.length : 0;
 
-  return {
+  const country: ScoredCountry = {
     iso3: upperIso3,
     name: countryEntry.name,
     score,
     scoreDisplay,
+    scoreStatus,
+    dataScore,
+    community,
     pillars,
     advisories,
     dataCompleteness: Math.round(overallCompleteness * 1000) / 1000,
     confidence,
     lastUpdated: new Date().toISOString(),
     sources,
+  };
+
+  return {
+    country,
+    diagnostics: {
+      sourceCount: sources.length,
+      guardApplied: statusDecision.guardApplied,
+      guardReasons: statusDecision.guardReasons,
+      communityRejected: rejectedActive,
+      rawScore,
+    },
   };
 }
 
@@ -459,19 +553,24 @@ export function computeCountryScore(
  * available data, preventing score spikes when a fetch temporarily fails.
  */
 export const INDICATOR_SOURCE_MAP: Record<string, string> = {
+  // World Bank: wb_homicide is scored (v9.1+); child mortality and PM2.5 are still
+  // fetched but no longer scored in v10; wb_population is an engine input only.
+  wb_homicide: 'worldbank',
+  wb_population: 'worldbank',
   wb_child_mortality: 'worldbank',
   wb_air_pollution: 'worldbank',
   vdem_rule_of_law: 'vdem',
   vdem_gov_effectiveness: 'vdem',
   vdem_corruption_control: 'vdem',
-  gpi_overall: 'gpi',
+  gpi_conflict: 'gpi',
   gpi_safety_security: 'gpi',
+  gpi_overall: 'gpi',
   gpi_militarisation: 'gpi',
   inform_natural: 'inform',
-  inform_health: 'inform',
   inform_epidemic: 'inform',
+  inform_health_access: 'inform',
   inform_governance: 'inform',
-  inform_climate: 'inform',
+  ucdp_conflict_deaths: 'ucdp',
   advisory_level_us: 'advisories_us',
   advisory_level_uk: 'advisories_uk',
   advisory_level_ca: 'advisories_ca',
@@ -520,7 +619,9 @@ export const INDICATOR_SOURCE_MAP: Record<string, string> = {
 export const SOURCE_CATALOG: Record<string, { url: string; description: string }> = {
   worldbank: {
     url: 'https://data.worldbank.org/',
-    description: 'World Bank Development Indicators -- child mortality and PM2.5 air pollution',
+    // Formula v10: the scored World Bank series is the intentional homicide rate (UNODC
+    // via WDI); population only damps its weight for small territories.
+    description: 'World Bank Development Indicators -- intentional homicide rate (with population)',
   },
   vdem: {
     url: 'https://www.v-dem.net/data/the-v-dem-dataset/',
@@ -538,11 +639,14 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
-    description: 'Global Peace Index -- annual peacefulness ranking by IEP',
+    // Formula v10 scores the overall index and the militarisation and safety & security
+    // domains (SPEC §2); the ongoing-conflict domain is fetched but unscored.
+    description: 'Global Peace Index (IEP) -- overall score, militarisation and safety & security domains',
   },
   inform: {
     url: 'https://drmkc.jrc.ec.europa.eu/inform-index',
-    description: 'INFORM Risk Index -- hazard, exposure, vulnerability, and coping capacity',
+    // Formula v10 reads four exact INFORM columns (SPEC §2).
+    description: 'INFORM Risk Index (European Commission JRC) -- natural hazards, epidemic risk, access to health care and governance',
   },
   reliefweb: {
     url: 'https://reliefweb.int/',
@@ -635,6 +739,21 @@ function buildSourcesForCountry(
   return sources;
 }
 
+/** Optional inputs of a scoring run (formula v10). */
+export interface ScoreRunOptions {
+  /**
+   * Directory holding this run's advisory side-channel files (advisories-*-info.json).
+   * Defaults to data/raw/<run date>. The v10 calibration and parity scripts point it at
+   * their frozen fixture folder.
+   */
+  rawDir?: string;
+  /**
+   * Validated community entries (loadCommunitySnapshot). Omitted or null = no community
+   * adjustment, so tests and backfills are never moved by whatever file is on disk.
+   */
+  community?: CommunityLookup | null;
+}
+
 /**
  * Compute scores for all countries.
  *
@@ -644,6 +763,10 @@ function buildSourcesForCountry(
  *
  * Automatically loads source-tiers.json for freshness decay. If the config file
  * is missing, freshness weighting defaults to 1.0 (fresh) everywhere.
+ *
+ * Formula v10: stale indicators are dropped first (maxAgeYears, relative to the run
+ * year), then sources are counted and each country gets its scoreStatus, calibrated
+ * data score and community adjustment. The run summary is logged.
  */
 export function computeAllScores(
   rawDataBySource: Map<string, RawSourceData>,
@@ -653,8 +776,10 @@ export function computeAllScores(
    * this run's advisory side-channel files. Fetchers write there by run date,
    * so the lookup must use the same date. Optional for backwards compatibility
    * (tests, backfills): without it the date is inferred from `fetchedAt`.
+   * Its year is also the run year of the v10 max-age filter.
    */
   runDate?: string,
+  options: ScoreRunOptions = {},
 ): ScoredCountry[] {
   // Load sources tier config (optional -- graceful fallback: no freshness decay)
   const sourceTiersPath = join(process.cwd(), 'src/pipeline/config/source-tiers.json');
@@ -667,9 +792,25 @@ export function computeAllScores(
     console.log('  source-tiers.json not found -- freshness weighting defaults to 1.0 everywhere');
   }
 
+  const f9 = weightsConfig.formulaV9 ?? DEFAULT_FORMULA_V9;
+
+  // Run date: the explicit pipeline date, else the advisory fetch date, else today (see the
+  // advisory side-channel note below for why the explicit date wins).
+  const anyAdvisorySourceForDate = [
+    'advisories', 'advisories_tier1', 'advisories_tier2a', 'advisories_tier2b', 'advisories_tier3a', 'advisories_tier3b',
+  ].map((key) => rawDataBySource.get(key)).find(Boolean);
+  const inferredDate = anyAdvisorySourceForDate?.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/)?.[1];
+  const effectiveDate = runDate ?? inferredDate ?? new Date().toISOString().slice(0, 10);
+  const runYear = parseInt(effectiveDate.slice(0, 4), 10);
+
+  // Formula v10 max-age filter (SPEC §1.2): BEFORE pillars and BEFORE source counting.
+  const maxAge = applyMaxAge(rawDataBySource, runYear, f9.maxAgeYears);
+  for (const line of formatMaxAgeLog(maxAge)) console.log(`  ${line}`);
+  const scoringData = maxAge.data;
+
   // Merge all indicators
   const allIndicators: RawIndicator[] = [];
-  for (const sourceData of rawDataBySource.values()) {
+  for (const sourceData of scoringData.values()) {
     allIndicators.push(...sourceData.indicators);
   }
 
@@ -691,13 +832,7 @@ export function computeAllScores(
   // Never fall back to a different date — applying modern advisories
   // (e.g. Level 4 "Do Not Travel") to historical dates would be incorrect.
   // Determine the data date from any available advisory source
-  const advisoriesSource = rawDataBySource.get('advisories');
-  const tier1Source = rawDataBySource.get('advisories_tier1');
-  const tier2aSource = rawDataBySource.get('advisories_tier2a');
-  const tier2bSource = rawDataBySource.get('advisories_tier2b');
-  const tier3aSource = rawDataBySource.get('advisories_tier3a');
-  const tier3bSource = rawDataBySource.get('advisories_tier3b');
-  const anyAdvisorySource = advisoriesSource || tier1Source || tier2aSource || tier2bSource || tier3aSource || tier3bSource;
+  const anyAdvisorySource = anyAdvisorySourceForDate;
 
   if (anyAdvisorySource) {
     // Prefer the explicit run date: `fetchedAt` is the wall-clock fetch time, which
@@ -705,11 +840,11 @@ export function computeAllScores(
     // YYYY-MM-DD) happens after UTC midnight. On 2026-09-26 a corrective run for
     // 2026-09-25 looked in data/raw/2026-09-26/, found nothing, and dropped EVERY
     // advisory (US/UK/CA/AU and all tiers) — the data-quality gate caught it.
-    const dateMatch = anyAdvisorySource.fetchedAt.match(/^(\d{4}-\d{2}-\d{2})/);
-    const dataDate = runDate ?? (dateMatch ? dateMatch[1] : new Date().toISOString().slice(0, 10));
+    const dataDate = effectiveDate;
+    const infoDir = options.rawDir ?? join(process.cwd(), 'data', 'raw', dataDate);
 
     // Load base advisories-info.json
-    const advisoryInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-info.json');
+    const advisoryInfoPath = join(infoDir, 'advisories-info.json');
     const loaded = readJson<AdvisoryInfoMap>(advisoryInfoPath);
     if (loaded) {
       advisoryInfoMap = loaded;
@@ -719,7 +854,7 @@ export function computeAllScores(
     }
 
     // Also load tier-1 advisory info
-    const tier1InfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier1-info.json');
+    const tier1InfoPath = join(infoDir, 'advisories-tier1-info.json');
     const tier1Info = readJson<AdvisoryInfoMap>(tier1InfoPath);
     if (tier1Info) {
       for (const [iso3, info] of Object.entries(tier1Info)) {
@@ -730,7 +865,7 @@ export function computeAllScores(
     }
 
     // Also load tier-2a advisory info
-    const tier2aInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier2a-info.json');
+    const tier2aInfoPath = join(infoDir, 'advisories-tier2a-info.json');
     const tier2aInfo = readJson<AdvisoryInfoMap>(tier2aInfoPath);
     if (tier2aInfo) {
       for (const [iso3, info] of Object.entries(tier2aInfo)) {
@@ -741,7 +876,7 @@ export function computeAllScores(
     }
 
     // Also load tier-2b advisory info
-    const tier2bInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier2b-info.json');
+    const tier2bInfoPath = join(infoDir, 'advisories-tier2b-info.json');
     const tier2bInfo = readJson<AdvisoryInfoMap>(tier2bInfoPath);
     if (tier2bInfo) {
       for (const [iso3, info] of Object.entries(tier2bInfo)) {
@@ -752,7 +887,7 @@ export function computeAllScores(
     }
 
     // Also load tier-3a advisory info
-    const tier3aInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier3a-info.json');
+    const tier3aInfoPath = join(infoDir, 'advisories-tier3a-info.json');
     const tier3aInfo = readJson<AdvisoryInfoMap>(tier3aInfoPath);
     if (tier3aInfo) {
       for (const [iso3, info] of Object.entries(tier3aInfo)) {
@@ -763,7 +898,7 @@ export function computeAllScores(
     }
 
     // Also load tier-3b advisory info
-    const tier3bInfoPath = join(process.cwd(), 'data', 'raw', dataDate, 'advisories-tier3b-info.json');
+    const tier3bInfoPath = join(infoDir, 'advisories-tier3b-info.json');
     const tier3bInfo = readJson<AdvisoryInfoMap>(tier3bInfoPath);
     if (tier3bInfo) {
       for (const [iso3, info] of Object.entries(tier3bInfo)) {
@@ -776,18 +911,60 @@ export function computeAllScores(
 
   // Score each country
   const results: ScoredCountry[] = [];
+  const diagnostics = new Map<string, CountryScoreDiagnostics>();
   for (const iso3 of iso3Set) {
     const entry = getCountryByIso3(iso3);
     if (!entry) continue; // Skip unknown iso3 codes not in our country list
 
     const countryAdvisories = advisoryInfoMap[iso3] || {};
-    const sources = buildSourcesForCountry(iso3, rawDataBySource, countryAdvisories);
-    const scored = computeCountryScore(iso3, allIndicators, weightsConfig, entry, countryAdvisories, sources, sourcesConfig);
-    results.push(scored);
+    // Sources come from the max-age-filtered data: a source whose rows for this
+    // country are all stale does not count toward the v10 minimum-source rule.
+    const sources = buildSourcesForCountry(iso3, scoringData, countryAdvisories);
+    const scored = computeCountryScoreDetailed(
+      iso3, allIndicators, weightsConfig, entry, countryAdvisories, sources, sourcesConfig,
+      options.community?.get(iso3) ?? undefined,
+    );
+    results.push(scored.country);
+    diagnostics.set(scored.country.iso3, scored.diagnostics);
   }
 
   // Sort by iso3
   results.sort((a, b) => a.iso3.localeCompare(b.iso3));
 
+  for (const line of formatRunSummary(results, diagnostics, f9.minSources)) console.log(`  ${line}`);
+
   return results;
+}
+
+/** Run-summary log lines: grey count, danger-guard hits, community adjustments. */
+export function formatRunSummary(
+  results: readonly ScoredCountry[],
+  diagnostics: ReadonlyMap<string, CountryScoreDiagnostics>,
+  minSources: number | undefined,
+): string[] {
+  if (minSources === undefined) return [];
+  const grey = results.filter((c) => c.scoreStatus === 'insufficient_data');
+  const lines = [
+    `[STATUS] ${results.length - grey.length} scored, ${grey.length} insufficient_data (< ${minSources} sources after the max-age filter)`,
+  ];
+  const guarded = results.filter((c) => diagnostics.get(c.iso3)?.guardApplied);
+  lines.push(
+    guarded.length === 0
+      ? '[STATUS] Danger guard: no data-poor country needed it'
+      : `[STATUS] Danger guard kept ${guarded.length} data-poor countr${guarded.length === 1 ? 'y' : 'ies'} scored: ` +
+          guarded.map((c) => `${c.iso3} (${diagnostics.get(c.iso3)!.guardReasons.join('; ')})`).join(', '),
+  );
+  const adjusted = results.filter((c) => (c.community?.adjustment ?? 0) !== 0);
+  const active = results.filter((c) => c.community?.status === 'active');
+  lines.push(
+    `[COMMUNITY] ${active.length} active, ${adjusted.length} adjusted` +
+      (adjusted.length > 0
+        ? `: ${adjusted.map((c) => `${c.iso3} ${c.community!.adjustment >= 0 ? '+' : ''}${c.community!.adjustment.toFixed(2)}`).join(', ')}`
+        : ''),
+  );
+  const rejected = results.filter((c) => diagnostics.get(c.iso3)?.communityRejected).map((c) => c.iso3);
+  if (rejected.length > 0) {
+    lines.push(`[COMMUNITY] Marked active but below the configured floors, not applied: ${rejected.join(', ')}`);
+  }
+  return lines;
 }

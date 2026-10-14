@@ -1,0 +1,2982 @@
+{
+  "date": "2026-10-14",
+  "weightsVersion": "9.1.0",
+  "countries": {
+    "ABW": {
+      "score": 6.65212272171292,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6982178427632975,
+        "crime": 0.6842478657136791,
+        "health": 0.5344289044289044,
+        "governance": 0.5344289044289044,
+        "environment": 0.5344289044289044
+      }
+    },
+    "AFG": {
+      "score": 3.641706142457797,
+      "scoreDisplay": 4,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.298037993320746,
+        "crime": 0.5036905169910739,
+        "health": 0.4080500000000001,
+        "governance": 0.1777142857142857,
+        "environment": 0.4540106836481725
+      }
+    },
+    "AGO": {
+      "score": 6.5598071488265886,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6866973401471997,
+        "crime": 0.7066032025379432,
+        "health": 0.5163103174603175,
+        "governance": 0.4262253968253969,
+        "environment": 0.6568965743872104
+      }
+    },
+    "AIA": {
+      "score": 6.322794516061667,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6974592074592074,
+        "crime": 0.5341025641025641,
+        "health": 0.5341025641025641,
+        "governance": 0.5341025641025641,
+        "environment": 0.5341025641025641
+      }
+    },
+    "ALA": {
+      "score": 5.890313526432444,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5731336805555557,
+        "crime": 0.5121527777777778,
+        "health": 0.5121527777777778,
+        "governance": 0.5121527777777778,
+        "environment": 0.5121527777777778
+      }
+    },
+    "ALB": {
+      "score": 7.777926983058989,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8298011003190691,
+        "crime": 0.8038531496779215,
+        "health": 0.786915,
+        "governance": 0.5440571428571428,
+        "environment": 0.633938098862897
+      }
+    },
+    "AND": {
+      "score": 7.965237379178362,
+      "scoreDisplay": 8,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.9044025157232705,
+        "crime": 0.7089855625946071,
+        "health": 0.79375,
+        "governance": 0.6,
+        "environment": 0.7555848906014593
+      }
+    },
+    "ARE": {
+      "score": 7.322868403241352,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.712670099009901,
+        "crime": 0.7595049584644276,
+        "health": 0.7113162500000001,
+        "governance": 0.6250964285714286,
+        "environment": 0.5556372871778925
+      }
+    },
+    "ARG": {
+      "score": 7.236680476262726,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7300634555020553,
+        "crime": 0.6893809948053473,
+        "health": 0.7586089285714286,
+        "governance": 0.5440857142857143,
+        "environment": 0.6179771931744624
+      }
+    },
+    "ARM": {
+      "score": 7.324076471836084,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7485664913366338,
+        "crime": 0.7752917484299552,
+        "health": 0.719245,
+        "governance": 0.5229285714285715,
+        "environment": 0.5833409625683792
+      }
+    },
+    "ASM": {
+      "score": 6.396714143842832,
+      "scoreDisplay": 6,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.6626984126984128,
+        "crime": 0.5379943123961235,
+        "health": 0.5277777777777778,
+        "governance": 0.5277777777777778,
+        "environment": 0.7359546900990492
+      }
+    },
+    "ATA": {
+      "score": 5.833493986497359,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.5858506944444445,
+        "crime": 0.4986111111111111,
+        "health": 0.4986111111111111,
+        "governance": 0.4986111111111111,
+        "environment": 0.4986111111111111
+      }
+    },
+    "ATF": {
+      "score": 5.460918913184011,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5293836805555556,
+        "crime": 0.4621527777777778,
+        "health": 0.4621527777777778,
+        "governance": 0.4621527777777778,
+        "environment": 0.4621527777777778
+      }
+    },
+    "ATG": {
+      "score": 7.550279170250981,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8704121414647731,
+        "crime": 0.63442461658012,
+        "health": 0.787162470760234,
+        "governance": 0.5073099415204678,
+        "environment": 0.7718208501350883
+      }
+    },
+    "AUS": {
+      "score": 8.397184346070686,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8674211334961336,
+        "crime": 0.8225432839985544,
+        "health": 0.7982922222222222,
+        "governance": 0.8384492063492065,
+        "environment": 0.6616426088922001
+      }
+    },
+    "AUT": {
+      "score": 8.48154996178869,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.893082108665269,
+        "crime": 0.8324232153355685,
+        "health": 0.8580975,
+        "governance": 0.7529142857142859,
+        "environment": 0.6734829683603689
+      }
+    },
+    "AZE": {
+      "score": 6.446841356670671,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7034137518595466,
+        "crime": 0.7041339722035543,
+        "health": 0.6969319967682365,
+        "governance": 0.2635487402717319,
+        "environment": 0.5619595532212028
+      }
+    },
+    "BDI": {
+      "score": 5.6732233982784095,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.5523336036283787,
+        "crime": 0.6298305596439023,
+        "health": 0.4840157010582011,
+        "governance": 0.28684656084656085,
+        "environment": 0.6348737482439301
+      }
+    },
+    "BEL": {
+      "score": 8.359553266276624,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.839229900990099,
+        "crime": 0.8218409067737498,
+        "health": 0.8505525000000002,
+        "governance": 0.7840285714285714,
+        "environment": 0.6763386046112526
+      }
+    },
+    "BEN": {
+      "score": 6.292149084680913,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.589505637287852,
+        "crime": 0.6516639512821214,
+        "health": 0.48068687500000007,
+        "governance": 0.6172160714285714,
+        "environment": 0.5330800506673321
+      }
+    },
+    "BES": {
+      "score": 5.897117505200596,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.62171875,
+        "crime": 0.495625,
+        "health": 0.495625,
+        "governance": 0.495625,
+        "environment": 0.495625
+      }
+    },
+    "BFA": {
+      "score": 4.328889844529414,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.31183454965135876,
+        "crime": 0.5908857851054391,
+        "health": 0.340501875,
+        "governance": 0.4656874999999999,
+        "environment": 0.6165791678420938
+      }
+    },
+    "BGD": {
+      "score": 6.113378243446864,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7273459439656599,
+        "crime": 0.6751562756685706,
+        "health": 0.4884175619834711,
+        "governance": 0.3853783353010626,
+        "environment": 0.33666711341917543
+      }
+    },
+    "BGR": {
+      "score": 7.891632549024414,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8622208353960398,
+        "crime": 0.8162242643069166,
+        "health": 0.8058525,
+        "governance": 0.5175428571428571,
+        "environment": 0.664792313274493
+      }
+    },
+    "BHR": {
+      "score": 6.611684369323719,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6612007686100297,
+        "crime": 0.7167517422705805,
+        "health": 0.7090558994708995,
+        "governance": 0.4046624338624339,
+        "environment": 0.6287091532643043
+      }
+    },
+    "BHS": {
+      "score": 6.910077742329742,
+      "scoreDisplay": 7,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8212614870509608,
+        "crime": 0.48963160035675535,
+        "health": 0.7450712280701755,
+        "governance": 0.5579824561403508,
+        "environment": 0.7823356466703251
+      }
+    },
+    "BIH": {
+      "score": 7.449311856055615,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8191089844952293,
+        "crime": 0.7613094890426823,
+        "health": 0.7971148453370268,
+        "governance": 0.4257550191267644,
+        "environment": 0.6334250617304987
+      }
+    },
+    "BLM": {
+      "score": 5.804616237340683,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6023611111111111,
+        "crime": 0.48833333333333334,
+        "health": 0.48833333333333334,
+        "governance": 0.48833333333333334,
+        "environment": 0.48833333333333334
+      }
+    },
+    "BLR": {
+      "score": 5.744395112830768,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.5693215323625217,
+        "crime": 0.6808759598420341,
+        "health": 0.7148157132963989,
+        "governance": 0.4098974277799763,
+        "environment": 0.6603382318251708
+      }
+    },
+    "BLZ": {
+      "score": 6.864797469255771,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8108580508474575,
+        "crime": 0.521747307383321,
+        "health": 0.7480368750000002,
+        "governance": 0.46546875000000004,
+        "environment": 0.6947565793990975
+      }
+    },
+    "BOL": {
+      "score": 6.734844683212248,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7244131972313734,
+        "crime": 0.6929973463039718,
+        "health": 0.6566468121693122,
+        "governance": 0.38627830687830694,
+        "environment": 0.5813517804583
+      }
+    },
+    "BRA": {
+      "score": 6.314230172824205,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6163641755857635,
+        "crime": 0.5690160625290377,
+        "health": 0.5096289658356418,
+        "governance": 0.5980254583827991,
+        "environment": 0.6021893736395006
+      }
+    },
+    "BRB": {
+      "score": 7.978061363031321,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8764317573595004,
+        "crime": 0.7023236547961187,
+        "health": 0.7200192105263158,
+        "governance": 0.751775939849624,
+        "environment": 0.7508609240747799
+      }
+    },
+    "BRN": {
+      "score": 7.9437575484769765,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8766889327359175,
+        "crime": 0.7745926812206817,
+        "health": 0.742311508714597,
+        "governance": 0.6182380174291939,
+        "environment": 0.7038137459333388
+      }
+    },
+    "BTN": {
+      "score": 8.032762470911123,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8787194863861387,
+        "crime": 0.7915793249073415,
+        "health": 0.7280806250000001,
+        "governance": 0.7039839285714286,
+        "environment": 0.6467144388332557
+      }
+    },
+    "BVT": {
+      "score": 5.460918913184011,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5293836805555556,
+        "crime": 0.4621527777777778,
+        "health": 0.4621527777777778,
+        "governance": 0.4621527777777778,
+        "environment": 0.4621527777777778
+      }
+    },
+    "BWA": {
+      "score": 7.522765565650571,
+      "scoreDisplay": 8,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.788098063250807,
+        "crime": 0.6630056598198978,
+        "health": 0.7260615211640211,
+        "governance": 0.6537026455026453,
+        "environment": 0.7162869730282514
+      }
+    },
+    "CAF": {
+      "score": 3.7431504454735998,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.343590637520491,
+        "crime": 0.4322655675076813,
+        "health": 0.32087750000000004,
+        "governance": 0.19217142857142858,
+        "environment": 0.5579161695938182
+      }
+    },
+    "CAN": {
+      "score": 8.316788153331773,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8687255194762898,
+        "crime": 0.8278235958636528,
+        "health": 0.7948655263157894,
+        "governance": 0.7998969924812029,
+        "environment": 0.6261545513209402
+      }
+    },
+    "CCK": {
+      "score": 5.181446289511495,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.45,
+        "crime": 0.45,
+        "health": 0.45,
+        "governance": 0.45,
+        "environment": 0.45
+      }
+    },
+    "CHE": {
+      "score": 8.709172382804795,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8967561386138614,
+        "crime": 0.858927713292163,
+        "health": 0.8409675000000001,
+        "governance": 0.867,
+        "environment": 0.7081680192436828
+      }
+    },
+    "CHL": {
+      "score": 7.658796642956845,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7760579872757978,
+        "crime": 0.7057669518071589,
+        "health": 0.7733285185185186,
+        "governance": 0.7521576719576719,
+        "environment": 0.568179735980895
+      }
+    },
+    "CHN": {
+      "score": 6.833966570417748,
+      "scoreDisplay": 7,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7576462616677914,
+        "crime": 0.706176960500952,
+        "health": 0.6955463708951867,
+        "governance": 0.4377522395732922,
+        "environment": 0.4281409855618805
+      }
+    },
+    "CIV": {
+      "score": 6.525514107162046,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7446400287967393,
+        "crime": 0.5980645743145744,
+        "health": 0.5545627525252526,
+        "governance": 0.41773448773448774,
+        "environment": 0.6547289040353456
+      }
+    },
+    "CMR": {
+      "score": 5.17722231284092,
+      "scoreDisplay": 5,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.5302124139871667,
+        "crime": 0.6028837375535738,
+        "health": 0.39697117266851345,
+        "governance": 0.22784893813481072,
+        "environment": 0.49580069400526006
+      }
+    },
+    "COD": {
+      "score": 3.6887390119768404,
+      "scoreDisplay": 4,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.28692353553292194,
+        "crime": 0.35183608058608057,
+        "health": 0.2929028205128205,
+        "governance": 0.18637454212454213,
+        "environment": 0.5230675022867071
+      }
+    },
+    "COG": {
+      "score": 5.639116025497399,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.5769219592165705,
+        "crime": 0.5008768315018315,
+        "health": 0.5981434775641026,
+        "governance": 0.29643163919413923,
+        "environment": 0.5527849511640537
+      }
+    },
+    "COK": {
+      "score": 6.621921333763325,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.7324645888447973,
+        "crime": 0.5673418209876544,
+        "health": 0.5673418209876544,
+        "governance": 0.5673418209876544,
+        "environment": 0.5673418209876544
+      }
+    },
+    "COL": {
+      "score": 5.751583102649773,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.5060165234456161,
+        "crime": 0.47409757350305254,
+        "health": 0.5281819903581267,
+        "governance": 0.6123098780007872,
+        "environment": 0.5626833660832734
+      }
+    },
+    "COM": {
+      "score": 6.3620833432989965,
+      "scoreDisplay": 6,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.800355914553103,
+        "crime": 0.47682461873638343,
+        "health": 0.6834311546840959,
+        "governance": 0.29447920946156236,
+        "environment": 0.7912955425867059
+      }
+    },
+    "CPV": {
+      "score": 7.714477082718909,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8173124183006537,
+        "crime": 0.6926111987704353,
+        "health": 0.7578070098039216,
+        "governance": 0.6216196078431373,
+        "environment": 0.7707115603516783
+      }
+    },
+    "CRI": {
+      "score": 7.648195180128971,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7885967511480485,
+        "crime": 0.6745573687745328,
+        "health": 0.7284649206349205,
+        "governance": 0.7739079365079365,
+        "environment": 0.6485009138871548
+      }
+    },
+    "CUB": {
+      "score": 6.461273116699573,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.6727196589174875,
+        "crime": 0.6444088588967599,
+        "health": 0.687773324099723,
+        "governance": 0.31064265927977835,
+        "environment": 0.7016272825807914
+      }
+    },
+    "CUW": {
+      "score": 6.266402872989594,
+      "scoreDisplay": 6,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6551657196969697,
+        "crime": 0.5938683757500075,
+        "health": 0.5121969696969697,
+        "governance": 0.5121969696969697,
+        "environment": 0.5121969696969697
+      }
+    },
+    "CXR": {
+      "score": 5.181446289511495,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.45,
+        "crime": 0.45,
+        "health": 0.45,
+        "governance": 0.45,
+        "environment": 0.45
+      }
+    },
+    "CYM": {
+      "score": 6.518421873244117,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6869151234567902,
+        "crime": 0.6447814098929723,
+        "health": 0.5283024691358025,
+        "governance": 0.5283024691358025,
+        "environment": 0.5283024691358025
+      }
+    },
+    "CYP": {
+      "score": 8.119987046523383,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8237856688596491,
+        "crime": 0.7531277966302719,
+        "health": 0.81615,
+        "governance": 0.7204571428571429,
+        "environment": 0.7769605652181973
+      }
+    },
+    "CZE": {
+      "score": 8.569074314326517,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8834440655006859,
+        "crime": 0.830413696283675,
+        "health": 0.8521199999999999,
+        "governance": 0.8114571428571427,
+        "environment": 0.7161368838473517
+      }
+    },
+    "DEU": {
+      "score": 8.357369920180012,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8341293936471194,
+        "crime": 0.8169279048597483,
+        "health": 0.8389275,
+        "governance": 0.8554,
+        "environment": 0.6287411184608679
+      }
+    },
+    "DJI": {
+      "score": 6.484297246389572,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7204966089108911,
+        "crime": 0.6182142857142857,
+        "health": 0.6283675000000001,
+        "governance": 0.37770000000000004,
+        "environment": 0.6254303104026587
+      }
+    },
+    "DMA": {
+      "score": 7.237917339254025,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8745080293325905,
+        "crime": 0.547532233581338,
+        "health": 0.7359044493177387,
+        "governance": 0.5585038986354776,
+        "environment": 0.7575569340724297
+      }
+    },
+    "DNK": {
+      "score": 8.752331458610753,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8539897831384015,
+        "crime": 0.8726207179987432,
+        "health": 0.831525,
+        "governance": 0.8900571428571429,
+        "environment": 0.8214756894327228
+      }
+    },
+    "DOM": {
+      "score": 6.97420723911842,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7582029517326735,
+        "crime": 0.6614020006291143,
+        "health": 0.6326762499999999,
+        "governance": 0.4949821428571428,
+        "environment": 0.6478273541697365
+      }
+    },
+    "DZA": {
+      "score": 6.889381980584747,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7098203403465347,
+        "crime": 0.7271993149513426,
+        "health": 0.684366875,
+        "governance": 0.3861517857142857,
+        "environment": 0.6656400912100349
+      }
+    },
+    "ECU": {
+      "score": 5.854675586173853,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6899476065480352,
+        "crime": 0.4393860838600935,
+        "health": 0.5459741137566139,
+        "governance": 0.3861195767195767,
+        "environment": 0.5482319740780677
+      }
+    },
+    "EGY": {
+      "score": 6.517929894566801,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7079239108910892,
+        "crime": 0.6820473453708531,
+        "health": 0.688970625,
+        "governance": 0.3903696428571429,
+        "environment": 0.38788013092137963
+      }
+    },
+    "ERI": {
+      "score": 5.772173772052856,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6546767499833617,
+        "crime": 0.5197824145987174,
+        "health": 0.6288639021164021,
+        "governance": 0.22092169312169313,
+        "environment": 0.6352737780456299
+      }
+    },
+    "ESH": {
+      "score": 5.152973375032559,
+      "scoreDisplay": 5,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.5923520334059549,
+        "crime": 0.3959490740740741,
+        "health": 0.3959490740740741,
+        "governance": 0.3959490740740741,
+        "environment": 0.3959490740740741
+      }
+    },
+    "ESP": {
+      "score": 8.257137614813505,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8415405693069307,
+        "crime": 0.8143852425026554,
+        "health": 0.8256899999999999,
+        "governance": 0.7629714285714286,
+        "environment": 0.65551601383795
+      }
+    },
+    "EST": {
+      "score": 8.64272721691914,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8600139351851852,
+        "crime": 0.8498924342775785,
+        "health": 0.85065,
+        "governance": 0.8608285714285714,
+        "environment": 0.7441738503129002
+      }
+    },
+    "ETH": {
+      "score": 5.244134142571254,
+      "scoreDisplay": 5,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.4140657108830822,
+        "crime": 0.6068514807701311,
+        "health": 0.408296875,
+        "governance": 0.38888749999999994,
+        "environment": 0.6085007596386478
+      }
+    },
+    "FIN": {
+      "score": 8.639248938047315,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8782156992574256,
+        "crime": 0.8765028533374377,
+        "health": 0.829155,
+        "governance": 0.8362857142857141,
+        "environment": 0.707828216351892
+      }
+    },
+    "FJI": {
+      "score": 8.13519292236926,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8877938088464402,
+        "crime": 0.789576420359145,
+        "health": 0.7515518100995733,
+        "governance": 0.6569668766510871,
+        "environment": 0.7637688739508846
+      }
+    },
+    "FLK": {
+      "score": 5.636777155873311,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.5773333333333334,
+        "crime": 0.4716666666666667,
+        "health": 0.4716666666666667,
+        "governance": 0.4716666666666667,
+        "environment": 0.4716666666666667
+      }
+    },
+    "FRA": {
+      "score": 7.953416874531444,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7534725561690784,
+        "crime": 0.7790541777270281,
+        "health": 0.8038811538461538,
+        "governance": 0.8063983516483516,
+        "environment": 0.6346625426904574
+      }
+    },
+    "FRO": {
+      "score": 6.226134751739974,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6333333333333333,
+        "crime": 0.5416666666666666,
+        "health": 0.5416666666666666,
+        "governance": 0.5416666666666666,
+        "environment": 0.5416666666666666
+      }
+    },
+    "FSM": {
+      "score": 7.896722779358883,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8949494949494949,
+        "crime": 0.7139523906510906,
+        "health": 0.7923216666666666,
+        "governance": 0.5433333333333333,
+        "environment": 0.8051276478649916
+      }
+    },
+    "GAB": {
+      "score": 6.566408894409108,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7578760307685269,
+        "crime": 0.5623733938019652,
+        "health": 0.6301467195767195,
+        "governance": 0.44160423280423283,
+        "environment": 0.5891464964072268
+      }
+    },
+    "GBR": {
+      "score": 8.312385312952925,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8104163595459551,
+        "crime": 0.83931556590102,
+        "health": 0.8320150816993465,
+        "governance": 0.7972443510737628,
+        "environment": 0.6792064210308281
+      }
+    },
+    "GEO": {
+      "score": 7.448367441303717,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7722366701815248,
+        "crime": 0.7082060571365222,
+        "health": 0.7404967195767196,
+        "governance": 0.5948042328042329,
+        "environment": 0.6345774832081069
+      }
+    },
+    "GGY": {
+      "score": 5.890313526432444,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5731336805555557,
+        "crime": 0.5121527777777778,
+        "health": 0.5121527777777778,
+        "governance": 0.5121527777777778,
+        "environment": 0.5121527777777778
+      }
+    },
+    "GHA": {
+      "score": 6.991549963381795,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7489627323397778,
+        "crime": 0.743952056534372,
+        "health": 0.58403423553719,
+        "governance": 0.4833219598583235,
+        "environment": 0.6278645651240855
+      }
+    },
+    "GIB": {
+      "score": 6.647245827301807,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.67421875,
+        "crime": 0.6419925188276665,
+        "health": 0.565625,
+        "governance": 0.565625,
+        "environment": 0.565625
+      }
+    },
+    "GIN": {
+      "score": 5.816475472449148,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7108171410891089,
+        "crime": 0.5716071428571429,
+        "health": 0.49473250000000013,
+        "governance": 0.2584714285714286,
+        "environment": 0.5838212770205681
+      }
+    },
+    "GLP": {
+      "score": 6.268789356591931,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6854166666666667,
+        "crime": 0.53,
+        "health": 0.53,
+        "governance": 0.53,
+        "environment": 0.53
+      }
+    },
+    "GMB": {
+      "score": 7.071409418826784,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7868625535795715,
+        "crime": 0.6267226890756302,
+        "health": 0.6359123529411765,
+        "governance": 0.595420168067227,
+        "environment": 0.5886059953764033
+      }
+    },
+    "GNB": {
+      "score": 6.337789750150644,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7270488023879143,
+        "crime": 0.7101106904962258,
+        "health": 0.5783602192982455,
+        "governance": 0.26441303258145366,
+        "environment": 0.6634029110387712
+      }
+    },
+    "GNQ": {
+      "score": 6.481161542788822,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7891792410859324,
+        "crime": 0.6921070036201614,
+        "health": 0.5937123781676413,
+        "governance": 0.2671641882483988,
+        "environment": 0.6373691108709825
+      }
+    },
+    "GRC": {
+      "score": 7.9964028322505065,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8297259405940595,
+        "crime": 0.7966318726009974,
+        "health": 0.7876350000000001,
+        "governance": 0.6628571428571429,
+        "environment": 0.669923133674833
+      }
+    },
+    "GRD": {
+      "score": 7.525405388521325,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8569736842105262,
+        "crime": 0.6217009264799465,
+        "health": 0.7566059210526316,
+        "governance": 0.5591118421052632,
+        "environment": 0.7733586707193306
+      }
+    },
+    "GRL": {
+      "score": 6.9306843882392455,
+      "scoreDisplay": 7,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.8516985645933013,
+        "crime": 0.6114278357619899,
+        "health": 0.5120574162679425,
+        "governance": 0.5120574162679425,
+        "environment": 0.7478472836335099
+      }
+    },
+    "GTM": {
+      "score": 6.824530394151726,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7506491076081293,
+        "crime": 0.6029183489589355,
+        "health": 0.6456296052631578,
+        "governance": 0.518630827067669,
+        "environment": 0.5784025493738333
+      }
+    },
+    "GUF": {
+      "score": 6.2109044944029455,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6754587836406017,
+        "crime": 0.5246386946386946,
+        "health": 0.5246386946386946,
+        "governance": 0.5246386946386946,
+        "environment": 0.5246386946386946
+      }
+    },
+    "GUM": {
+      "score": 6.831260920549954,
+      "scoreDisplay": 7,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.6820312499999999,
+        "crime": 0.696481086580368,
+        "health": 0.5375,
+        "governance": 0.5375,
+        "environment": 0.7441414929738683
+      }
+    },
+    "GUY": {
+      "score": 6.749470481270958,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7575603774752476,
+        "crime": 0.587245492271912,
+        "health": 0.64844,
+        "governance": 0.48002857142857147,
+        "environment": 0.5845514459263366
+      }
+    },
+    "HKG": {
+      "score": 6.76857175340305,
+      "scoreDisplay": 7,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.623884468022399,
+        "crime": 0.7946366624409124,
+        "health": 0.5037547892720307,
+        "governance": 0.676474411603722,
+        "environment": 0.5037547892720307
+      }
+    },
+    "HND": {
+      "score": 6.475394224427573,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7458962062071591,
+        "crime": 0.5405691861912593,
+        "health": 0.6190496794871795,
+        "governance": 0.4454826007326007,
+        "environment": 0.5558278966492082
+      }
+    },
+    "HRV": {
+      "score": 8.130324258786892,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8663962037037037,
+        "crime": 0.8224298111090514,
+        "health": 0.8222700000000001,
+        "governance": 0.6572,
+        "environment": 0.6152574872801144
+      }
+    },
+    "HTI": {
+      "score": 3.770754976175317,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.32401121085993456,
+        "crime": 0.3689554431264376,
+        "health": 0.40789877410468317,
+        "governance": 0.24353959071231798,
+        "environment": 0.5678515590540347
+      }
+    },
+    "HUN": {
+      "score": 7.972560665206723,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.879431208748813,
+        "crime": 0.8203993332858593,
+        "health": 0.7831275000000001,
+        "governance": 0.5626857142857143,
+        "environment": 0.6524957446560659
+      }
+    },
+    "IDN": {
+      "score": 6.400751555660033,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.6648442306889126,
+        "crime": 0.7613980856620891,
+        "health": 0.5167556249999999,
+        "governance": 0.41273392857142854,
+        "environment": 0.4649864064434346
+      }
+    },
+    "IMN": {
+      "score": 6.189736736374721,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.5731336805555557,
+        "crime": 0.656047774994133,
+        "health": 0.5121527777777778,
+        "governance": 0.5121527777777778,
+        "environment": 0.5121527777777778
+      }
+    },
+    "IND": {
+      "score": 5.788209776703164,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.5265291918828173,
+        "crime": 0.7104431322409448,
+        "health": 0.4842811111111111,
+        "governance": 0.4029174603174603,
+        "environment": 0.37497402252906176
+      }
+    },
+    "IOT": {
+      "score": 5.2885301101092645,
+      "scoreDisplay": 5,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.5118836805555556,
+        "crime": 0.4421527777777778,
+        "health": 0.4421527777777778,
+        "governance": 0.4421527777777778,
+        "environment": 0.4421527777777778
+      }
+    },
+    "IRL": {
+      "score": 8.656524310654705,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.9013585706018518,
+        "crime": 0.8461130806215623,
+        "health": 0.8525925,
+        "governance": 0.7872000000000001,
+        "environment": 0.7581630257131128
+      }
+    },
+    "IRN": {
+      "score": 4.111420208110783,
+      "scoreDisplay": 4,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.3326323529684826,
+        "crime": 0.593007986632915,
+        "health": 0.46514750000000005,
+        "governance": 0.2879714285714286,
+        "environment": 0.4040385648065805
+      }
+    },
+    "IRQ": {
+      "score": 4.498353210448843,
+      "scoreDisplay": 4,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.41464096423034397,
+        "crime": 0.544599148311207,
+        "health": 0.45811238095238094,
+        "governance": 0.27964761904761903,
+        "environment": 0.3550307105469582
+      }
+    },
+    "ISL": {
+      "score": 8.867121216252833,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.9244257733308965,
+        "crime": 0.8679629401233764,
+        "health": 0.83556,
+        "governance": 0.8407428571428571,
+        "environment": 0.8252199630435963
+      }
+    },
+    "ISR": {
+      "score": 5.91539729999836,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.42090890813329135,
+        "crime": 0.6664009169692744,
+        "health": 0.5804530555555556,
+        "governance": 0.7139015873015874,
+        "environment": 0.6836933969296082
+      }
+    },
+    "ITA": {
+      "score": 8.121221991874332,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8207225483736942,
+        "crime": 0.8284664365333674,
+        "health": 0.8450025000000001,
+        "governance": 0.6882285714285714,
+        "environment": 0.6196675127557495
+      }
+    },
+    "JAM": {
+      "score": 6.941772481631504,
+      "scoreDisplay": 7,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7793859662761936,
+        "crime": 0.499460940668139,
+        "health": 0.7131239807162534,
+        "governance": 0.70953404171586,
+        "environment": 0.70489852478774
+      }
+    },
+    "JEY": {
+      "score": 5.890313526432444,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5731336805555557,
+        "crime": 0.5121527777777778,
+        "health": 0.5121527777777778,
+        "governance": 0.5121527777777778,
+        "environment": 0.5121527777777778
+      }
+    },
+    "JOR": {
+      "score": 7.140695649685976,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.68313069754155,
+        "crime": 0.736622292812025,
+        "health": 0.6784436019283746,
+        "governance": 0.6002465958284141,
+        "environment": 0.6536898137118665
+      }
+    },
+    "JPN": {
+      "score": 8.238515041697008,
+      "scoreDisplay": 8,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8588900160144421,
+        "crime": 0.8689925030659235,
+        "health": 0.7814096296296296,
+        "governance": 0.8136465608465608,
+        "environment": 0.5174781428697952
+      }
+    },
+    "KAZ": {
+      "score": 7.266032248826179,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8207551608910892,
+        "crime": 0.7499656444209075,
+        "health": 0.7587550000000001,
+        "governance": 0.40054285714285714,
+        "environment": 0.5855439112422374
+      }
+    },
+    "KEN": {
+      "score": 6.234116770438598,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.596935586488984,
+        "crime": 0.609192687313816,
+        "health": 0.5012461111111111,
+        "governance": 0.518374603174603,
+        "environment": 0.6112083780837441
+      }
+    },
+    "KGZ": {
+      "score": 7.291516579963649,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8049513360935544,
+        "crime": 0.7563817078987894,
+        "health": 0.7129530283224402,
+        "governance": 0.42677727980080926,
+        "environment": 0.6527649824224484
+      }
+    },
+    "KHM": {
+      "score": 6.182504578782982,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6108329879743057,
+        "crime": 0.737365229029268,
+        "health": 0.6660116137566138,
+        "governance": 0.24866243386243383,
+        "environment": 0.5441801770271185
+      }
+    },
+    "KIR": {
+      "score": 7.663438731213515,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8943059173143031,
+        "crime": 0.6901252265486092,
+        "health": 0.6945663945005611,
+        "governance": 0.5519177890011223,
+        "environment": 0.7800966754033712
+      }
+    },
+    "KNA": {
+      "score": 6.79338069731013,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8915647163120568,
+        "crime": 0.42824494768440463,
+        "health": 0.790520625,
+        "governance": 0.56515625,
+        "environment": 0.7881585360342936
+      }
+    },
+    "KOR": {
+      "score": 8.058899105079327,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8214350260510188,
+        "crime": 0.8333723566278368,
+        "health": 0.7693235620915033,
+        "governance": 0.7933908496732027,
+        "environment": 0.5416487977633504
+      }
+    },
+    "KWT": {
+      "score": 7.073917637922336,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6846610891089111,
+        "crime": 0.7831101699576826,
+        "health": 0.70142,
+        "governance": 0.5453357142857143,
+        "environment": 0.5105754437866085
+      }
+    },
+    "LAO": {
+      "score": 6.70953506627766,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7718918038501216,
+        "crime": 0.650599962207105,
+        "health": 0.662811216931217,
+        "governance": 0.36311640211640206,
+        "environment": 0.5786670377705636
+      }
+    },
+    "LBN": {
+      "score": 4.848447592233221,
+      "scoreDisplay": 5,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.41121467580647936,
+        "crime": 0.6429326642742741,
+        "health": 0.48174500000000003,
+        "governance": 0.2721142857142857,
+        "environment": 0.6510012626631044
+      }
+    },
+    "LBR": {
+      "score": 6.522017481995344,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7629158294539345,
+        "crime": 0.6595060526520455,
+        "health": 0.547918434903047,
+        "governance": 0.3618450336367234,
+        "environment": 0.6018197660964855
+      }
+    },
+    "LBY": {
+      "score": 4.815007583432333,
+      "scoreDisplay": 5,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.5362224566831683,
+        "crime": 0.5101785714285715,
+        "health": 0.662585,
+        "governance": 0.18919999999999998,
+        "environment": 0.6757336957260519
+      }
+    },
+    "LCA": {
+      "score": 6.807488209780399,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.857236780805963,
+        "crime": 0.45801839877697353,
+        "health": 0.7500460185185185,
+        "governance": 0.542662037037037,
+        "environment": 0.7675897703410876
+      }
+    },
+    "LIE": {
+      "score": 8.011510049559998,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.9047619047619048,
+        "crime": 0.663990084326888,
+        "health": 0.8333333333333334,
+        "governance": 0.7150000000000001,
+        "environment": 0.7007407407407408
+      }
+    },
+    "LKA": {
+      "score": 7.519107121276503,
+      "scoreDisplay": 8,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7693881077616872,
+        "crime": 0.7352752188894427,
+        "health": 0.7117575826446281,
+        "governance": 0.6040377804014168,
+        "environment": 0.6922747516921494
+      }
+    },
+    "LSO": {
+      "score": 6.864664154038274,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7592712809405939,
+        "crime": 0.5494337325614171,
+        "health": 0.675459375,
+        "governance": 0.5345017857142857,
+        "environment": 0.6948910118364015
+      }
+    },
+    "LTU": {
+      "score": 8.356584087408006,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8630084490740741,
+        "crime": 0.8410419804128205,
+        "health": 0.825405,
+        "governance": 0.7222571428571429,
+        "environment": 0.7020849961105973
+      }
+    },
+    "LUX": {
+      "score": 8.695765915399312,
+      "scoreDisplay": 9,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8977072310405644,
+        "crime": 0.8012563956291225,
+        "health": 0.8550150000000001,
+        "governance": 0.8679428571428571,
+        "environment": 0.800151895289204
+      }
+    },
+    "LVA": {
+      "score": 8.520601121251941,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8696927390960039,
+        "crime": 0.8324743906126327,
+        "health": 0.8545875,
+        "governance": 0.8225999999999999,
+        "environment": 0.6796475789803534
+      }
+    },
+    "MAC": {
+      "score": 6.3779926801600855,
+      "scoreDisplay": 6,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6040625,
+        "crime": 0.761101927959703,
+        "health": 0.4945,
+        "governance": 0.4945,
+        "environment": 0.4945
+      }
+    },
+    "MAF": {
+      "score": 5.963559812110126,
+      "scoreDisplay": 6,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6295162509448224,
+        "crime": 0.5076857082616204,
+        "health": 0.5003703703703704,
+        "governance": 0.5003703703703704,
+        "environment": 0.5003703703703704
+      }
+    },
+    "MAR": {
+      "score": 7.191828506701422,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7630719245049505,
+        "crime": 0.7517433146560581,
+        "health": 0.690036875,
+        "governance": 0.4592875,
+        "environment": 0.6300074765872504
+      }
+    },
+    "MCO": {
+      "score": 7.838484136952403,
+      "scoreDisplay": 8,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.8972922502334265,
+        "crime": 0.6677718620300003,
+        "health": 0.79325,
+        "governance": 0.6,
+        "environment": 0.7431100891010904
+      }
+    },
+    "MDA": {
+      "score": 7.5342382069332965,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.773069727718421,
+        "crime": 0.7444184428210715,
+        "health": 0.7074936639118456,
+        "governance": 0.6125392168437622,
+        "environment": 0.6718050819416425
+      }
+    },
+    "MDG": {
+      "score": 6.277030436971316,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.774275563118812,
+        "crime": 0.636517857142857,
+        "health": 0.5920331249999999,
+        "governance": 0.2564482142857143,
+        "environment": 0.5629383641642948
+      }
+    },
+    "MDV": {
+      "score": 7.971248544293342,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8135008574066747,
+        "crime": 0.7607678929671124,
+        "health": 0.8097151108033243,
+        "governance": 0.6335166600712308,
+        "environment": 0.7779521730569696
+      }
+    },
+    "MEX": {
+      "score": 5.934473730406274,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.5868031243941975,
+        "crime": 0.5314339637761349,
+        "health": 0.5276182142857143,
+        "governance": 0.46348571428571433,
+        "environment": 0.5229233269400786
+      }
+    },
+    "MHL": {
+      "score": 7.689019658922963,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.883808620650726,
+        "crime": 0.6371398029327916,
+        "health": 0.7799659660976765,
+        "governance": 0.5748269321953532,
+        "environment": 0.7728967744708062
+      }
+    },
+    "MKD": {
+      "score": 7.600903434579102,
+      "scoreDisplay": 8,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8425691742811892,
+        "crime": 0.7900037404652435,
+        "health": 0.7983600000000001,
+        "governance": 0.4159714285714286,
+        "environment": 0.6976324983000032
+      }
+    },
+    "MLI": {
+      "score": 3.669504832985593,
+      "scoreDisplay": 4,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.2910445434963342,
+        "crime": 0.40071428571428575,
+        "health": 0.35630000000000006,
+        "governance": 0.3399142857142857,
+        "environment": 0.46453047723275415
+      }
+    },
+    "MLT": {
+      "score": 8.435055517355604,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.9050847457627119,
+        "crime": 0.8059496627667114,
+        "health": 0.8180475,
+        "governance": 0.6898857142857142,
+        "environment": 0.8246901452105581
+      }
+    },
+    "MMR": {
+      "score": 4.082724358466953,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.31184920162355545,
+        "crime": 0.5592401193017542,
+        "health": 0.42982437830687825,
+        "governance": 0.2155312169312169,
+        "environment": 0.42852950361548103
+      }
+    },
+    "MNE": {
+      "score": 8.166017298965986,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8646468935643564,
+        "crime": 0.8029797667117998,
+        "health": 0.8128799999999999,
+        "governance": 0.6396285714285714,
+        "environment": 0.7377269228222483
+      }
+    },
+    "MNG": {
+      "score": 7.359938778866128,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8342964472562071,
+        "crime": 0.7257145385463538,
+        "health": 0.761555138504155,
+        "governance": 0.4769315393747527,
+        "environment": 0.539899289083855
+      }
+    },
+    "MNP": {
+      "score": 6.232223809039861,
+      "scoreDisplay": 6,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.63671875,
+        "crime": 0.515625,
+        "health": 0.515625,
+        "governance": 0.515625,
+        "environment": 0.7251751355763065
+      }
+    },
+    "MOZ": {
+      "score": 5.7266798763042726,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.5492840312134449,
+        "crime": 0.6359002371511061,
+        "health": 0.44026125000000005,
+        "governance": 0.35216785714285714,
+        "environment": 0.5638868324002108
+      }
+    },
+    "MRT": {
+      "score": 6.056647740220461,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6571970977722773,
+        "crime": 0.6633295730411801,
+        "health": 0.6119643750000001,
+        "governance": 0.2766089285714286,
+        "environment": 0.47108916052352323
+      }
+    },
+    "MSR": {
+      "score": 6.328322286889691,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6985476841998581,
+        "crime": 0.5345707915273132,
+        "health": 0.5345707915273132,
+        "governance": 0.5345707915273132,
+        "environment": 0.5345707915273132
+      }
+    },
+    "MTQ": {
+      "score": 6.268789356591931,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6854166666666667,
+        "crime": 0.53,
+        "health": 0.53,
+        "governance": 0.53,
+        "environment": 0.53
+      }
+    },
+    "MUS": {
+      "score": 7.894470089045009,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8455365655940593,
+        "crime": 0.7420011970769627,
+        "health": 0.736276875,
+        "governance": 0.6551803571428572,
+        "environment": 0.7556589501484047
+      }
+    },
+    "MWI": {
+      "score": 7.054449934719944,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7597904773135672,
+        "crime": 0.7188228484631035,
+        "health": 0.6135076190476191,
+        "governance": 0.5153809523809525,
+        "environment": 0.6356942353208134
+      }
+    },
+    "MYS": {
+      "score": 7.656364848781516,
+      "scoreDisplay": 8,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8397388118811882,
+        "crime": 0.7772822990065887,
+        "health": 0.7280475,
+        "governance": 0.5656142857142857,
+        "environment": 0.6072687084570921
+      }
+    },
+    "MYT": {
+      "score": 5.807952003288688,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6260720486111112,
+        "crime": 0.4808159722222222,
+        "health": 0.4808159722222222,
+        "governance": 0.4808159722222222,
+        "environment": 0.4808159722222222
+      }
+    },
+    "NAM": {
+      "score": 7.469595056149311,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7890662004950495,
+        "crime": 0.6638294939011354,
+        "health": 0.6905843749999999,
+        "governance": 0.7026517857142858,
+        "environment": 0.6480147475211895
+      }
+    },
+    "NCL": {
+      "score": 6.4172898093464905,
+      "scoreDisplay": 6,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.6141826923076923,
+        "crime": 0.7186931307926373,
+        "health": 0.5134615384615384,
+        "governance": 0.5134615384615384,
+        "environment": 0.5134615384615384
+      }
+    },
+    "NER": {
+      "score": 4.143470127932346,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.334861740995477,
+        "crime": 0.5949064560805939,
+        "health": 0.30257750000000005,
+        "governance": 0.4061714285714285,
+        "environment": 0.43391165563893647
+      }
+    },
+    "NFK": {
+      "score": 5.181446289511495,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.45,
+        "crime": 0.45,
+        "health": 0.45,
+        "governance": 0.45,
+        "environment": 0.45
+      }
+    },
+    "NGA": {
+      "score": 4.626972874230014,
+      "scoreDisplay": 5,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.4138938911758932,
+        "crime": 0.5471542463754929,
+        "health": 0.28504949735449736,
+        "governance": 0.3048835978835979,
+        "environment": 0.4026943589456657
+      }
+    },
+    "NIC": {
+      "score": 5.951216697430066,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7415186261896444,
+        "crime": 0.6305721887991643,
+        "health": 0.6662339153439153,
+        "governance": 0.15347513227513226,
+        "environment": 0.5761595774372176
+      }
+    },
+    "NIU": {
+      "score": 6.576625308306472,
+      "scoreDisplay": 7,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.7265625,
+        "crime": 0.5625,
+        "health": 0.5625,
+        "governance": 0.5625,
+        "environment": 0.5625
+      }
+    },
+    "NLD": {
+      "score": 8.288881807131112,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8336124276112735,
+        "crime": 0.8529489114808343,
+        "health": 0.8195186208576998,
+        "governance": 0.8034951824004455,
+        "environment": 0.5905168948487183
+      }
+    },
+    "NOR": {
+      "score": 8.566380490389651,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8367487807626706,
+        "crime": 0.8835077057343323,
+        "health": 0.8290125,
+        "governance": 0.8543999999999998,
+        "environment": 0.7032891208329963
+      }
+    },
+    "NPL": {
+      "score": 6.949270394889616,
+      "scoreDisplay": 7,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7437657231167025,
+        "crime": 0.6965286018170886,
+        "health": 0.6665539555765595,
+        "governance": 0.49826859303267623,
+        "environment": 0.5149705533765288
+      }
+    },
+    "NRU": {
+      "score": 7.483663672714027,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8871106337271751,
+        "crime": 0.5715789473684211,
+        "health": 0.8066672368421053,
+        "governance": 0.5507894736842105,
+        "environment": 0.8395181490577996
+      }
+    },
+    "NZL": {
+      "score": 8.54361173968141,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8989017004985755,
+        "crime": 0.8415194461755797,
+        "health": 0.7781247222222223,
+        "governance": 0.8552492063492064,
+        "environment": 0.7037051774552856
+      }
+    },
+    "OMN": {
+      "score": 7.308831048051095,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7206986386138615,
+        "crime": 0.7798874255253949,
+        "health": 0.707581875,
+        "governance": 0.5802303571428572,
+        "environment": 0.5552389200170205
+      }
+    },
+    "PAK": {
+      "score": 4.893860014287219,
+      "scoreDisplay": 5,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.39009438050571865,
+        "crime": 0.6263929317034279,
+        "health": 0.4015622245179063,
+        "governance": 0.32203835104289646,
+        "environment": 0.31490833748070884
+      }
+    },
+    "PAN": {
+      "score": 7.235002532301582,
+      "scoreDisplay": 7,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7768835391501117,
+        "crime": 0.6425844317443901,
+        "health": 0.6953783201058201,
+        "governance": 0.5494846560846561,
+        "environment": 0.7149130556233647
+      }
+    },
+    "PCN": {
+      "score": 5.80568502969619,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5933333333333334,
+        "crime": 0.4916666666666667,
+        "health": 0.4916666666666667,
+        "governance": 0.4916666666666667,
+        "environment": 0.4916666666666667
+      }
+    },
+    "PER": {
+      "score": 6.970524554756761,
+      "scoreDisplay": 7,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.7432673072349208,
+        "crime": 0.6520015063021869,
+        "health": 0.6968964600550965,
+        "governance": 0.5159888823297913,
+        "environment": 0.5483825942368205
+      }
+    },
+    "PHL": {
+      "score": 6.120229068069896,
+      "scoreDisplay": 6,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.6147535087362322,
+        "crime": 0.6922791639673516,
+        "health": 0.5136547899353647,
+        "governance": 0.3923824033768632,
+        "environment": 0.46740337645002605
+      }
+    },
+    "PLW": {
+      "score": 7.6245905850147,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8917789970421547,
+        "crime": 0.6001905188666903,
+        "health": 0.8165801541014699,
+        "governance": 0.5621503082029398,
+        "environment": 0.8229136132889547
+      }
+    },
+    "PNG": {
+      "score": 6.612475294741337,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7221661076732674,
+        "crime": 0.6832282074722951,
+        "health": 0.5350112499999999,
+        "governance": 0.45958214285714283,
+        "environment": 0.5969770650006768
+      }
+    },
+    "POL": {
+      "score": 8.321071652645426,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8617220845502096,
+        "crime": 0.8351693311732189,
+        "health": 0.805665,
+        "governance": 0.7554857142857143,
+        "environment": 0.6695353014713361
+      }
+    },
+    "PRI": {
+      "score": 6.552429537314044,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.648529820261438,
+        "crime": 0.6553315476846829,
+        "health": 0.5120669934640523,
+        "governance": 0.5120669934640523,
+        "environment": 0.7168353455762413
+      }
+    },
+    "PRK": {
+      "score": 4.780794935380505,
+      "scoreDisplay": 5,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.4894911795380545,
+        "crime": 0.4831448412698413,
+        "health": 0.6674792361111112,
+        "governance": 0.223944246031746,
+        "environment": 0.5342675935716814
+      }
+    },
+    "PRT": {
+      "score": 8.451398392921867,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8861730206911457,
+        "crime": 0.826874763711316,
+        "health": 0.837315,
+        "governance": 0.7396285714285715,
+        "environment": 0.7249881879410583
+      }
+    },
+    "PRY": {
+      "score": 7.049513227860865,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7799358811270839,
+        "crime": 0.7073147628565907,
+        "health": 0.7037824206349207,
+        "governance": 0.3902507936507936,
+        "environment": 0.6619024412501088
+      }
+    },
+    "PSE": {
+      "score": 4.632012203510008,
+      "scoreDisplay": 5,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.3032493145156768,
+        "crime": 0.6310309859953576,
+        "health": 0.47356574561403514,
+        "governance": 0.5392100250626566,
+        "environment": 0.7258176083501047
+      }
+    },
+    "PYF": {
+      "score": 7.002164145814786,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.7265625,
+        "crime": 0.7641715626070494,
+        "health": 0.5625,
+        "governance": 0.5625,
+        "environment": 0.5625
+      }
+    },
+    "QAT": {
+      "score": 7.340320732399561,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6913215160144485,
+        "crime": 0.8350791301663385,
+        "health": 0.7221831084656084,
+        "governance": 0.6236296296296296,
+        "environment": 0.4811218584656085
+      }
+    },
+    "REU": {
+      "score": 5.789522640441595,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.626984126984127,
+        "crime": 0.4777777777777778,
+        "health": 0.4777777777777778,
+        "governance": 0.4777777777777778,
+        "environment": 0.4777777777777778
+      }
+    },
+    "ROU": {
+      "score": 7.942320867383492,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8492016087962964,
+        "crime": 0.8212815802336214,
+        "health": 0.7872975,
+        "governance": 0.5809142857142857,
+        "environment": 0.6515371365719659
+      }
+    },
+    "RUS": {
+      "score": 4.051037406150013,
+      "scoreDisplay": 4,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.24528416215514806,
+        "crime": 0.60232220715268,
+        "health": 0.5423800793650794,
+        "governance": 0.33512063492063493,
+        "environment": 0.5393823774411406
+      }
+    },
+    "RWA": {
+      "score": 6.839866624135523,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7124326542026971,
+        "crime": 0.6788989334151971,
+        "health": 0.6031825619834711,
+        "governance": 0.4966926210153483,
+        "environment": 0.6317777307130793
+      }
+    },
+    "SAU": {
+      "score": 6.237263284036693,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.5613819949209119,
+        "crime": 0.7460001157906734,
+        "health": 0.666121875,
+        "governance": 0.5008803571428572,
+        "environment": 0.4241597687558739
+      }
+    },
+    "SDN": {
+      "score": 3.4464921732135325,
+      "scoreDisplay": 3,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.20947624725877198,
+        "crime": 0.5278622239666497,
+        "health": 0.37487000000000004,
+        "governance": 0.24122857142857143,
+        "environment": 0.447365604702254
+      }
+    },
+    "SEN": {
+      "score": 7.056933504968096,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7680859124258557,
+        "crime": 0.711263259765891,
+        "health": 0.6410281336088154,
+        "governance": 0.5655039354584809,
+        "environment": 0.5048194361498779
+      }
+    },
+    "SGP": {
+      "score": 8.651248711912007,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8671238551980199,
+        "crime": 0.8646367142438458,
+        "health": 0.7830712500000001,
+        "governance": 0.8724321428571429,
+        "environment": 0.8137504171017416
+      }
+    },
+    "SGS": {
+      "score": 5.460918913184011,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5293836805555556,
+        "crime": 0.4621527777777778,
+        "health": 0.4621527777777778,
+        "governance": 0.4621527777777778,
+        "environment": 0.4621527777777778
+      }
+    },
+    "SHN": {
+      "score": 5.029197677487458,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.48563368055555556,
+        "crime": 0.4121527777777778,
+        "health": 0.4121527777777778,
+        "governance": 0.4121527777777778,
+        "environment": 0.4121527777777778
+      }
+    },
+    "SJM": {
+      "score": 6.226134751739974,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.6333333333333333,
+        "crime": 0.5416666666666666,
+        "health": 0.5416666666666666,
+        "governance": 0.5416666666666666,
+        "environment": 0.5416666666666666
+      }
+    },
+    "SLB": {
+      "score": 7.685599864944718,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8414830508474577,
+        "crime": 0.7606997174053324,
+        "health": 0.7278625,
+        "governance": 0.5324500000000001,
+        "environment": 0.7302977510565419
+      }
+    },
+    "SLE": {
+      "score": 6.8493145650601654,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.777081577970297,
+        "crime": 0.6892999435467384,
+        "health": 0.52915,
+        "governance": 0.49523571428571433,
+        "environment": 0.6220921568065225
+      }
+    },
+    "SLV": {
+      "score": 6.754666851380785,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7480848140244917,
+        "crime": 0.6560790661940178,
+        "health": 0.7218513227513226,
+        "governance": 0.3562296296296296,
+        "environment": 0.5862964478179883
+      }
+    },
+    "SMR": {
+      "score": 7.8367227532539845,
+      "scoreDisplay": 8,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.9044025157232705,
+        "crime": 0.6608664005688257,
+        "health": 0.7967500000000001,
+        "governance": 0.6,
+        "environment": 0.7363196312385445
+      }
+    },
+    "SOM": {
+      "score": 3.7914650859841617,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.3155979074187023,
+        "crime": 0.35910714285714285,
+        "health": 0.32587000000000005,
+        "governance": 0.2728785714285714,
+        "environment": 0.4670700790581809
+      }
+    },
+    "SPM": {
+      "score": 5.2885301101092645,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.5118836805555556,
+        "crime": 0.4421527777777778,
+        "health": 0.4421527777777778,
+        "governance": 0.4421527777777778,
+        "environment": 0.4421527777777778
+      }
+    },
+    "SRB": {
+      "score": 7.476151733167958,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8205015478686233,
+        "crime": 0.7775413703776947,
+        "health": 0.7783800000000001,
+        "governance": 0.4330571428571428,
+        "environment": 0.6381821415888894
+      }
+    },
+    "SSD": {
+      "score": 3.453670916187176,
+      "scoreDisplay": 3,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.3241456869883563,
+        "crime": 0.4184467198503047,
+        "health": 0.3132275,
+        "governance": 0.1355714285714286,
+        "environment": 0.5263654802112587
+      }
+    },
+    "STP": {
+      "score": 7.631415250225185,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8124313725490198,
+        "crime": 0.69111006791851,
+        "health": 0.7163582352941176,
+        "governance": 0.6149563025210083,
+        "environment": 0.7881647659120163
+      }
+    },
+    "SUR": {
+      "score": 7.636046588177824,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8458368142578669,
+        "crime": 0.7228473070416727,
+        "health": 0.7159080994152047,
+        "governance": 0.6250870509607352,
+        "environment": 0.6143684570342284
+      }
+    },
+    "SVK": {
+      "score": 8.045943233755288,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8681394155092592,
+        "crime": 0.8141103831121919,
+        "health": 0.8142975,
+        "governance": 0.5859142857142857,
+        "environment": 0.6712421851356791
+      }
+    },
+    "SVN": {
+      "score": 8.50995229186692,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.9022973611111111,
+        "crime": 0.8552424468948102,
+        "health": 0.8339475000000001,
+        "governance": 0.7484,
+        "environment": 0.6783349510455613
+      }
+    },
+    "SWE": {
+      "score": 8.51036935367057,
+      "scoreDisplay": 9,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8294729678362573,
+        "crime": 0.8525589284089307,
+        "health": 0.8407800000000001,
+        "governance": 0.8596571428571428,
+        "environment": 0.7036801551376617
+      }
+    },
+    "SWZ": {
+      "score": 6.780463241608729,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7620545173267327,
+        "crime": 0.5962003387116218,
+        "health": 0.67987,
+        "governance": 0.38563571428571425,
+        "environment": 0.7388026323430745
+      }
+    },
+    "SXM": {
+      "score": 6.147288835511865,
+      "scoreDisplay": 6,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6682812499999999,
+        "crime": 0.5175,
+        "health": 0.5175,
+        "governance": 0.5175,
+        "environment": 0.5175
+      }
+    },
+    "SYC": {
+      "score": 7.8671324983523885,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8490414633073912,
+        "crime": 0.6374141959998482,
+        "health": 0.7845562557710064,
+        "governance": 0.7953792903310909,
+        "environment": 0.7946344934553979
+      }
+    },
+    "SYR": {
+      "score": 3.9208811684303946,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.27738707917920163,
+        "crime": 0.5557133649363344,
+        "health": 0.457355,
+        "governance": 0.3275428571428572,
+        "environment": 0.5106723276532673
+      }
+    },
+    "TCA": {
+      "score": 5.792769149242569,
+      "scoreDisplay": 6,
+      "sources": 3,
+      "pillars": {
+        "conflict": 0.6154027777777777,
+        "crime": 0.3876788590648115,
+        "health": 0.7372777777777778,
+        "governance": 0.49805555555555553,
+        "environment": 0.49805555555555553
+      }
+    },
+    "TCD": {
+      "score": 4.138703718858215,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.4761489308769359,
+        "crime": 0.41535714285714287,
+        "health": 0.33415375,
+        "governance": 0.13606785714285716,
+        "environment": 0.48819096895446
+      }
+    },
+    "TGO": {
+      "score": 5.8925466543089495,
+      "scoreDisplay": 6,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.6034336367746245,
+        "crime": 0.5722486772486773,
+        "health": 0.46985009259259264,
+        "governance": 0.3898740740740741,
+        "environment": 0.6361819438100655
+      }
+    },
+    "THA": {
+      "score": 6.480818571908172,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6345324962876618,
+        "crime": 0.6977383491717949,
+        "health": 0.60429173553719,
+        "governance": 0.4480362455726092,
+        "environment": 0.5014461021574481
+      }
+    },
+    "TJK": {
+      "score": 6.612130337695917,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7802143025398489,
+        "crime": 0.7644678592574043,
+        "health": 0.6623387169312169,
+        "governance": 0.24694497354497358,
+        "environment": 0.5588400696426805
+      }
+    },
+    "TKL": {
+      "score": 6.063698678705504,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.63671875,
+        "crime": 0.515625,
+        "health": 0.515625,
+        "governance": 0.515625,
+        "environment": 0.515625
+      }
+    },
+    "TKM": {
+      "score": 6.543564125902833,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7802681745049506,
+        "crime": 0.7415583695954777,
+        "health": 0.675,
+        "governance": 0.24312857142857142,
+        "environment": 0.5227814344047729
+      }
+    },
+    "TLS": {
+      "score": 7.595926332697602,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8040347879616965,
+        "crime": 0.7618388142588735,
+        "health": 0.6570744117647058,
+        "governance": 0.591509243697479,
+        "environment": 0.7593518747281853
+      }
+    },
+    "TON": {
+      "score": 7.701096141881859,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.87728590544157,
+        "crime": 0.7086288471078318,
+        "health": 0.776021052631579,
+        "governance": 0.4887171052631578,
+        "environment": 0.7885984953856675
+      }
+    },
+    "TTO": {
+      "score": 6.981373948150442,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7611497896039603,
+        "crime": 0.5335949458776815,
+        "health": 0.67506625,
+        "governance": 0.6735535714285714,
+        "environment": 0.7372940041917324
+      }
+    },
+    "TUN": {
+      "score": 7.156563494904776,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.7413959962871288,
+        "crime": 0.6825276772036906,
+        "health": 0.7372918749999999,
+        "governance": 0.5031875,
+        "environment": 0.6293952111182373
+      }
+    },
+    "TUR": {
+      "score": 6.071897694523247,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.671103924506691,
+        "crime": 0.6350372340597846,
+        "health": 0.5445180392156863,
+        "governance": 0.29230700280112043,
+        "environment": 0.5589192389137492
+      }
+    },
+    "TUV": {
+      "score": 7.337471532941006,
+      "scoreDisplay": 7,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8871106337271751,
+        "crime": 0.579443196419768,
+        "health": 0.7585847368421053,
+        "governance": 0.4707894736842105,
+        "environment": 0.8172412631251884
+      }
+    },
+    "TWN": {
+      "score": 7.565455780291306,
+      "scoreDisplay": 8,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8481176689051689,
+        "crime": 0.7532539682539683,
+        "health": 0.5563888888888888,
+        "governance": 0.8057400793650794,
+        "environment": 0.5563888888888888
+      }
+    },
+    "TZA": {
+      "score": 6.602348592037648,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.5601695882314867,
+        "crime": 0.7229666945411098,
+        "health": 0.5932193121693121,
+        "governance": 0.5621354497354497,
+        "environment": 0.6187991345403832
+      }
+    },
+    "UGA": {
+      "score": 5.907685661370083,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.6463689164845098,
+        "crime": 0.5784522053594774,
+        "health": 0.5437815674603175,
+        "governance": 0.325243253968254,
+        "environment": 0.6158441633368996
+      }
+    },
+    "UKR": {
+      "score": 3.8284661380694898,
+      "scoreDisplay": 4,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.2029237415866535,
+        "crime": 0.6280329512942797,
+        "health": 0.5136132909343201,
+        "governance": 0.43377948989031323,
+        "environment": 0.612272551293137
+      }
+    },
+    "UMI": {
+      "score": 5.181446289511495,
+      "scoreDisplay": 5,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.45,
+        "crime": 0.45,
+        "health": 0.45,
+        "governance": 0.45,
+        "environment": 0.45
+      }
+    },
+    "URY": {
+      "score": 7.7520138793841005,
+      "scoreDisplay": 8,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8315551803392565,
+        "crime": 0.6689065327169212,
+        "health": 0.7279932275132276,
+        "governance": 0.7394391534391535,
+        "environment": 0.7106459071758119
+      }
+    },
+    "USA": {
+      "score": 7.460939618876326,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7388802277883296,
+        "crime": 0.689244287435447,
+        "health": 0.7194443910256411,
+        "governance": 0.7611883699633699,
+        "environment": 0.5789834267031817
+      }
+    },
+    "UZB": {
+      "score": 7.035325460321613,
+      "scoreDisplay": 7,
+      "sources": 6,
+      "pillars": {
+        "conflict": 0.8186371843740382,
+        "crime": 0.7658742426739249,
+        "health": 0.6976490212373039,
+        "governance": 0.3692837884184145,
+        "environment": 0.5061629583025931
+      }
+    },
+    "VAT": {
+      "score": 6.525260069632003,
+      "scoreDisplay": 7,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.7164062499999999,
+        "crime": 0.5875,
+        "health": 0.5875,
+        "governance": 0.4625892857142857,
+        "environment": 0.5875
+      }
+    },
+    "VCT": {
+      "score": 6.509110470055549,
+      "scoreDisplay": 7,
+      "sources": 4,
+      "pillars": {
+        "conflict": 0.8668821548821549,
+        "crime": 0.40440716278926103,
+        "health": 0.7721280555555556,
+        "governance": 0.48711111111111116,
+        "environment": 0.7714206856610265
+      }
+    },
+    "VEN": {
+      "score": 4.922240130157447,
+      "scoreDisplay": 5,
+      "sources": 8,
+      "pillars": {
+        "conflict": 0.5373577915247171,
+        "crime": 0.562477888168362,
+        "health": 0.570415,
+        "governance": 0.1366714285714286,
+        "environment": 0.5528544371520676
+      }
+    },
+    "VGB": {
+      "score": 6.7648124528830795,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.6869151234567902,
+        "crime": 0.5951228366868857,
+        "health": 0.7331512345679012,
+        "governance": 0.5283024691358025,
+        "environment": 0.5283024691358025
+      }
+    },
+    "VIR": {
+      "score": 5.796265427583966,
+      "scoreDisplay": 6,
+      "sources": 1,
+      "pillars": {
+        "conflict": 0.6538541666666665,
+        "crime": 0.39557528689494487,
+        "health": 0.5116666666666666,
+        "governance": 0.5116666666666666,
+        "environment": 0.7218701421778728
+      }
+    },
+    "VNM": {
+      "score": 7.150609434879658,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8156441939952083,
+        "crime": 0.7765844992814087,
+        "health": 0.6822820238095237,
+        "governance": 0.4453333333333333,
+        "environment": 0.47527125907193246
+      }
+    },
+    "VUT": {
+      "score": 8.048364452284073,
+      "scoreDisplay": 8,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.8767224213460773,
+        "crime": 0.7748201275085541,
+        "health": 0.7701121296296296,
+        "governance": 0.6225037037037037,
+        "environment": 0.7556455287509242
+      }
+    },
+    "WLF": {
+      "score": 6.203177441757399,
+      "scoreDisplay": 6,
+      "sources": 0,
+      "pillars": {
+        "conflict": 0.6626984126984128,
+        "crime": 0.5277777777777778,
+        "health": 0.5277777777777778,
+        "governance": 0.5277777777777778,
+        "environment": 0.5277777777777778
+      }
+    },
+    "WSM": {
+      "score": 7.945254624658335,
+      "scoreDisplay": 8,
+      "sources": 5,
+      "pillars": {
+        "conflict": 0.8895444915254238,
+        "crime": 0.7157803092457805,
+        "health": 0.788739375,
+        "governance": 0.57734375,
+        "environment": 0.8073983357093991
+      }
+    },
+    "XKX": {
+      "score": 7.495426050451156,
+      "scoreDisplay": 7,
+      "sources": 2,
+      "pillars": {
+        "conflict": 0.7046783625730993,
+        "crime": 0.8076659012542807,
+        "health": 0.7750898560503823,
+        "governance": 0.5936797121007646,
+        "environment": 0.5936797121007646
+      }
+    },
+    "YEM": {
+      "score": 3.5093663719444215,
+      "scoreDisplay": 4,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.2780223057127026,
+        "crime": 0.5123463775995317,
+        "health": 0.4130075,
+        "governance": 0.12511428571428573,
+        "environment": 0.48297839707866363
+      }
+    },
+    "ZAF": {
+      "score": 6.339134354529648,
+      "scoreDisplay": 6,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7368724208891198,
+        "crime": 0.445690322357227,
+        "health": 0.6489209349030471,
+        "governance": 0.5380450336367233,
+        "environment": 0.6427996944053586
+      }
+    },
+    "ZMB": {
+      "score": 7.061862537159728,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7806348661858176,
+        "crime": 0.6738538081453352,
+        "health": 0.6254940211640212,
+        "governance": 0.5113026455026455,
+        "environment": 0.6425384618394795
+      }
+    },
+    "ZWE": {
+      "score": 6.5530930170886545,
+      "scoreDisplay": 7,
+      "sources": 7,
+      "pillars": {
+        "conflict": 0.7584759450808626,
+        "crime": 0.6658088700221546,
+        "health": 0.611775119047619,
+        "governance": 0.32000952380952385,
+        "environment": 0.6464733213828866
+      }
+    }
+  }
+}

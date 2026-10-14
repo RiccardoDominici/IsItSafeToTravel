@@ -176,7 +176,7 @@ describe('computeCountryScore — Formula v9: prior collapse', () => {
       );
       assert.equal(pillar.dataCompleteness, 0);
     }
-    assert.ok(result.score >= 1 && result.score <= 10);
+    assert.ok(result.score! >= 1 && result.score! <= 10);
     assert.equal(result.confidence, 0, 'confidence must be 0 with zero precision everywhere');
   });
 
@@ -185,7 +185,7 @@ describe('computeCountryScore — Formula v9: prior collapse', () => {
     const usa = computeCountryScore('USA', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES); // americas
     const deu = computeCountryScore('DEU', [], weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES); // europe
 
-    assert.ok(deu.score > usa.score, `Europe prior (${deu.score}) should exceed Americas prior (${usa.score})`);
+    assert.ok(deu.score! > usa.score!, `Europe prior (${deu.score}) should exceed Americas prior (${usa.score})`);
   });
 });
 
@@ -228,8 +228,8 @@ describe('computeCountryScore — Formula v9: Bayesian shrinkage monotonicity', 
     const good = computeCountryScore('TST', goodIndicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
     const bad = computeCountryScore('TST', badIndicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
 
-    assert.ok(good.score > baseline.score, `Good evidence (${good.score}) should exceed the zero-data baseline (${baseline.score})`);
-    assert.ok(bad.score < baseline.score, `Bad evidence (${bad.score}) should be below the zero-data baseline (${baseline.score})`);
+    assert.ok(good.score! > baseline.score!, `Good evidence (${good.score}) should exceed the zero-data baseline (${baseline.score})`);
+    assert.ok(bad.score! < baseline.score!, `Bad evidence (${bad.score}) should be below the zero-data baseline (${baseline.score})`);
   });
 
   it('freshness-decayed (stale) data shrinks precision toward zero, collapsing back toward the mu baseline', () => {
@@ -275,7 +275,7 @@ describe('computeCountryScore — Formula v9: severe advisory modifier', () => {
       advisories[code] = { level: 4, text: 'Do not travel', source: code, url: '', updatedAt: '2026-01-01' };
     }
     const result = computeCountryScore('TST', [], weights, TEST_COUNTRY, advisories, TEST_SOURCES);
-    assert.ok(result.score >= 1 && result.score <= 10, `Score ${result.score} must stay in [1,10]`);
+    assert.ok(result.score! >= 1 && result.score! <= 10, `Score ${result.score} must stay in [1,10]`);
   });
 
   it('is count-damped: a broad multi-government L4 consensus sinks the score more than a single thin L4 record', () => {
@@ -299,7 +299,7 @@ describe('computeCountryScore — Formula v9: severe advisory modifier', () => {
     const broad = computeCountryScore('TST', sharedIndicators, weights, TEST_COUNTRY, broadAdvisory, TEST_SOURCES);
 
     assert.ok(
-      broad.score < thin.score,
+      broad.score! < thin.score!,
       `Broad L4 consensus (${broad.score}) should sink the score more than a single thin L4 record (${thin.score})`,
     );
   });
@@ -317,7 +317,7 @@ describe('computeCountryScore — Formula v9: severe advisory modifier', () => {
     const before = computeCountryScore('TST', [], weights, TEST_COUNTRY, levelThree, TEST_SOURCES);
     const after = computeCountryScore('TST', [], weights, TEST_COUNTRY, levelFour, TEST_SOURCES);
 
-    const delta = Math.abs(after.score - before.score);
+    const delta = Math.abs(after.score! - before.score!);
     assert.ok(delta < 0.5, `Single advisory-level step should change the score by < 0.5, got ${delta.toFixed(3)}`);
   });
 });
@@ -353,7 +353,7 @@ describe('computeCountryScore — Formula v9: acute term is down-only', () => {
     const uncapped = computeCountryScore('TST', indicators, makeWeightsWithCap(0), TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
 
     assert.ok(
-      capped.score < uncapped.score,
+      capped.score! < uncapped.score!,
       `Down-only cap should score no higher than the uncapped acute blend: capped=${capped.score}, uncapped=${uncapped.score}`,
     );
   });
@@ -384,8 +384,8 @@ describe('computeCountryScore — Formula v9: score bounds + advisory pass-throu
 
     for (const indicators of scenarios) {
       const result = computeCountryScore('TST', indicators, weights, TEST_COUNTRY, NO_ADVISORIES, TEST_SOURCES);
-      assert.ok(result.score >= 1 && result.score <= 10, `Score ${result.score} out of [1,10] for scenario with ${indicators.length} indicators`);
-      assert.ok(result.scoreDisplay >= 1 && result.scoreDisplay <= 10);
+      assert.ok(result.score! >= 1 && result.score! <= 10, `Score ${result.score} out of [1,10] for scenario with ${indicators.length} indicators`);
+      assert.ok(result.scoreDisplay! >= 1 && result.scoreDisplay! <= 10);
       assert.ok(result.confidence >= 0 && result.confidence <= 1, `confidence ${result.confidence} out of [0,1]`);
     }
   });
@@ -481,7 +481,7 @@ describe('computeAllScores', () => {
     assert.ok(usa, 'USA should be in results');
     assert.ok(afg, 'AFG should be in results');
     // USA (lower GPI = safer) should score higher than AFG
-    assert.ok(usa!.score > afg!.score, 'USA should have higher safety score than AFG');
+    assert.ok(usa!.score! > afg!.score!, 'USA should have higher safety score than AFG');
     // Every scored country carries a numeric confidence
     for (const r of results) {
       assert.equal(typeof r.confidence, 'number');
@@ -497,14 +497,14 @@ describe('MIN_PILLAR_COVERAGE (legacy export, display-layer only)', () => {
   });
 });
 
-// --- Formula v9.1: weights.json structure (quick-260708-lb3) ---
+// --- weights.json structure: v9.1 mechanics, formula v10 indicator set (SPEC 2026-10-14 §2) ---
 
-describe('Formula v9.1: weights.json structure', () => {
+describe('Formula v10: weights.json structure', () => {
   const weightsPath = join(process.cwd(), 'src/pipeline/config/weights.json');
   const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig;
 
-  it('version is "9.1.0"', () => {
-    assert.equal(weightsJson.version, '9.1.0');
+  it('version is "10.0.0"', () => {
+    assert.equal(weightsJson.version, '10.0.0');
   });
 
   it('pillar weights are still 30/25/20/15/10 and sum to 1.0', () => {
@@ -518,12 +518,13 @@ describe('Formula v9.1: weights.json structure', () => {
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
   });
 
-  it('conflict pillar is [gpi_overall, gpi_militarisation, A, ucdp_conflict_deaths] — no advisory_level_* entries', () => {
+  it('conflict pillar is exactly v9.1 [gpi_overall, gpi_militarisation, A, ucdp_conflict_deaths]; gpi_conflict stays unscored', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict, 'conflict pillar must exist');
     const advisoryCount = conflict.indicators.filter((n) => n.startsWith('advisory_level_')).length;
-    assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries in v9.1');
+    assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries');
     assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_militarisation', 'gpi_overall', 'ucdp_conflict_deaths']);
+    assert.equal(weightsJson.pillars.some((p) => p.indicators.includes('gpi_conflict')), false, 'gpi_conflict is fetched but unscored');
   });
 
   it('conflict pillar subweights (gpi_overall .3275 / gpi_militarisation .1125 / A .28 / ucdp .28) sum to 1.0', () => {
@@ -535,7 +536,36 @@ describe('Formula v9.1: weights.json structure', () => {
     assert.equal(conflict.indicatorWeights!.ucdp_conflict_deaths, 0.28);
     const sum = Object.values(conflict.indicatorWeights!).reduce((a, b) => a + b, 0);
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
+    assert.equal(conflict.indicatorPrecision!.gpi_overall, 2.0);
+    assert.equal(conflict.indicatorPrecision!.gpi_militarisation, 1.0);
     assert.equal(conflict.indicatorPrecision!.ucdp_conflict_deaths, 2.5);
+  });
+
+  it('health pillar is INFORM access to health care (.55) + epidemic (.45), nothing from Human or child mortality', () => {
+    const health = weightsJson.pillars.find((p) => p.name === 'health')!;
+    assert.deepEqual([...health.indicators].sort(), ['inform_epidemic', 'inform_health_access']);
+    assert.equal(health.indicatorWeights!.inform_health_access, 0.55);
+    assert.equal(health.indicatorWeights!.inform_epidemic, 0.45);
+    assert.equal(health.indicatorPrecision!.inform_health_access, 1.0);
+    assert.equal(health.indicatorPrecision!.inform_epidemic, 1.0);
+  });
+
+  it('environment pillar is inform_natural (.25, rho 1) + reliefweb/gdacs (.10, rho 0); no PM2.5 or River Flood', () => {
+    const env = weightsJson.pillars.find((p) => p.name === 'environment')!;
+    assert.deepEqual([...env.indicators].sort(), ['gdacs_disaster_alerts', 'inform_natural', 'reliefweb_active_disasters']);
+    assert.equal(env.indicatorWeights!.inform_natural, 0.25);
+    assert.equal(env.indicatorWeights!.reliefweb_active_disasters, 0.10);
+    assert.equal(env.indicatorWeights!.gdacs_disaster_alerts, 0.10);
+    assert.equal(env.indicatorPrecision!.inform_natural, 1.0);
+    assert.equal(env.indicatorPrecision!.reliefweb_active_disasters, 0);
+    assert.equal(env.indicatorPrecision!.gdacs_disaster_alerts, 0);
+  });
+
+  it('no pillar scores an indicator the owner removed in v10', () => {
+    const all = new Set(weightsJson.pillars.flatMap((p) => p.indicators));
+    for (const removed of ['wb_child_mortality', 'wb_air_pollution', 'inform_health', 'inform_climate']) {
+      assert.equal(all.has(removed), false, `${removed} must not be scored in v10`);
+    }
   });
 
   it('crime pillar indicators equals [gpi_safety_security, wb_homicide] exactly (v9.1 D1)', () => {
@@ -566,7 +596,7 @@ describe('Formula v9.1: weights.json structure', () => {
     }
   });
 
-  it('has a formulaV9 constants section with the v9.1 tunables (KEY name stays "formulaV9")', () => {
+  it('has a formulaV9 constants section with the v9.1 tunables unchanged (KEY name stays "formulaV9")', () => {
     const f9 = weightsJson.formulaV9;
     assert.ok(f9, 'formulaV9 section must exist');
     assert.equal(f9!.K, 1.0);
@@ -584,6 +614,14 @@ describe('Formula v9.1: weights.json structure', () => {
     assert.ok(f9!.advisoryRebase.includes('at') && f9!.advisoryRebase.includes('nz'));
     assert.equal(f9!.regionOffset.europe, 0.05);
     assert.equal(f9!.regionOffset.middle_east, -0.05);
+  });
+
+  it('carries the v10 additions: maxAgeYears 5, minSources 4, per-pillar maps, community k30/cap1/30 votes/3 origins/0.5', () => {
+    const f9 = weightsJson.formulaV9!;
+    assert.equal(f9.maxAgeYears, 5);
+    assert.equal(f9.minSources, 4);
+    assert.deepEqual(Object.keys(f9.pillarCalibration ?? {}).sort(), ['environment', 'governance', 'health']);
+    assert.deepEqual(f9.community, { k: 30, cap: 1.0, minVotes: 30, minOrigins: 3, originCap: 0.5 });
   });
 });
 
@@ -605,7 +643,7 @@ describe('computeCountryScore — Formula v9.1: advisory ramp (D4)', () => {
     // score should NOT collapse the way a full un-ramped L4 modifier would.
     // We assert the score stays close (within the partial-nudge ballpark),
     // not identical (the nudge ramp at nAdv=1 is 0.417, not 0).
-    const delta = Math.abs(withOne.score - withZero.score);
+    const delta = Math.abs(withOne.score! - withZero.score!);
     assert.ok(delta < 1.0, `nAdv=1 severeEff-suppressed score should stay close to zero-advisory baseline, delta=${delta.toFixed(3)}`);
   });
 
@@ -628,8 +666,8 @@ describe('computeCountryScore — Formula v9.1: advisory ramp (D4)', () => {
     // All-safe (level 1) advisories nudge mu UP; the ramp means nAdv=1 gets a
     // PARTIAL nudge (f=0.417 at nudgeMinNAdv=1, gateRampWidth=2.4), landing
     // strictly between the zero-advisory baseline and the fuller nAdv=3 nudge.
-    assert.ok(one.score > zero.score, `nAdv=1 safe nudge (${one.score}) should exceed zero-advisory baseline (${zero.score})`);
-    assert.ok(three.score > one.score, `nAdv=3 nudge (${three.score}) should exceed the partial nAdv=1 nudge (${one.score})`);
+    assert.ok(one.score! > zero.score!, `nAdv=1 safe nudge (${one.score}) should exceed zero-advisory baseline (${zero.score})`);
+    assert.ok(three.score! > one.score!, `nAdv=3 nudge (${three.score}) should exceed the partial nAdv=1 nudge (${one.score})`);
   });
 });
 

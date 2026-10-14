@@ -212,15 +212,18 @@ async function main(): Promise<void> {
     }
     if (Number.isNaN(row.v91Score)) continue; // defensive: skip malformed fixture rows
 
-    const delta = Math.abs(got.score - row.v91Score);
+    // v9.x configs score every country, so score is never null here; NaN keeps a
+    // hypothetical null from passing silently: a NaN delta fails the gate below.
+    const gotScore = got.score ?? Number.NaN;
+    const delta = Math.abs(gotScore - row.v91Score);
     comparedCount++;
     if (delta > maxDelta) {
       maxDelta = delta;
       maxDeltaIso3 = row.iso3;
     }
 
-    if (delta > GATE_THRESHOLD) {
-      const line = `${row.iso3}: got=${got.score.toFixed(4)} expected=${row.v91Score.toFixed(4)} delta=${delta.toFixed(4)}`;
+    if (!(delta <= GATE_THRESHOLD)) { // NaN (no score) fails too
+      const line = `${row.iso3}: got=${gotScore.toFixed(4)} expected=${row.v91Score.toFixed(4)} delta=${delta.toFixed(4)}`;
       if (KNOWN_CHILD_MORTALITY_COVERAGE_DRIFT.has(row.iso3)) {
         driftDeviations.push(`${line} [wb_child_mortality coverage-gap fix, verified pure-additive]`);
         continue;

@@ -1,5 +1,6 @@
 import { fetchAllSources } from './fetchers/index.js';
 import { computeAllScores } from './scoring/engine.js';
+import { loadCommunitySnapshot } from './scoring/community.js';
 import { writeSnapshot } from './scoring/snapshot.js';
 import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
@@ -11,6 +12,7 @@ import { computeNews } from './news/engine.js';
 import { filterSortCap, cooldownKey } from './news/cooldown.js';
 import { readNewsIndex, writeNewsDay, writeNewsIndex, rebuildRecent, pruneCooldowns } from './news/snapshot.js';
 import { listSnapshotDates, loadSnapshot } from './scoring/snapshot.js';
+import { runStalenessMonitor, worldbankIndicatorsUsedBy } from './staleness.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -33,6 +35,9 @@ export interface PipelineResult {
  */
 export async function runPipeline(dateOverride?: string): Promise<PipelineResult> {
   const date = dateOverride || new Date().toISOString().slice(0, 10);
+  // Captured before any fetch: the staleness monitor reads "a new INFORM edition was
+  // stored during this run" from this instant.
+  const runStartedAt = new Date().toISOString();
   console.log(`=== Pipeline run for ${date} ===`);
 
   // Load weights config
@@ -72,6 +77,21 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
     return { success: false, countriesScored: 0, sourcesSucceeded: 0, sourcesTotal };
   }
 
+  // Staleness monitor (formula v10, SPEC §6), non-fatal: it reads the years as published,
+  // so it must run before the UCDP vintage injection below rewrites them. Writes
+  // data/raw/<date>/staleness.json and pushes ntfy only when NTFY_TOPIC is set.
+  try {
+    await runStalenessMonitor({
+      date,
+      rawDataMap,
+      runStartedAt,
+      worldbankIndicators: worldbankIndicatorsUsedBy(weightsConfig),
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[STALENESS] Monitor failed unexpectedly (non-fatal): ${message}`);
+  }
+
   // v9.1 (SHIP-SPEC 1.3): today's ucdp-parsed.json holds ALL years 1989-latest
   // per country (fetchUcdp always dumps the full consolidated OWID mirror) —
   // without this injection the engine's rawByName Map.set would keep an
@@ -83,13 +103,23 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
 
   // Stage 3: Score
   console.log('\n--- Stage 3: Score ---');
-  const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date);
+  // Formula v10 community component (SPEC §5): the engine reads data/sentiment/latest.json.
+  // Stage 6 below rewrites that file AFTER scoring, so this run applies the community
+  // snapshot of the previous run (one-day lag). A missing or pre-v10 file means no
+  // adjustment for anyone.
+  // MERGE NOTE (feat/community-v10, SPEC §6 "Run order"): move Stage 6 above this stage once
+  // its aggregator no longer needs the day's official scores; otherwise the first community
+  // adjustments land the day after the v10 switch as score-jump news.
+  const community = loadCommunitySnapshot();
+  const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date, { community });
   console.log(`Scored ${scoredCountries.length} countries`);
 
-  // Log tier contribution summary
-  const avgScore = scoredCountries.reduce((sum, c) => sum + c.score, 0) / scoredCountries.length;
-  console.log(`  Average score: ${avgScore.toFixed(1)}`);
-  console.log(`  Countries scored: ${scoredCountries.length}`);
+  // Log tier contribution summary. Grey countries (formula v10 insufficient_data) have no
+  // official score and stay out of the average.
+  const withScore = scoredCountries.filter((c): c is typeof c & { score: number } => c.score !== null);
+  const avgScore = withScore.length > 0 ? withScore.reduce((sum, c) => sum + c.score, 0) / withScore.length : 0;
+  console.log(`  Average score: ${avgScore.toFixed(1)} (over ${withScore.length} countries with an official score)`);
+  console.log(`  Countries scored: ${withScore.length} of ${scoredCountries.length} (${scoredCountries.length - withScore.length} insufficient_data)`);
 
   // Log data completeness summary
   const avgCompleteness = scoredCountries.reduce((sum, c) => sum + c.dataCompleteness, 0) / scoredCountries.length;
@@ -111,7 +141,8 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   try {
     const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
     const { ok, rows } = await fetchVotes(cutoff);
-    const officialScores = new Map(scoredCountries.map((c) => [c.iso3, c.score]));
+    // Only countries with an official score anchor relative votes (grey ones have none).
+    const officialScores = new Map(withScore.map((c) => [c.iso3, c.score]));
 
     if (ok) {
       const sentimentSnapshot = aggregateVotes(rows, officialScores, Date.now());

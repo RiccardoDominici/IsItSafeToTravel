@@ -20,8 +20,20 @@ import {
 // Data-coverage floor, same idea as src/lib/hub-data.ts / scripts/generate-llms-full.ts.
 // This is now a 3rd duplication of MIN_RANKING_SOURCES (flagged in PLAN-news.md "Top risks") —
 // keep all three in sync, or sparse micro-territories pollute rank-based news events.
+// Formula v10 moves the same floor into the engine (weights.json formulaV9.minSources).
 const MIN_RANKING_SOURCES = 4;
-const hasSufficientData = (c: ScoredCountry): boolean => (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+
+/**
+ * Formula v10 (SPEC §4): a grey country (scoreStatus 'insufficient_data', score null) has
+ * no official score, so it can never produce a score-derived ("movement") event or a
+ * new_country event. Pre-v10 snapshots have no scoreStatus and always a number.
+ */
+type WithOfficialScore = ScoredCountry & { score: number };
+const hasOfficialScore = (c: ScoredCountry | undefined): c is WithOfficialScore =>
+  c !== undefined && typeof c.score === 'number' && c.scoreStatus !== 'insufficient_data';
+
+const hasSufficientData = (c: ScoredCountry): c is WithOfficialScore =>
+  hasOfficialScore(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 
@@ -40,7 +52,7 @@ type AdvisoryIssuer = keyof ScoredCountry['advisories'];
 
 /** iso3 -> 1-based rank among sufficient-data countries, safest first. Deterministic tie-break: iso3. */
 function rankSafest(list: ScoredCountry[]): Map<string, number> {
-  const ranked = [...list]
+  const ranked = list
     .filter(hasSufficientData)
     .sort((a, b) => b.score - a.score || a.iso3.localeCompare(b.iso3));
   return new Map(ranked.map((c, i) => [c.iso3, i + 1]));
@@ -108,6 +120,13 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
     const p = prevByIso.get(c.iso3);
     if (!p) continue;
 
+    // severe_advisory is advisory-derived, not score-derived: it is reported for grey
+    // countries too (a new level 4 is news whatever our data coverage).
+    events.push(...severeAdvisoryEvents(c, p, date));
+
+    // Movement events need an official score on BOTH days (formula v10 grey rule).
+    if (!hasOfficialScore(c) || !hasOfficialScore(p)) continue;
+
     const d = round2(c.score - p.score);
     const sNew = Number(c.score.toFixed(1));
     const cConf = round2(conf(c));
@@ -161,17 +180,23 @@ export function computeNews(prev: DailySnapshot | null, curr: DailySnapshot, dat
       }
     }
 
-    for (const iss of MAJOR_ISSUERS) {
-      const nowL = numLevel(c.advisories[iss as AdvisoryIssuer]?.level);
-      const wasL = numLevel(p.advisories[iss as AdvisoryIssuer]?.level);
-      if (nowL >= SEVERE_ADVISORY_MIN_LEVEL && nowL > wasL) {
-        events.push(mk('severe_advisory', c.iso3, { country: c.iso3, issuer: iss, level: nowL }, date, iss));
-      }
-    }
   }
 
   events.push(...computeOvertakes(prevByIso, rankP, rankT, curr, date));
   return events;
+}
+
+/** A major issuer raised this country to level 4 (or higher) since the previous snapshot. */
+function severeAdvisoryEvents(c: ScoredCountry, p: ScoredCountry, date: string): NewsEvent[] {
+  const out: NewsEvent[] = [];
+  for (const iss of MAJOR_ISSUERS) {
+    const nowL = numLevel(c.advisories[iss as AdvisoryIssuer]?.level);
+    const wasL = numLevel(p.advisories[iss as AdvisoryIssuer]?.level);
+    if (nowL >= SEVERE_ADVISORY_MIN_LEVEL && nowL > wasL) {
+      out.push(mk('severe_advisory', c.iso3, { country: c.iso3, issuer: iss, level: nowL }, date, iss));
+    }
+  }
+  return out;
 }
 
 /** One clean overtake per climber: the nearest crossed country now trailing it. */
@@ -202,12 +227,16 @@ function computeOvertakes(
     }
     if (!best) continue;
 
-    const a = currByIso.get(iso)!;
-    const b = currByIso.get(best)!;
+    const a = currByIso.get(iso);
+    const b = currByIso.get(best);
+    // Ranked countries always carry an official score; the guard keeps the types honest.
+    if (!hasOfficialScore(a) || !hasOfficialScore(b)) continue;
     if (!isConfident(a) || !isConfident(b)) continue; // both sides need real coverage
+    const prevA = prevByIso.get(iso);
+    const prevB = prevByIso.get(best);
     const gap = Math.abs(a.score - b.score);
-    const moveA = Math.abs(a.score - (prevByIso.get(iso)?.score ?? a.score));
-    const moveB = Math.abs(b.score - (prevByIso.get(best)?.score ?? b.score));
+    const moveA = Math.abs(a.score - (hasOfficialScore(prevA) ? prevA.score : a.score));
+    const moveB = Math.abs(b.score - (hasOfficialScore(prevB) ? prevB.score : b.score));
     if (gap < RANK_OVERTAKE_MIN_GAP || Math.max(moveA, moveB) < RANK_OVERTAKE_MIN_MOVE) continue;
 
     out.push(

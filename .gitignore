@@ -44,6 +44,9 @@ data/raw/**/*.tmp
 data/raw/**/*.partial
 # V-Dem raw CSV downloads (we cache parsed JSON only; never commit raw CSV)
 data/raw/**/*.csv
+# INFORM workbook: stored once under data/raw/inform/ (formula v10). The per-date
+# copies were 757 identical 2.2 MB files; this rule keeps them from coming back.
+data/raw/*/inform.xlsx
 
 # Legal research (local only, not published)
 .legal-research/

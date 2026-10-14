@@ -1,0 +1,123 @@
+{
+  "_comment": "SYNTHETIC v10-shape sentiment snapshot for scripts/verify-formula-v10-parity.ts and the v10 verification table. CHN, USA, SLV, JPN, THA, DEU, ECU, ISR, PRK, PSE carry the real 2026-10-14 vote counts, known-origin counts and perceived score P (official score at vote time + 0.5 x recency-weighted delta); their nEff (0.55 x votes) and capped top-origin share are approximations. ALA, ATA and SDN are invented to exercise a grey place with an active community and the +/-1 cap. Not production data.",
+  "generatedAt": "2026-10-14T06:00:00.000Z",
+  "countries": {
+    "CHN": {
+      "iso3": "CHN",
+      "votes": 73,
+      "origins": 13,
+      "topOriginShare": 0.5,
+      "nEff": 40.15,
+      "perceived": 7.3971,
+      "status": "active"
+    },
+    "USA": {
+      "iso3": "USA",
+      "votes": 28,
+      "origins": 9,
+      "topOriginShare": 0.5,
+      "nEff": 15.4,
+      "perceived": 7.19,
+      "status": "insufficient"
+    },
+    "SLV": {
+      "iso3": "SLV",
+      "votes": 8,
+      "origins": 4,
+      "topOriginShare": 0.5,
+      "nEff": 4.4,
+      "perceived": 7.3435,
+      "status": "insufficient"
+    },
+    "JPN": {
+      "iso3": "JPN",
+      "votes": 6,
+      "origins": 5,
+      "topOriginShare": 0.1667,
+      "nEff": 3.3,
+      "perceived": 8.3417,
+      "status": "insufficient"
+    },
+    "THA": {
+      "iso3": "THA",
+      "votes": 5,
+      "origins": 3,
+      "topOriginShare": 0.5,
+      "nEff": 2.75,
+      "perceived": 5.7999,
+      "status": "insufficient"
+    },
+    "DEU": {
+      "iso3": "DEU",
+      "votes": 3,
+      "origins": 2,
+      "topOriginShare": 0.5,
+      "nEff": 1.65,
+      "perceived": 7.7251,
+      "status": "insufficient"
+    },
+    "ECU": {
+      "iso3": "ECU",
+      "votes": 1,
+      "origins": 1,
+      "topOriginShare": 1.0,
+      "nEff": 0.55,
+      "perceived": 6.8547,
+      "status": "insufficient"
+    },
+    "ISR": {
+      "iso3": "ISR",
+      "votes": 2,
+      "origins": 2,
+      "topOriginShare": 0.5,
+      "nEff": 1.1,
+      "perceived": 5.2748,
+      "status": "insufficient"
+    },
+    "PRK": {
+      "iso3": "PRK",
+      "votes": 3,
+      "origins": 2,
+      "topOriginShare": 0.3333,
+      "nEff": 1.65,
+      "perceived": 4.5764,
+      "status": "insufficient"
+    },
+    "PSE": {
+      "iso3": "PSE",
+      "votes": 1,
+      "origins": 1,
+      "topOriginShare": 1.0,
+      "nEff": 0.55,
+      "perceived": 5.3903,
+      "status": "insufficient"
+    },
+    "ALA": {
+      "iso3": "ALA",
+      "votes": 34,
+      "origins": 4,
+      "topOriginShare": 0.45,
+      "nEff": 25.0,
+      "perceived": 8.6,
+      "status": "active"
+    },
+    "ATA": {
+      "iso3": "ATA",
+      "votes": 2,
+      "origins": 1,
+      "topOriginShare": 1.0,
+      "nEff": 2.0,
+      "perceived": 9.0,
+      "status": "insufficient"
+    },
+    "SDN": {
+      "iso3": "SDN",
+      "votes": 60,
+      "origins": 5,
+      "topOriginShare": 0.3,
+      "nEff": 45.0,
+      "perceived": 9.5,
+      "status": "active"
+    }
+  }
+}
