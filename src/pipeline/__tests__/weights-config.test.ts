@@ -51,8 +51,9 @@ describe('weights.json config validation — Formula v9', () => {
   const raw = readFileSync(weightsPath, 'utf-8');
   const config: WeightsConfig = JSON.parse(raw);
 
-  it('version starts with "9." (Formula v9)', () => {
-    assert.ok(config.version.startsWith('9.'), `Expected a 9.x.x version, got ${config.version}`);
+  it('version is 9.x (Formula v9) or later (v10 keeps the v9 mechanics)', () => {
+    const major = Number(config.version.split('.')[0]);
+    assert.ok(major >= 9, `Expected version 9.x.x or later, got ${config.version}`);
   });
 
   it('crime pillar is driven by gpi_safety_security (moved out of conflict in v9)', () => {
@@ -83,13 +84,13 @@ describe('weights.json config validation — Formula v9', () => {
 
 // --- Formula v9.1 shape (quick-260708-lb3: D1 homicide / D2 UCDP / D3 GPI-2026 / D4 ramp) ---
 
-describe('weights.json config validation — Formula v9.1', () => {
+describe('weights.json config validation — Formula v9.1 mechanics under v10', () => {
   const weightsPath = join(process.cwd(), 'src', 'pipeline', 'config', 'weights.json');
   const raw = readFileSync(weightsPath, 'utf-8');
   const config: WeightsConfig = JSON.parse(raw);
 
-  it('version is exactly "9.1.0"', () => {
-    assert.equal(config.version, '9.1.0');
+  it('version is exactly "10.0.0" (formula v10, SPEC 2026-10-14)', () => {
+    assert.equal(config.version, '10.0.0');
   });
 
   it('crime pillar gains wb_homicide (D1) alongside gpi_safety_security, subweights sum to 1.0', () => {
@@ -101,10 +102,10 @@ describe('weights.json config validation — Formula v9.1', () => {
     assert.ok(Math.abs(sum - 1.0) < 1e-9, `crime subweights must sum to 1.0, got ${sum}`);
   });
 
-  it('conflict pillar gains ucdp_conflict_deaths (D2) alongside gpi_overall/gpi_militarisation/A, subweights sum to 1.0', () => {
+  it('conflict pillar keeps ucdp_conflict_deaths (D2) alongside gpi_conflict/A (v10), subweights sum to 1.0', () => {
     const conflict = config.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.indicators.includes('ucdp_conflict_deaths'), 'conflict pillar must include ucdp_conflict_deaths');
-    assert.equal(conflict.indicators.length, 4, 'conflict pillar must have exactly 4 indicators in v9.1');
+    assert.equal(conflict.indicators.length, 3, 'conflict pillar must have exactly 3 indicators in v10');
     const sum = Object.values(conflict.indicatorWeights ?? {}).reduce((a, b) => a + b, 0);
     assert.ok(Math.abs(sum - 1.0) < 1e-9, `conflict subweights must sum to 1.0, got ${sum}`);
   });

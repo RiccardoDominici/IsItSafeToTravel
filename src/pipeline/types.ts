@@ -104,12 +104,54 @@ export interface FormulaV9Config {
   advisoryRebase: string[];
   /** region name -> conservative-prior offset */
   regionOffset: Record<string, number>;
+  /**
+   * Formula v10 (SPEC §1.2): a non-advisory indicator whose data `year` is older than
+   * (run year - maxAgeYears) is treated as missing, before pillar computation AND before
+   * source counting. Absent (pre-v10 / synthetic configs) = no age filter.
+   */
+  maxAgeYears?: number;
+  /**
+   * Formula v10 (SPEC §4): a country with fewer distinct sources than this (after the
+   * max-age filter, counted like hasSufficientData) is `insufficient_data` unless the
+   * danger guard holds. Absent (pre-v10 / synthetic configs) = every country is scored.
+   */
+  minSources?: number;
+  /**
+   * Formula v10 (SPEC §3): frozen affine scale-continuity map applied to the raw data
+   * score, S_data = clamp(alpha + beta * S_raw, 1, 10). Absent = identity.
+   */
+  calibration?: CalibrationConfig;
+  /** Formula v10 (SPEC §5): bounded community adjustment. Absent = no community component. */
+  community?: CommunityConfig;
+}
+
+/** Formula v10 (SPEC §3) frozen calibration constants. */
+export interface CalibrationConfig {
+  alpha: number;
+  beta: number;
+}
+
+/** Formula v10 (SPEC §5) community parameters. */
+export interface CommunityConfig {
+  /** Shrinkage constant: Z = nEff / (nEff + k). */
+  k: number;
+  /** Largest adjustment in score points, applied symmetrically (+/- cap). */
+  cap: number;
+  /** Activation floor: votes in the window. */
+  minVotes: number;
+  /** Activation floor: distinct known countries of origin. */
+  minOrigins: number;
+  /** Largest vote-weight share one origin may hold after the origin cap. */
+  originCap: number;
 }
 
 export interface WeightsConfig {
   version: string;
   pillars: PillarWeight[];
-  /** Formula v9 constants (weights.json v9.0.0+). Absent in older/synthetic test configs. */
+  /**
+   * Formula constants (weights.json v9.0.0+). The key stays `formulaV9` whatever the
+   * formula version (v10 adds optional fields). Absent in older/synthetic test configs.
+   */
   formulaV9?: FormulaV9Config;
 }
 
@@ -148,11 +190,49 @@ export interface AdvisoryInfo {
   restoredFrom?: string;
 }
 
+/**
+ * Formula v10 (SPEC §4): `insufficient_data` = fewer than minSources distinct sources
+ * after the max-age filter and no danger-guard signal. Such a country has no official
+ * score (score, scoreDisplay and dataScore are null); its pillars are kept for
+ * transparency but must never be rendered as numbers.
+ */
+export type ScoreStatus = 'scored' | 'insufficient_data';
+
+/**
+ * Formula v10 (SPEC §5) community component, as applied by the engine. Always present.
+ * `adjustment` is the number of points added to the data score (0 unless the community
+ * is active AND the country has an official score). For a grey country with an active
+ * community, `perceived` is the community rating to show separately, never as the score.
+ */
+export interface CommunityComponent {
+  status: 'active' | 'insufficient';
+  /** Usable votes in the 180-day window (0 when there is no sentiment entry). */
+  votes: number;
+  /** Distinct known countries of origin. */
+  origins: number;
+  /** P: weighted mean perceived score on the 1-10 scale, null without votes. */
+  perceived: number | null;
+  /** clamp(Z * (P - S_data), -cap, +cap) when applied, else 0. */
+  adjustment: number;
+}
+
 export interface ScoredCountry {
   iso3: string;
   name: { en: string; it: string; es: string; fr: string; pt: string };
-  score: number; // 1-10, one decimal
-  scoreDisplay: number; // 1-10 integer
+  /**
+   * Official score 1-10 (full precision) = clamp(dataScore + community.adjustment, 1, 10).
+   * null when scoreStatus is 'insufficient_data' (formula v10). Snapshots written
+   * before v10 always carry a number.
+   */
+  score: number | null;
+  /** Math.round(score); null when scoreStatus is 'insufficient_data'. */
+  scoreDisplay: number | null;
+  /** Formula v10. Absent on snapshots written before v10 (treat as 'scored'). */
+  scoreStatus?: ScoreStatus;
+  /** Formula v10: S_data, the calibrated data score before the community adjustment; null when grey. */
+  dataScore?: number | null;
+  /** Formula v10 community component. Absent on snapshots written before v10. */
+  community?: CommunityComponent;
   pillars: PillarScore[];
   advisories: {
     us?: AdvisoryInfo;
@@ -228,7 +308,7 @@ export interface DailySnapshot {
   generatedAt: string; // ISO 8601
   pipelineVersion: string;
   weightsVersion: string;
-  globalScore: number; // arithmetic mean of all countries[].score, rounded to 1 decimal
+  globalScore: number; // arithmetic mean of the non-null countries[].score, rounded to 2 decimals
   countries: ScoredCountry[];
   fetchResults: FetchResult[];
   // Data-revision marker (see pipeline/config/data-revision.ts). Missing on

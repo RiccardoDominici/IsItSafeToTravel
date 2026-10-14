@@ -1,19 +1,18 @@
 {
-  "version": "9.1.0",
+  "version": "10.0.0",
+  "_comment_pillars": "Formula v10 indicator set (SPEC §2): pillar weights unchanged from v9.1; removed gpi_overall, gpi_militarisation, wb_child_mortality, wb_air_pollution, inform_health (= INFORM Human) and inform_climate (= River Flood). The 'environment' key is kept to limit blast radius; its visible label is 'Natural hazards'. Its sub-weights are relative (0.25/0.10/0.10, sum 0.45): the engine renormalises sub-weights over the indicators present, as the v10 prototype did.",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["gpi_overall", "gpi_militarisation", "A", "ucdp_conflict_deaths"],
+      "indicators": ["gpi_conflict", "A", "ucdp_conflict_deaths"],
       "indicatorWeights": {
-        "gpi_overall": 0.3275,
-        "gpi_militarisation": 0.1125,
+        "gpi_conflict": 0.44,
         "A": 0.28,
         "ucdp_conflict_deaths": 0.28
       },
       "indicatorPrecision": {
-        "gpi_overall": 2.0,
-        "gpi_militarisation": 1.0,
+        "gpi_conflict": 2.0,
         "ucdp_conflict_deaths": 2.5
       }
     },
@@ -33,16 +32,14 @@
     {
       "name": "health",
       "weight": 0.20,
-      "indicators": ["wb_child_mortality", "inform_health", "inform_epidemic"],
+      "indicators": ["inform_health_access", "inform_epidemic"],
       "indicatorWeights": {
-        "wb_child_mortality": 0.38,
-        "inform_health": 0.31,
-        "inform_epidemic": 0.31
+        "inform_health_access": 0.55,
+        "inform_epidemic": 0.45
       },
       "indicatorPrecision": {
-        "wb_child_mortality": 1,
-        "inform_health": 1,
-        "inform_epidemic": 1
+        "inform_health_access": 1.0,
+        "inform_epidemic": 1.0
       }
     },
     {
@@ -56,34 +53,30 @@
         "inform_governance": 0.25
       },
       "indicatorPrecision": {
-        "vdem_rule_of_law": 1,
-        "vdem_gov_effectiveness": 1,
-        "vdem_corruption_control": 1,
-        "inform_governance": 1
+        "vdem_rule_of_law": 1.0,
+        "vdem_gov_effectiveness": 1.0,
+        "vdem_corruption_control": 1.0,
+        "inform_governance": 1.0
       }
     },
     {
       "name": "environment",
       "weight": 0.10,
-      "indicators": ["wb_air_pollution", "inform_natural", "inform_climate", "reliefweb_active_disasters", "gdacs_disaster_alerts"],
+      "indicators": ["inform_natural", "reliefweb_active_disasters", "gdacs_disaster_alerts"],
       "indicatorWeights": {
-        "wb_air_pollution": 0.35,
         "inform_natural": 0.25,
-        "inform_climate": 0.20,
         "reliefweb_active_disasters": 0.10,
         "gdacs_disaster_alerts": 0.10
       },
       "indicatorPrecision": {
-        "wb_air_pollution": 1,
-        "inform_natural": 1,
-        "inform_climate": 1,
+        "inform_natural": 1.0,
         "reliefweb_active_disasters": 0,
         "gdacs_disaster_alerts": 0
       }
     }
   ],
   "formulaV9": {
-    "_comment": "Formula v9.1 (Bayesian synthesis + D1 homicide/D2 UCDP/D3 GPI-2026/D4 advisory ramp) frozen constants, ported verbatim from prototype-scorer-v91.mjs DEFAULT_CONST + ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET (final-constants-v91.json round-2 section: P_HALF=200000). KEY NAME stays 'formulaV9' — engine.ts reads this key regardless of the formula's own version number. Do not re-tune.",
+    "_comment": "Formula v9.1 (Bayesian synthesis + D1 homicide/D2 UCDP/D3 GPI-2026/D4 advisory ramp) frozen constants, ported verbatim from prototype-scorer-v91.mjs DEFAULT_CONST + ADVISORY_TIER + FROZEN_EXCLUDED_SOURCES + ADVISORY_REBASE + REGION_OFFSET (final-constants-v91.json round-2 section: P_HALF=200000). KEY NAME stays 'formulaV9' — engine.ts reads this key regardless of the formula's own version number. Do not re-tune. Formula v10 (SPEC 2026-10-14, .planning/quick/261014-formula-v10/SPEC.md) leaves every v9.1 constant here unchanged and adds maxAgeYears, minSources, calibration and community below.",
     "K": 1.0,
     "lambda": 0.25,
     "q": 3,
@@ -120,6 +113,18 @@
       "middle_east": -0.05,
       "africa": -0.05,
       "other": 0
+    },
+    "_comment_maxAgeYears": "v10 SPEC §1.2: a non-advisory indicator whose data year < (run year - maxAgeYears) is missing, before pillars and before source counting (src/pipeline/scoring/max-age.ts). wb_population (homicide precision input, never scored) is exempt.",
+    "maxAgeYears": 5,
+    "_comment_minSources": "v10 SPEC §4: fewer distinct sources than this after the max-age filter => scoreStatus insufficient_data (score null), unless the danger guard holds (src/pipeline/scoring/status.ts). Same floor as MIN_RANKING_SOURCES in src/lib/hub-data.ts, scripts/generate-llms-full.ts and src/pipeline/news/engine.ts.",
+    "minSources": 4,
+    "_comment_community": "v10 SPEC §5: adjustment = clamp(Z * (P - S_data), -cap, +cap), Z = nEff / (nEff + k), applied only to officially scored countries whose entry in data/sentiment/latest.json is active AND meets minVotes/minOrigins/originCap (re-checked by the engine). Same values as src/pipeline/sentiment/constants.ts on the community branch.",
+    "community": {
+      "k": 30,
+      "cap": 1.0,
+      "minVotes": 30,
+      "minOrigins": 3,
+      "originCap": 0.5
     }
   }
 }

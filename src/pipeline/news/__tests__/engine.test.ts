@@ -336,3 +336,46 @@ describe('bandCrossConfirmed: directional hysteresis', () => {
     assert.equal(bandCrossConfirmed(6.5, 8.5), true);
   });
 });
+
+// --- Formula v10 grey rule (SPEC §4): grey places never produce movement events ---
+
+describe('computeNews: formula v10 grey countries', () => {
+  const grey = (iso3: string, overrides: Partial<ScoredCountry> = {}) =>
+    mkCountry(iso3, 0, { score: null, scoreDisplay: null, scoreStatus: 'insufficient_data', dataScore: null, ...overrides });
+  const DATES = ['2026-10-15', '2026-10-16'] as const;
+  const snap = (date: string, countries: ScoredCountry[]) => mkSnapshot(date, countries, { dataRevision: 7 });
+
+  it('no score_jump / band_change when a country turns grey or leaves grey', () => {
+    const intoGrey = computeNews(snap(DATES[0], [mkCountry('AAA', 6.0)]), snap(DATES[1], [grey('AAA')]), DATES[1]);
+    const outOfGrey = computeNews(snap(DATES[0], [grey('AAA')]), snap(DATES[1], [mkCountry('AAA', 8.5)]), DATES[1]);
+    for (const events of [intoGrey, outOfGrey]) {
+      assert.deepEqual(events.filter((e) => e.params.country === 'AAA'), []);
+    }
+  });
+
+  it('grey countries are never ranked, so they cannot enter the top 10 or overtake', () => {
+    const scored = Array.from({ length: 12 }, (_, i) => mkCountry(`S${String(i).padStart(2, '0')}`, 7 + i * 0.1));
+    const prev = snap(DATES[0], [...scored, mkCountry('GRY', 6.0)]);
+    const curr = snap(DATES[1], [...scored, grey('GRY')]);
+    const events = computeNews(prev, curr, DATES[1]);
+    assert.equal(events.some((e) => e.params.country === 'GRY' || e.params.other === 'GRY'), false);
+  });
+
+  it('a grey country appearing for the first time is not announced as a new country', () => {
+    const events = computeNews(snap(DATES[0], [mkCountry('AAA', 6)]), snap(DATES[1], [mkCountry('AAA', 6), grey('NEW')]), DATES[1]);
+    assert.equal(events.some((e) => e.type === 'new_country'), false);
+  });
+
+  it('a new level 4 from a major issuer is still reported for a grey country (advisory news, not movement)', () => {
+    const prev = snap(DATES[0], [grey('GRY', { advisories: { us: { level: 2, text: '', source: 'us', url: '' } } })]);
+    const curr = snap(DATES[1], [grey('GRY', { advisories: { us: { level: 4, text: '', source: 'us', url: '' } } })]);
+    const events = computeNews(prev, curr, DATES[1]);
+    assert.deepEqual(events.map((e) => e.type), ['severe_advisory']);
+  });
+
+  it('the v10 switch day (dataRevision bump) emits nothing at all', () => {
+    const prev = mkSnapshot(DATES[0], [mkCountry('AAA', 6.0)], { dataRevision: 6 });
+    const curr = mkSnapshot(DATES[1], [mkCountry('AAA', 7.5), grey('BBB')], { dataRevision: 7 });
+    assert.deepEqual(computeNews(prev, curr, DATES[1]), []);
+  });
+});

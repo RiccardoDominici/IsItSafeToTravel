@@ -1,13 +1,25 @@
 import { writeJson, readJson, getScoresDir } from '../utils/fs.js';
-import { listSnapshotDates, loadSnapshot } from './snapshot.js';
+import { listSnapshotDates, loadSnapshot, meanOfOfficialScores } from './snapshot.js';
 import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 import type { PillarName } from '../types.js';
 
+/**
+ * One country-day of history. `score` is null on days the country had no official score
+ * (formula v10 scoreStatus 'insufficient_data'): the point keeps the date so a chart can
+ * show the gap instead of interpolating across it.
+ */
+export interface HistoryCountryPoint {
+  date: string;
+  score: number | null;
+  dc?: number;
+}
+
 export interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
-  countries: Record<string, Array<{ date: string; score: number; dc?: number }>>;
+  countries: Record<string, HistoryCountryPoint[]>;
+  /** Pillar points exist only for days with an official score (never for grey days). */
   pillarHistory: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
 }
 
@@ -53,7 +65,7 @@ export function writeHistoryIndex(opts: { full?: boolean } = {}): HistoryIndex {
   }
 
   const global: Array<{ date: string; score: number }> = [];
-  const countries: Record<string, Array<{ date: string; score: number; dc?: number }>> = {};
+  const countries: Record<string, HistoryCountryPoint[]> = {};
   const pillarHistory: Record<string, Record<string, Array<{ date: string; score: number }>>> = {};
 
   let pendingDates: string[];
@@ -94,10 +106,9 @@ export function writeHistoryIndex(opts: { full?: boolean } = {}): HistoryIndex {
     if (!snapshot) continue;
     folded++;
 
-    // Always recalculate from country scores for 2-decimal precision
-    const globalScore = snapshot.countries.length > 0
-      ? Math.round((snapshot.countries.reduce((s, c) => s + c.score, 0) / snapshot.countries.length) * 100) / 100
-      : 0;
+    // Always recalculate from country scores for 2-decimal precision (official scores
+    // only: formula v10 grey countries carry score null and are left out).
+    const globalScore = meanOfOfficialScores(snapshot.countries);
     global.push({ date, score: globalScore });
 
     // Per-country scores and per-pillar scores
@@ -106,12 +117,13 @@ export function writeHistoryIndex(opts: { full?: boolean } = {}): HistoryIndex {
       // Include dataCompleteness when it's low enough to indicate insufficient data.
       // dc=0 means no real data (all pillars at neutral default 0.5).
       // We store dc when below 0.15 to flag truly data-sparse snapshots.
-      const point: { date: string; score: number; dc?: number } = { date, score: country.score };
+      const point: HistoryCountryPoint = { date, score: country.score ?? null };
       if (country.dataCompleteness < 0.15) point.dc = country.dataCompleteness;
       countries[country.iso3].push(point);
 
-      // Extract per-pillar scores
-      if (country.pillars) {
+      // Extract per-pillar scores. A grey day (no official score) records no pillar
+      // points: pillar values of a grey country are internal, never rendered (SPEC §4).
+      if (country.pillars && country.score !== null) {
         if (!pillarHistory[country.iso3]) {
           pillarHistory[country.iso3] = {} as Record<string, Array<{ date: string; score: number }>>;
         }

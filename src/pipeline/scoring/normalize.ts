@@ -48,16 +48,26 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   // GDACS disaster alerts - orange/red (lower = safer)
   gdacs_disaster_alerts: { min: 0, max: 5, inverse: true },
 
-  // Global Peace Index: 1 to 5 scale (lower = more peaceful = safer)
+  // Global Peace Index: 1 to 5 scale (lower = more peaceful = safer).
+  // gpi_overall keeps its historical 1-4 range (v9.x); it is no longer scored in v10.
   gpi_overall: { min: 1, max: 4, inverse: true },
   gpi_safety_security: { min: 1, max: 5, inverse: true },
   gpi_militarisation: { min: 1, max: 5, inverse: true },
+  // Formula v10 (SPEC §2): Ongoing Domestic & International Conflict domain, the JSON
+  // `conflict` field, on the full 1-5 GPI domain scale, inverted (the range the v10
+  // calibration prototype used; published values run 1 to about 4.2).
+  gpi_conflict: { min: 1, max: 5, inverse: true },
 
   // INFORM Risk Index: 0 to 10 (lower = lower risk = safer)
   inform_natural: { min: 0, max: 10, inverse: true },
-  inform_health: { min: 0, max: 10, inverse: true },
   inform_epidemic: { min: 0, max: 10, inverse: true },
   inform_governance: { min: 0, max: 10, inverse: true },
+  // Formula v10 (SPEC §2): INFORM "Access to health care" (Lack of Coping Capacity), 0-10, inverted.
+  inform_health_access: { min: 0, max: 10, inverse: true },
+  // Legacy v9.1 names, kept only so pre-v10 raw files still normalise: inform_health was the
+  // "Human" (conflict hazard) column and inform_climate the "River Flood" column. The v10
+  // parser no longer emits either and weights.json no longer scores them.
+  inform_health: { min: 0, max: 10, inverse: true },
   inform_climate: { min: 0, max: 10, inverse: true },
 
   // Government travel advisories: raw levels 1-4 (lower = safer)

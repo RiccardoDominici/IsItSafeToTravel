@@ -23,10 +23,10 @@ function makeIndicator(name: string, value: number): RawIndicator {
 describe('DATA-02: composite score is always in 1-10 range', () => {
   it('score is 1-10 with no indicators (neutral)', () => {
     const result = computeCountryScore('TST', [], WEIGHTS, COUNTRY, {}, []);
-    assert.ok(result.score >= 1.0, `Score ${result.score} should be >= 1`);
-    assert.ok(result.score <= 10.0, `Score ${result.score} should be <= 10`);
-    assert.ok(result.scoreDisplay >= 1, `scoreDisplay ${result.scoreDisplay} should be >= 1`);
-    assert.ok(result.scoreDisplay <= 10, `scoreDisplay ${result.scoreDisplay} should be <= 10`);
+    assert.ok(result.score! >= 1.0, `Score ${result.score} should be >= 1`);
+    assert.ok(result.score! <= 10.0, `Score ${result.score} should be <= 10`);
+    assert.ok(result.scoreDisplay! >= 1, `scoreDisplay ${result.scoreDisplay} should be >= 1`);
+    assert.ok(result.scoreDisplay! <= 10, `scoreDisplay ${result.scoreDisplay} should be <= 10`);
   });
 
   it('score is 1-10 with worst-case indicators', () => {
@@ -44,8 +44,8 @@ describe('DATA-02: composite score is always in 1-10 range', () => {
       makeIndicator('inform_climate', 10),       // worst
     ];
     const result = computeCountryScore('TST', indicators, WEIGHTS, COUNTRY, {}, []);
-    assert.ok(result.score >= 1.0, `Worst-case score ${result.score} should be >= 1`);
-    assert.ok(result.score <= 10.0, `Worst-case score ${result.score} should be <= 10`);
+    assert.ok(result.score! >= 1.0, `Worst-case score ${result.score} should be >= 1`);
+    assert.ok(result.score! <= 10.0, `Worst-case score ${result.score} should be <= 10`);
   });
 
   it('score is 1-10 with best-case indicators', () => {
@@ -63,8 +63,8 @@ describe('DATA-02: composite score is always in 1-10 range', () => {
       makeIndicator('inform_climate', 0),        // best
     ];
     const result = computeCountryScore('TST', indicators, WEIGHTS, COUNTRY, {}, []);
-    assert.ok(result.score >= 1.0, `Best-case score ${result.score} should be >= 1`);
-    assert.ok(result.score <= 10.0, `Best-case score ${result.score} should be <= 10`);
+    assert.ok(result.score! >= 1.0, `Best-case score ${result.score} should be >= 1`);
+    assert.ok(result.score! <= 10.0, `Best-case score ${result.score} should be <= 10`);
   });
 
   it('best-case scores higher than worst-case', () => {
@@ -78,7 +78,7 @@ describe('DATA-02: composite score is always in 1-10 range', () => {
     ];
     const best = computeCountryScore('TST', bestIndicators, WEIGHTS, COUNTRY, {}, []);
     const worst = computeCountryScore('TST', worstIndicators, WEIGHTS, COUNTRY, {}, []);
-    assert.ok(best.score > worst.score, `Safe country (${best.score}) should score higher than dangerous (${worst.score})`);
+    assert.ok(best.score! > worst.score!, `Safe country (${best.score}) should score higher than dangerous (${worst.score})`);
   });
 });
 

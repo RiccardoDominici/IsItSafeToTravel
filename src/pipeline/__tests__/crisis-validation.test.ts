@@ -250,11 +250,11 @@ describe('Crisis validation: Formula v9.1 detects real-world crises', () => {
       const advisories = extractAdvisories(indicators, now);
       const result = computeCountryScore(crisis.iso3, indicators, WEIGHTS, crisis.country, advisories, [], SOURCE_TIERS);
 
-      console.log(`  ${crisis.name} (${crisis.iso3}): score=${result.score.toFixed(3)}, confidence=${result.confidence.toFixed(3)}`);
+      console.log(`  ${crisis.name} (${crisis.iso3}): score=${result.score!.toFixed(3)}, confidence=${result.confidence.toFixed(3)}`);
       console.log(`    ${crisis.description}`);
       console.log(`    ${crisis.relevantPillar} pillar (shrunk): ${getPillarScore(result, crisis.relevantPillar).toFixed(4)}`);
 
-      assert.ok(result.score >= 1 && result.score <= 10, `Score ${result.score} in [1,10]`);
+      assert.ok(result.score! >= 1 && result.score! <= 10, `Score ${result.score} in [1,10]`);
 
       const relevantPillarScore = getPillarScore(result, crisis.relevantPillar);
       assert.ok(
@@ -273,12 +273,12 @@ describe('Crisis validation: Formula v9.1 detects real-world crises', () => {
     });
 
     console.log('  Crisis severity ranking (lower = less safe):');
-    for (const r of [...results].sort((a, b) => a.score - b.score)) {
-      console.log(`    ${r.iso3} (${r.name}): ${r.score.toFixed(3)}`);
+    for (const r of [...results].sort((a, b) => a.score! - b.score!)) {
+      console.log(`    ${r.iso3} (${r.name}): ${r.score!.toFixed(3)}`);
     }
 
     for (const r of results) {
-      assert.ok(r.score < 7, `${r.iso3} (${r.name}) should score below 7 during crisis, got ${r.score}`);
+      assert.ok(r.score! < 7, `${r.iso3} (${r.name}) should score below 7 during crisis, got ${r.score}`);
     }
   });
 
@@ -294,8 +294,8 @@ describe('Crisis validation: Formula v9.1 detects real-world crises', () => {
     const sudan = score('SDN');
     const drc = score('COD');
 
-    assert.ok(sudan < turkey, `Sudan (${sudan}) should score lower than Turkey (${turkey}) — civil war vs earthquake`);
-    assert.ok(drc < turkey, `DR Congo (${drc}) should score lower than Turkey (${turkey}) — disease outbreak vs earthquake`);
+    assert.ok(sudan! < turkey!, `Sudan (${sudan}) should score lower than Turkey (${turkey}) — civil war vs earthquake`);
+    assert.ok(drc! < turkey!, `DR Congo (${drc}) should score lower than Turkey (${turkey}) — disease outbreak vs earthquake`);
   });
 
   it('runs identically without a sourcesConfig (freshness weighting degrades gracefully to 1.0)', () => {
@@ -305,7 +305,7 @@ describe('Crisis validation: Formula v9.1 detects real-world crises', () => {
     const withTiers = computeCountryScore(crisis.iso3, indicators, WEIGHTS, crisis.country, advisories, [], SOURCE_TIERS);
     const withoutTiers = computeCountryScore(crisis.iso3, indicators, WEIGHTS, crisis.country, advisories, []);
 
-    assert.ok(withTiers.score >= 1 && withTiers.score <= 10);
-    assert.ok(withoutTiers.score >= 1 && withoutTiers.score <= 10);
+    assert.ok(withTiers.score! >= 1 && withTiers.score! <= 10);
+    assert.ok(withoutTiers.score! >= 1 && withoutTiers.score! <= 10);
   });
 });

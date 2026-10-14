@@ -141,3 +141,40 @@ describe('history: writeHistoryIndex', () => {
     assert.equal(testGlobal[1].score, 5.0);
   });
 });
+
+// --- Formula v10 grey rule (SPEC §4): grey = null in snapshots and history ---
+
+describe('history + snapshot: formula v10 grey countries', () => {
+  const greyCountry = (iso3: string): ScoredCountry => ({
+    ...makeScoredCountry(iso3, 0),
+    score: null,
+    scoreDisplay: null,
+    scoreStatus: 'insufficient_data',
+    dataScore: null,
+  });
+
+  afterEach(() => {
+    for (const f of ['2099-02-01.json', 'latest.json', 'history-index.json']) {
+      const p = join(TEST_SCORES_DIR, f);
+      if (existsSync(p)) rmSync(p);
+    }
+  });
+
+  it('the snapshot globalScore averages only official scores', () => {
+    const snapshot = writeSnapshot('2099-02-01', [makeScoredCountry('AAA', 6), makeScoredCountry('BBB', 8), greyCountry('CCC')], TEST_FETCH_RESULTS, '10.0.0');
+    assert.equal(snapshot.globalScore, 7);
+    const onDisk = JSON.parse(readFileSync(join(TEST_SCORES_DIR, '2099-02-01.json'), 'utf-8'));
+    const ccc = onDisk.countries.find((c: ScoredCountry) => c.iso3 === 'CCC');
+    assert.equal(ccc.score, null, 'grey = null on disk (public/scores.json is a copy of latest.json)');
+    assert.equal(ccc.scoreStatus, 'insufficient_data');
+  });
+
+  it('history keeps a null point for a grey day and records no pillar points for it', () => {
+    writeSnapshot('2099-02-01', [makeScoredCountry('AAA', 6), greyCountry('CCC')], TEST_FETCH_RESULTS, '10.0.0');
+    const index = writeHistoryIndex({ full: true });
+    assert.deepEqual(index.countries.CCC, [{ date: '2099-02-01', score: null, dc: 0 }]);
+    assert.equal(index.pillarHistory.CCC, undefined, 'grey pillar values are internal, never charted');
+    assert.equal(index.global.find((g) => g.date === '2099-02-01')?.score, 6);
+    assert.equal(index.pillarHistory.AAA.conflict.length, 1);
+  });
+});

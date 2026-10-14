@@ -1,5 +1,6 @@
 import { fetchAllSources } from './fetchers/index.js';
 import { computeAllScores } from './scoring/engine.js';
+import { loadCommunitySnapshot } from './scoring/community.js';
 import { writeSnapshot } from './scoring/snapshot.js';
 import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
@@ -102,13 +103,20 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
 
   // Stage 3: Score
   console.log('\n--- Stage 3: Score ---');
-  const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date);
+  // Formula v10 community component (SPEC §5): the engine reads data/sentiment/latest.json.
+  // Stage 6 below rewrites that file AFTER scoring, so this run applies the community
+  // snapshot of the previous run (one-day lag). A missing or pre-v10 file means no
+  // adjustment for anyone.
+  const community = loadCommunitySnapshot();
+  const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date, { community });
   console.log(`Scored ${scoredCountries.length} countries`);
 
-  // Log tier contribution summary
-  const avgScore = scoredCountries.reduce((sum, c) => sum + c.score, 0) / scoredCountries.length;
-  console.log(`  Average score: ${avgScore.toFixed(1)}`);
-  console.log(`  Countries scored: ${scoredCountries.length}`);
+  // Log tier contribution summary. Grey countries (formula v10 insufficient_data) have no
+  // official score and stay out of the average.
+  const withScore = scoredCountries.filter((c): c is typeof c & { score: number } => c.score !== null);
+  const avgScore = withScore.length > 0 ? withScore.reduce((sum, c) => sum + c.score, 0) / withScore.length : 0;
+  console.log(`  Average score: ${avgScore.toFixed(1)} (over ${withScore.length} countries with an official score)`);
+  console.log(`  Countries scored: ${withScore.length} of ${scoredCountries.length} (${scoredCountries.length - withScore.length} insufficient_data)`);
 
   // Log data completeness summary
   const avgCompleteness = scoredCountries.reduce((sum, c) => sum + c.dataCompleteness, 0) / scoredCountries.length;
@@ -130,7 +138,8 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   try {
     const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
     const { ok, rows } = await fetchVotes(cutoff);
-    const officialScores = new Map(scoredCountries.map((c) => [c.iso3, c.score]));
+    // Only countries with an official score anchor relative votes (grey ones have none).
+    const officialScores = new Map(withScore.map((c) => [c.iso3, c.score]));
 
     if (ok) {
       const sentimentSnapshot = aggregateVotes(rows, officialScores, Date.now());

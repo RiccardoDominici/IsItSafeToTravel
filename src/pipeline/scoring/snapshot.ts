@@ -19,6 +19,17 @@ function getPipelineVersion(): string {
 }
 
 /**
+ * Mean of the official scores, rounded to 2 decimals. Formula v10 grey countries
+ * (score null, scoreStatus 'insufficient_data') have no official score and are left out,
+ * so the global figure is not dragged by prior-driven micro-territories. 0 when empty.
+ */
+export function meanOfOfficialScores(countries: ReadonlyArray<Pick<ScoredCountry, 'score'>>): number {
+  const scores = countries.map((c) => c.score).filter((s): s is number => typeof s === 'number');
+  if (scores.length === 0) return 0;
+  return Math.round((scores.reduce((sum, s) => sum + s, 0) / scores.length) * 100) / 100;
+}
+
+/**
  * Write a daily snapshot to data/scores/{date}.json and data/scores/latest.json.
  *
  * Historical snapshots are preserved -- each day gets its own file.
@@ -30,9 +41,7 @@ export function writeSnapshot(
   fetchResults: FetchResult[],
   weightsVersion: string,
 ): DailySnapshot {
-  const globalScore = countries.length > 0
-    ? Math.round((countries.reduce((sum, c) => sum + c.score, 0) / countries.length) * 100) / 100
-    : 0;
+  const globalScore = meanOfOfficialScores(countries);
 
   const snapshot: DailySnapshot = {
     date,

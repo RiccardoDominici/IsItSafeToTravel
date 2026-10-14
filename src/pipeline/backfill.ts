@@ -446,7 +446,9 @@ async function runBackfill(dryRun: boolean = false): Promise<BackfillResult> {
     }
 
     try {
-      const scoredCountries = computeAllScores(rawDataMap, weightsConfig);
+      // The date is the run date of this snapshot: it picks the advisory side-channel
+      // files of the SAME date folder and is the run year of the v10 max-age filter.
+      const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date);
 
       if (!dryRun) {
         // Build minimal fetch results for snapshot compatibility
