@@ -322,6 +322,17 @@ export function getPortugueseWithArticle(iso3: string, bareName: string): string
   return article ? `${article} ${bareName}` : bareName;
 }
 
+const PT_DE_CONTRACT: Record<PtArticle, string> = { '': 'de', o: 'do', a: 'da', os: 'dos', as: 'das' };
+
+/** "do Japão" | "da Alemanha" | "dos Estados Unidos" — "de" contracted with the
+ *  article, for "a segurança {de X} com a dos países vizinhos". Inherits
+ *  getPtArticle's default, so a name with no override and no -a/-ão ending gets
+ *  no article ("de Brasil" rather than "do Brasil"): a known gap in the article
+ *  table, not something this helper can infer. */
+export function getPortugueseDe(iso3: string, bareName: string): string {
+  return `${PT_DE_CONTRACT[getPtArticle(iso3, bareName)]} ${bareName}`;
+}
+
 // ---------------------------------------------------------------------------
 // German — nominative ("Ist {nominative} sicher?"), directional ("nach
 // {name}" / "in die {name}"), and "für" (always accusative)
@@ -457,5 +468,43 @@ export function getH1CountryPhrase(lang: Lang, iso3: string, bareName: string): 
       return getGermanDirectional(iso3, bareName);
     default:
       return bareName; // es, fr, zh — bare name is already grammatically correct
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Country comparison heading (ui.ts country.compare_title / compare_title_nearby)
+// ---------------------------------------------------------------------------
+
+/**
+ * Grammar-correct country phrase for the comparison heading, in the form each
+ * locale's sentence needs. `phrase` fills {name}. `copula` fills {copula}
+ * (German only: lowercase "ist"/"sind", so the verb agrees with plural names
+ * such as die Niederlande).
+ *
+ * The headings avoid a bare subject wherever the language would need a
+ * gender- or number-dependent verb or adjective. Italian and French put the
+ * country in a locative ("la sicurezza in Germania", "la sécurité en France"),
+ * Portuguese uses "de" plus article ("a segurança do Japão"), German uses a
+ * copula. English takes the name with its article, Spanish and Chinese the
+ * bare name.
+ */
+export function getComparisonSubject(
+  lang: Lang,
+  iso3: string,
+  bareName: string,
+): { phrase: string; copula: string } {
+  switch (lang) {
+    case 'en':
+      return { phrase: getEnglishCountryPhrase(iso3, bareName), copula: '' };
+    case 'it':
+      return { phrase: getItalianLocative(iso3, bareName), copula: '' };
+    case 'fr':
+      return { phrase: getFrenchPreposition(iso3, bareName), copula: '' };
+    case 'pt':
+      return { phrase: getPortugueseDe(iso3, bareName), copula: '' };
+    case 'de':
+      return { phrase: getGermanNominative(iso3, bareName), copula: getGermanCopula(iso3, bareName).toLowerCase() };
+    default:
+      return { phrase: bareName, copula: '' }; // es, zh
   }
 }

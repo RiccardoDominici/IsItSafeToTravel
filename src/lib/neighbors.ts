@@ -225,17 +225,26 @@ export const borderMap: Record<string, string[]> = {
 /**
  * Get neighboring countries with their full scored data.
  * Returns ScoredCountry objects sorted by score descending, max 6.
+ *
+ * `include` is applied BEFORE the top-6 cap: a neighbour the caller rejects
+ * (e.g. failing hasSufficientData) must not push an acceptable one out of the
+ * list. France has 8 borders, two of them 3-source micro-states; capping first
+ * would silently drop a comparable neighbour.
  */
-export function getNeighbors(iso3: string, allCountries: ScoredCountry[]): ScoredCountry[] {
+export function getNeighbors(
+  iso3: string,
+  allCountries: ScoredCountry[],
+  include: (c: ScoredCountry) => boolean = () => true,
+): ScoredCountry[] {
   const borders = borderMap[iso3];
   if (!borders || borders.length === 0) return [];
 
-  const borderSet = new Set(borders);
   const countryMap = new Map(allCountries.map(c => [c.iso3, c]));
 
   return borders
     .filter(b => countryMap.has(b))
     .map(b => countryMap.get(b)!)
+    .filter(include)
     .sort((a, b) => b.score - a.score)
     .slice(0, 6);
 }

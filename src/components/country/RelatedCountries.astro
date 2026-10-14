@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { getRegion } from '../../lib/regions';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { selectComparison, selectRelated } from '../../lib/comparisons';
 
 interface Props {
   country: ScoredCountry;
@@ -14,13 +15,13 @@ interface Props {
 const { country, allCountries, lang } = Astro.props;
 
 const titles: Record<Lang, { heading: string; region: string; similar: string; seeAll: string }> = {
-  en: { heading: 'Related Countries', region: 'In the same region', similar: 'Similar safety scores', seeAll: 'See all countries in this region' },
-  it: { heading: 'Paesi correlati', region: 'Nella stessa regione', similar: 'Punteggi simili', seeAll: 'Vedi tutti i paesi della regione' },
-  es: { heading: 'Pa\u00edses relacionados', region: 'En la misma regi\u00f3n', similar: 'Puntuaciones similares', seeAll: 'Ver todos los pa\u00edses de la regi\u00f3n' },
-  fr: { heading: 'Pays similaires', region: 'Dans la m\u00eame r\u00e9gion', similar: 'Scores similaires', seeAll: 'Voir tous les pays de la r\u00e9gion' },
-  pt: { heading: 'Pa\u00edses relacionados', region: 'Na mesma regi\u00e3o', similar: 'Pontua\u00e7\u00f5es similares', seeAll: 'Ver todos os pa\u00edses da regi\u00e3o' },
-  zh: { heading: '\u76f8\u5173\u56fd\u5bb6', region: '\u540c\u4e00\u5730\u533a', similar: '\u76f8\u4f3c\u5b89\u5168\u8bc4\u5206', seeAll: '\u67e5\u770b\u8be5\u5730\u533a\u7684\u6240\u6709\u56fd\u5bb6' },
-  de: { heading: 'Verwandte L\u00e4nder', region: 'In derselben Region', similar: '\u00c4hnliche Sicherheitsbewertungen', seeAll: 'Alle L\u00e4nder dieser Region ansehen' },
+  en: { heading: 'Related Countries', region: 'In the same region', similar: 'Countries with a similar risk profile', seeAll: 'See all countries in this region' },
+  it: { heading: 'Paesi correlati', region: 'Nella stessa regione', similar: 'Paesi con un profilo di rischio simile', seeAll: 'Vedi tutti i paesi della regione' },
+  es: { heading: 'Países relacionados', region: 'En la misma región', similar: 'Países con un perfil de riesgo similar', seeAll: 'Ver todos los países de la región' },
+  fr: { heading: 'Pays similaires', region: 'Dans la même région', similar: 'Pays au profil de risque similaire', seeAll: 'Voir tous les pays de la région' },
+  pt: { heading: 'Países relacionados', region: 'Na mesma região', similar: 'Países com um perfil de risco semelhante', seeAll: 'Ver todos os países da região' },
+  zh: { heading: '相关国家', region: '同一地区', similar: '风险特征相似的国家', seeAll: '查看该地区的所有国家' },
+  de: { heading: 'Verwandte Länder', region: 'In derselben Region', similar: 'Länder mit ähnlichem Risikoprofil', seeAll: 'Alle Länder dieser Region ansehen' },
 };
 
 const t = titles[lang];
@@ -33,21 +34,11 @@ function getScoreBadgeClasses(rawScore: number): string {
   return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
 }
 
-const currentRegion = getRegion(country.iso3);
-const others = allCountries.filter(c => c.iso3 !== country.iso3);
-
-// Same region, closest scores
-const sameRegion = others
-  .filter(c => getRegion(c.iso3) === currentRegion)
-  .sort((a, b) => Math.abs(a.score - country.score) - Math.abs(b.score - country.score))
-  .slice(0, 3);
-
-// Similar scores globally (excluding those already in sameRegion)
-const sameRegionIsos = new Set(sameRegion.map(c => c.iso3));
-const similarScore = others
-  .filter(c => !sameRegionIsos.has(c.iso3))
-  .sort((a, b) => Math.abs(a.score - country.score) - Math.abs(b.score - country.score))
-  .slice(0, 3);
+// Same-region and similar-risk-profile lists. Both skip countries the comparison table
+// already shows, and both skip countries below the data floor (selection rules in
+// src/lib/comparisons.ts).
+const comparison = selectComparison(country, allCountries);
+const { sameRegion, similarProfile } = selectRelated(country, allCountries, comparison);
 
 const r = routes[lang];
 function countryUrl(iso3: string): string {
@@ -57,13 +48,14 @@ function countryUrl(iso3: string): string {
 // Link to the region hub for this country's region (internal-linking + crawl depth).
 // Use the locale-specific region leaf from routes (fr: 'asie', de: 'asien', etc.).
 // routes uses 'middle-east' as the lookup key, but getRegion returns 'middle_east'.
+const currentRegion = getRegion(country.iso3);
 const regionLookupKey = currentRegion === 'middle_east' ? 'middle-east' : currentRegion;
 const regionLeaf = currentRegion !== 'other' ? (r as Record<string, string>)[regionLookupKey] : null;
 const regionsParent = (r as Record<string, string>).regions ?? 'regions';
 const regionUrl = regionLeaf ? `/${lang}/${regionsParent}/${regionLeaf}/` : null;
 ---
 
-{(sameRegion.length > 0 || similarScore.length > 0) && (
+{(sameRegion.length > 0 || similarProfile.length > 0) && (
   <section class="py-6 px-4 max-w-2xl mx-auto">
     <h2 class="text-xl md:text-2xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-5">
       {t.heading}
@@ -101,13 +93,13 @@ const regionUrl = regionLeaf ? `/${lang}/${regionsParent}/${regionLeaf}/` : null
       </div>
     )}
 
-    {similarScore.length > 0 && (
+    {similarProfile.length > 0 && (
       <div>
         <h3 class="text-sm font-semibold text-sand-600 dark:text-sand-400 uppercase tracking-wide mb-3">
           {t.similar}
         </h3>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-          {similarScore.map((c) => (
+          {similarProfile.map((c) => (
             <a
               href={countryUrl(c.iso3)}
               class="flex items-center justify-between gap-2 rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-4 py-3 hover:border-terracotta-400 dark:hover:border-terracotta-500 transition-colors"

@@ -3,8 +3,13 @@ import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
-import { getRegion } from '../../lib/regions';
+import { getComparisonSubject } from '../../i18n/country-grammar';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { comparisonRows, selectComparison } from '../../lib/comparisons';
+
+// One comparison section for the country page: real neighbours (borderMap), plus
+// same-region "nearby" fillers when a country has fewer than 3 data-sufficient
+// neighbours (island nations). Selection rules live in src/lib/comparisons.ts.
 
 interface Props {
   country: ScoredCountry;
@@ -23,18 +28,17 @@ function getScoreColor(rawScore: number): string {
   return 'text-red-700 dark:text-red-400';
 }
 
-const currentRegion = getRegion(country.iso3);
+const selection = selectComparison(country, allCountries);
+const nearbyIso3 = new Set(selection.nearby.map((c) => c.iso3));
+const tableRows = comparisonRows(country, selection);
 
-// Get up to 4 other countries in same region sorted by score desc, plus current country
-const regionCountries = allCountries
-  .filter(c => getRegion(c.iso3) === currentRegion && c.iso3 !== country.iso3)
-  .sort((a, b) => b.score - a.score)
-  .slice(0, 4);
-
-// Build table rows: include current country, sort all by score desc
-const tableRows = [...regionCountries, country].sort((a, b) => b.score - a.score);
-
-const heading = t('country.compare_title' as any).replace('{name}', getLocalizedCountryName(country, lang));
+// Neighbours-only wording, unless nearby fillers are shown. The country phrase is
+// built per locale so the article, preposition or verb agreement is correct.
+const subject = getComparisonSubject(lang, country.iso3, getLocalizedCountryName(country, lang));
+const headingTemplate = selection.nearby.length > 0
+  ? t('country.compare_title_nearby')
+  : t('country.compare_title');
+const heading = headingTemplate.replace('{name}', subject.phrase).replace('{copula}', subject.copula);
 
 // Pillar order matching ScoredCountry.pillars standard order
 const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] as const;
@@ -49,8 +53,8 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
       <table class="w-full text-sm border-collapse">
         <thead>
           <tr class="border-b border-sand-300 dark:border-sand-600">
-            <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium">{t('country.compare_country' as any)}</th>
-            <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium">{t('country.compare_score' as any)}</th>
+            <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium">{t('country.compare_country')}</th>
+            <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium">{t('country.compare_score')}</th>
             {pillarKeys.map((key) => (
               <th class="text-left py-2 pr-3 text-sand-600 dark:text-sand-400 font-medium whitespace-nowrap">{t(`country.pillar.${key}` as any)}</th>
             ))}
@@ -59,6 +63,7 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
         <tbody>
           {tableRows.map((c) => {
             const isCurrentCountry = c.iso3 === country.iso3;
+            const isNearby = nearbyIso3.has(c.iso3);
             const rowClass = isCurrentCountry ? 'bg-terracotta-50 dark:bg-terracotta-900/20' : '';
             const pillarScoreMap = new Map(c.pillars.map(p => [p.name, p.score]));
             return (
@@ -67,6 +72,11 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
                   <a href={`/${lang}/${r.country}/${c.iso3.toLowerCase()}/`} class="hover:text-terracotta-500 dark:hover:text-terracotta-400">
                     {getLocalizedCountryName(c, lang)}
                   </a>
+                  {isNearby && (
+                    <span class="ml-2 align-middle rounded-full border border-sand-300 dark:border-sand-600 px-2 py-0.5 text-xs font-normal text-sand-600 dark:text-sand-400 whitespace-nowrap">
+                      {t('country.compare_nearby')}
+                    </span>
+                  )}
                 </td>
                 <td class:list={['py-2 pr-3 font-bold', getScoreColor(c.score)]}>
                   {c.score.toFixed(1)}

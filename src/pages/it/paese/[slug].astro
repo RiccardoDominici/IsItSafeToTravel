@@ -15,7 +15,6 @@ import TrendChart from '../../../components/country/TrendChart.astro';
 import SourcesList from '../../../components/country/SourcesList.astro';
 import RelatedCountries from '../../../components/country/RelatedCountries.astro';
 import AuthorityLinks from '../../../components/country/AuthorityLinks.astro';
-import NeighborComparison from '../../../components/country/NeighborComparison.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
 import FaqSection from '../../../components/country/FaqSection.astro';
 import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
@@ -126,7 +125,6 @@ const titleLocative = getItalianLocative(country.iso3, getLocalizedCountryName(c
     />
     <NewsletterSignup lang={lang} placement="country" countrySlug={country.iso3.toLowerCase()} />
     <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
-    <NeighborComparison country={country} allCountries={allCountries} lang={lang} />
     <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
     <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
     <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} />

@@ -26,6 +26,8 @@ import {
   getItalianGeneric,
   getPortuguesePhrase,
   getPortugueseWithArticle,
+  getPortugueseDe,
+  getComparisonSubject,
   getGermanNominative,
   getGermanDirectional,
   getGermanFuerPhrase,
@@ -203,6 +205,50 @@ describe('country-grammar golden checks', () => {
       const country = COUNTRIES.find((c) => c.iso3 === iso3)!;
       assert.match(getItalianLocative(iso3, country.name.it), /^a /);
       assert.match(getFrenchPreposition(iso3, country.name.fr), /^à /);
+    }
+  });
+});
+
+// --- 3. Comparison heading subject phrases (country.compare_title*) ---
+
+describe('comparison heading: getComparisonSubject / getPortugueseDe', () => {
+  it('pt "de" contracts with the article: do / da / dos / das', () => {
+    assert.equal(getPortugueseDe('JPN', 'Japão'), 'do Japão');
+    assert.equal(getPortugueseDe('DEU', 'Alemanha'), 'da Alemanha');
+    assert.equal(getPortugueseDe('USA', 'Estados Unidos'), 'dos Estados Unidos');
+    assert.equal(getPortugueseDe('MDV', 'Maldivas'), 'das Maldivas');
+  });
+
+  it('en takes "the" where the name needs it; es and zh stay bare', () => {
+    assert.deepEqual(getComparisonSubject('en', 'USA', 'United States'), { phrase: 'the United States', copula: '' });
+    assert.deepEqual(getComparisonSubject('en', 'ECU', 'Ecuador'), { phrase: 'Ecuador', copula: '' });
+    assert.deepEqual(getComparisonSubject('es', 'USA', 'Estados Unidos'), { phrase: 'Estados Unidos', copula: '' });
+    assert.deepEqual(getComparisonSubject('zh', 'DEU', '德国'), { phrase: '德国', copula: '' });
+  });
+
+  it('it uses the locative and fr the gendered preposition, so the sentence needs no article agreement', () => {
+    assert.deepEqual(getComparisonSubject('it', 'ECU', 'Ecuador'), { phrase: 'in Ecuador', copula: '' });
+    assert.deepEqual(getComparisonSubject('it', 'USA', 'Stati Uniti'), { phrase: 'negli Stati Uniti', copula: '' });
+    assert.deepEqual(getComparisonSubject('fr', 'ECU', 'Équateur'), { phrase: 'en Équateur', copula: '' });
+    assert.deepEqual(getComparisonSubject('fr', 'USA', 'États-Unis'), { phrase: 'aux États-Unis', copula: '' });
+  });
+
+  it('de gives the nominative with its article, and a copula that agrees with plural names', () => {
+    assert.deepEqual(getComparisonSubject('de', 'DEU', 'Deutschland'), { phrase: 'Deutschland', copula: 'ist' });
+    assert.deepEqual(getComparisonSubject('de', 'NLD', 'Niederlande'), { phrase: 'die Niederlande', copula: 'sind' });
+    assert.deepEqual(getComparisonSubject('de', 'TUR', 'Türkei'), { phrase: 'die Türkei', copula: 'ist' });
+  });
+
+  it('covers all 248 countries in every locale: non-empty phrase, copula only in German', () => {
+    for (const country of COUNTRIES) {
+      const { iso2, iso3, name } = country;
+      for (const lang of ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'] as const) {
+        const bare = lang === 'de' ? bareDeName(iso2, iso3) : (name as Record<string, string>)[lang] ?? name.en;
+        const subject = getComparisonSubject(lang, iso3, bare);
+        assert.ok(subject.phrase.length > 0, `${iso3}/${lang}: empty phrase`);
+        if (lang === 'de') assert.ok(['ist', 'sind'].includes(subject.copula), `${iso3}/de: copula "${subject.copula}"`);
+        else assert.equal(subject.copula, '', `${iso3}/${lang}: unexpected copula`);
+      }
     }
   });
 });
