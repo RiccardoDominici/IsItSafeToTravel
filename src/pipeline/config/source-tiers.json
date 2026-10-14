@@ -1,11 +1,11 @@
 {
   "_comment_worldbank": "v9.1 (SHIP-SPEC 1.1a gate): 'worldbank' is INTENTIONALLY absent from this sources map. worldbank.ts now stamps RawIndicator.dataDate from each indicator's own vintage year, which would otherwise start decaying wb_child_mortality/wb_air_pollution/wb_homicide freshness (computeIndicatorFreshness falls back to 1.0 only when the source has no entry here). The frozen v9.1 parity fixture (scripts/fixtures/formula-v91-parity.csv) was generated assuming fw=1.0 for all baseline sources; enabling WB decay would move scores for ~199 countries and break the <0.02 parity gate. dataDate is still persisted for citability/documentation — decay is simply not wired to it for this source. Documented follow-up per SHIP-SPEC 1.1a.",
+  "_comment_inform": "formula v10 (SPEC §1.2, §6): 'inform' is INTENTIONALLY absent, like 'worldbank' above. INFORM rows now carry dataDate = edition year (Jan 1). With an entry here, the 730-day / 365-day-half-life decay would start weighting the 2026 edition down daily (about 0.58 today), which is the time-decay blending the owner ruled out. The edition is the latest one or nothing; the 5-year max age is applied by year in the engine. Re-adding 'inform' turns that decay back on.",
   "maxSignalInfluence": 0.30,
   "maxDailyScoreChange": 0.3,
   "sources": {
     "vdem":      { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
     "gpi":       { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
-    "inform":    { "tier": "baseline", "maxAgeDays": 730, "decayHalfLifeDays": 365 },
 
     "advisories":   { "tier": "signal", "maxAgeDays": 30, "decayHalfLifeDays": 7 },
     "advisories_us":{ "tier": "signal", "maxAgeDays": 30, "decayHalfLifeDays": 7 },
