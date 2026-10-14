@@ -11,7 +11,7 @@ import { computeNews } from './news/engine.js';
 import { filterSortCap, cooldownKey } from './news/cooldown.js';
 import { readNewsIndex, writeNewsDay, writeNewsIndex, rebuildRecent, pruneCooldowns } from './news/snapshot.js';
 import { listSnapshotDates, loadSnapshot } from './scoring/snapshot.js';
-import { runStalenessMonitor } from './staleness.js';
+import { runStalenessMonitor, worldbankIndicatorsUsedBy } from './staleness.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -80,7 +80,12 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // so it must run before the UCDP vintage injection below rewrites them. Writes
   // data/raw/<date>/staleness.json and pushes ntfy only when NTFY_TOPIC is set.
   try {
-    await runStalenessMonitor({ date, rawDataMap, runStartedAt });
+    await runStalenessMonitor({
+      date,
+      rawDataMap,
+      runStartedAt,
+      worldbankIndicators: worldbankIndicatorsUsedBy(weightsConfig),
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     console.warn(`[STALENESS] Monitor failed unexpectedly (non-fatal): ${message}`);

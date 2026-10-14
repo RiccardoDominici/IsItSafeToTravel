@@ -13,7 +13,10 @@ import {
   isNewEditionSince,
   newestYearByIndicator,
   newestYearOf,
+  carriedNotifiedKeys,
+  newViolationKeys,
   runStalenessMonitor,
+  worldbankIndicatorsUsedBy,
   type StalenessObservations,
 } from '../staleness.js';
 import { ntfyTopicFromEnv, pushNtfy } from '../utils/ntfy.js';
@@ -323,5 +326,112 @@ describe('runStalenessMonitor: gating and output', () => {
       process.chdir(previousCwd);
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* Review fixes: no daily push for a persisting violation, and only the World  */
+/* Bank series the engine reads are monitored.                                 */
+/* -------------------------------------------------------------------------- */
+
+describe('ntfy de-duplication across runs', () => {
+  const report = (date: string, obs: Partial<StalenessObservations>) =>
+    buildStalenessReport({
+      date,
+      generatedAt: `${date}T06:05:00.000Z`,
+      observations: currentObservations(obs),
+      informEdition: null,
+      runStartedAt: `${date}T06:00:00.000Z`,
+    });
+
+  it('warns while a violation has not been pushed, then stays quiet while it persists', () => {
+    const day1 = report('2026-10-14', { gpi: 2023 });
+    assert.deepEqual(newViolationKeys(day1, []), ['gpi']);
+    assert.equal(buildNtfyMessages(day1, []).length, 1, 'first sighting pushes');
+
+    const day2 = report('2026-10-15', { gpi: 2023 });
+    day1.notifiedViolationKeys = ['gpi'];
+    const carried = carriedNotifiedKeys(day2, day1);
+    assert.deepEqual(carried, ['gpi']);
+    assert.deepEqual(buildNtfyMessages(day2, carried), [], 'the same violation the next day does not push again');
+  });
+
+  it('warns again when a different source falls behind, listing every current violation', () => {
+    const day2 = report('2026-10-15', { gpi: 2023, ucdp: 2020 });
+    assert.deepEqual(newViolationKeys(day2, ['gpi']), ['ucdp']);
+    const [message] = buildNtfyMessages(day2, ['gpi']);
+    assert.match(message.body, /Global Peace Index/);
+    assert.match(message.body, /UCDP conflict deaths/);
+  });
+
+  it('forgets a violation once it clears, so it is pushed again if it comes back', () => {
+    const resolved = report('2026-10-15', {});
+    const previous = { ...report('2026-10-14', { gpi: 2023 }), notifiedViolationKeys: ['gpi'] };
+    assert.deepEqual(carriedNotifiedKeys(resolved, previous), []);
+    const back = report('2026-10-16', { gpi: 2023 });
+    assert.deepEqual(newViolationKeys(back, carriedNotifiedKeys(resolved, previous)), ['gpi']);
+  });
+
+  it('runStalenessMonitor pushes once, then skips the repeat; an unset topic or a failed push does not count', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'staleness-dedupe-test-'));
+    const previousCwd = process.cwd();
+    process.chdir(dir);
+    try {
+      const rawDataMap = new Map<string, RawSourceData>([
+        ['gpi', { source: 'gpi', fetchedAt: '2026-10-14T06:00:00.000Z', indicators: [{ countryIso3: 'DEU', indicatorName: 'gpi_overall', value: 1.4, year: 2023, source: 'gpi' }] }],
+      ]);
+      const calls: string[] = [];
+      const okFetch = (async (url: string) => {
+        calls.push(String(url));
+        return new Response('', { status: 200 });
+      }) as unknown as typeof fetch;
+      const failingFetch = (async (url: string) => {
+        calls.push(String(url));
+        return new Response('', { status: 500 });
+      }) as unknown as typeof fetch;
+      const env = { NTFY_TOPIC: 'riccardo-claude' };
+      const run = (date: string, opts: { env?: NodeJS.ProcessEnv; fetchImpl: typeof fetch }) =>
+        runStalenessMonitor({ date, rawDataMap, runStartedAt: new Date().toISOString(), ...opts });
+
+      await run('2026-10-13', { env: {}, fetchImpl: okFetch });
+      assert.equal(calls.length, 0, 'no topic: nothing sent');
+      await run('2026-10-14', { env, fetchImpl: failingFetch });
+      assert.equal(calls.length, 1, 'a previous run without a topic does not silence this one');
+      await run('2026-10-15', { env, fetchImpl: okFetch });
+      assert.equal(calls.length, 2, 'the failed push is retried on the next run');
+      await run('2026-10-16', { env, fetchImpl: okFetch });
+      assert.equal(calls.length, 2, 'same violation after a successful push: no push');
+      await run('2026-10-16', { env, fetchImpl: okFetch });
+      assert.equal(calls.length, 2, 'same-day rerun: no push');
+
+      // Only GPI is loaded here, so every other source is a "no data" violation as well.
+      const last = JSON.parse(readFileSync(join(dir, 'data', 'raw', '2026-10-16', 'staleness.json'), 'utf-8'));
+      const failing = last.checks.filter((c: { ok: boolean }) => !c.ok).map((c: { key: string }) => c.key);
+      assert.ok(failing.includes('gpi'));
+      assert.deepEqual(last.notifiedViolationKeys, failing, 'the pushed set is recorded for the next run');
+    } finally {
+      process.chdir(previousCwd);
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('World Bank scope', () => {
+  it('monitors the series the engine reads (scored ones plus wb_population), not unscored ones', () => {
+    const weights = {
+      pillars: [
+        { name: 'crime' as const, weight: 0.25, indicators: ['gpi_safety_security', 'wb_homicide'] },
+        { name: 'health' as const, weight: 0.2, indicators: ['inform_health_access', 'inform_epidemic'] },
+      ],
+    };
+    assert.deepEqual(worldbankIndicatorsUsedBy(weights).sort(), ['wb_homicide', 'wb_population']);
+  });
+
+  it('an unscored series falling behind is not a violation when the engine subset is passed', () => {
+    const obs = currentObservations({ worldbank: { wb_homicide: 2023, wb_population: 2025, wb_air_pollution: 2015 } });
+    const checks = evaluateStaleness(obs, ['wb_homicide', 'wb_population']);
+    assert.equal(checks.some((c) => c.key === 'worldbank:wb_air_pollution'), false);
+    assert.ok(checks.every((c) => c.ok));
+    assert.equal(evaluateStaleness(obs).find((c) => c.key === 'worldbank:wb_air_pollution')?.ok, false, 'default still checks every fetched series');
   });
 });
