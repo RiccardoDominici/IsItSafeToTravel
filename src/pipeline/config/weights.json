@@ -1,18 +1,21 @@
 {
   "version": "10.0.0",
-  "_comment_pillars": "Formula v10 indicator set (SPEC §2): pillar weights unchanged from v9.1; removed gpi_overall, gpi_militarisation, wb_child_mortality, wb_air_pollution, inform_health (= INFORM Human) and inform_climate (= River Flood). The 'environment' key is kept to limit blast radius; its visible label is 'Natural hazards'. Its sub-weights are relative (0.25/0.10/0.10, sum 0.45): the engine renormalises sub-weights over the indicators present, as the v10 prototype did.",
+  "_comment_pillars": "Formula v10 indicator set (SPEC §2): pillar weights unchanged from v9.1; removed wb_child_mortality, wb_air_pollution, inform_health (= INFORM Human) and inform_climate (= River Flood); INFORM governance now reads the Governance column. The 'environment' key is kept to limit blast radius; its visible label is 'Natural hazards'. Its sub-weights are relative (0.25/0.10/0.10, sum 0.45): the engine renormalises sub-weights over the indicators present, as the v10 prototype did.",
+  "_comment_conflict": "The conflict pillar is EXACTLY v9.1's (gpi_overall, gpi_militarisation, advisory consensus A, UCDP deaths). gpi_conflict (the GPI Ongoing Domestic & International Conflict domain) is still fetched and stored but deliberately unscored: the GPI overall score includes militarisation, and replacing overall + militarisation with the conflict domain alone moved North Korea and Pakistan out of the danger band on 2026-10-14, so the conflict pillar was left as in v9.1 (owner/orchestrator decision 2026-10-14).",
   "pillars": [
     {
       "name": "conflict",
       "weight": 0.30,
-      "indicators": ["gpi_conflict", "A", "ucdp_conflict_deaths"],
+      "indicators": ["gpi_overall", "gpi_militarisation", "A", "ucdp_conflict_deaths"],
       "indicatorWeights": {
-        "gpi_conflict": 0.44,
+        "gpi_overall": 0.3275,
+        "gpi_militarisation": 0.1125,
         "A": 0.28,
         "ucdp_conflict_deaths": 0.28
       },
       "indicatorPrecision": {
-        "gpi_conflict": 2.0,
+        "gpi_overall": 2.0,
+        "gpi_militarisation": 1.0,
         "ucdp_conflict_deaths": 2.5
       }
     },
@@ -118,10 +121,11 @@
     "maxAgeYears": 5,
     "_comment_minSources": "v10 SPEC §4: fewer distinct sources than this after the max-age filter => scoreStatus insufficient_data (score null), unless the danger guard holds (src/pipeline/scoring/status.ts). Same floor as MIN_RANKING_SOURCES in src/lib/hub-data.ts, scripts/generate-llms-full.ts and src/pipeline/news/engine.ts.",
     "minSources": 4,
-    "_comment_calibration": "v10 SPEC §3 scale-continuity map, S_data = clamp(alpha + beta * S_raw, 1, 10). FROZEN on 2026-10-14, never refitted: computed by scripts/calibrate-v10.ts on the frozen fixture scripts/fixtures/v10/raw-2026-10-14 against the PUBLISHED v9.1 scores of that date (data/scores/2026-10-14.json = latest.json, copied to scripts/fixtures/v10/v91-scores-2026-10-14.json) over the 192 countries scored by both: v9.1 mean 6.8381 / SD 1.3304, v10 raw mean 6.5417 / SD 1.3450, beta = SD ratio, alpha = mean_v91 - beta * mean_v10raw. The evaluation prototype's alpha 0.235 / beta 0.998 is reproduced by the same script logic when the target is v9.1 RE-RUN with the 5-year max-age filter (mean 6.7625); calibrating against the published scores also absorbs the max-age filter's own -0.08 shift, so the switch day does not move the scale. Band changes vs v9.1 on the 192: 49 uncalibrated, 29 calibrated.",
-    "calibration": {
-      "alpha": 0.367609,
-      "beta": 0.989118
+    "_comment_pillarCalibration": "v10 SPEC §3 per-pillar scale continuity, FROZEN on 2026-10-14 and never refitted. Pillar weights only have meaning relative to pillar scales: swapping the indicators inside a pillar changes its mean and spread and so silently changes its effective weight. Each pillar whose indicator set changed is therefore mapped back onto its v9.1 scale, p' = clamp(alpha + beta * p, 0.001, 1), applied to the final (shrunk) pillar value before the geometric mean and the acute soft-min; beta = SD_v91 / SD_v10, alpha = mean_v91 - beta * mean_v10, over the 192 countries scored by both on the frozen fixture scripts/fixtures/v10/raw-2026-10-14 against the PUBLISHED v9.1 pillar values (scripts/calibrate-v10.ts reproduces them). Not mapped: conflict (identical to v9.1) and crime (same indicators; its -0.033 mean shift comes only from the 5-year max-age rule turning stale homicide rates into missing data, and mapping it away would undo that rule). No global calibration of the final score: an affine map on the score lifted the low end uniformly and moved North Korea and Pakistan out of the danger band. Result on 2026-10-14: 28 band changes vs v9.1; community MAE 0.473 (v9.1 0.466).",
+    "pillarCalibration": {
+      "health": { "alpha": 0.161743, "beta": 0.913643 },
+      "governance": { "alpha": 0.019734, "beta": 0.970809 },
+      "environment": { "alpha": -0.113726, "beta": 1.311236 }
     },
     "_comment_community": "v10 SPEC §5: adjustment = clamp(Z * (P - S_data), -cap, +cap), Z = nEff / (nEff + k), applied only to officially scored countries whose entry in data/sentiment/latest.json is active AND meets minVotes/minOrigins/originCap (re-checked by the engine). Same values as src/pipeline/sentiment/constants.ts on the community branch.",
     "community": {

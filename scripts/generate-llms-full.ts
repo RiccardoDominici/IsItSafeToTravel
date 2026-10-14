@@ -242,7 +242,7 @@ function main() {
   lines.push("## Methodology");
   lines.push("");
   lines.push("IsItSafeToTravel.org calculates composite safety scores using 5 weighted pillars:");
-  lines.push(`- **Conflict** (weight: ${wpct("conflict")}) — Global Peace Index ongoing-conflict domain, the consensus of government travel advisories, and UCDP conflict-death counts (log-normalized)`);
+  lines.push(`- **Conflict** (weight: ${wpct("conflict")}) — Global Peace Index overall score and militarisation domain, the consensus of government travel advisories, and UCDP conflict-death counts (log-normalized)`);
   lines.push(`- **Crime** (weight: ${wpct("crime")}) — Global Peace Index safety & security domain plus the World Bank intentional-homicide rate (population-reliability scaled)`);
   lines.push(`- **Health** (weight: ${wpct("health")}) — INFORM access to health care and epidemic risk`);
   lines.push(`- **Governance** (weight: ${wpct("governance")}) — V-Dem rule of law, public administration and corruption, plus INFORM governance`);

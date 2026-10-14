@@ -53,9 +53,9 @@ const INDICATOR_RANGES: Record<string, { min: number; max: number; inverse: bool
   gpi_overall: { min: 1, max: 4, inverse: true },
   gpi_safety_security: { min: 1, max: 5, inverse: true },
   gpi_militarisation: { min: 1, max: 5, inverse: true },
-  // Formula v10 (SPEC §2): Ongoing Domestic & International Conflict domain, the JSON
-  // `conflict` field, on the full 1-5 GPI domain scale, inverted (the range the v10
-  // calibration prototype used; published values run 1 to about 4.2).
+  // Ongoing Domestic & International Conflict domain (the GPI JSON `conflict` field), on the
+  // full 1-5 domain scale, inverted. Fetched and normalisable but NOT scored in v10: the
+  // conflict pillar kept its v9.1 composition (see weights.json _comment_conflict).
   gpi_conflict: { min: 1, max: 5, inverse: true },
 
   // INFORM Risk Index: 0 to 10 (lower = lower risk = safer)

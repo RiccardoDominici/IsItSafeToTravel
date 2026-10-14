@@ -1,35 +1,46 @@
 /**
- * Formula v10 scale-continuity calibration (SPEC §3).
+ * Formula v10 per-pillar scale continuity (SPEC §3).
  *
- * Changing the indicator set moved the whole score distribution for no real-world
- * reason. v10 therefore maps the raw data score through a frozen affine map,
+ * Pillar weights only mean something relative to pillar scales: swapping the indicators
+ * inside a pillar changes its mean and spread, and so silently changes how much that
+ * pillar moves the score. v10 therefore maps the final (shrunk) value of each pillar
+ * whose indicator set changed back onto its v9.1 scale before aggregation:
  *
- *   S_data = clamp(alpha + beta * S_raw, 1, 10)
- *   beta   = SD_v91 / SD_v10raw,   alpha = mean_v91 - beta * mean_v10raw
+ *   p' = clamp(alpha + beta * p, 0.001, 1)
+ *   beta = SD_v91 / SD_v10,   alpha = mean_v91 - beta * mean_v10
  *
  * computed ONCE on raw date 2026-10-14 over the countries scored by both (v10 status
- * 'scored'; v9.1 scored every country), then frozen in weights.json
- * formulaV9.calibration. It is never refitted: this script only recomputes the values
- * from the frozen fixture and reports whether weights.json still matches them.
+ * 'scored'), against the PUBLISHED v9.1 pillar values of that date, then frozen in
+ * weights.json formulaV9.pillarCalibration. Mapped pillars: health, governance and
+ * environment (their indicators changed). Not mapped: conflict (identical to v9.1) and
+ * crime (same indicators; its shift comes only from the 5-year max-age rule turning stale
+ * homicide rates into missing values, and mapping it away would undo that rule). There
+ * is no global calibration of the final score.
  *
- * Reads scripts/fixtures/v10/ only; writes nothing.
+ * This script only recomputes the constants from the frozen fixture and reports whether
+ * weights.json still matches them. Reads scripts/fixtures/v10/ only; writes nothing.
  *
  * Usage: npx tsx scripts/calibrate-v10.ts
  */
 import { computeAllScores } from '../src/pipeline/scoring/engine.js';
+import type { PillarName } from '../src/pipeline/types.js';
 import {
   FIXTURE_DATE,
   FIXTURE_RAW_DIR,
+  PILLAR_NAMES,
   bandOf,
   loadRawFolder,
   mean,
   readV91Reference,
   readWeights,
   sd,
-  withoutCalibration,
+  withoutPillarCalibration,
 } from './lib/v10-fixture.js';
 
-/** Rounding used for the frozen constants (well below the 0.01 display resolution). */
+/** The pillars whose indicator set changed in v10 (SPEC §2): the only ones mapped. */
+const MAPPED_PILLARS: readonly PillarName[] = ['health', 'governance', 'environment'];
+
+/** Rounding used for the frozen constants. */
 const FROZEN_DECIMALS = 6;
 
 function round(x: number, decimals = FROZEN_DECIMALS): number {
@@ -39,50 +50,61 @@ function round(x: number, decimals = FROZEN_DECIMALS): number {
 
 function main(): void {
   const weights = readWeights();
-  const raw = loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE);
   const reference = readV91Reference();
-
-  // S_raw = the v10 data score with calibration removed and no community input.
-  const v10raw = computeAllScores(raw, withoutCalibration(weights), FIXTURE_DATE, { rawDir: FIXTURE_RAW_DIR, community: null });
-
-  const pairs = v10raw
-    .filter((c) => c.scoreStatus === 'scored' && c.dataScore !== null && c.dataScore !== undefined && reference.countries[c.iso3])
-    .map((c) => ({ iso3: c.iso3, v10raw: c.dataScore as number, v91: reference.countries[c.iso3].score }));
-  const grey = v10raw.filter((c) => c.scoreStatus === 'insufficient_data').length;
-
-  const v91 = pairs.map((p) => p.v91);
-  const v10 = pairs.map((p) => p.v10raw);
-  const beta = sd(v91) / sd(v10);
-  const alpha = mean(v91) - beta * mean(v10);
-  const frozen = { alpha: round(alpha), beta: round(beta) };
-
-  const calibrated = pairs.map((p) => ({ ...p, v10: Math.max(1, Math.min(10, frozen.alpha + frozen.beta * p.v10raw)) }));
-  const bandChangesRaw = pairs.filter((p) => bandOf(p.v10raw) !== bandOf(p.v91)).length;
-  const bandChangesCal = calibrated.filter((p) => bandOf(p.v10) !== bandOf(p.v91)).length;
-  const mae = mean(calibrated.map((p) => Math.abs(p.v10 - p.v91)));
-
-  console.log(`=== Formula v10 calibration on raw date ${FIXTURE_DATE} (weights ${weights.version}) ===`);
-  console.log(`Countries: ${v10raw.length} total, ${pairs.length} scored by both v9.1 and v10, ${grey} insufficient_data in v10`);
-  console.log(`v9.1:     mean ${mean(v91).toFixed(4)}  SD ${sd(v91).toFixed(4)}`);
-  console.log(`v10 raw:  mean ${mean(v10).toFixed(4)}  SD ${sd(v10).toFixed(4)}  min ${Math.min(...v10).toFixed(3)}  max ${Math.max(...v10).toFixed(3)}`);
-  console.log(`beta  = SD_v91 / SD_v10raw            = ${beta.toFixed(10)}`);
-  console.log(`alpha = mean_v91 - beta * mean_v10raw = ${alpha.toFixed(10)}`);
-  console.log(`Frozen (${FROZEN_DECIMALS} decimals): ${JSON.stringify(frozen)}`);
-  console.log(
-    `v10 calibrated: mean ${mean(calibrated.map((p) => p.v10)).toFixed(4)}  SD ${sd(calibrated.map((p) => p.v10)).toFixed(4)}  ` +
-      `MAE vs v9.1 ${mae.toFixed(4)}`,
+  const quiet = console.log;
+  console.log = () => {};
+  const unmapped = computeAllScores(
+    loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE),
+    withoutPillarCalibration(weights),
+    FIXTURE_DATE,
+    { rawDir: FIXTURE_RAW_DIR, community: null },
   );
-  console.log(`Band changes vs v9.1 (scored by both): ${bandChangesRaw} without calibration, ${bandChangesCal} with it`);
+  const mapped = computeAllScores(loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE), weights, FIXTURE_DATE, {
+    rawDir: FIXTURE_RAW_DIR,
+    community: null,
+  });
+  console.log = quiet;
 
-  const inConfig = weights.formulaV9?.calibration;
-  if (!inConfig) {
-    console.log('\nweights.json has no formulaV9.calibration yet. Freeze:');
-    console.log(`  "calibration": { "alpha": ${frozen.alpha}, "beta": ${frozen.beta} }`);
-    process.exitCode = 1;
-  } else if (inConfig.alpha === frozen.alpha && inConfig.beta === frozen.beta) {
-    console.log('\nweights.json formulaV9.calibration matches the recomputed values: OK');
+  const scored = unmapped.filter((c) => c.scoreStatus === 'scored' && reference.countries[c.iso3]);
+  console.log(`=== Formula v10 per-pillar calibration on raw date ${FIXTURE_DATE} (weights ${weights.version}) ===`);
+  console.log(`Countries: ${unmapped.length} total, ${scored.length} scored by both v9.1 and v10, ${unmapped.length - scored.length} insufficient_data`);
+  console.log('pillar        v9.1 mean   SD     | v10 mean   SD     | mapped');
+
+  const recomputed: Partial<Record<PillarName, { alpha: number; beta: number }>> = {};
+  for (const pillar of PILLAR_NAMES) {
+    const v91 = scored.map((c) => reference.countries[c.iso3].pillars[pillar]);
+    const v10 = scored.map((c) => c.pillars.find((p) => p.name === pillar)!.score);
+    const beta = sd(v91) / sd(v10);
+    const alpha = mean(v91) - beta * mean(v10);
+    const isMapped = MAPPED_PILLARS.includes(pillar);
+    if (isMapped) recomputed[pillar] = { alpha: round(alpha), beta: round(beta) };
+    console.log(
+      `${pillar.padEnd(13)} ${mean(v91).toFixed(4)}  ${sd(v91).toFixed(4)} | ${mean(v10).toFixed(4)}  ${sd(v10).toFixed(4)} | ` +
+        (isMapped ? `alpha ${round(alpha)} beta ${round(beta)}` : `no (shift ${(mean(v10) - mean(v91)).toFixed(4)})`),
+    );
+  }
+
+  // Effect on the published score (with whatever is frozen in weights.json).
+  const pairs = mapped
+    .filter((c) => c.scoreStatus === 'scored' && c.score !== null)
+    .map((c) => ({ v10: c.score as number, v91: reference.countries[c.iso3].score }));
+  const bandChanges = pairs.filter((p) => bandOf(p.v10) !== bandOf(p.v91)).length;
+  console.log(
+    `Scores with the frozen maps: mean ${mean(pairs.map((p) => p.v10)).toFixed(4)} (v9.1 ${mean(pairs.map((p) => p.v91)).toFixed(4)}), ` +
+      `${bandChanges} band changes vs v9.1`,
+  );
+
+  const frozen = weights.formulaV9?.pillarCalibration ?? {};
+  const frozenKeys = Object.keys(frozen).sort();
+  const expectedKeys = [...MAPPED_PILLARS].sort();
+  const matches =
+    JSON.stringify(frozenKeys) === JSON.stringify(expectedKeys) &&
+    MAPPED_PILLARS.every((p) => frozen[p]?.alpha === recomputed[p]!.alpha && frozen[p]?.beta === recomputed[p]!.beta);
+  if (matches) {
+    console.log('\nweights.json formulaV9.pillarCalibration matches the recomputed values: OK');
   } else {
-    console.log(`\nMISMATCH: weights.json has ${JSON.stringify(inConfig)}, the fixture gives ${JSON.stringify(frozen)}`);
+    console.log(`\nMISMATCH: weights.json has ${JSON.stringify(frozen)}`);
+    console.log(`Recomputed from the fixture: ${JSON.stringify(recomputed)}`);
     process.exitCode = 1;
   }
 }

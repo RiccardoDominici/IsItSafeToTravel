@@ -140,17 +140,18 @@
  *   7 (formula v10, SPEC .planning/quick/261014-formula-v10/SPEC.md; first scheduled run after the
  *     v10 merge) — the scoring formula itself changes, so every score moves on the switch day for
  *     methodological reasons only:
- *       a) indicator set: gpi_conflict replaces gpi_overall + gpi_militarisation; INFORM is read
- *          from the newest edition with exact columns (Access to health care, Epidemic, Natural,
- *          Governance), dropping Human-as-health and River-Flood-as-climate; child mortality and
- *          PM2.5 leave the formula;
+ *       a) indicator set: INFORM is read from the newest edition with exact columns (Access to
+ *          health care, Epidemic, Natural, Governance), dropping Human-as-health and
+ *          River-Flood-as-climate; child mortality and PM2.5 leave the formula; the conflict
+ *          pillar is unchanged (gpi_conflict is fetched but unscored);
  *       b) 5-year max age: 81 stale values (75 World Bank homicide rates, 6 V-Dem rows for VAT/PSE
  *          dated 1870/1948) count as missing on 2026-10-14;
  *       c) grey rule: 56 places with < 4 sources get score null (scoreStatus insufficient_data)
  *          instead of a prior-driven number, so they leave every score-derived surface;
- *       d) frozen scale calibration (weights.json formulaV9.calibration) and the bounded
- *          community adjustment (at most +/-1.0 point, only for active communities).
- *     Without this bump the switch run would diff v9.1 against v10 and email ~30 band changes and
+ *       d) per-pillar scale continuity for health, governance and environment (weights.json
+ *          formulaV9.pillarCalibration) and the bounded community adjustment (at most +/-1.0
+ *          point, only for active communities).
+ *     Without this bump the switch run would diff v9.1 against v10 and email 28 band changes and
  *     dozens of score jumps that are the formula change, not news. The first production run must
  *     ALSO be dispatched with skip_digest=true (SPEC §6): the digest step reads the news file, and
  *     the bump already empties it, but skipping is the belt to these braces.

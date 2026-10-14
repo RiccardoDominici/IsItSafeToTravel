@@ -24,6 +24,9 @@ import type {
   CalibrationConfig,
 } from '../types.js';
 
+/** Lower bound of a scale-mapped pillar (formula v10 pillarCalibration), above the ln() floor's input range. */
+export const PILLAR_CALIBRATION_MIN = 0.001;
+
 /**
  * Compute safety score for a single country — Formula v9 (Bayesian synthesis).
  *
@@ -45,10 +48,13 @@ import type {
  * Formula v10 (SPEC .planning/quick/261014-formula-v10/SPEC.md) keeps 1-7 and adds, in
  * computeAllScores/computeCountryScore, driven by optional formulaV9 fields:
  * 8. max-age filter (maxAgeYears) before pillars AND source counting (max-age.ts);
- * 9. scoreStatus: < minSources sources => 'insufficient_data' (score null) unless the
+ * 9. per-pillar scale continuity (pillarCalibration): the shrunk value of a pillar whose
+ *    indicators changed is mapped p' = clamp(alpha + beta * p, 0.001, 1) BEFORE step 5,
+ *    so its mean/spread, and therefore its effective weight, stay those of v9.1;
+ * 10. scoreStatus: < minSources sources => 'insufficient_data' (score null) unless the
  *    danger guard holds (status.ts);
- * 10. frozen affine calibration S_data = clamp(alpha + beta * S_raw, 1, 10);
  * 11. bounded community adjustment, score = clamp(S_data + adj, 1, 10) (community.ts).
+ * There is no global calibration of the final score.
  * Without those fields (pre-v10 or synthetic configs) the output equals v9.1 exactly.
  *
  * All formula constants live in weightsConfig.formulaV9 (single source of truth);
@@ -303,12 +309,13 @@ function computeConfidence(nByPillar: Record<PillarName, number>, pillarDefs: Pi
 }
 
 /**
- * Formula v10 (SPEC §3) scale-continuity map: S_data = clamp(alpha + beta * S_raw, 1, 10).
- * Identity when the config carries no calibration (pre-v10 / synthetic configs).
+ * Formula v10 (SPEC §3) per-pillar scale continuity: p' = clamp(alpha + beta * p, 0.001, 1),
+ * applied to the final (shrunk) pillar value before aggregation. Identity without a map
+ * for that pillar (pre-v10 / synthetic configs, or a pillar whose indicators did not change).
  */
-export function calibrateScore(rawScore: number, calibration: CalibrationConfig | undefined): number {
-  if (!calibration) return rawScore;
-  return clamp(calibration.alpha + calibration.beta * rawScore, 1, 10);
+export function calibratePillar(p: number, calibration: CalibrationConfig | undefined): number {
+  if (!calibration) return p;
+  return clamp(calibration.alpha + calibration.beta * p, PILLAR_CALIBRATION_MIN, 1);
 }
 
 /** Per-country diagnostics computeAllScores aggregates into its run summary. */
@@ -319,7 +326,7 @@ export interface CountryScoreDiagnostics {
   guardReasons: string[];
   /** The sentiment entry said 'active' but failed the engine's activation floors. */
   communityRejected: boolean;
-  /** S_raw before calibration (also computed for grey countries, never published). */
+  /** Score from the mapped pillars, before the community adjustment (also computed for grey countries, never published). */
   rawScore: number;
 }
 
@@ -455,12 +462,16 @@ export function computeCountryScoreDetailed(
   }
 
   for (const pillarDef of weightsConfig.pillars) {
-    shrunkByPillar[pillarDef.name] = shrinkPillar(
+    const shrunk = shrinkPillar(
       rawByPillar[pillarDef.name] ?? null,
       nByPillar[pillarDef.name] ?? 0,
       mu,
       f9.K,
     );
+    // Formula v10 (SPEC §3): scale continuity for pillars whose indicator set changed. The
+    // mapped value is THE pillar value from here on: it enters the geometric mean and the
+    // acute soft-min, and it is the published pillar score.
+    shrunkByPillar[pillarDef.name] = calibratePillar(shrunk, f9.pillarCalibration?.[pillarDef.name]);
   }
 
   const shrunkComplete = shrunkByPillar as Record<PillarName, number>;
@@ -481,7 +492,8 @@ export function computeCountryScoreDetailed(
     ucdpDeaths: ucdpRow && Number.isFinite(ucdpRow.value) ? ucdpRow.value : null,
   });
   const scoreStatus = statusDecision.status;
-  const dataScore = scoreStatus === 'scored' ? calibrateScore(rawScore, f9.calibration) : null;
+  // No global calibration in v10: scale continuity is per pillar (applied above).
+  const dataScore = scoreStatus === 'scored' ? rawScore : null;
   const { component: community, rejectedActive } = computeCommunityComponent(communityEntry, dataScore, f9.community);
   const score = dataScore === null ? null : clamp(dataScore + community.adjustment, 1, 10);
   const scoreDisplay = score === null ? null : Math.round(score);
@@ -627,8 +639,9 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
   },
   gpi: {
     url: 'https://www.visionofhumanity.org/maps/',
-    // Formula v10 scores two GPI domains (SPEC §2); the overall index is no longer scored.
-    description: 'Global Peace Index (IEP) -- ongoing conflict and safety & security domains',
+    // Formula v10 scores the overall index and the militarisation and safety & security
+    // domains (SPEC §2); the ongoing-conflict domain is fetched but unscored.
+    description: 'Global Peace Index (IEP) -- overall score, militarisation and safety & security domains',
   },
   inform: {
     url: 'https://drmkc.jrc.ec.europa.eu/inform-index',

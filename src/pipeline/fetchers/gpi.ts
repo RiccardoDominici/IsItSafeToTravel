@@ -76,7 +76,9 @@ function resolveCountryName(rawName: string): string {
 
 /**
  * GPI per-year JSON domain fields -> indicator names. The four domain scores (1-5,
- * higher = less peaceful) are the only GPI JSON values the engine reads. The `ind`
+ * higher = less peaceful) are the only GPI JSON values stored. The engine scores
+ * overall, safety and militarisation; gpi_conflict is stored but unscored in v10 (the
+ * conflict pillar kept its v9.1 composition, weights.json _comment_conflict). The `ind`
  * sub-indicators are deliberately NOT used: their labels disagree between the GPI
  * manifest and the GPI report (formula v10, SPEC §1.7).
  */

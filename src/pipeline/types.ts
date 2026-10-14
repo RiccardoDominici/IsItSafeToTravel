@@ -117,15 +117,18 @@ export interface FormulaV9Config {
    */
   minSources?: number;
   /**
-   * Formula v10 (SPEC §3): frozen affine scale-continuity map applied to the raw data
-   * score, S_data = clamp(alpha + beta * S_raw, 1, 10). Absent = identity.
+   * Formula v10 (SPEC §3): per-pillar scale continuity, frozen on the switch date. For each
+   * listed pillar the final (shrunk) pillar value is mapped p' = clamp(alpha + beta * p,
+   * 0.001, 1) before aggregation, so a pillar whose indicators changed keeps the mean and
+   * spread it had in v9.1 (pillar weights only mean something relative to pillar scales).
+   * Pillars not listed are used as computed. Absent = no mapping (v9.1 behaviour).
    */
-  calibration?: CalibrationConfig;
+  pillarCalibration?: Partial<Record<PillarName, CalibrationConfig>>;
   /** Formula v10 (SPEC §5): bounded community adjustment. Absent = no community component. */
   community?: CommunityConfig;
 }
 
-/** Formula v10 (SPEC §3) frozen calibration constants. */
+/** Formula v10 (SPEC §3) frozen per-pillar map p' = clamp(alpha + beta * p, 0.001, 1). */
 export interface CalibrationConfig {
   alpha: number;
   beta: number;
@@ -229,7 +232,7 @@ export interface ScoredCountry {
   scoreDisplay: number | null;
   /** Formula v10. Absent on snapshots written before v10 (treat as 'scored'). */
   scoreStatus?: ScoreStatus;
-  /** Formula v10: S_data, the calibrated data score before the community adjustment; null when grey. */
+  /** Formula v10: S_data, the data score (from the scale-mapped pillars) before the community adjustment; null when grey. */
   dataScore?: number | null;
   /** Formula v10 community component. Absent on snapshots written before v10. */
   community?: CommunityComponent;

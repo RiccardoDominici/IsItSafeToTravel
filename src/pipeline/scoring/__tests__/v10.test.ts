@@ -16,7 +16,7 @@ import {
   parseCommunitySnapshot,
   type CommunityEntry,
 } from '../community.js';
-import { calibrateScore, computeAllScores } from '../engine.js';
+import { PILLAR_CALIBRATION_MIN, calibratePillar, computeAllScores } from '../engine.js';
 import { normalizeIndicators } from '../normalize.js';
 import type { AdvisoryInfo, CommunityConfig, RawIndicator, RawSourceData, WeightsConfig } from '../../types.js';
 
@@ -221,12 +221,11 @@ describe('v10 computeAllScores: grey countries and the danger guard (synthetic, 
     assert.equal(tuv.community?.adjustment, 0);
   });
 
-  it('a well-covered country is scored, and without calibration/community score = dataScore', () => {
+  it('a well-covered country is scored, and without community input score = dataScore', () => {
     const deu = scoreAll(sources, info).get('DEU')!;
     assert.equal(deu.scoreStatus, 'scored');
     assert.equal(deu.sources.length, 6);
-    const expected = calibrateScore(deu.dataScore!, undefined);
-    assert.equal(deu.score, expected);
+    assert.equal(deu.score, deu.dataScore);
     assert.equal(deu.scoreDisplay, Math.round(deu.score!));
   });
 
@@ -259,26 +258,44 @@ describe('v10 computeAllScores: grey countries and the danger guard (synthetic, 
 /* Calibration                                                                 */
 /* -------------------------------------------------------------------------- */
 
-describe('v10 calibration', () => {
-  it('applies alpha + beta * S_raw and clamps to [1, 10]', () => {
-    assert.equal(calibrateScore(6, { alpha: 0.24, beta: 1 }), 6.24);
-    assert.equal(calibrateScore(9.9, { alpha: 0.5, beta: 1 }), 10);
-    assert.equal(calibrateScore(1.1, { alpha: -0.5, beta: 1 }), 1);
+describe('v10 per-pillar scale continuity', () => {
+  it('maps p to alpha + beta * p and clamps to [0.001, 1]', () => {
+    assert.equal(calibratePillar(0.5, { alpha: 0.1, beta: 0.8 }), 0.5);
+    assert.equal(calibratePillar(0.95, { alpha: 0.2, beta: 1 }), 1);
+    assert.equal(calibratePillar(0.05, { alpha: -0.2, beta: 1 }), PILLAR_CALIBRATION_MIN);
   });
 
-  it('is the identity without a calibration section', () => {
-    assert.equal(calibrateScore(6.123, undefined), 6.123);
+  it('is the identity for a pillar without a map', () => {
+    assert.equal(calibratePillar(0.6123, undefined), 0.6123);
   });
 
-  it('weights.json freezes alpha and beta, and every scored country stays within [1, 10]', () => {
-    const cal = WEIGHTS.formulaV9!.calibration;
-    assert.ok(cal, 'formulaV9.calibration must be frozen in weights.json');
-    assert.ok(Number.isFinite(cal.alpha) && Number.isFinite(cal.beta) && cal.beta > 0);
-    for (const raw of [1, 3.4, 6.5, 8.9, 10]) {
-      const s = calibrateScore(raw, cal);
-      assert.ok(s >= 1 && s <= 10);
+  it('weights.json maps exactly health, governance and environment, never crime or conflict, and has no global calibration', () => {
+    const f9 = WEIGHTS.formulaV9! as typeof WEIGHTS.formulaV9 & { calibration?: unknown };
+    assert.deepEqual(Object.keys(f9.pillarCalibration ?? {}).sort(), ['environment', 'governance', 'health']);
+    for (const cal of Object.values(f9.pillarCalibration!)) {
+      assert.ok(Number.isFinite(cal!.alpha) && Number.isFinite(cal!.beta) && cal!.beta > 0);
     }
+    assert.equal(f9.calibration, undefined, 'the global affine calibration is gone');
   });
+
+  it('the engine maps the shrunk pillar BEFORE aggregation: the mapped value is published and drives the score', () => {
+    const sources = bySource(wellCovered('DEU'));
+    const info = { DEU: { us: advisory(1, 'US') } };
+    const base = scoreAll(sources, info, { weights: { ...WEIGHTS, formulaV9: { ...WEIGHTS.formulaV9!, pillarCalibration: {} } } }).get('DEU')!;
+    // A degenerate map (beta 0) pins health at 0.2: the published pillar and the score must both follow it.
+    const pinned = scoreAll(sources, info, {
+      weights: { ...WEIGHTS, formulaV9: { ...WEIGHTS.formulaV9!, pillarCalibration: { health: { alpha: 0.2, beta: 0 } } } },
+    }).get('DEU')!;
+    const pillar = (c: typeof base, name: string) => c.pillars.find((p) => p.name === name)!.score;
+    assert.equal(pillar(pinned, 'health'), 0.2);
+    assert.ok(pillar(base, 'health') > 0.2);
+    for (const other of ['conflict', 'crime', 'governance', 'environment']) {
+      assert.equal(pillar(pinned, other), pillar(base, other), `${other} is untouched`);
+    }
+    assert.ok(pinned.score! < base.score!, 'a lower mapped health pillar lowers the score');
+    assert.equal(pinned.confidence, base.confidence, 'confidence (evidence) does not depend on the scale map');
+  });
+
 });
 
 /* -------------------------------------------------------------------------- */

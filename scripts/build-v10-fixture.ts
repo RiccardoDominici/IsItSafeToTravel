@@ -8,7 +8,7 @@
  *       2026 edition, data/raw/inform/<edition.json file>;
  *     - gpi-parsed.json: re-parsed by the v10 GPI parser (gpiEntriesToIndicators, now with
  *       gpi_conflict) from the GPI 2026 domain scores in scripts/fixtures/v10/inputs/.
- *   scripts/fixtures/v10/v91-scores-2026-10-14.json   the v9.1 scores published that day.
+ *   scripts/fixtures/v10/v91-scores-2026-10-14.json   the v9.1 scores and pillar values published that day.
  *   scripts/fixtures/v10/raw-2026-10-14/MANIFEST.json provenance (inputs, checksums, counts).
  *
  * Re-running reproduces the same files. The script only READS data/raw and data/scores and
@@ -95,14 +95,23 @@ function main(): void {
     indicators: gpi,
   } satisfies RawSourceData);
 
-  // 4. The v9.1 reference scores of the same day (the calibration target, SPEC §3).
+  // 4. The v9.1 reference of the same day: scores, and the pillar values that are the
+  //    per-pillar calibration target (SPEC §3).
   const snapshot = JSON.parse(readFileSync(V91_SNAPSHOT, 'utf-8')) as DailySnapshot;
   if (!snapshot.weightsVersion.startsWith('9.1')) fail(`${V91_SNAPSHOT} is not a v9.1 snapshot (${snapshot.weightsVersion})`);
   const reference: V91Reference = {
     date: snapshot.date,
     weightsVersion: snapshot.weightsVersion,
     countries: Object.fromEntries(
-      snapshot.countries.map((c) => [c.iso3, { score: c.score as number, scoreDisplay: c.scoreDisplay as number, sources: c.sources.length }]),
+      snapshot.countries.map((c) => [
+        c.iso3,
+        {
+          score: c.score as number,
+          scoreDisplay: c.scoreDisplay as number,
+          sources: c.sources.length,
+          pillars: Object.fromEntries(c.pillars.map((p) => [p.name, p.score])) as V91Reference['countries'][string]['pillars'],
+        },
+      ]),
     ),
   };
   writeJsonPretty(V91_REFERENCE_PATH, reference);

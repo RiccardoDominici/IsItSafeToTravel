@@ -12,22 +12,26 @@
 import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { loadUcdpByYear, selectUcdpIndicatorsForYear } from '../../src/pipeline/backfill.js';
-import type { RawSourceData, WeightsConfig } from '../../src/pipeline/types.js';
+import type { PillarName, RawSourceData, WeightsConfig } from '../../src/pipeline/types.js';
 
 export const FIXTURE_DATE = '2026-10-14';
 export const FIXTURE_ROOT = join(process.cwd(), 'scripts', 'fixtures', 'v10');
 export const FIXTURE_RAW_DIR = join(FIXTURE_ROOT, `raw-${FIXTURE_DATE}`);
 export const FIXTURE_INPUTS_DIR = join(FIXTURE_ROOT, 'inputs');
-/** v9.1 published scores of the fixture date (copied from data/scores/2026-10-14.json). */
+/** v9.1 published scores and pillar values of the fixture date (copied from data/scores/2026-10-14.json). */
 export const V91_REFERENCE_PATH = join(FIXTURE_ROOT, `v91-scores-${FIXTURE_DATE}.json`);
 export const PARITY_CSV_PATH = join(process.cwd(), 'scripts', 'fixtures', 'formula-v10-parity.csv');
 export const WEIGHTS_PATH = join(process.cwd(), 'src', 'pipeline', 'config', 'weights.json');
+
+export const PILLAR_NAMES: readonly PillarName[] = ['conflict', 'crime', 'health', 'governance', 'environment'];
 
 export interface V91ReferenceRow {
   score: number;
   scoreDisplay: number;
   /** Number of ScoredCountry.sources entries (the v9.1 hasSufficientData input). */
   sources: number;
+  /** Published (shrunk) pillar values, the per-pillar calibration target (SPEC §3). */
+  pillars: Record<PillarName, number>;
 }
 
 export interface V91Reference {
@@ -59,10 +63,10 @@ export function readWeights(path: string = WEIGHTS_PATH): WeightsConfig {
   return JSON.parse(readFileSync(path, 'utf-8')) as WeightsConfig;
 }
 
-/** The weights with the frozen calibration removed: the engine then returns S_raw as dataScore. */
-export function withoutCalibration(weights: WeightsConfig): WeightsConfig {
+/** The weights with the frozen per-pillar maps removed: the engine then reports unmapped pillar values. */
+export function withoutPillarCalibration(weights: WeightsConfig): WeightsConfig {
   const f9 = { ...weights.formulaV9! };
-  delete f9.calibration;
+  delete f9.pillarCalibration;
   return { ...weights, formulaV9: f9 };
 }
 

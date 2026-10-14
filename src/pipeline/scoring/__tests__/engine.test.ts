@@ -518,23 +518,26 @@ describe('Formula v10: weights.json structure', () => {
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
   });
 
-  it('conflict pillar is [gpi_conflict, A, ucdp_conflict_deaths] — gpi_overall/gpi_militarisation removed in v10', () => {
+  it('conflict pillar is exactly v9.1 [gpi_overall, gpi_militarisation, A, ucdp_conflict_deaths]; gpi_conflict stays unscored', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict, 'conflict pillar must exist');
     const advisoryCount = conflict.indicators.filter((n) => n.startsWith('advisory_level_')).length;
     assert.equal(advisoryCount, 0, 'conflict.indicators must not contain any advisory_level_* entries');
-    assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_conflict', 'ucdp_conflict_deaths']);
+    assert.deepEqual([...conflict.indicators].sort(), ['A', 'gpi_militarisation', 'gpi_overall', 'ucdp_conflict_deaths']);
+    assert.equal(weightsJson.pillars.some((p) => p.indicators.includes('gpi_conflict')), false, 'gpi_conflict is fetched but unscored');
   });
 
-  it('conflict pillar subweights (gpi_conflict .44 / A .28 / ucdp .28) sum to 1.0, precisions 2.0 / 2.5', () => {
+  it('conflict pillar subweights (gpi_overall .3275 / gpi_militarisation .1125 / A .28 / ucdp .28) sum to 1.0', () => {
     const conflict = weightsJson.pillars.find((p) => p.name === 'conflict')!;
     assert.ok(conflict.indicatorWeights);
-    assert.equal(conflict.indicatorWeights!.gpi_conflict, 0.44);
+    assert.equal(conflict.indicatorWeights!.gpi_overall, 0.3275);
+    assert.equal(conflict.indicatorWeights!.gpi_militarisation, 0.1125);
     assert.equal(conflict.indicatorWeights!.A, 0.28);
     assert.equal(conflict.indicatorWeights!.ucdp_conflict_deaths, 0.28);
     const sum = Object.values(conflict.indicatorWeights!).reduce((a, b) => a + b, 0);
     assert.ok(Math.abs(sum - 1.0) < 1e-9);
-    assert.equal(conflict.indicatorPrecision!.gpi_conflict, 2.0);
+    assert.equal(conflict.indicatorPrecision!.gpi_overall, 2.0);
+    assert.equal(conflict.indicatorPrecision!.gpi_militarisation, 1.0);
     assert.equal(conflict.indicatorPrecision!.ucdp_conflict_deaths, 2.5);
   });
 
@@ -560,7 +563,7 @@ describe('Formula v10: weights.json structure', () => {
 
   it('no pillar scores an indicator the owner removed in v10', () => {
     const all = new Set(weightsJson.pillars.flatMap((p) => p.indicators));
-    for (const removed of ['gpi_overall', 'gpi_militarisation', 'wb_child_mortality', 'wb_air_pollution', 'inform_health', 'inform_climate']) {
+    for (const removed of ['wb_child_mortality', 'wb_air_pollution', 'inform_health', 'inform_climate']) {
       assert.equal(all.has(removed), false, `${removed} must not be scored in v10`);
     }
   });
@@ -613,10 +616,11 @@ describe('Formula v10: weights.json structure', () => {
     assert.equal(f9!.regionOffset.middle_east, -0.05);
   });
 
-  it('carries the v10 additions: maxAgeYears 5, minSources 4, community k30/cap1/30 votes/3 origins/0.5', () => {
+  it('carries the v10 additions: maxAgeYears 5, minSources 4, per-pillar maps, community k30/cap1/30 votes/3 origins/0.5', () => {
     const f9 = weightsJson.formulaV9!;
     assert.equal(f9.maxAgeYears, 5);
     assert.equal(f9.minSources, 4);
+    assert.deepEqual(Object.keys(f9.pillarCalibration ?? {}).sort(), ['environment', 'governance', 'health']);
     assert.deepEqual(f9.community, { k: 30, cap: 1.0, minVotes: 30, minOrigins: 3, originCap: 0.5 });
   });
 });
