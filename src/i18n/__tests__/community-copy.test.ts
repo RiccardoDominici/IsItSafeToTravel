@@ -168,6 +168,15 @@ describe('typography and case', () => {
   });
 });
 
+describe('SEO gate compatibility', () => {
+  it('zh never puts a number right before 个来源 (validate-seo reads that as a data-source count)', () => {
+    for (const [key, value] of stringFields(communityCopy.zh)) {
+      const filled = fillCommunityTemplate(value, ALL_TOKENS);
+      assert.ok(!/\d\s*个来源/.test(filled), `zh.${key}: "${filled}"`);
+    }
+  });
+});
+
 describe('number formatting', () => {
   it('prose decimals follow the locale separator', () => {
     assert.equal(formatProseDecimal('en', 1), '1.0');

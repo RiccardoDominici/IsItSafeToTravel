@@ -224,7 +224,8 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     adjustmentLabel: '社区调整',
     finalScoreLabel: '安全评分',
     insufficient:
-      '投票还不够（{votes}/{minVotes} 票，{origins}/{minOrigins} 个来源国家或地区）——投出您的一票，让社区的声音被计入。',
+      // Never "N 个来源" here: scripts/validate-seo.ts reads "<number> 个来源" as a data-source count.
+      '投票还不够（{votes}/{minVotes} 票，来自 {origins}/{minOrigins} 个国家或地区）——投出您的一票，让社区的声音被计入。',
     rulesScored:
       '当一个国家获得来自至少 {minOrigins} 个国家或地区的 {minVotes} 票后，旅行者的投票最多可使其安全评分上下浮动 {cap} 分；任何单一来源国家或地区的权重都不超过一半。',
     rulesGrey: '这里还没有官方安全评分，因此社区评分单独显示，绝不会取而代之。',
