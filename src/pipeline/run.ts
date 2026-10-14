@@ -107,6 +107,9 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // Stage 6 below rewrites that file AFTER scoring, so this run applies the community
   // snapshot of the previous run (one-day lag). A missing or pre-v10 file means no
   // adjustment for anyone.
+  // MERGE NOTE (feat/community-v10, SPEC §6 "Run order"): move Stage 6 above this stage once
+  // its aggregator no longer needs the day's official scores; otherwise the first community
+  // adjustments land the day after the v10 switch as score-jump news.
   const community = loadCommunitySnapshot();
   const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date, { community });
   console.log(`Scored ${scoredCountries.length} countries`);

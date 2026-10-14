@@ -24,6 +24,10 @@ Verified defects in v9.1:
 
 1. **Latest edition only.** If B is a newer edition of A, A weighs 0. No time-decay blending.
 2. **Max age 5 years.** A non-advisory indicator whose data year < (run year − 5) is missing.
+   Attribution (corrected 2026-10-14): this is the orchestrator's rule, accepted by the owner; the
+   owner's own rule is decision 1, "a superseded edition weighs 0". Implementation: applied
+   before pillars and before source counting; `wb_population` is exempt (never scored, it only
+   damps homicide precision, and dropping it would raise that precision).
 3. **Traveller relevance.** Every scored indicator must be defensible for a traveller's safety
    and must carry its real data year.
 4. **Grey.** No official score without enough data (rule §4). Community part grey until enough
@@ -40,11 +44,12 @@ Verified defects in v9.1:
 
 Pillar weights unchanged. All other v9.1 mechanics unchanged (per-pillar precision-weighted
 shrinkage K=1, weighted geometric mean, acute soft-min λ=0.25 on conflict+crime, count-damped
-severe-advisory modifier, γ=0.96), then the calibration of §3.
+severe-advisory modifier, γ=0.96), with the per-pillar scale continuity of §3 applied to the
+shrunk pillar values before aggregation.
 
 | Pillar (key) | Weight | Indicators (sub-weight, precision) | Removed vs v9.1 |
 |---|---|---|---|
-| conflict | 0.30 | `gpi_conflict` = GPI Ongoing Domestic & International Conflict domain, JSON field `conflict`, 1–5 inverted (0.44, 2.0); advisory consensus `A` (0.28); `ucdp_conflict_deaths` (0.28, 2.5) | `gpi_overall`, `gpi_militarisation` |
+| conflict | 0.30 | **Unchanged from v9.1:** `gpi_overall` (0.3275, 2.0); `gpi_militarisation` (0.1125, 1.0); advisory consensus `A` (0.28); `ucdp_conflict_deaths` (0.28, 2.5). `gpi_conflict` (GPI Ongoing Domestic & International Conflict domain, JSON field `conflict`, 1–5) is fetched and stored but **unscored** | — |
 | crime | 0.25 | `gpi_safety_security` (0.67, 2.5); `wb_homicide` (0.33, pop-damped as v9.1) | — |
 | health | 0.20 | `inform_health_access` = INFORM "Access to health care", 0–10 inverted (0.55, 1.0); `inform_epidemic` (0.45, 1.0) | `wb_child_mortality`, `inform_health` (= Human) |
 | governance | 0.15 | `vdem_rule_of_law`, `vdem_gov_effectiveness`, `vdem_corruption_control`, `inform_governance` read from the **Governance** column (0.25 each, 1.0) | Institutional column |
@@ -52,17 +57,48 @@ severe-advisory modifier, γ=0.96), then the calibration of §3.
 
 The pillar key stays `environment` to limit blast radius; only its visible label changes.
 
-## 3. Scale-continuity calibration
+Conflict (revised 2026-10-14 after the face-validity review): the first v10 cut replaced
+`gpi_overall` + `gpi_militarisation` with `gpi_conflict` (0.44, 2.0). That was the
+orchestrator's judgment, not part of the external critique. The GPI overall score includes
+militarisation, and dropping both moved North Korea and Pakistan out of the danger band and
+Israel up to "moderate", so the conflict pillar stays exactly as in v9.1.
 
-Changing indicators shifted the whole distribution down (mean 6.763 → 6.542 on 2026-10-14) for
-no real-world reason, which would move ~30 countries' bands. v10 applies a frozen affine map to
-the data score so its mean and SD match v9.1 on the switch date:
+## 3. Scale continuity (per pillar)
 
-`S_data = clamp(α + β · S_raw, 1, 10)`, with β = SD_v91 / SD_v10raw and α = mean_v91 − β ·
-mean_v10raw, computed ONCE on raw date 2026-10-14 over countries scored by both, then frozen in
-`weights.json` with a comment. Not refitted later. (Prototype: α ≈ 0.24, β ≈ 1.00.)
-Evidence: with calibration the v10 prototype's distance from community votes is within noise of
-v9.1 (weighted MAE 0.477 vs 0.463; ≥5-vote countries 0.374 vs 0.353).
+Pillar weights only have meaning relative to pillar scales: swapping the indicators inside a
+pillar changes its mean and spread and so silently changes its effective weight. Each pillar
+whose indicator set changed (health, governance, environment) is mapped back onto its v9.1
+scale; the map applies to the final pillar value after shrinkage, before aggregation:
+
+`p′ = clamp(α_p + β_p · p, 0.001, 1)`, with β_p = SD_v91,p / SD_v10,p and α_p = mean_v91,p −
+β_p · mean_v10,p, computed ONCE on raw date 2026-10-14 (frozen fixture
+`scripts/fixtures/v10/raw-2026-10-14/`) over the 192 countries scored by both, against the
+PUBLISHED v9.1 pillar values; frozen in `weights.json` `formulaV9.pillarCalibration`, reproduced
+by `scripts/calibrate-v10.ts`, never refitted. Aggregation is then exactly v9.1's (geometric
+mean, acute soft-min, severe modifier, γ). There is no global calibration of the score.
+
+| Pillar | v9.1 mean / SD | v10 mean / SD | α | β |
+|---|---|---|---|---|
+| health | 0.6652 / 0.1421 | 0.5510 / 0.1555 | 0.161743 | 0.913643 |
+| governance | 0.5173 / 0.1921 | 0.5125 / 0.1979 | 0.019734 | 0.970809 |
+| environment | 0.6283 / 0.1092 | 0.5659 / 0.0833 | −0.113726 | 1.311236 |
+
+Not mapped: conflict (identical to v9.1) and crime (same indicators; its mean shift 0.679 →
+0.646 is the 5-year max-age rule turning 75 stale homicide rates into missing values, and
+mapping it away would undo that rule).
+
+Superseded (first v10 cut): a global affine map on the score, `S_data = clamp(α + β · S_raw,
+1, 10)` (α 0.367609, β 0.989118 against the published v9.1). It lifted the whole low end by about
++0.3 and carried North Korea and Pakistan over 5.0 although their pillar values had not moved.
+
+Evidence on 2026-10-14 (reference: published v9.1; bands on the one-decimal display value):
+- 28 band changes (first cut with the global map: 29; per-pillar maps with crime mapped: 31).
+- Danger band (< 5) 25 → 24: North Korea 4.89 and Nigeria 4.92 stay; Pakistan 5.12 leaves
+  (only 2 of 24 governments put it at level 4: 11 at level 3, 11 at level 2); nobody enters.
+- Community (2026-10-14 votes, evaluation definitions): weighted MAE to the implied community
+  score 0.473 (v9.1 0.466); direction agreement 59.0% (60.5%); MAE on the 8 countries with ≥ 5
+  votes 0.408 (0.353).
+- Grey set (56) and danger guard (no hits) unchanged.
 
 ## 4. Official grey rule (`scoreStatus`)
 
@@ -121,6 +157,13 @@ enabled (owner action in the Cloudflare dashboard; code is already env-gated).
 - **Release:** bump `DATA_REVISION` so the switch day emits no movement news; first production
   run with `skip_digest=true`. Past history snapshots stay v9.1; the trend chart marks the v10
   date. New parity fixture + `scripts/verify-formula-v10-parity.ts` on raw date 2026-10-14.
+- **Run order (merge with `feat/community-v10`):** the sentiment stage must run BEFORE scoring
+  in `run.ts`, so the engine reads the same day's community snapshot. Not done on
+  `feat/formula-v10`: its v9.1 aggregator still needs the day's official scores, and the
+  community branch rewrites that stage (its aggregator anchors votes to the stored or historical
+  published score, so it can run first). Without the reorder the community adjustment lags a
+  day, and the first adjustments land the day after the switch, outside the `DATA_REVISION`
+  suppression, as score-jump news.
 
 ## 7. Site
 
