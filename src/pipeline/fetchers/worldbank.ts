@@ -35,6 +35,9 @@ const INDICATORS: Array<{ wbCode: string; name: string; description: string }> =
   { wbCode: 'SP.POP.TOTL', name: 'wb_population', description: 'Total Population (internal engine input, not scored)' },
 ];
 
+/** Indicator names this fetcher writes. The staleness monitor checks each one (src/pipeline/staleness.ts). */
+export const WB_INDICATOR_NAMES: readonly string[] = INDICATORS.map((ind) => ind.name);
+
 async function fetchIndicator(
   wbCode: string,
   indicatorName: string,

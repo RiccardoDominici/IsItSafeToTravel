@@ -11,6 +11,7 @@ import { computeNews } from './news/engine.js';
 import { filterSortCap, cooldownKey } from './news/cooldown.js';
 import { readNewsIndex, writeNewsDay, writeNewsIndex, rebuildRecent, pruneCooldowns } from './news/snapshot.js';
 import { listSnapshotDates, loadSnapshot } from './scoring/snapshot.js';
+import { runStalenessMonitor } from './staleness.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
@@ -33,6 +34,9 @@ export interface PipelineResult {
  */
 export async function runPipeline(dateOverride?: string): Promise<PipelineResult> {
   const date = dateOverride || new Date().toISOString().slice(0, 10);
+  // Captured before any fetch: the staleness monitor reads "a new INFORM edition was
+  // stored during this run" from this instant.
+  const runStartedAt = new Date().toISOString();
   console.log(`=== Pipeline run for ${date} ===`);
 
   // Load weights config
@@ -70,6 +74,16 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   if (rawDataMap.size === 0) {
     console.error('ERROR: No raw data available — all fetchers failed and no cached data found');
     return { success: false, countriesScored: 0, sourcesSucceeded: 0, sourcesTotal };
+  }
+
+  // Staleness monitor (formula v10, SPEC §6), non-fatal: it reads the years as published,
+  // so it must run before the UCDP vintage injection below rewrites them. Writes
+  // data/raw/<date>/staleness.json and pushes ntfy only when NTFY_TOPIC is set.
+  try {
+    await runStalenessMonitor({ date, rawDataMap, runStartedAt });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[STALENESS] Monitor failed unexpectedly (non-fatal): ${message}`);
   }
 
   // v9.1 (SHIP-SPEC 1.3): today's ucdp-parsed.json holds ALL years 1989-latest
