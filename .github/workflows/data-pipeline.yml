@@ -51,6 +51,9 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_D1_TOKEN: ${{ secrets.CLOUDFLARE_D1_TOKEN }}
+          # Staleness monitor (src/pipeline/staleness.ts) pushes to ntfy only when this is set.
+          # Local runs and tests leave it unset, so they never send a notification.
+          NTFY_TOPIC: riccardo-claude
         continue-on-error: true
         id: pipeline
 
@@ -83,6 +86,23 @@ jobs:
               done
             else
               echo "All sources fetched successfully." >> "$GITHUB_STEP_SUMMARY"
+            fi
+
+            # Staleness monitor (src/pipeline/staleness.ts): one warning per source that is
+            # behind its cycle, and a note when a new INFORM edition was stored this run.
+            STALE=$(grep '^\[STALENESS\] VIOLATION' pipeline-output.log || true)
+            if [ -n "$STALE" ]; then
+              echo "### Data staleness" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "$STALE" >> "$GITHUB_STEP_SUMMARY"
+              echo '```' >> "$GITHUB_STEP_SUMMARY"
+              echo "$STALE" | while IFS= read -r line; do
+                echo "::warning::${line#\[STALENESS\] }"
+              done
+            fi
+            NEW_EDITION=$(grep '^\[STALENESS\] NEW INFORM edition' pipeline-output.log || true)
+            if [ -n "$NEW_EDITION" ]; then
+              echo "**${NEW_EDITION#\[STALENESS\] }**" >> "$GITHUB_STEP_SUMMARY"
             fi
 
             # Report successful sources
