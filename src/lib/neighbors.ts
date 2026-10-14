@@ -7,6 +7,10 @@ import type { ScoredCountry } from '../pipeline/types';
  */
 export const borderMap: Record<string, string[]> = {
   // Europe
+  // Åland belongs to Finland and lies across the Sea of Åland from Sweden. Its
+  // centroid-based distance to Finland is larger than to Estonia and Norway, so
+  // without these entries the nearby list would name Norway instead of Finland.
+  ALA: ['FIN', 'SWE'],
   ALB: ['MNE', 'XKX', 'MKD', 'GRC'],
   AND: ['FRA', 'ESP'],
   AUT: ['DEU', 'CZE', 'SVK', 'HUN', 'SVN', 'ITA', 'CHE', 'LIE'],

@@ -3,32 +3,41 @@
  * "related countries" block (components/country/ComparisonTable.astro and
  * RelatedCountries.astro).
  *
- * Pure: no I/O, no logging, no module state beyond the static neighbour and
- * region tables. Every ordering ends in an iso3 tie-break, so the same
- * countries always produce the same lists, whatever order the caller passes
- * them in.
+ * Pure: no I/O, no logging. Coordinates are passed in (src/data/country-coords.json,
+ * built by scripts/generate-country-coords.ts). Every ordering ends in an iso3
+ * tie-break, so the same countries always produce the same lists, whatever order
+ * the caller passes them in.
  *
- * Rules:
- *  - Comparison: real neighbours (borderMap via getNeighbors) that pass
- *    hasSufficientData, by score, max 6. When fewer than
- *    MIN_NEIGHBOURS_BEFORE_FILL remain, top up to COMPARISON_SIZE with
- *    same-region countries closest in total score that also pass
- *    hasSufficientData. Fillers are "nearby", never presented as neighbours.
- *  - Related: same-region countries closest in total score, then countries
- *    with the most similar risk profile (smallest Euclidean distance over the
- *    five pillar scores). Both exclude self, data-poor countries, anything the
- *    comparison already shows, and each other.
- *  - Data coverage filters the CANDIDATES, never the page: a country with thin
- *    data still gets both sections.
+ * Comparison rows:
+ *  - Neighbours: real borders (borderMap via getNeighbors) that pass
+ *    hasSufficientData, by score, max 6.
+ *  - Nearby: only when fewer than MIN_NEIGHBOURS_BEFORE_FILL neighbours remain.
+ *    Filled up to COMPARISON_SIZE other countries with the NEAREST countries by
+ *    great-circle distance. Candidates must pass hasSufficientData, lie within
+ *    NEARBY_MAX_KM of the subject, and not be the subject or one of its real
+ *    borders. Nearby means geographically close: not "same region", not "similar
+ *    score".
+ *  - A subject or candidate without coordinates gets no nearby countries. No
+ *    coordinates are invented.
+ *  - When nothing qualifies, the table keeps only the real neighbours. A country
+ *    with neither real neighbours nor nearby countries is not rendered.
  *
- * WHY: the comparison used to list the top-4 scores of the whole continental
- * bucket (Canada, Barbados, Uruguay and Chile for Ecuador), and the related
- * block listed the closest total scores worldwide, including 0-source
- * territories whose 5.9 is only the prior (Antarctica, Aland, Guernsey). A
- * reader called both meaningless.
+ * Related block:
+ *  - Same region: closest total score first (data-sufficient, excluding the rows above).
+ *  - Similar risk profile: smallest Euclidean distance over the five pillar scores,
+ *    excluding the same-region list. Hidden entirely when the subject fails
+ *    hasSufficientData: its pillars are then prior-driven, so the list would compare
+ *    priors with real profiles.
+ *
+ * Data coverage filters the CANDIDATES, never the page: a country with thin data
+ * still gets a comparison table.
+ *
+ * WHY: fillers used to be the countries closest in score within the same region,
+ * so Ecuador got Nicaragua and Mexico and Aland got Serbia and Georgia. Those are
+ * not nearby, and a reader called them wrong. Distance decides now.
  */
 import type { ScoredCountry } from '../pipeline/types';
-import { getNeighbors } from './neighbors';
+import { borderMap, getNeighbors } from './neighbors';
 import { getRegion } from './regions';
 import { hasSufficientData } from './hub-data';
 
@@ -38,12 +47,19 @@ export const MIN_NEIGHBOURS_BEFORE_FILL = 3;
 export const COMPARISON_SIZE = 4;
 /** Entries per list in the related-countries block. */
 export const RELATED_LIST_SIZE = 3;
+/** A nearby country must lie within this great-circle distance of the subject (km). */
+export const NEARBY_MAX_KM = 2000;
+
+const EARTH_RADIUS_KM = 6371;
+
+/** ISO3 -> [lat, lon] (src/data/country-coords.json). A missing or malformed entry means "no coordinates". */
+export type CoordMap = Readonly<Record<string, readonly number[] | undefined>>;
 
 /** What the comparison table shows for a country, besides the country itself. */
 export interface ComparisonSelection {
   /** Real neighbours that pass hasSufficientData, score descending, max 6. */
   neighbours: ScoredCountry[];
-  /** Same-region fillers. Empty unless neighbours.length < MIN_NEIGHBOURS_BEFORE_FILL. */
+  /** Nearest countries by distance. Empty unless neighbours.length < MIN_NEIGHBOURS_BEFORE_FILL. */
   nearby: ScoredCountry[];
 }
 
@@ -51,7 +67,7 @@ export interface ComparisonSelection {
 export interface RelatedSelection {
   /** Same region, closest total score first. */
   sameRegion: ScoredCountry[];
-  /** Most similar risk profile first. Never repeats a sameRegion entry. */
+  /** Most similar risk profile first. Empty when the subject fails the data floor. Never repeats a sameRegion entry. */
   similarProfile: ScoredCountry[];
 }
 
@@ -60,9 +76,35 @@ function byIso3(a: ScoredCountry, b: ScoredCountry): number {
   return a.iso3 < b.iso3 ? -1 : a.iso3 > b.iso3 ? 1 : 0;
 }
 
-/** Absolute total-score gap: the closeness measure for same-region and nearby lists. */
+/** Absolute total-score gap: the closeness measure for the same-region list. */
 function scoreGap(candidate: ScoredCountry, subject: ScoredCountry): number {
   return Math.abs(candidate.score - subject.score);
+}
+
+/**
+ * Great-circle distance in km between two [lat, lon] points (haversine formula,
+ * spherical Earth). Longitudes may cross the antimeridian.
+ */
+export function haversineKm(a: readonly [number, number], b: readonly [number, number]): number {
+  const toRad = (deg: number): number => (deg * Math.PI) / 180;
+  const dLat = toRad(b[0] - a[0]);
+  const dLon = toRad(b[1] - a[1]);
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLon / 2) ** 2;
+  return 2 * EARTH_RADIUS_KM * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+
+/**
+ * The [lat, lon] for an ISO3 code, or null when there is none or it is malformed
+ * (not two finite numbers, or outside the valid ranges).
+ */
+export function coordsOf(iso3: string, coords: CoordMap): [number, number] | null {
+  if (!Object.prototype.hasOwnProperty.call(coords, iso3)) return null;
+  const entry = coords[iso3];
+  if (!entry || entry.length !== 2) return null;
+  const [lat, lon] = entry;
+  if (!Number.isFinite(lat) || !Number.isFinite(lon)) return null;
+  if (Math.abs(lat) > 90 || Math.abs(lon) > 180) return null;
+  return [lat, lon];
 }
 
 /**
@@ -85,23 +127,39 @@ export function profileDistance(a: ScoredCountry, b: ScoredCountry): number | nu
 }
 
 /**
- * Comparison selection for one country: real neighbours first, then nearby
- * same-region fillers only when too few neighbours remain. Region "other"
- * (Antarctica and the uninhabited islets) has no regional peers, so it never
- * gets fillers: without this guard it would pull in every other "other" entry.
+ * Comparison selection for one country: real neighbours first, then, only when too
+ * few remain, the nearest countries by great-circle distance to top up to
+ * COMPARISON_SIZE others.
  */
-export function selectComparison(country: ScoredCountry, allCountries: ScoredCountry[]): ComparisonSelection {
+export function selectComparison(
+  country: ScoredCountry,
+  allCountries: ScoredCountry[],
+  coords: CoordMap,
+): ComparisonSelection {
   const neighbours = getNeighbors(country.iso3, allCountries, hasSufficientData);
-  const region = getRegion(country.iso3);
-  if (neighbours.length >= MIN_NEIGHBOURS_BEFORE_FILL || region === 'other') {
+  if (neighbours.length >= MIN_NEIGHBOURS_BEFORE_FILL) {
     return { neighbours, nearby: [] };
   }
 
-  const taken = new Set<string>([country.iso3, ...neighbours.map((c) => c.iso3)]);
+  const subject = coordsOf(country.iso3, coords);
+  if (!subject) return { neighbours, nearby: [] };
+
+  // Real borders are never fillers, even when the data floor would have dropped them.
+  const excluded = new Set<string>([
+    country.iso3,
+    ...(borderMap[country.iso3] ?? []),
+    ...neighbours.map((c) => c.iso3),
+  ]);
   const nearby = allCountries
-    .filter((c) => !taken.has(c.iso3) && hasSufficientData(c) && getRegion(c.iso3) === region)
-    .sort((a, b) => scoreGap(a, country) - scoreGap(b, country) || byIso3(a, b))
-    .slice(0, COMPARISON_SIZE - neighbours.length);
+    .filter((c) => !excluded.has(c.iso3) && hasSufficientData(c))
+    .flatMap((c) => {
+      const at = coordsOf(c.iso3, coords);
+      return at ? [{ c, km: haversineKm(subject, at) }] : [];
+    })
+    .filter((x) => x.km <= NEARBY_MAX_KM)
+    .sort((a, b) => a.km - b.km || byIso3(a.c, b.c))
+    .slice(0, COMPARISON_SIZE - neighbours.length)
+    .map((x) => x.c);
 
   return { neighbours, nearby };
 }
@@ -137,6 +195,10 @@ export function selectRelated(
           .filter((c) => getRegion(c.iso3) === region)
           .sort((a, b) => scoreGap(a, country) - scoreGap(b, country) || byIso3(a, b))
           .slice(0, RELATED_LIST_SIZE);
+
+  // A subject below the data floor has prior-driven pillars. Its "similar profile"
+  // would compare priors with real profiles, so the list is not produced at all.
+  if (!hasSufficientData(country)) return { sameRegion, similarProfile: [] };
 
   const regionShown = new Set(sameRegion.map((c) => c.iso3));
   const similarProfile = candidates

@@ -6,10 +6,12 @@ import { useTranslations } from '../../i18n/utils';
 import { getComparisonSubject } from '../../i18n/country-grammar';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { comparisonRows, selectComparison } from '../../lib/comparisons';
+import countryCoords from '../../data/country-coords.json';
 
 // One comparison section for the country page: real neighbours (borderMap), plus
-// same-region "nearby" fillers when a country has fewer than 3 data-sufficient
-// neighbours (island nations). Selection rules live in src/lib/comparisons.ts.
+// "nearby" fillers, the nearest countries by distance within 2000 km, when a country
+// has fewer than 3 data-sufficient neighbours (island nations). Selection rules live in
+// src/lib/comparisons.ts; coordinates come from src/data/country-coords.json.
 
 interface Props {
   country: ScoredCountry;
@@ -28,7 +30,7 @@ function getScoreColor(rawScore: number): string {
   return 'text-red-700 dark:text-red-400';
 }
 
-const selection = selectComparison(country, allCountries);
+const selection = selectComparison(country, allCountries, countryCoords);
 const nearbyIso3 = new Set(selection.nearby.map((c) => c.iso3));
 const tableRows = comparisonRows(country, selection);
 

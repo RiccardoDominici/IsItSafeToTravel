@@ -11,6 +11,7 @@
     "build": "npm run generate:og && npm run generate:llms && astro build && npm run validate:seo",
     "validate:seo": "npx tsx scripts/validate-seo.ts",
     "generate:og": "npx tsx scripts/generate-og-images.ts",
+    "generate:coords": "npx tsx scripts/generate-country-coords.ts",
     "generate:llms": "npx tsx scripts/generate-llms-full.ts",
     "preview": "astro preview",
     "astro": "astro",
