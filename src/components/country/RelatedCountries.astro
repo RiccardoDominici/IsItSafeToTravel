@@ -36,8 +36,9 @@ function getScoreBadgeClasses(rawScore: number): string {
 }
 
 // Same-region and similar-risk-profile lists. Both skip countries the comparison table
-// already shows and countries below the data floor. The similar-profile list is not
-// produced at all for a subject below the floor (selection rules in src/lib/comparisons.ts).
+// already shows and countries below the data floor. For a subject below the floor the whole
+// block is withheld: its score and pillars are prior-driven (src/lib/comparisons.ts). The
+// section renders nothing when both lists are empty.
 const comparison = selectComparison(country, allCountries, countryCoords);
 const { sameRegion, similarProfile } = selectRelated(country, allCountries, comparison);
 

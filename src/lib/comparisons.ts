@@ -25,9 +25,10 @@
  * Related block:
  *  - Same region: closest total score first (data-sufficient, excluding the rows above).
  *  - Similar risk profile: smallest Euclidean distance over the five pillar scores,
- *    excluding the same-region list. Hidden entirely when the subject fails
- *    hasSufficientData: its pillars are then prior-driven, so the list would compare
- *    priors with real profiles.
+ *    excluding the same-region list.
+ *  - Withheld entirely (both lists) when the subject fails hasSufficientData. Its
+ *    score and pillars are then prior-driven, and the same-region list orders by
+ *    total score, so both lists would rest on priors.
  *
  * Data coverage filters the CANDIDATES, never the page: a country with thin data
  * still gets a comparison table.
@@ -65,7 +66,7 @@ export interface ComparisonSelection {
 
 /** What the related-countries block shows for a country. */
 export interface RelatedSelection {
-  /** Same region, closest total score first. */
+  /** Same region, closest total score first. Empty when the subject fails the data floor. */
   sameRegion: ScoredCountry[];
   /** Most similar risk profile first. Empty when the subject fails the data floor. Never repeats a sameRegion entry. */
   similarProfile: ScoredCountry[];
@@ -174,12 +175,19 @@ export function comparisonRows(country: ScoredCountry, selection: ComparisonSele
 /**
  * Related-countries block. `shown` is the comparison selection rendered on the
  * same page; those countries are excluded so no country appears twice.
+ *
+ * Withheld entirely (both lists empty) for a subject below the data floor: its score
+ * and pillars are prior-driven, and both lists rest on them.
  */
 export function selectRelated(
   country: ScoredCountry,
   allCountries: ScoredCountry[],
   shown: ComparisonSelection,
 ): RelatedSelection {
+  // Withheld for a subject below the data floor: its score and pillars are prior-driven,
+  // so neither the same-region order nor the profile distances mean anything.
+  if (!hasSufficientData(country)) return { sameRegion: [], similarProfile: [] };
+
   const excluded = new Set<string>([
     country.iso3,
     ...shown.neighbours.map((c) => c.iso3),
@@ -195,10 +203,6 @@ export function selectRelated(
           .filter((c) => getRegion(c.iso3) === region)
           .sort((a, b) => scoreGap(a, country) - scoreGap(b, country) || byIso3(a, b))
           .slice(0, RELATED_LIST_SIZE);
-
-  // A subject below the data floor has prior-driven pillars. Its "similar profile"
-  // would compare priors with real profiles, so the list is not produced at all.
-  if (!hasSufficientData(country)) return { sameRegion, similarProfile: [] };
 
   const regionShown = new Set(sameRegion.map((c) => c.iso3));
   const similarProfile = candidates

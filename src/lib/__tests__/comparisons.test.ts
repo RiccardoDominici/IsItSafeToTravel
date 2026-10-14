@@ -370,8 +370,9 @@ describe('selectRelated', () => {
     assert.deepEqual(iso(reversed.similarProfile), ['DEU', 'FRA', 'NLD']);
   });
 
-  it('a data-poor subject keeps its same-region list but gets no similar-profile list', () => {
-    // Aland fails the floor. Its prior-driven pillars would be compared with real profiles, so none are produced.
+  it('a data-poor subject gets no related block at all, even though same-region candidates exist', () => {
+    // Aland fails the floor. Its score and pillars are prior-driven, and the same-region list orders by
+    // total score, so neither list is produced. The control below shows the same candidates fill the block otherwise.
     const coords: CoordMap = {
       ALA: [60.25, 20], SWE: [61, 15], EST: [59, 26], LVA: [57, 25], FIN: [65, 27],
       DNK: [56, 10], ITA: [41.9, 12.5], ESP: [40.4, -3.7], GBR: [54, -2], DEU: [51, 10],
@@ -383,8 +384,19 @@ describe('selectRelated', () => {
     ];
     const ala = find(world, 'ALA');
     const rel = selectRelated(ala, world, selectComparison(ala, world, coords));
-    assert.equal(rel.sameRegion.length, RELATED_LIST_SIZE, 'a data-poor subject still gets a same-region list');
+    assert.deepEqual(rel.sameRegion, [], 'a data-poor subject gets no same-region list');
     assert.deepEqual(rel.similarProfile, [], 'a data-poor subject gets no similar-profile list');
+
+    // Control: the same candidates fill both lists once the subject passes the floor.
+    const sufficientAla = country('ALA', 5.89);
+    const worldSufficient = world.map((c) => (c.iso3 === 'ALA' ? sufficientAla : c));
+    const control = selectRelated(
+      sufficientAla,
+      worldSufficient,
+      selectComparison(sufficientAla, worldSufficient, coords),
+    );
+    assert.equal(control.sameRegion.length, RELATED_LIST_SIZE, 'a data-sufficient subject keeps its same-region list');
+    assert.ok(control.similarProfile.length > 0, 'a data-sufficient subject keeps its similar-profile list');
   });
 
   it('a region-"other" country gets no same-region list but still a similar-profile list', () => {
@@ -513,7 +525,7 @@ describe('real dataset invariants', () => {
         assert.ok(!shown.has(r), `${label}: related ${r} is already shown`);
       }
       if (!hasSufficientData(c)) {
-        assert.equal(rel.similarProfile.length, 0, `${label}: similar-profile list shown for a data-poor subject`);
+        assert.equal(rel.sameRegion.length + rel.similarProfile.length, 0, `${label}: related block shown for a data-poor subject`);
       }
     }
   });
