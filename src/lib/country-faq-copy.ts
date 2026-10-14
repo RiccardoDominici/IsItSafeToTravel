@@ -61,6 +61,14 @@ export interface CountryFaqCopy {
   a3None: string;
   /** Singular/plural advisory-count noun phrase; {n} is the count (fills {advisoryCount}). */
   advisoryCountNoun: { one: string; other: string };
+  /**
+   * Formula v10 grey place (insufficient_data): A1 without any score, band or pillar figure. Spells
+   * the four-source floor out ("four", not "4": validate-seo reads "<n> sources" as a site-wide
+   * count). Only en/zh carry {name}; the other locales say "this destination" (article-free).
+   */
+  a1Grey: string;
+  /** a3None for a grey place: no "pillar scores above" to point to. */
+  a3NoneGrey: string;
 }
 
 /** Pillar labels with proper diacritics, for use inside FAQ answer prose. */
@@ -70,49 +78,49 @@ export const faqPillarLabels: Record<Lang, Record<PillarName, string>> = {
     "crime": "crime",
     "health": "health",
     "governance": "governance",
-    "environment": "environment"
+    "environment": "natural hazards"
   },
   "it": {
     "conflict": "conflitto",
     "crime": "criminalità",
     "health": "salute",
     "governance": "governance",
-    "environment": "ambiente"
+    "environment": "rischi naturali"
   },
   "es": {
     "conflict": "conflicto",
     "crime": "criminalidad",
     "health": "salud",
     "governance": "gobernanza",
-    "environment": "medio ambiente"
+    "environment": "riesgos naturales"
   },
   "fr": {
     "conflict": "conflit",
     "crime": "criminalité",
     "health": "santé",
     "governance": "gouvernance",
-    "environment": "environnement"
+    "environment": "risques naturels"
   },
   "pt": {
     "conflict": "conflito",
     "crime": "criminalidade",
     "health": "saúde",
     "governance": "governança",
-    "environment": "meio ambiente"
+    "environment": "riscos naturais"
   },
   "zh": {
     "conflict": "冲突",
     "crime": "犯罪",
     "health": "健康",
     "governance": "治理",
-    "environment": "环境"
+    "environment": "自然灾害"
   },
   "de": {
     "conflict": "Konflikt",
     "crime": "Kriminalität",
     "health": "Gesundheit",
     "governance": "Regierungsführung",
-    "environment": "Umwelt"
+    "environment": "Naturgefahren"
   }
 };
 
@@ -129,15 +137,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "militarisation (Global Peace Index)",
     "ucdp_conflict_deaths": "conflict deaths (UCDP)",
     "vdem_rule_of_law": "rule of law (V-Dem)",
-    "inform_health": "health-system capacity (INFORM)",
+    "inform_health_access": "access to health care (INFORM)",
     "inform_epidemic": "epidemic and disease risk (INFORM)",
-    "wb_child_mortality": "child mortality (World Bank)",
     "wb_homicide": "homicide rate (World Bank)",
-    "vdem_corruption_control": "control of corruption (V-Dem)",
-    "vdem_gov_effectiveness": "government effectiveness (V-Dem)",
-    "inform_governance": "institutional and governance fragility (INFORM)",
+    "vdem_corruption_control": "political corruption (V-Dem)",
+    "vdem_gov_effectiveness": "impartial public administration (V-Dem)",
+    "inform_governance": "governance (INFORM)",
     "inform_natural": "exposure to natural hazards (INFORM)",
-    "inform_climate": "climate-related hazard exposure (INFORM)",
     "gdacs_disaster_alerts": "active disaster alerts (GDACS)",
     "reliefweb_active_disasters": "ongoing humanitarian emergencies (ReliefWeb)",
     "advisory_group": "government travel-advisory levels"
@@ -148,15 +154,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "militarizzazione (Global Peace Index)",
     "ucdp_conflict_deaths": "morti per conflitto (UCDP)",
     "vdem_rule_of_law": "stato di diritto (V-Dem)",
-    "inform_health": "capacità del sistema sanitario (INFORM)",
+    "inform_health_access": "accesso alle cure mediche (INFORM)",
     "inform_epidemic": "rischio di epidemie e malattie (INFORM)",
-    "wb_child_mortality": "mortalità infantile (Banca Mondiale)",
     "wb_homicide": "tasso di omicidi (Banca Mondiale)",
-    "vdem_corruption_control": "controllo della corruzione (V-Dem)",
-    "vdem_gov_effectiveness": "efficacia del governo (V-Dem)",
-    "inform_governance": "fragilità istituzionale e di governance (INFORM)",
+    "vdem_corruption_control": "corruzione politica (V-Dem)",
+    "vdem_gov_effectiveness": "imparzialità della pubblica amministrazione (V-Dem)",
+    "inform_governance": "governance (INFORM)",
     "inform_natural": "esposizione ai rischi naturali (INFORM)",
-    "inform_climate": "esposizione ai rischi climatici (INFORM)",
     "gdacs_disaster_alerts": "allerte per disastri in corso (GDACS)",
     "reliefweb_active_disasters": "emergenze umanitarie in corso (ReliefWeb)",
     "advisory_group": "livelli degli avvisi di viaggio governativi"
@@ -167,15 +171,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "militarización (Global Peace Index)",
     "ucdp_conflict_deaths": "muertes por conflicto (UCDP)",
     "vdem_rule_of_law": "estado de derecho (V-Dem)",
-    "inform_health": "capacidad del sistema sanitario (INFORM)",
+    "inform_health_access": "acceso a la atención sanitaria (INFORM)",
     "inform_epidemic": "riesgo de epidemias y enfermedades (INFORM)",
-    "wb_child_mortality": "mortalidad infantil (Banco Mundial)",
     "wb_homicide": "tasa de homicidios (Banco Mundial)",
-    "vdem_corruption_control": "control de la corrupción (V-Dem)",
-    "vdem_gov_effectiveness": "eficacia del gobierno (V-Dem)",
-    "inform_governance": "fragilidad institucional y de gobernanza (INFORM)",
+    "vdem_corruption_control": "corrupción política (V-Dem)",
+    "vdem_gov_effectiveness": "imparcialidad de la administración pública (V-Dem)",
+    "inform_governance": "gobernanza (INFORM)",
     "inform_natural": "exposición a riesgos naturales (INFORM)",
-    "inform_climate": "exposición a riesgos climáticos (INFORM)",
     "gdacs_disaster_alerts": "alertas de desastres activas (GDACS)",
     "reliefweb_active_disasters": "emergencias humanitarias en curso (ReliefWeb)",
     "advisory_group": "niveles de los avisos de viaje gubernamentales"
@@ -186,15 +188,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "militarisation (Global Peace Index)",
     "ucdp_conflict_deaths": "morts liées aux conflits (UCDP)",
     "vdem_rule_of_law": "état de droit (V-Dem)",
-    "inform_health": "capacité du système de santé (INFORM)",
+    "inform_health_access": "accès aux soins (INFORM)",
     "inform_epidemic": "risque d'épidémies et de maladies (INFORM)",
-    "wb_child_mortality": "mortalité infantile (Banque mondiale)",
     "wb_homicide": "taux d'homicides (Banque mondiale)",
-    "vdem_corruption_control": "contrôle de la corruption (V-Dem)",
-    "vdem_gov_effectiveness": "efficacité du gouvernement (V-Dem)",
-    "inform_governance": "fragilité institutionnelle et de gouvernance (INFORM)",
+    "vdem_corruption_control": "corruption politique (V-Dem)",
+    "vdem_gov_effectiveness": "impartialité de l’administration publique (V-Dem)",
+    "inform_governance": "gouvernance (INFORM)",
     "inform_natural": "exposition aux risques naturels (INFORM)",
-    "inform_climate": "exposition aux risques climatiques (INFORM)",
     "gdacs_disaster_alerts": "alertes de catastrophes en cours (GDACS)",
     "reliefweb_active_disasters": "urgences humanitaires en cours (ReliefWeb)",
     "advisory_group": "niveaux des avis aux voyageurs gouvernementaux"
@@ -205,15 +205,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "militarização (Global Peace Index)",
     "ucdp_conflict_deaths": "mortes por conflito (UCDP)",
     "vdem_rule_of_law": "estado de direito (V-Dem)",
-    "inform_health": "capacidade do sistema de saúde (INFORM)",
+    "inform_health_access": "acesso a cuidados de saúde (INFORM)",
     "inform_epidemic": "risco de epidemias e doenças (INFORM)",
-    "wb_child_mortality": "mortalidade infantil (Banco Mundial)",
     "wb_homicide": "taxa de homicídios (Banco Mundial)",
-    "vdem_corruption_control": "controle da corrupção (V-Dem)",
-    "vdem_gov_effectiveness": "eficácia do governo (V-Dem)",
-    "inform_governance": "fragilidade institucional e de governança (INFORM)",
+    "vdem_corruption_control": "corrupção política (V-Dem)",
+    "vdem_gov_effectiveness": "imparcialidade da administração pública (V-Dem)",
+    "inform_governance": "governança (INFORM)",
     "inform_natural": "exposição a riscos naturais (INFORM)",
-    "inform_climate": "exposição a riscos climáticos (INFORM)",
     "gdacs_disaster_alerts": "alertas de desastres ativos (GDACS)",
     "reliefweb_active_disasters": "emergências humanitárias em curso (ReliefWeb)",
     "advisory_group": "níveis dos avisos de viagem governamentais"
@@ -224,15 +222,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "军事化程度（全球和平指数）",
     "ucdp_conflict_deaths": "冲突死亡人数（UCDP）",
     "vdem_rule_of_law": "法治水平（V-Dem）",
-    "inform_health": "医疗系统能力（INFORM）",
+    "inform_health_access": "医疗服务可及性（INFORM）",
     "inform_epidemic": "流行病与疾病风险（INFORM）",
-    "wb_child_mortality": "儿童死亡率（世界银行）",
     "wb_homicide": "谋杀率（世界银行）",
-    "vdem_corruption_control": "腐败控制（V-Dem）",
-    "vdem_gov_effectiveness": "政府效能（V-Dem）",
-    "inform_governance": "制度与治理脆弱性（INFORM）",
+    "vdem_corruption_control": "政治腐败（V-Dem）",
+    "vdem_gov_effectiveness": "公共行政公正性（V-Dem）",
+    "inform_governance": "治理（INFORM）",
     "inform_natural": "自然灾害暴露程度（INFORM）",
-    "inform_climate": "气候相关灾害暴露程度（INFORM）",
     "gdacs_disaster_alerts": "活跃灾害预警（GDACS）",
     "reliefweb_active_disasters": "持续中的人道主义紧急情况（ReliefWeb）",
     "advisory_group": "各国政府旅行警告级别"
@@ -243,15 +239,13 @@ export const indicatorLabels: Record<Lang, Record<string, string>> = {
     "gpi_militarisation": "Militarisierung (Global Peace Index)",
     "ucdp_conflict_deaths": "Konflikttote (UCDP)",
     "vdem_rule_of_law": "Rechtsstaatlichkeit (V-Dem)",
-    "inform_health": "Kapazität des Gesundheitssystems (INFORM)",
+    "inform_health_access": "Zugang zur Gesundheitsversorgung (INFORM)",
     "inform_epidemic": "Epidemie- und Krankheitsrisiko (INFORM)",
-    "wb_child_mortality": "Kindersterblichkeit (Weltbank)",
     "wb_homicide": "Mordrate (Weltbank)",
-    "vdem_corruption_control": "Korruptionskontrolle (V-Dem)",
-    "vdem_gov_effectiveness": "Regierungseffektivität (V-Dem)",
-    "inform_governance": "institutionelle Fragilität und Regierungsführung (INFORM)",
+    "vdem_corruption_control": "politische Korruption (V-Dem)",
+    "vdem_gov_effectiveness": "unparteiische öffentliche Verwaltung (V-Dem)",
+    "inform_governance": "Regierungsführung (INFORM)",
     "inform_natural": "Exposition gegenüber Naturgefahren (INFORM)",
-    "inform_climate": "Exposition gegenüber klimabedingten Gefahren (INFORM)",
     "gdacs_disaster_alerts": "aktive Katastrophenwarnungen (GDACS)",
     "reliefweb_active_disasters": "laufende humanitäre Notlagen (ReliefWeb)",
     "advisory_group": "Stufen staatlicher Reisehinweise"
@@ -287,20 +281,20 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "What do government travel advisories say about {name}?",
     "a1Verdict": {
       "excellent": "Yes — {name} is one of the safest destinations on our index: as of {monthYear} it scores {score}/10, classified as {riskLevel}.",
-      "good": "Yes, generally — {name} is considered a safe destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}.",
-      "moderate": "Yes, with some caution — {name} is reasonably safe for most travelers: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}. Stay alert to the specific risks below.",
-      "high_caution": "Yes, but only with real caution — {name} carries meaningful risk: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}. Many trips go fine, but this is not a low-risk destination.",
-      "danger": "No — {name} is currently a high-risk destination: as of {monthYear} it scores {score}/10 on our daily safety index, classified as {riskLevel}, and travel requires serious caution."
+      "good": "Yes, generally — {name} is considered a safe destination: as of {monthYear} it scores {score}/10 on our safety index, classified as {riskLevel}.",
+      "moderate": "Yes, with some caution — {name} is reasonably safe for most travelers: as of {monthYear} it scores {score}/10 on our safety index, classified as {riskLevel}. Stay alert to the specific risks below.",
+      "high_caution": "Yes, but only with real caution — {name} carries meaningful risk: as of {monthYear} it scores {score}/10 on our safety index, classified as {riskLevel}. Many trips go fine, but this is not a low-risk destination.",
+      "danger": "No — {name} is currently a high-risk destination: as of {monthYear} it scores {score}/10 on our safety index, classified as {riskLevel}, and travel requires serious caution."
     },
     "a1VerdictLowConfidence": "The data available for {name} is thin, so treat this score with caution: as of {monthYear} it stands at {score}/10, provisionally classified as {riskLevel} based mostly on regional patterns rather than country-specific evidence.",
-    "a1Formula": "The score is an uncertainty-weighted (Bayesian shrinkage) geometric mean of five pillars: conflict (30%), crime (25%), health (20%), governance (15%) and environment (10%). A weak pillar drags the overall score down more than a strong one lifts it, and the mix also folds in a calibrated consensus of government travel advisories. Thin or stale data pulls a country's score toward a cautious regional baseline instead of guessing — see our methodology page for the full statistical detail.",
+    "a1Formula": "The score is an uncertainty-weighted (Bayesian shrinkage) geometric mean of five pillars: conflict (30%), crime (25%), health (20%), governance (15%) and natural hazards (10%). A weak pillar drags the overall score down more than a strong one lifts it, and the mix also folds in a calibrated consensus of government travel advisories. Thin or stale data pulls a country's score toward a cautious regional baseline instead of guessing — see our methodology page for the full statistical detail.",
     "a1Drivers": {
       "normal": "{strongest} ({strongestScore}/10) is {name}'s strongest pillar, while the score is pulled down by {second} ({secondScore}/10) and above all by {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "All five pillars score well for {name}: even the weakest, {weakest} ({weakestScore}/10), sits in the low-risk band, with {strongest} ({strongestScore}/10) leading."
     },
     "a2": {
-      "critical": "The main concern for {name} is {weakest}, its weakest pillar at {weakestScore}/10. {meaning} {drivers} The second-lowest area is {second} at {secondScore}/10, so it deserves attention too. By contrast, {strongest} scores {strongestScore}/10 and is {name}'s strongest area.",
-      "mid": "No single factor stands out as critical for {name}: its relatively weakest area is {weakest} at {weakestScore}/10, close to the global mid-range. {meaning} {drivers} Its strongest pillar is {strongest} at {strongestScore}/10.",
+      "critical": "The main concern for {name} is {weakest}, at {weakestScore}/10. {meaning} {drivers} Another area to watch is {second}, at {secondScore}/10. By contrast, {strongest} scores {strongestScore}/10 and is {name}'s strongest area.",
+      "mid": "No single factor stands out as critical for {name}: the area that needs the most attention is {weakest}, at {weakestScore}/10. {meaning} {drivers} Its strongest pillar is {strongest} at {strongestScore}/10.",
       "strong": "No pillar signals a significant risk for {name}: even its weakest area, {weakest}, scores {weakestScore}/10, well inside the low-risk band, and its five pillars range from {weakestScore}/10 to {strongestScore}/10. For travelers this means normal, common-sense precautions are enough."
     },
     "a2DriverClause": {
@@ -326,7 +320,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "one government travel advisory",
       "other": "{n} government travel advisories"
-    }
+    },
+    "a1Grey": "We cannot give {name} an official safety score yet: we publish one only when at least four independent sources cover a place, and fewer do here. Read the government advisories below and check your own government's travel advice before you go.",
+    "a3NoneGrey": "As of {monthYear}, no government in our dataset publishes a travel advisory for {name} — typically the case for very small or remote territories. Check your own government's latest guidance before you travel."
   },
   "it": {
     // {nameIn} (q1/q2/a3Consensus below) is a SEPARATE slot from {name}: it's
@@ -339,7 +335,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "Cosa dicono gli avvisi di viaggio governativi su {name}?",
     "a1Verdict": {
       "excellent": "Sì — {name} è una delle destinazioni più sicure del nostro indice: a {monthYear} ottiene {score}/10, un punteggio classificato come {riskLevel}.",
-      "good": "Sì, in genere — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}.",
+      "good": "Sì, in genere — {name} è una destinazione considerata sicura: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza, un punteggio classificato come {riskLevel}.",
       // Reworded from the old "{name} è ragionevolmente sicura" (a DIRECT
       // predicate adjective on {name}, always feminine regardless of the
       // country's own gender/number — wrong for e.g. "Giappone" [masc] or
@@ -347,19 +343,19 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       // (always feminine singular) matches the good/danger bands above/below,
       // which already use this pattern, and needs no gender/number agreement
       // with {name} at all.
-      "moderate": "Sì, con qualche cautela — {name} è una destinazione ragionevolmente sicura per la maggior parte dei viaggiatori: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. Presta attenzione ai rischi specifici indicati più sotto.",
-      "high_caution": "Sì, ma solo con vera cautela — {name} presenta un rischio significativo: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}. Molti viaggi si svolgono senza problemi, ma non è una destinazione a basso rischio.",
-      "danger": "No — {name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza aggiornato ogni giorno, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
+      "moderate": "Sì, con qualche cautela — {name} è una destinazione ragionevolmente sicura per la maggior parte dei viaggiatori: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza, un punteggio classificato come {riskLevel}. Presta attenzione ai rischi specifici indicati più sotto.",
+      "high_caution": "Sì, ma solo con vera cautela — {name} presenta un rischio significativo: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza, un punteggio classificato come {riskLevel}. Molti viaggi si svolgono senza problemi, ma non è una destinazione a basso rischio.",
+      "danger": "No — {name} è attualmente una destinazione ad alto rischio: a {monthYear} ottiene {score}/10 sul nostro indice di sicurezza, un punteggio classificato come {riskLevel}, e viaggiare richiede grande prudenza."
     },
     "a1VerdictLowConfidence": "I dati disponibili per {name} sono scarsi, quindi considera questo punteggio con cautela: a {monthYear} si attesta a {score}/10, classificato in via provvisoria come {riskLevel} sulla base soprattutto di pattern regionali più che di prove specifiche per il paese.",
-    "a1Formula": "Il punteggio è una media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di cinque pilastri: conflitto (30%), criminalità (25%), salute (20%), governance (15%) e ambiente (10%). Un pilastro debole trascina verso il basso il punteggio complessivo più di quanto uno forte riesca a sollevarlo, e la combinazione include anche un consenso calibrato degli avvisi di viaggio governativi. I dati scarsi o datati avvicinano il punteggio di un paese a un valore di riferimento regionale prudente invece di essere stimati a caso — per tutti i dettagli statistici consulta la nostra pagina di metodologia.",
+    "a1Formula": "Il punteggio è una media geometrica ponderata e corretta per l'incertezza (Bayesian shrinkage) di cinque pilastri: conflitto (30%), criminalità (25%), salute (20%), governance (15%) e rischi naturali (10%). Un pilastro debole trascina verso il basso il punteggio complessivo più di quanto uno forte riesca a sollevarlo, e la combinazione include anche un consenso calibrato degli avvisi di viaggio governativi. I dati scarsi o datati avvicinano il punteggio di un paese a un valore di riferimento regionale prudente invece di essere stimati a caso — per tutti i dettagli statistici consulta la nostra pagina di metodologia.",
     "a1Drivers": {
       "normal": "Il pilastro più solido di {name} è {strongest} ({strongestScore}/10), mentre a pesare sul punteggio sono {second} ({secondScore}/10) e, più di tutto, {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Tutti e cinque i pilastri ottengono buoni punteggi per {name}: anche il più debole, {weakest} ({weakestScore}/10), rientra nella fascia di rischio basso, con {strongest} ({strongestScore}/10) in testa."
     },
     "a2": {
-      "critical": "La principale criticità per {name} riguarda il pilastro {weakest}, il più debole con {weakestScore}/10. {meaning} {drivers} Il secondo punto debole è il pilastro {second}, con {secondScore}/10, e merita quindi attenzione anch'esso. Per contro, il pilastro {strongest} ottiene {strongestScore}/10 ed è l'area più solida di {name}.",
-      "mid": "Nessun singolo fattore emerge come critico per {name}: l'area relativamente più debole è il pilastro {weakest}, con {weakestScore}/10, un valore vicino alla fascia media globale. {meaning} {drivers} Il suo punto di forza è il pilastro {strongest}, con {strongestScore}/10.",
+      "critical": "La principale criticità per {name} riguarda il pilastro {weakest}, con {weakestScore}/10. {meaning} {drivers} Merita attenzione anche il pilastro {second}, con {secondScore}/10. Per contro, il pilastro {strongest} ottiene {strongestScore}/10 ed è l'area più solida di {name}.",
+      "mid": "Nessun singolo fattore emerge come critico per {name}: l'area che richiede più attenzione è il pilastro {weakest}, con {weakestScore}/10. {meaning} {drivers} Il suo punto di forza è il pilastro {strongest}, con {strongestScore}/10.",
       "strong": "Nessun pilastro segnala un rischio significativo per {name}: anche l'area più debole, {weakest}, ottiene {weakestScore}/10, ben dentro la fascia di rischio basso, e i cinque pilastri si collocano tra {weakestScore}/10 e {strongestScore}/10. Per chi viaggia questo significa che bastano le normali precauzioni di buon senso."
     },
     "a2DriverClause": {
@@ -385,7 +381,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "un avviso di viaggio governativo",
       "other": "{n} avvisi di viaggio governativi"
-    }
+    },
+    "a1Grey": "Per questa destinazione non possiamo ancora dare un punteggio di sicurezza ufficiale: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo, e qui sono meno. Leggi gli avvisi governativi qui sotto e controlla le indicazioni del tuo governo prima di partire.",
+    "a3NoneGrey": "A {monthYear}, nessun governo presente nel nostro set di dati pubblica un avviso di viaggio per {name}: è il caso tipico di territori molto piccoli o remoti. Verifica le indicazioni più recenti del tuo governo prima di partire."
   },
   "es": {
     "q1": "¿Es seguro viajar a {name} en {year}?",
@@ -393,25 +391,25 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "¿Qué dicen los avisos de viaje gubernamentales sobre {name}?",
     "a1Verdict": {
       "excellent": "Sí — {name} es uno de los destinos más seguros de nuestro índice: a fecha de {monthYear} obtiene {score}/10, clasificado como {riskLevel}.",
-      "good": "Sí, en general — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}.",
+      "good": "Sí, en general — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.",
       // Reworded from "{name} es razonablemente seguro" (a DIRECT predicate
       // adjective on {name}, always masculine regardless of the country's own
       // gender/number — wrong for e.g. "Francia" [fem] or feminine-plural
       // names). "un destino" (always masculine singular) matches the good/
       // danger bands above/below and needs no agreement with {name}.
-      "moderate": "Sí, con cierta precaución — {name} es un destino razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. Presta atención a los riesgos específicos indicados más abajo.",
-      "high_caution": "Sí, pero solo con verdadera precaución — {name} presenta un riesgo considerable: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}. La mayoría de los viajes salen bien, pero no es un destino de bajo riesgo.",
-      "danger": "No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad diario, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
+      "moderate": "Sí, con cierta precaución — {name} es un destino razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}. Presta atención a los riesgos específicos indicados más abajo.",
+      "high_caution": "Sí, pero solo con verdadera precaución — {name} presenta un riesgo considerable: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}. La mayoría de los viajes salen bien, pero no es un destino de bajo riesgo.",
+      "danger": "No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones."
     },
     "a1VerdictLowConfidence": "Los datos disponibles para {name} son escasos, así que considera esta puntuación con cautela: a fecha de {monthYear} se sitúa en {score}/10, clasificada de forma provisional como {riskLevel}, basada sobre todo en patrones regionales y no en evidencia específica del país.",
-    "a1Formula": "La puntuación es una media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de cinco pilares: conflictos (30%), criminalidad (25%), salud (20%), gobernanza (15%) y medio ambiente (10%). Un pilar débil lastra la puntuación global más de lo que un pilar fuerte la eleva, y la combinación incluye también un consenso calibrado de los avisos de viaje gubernamentales. Cuando los datos son escasos o antiguos, la puntuación de un país se acerca a un valor de referencia regional prudente en lugar de adivinar — consulta nuestra página de metodología para todos los detalles estadísticos.",
+    "a1Formula": "La puntuación es una media geométrica ponderada con corrección por incertidumbre (Bayesian shrinkage) de cinco pilares: conflictos (30%), criminalidad (25%), salud (20%), gobernanza (15%) y riesgos naturales (10%). Un pilar débil lastra la puntuación global más de lo que un pilar fuerte la eleva, y la combinación incluye también un consenso calibrado de los avisos de viaje gubernamentales. Cuando los datos son escasos o antiguos, la puntuación de un país se acerca a un valor de referencia regional prudente en lugar de adivinar — consulta nuestra página de metodología para todos los detalles estadísticos.",
     "a1Drivers": {
       "normal": "El pilar más fuerte de {name} es {strongest} ({strongestScore}/10), mientras que la puntuación se ve lastrada por {second} ({secondScore}/10) y, sobre todo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Los cinco pilares de {name} obtienen buenas puntuaciones: incluso el más débil, {weakest} ({weakestScore}/10), se sitúa en la franja de riesgo bajo, con {strongest} ({strongestScore}/10) a la cabeza."
     },
     "a2": {
-      "critical": "La principal preocupación en {name} es {weakest}, su pilar más débil con {weakestScore}/10. {meaning} {drivers} La segunda área más débil es {second}, con {secondScore}/10, por lo que también merece atención. En cambio, el pilar de {strongest} alcanza {strongestScore}/10 y es el área más fuerte de {name}.",
-      "mid": "Ningún factor destaca como crítico en {name}: su área relativamente más débil es {weakest}, con {weakestScore}/10, cerca de la franja media mundial. {meaning} {drivers} Su pilar más fuerte es {strongest}, con {strongestScore}/10.",
+      "critical": "La principal preocupación en {name} es {weakest}, con {weakestScore}/10. {meaning} {drivers} También merece atención {second}, con {secondScore}/10. En cambio, el pilar de {strongest} alcanza {strongestScore}/10 y es el área más fuerte de {name}.",
+      "mid": "Ningún factor destaca como crítico en {name}: el área que requiere más atención es {weakest}, con {weakestScore}/10. {meaning} {drivers} Su pilar más fuerte es {strongest}, con {strongestScore}/10.",
       "strong": "Ningún pilar señala un riesgo significativo en {name}: incluso su área más débil, {weakest}, obtiene {weakestScore}/10, claramente dentro de la franja de riesgo bajo, y sus cinco pilares se mueven entre {weakestScore}/10 y {strongestScore}/10. Para quien viaja, esto significa que bastan las precauciones normales de sentido común."
     },
     "a2DriverClause": {
@@ -437,7 +435,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "un aviso de viaje gubernamental",
       "other": "{n} avisos de viaje gubernamentales"
-    }
+    },
+    "a1Grey": "Todavía no podemos dar una puntuación de seguridad oficial para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Lee los avisos gubernamentales más abajo y consulta las recomendaciones de tu gobierno antes de viajar.",
+    "a3NoneGrey": "A fecha de {monthYear}, ningún gobierno de nuestro conjunto de datos publica un aviso de viaje para {name}, algo habitual en territorios muy pequeños o remotos. Consulta las indicaciones más recientes de tu propio gobierno antes de viajar."
   },
   "fr": {
     "q1": "{name} : est-ce sûr d'y voyager en {year} ?",
@@ -445,20 +445,20 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "Que disent les avis aux voyageurs officiels concernant {name} ?",
     "a1Verdict": {
       "excellent": "Oui — {name} est l'une des destinations les plus sûres de notre indice : en {monthYear}, le pays obtient {score}/10, dans la catégorie « {riskLevel} ».",
-      "good": "Oui, en général — {name} est une destination considérée comme sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ».",
-      "moderate": "Oui, avec quelques précautions — {name} est une destination raisonnablement sûre pour la plupart des voyageurs : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ». Restez attentif aux risques spécifiques détaillés plus bas.",
-      "high_caution": "Oui, mais avec une réelle prudence — {name} présente un risque non négligeable : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} ». La plupart des voyages se passent bien, mais ce n'est pas une destination à faible risque.",
-      "danger": "Non — {name} est actuellement une destination à haut risque : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité quotidien, dans la catégorie « {riskLevel} », et tout voyage exige une grande prudence."
+      "good": "Oui, en général — {name} est une destination considérée comme sûre : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité, dans la catégorie « {riskLevel} ».",
+      "moderate": "Oui, avec quelques précautions — {name} est une destination raisonnablement sûre pour la plupart des voyageurs : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité, dans la catégorie « {riskLevel} ». Restez attentif aux risques spécifiques détaillés plus bas.",
+      "high_caution": "Oui, mais avec une réelle prudence — {name} présente un risque non négligeable : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité, dans la catégorie « {riskLevel} ». La plupart des voyages se passent bien, mais ce n'est pas une destination à faible risque.",
+      "danger": "Non — {name} est actuellement une destination à haut risque : en {monthYear}, le pays obtient {score}/10 sur notre indice de sécurité, dans la catégorie « {riskLevel} », et tout voyage exige une grande prudence."
     },
     "a1VerdictLowConfidence": "Les données disponibles pour {name} sont limitées, considérez donc ce score avec prudence : en {monthYear}, il s'établit à {score}/10, classé à titre provisoire comme « {riskLevel} », fondé surtout sur des tendances régionales plutôt que sur des données propres au pays.",
-    "a1Formula": "Le score est une moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de cinq piliers : conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et environnement (10 %). Un pilier faible tire le score global vers le bas plus qu'un pilier fort ne le relève, et la combinaison intègre aussi un consensus calibré des avis de voyage gouvernementaux. Lorsque les données sont rares ou anciennes, le score d'un pays se rapproche d'une référence régionale prudente plutôt que d'être deviné — consultez notre page de méthodologie pour le détail statistique complet.",
+    "a1Formula": "Le score est une moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de cinq piliers : conflits (30 %), criminalité (25 %), santé (20 %), gouvernance (15 %) et risques naturels (10 %). Un pilier faible tire le score global vers le bas plus qu'un pilier fort ne le relève, et la combinaison intègre aussi un consensus calibré des avis de voyage gouvernementaux. Lorsque les données sont rares ou anciennes, le score d'un pays se rapproche d'une référence régionale prudente plutôt que d'être deviné — consultez notre page de méthodologie pour le détail statistique complet.",
     "a1Drivers": {
       "normal": "Le pilier le plus solide de {name} est {strongest} ({strongestScore}/10), tandis que le score est tiré vers le bas par {second} ({secondScore}/10) et surtout par {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "{name} affiche de bons scores sur les cinq piliers : même le plus faible, le pilier {weakest} ({weakestScore}/10), reste dans la zone de faible risque, le pilier {strongest} ({strongestScore}/10) arrivant en tête."
     },
     "a2": {
-      "critical": "{name} présente un point de vigilance majeur : le pilier {weakest}, le plus faible avec {weakestScore}/10. {meaning} {drivers} Le deuxième domaine le plus fragile est le pilier {second}, à {secondScore}/10 : il mérite donc lui aussi de l'attention. À l'inverse, le pilier {strongest} atteint {strongestScore}/10 : c'est le domaine où {name} est le plus solide.",
-      "mid": "{name} ne présente aucun facteur véritablement critique : son domaine relativement le plus faible est le pilier {weakest}, à {weakestScore}/10, un niveau proche de la moyenne mondiale. {meaning} {drivers} Côté points forts, le pilier {strongest} arrive en tête, à {strongestScore}/10.",
+      "critical": "{name} présente un point de vigilance majeur : le pilier {weakest}, à {weakestScore}/10. {meaning} {drivers} Le pilier {second}, à {secondScore}/10, mérite lui aussi de l'attention. À l'inverse, le pilier {strongest} atteint {strongestScore}/10 : c'est le domaine où {name} est le plus solide.",
+      "mid": "{name} ne présente aucun facteur véritablement critique : le domaine qui demande le plus d'attention est le pilier {weakest}, à {weakestScore}/10. {meaning} {drivers} Côté points forts, le pilier {strongest} arrive en tête, à {strongestScore}/10.",
       "strong": "{name} ne présente de risque significatif sur aucun pilier : même son domaine le plus faible, le pilier {weakest}, obtient {weakestScore}/10, bien à l'intérieur de la zone de faible risque, et ses cinq piliers s'échelonnent de {weakestScore}/10 à {strongestScore}/10. Pour les voyageurs, cela signifie que les précautions de bon sens habituelles suffisent."
     },
     "a2DriverClause": {
@@ -488,7 +488,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "un avis aux voyageurs officiel",
       "other": "{n} avis aux voyageurs officiels"
-    }
+    },
+    "a1Grey": "Nous ne pouvons pas encore attribuer de score de sécurité officiel à cette destination : nous n'en publions un que si au moins quatre sources indépendantes couvrent un lieu, et elles sont moins nombreuses ici. Consultez les avis gouvernementaux ci-dessous et les conseils de votre propre gouvernement avant de partir.",
+    "a3NoneGrey": "En {monthYear}, aucun gouvernement de notre jeu de données ne publie d'avis aux voyageurs pour {name}, ce qui est courant pour les territoires très petits ou reculés. Vérifiez les dernières recommandations de votre propre gouvernement avant de partir."
   },
   "pt": {
     // {namePara}/{nameA} are SEPARATE slots from {name}: filled with the full
@@ -501,25 +503,25 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "O que dizem os avisos de viagem governamentais sobre {name}?",
     "a1Verdict": {
       "excellent": "Sim — {name} é um dos destinos mais seguros do nosso índice: em {monthYear}, obtém {score}/10, com classificação de {riskLevel}.",
-      "good": "Sim, em geral — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}.",
+      "good": "Sim, em geral — {name} é um destino considerado seguro: em {monthYear}, obtém {score}/10 no nosso índice de segurança, com classificação de {riskLevel}.",
       // Reworded from "{name} é razoavelmente seguro" (a DIRECT predicate
       // adjective on {name}, always masculine regardless of the country's own
       // gender/number — wrong for e.g. "França" [fem] or feminine-plural
       // names). "um destino" (always masculine singular) matches the good/
       // danger bands above/below and needs no agreement with {name}.
-      "moderate": "Sim, com alguma cautela — {name} é um destino razoavelmente seguro para a maioria dos viajantes: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. Fique atento aos riscos específicos indicados mais abaixo.",
-      "high_caution": "Sim, mas apenas com cautela real — {name} apresenta um risco considerável: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}. A maioria das viagens corre bem, mas não é um destino de baixo risco.",
-      "danger": "Não — {name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice diário de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
+      "moderate": "Sim, com alguma cautela — {name} é um destino razoavelmente seguro para a maioria dos viajantes: em {monthYear}, obtém {score}/10 no nosso índice de segurança, com classificação de {riskLevel}. Fique atento aos riscos específicos indicados mais abaixo.",
+      "high_caution": "Sim, mas apenas com cautela real — {name} apresenta um risco considerável: em {monthYear}, obtém {score}/10 no nosso índice de segurança, com classificação de {riskLevel}. A maioria das viagens corre bem, mas não é um destino de baixo risco.",
+      "danger": "Não — {name} é atualmente um destino de alto risco: em {monthYear}, obtém {score}/10 no nosso índice de segurança, com classificação de {riskLevel}, e viajar exige muita cautela."
     },
     "a1VerdictLowConfidence": "Os dados disponíveis para {name} são escassos, portanto considere esta pontuação com cautela: em {monthYear}, ela está em {score}/10, classificada de forma provisória como {riskLevel}, baseada principalmente em padrões regionais e não em evidências específicas do país.",
-    "a1Formula": "A pontuação é uma média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de cinco pilares: conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e meio ambiente (10%). Um pilar fraco puxa a pontuação geral para baixo mais do que um pilar forte a eleva, e a combinação também inclui um consenso calibrado dos avisos de viagem governamentais. Quando os dados são escassos ou desatualizados, a pontuação de um país se aproxima de um valor de referência regional prudente em vez de ser estimada ao acaso — consulte nossa página de metodologia para todos os detalhes estatísticos.",
+    "a1Formula": "A pontuação é uma média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de cinco pilares: conflitos (30%), criminalidade (25%), saúde (20%), governança (15%) e riscos naturais (10%). Um pilar fraco puxa a pontuação geral para baixo mais do que um pilar forte a eleva, e a combinação também inclui um consenso calibrado dos avisos de viagem governamentais. Quando os dados são escassos ou desatualizados, a pontuação de um país se aproxima de um valor de referência regional prudente em vez de ser estimada ao acaso — consulte nossa página de metodologia para todos os detalhes estatísticos.",
     "a1Drivers": {
       "normal": "O pilar mais forte de {name} é {strongest} ({strongestScore}/10), enquanto a pontuação é puxada para baixo por {second} ({secondScore}/10) e, sobretudo, por {weakest} ({weakestScore}/10). {meaning}",
       "allStrong": "Os cinco pilares de {name} apresentam boas pontuações: até o mais fraco, {weakest} ({weakestScore}/10), fica na faixa de risco baixo, com {strongest} ({strongestScore}/10) na liderança."
     },
     "a2": {
-      "critical": "A principal preocupação para {name} é o pilar de {weakest}, o mais fraco do país, com {weakestScore}/10. {meaning} {drivers} A segunda área mais baixa é a de {second}, com {secondScore}/10, e também merece atenção. Em contrapartida, o pilar de {strongest} obtém {strongestScore}/10 e é a área mais forte de {name}.",
-      "mid": "Nenhum fator isolado se destaca como crítico para {name}: sua área relativamente mais fraca é a de {weakest}, com {weakestScore}/10, perto da faixa intermediária global. {meaning} {drivers} Seu pilar mais forte é o de {strongest}, com {strongestScore}/10.",
+      "critical": "A principal preocupação para {name} é o pilar de {weakest}, com {weakestScore}/10. {meaning} {drivers} A área de {second}, com {secondScore}/10, também merece atenção. Em contrapartida, o pilar de {strongest} obtém {strongestScore}/10 e é a área mais forte de {name}.",
+      "mid": "Nenhum fator isolado se destaca como crítico para {name}: a área que exige mais atenção é a de {weakest}, com {weakestScore}/10. {meaning} {drivers} Seu pilar mais forte é o de {strongest}, com {strongestScore}/10.",
       "strong": "Nenhum pilar indica um risco significativo para {name}: até sua área mais fraca, a de {weakest}, obtém {weakestScore}/10, bem dentro da faixa de risco baixo, e os cinco pilares variam de {weakestScore}/10 a {strongestScore}/10. Para quem viaja, isso significa que as precauções normais de bom senso são suficientes."
     },
     "a2DriverClause": {
@@ -545,7 +547,9 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "um aviso de viagem governamental",
       "other": "{n} avisos de viagem governamentais"
-    }
+    },
+    "a1Grey": "Ainda não podemos dar uma pontuação de segurança oficial para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar, e aqui são menos. Leia os alertas governamentais abaixo e consulte as orientações do seu governo antes de viajar.",
+    "a3NoneGrey": "Em {monthYear}, nenhum governo do nosso conjunto de dados publica um aviso de viagem para {name}, o que é comum em territórios muito pequenos ou remotos. Verifique as orientações mais recentes do seu próprio governo antes de viajar."
   },
   "zh": {
     // No spaces around {name}: Chinese doesn't use spaces between characters,
@@ -558,20 +562,20 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "q3": "各国政府的旅行警告对 {name} 有何评价？",
     "a1Verdict": {
       "excellent": "是的——{name}是我们指数中最安全的目的地之一：截至{monthYear}，其得分为 {score}/10，被评为{riskLevel}。",
-      "good": "总体而言是的——{name}被认为是一个安全的旅行目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。",
-      "moderate": "可以，但需留意——{name}对大多数旅行者而言相对安全：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。请留意下方列出的具体风险。",
-      "high_caution": "可以，但务必格外谨慎——{name}存在不容忽视的风险：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}。多数行程能够顺利完成，但这并非一个低风险目的地。",
-      "danger": "不安全——{name}目前属于高风险目的地：截至{monthYear}，其在我们每日更新的安全指数中得分为 {score}/10，被评为{riskLevel}，前往旅行需要格外谨慎。"
+      "good": "总体而言是的——{name}被认为是一个安全的旅行目的地：截至{monthYear}，其在我们的安全指数中得分为{score}/10，被评为{riskLevel}。",
+      "moderate": "可以，但需留意——{name}对大多数旅行者而言相对安全：截至{monthYear}，其在我们的安全指数中得分为{score}/10，被评为{riskLevel}。请留意下方列出的具体风险。",
+      "high_caution": "可以，但务必格外谨慎——{name}存在不容忽视的风险：截至{monthYear}，其在我们的安全指数中得分为{score}/10，被评为{riskLevel}。多数行程能够顺利完成，但这并非一个低风险目的地。",
+      "danger": "不安全——{name}目前属于高风险目的地：截至{monthYear}，其在我们的安全指数中得分为{score}/10，被评为{riskLevel}，前往旅行需要格外谨慎。"
     },
     "a1VerdictLowConfidence": "{name}的可用数据非常有限，请谨慎看待此评分：截至{monthYear}，其得分为 {score}/10，暂定评为{riskLevel}，该评级主要基于区域规律，而非该国自身的具体证据。",
-    "a1Formula": "该评分是五大支柱——冲突（30%）、犯罪（25%）、健康（20%）、治理（15%）和环境（10%）——经不确定性加权（贝叶斯收缩）计算得出的几何平均数。薄弱支柱对总分的拉低作用大于强势支柱的提升作用，评分还结合了经校准的政府旅行警告共识。数据稀疏或陈旧时，评分会向审慎的区域基准靠拢，而不是凭空估计——完整的统计细节请参见我们的方法论页面。",
+    "a1Formula": "该评分是五大支柱——冲突（30%）、犯罪（25%）、健康（20%）、治理（15%）和自然灾害（10%）——经不确定性加权（贝叶斯收缩）计算得出的几何平均数。薄弱支柱对总分的拉低作用大于强势支柱的提升作用，评分还结合了经校准的政府旅行警告共识。数据稀疏或陈旧时，评分会向审慎的区域基准靠拢，而不是凭空估计——完整的统计细节请参见我们的方法论页面。",
     "a1Drivers": {
       "normal": "{strongest}（{strongestScore}/10）是{name}表现最强的支柱，而拉低总分的主要是{second}（{secondScore}/10），尤其是{weakest}（{weakestScore}/10）。{meaning}",
       "allStrong": "{name}的五大支柱均表现良好：即使是得分最低的{weakest}（{weakestScore}/10）也处于低风险区间，其中以{strongest}（{strongestScore}/10）表现最为突出。"
     },
     "a2": {
-      "critical": "{name}最需要关注的是{weakest}，这一支柱得分最低，仅为 {weakestScore}/10。{meaning}{drivers}得分第二低的领域是{second}（{secondScore}/10），同样值得留意。相比之下，{strongest}得分为 {strongestScore}/10，是{name}表现最强的领域。",
-      "mid": "对{name}而言，没有任何单一因素构成突出风险：其相对最薄弱的领域是{weakest}，得分为 {weakestScore}/10，接近全球中等水平。{meaning}{drivers}其表现最强的支柱是{strongest}，得分为 {strongestScore}/10。",
+      "critical": "{name}最需要关注的是{weakest}，得分为{weakestScore}/10。{meaning}{drivers}{second}（{secondScore}/10）同样值得留意。相比之下，{strongest}得分为 {strongestScore}/10，是{name}表现最强的领域。",
+      "mid": "对{name}而言，没有任何单一因素构成突出风险：最需要关注的领域是{weakest}，得分为{weakestScore}/10。{meaning}{drivers}其表现最强的支柱是{strongest}，得分为 {strongestScore}/10。",
       "strong": "{name}的各项支柱均未显示出明显风险：即使是其最薄弱的领域{weakest}也得到了 {weakestScore}/10 的分数，稳居低风险区间，五大支柱的得分介于 {weakestScore}/10 到 {strongestScore}/10 之间。对旅行者而言，这意味着只需采取常规的常识性预防措施即可。"
     },
     "a2DriverClause": {
@@ -596,9 +600,11 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "a3Cap": "这些警告严重到足以在我们的指数中占据很大权重：当多数政府发布切勿前往的警告时，{name}的总分会被明显拉低，这还是在其他支柱已有表现的基础之上。",
     "a3None": "截至{monthYear}，我们的数据集中没有任何政府发布针对{name}的旅行警告——这在面积很小或偏远的地区很常见。请参考上方各支柱的得分，并在出行前查阅你所在国家政府的最新指引。",
     "advisoryCountNoun": {
-      "one": "1 条政府旅行警告",
-      "other": "{n} 条政府旅行警告"
-    }
+      "one": "1条政府旅行警告",
+      "other": "{n}条政府旅行警告"
+    },
+    "a1Grey": "我们目前还无法为{name}给出官方安全评分：只有当至少四个独立来源覆盖某地时，我们才会发布评分，而这里的来源不足四个。请阅读下方的政府旅行警告，并在出行前查看本国政府的旅行建议。",
+    "a3NoneGrey": "截至{monthYear}，我们的数据集中没有任何政府发布针对{name}的旅行警告——这在面积很小或偏远的地区很常见。请在出行前查阅你所在国家政府的最新指引。"
   },
   "de": {
     // {nameDir} is a SEPARATE slot from {name}: filled with the full
@@ -620,18 +626,18 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     // singular regardless of the actual country's own number.
     "a1Verdict": {
       "excellent": "Ja — {name} {deZaehlt} zu den sichersten Reisezielen in unserem Index: Stand {monthYear} erreicht das Land {score}/10 und ist als {riskLevel} eingestuft.",
-      "good": "Ja, im Allgemeinen — {name} {deGilt} als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft.",
-      "moderate": "Ja, mit etwas Vorsicht — {name} {deIstSind} für die meisten Reisenden ausreichend sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Achten Sie auf die weiter unten genannten spezifischen Risiken.",
-      "high_caution": "Ja, aber nur mit wirklicher Vorsicht — {name} {deBirgt} ein spürbares Risiko: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen gut, doch dies ist kein risikoarmes Reiseziel.",
+      "good": "Ja, im Allgemeinen — {name} {deGilt} als sicheres Reiseziel: Stand {monthYear} erreicht das Land {score}/10 auf unserem Sicherheitsindex und ist als {riskLevel} eingestuft.",
+      "moderate": "Ja, mit etwas Vorsicht — {name} {deIstSind} für die meisten Reisenden ausreichend sicher: Stand {monthYear} erreicht das Land {score}/10 auf unserem Sicherheitsindex und ist als {riskLevel} eingestuft. Achten Sie auf die weiter unten genannten spezifischen Risiken.",
+      "high_caution": "Ja, aber nur mit wirklicher Vorsicht — {name} {deBirgt} ein spürbares Risiko: Stand {monthYear} erreicht das Land {score}/10 auf unserem Sicherheitsindex und ist als {riskLevel} eingestuft. Die meisten Reisen verlaufen gut, doch dies ist kein risikoarmes Reiseziel.",
       // Reworded to reuse "{deZaehlt} zu den Hochrisiko-Reisezielen" (matches
       // "excellent" above) instead of "ist ... ein Hochrisiko-Reiseziel",
       // which — beyond the verb — would ALSO need the predicate noun itself
       // to go plural ("sind ... Hochrisiko-Reiseziele") for a fully plural
       // subject; "zählt/zählen zu den X" sidesteps that second agreement too.
-      "danger": "Nein — {name} {deZaehlt} derzeit zu den Hochrisiko-Reisezielen: Stand {monthYear} erreicht das Land {score}/10 auf unserem täglich aktualisierten Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
+      "danger": "Nein — {name} {deZaehlt} derzeit zu den Hochrisiko-Reisezielen: Stand {monthYear} erreicht das Land {score}/10 auf unserem Sicherheitsindex, ist als {riskLevel} eingestuft, und Reisen dorthin erfordern erhebliche Vorsicht."
     },
     "a1VerdictLowConfidence": "Für {name} liegen nur wenige Daten vor, betrachten Sie diese Bewertung daher mit Vorsicht: Stand {monthYear} liegt sie bei {score}/10 und ist vorläufig als {riskLevel} eingestuft — basierend vor allem auf regionalen Mustern statt auf länderspezifischen Belegen.",
-    "a1Formula": "Der Wert ist ein unsicherheitsgewichtetes (Bayesian Shrinkage) geometrisches Mittel aus fünf Säulen: Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Umwelt (10 %). Eine schwache Säule zieht den Gesamtwert stärker nach unten, als eine starke ihn anhebt, und die Berechnung bezieht zudem einen kalibrierten Konsens staatlicher Reisehinweise mit ein. Sind die Daten spärlich oder veraltet, nähert sich der Wert eines Landes einem vorsichtigen regionalen Richtwert an, statt geschätzt zu werden — die vollständigen statistischen Details finden Sie auf unserer Methodik-Seite.",
+    "a1Formula": "Der Wert ist ein unsicherheitsgewichtetes (Bayesian Shrinkage) geometrisches Mittel aus fünf Säulen: Konflikt (30 %), Kriminalität (25 %), Gesundheit (20 %), Regierungsführung (15 %) und Naturgefahren (10 %). Eine schwache Säule zieht den Gesamtwert stärker nach unten, als eine starke ihn anhebt, und die Berechnung bezieht zudem einen kalibrierten Konsens staatlicher Reisehinweise mit ein. Sind die Daten spärlich oder veraltet, nähert sich der Wert eines Landes einem vorsichtigen regionalen Richtwert an, statt geschätzt zu werden — die vollständigen statistischen Details finden Sie auf unserer Methodik-Seite.",
     "a1Drivers": {
       "normal": "Die stärkste Säule von {name} ist {strongest} ({strongestScore}/10), während {second} ({secondScore}/10) und vor allem {weakest} ({weakestScore}/10) den Wert nach unten ziehen. {meaning}",
       // {deSchneidet}: separable verb "abschneiden" ("zählt/schneidet ... ab"),
@@ -640,8 +646,8 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       "allStrong": "{name} {deSchneidet} in allen fünf Säulen gut ab: Selbst die schwächste Säule, {weakest} ({weakestScore}/10), liegt im risikoarmen Bereich, während {strongest} ({strongestScore}/10) an der Spitze steht."
     },
     "a2": {
-      "critical": "Die größte Sorge für {name} ist die Säule {weakest} — mit {weakestScore}/10 die schwächste des Landes. {meaning} {drivers} Der zweitschwächste Bereich ist {second} mit {secondScore}/10 und verdient daher ebenfalls Aufmerksamkeit. Im Gegensatz dazu kommt {strongest} auf {strongestScore}/10 — in diesem Bereich ist {name} am stärksten.",
-      "mid": "Für {name} sticht kein einzelner Faktor als kritisch hervor: Die vergleichsweise schwächste Säule ist {weakest} mit {weakestScore}/10 und liegt damit nahe am globalen Mittelfeld. {meaning} {drivers} Die stärkste Säule des Landes ist {strongest} mit {strongestScore}/10.",
+      "critical": "Die größte Sorge für {name} ist die Säule {weakest} mit {weakestScore}/10. {meaning} {drivers} Auch {second} mit {secondScore}/10 verdient Aufmerksamkeit. Im Gegensatz dazu kommt {strongest} auf {strongestScore}/10 — in diesem Bereich ist {name} am stärksten.",
+      "mid": "Für {name} sticht kein einzelner Faktor als kritisch hervor: Die meiste Aufmerksamkeit verdient die Säule {weakest} mit {weakestScore}/10. {meaning} {drivers} Die stärkste Säule des Landes ist {strongest} mit {strongestScore}/10.",
       "strong": "Keine Säule signalisiert für {name} ein nennenswertes Risiko: Selbst die schwächste Säule, {weakest}, erreicht {weakestScore}/10 und liegt damit klar im risikoarmen Bereich, und insgesamt bewegen sich die fünf Säulen zwischen {weakestScore}/10 und {strongestScore}/10. Für Reisende bedeutet das: Normale, vernünftige Vorsichtsmaßnahmen genügen."
     },
     "a2DriverClause": {
@@ -672,6 +678,8 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     "advisoryCountNoun": {
       "one": "einen staatlichen Reisehinweis",
       "other": "{n} staatliche Reisehinweise"
-    }
+    },
+    "a1Grey": "Für dieses Reiseziel können wir noch keine offizielle Sicherheitsbewertung angeben: Wir veröffentlichen eine nur, wenn mindestens vier unabhängige Quellen einen Ort abdecken, und hier sind es weniger. Lesen Sie die staatlichen Reisehinweise weiter unten und prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.",
+    "a3NoneGrey": "Stand {monthYear} veröffentlicht keine Regierung in unserem Datensatz einen Reisehinweis für {name} — typisch für sehr kleine oder abgelegene Gebiete. Prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung."
   }
 };

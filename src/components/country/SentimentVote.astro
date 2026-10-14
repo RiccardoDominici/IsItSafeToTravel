@@ -21,9 +21,14 @@ interface Props {
   /** Bare localized country name (getLocalizedCountryName). */
   countryName?: string;
   lang: Lang;
+  /**
+   * Grey country only: show the "Partial data" notice above the question. The country page passes
+   * false when the widget sits inside the grey hero, which already says why there is no score.
+   */
+  showPartialNotice?: boolean;
 }
 
-const { iso3, officialScore, countryName = '', lang } = Astro.props;
+const { iso3, officialScore, countryName = '', lang, showPartialNotice = true } = Astro.props;
 const copy = communityCopy[lang];
 
 const isGrey = isGreyScore(officialScore);
@@ -45,7 +50,7 @@ const radioDotClass =
 ---
 
 <div class="sentiment-vote" data-vote-mode={isGrey ? 'absolute' : 'relative'}>
-  {isGrey && (
+  {isGrey && showPartialNotice && (
     <div class="mb-4 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-900/40 p-3">
       <p class="text-sm font-semibold text-sand-700 dark:text-sand-200">{copy.partialDataTitle}</p>
       <p class="text-sm text-sand-600 dark:text-sand-400">{copy.partialDataBody}</p>

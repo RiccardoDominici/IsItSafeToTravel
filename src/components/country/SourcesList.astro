@@ -3,6 +3,7 @@ import type { SourceMeta, PillarScore, ScoredCountry } from '../../pipeline/type
 import type { Lang } from '../../i18n/ui';
 import { useTranslations, type TranslationKey } from '../../i18n/utils';
 import { getLocalizedSourceDescription, buildLocalizedAdvisoryDescription } from '../../i18n/source-descriptions';
+import { isScoredIndicator } from '../../lib/indicator-display';
 
 interface Props {
   sources: SourceMeta[];
@@ -37,6 +38,8 @@ type FreshnessLevel = 'fresh' | 'recent' | 'stale' | 'outdated' | 'unknown';
 const yearsBySource = new Map<string, { min: number; max: number }>();
 for (const pillar of pillars ?? []) {
   for (const ind of pillar.indicators) {
+    // Only indicators the current formula scores (a pre-v10 snapshot still lists retired ones).
+    if (!isScoredIndicator(ind.name)) continue;
     if (!Number.isFinite(ind.year) || ind.year <= 0) continue;
     const entry = yearsBySource.get(ind.source);
     if (!entry) {

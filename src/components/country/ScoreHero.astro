@@ -9,6 +9,12 @@ import { getBand } from '../../lib/bands';
 import type { BandKey } from '../../pipeline/news/types';
 import { getBandVerdictCopy } from '../../lib/band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from '../../lib/confidence';
+import { isScored } from '../../lib/score-status';
+import { countryEvidenceCoverage } from '../../lib/indicator-display';
+import { communityCopy } from '../../i18n/community-copy';
+import { greyCopy, greySourceItems } from '../../i18n/grey-copy';
+import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
+import { routes } from '../../i18n/ui';
 
 interface Props {
   country: ScoredCountry;
@@ -19,7 +25,19 @@ interface Props {
 const { country, lang, scoreDelta } = Astro.props;
 const t = useTranslations(lang);
 
-const bgColor = scoreToColor(country.score);
+// Formula v10 grey place (insufficient_data): no score, no band colour, no rank, no delta. The
+// hero explains why (fewer than four independent sources), lists what we do have, links the rule
+// and hosts the vote widget (the page passes the community block in the default slot).
+const scored = isScored(country);
+const bareName = getLocalizedCountryName(country, lang);
+const grey = greyCopy[lang];
+const greyName = lang === 'en' ? getEnglishCountryPhrase(country.iso3, bareName) : bareName;
+const greyItems = scored ? [] : greySourceItems(lang, Object.keys(country.advisories ?? {}).length, (country.sources ?? []).map((s) => s.name));
+const methodologyHref = `/${lang}/${routes[lang].methodology}/#grey-rule`;
+
+// Scored-only values (never computed from a grey place's null score).
+const scoreValue = scored ? country.score : 0;
+const bgColor = scoreToColor(scoreValue);
 // WCAG: the moderate band's yellow fails contrast with white text — pick dark
 // text on light backgrounds, keep white on danger/safe colors.
 const fgColor = readableTextColor(bgColor);
@@ -42,8 +60,8 @@ const badgeStyles: Record<BandKey, string> = {
 // getBand() rounds to the same 1-decimal value the hero displays internally,
 // so the verdict never disagrees with the shown number at band boundaries
 // (e.g. 5.9975 -> "6.0").
-const band = getBand(country.score);
-const verdictText = getBandVerdictCopy(country.score, lang).badge;
+const band = getBand(scoreValue);
+const verdictText = getBandVerdictCopy(scoreValue, lang).badge;
 const badgeClass = badgeStyles[band];
 
 const formattedDate = new Intl.DateTimeFormat(lang, {
@@ -51,9 +69,48 @@ const formattedDate = new Intl.DateTimeFormat(lang, {
   month: 'long',
   day: 'numeric',
 }).format(new Date(country.lastUpdated));
-const completenessPercent = Math.round(country.dataCompleteness * 100);
+// Same coverage the pillar tables show (zero-precision alert feeds missing = nothing happening).
+const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) * 100);
 ---
 
+{!scored ? (
+<section class="text-center py-8 md:py-12 px-4" data-score-status="insufficient_data">
+  <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
+    {t('country.h1_question').replace('{name}', getH1CountryPhrase(lang, country.iso3, bareName))}
+  </h1>
+
+  <div class="flex justify-center mb-6">
+    <p class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-base md:text-lg font-semibold bg-sand-200 text-sand-800 dark:bg-sand-700 dark:text-sand-100">
+      <svg class="w-2.5 h-2.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="8" cy="8" r="8"/></svg>
+      <span>{communityCopy[lang].partialDataTitle}</span>
+    </p>
+  </div>
+
+  <div class="mx-auto max-w-xl rounded-2xl border border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-800 px-5 py-5 md:px-6 text-left">
+    <p class="text-xl md:text-2xl font-heading font-bold text-sand-700 dark:text-sand-100 text-center">{grey.noScore}</p>
+    <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.why.replace('{name}', greyName)}</p>
+    <p class="mt-4 text-sm font-semibold text-sand-800 dark:text-sand-100">{grey.haveHeading}</p>
+    {greyItems.length > 0 ? (
+      <ul class="mt-1 list-disc pl-5 space-y-0.5 text-sm text-sand-700 dark:text-sand-300">
+        {greyItems.map((item) => <li>{item}</li>)}
+      </ul>
+    ) : (
+      <p class="mt-1 text-sm text-sand-700 dark:text-sand-300">{grey.nothing}</p>
+    )}
+    <a href={methodologyHref} class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline">
+      {grey.methodologyLink}<span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+
+  <div class="mt-6 mx-auto max-w-xl text-left">
+    <slot />
+  </div>
+
+  <div class="mt-4 text-sm text-sand-600 dark:text-sand-400">
+    <span>{t('country.last_updated').replace('{date}', formattedDate)}</span>
+  </div>
+</section>
+) : (
 <section class="text-center py-8 md:py-12 px-4">
   {/* Question-form H1 + verdict directly under it: SERP competitors all restate
       the query as H1, and our yes/no verdict used to sit ~60% down the page in
@@ -61,7 +118,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
   <h1 class="text-3xl md:text-4xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-4">
     {/* {name} needs an article/preposition/case in it/pt/de (and "the" in en)
         that the bare localized name doesn't carry — see country-grammar.ts. */}
-    {t('country.h1_question').replace('{name}', getH1CountryPhrase(lang, country.iso3, getLocalizedCountryName(country, lang)))}
+    {t('country.h1_question').replace('{name}', getH1CountryPhrase(lang, country.iso3, bareName))}
   </h1>
 
   {/* Block wrapper: the pill itself is inline-flex, so without this it would
@@ -87,7 +144,7 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
         measured 5.13:1 before any fade) -- any alpha blend risks dropping
         below AA (2026-09 contrast fix). */}
     <span class="text-lg md:text-xl font-medium mt-1">
-      {country.score.toFixed(1)} {t('country.out_of')}
+      {scoreValue.toFixed(1)} {t('country.out_of')}
     </span>
   </div>
 
@@ -125,3 +182,4 @@ const completenessPercent = Math.round(country.dataCompleteness * 100);
     <span>{t('country.data_completeness').replace('{percent}', String(completenessPercent))}</span>
   </div>
 </section>
+)}

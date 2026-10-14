@@ -1,136 +1,47 @@
 ---
 export const prerender = true;
 
+// Country page (de). Data and body are shared by the 7 localized routes
+// (src/lib/country-page.ts, src/components/country/CountryPageBody.astro); this file keeps only
+// what is per-locale: the <title>.
 import type { GetStaticPaths } from 'astro';
-import type { ScoredCountry, SentimentEntry } from '../../../pipeline/types';
-import type { HistoryPoint, PillarHistoryData } from '../../../lib/scores';
 import Base from '../../../layouts/Base.astro';
-import ScoreHero from '../../../components/country/ScoreHero.astro';
-import PillarBreakdown from '../../../components/country/PillarBreakdown.astro';
-import SentimentPillar from '../../../components/country/SentimentPillar.astro';
-import SentimentVote from '../../../components/country/SentimentVote.astro';
-import AdvisorySection from '../../../components/country/AdvisorySection.astro';
-import TrendChart from '../../../components/country/TrendChart.astro';
-
-import SourcesList from '../../../components/country/SourcesList.astro';
-import RelatedCountries from '../../../components/country/RelatedCountries.astro';
-import AuthorityLinks from '../../../components/country/AuthorityLinks.astro';
-import Breadcrumb from '../../../components/Breadcrumb.astro';
-import FaqSection from '../../../components/country/FaqSection.astro';
-import AnswerFirstParagraph from '../../../components/country/AnswerFirstParagraph.astro';
-import ComparisonTable from '../../../components/country/ComparisonTable.astro';
-import TravelDealsWidget from '../../../components/TravelDealsWidget.astro';
-import NewsletterSignup from '../../../components/NewsletterSignup.astro';
-import { getMainCityIata, getMainCityName } from '../../../lib/iata-cities';
-import { loadLatestScores, loadHistoricalScores, loadPillarHistory, getScoreDelta, getLocalizedCountryName } from '../../../lib/scores';
-import { loadSentimentForCountry } from '../../../lib/sentiment';
+import CountryPageBody from '../../../components/country/CountryPageBody.astro';
+import { buildCountryPagePaths, type CountryPageProps } from '../../../lib/country-page';
+import { getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { getLastmodMap } from '../../../lib/lastmod';
-import { useTranslations } from '../../../i18n/utils';
+import { isScored } from '../../../lib/score-status';
+import { greyCopy } from '../../../i18n/grey-copy';
 import type { Lang } from '../../../i18n/ui';
-import { routes } from '../../../i18n/ui';
 import { getGermanNominative, getGermanCopula } from '../../../i18n/country-grammar';
 
 const lang: Lang = 'de';
-const r = routes[lang];
-const t = useTranslations(lang);
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const countries = loadLatestScores();
-  const history = loadHistoricalScores();
-  const sorted = [...countries].sort((a, b) => b.score - a.score);
-  const rankMap = new Map(sorted.map((c, i) => [c.iso3, i + 1]));
-
-  return countries.map((country) => ({
-    params: { slug: country.iso3.toLowerCase() },
-    props: {
-      country,
-      allCountries: countries,
-      trend: history.get(country.iso3) ?? [],
-      pillarTrend: loadPillarHistory(country.iso3),
-      scoreDelta: getScoreDelta(country.iso3, history),
-      rank: rankMap.get(country.iso3) ?? 0,
-      totalCountries: countries.length,
-      sentiment: loadSentimentForCountry(country.iso3),
-    },
-  }));
+  return buildCountryPagePaths();
 };
 
-interface Props {
-  country: ScoredCountry;
-  allCountries: ScoredCountry[];
-  trend: HistoryPoint[];
-  pillarTrend: PillarHistoryData | null;
-  scoreDelta: { delta: number; period: string } | null;
-  rank: number;
-  totalCountries: number;
-  sentiment: SentimentEntry | null;
-}
-
 // getStaticPaths props are not inferred by astro check — cast once to the declared
-// Props interface so every downstream component receives properly typed values.
-const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries, sentiment } = Astro.props as unknown as Props;
+// props type so every downstream component receives properly typed values.
+const props = Astro.props as unknown as CountryPageProps;
+const { country } = props;
+const name = getLocalizedCountryName(country, lang);
 const description = buildCountryMetaDescription(country, lang);
 const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
-const lm = getLastmodMap();
 // JSON-LD dateModified must match the visible "Last update" line, which renders
 // lm.snapshotDate (the daily pipeline recompute date). The per-country smart
-// lastmod (lm.countries) is a crawl hint that stays sitemap-only — surfacing it
-// here made schema claim the page was weeks stale while the copy said "updated
-// daily" (2026-08 SEO audit, flagged by 4 independent reviewers).
-const dateModified = lm.snapshotDate.slice(0, 10);
+// lastmod (lm.countries) is a crawl hint that stays sitemap-only (2026-08 SEO audit).
+const dateModified = getLastmodMap().snapshotDate.slice(0, 10);
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
-const advisorySources = Object.keys(country.advisories || {}).map(key => ({
-  key,
-  name: t(`country.advisory.${key}` as any),
-}));
-const iata = getMainCityIata(country.iso3);
-const cityName = iata ? getMainCityName(country.iso3, lang) : null;
-// Old title dropped the article entirely ("Ist Türkei sicher?"), wrong for
-// the ~25 countries that grammatically require one (die Türkei, der Iran,
-// die USA, das Vereinigte Königreich...). See country-grammar.ts. Copula is
-// separate from the article: plural names (die Vereinigten Staaten, die
-// Niederlande...) need "Sind", not "Ist" ("Ist die Vereinigten Staaten
-// sicher?" is a verb-agreement error even once the article is right).
-const titleNominative = getGermanNominative(country.iso3, getLocalizedCountryName(country, lang));
-const titleCopula = getGermanCopula(country.iso3, getLocalizedCountryName(country, lang));
+// Article where German needs one (die Türkei, der Iran, das Vereinigte Königreich) and a copula
+// that agrees with plural names (Sind die Vereinigten Staaten sicher?) — see country-grammar.ts.
+const titleNominative = getGermanNominative(country.iso3, name);
+const titleCopula = getGermanCopula(country.iso3, name);
+const title = isScored(country)
+  ? `${titleCopula} ${titleNominative} sicher? Score ${country.score.toFixed(1)}/10 (2026)`
+  : `${titleCopula} ${titleNominative} sicher? ${greyCopy[lang].titleSuffix} (2026)`;
 ---
-<Base lang={lang} title={`${titleCopula} ${titleNominative} sicher? Score ${country.score.toFixed(1)}/10 (2026)`} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
-  <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
-    <Breadcrumb lang={lang} items={[
-      { label: t('nav.home'), href: `/${lang}/` },
-      { label: t('nav.countries'), href: `/${lang}/` },
-      { label: getLocalizedCountryName(country, lang), href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
-    ]} />
-    <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
-      <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">
-        Letzte Aktualisierung: {new Date(lm.snapshotDate).toLocaleDateString('de-DE', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' })}
-      </p>
-      <span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300">
-        <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor"><circle cx="8" cy="8" r="3"/></svg>
-        {t('country.updated_daily_badge' as any)}
-      </span>
-    </div>
-    <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
-    <AnswerFirstParagraph country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
-    <PillarBreakdown pillars={country.pillars} lang={lang} />
-    <SentimentPillar sentiment={sentiment} official={country.score} lang={lang}>
-      <SentimentVote iso3={country.iso3} officialScore={country.score} countryName={getLocalizedCountryName(country, lang)} lang={lang} />
-    </SentimentPillar>
-    <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
-    <FaqSection country={country} lang={lang} />
-    <TravelDealsWidget
-      lang={lang}
-      destinationIata={iata ?? undefined}
-      destinationCityName={cityName ?? undefined}
-      countryName={getLocalizedCountryName(country, lang)}
-      mode="country"
-    />
-    <NewsletterSignup lang={lang} placement="country" countrySlug={country.iso3.toLowerCase()} />
-    <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
-    <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
-    <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
-    <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} />
-    <SourcesList sources={country.sources} pillars={country.pillars} lang={lang} advisories={country.advisories} />
-  </div>
+<Base lang={lang} title={title} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
+  <CountryPageBody {...props} lang={lang} canonicalUrl={canonicalUrl} />
 </Base>

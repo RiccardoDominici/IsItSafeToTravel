@@ -1,0 +1,137 @@
+---
+// Body of every country page, shared by the 7 localized routes (src/pages/{lang}/.../[slug].astro).
+// The routes keep their per-locale <title>, meta description and JSON-LD; everything below the
+// <Base> wrapper lives here so the scored and grey layouts are defined once (src/lib/country-page.ts
+// explains why).
+//
+// Scored country: hero with the score, summary, pillar bars + indicator tables, community block
+// (data score, community adjustment, final score once the community is active), advisories, FAQ,
+// comparisons, trend chart, sources.
+// Grey place (formula v10 insufficient_data, SPEC §4/§7): no number anywhere. The hero says
+// "Partial data", why, which sources exist, links the rule and hosts the absolute vote widget;
+// pillar figures, the trend chart and the score delta are not rendered.
+import type { Lang } from '../../i18n/ui';
+import { routes } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import type { CountryPageProps } from '../../lib/country-page';
+import { getLocalizedCountryName, getFormulaChange } from '../../lib/scores';
+import { getLastmodMap } from '../../lib/lastmod';
+import { isScored, officialScore } from '../../lib/score-status';
+import { getMainCityIata, getMainCityName } from '../../lib/iata-cities';
+import Breadcrumb from '../Breadcrumb.astro';
+import ScoreHero from './ScoreHero.astro';
+import AnswerFirstParagraph from './AnswerFirstParagraph.astro';
+import PillarBreakdown from './PillarBreakdown.astro';
+import SentimentPillar from './SentimentPillar.astro';
+import SentimentVote from './SentimentVote.astro';
+import AdvisorySection from './AdvisorySection.astro';
+import FaqSection from './FaqSection.astro';
+import ComparisonTable from './ComparisonTable.astro';
+import RelatedCountries from './RelatedCountries.astro';
+import AuthorityLinks from './AuthorityLinks.astro';
+import TrendChart from './TrendChart.astro';
+import SourcesList from './SourcesList.astro';
+import TravelDealsWidget from '../TravelDealsWidget.astro';
+import NewsletterSignup from '../NewsletterSignup.astro';
+
+interface Props extends CountryPageProps {
+  lang: Lang;
+  canonicalUrl: string;
+}
+
+const { country, allCountries, trend, pillarTrend, scoreDelta, rank, totalCountries, sentiment, lang, canonicalUrl } = Astro.props;
+const t = useTranslations(lang);
+const r = routes[lang];
+const name = getLocalizedCountryName(country, lang);
+const scored = isScored(country);
+
+// "Last update" shows the snapshot date (the daily recompute), the same date JSON-LD dateModified
+// carries. Per-locale label kept here, next to its only use.
+const DATE_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+const LAST_UPDATE: Record<Lang, string> = {
+  en: 'Last update: {date}',
+  it: 'Ultimo aggiornamento: {date}',
+  es: 'Última actualización: {date}',
+  fr: 'Dernière mise à jour : {date}',
+  pt: 'Última atualização: {date}',
+  zh: '最后更新：{date}',
+  de: 'Letzte Aktualisierung: {date}',
+};
+const lm = getLastmodMap();
+const lastUpdate = LAST_UPDATE[lang].replace(
+  '{date}',
+  new Date(lm.snapshotDate).toLocaleDateString(DATE_LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }),
+);
+
+const advisorySources = Object.keys(country.advisories || {}).map((key) => ({
+  key,
+  name: t(`country.advisory.${key}` as any),
+}));
+const iata = getMainCityIata(country.iso3);
+const cityName = iata ? getMainCityName(country.iso3, lang) : null;
+const formulaChange = getFormulaChange();
+---
+
+<div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
+  <Breadcrumb lang={lang} items={[
+    { label: t('nav.home'), href: `/${lang}/` },
+    { label: t('nav.countries'), href: `/${lang}/` },
+    { label: name, href: `/${lang}/${r.country}/${country.iso3.toLowerCase()}/` },
+  ]} />
+  <div class="flex flex-wrap items-center justify-center gap-2 mt-1">
+    <p class="text-sm text-sand-600 dark:text-sand-400 font-medium">{lastUpdate}</p>
+    {/* Honest cadence (formula v10, SPEC §7): the SCORE is recalculated daily; advisories and
+        disaster alerts change daily, international indices once or twice a year. The full
+        sentence is the badge's tooltip and is printed under the pillar tables. */}
+    <span
+      class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-300"
+      title={t('country.update_cadence')}
+    >
+      <svg class="w-3 h-3" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="8" cy="8" r="3"/></svg>
+      {t('country.updated_daily_badge')}
+    </span>
+  </div>
+
+  {scored ? (
+    <>
+      <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
+      <AnswerFirstParagraph country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
+      <PillarBreakdown pillars={country.pillars} lang={lang} />
+      <SentimentPillar
+        sentiment={sentiment}
+        community={country.community ?? null}
+        official={officialScore(country)}
+        dataScore={country.dataScore ?? null}
+        scoreAdjustment={country.community?.adjustment ?? null}
+        lang={lang}
+      >
+        <SentimentVote iso3={country.iso3} officialScore={officialScore(country)} countryName={name} lang={lang} />
+      </SentimentPillar>
+    </>
+  ) : (
+    <>
+      <ScoreHero country={country} lang={lang} scoreDelta={null}>
+        <SentimentPillar sentiment={sentiment} community={country.community ?? null} official={null} lang={lang}>
+          <SentimentVote iso3={country.iso3} officialScore={null} countryName={name} lang={lang} showPartialNotice={false} />
+        </SentimentPillar>
+      </ScoreHero>
+      <AnswerFirstParagraph country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
+    </>
+  )}
+
+  <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
+  <FaqSection country={country} lang={lang} />
+  <TravelDealsWidget
+    lang={lang}
+    destinationIata={iata ?? undefined}
+    destinationCityName={cityName ?? undefined}
+    countryName={name}
+    mode="country"
+  />
+  <NewsletterSignup lang={lang} placement="country" countrySlug={country.iso3.toLowerCase()} />
+  <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
+  <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
+  <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
+  {scored && <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} formulaChange={formulaChange} />}
+  <SourcesList sources={country.sources} pillars={scored ? country.pillars : []} lang={lang} advisories={country.advisories} />
+</div>

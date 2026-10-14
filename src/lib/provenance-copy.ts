@@ -39,7 +39,7 @@ const otherSourceNoun: Record<Lang, { one: string; other: string }> = {
   es: { one: 'otro conjunto de datos público', other: '{n} otros conjuntos de datos públicos' },
   fr: { one: 'un autre jeu de données public', other: '{n} autres jeux de données publics' },
   pt: { one: 'outro conjunto de dados público', other: '{n} outros conjuntos de dados públicos' },
-  zh: { one: '1 个其他公开数据集', other: '{n} 个其他公开数据集' },
+  zh: { one: '1个其他公开数据集', other: '{n}个其他公开数据集' },
   de: { one: 'einen weiteren öffentlichen Datensatz', other: '{n} weitere öffentliche Datensätze' },
 };
 

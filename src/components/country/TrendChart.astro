@@ -2,17 +2,47 @@
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
-import type { HistoryPoint } from '../../lib/scores';
+import type { FormulaChange, HistoryPoint } from '../../lib/scores';
 
 interface Props {
   data: HistoryPoint[];
   pillarData?: Record<string, HistoryPoint[]> | null;
   lang: Lang;
   iso3: string;
+  /**
+   * First snapshot computed with formula v10+ (getFormulaChange), or null. Past snapshots stay on
+   * the formula they were computed with (SPEC §6), so the chart marks the switch date with a dashed
+   * line and says that earlier points used the previous formula: a jump on that day is the
+   * method changing, not the country.
+   */
+  formulaChange?: FormulaChange | null;
 }
 
-const { data, pillarData, lang, iso3 } = Astro.props;
+const { data, pillarData, lang, iso3, formulaChange = null } = Astro.props;
 const t = useTranslations(lang);
+
+const formulaCopy: Record<Lang, { marker: string; note: string }> = {
+  en: { marker: 'Formula v{v}', note: 'The dashed line marks {date}, when the score moved to formula v{v}; earlier points were computed with the previous formula.' },
+  it: { marker: 'Formula v{v}', note: 'La linea tratteggiata indica il {date}, quando il punteggio è passato alla formula v{v}; i valori precedenti sono stati calcolati con la formula precedente.' },
+  es: { marker: 'Fórmula v{v}', note: 'La línea discontinua marca el {date}, cuando la puntuación pasó a la fórmula v{v}; los valores anteriores se calcularon con la fórmula anterior.' },
+  fr: { marker: 'Formule v{v}', note: 'La ligne pointillée marque le {date}, date du passage du score à la formule v{v} ; les valeurs antérieures ont été calculées avec la formule précédente.' },
+  pt: { marker: 'Fórmula v{v}', note: 'A linha tracejada marca {date}, quando a pontuação passou para a fórmula v{v}; os valores anteriores foram calculados com a fórmula anterior.' },
+  zh: { marker: '公式 v{v}', note: '虚线标出{date}，即评分改用公式 v{v} 的日期；此前的数值按旧公式计算。' },
+  de: { marker: 'Formel v{v}', note: 'Die gestrichelte Linie markiert den {date}, an dem die Bewertung auf Formel v{v} umgestellt wurde; frühere Werte wurden mit der vorherigen Formel berechnet.' },
+};
+const DATE_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+// Only worth saying when the switch date falls inside the plotted history.
+const showFormulaNote =
+  formulaChange !== null && data.length >= 2 && data[0].date < formulaChange.date && data[data.length - 1].date >= formulaChange.date;
+const formulaMarker = formulaChange ? formulaCopy[lang].marker.replace('{v}', formulaChange.version) : '';
+const formulaNote = formulaChange
+  ? formulaCopy[lang].note
+      .replaceAll('{v}', formulaChange.version)
+      .replace(
+        '{date}',
+        new Date(`${formulaChange.date}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }),
+      )
+  : '';
 
 // Small, page-local labels for the chart chrome (loading state, time-range
 // buttons, reset) -- these were hardcoded English strings, invisible to a
@@ -91,7 +121,14 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           </div>
         </div>
       )}
-      <div id="trend-chart-container" class="relative" data-iso3={iso3.toLowerCase()} data-lang={lang}>
+      <div
+        id="trend-chart-container"
+        class="relative"
+        data-iso3={iso3.toLowerCase()}
+        data-lang={lang}
+        data-formula-date={formulaChange?.date ?? ''}
+        data-formula-label={formulaMarker}
+      >
         <div id="trend-chart-placeholder" class="flex items-center justify-center w-full bg-sand-50 dark:bg-sand-900 rounded" style="aspect-ratio: 800/240;">
           <span class="text-sm text-sand-600 dark:text-sand-400 animate-pulse">{cl.loading}</span>
         </div>
@@ -113,6 +150,9 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         <p class="text-xs text-sand-600 dark:text-sand-400 mt-2 italic">
           {t('country.trend_accumulating')}
         </p>
+      )}
+      {showFormulaNote && (
+        <p class="text-xs text-sand-600 dark:text-sand-400 mt-2">{formulaNote}</p>
       )}
     </div>
   ) : stableScore !== null ? (
@@ -349,6 +389,19 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${t.label}</text>`;
         }
 
+        // Formula switch marker (dashed vertical line + label) when the date is in the plotted range.
+        let formulaMarkerSvg = '';
+        const formulaDate = container!.dataset.formulaDate;
+        if (formulaDate) {
+          const fd = new Date(formulaDate + 'T00:00:00Z');
+          if (fd > dates[0] && fd <= dates[dates.length - 1]) {
+            const fx = xScale(fd);
+            const nearRight = fx > innerWidth - 90;
+            formulaMarkerSvg = `<line x1="${fx}" x2="${fx}" y1="0" y2="${innerHeight}" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />`
+              + `<text x="${nearRight ? fx - 4 : fx + 4}" y="11" text-anchor="${nearRight ? 'end' : 'start'}" font-size="11" class="fill-sand-600 dark:fill-sand-400">${container!.dataset.formulaLabel || ''}</text>`;
+          }
+        }
+
         svg.innerHTML = `
           <defs>
             <linearGradient id="trendGradient" x1="0" y1="0" x2="0" y2="1">
@@ -359,6 +412,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           </defs>
           <g class="chart-main" transform="translate(${margin.left}, ${margin.top})">
             ${gridLines}
+            ${formulaMarkerSvg}
             ${segmentPaths}
             <circle cx="${endCx}" cy="${endCy}" r="4" fill="${endColor}" />
             ${yLabels}

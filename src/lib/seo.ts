@@ -18,6 +18,9 @@ import { getBandVerdictCopy } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { selectPillarExtremes } from './pillar-extremes';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
+import { isScored } from './score-status';
+import { isScoredIndicator } from './indicator-display';
+import { selectDriverPillar } from './country-summary';
 import {
   getEnglishCountryPhrase,
   getItalianLocative,
@@ -152,13 +155,13 @@ const regionDisplayNames: Record<string, Record<Lang, string>> = {
 
 // Pillar name translations for meta descriptions
 const pillarLabels: Record<Lang, Record<PillarName, string>> = {
-  en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'environment' },
-  it: { conflict: 'conflitto', crime: 'criminalità', health: 'salute', governance: 'governance', environment: 'ambiente' },
-  es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'medio ambiente' },
-  fr: { conflict: 'conflit', crime: 'criminalité', health: 'santé', governance: 'gouvernance', environment: 'environnement' },
-  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saúde', governance: 'governança', environment: 'meio ambiente' },
-  zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '环境' },
-  de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Umwelt' },
+  en: { conflict: 'conflict', crime: 'crime', health: 'health', governance: 'governance', environment: 'natural hazards' },
+  it: { conflict: 'conflitto', crime: 'criminalità', health: 'salute', governance: 'governance', environment: 'rischi naturali' },
+  es: { conflict: 'conflicto', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'riesgos naturales' },
+  fr: { conflict: 'conflit', crime: 'criminalité', health: 'santé', governance: 'gouvernance', environment: 'risques naturels' },
+  pt: { conflict: 'conflito', crime: 'criminalidade', health: 'saúde', governance: 'governança', environment: 'riscos naturais' },
+  zh: { conflict: '冲突', crime: '犯罪', health: '健康', governance: '治理', environment: '自然灾害' },
+  de: { conflict: 'Konflikt', crime: 'Kriminalität', health: 'Gesundheit', governance: 'Regierungsführung', environment: 'Naturgefahren' },
 };
 
 /**
@@ -187,6 +190,9 @@ function selectPillarDriverLabels(pillar: PillarScore, lang: Lang): string[] {
   const entries: { key: string; nv: number }[] = [];
   let advisoryMin: number | null = null;
   for (const ind of pillar.indicators) {
+    // A pre-v10 snapshot still lists retired indicators (child mortality, PM2.5, two mislabelled
+    // INFORM columns): never name them as what drives a pillar today.
+    if (!ind.name.startsWith('advisory_level_') && !isScoredIndicator(ind.name)) continue;
     if (ind.name.startsWith('advisory_level_')) {
       advisoryMin = advisoryMin === null ? ind.normalizedValue : Math.min(advisoryMin, ind.normalizedValue);
     } else if (labelMap[ind.name]) {
@@ -213,11 +219,29 @@ const ADVISORY_GOV_PRIORITY = [
 ];
 
 /**
+ * Meta description of a grey place (formula v10 insufficient_data): no score, band or pillar.
+ * The four-source floor is spelled out ("four"): validate-seo reads "<n> sources" as a count claim.
+ */
+const greyMetaDescriptions: Record<Lang, (name: string) => string> = {
+  en: (n) => `${n}: partial data, no official safety score yet (fewer than four independent sources). See the government advisories we have and rate your trip.`,
+  it: (n) => `${n}: dati parziali, ancora nessun punteggio di sicurezza ufficiale (meno di quattro fonti indipendenti). Vedi gli avvisi disponibili e valuta il tuo viaggio.`,
+  es: (n) => `${n}: datos parciales, aún sin puntuación de seguridad oficial (menos de cuatro fuentes independientes). Consulta los avisos disponibles y valora tu viaje.`,
+  fr: (n) => `${n} : données partielles, pas encore de score de sécurité officiel (moins de quatre sources indépendantes). Consultez les avis disponibles et notez votre voyage.`,
+  pt: (n) => `${n}: dados parciais, ainda sem pontuação de segurança oficial (menos de quatro fontes independentes). Veja os alertas disponíveis e avalie sua viagem.`,
+  zh: (n) => `${n}数据不完整，暂无官方安全评分（独立来源不足四个）。查看现有的政府旅行警告，并分享您的旅行感受。`,
+  de: (n) => `${n}: unvollständige Datenlage, noch keine offizielle Sicherheitsbewertung (weniger als vier unabhängige Quellen). Reisehinweise ansehen und Reise bewerten.`,
+};
+
+/**
  * Generate a unique meta description for a country page based on score data.
  * Each country gets a differentiated description using its score, risk level,
  * and weakest pillar, kept within Google's ~155-character display budget.
  */
 export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang): string {
+  // Formula v10 grey place: no score, band or pillar figure in the SERP snippet either.
+  if (!isScored(country)) {
+    return greyMetaDescriptions[lang](getLocalizedCountryName(country, lang));
+  }
   const score = country.score;
 
   // Single source of truth for the risk label (band-copy.ts) — must read the
@@ -232,7 +256,10 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   // same root cause as content.md's C2 in AnswerFirstParagraph). Only
   // pillars with sufficient data coverage are eligible, so a zero-data
   // pillar (e.g. Monaco's crime/governance/environment) is never named.
-  const { weakest, isNearTie } = selectPillarExtremes(country.pillars);
+  // The pillar named is the same one the page's summary and FAQ name (selectDriverPillar in
+  // country-summary.ts), so the snippet never contradicts the page.
+  const { isNearTie } = selectPillarExtremes(country.pillars);
+  const weakest = selectDriverPillar(country.pillars).pillar;
 
   const weakestScore = (weakest.score * 10).toFixed(1);
   const weakestLabel = pillarLabels[lang][weakest.name];
@@ -257,7 +284,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
         es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Los cinco pilares de seguridad están muy igualados.`,
         fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Les cinq piliers de sécurité sont très proches les uns des autres.`,
         pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Os cinco pilares de segurança estão muito equilibrados entre si.`,
-        zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），五大安全支柱得分非常接近，没有明显的强项或弱项。`,
+        zh: `${name}当前安全评分为${roundedScore}/10（${riskLevel}），五大安全支柱得分非常接近，没有明显的强项或弱项。`,
         de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Die fünf Sicherheitssäulen liegen sehr nah beieinander.`,
       }
     : {
@@ -266,7 +293,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
         es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}).`,
         fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}).`,
         pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}).`,
-        zh: `${name} 当前安全评分为 ${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和环境五大安全类别。最需关注：${weakestLabel}（${weakestScore} 分）。`,
+        zh: `${name}当前安全评分为${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和自然灾害五大安全类别。最需关注：${weakestLabel}（${weakestScore}分）。`,
         de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
       };
   // Computed, not hardcoded: this "tails" block used to declare its own
@@ -278,14 +305,16 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   // live on all 1,918 country pages. Caught while building the validate-seo.ts
   // computed-count guard below, which is exactly the kind of drift it exists
   // to catch.
+  // Honest cadence (formula v10, SPEC §7): the SCORE is recalculated daily; most of the data
+  // behind it is not ("updated daily" claimed the opposite).
   const tails: Record<Lang, string> = {
-    en: ` Free data from ${SOURCE_COUNT_DISPLAY} sources, updated daily.`,
-    it: ` Dati gratuiti da ${SOURCE_COUNT_DISPLAY} fonti, aggiornati ogni giorno.`,
-    es: ` Datos gratuitos de ${SOURCE_COUNT_DISPLAY} fuentes, actualizados a diario.`,
-    fr: ` Données gratuites de ${SOURCE_COUNT_DISPLAY} sources, mises à jour chaque jour.`,
-    pt: ` Dados gratuitos de ${SOURCE_COUNT_DISPLAY} fontes, atualizados diariamente.`,
-    zh: `数据来自 ${SOURCE_COUNT_DISPLAY} 个公开来源，每日更新，免费查询。`,
-    de: ` Kostenlose Daten aus ${SOURCE_COUNT_DISPLAY} Quellen, täglich aktualisiert.`,
+    en: ` Free score from ${SOURCE_COUNT_DISPLAY} public sources, recalculated daily.`,
+    it: ` Punteggio gratuito da ${SOURCE_COUNT_DISPLAY} fonti pubbliche, ricalcolato ogni giorno.`,
+    es: ` Puntuación gratuita de ${SOURCE_COUNT_DISPLAY} fuentes públicas, recalculada a diario.`,
+    fr: ` Score gratuit issu de ${SOURCE_COUNT_DISPLAY} sources publiques, recalculé chaque jour.`,
+    pt: ` Pontuação gratuita de ${SOURCE_COUNT_DISPLAY} fontes públicas, recalculada diariamente.`,
+    zh: `评分基于${SOURCE_COUNT_DISPLAY}个公开来源，每日重新计算，免费查询。`,
+    de: ` Kostenloser Wert aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, täglich neu berechnet.`,
   };
 
   const base = bases[lang];
@@ -345,13 +374,24 @@ const touristTypes: Record<Lang, [string, string, string]> = {
 
 // TouristDestination.description
 const touristDescriptions: Record<Lang, (name: string, score: string, band: string) => string> = {
-  en: (n, s, b) => `Travel safety information for ${n}. Safety score: ${s}/10 (${b}). Data from IsItSafeToTravel.org, updated daily.`,
-  it: (n, s, b) => `Informazioni sulla sicurezza dei viaggi per ${n}. Punteggio di sicurezza: ${s}/10 (${b}). Dati da IsItSafeToTravel.org, aggiornati ogni giorno.`,
-  es: (n, s, b) => `Información de seguridad de viaje para ${n}. Puntuación de seguridad: ${s}/10 (${b}). Datos de IsItSafeToTravel.org, actualizados a diario.`,
-  fr: (n, s, b) => `Informations de sécurité voyage pour ${n}. Score de sécurité : ${s}/10 (${b}). Données de IsItSafeToTravel.org, mises à jour quotidiennement.`,
-  pt: (n, s, b) => `Informações de segurança de viagem para ${n}. Pontuação de segurança: ${s}/10 (${b}). Dados de IsItSafeToTravel.org, atualizados diariamente.`,
-  zh: (n, s, b) => `${n} 旅行安全信息。安全评分：${s}/10（${b}）。数据来自 IsItSafeToTravel.org，每日更新。`,
-  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheits-Score: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, täglich aktualisiert.`,
+  en: (n, s, b) => `Travel safety information for ${n}. Safety score: ${s}/10 (${b}). Data from IsItSafeToTravel.org, score recalculated daily.`,
+  it: (n, s, b) => `Informazioni sulla sicurezza dei viaggi per ${n}. Punteggio di sicurezza: ${s}/10 (${b}). Dati da IsItSafeToTravel.org, punteggio ricalcolato ogni giorno.`,
+  es: (n, s, b) => `Información de seguridad de viaje para ${n}. Puntuación de seguridad: ${s}/10 (${b}). Datos de IsItSafeToTravel.org, puntuación recalculada a diario.`,
+  fr: (n, s, b) => `Informations de sécurité voyage pour ${n}. Score de sécurité : ${s}/10 (${b}). Données de IsItSafeToTravel.org, score recalculé chaque jour.`,
+  pt: (n, s, b) => `Informações de segurança de viagem para ${n}. Pontuação de segurança: ${s}/10 (${b}). Dados de IsItSafeToTravel.org, pontuação recalculada diariamente.`,
+  zh: (n, s, b) => `${n}旅行安全信息。安全评分：${s}/10（${b}）。数据来自 IsItSafeToTravel.org，评分每日重新计算。`,
+  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheits-Score: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, Wert täglich neu berechnet.`,
+};
+
+// TouristDestination.description of a grey place: no score, no band.
+const touristDescriptionsGrey: Record<Lang, (name: string) => string> = {
+  en: (n) => `Travel safety information for ${n}. Partial data: no official safety score yet. Government advisories from IsItSafeToTravel.org.`,
+  it: (n) => `Informazioni sulla sicurezza dei viaggi per ${n}. Dati parziali: ancora nessun punteggio di sicurezza ufficiale. Avvisi governativi da IsItSafeToTravel.org.`,
+  es: (n) => `Información de seguridad de viaje para ${n}. Datos parciales: aún sin puntuación de seguridad oficial. Avisos gubernamentales de IsItSafeToTravel.org.`,
+  fr: (n) => `Informations de sécurité voyage pour ${n}. Données partielles : pas encore de score de sécurité officiel. Avis gouvernementaux de IsItSafeToTravel.org.`,
+  pt: (n) => `Informações de segurança de viagem para ${n}. Dados parciais: ainda sem pontuação de segurança oficial. Alertas governamentais de IsItSafeToTravel.org.`,
+  zh: (n) => `${n}旅行安全信息。数据不完整：暂无官方安全评分。政府旅行警告来自 IsItSafeToTravel.org。`,
+  de: (n) => `Reise-Sicherheitsinformationen für ${n}. Unvollständige Datenlage: noch keine offizielle Sicherheitsbewertung. Staatliche Reisehinweise von IsItSafeToTravel.org.`,
 };
 
 // Dataset.name (year is appended)
@@ -367,13 +407,24 @@ const datasetNames: Record<Lang, (name: string, year: number) => string> = {
 
 // Dataset.description
 const datasetDescriptions: Record<Lang, (name: string) => string> = {
-  en: (n) => `Daily updated safety scores for ${n}, covering conflict, crime, health, governance, and environment.`,
-  it: (n) => `Punteggi di sicurezza aggiornati ogni giorno per ${n}, che coprono conflitto, criminalità, salute, governance e ambiente.`,
-  es: (n) => `Puntuaciones de seguridad actualizadas diariamente para ${n}, que cubren conflicto, criminalidad, salud, gobernanza y medio ambiente.`,
-  fr: (n) => `Scores de sécurité mis à jour quotidiennement pour ${n}, couvrant conflit, criminalité, santé, gouvernance et environnement.`,
-  pt: (n) => `Pontuações de segurança atualizadas diariamente para ${n}, cobrindo conflito, criminalidade, saúde, governança e meio ambiente.`,
-  zh: (n) => `${n} 综合安全评分，基于冲突、犯罪、健康、治理和环境五大风险类别加权计算，数据来源公开透明，每日自动更新，供出行前参考。`,
-  de: (n) => `Täglich aktualisierte Sicherheits-Scores für ${n}, die Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt abdecken.`,
+  en: (n) => `Safety scores for ${n}, recalculated daily from public sources and covering conflict, crime, health, governance and natural hazards.`,
+  it: (n) => `Punteggi di sicurezza per ${n}, ricalcolati ogni giorno da fonti pubbliche, che coprono conflitto, criminalità, salute, governance e rischi naturali.`,
+  es: (n) => `Puntuaciones de seguridad para ${n}, recalculadas a diario a partir de fuentes públicas, que cubren conflicto, criminalidad, salud, gobernanza y riesgos naturales.`,
+  fr: (n) => `Scores de sécurité pour ${n}, recalculés chaque jour à partir de sources publiques et couvrant conflit, criminalité, santé, gouvernance et risques naturels.`,
+  pt: (n) => `Pontuações de segurança para ${n}, recalculadas diariamente a partir de fontes públicas, cobrindo conflito, criminalidade, saúde, governança e riscos naturais.`,
+  zh: (n) => `${n}综合安全评分，基于冲突、犯罪、健康、治理和自然灾害五大类别加权计算，数据来源公开透明，评分每日重新计算，供出行前参考。`,
+  de: (n) => `Sicherheits-Scores für ${n}, täglich aus öffentlichen Quellen neu berechnet, mit den Bereichen Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren.`,
+};
+
+// Dataset.description of a grey place: what exists, and that no score is published.
+const datasetDescriptionsGrey: Record<Lang, (name: string) => string> = {
+  en: (n) => `Travel safety data for ${n}: government travel advisories and the few indicators available. Partial data, so no official safety score is published.`,
+  it: (n) => `Dati sulla sicurezza di viaggio per ${n}: avvisi di viaggio governativi e i pochi indicatori disponibili. Dati parziali, quindi nessun punteggio di sicurezza ufficiale.`,
+  es: (n) => `Datos de seguridad de viaje para ${n}: avisos de viaje gubernamentales y los pocos indicadores disponibles. Datos parciales, por lo que no se publica una puntuación oficial.`,
+  fr: (n) => `Données de sécurité voyage pour ${n} : avis gouvernementaux aux voyageurs et les rares indicateurs disponibles. Données partielles, donc aucun score officiel n'est publié.`,
+  pt: (n) => `Dados de segurança de viagem para ${n}: alertas de viagem governamentais e os poucos indicadores disponíveis. Dados parciais, por isso não há pontuação oficial publicada.`,
+  zh: (n) => `${n}的旅行安全数据：政府旅行警告及少量可用指标。数据不完整，因此不发布官方安全评分。`,
+  de: (n) => `Reisesicherheitsdaten für ${n}: staatliche Reisehinweise und die wenigen verfügbaren Indikatoren. Unvollständige Datenlage, daher keine offizielle Sicherheitsbewertung.`,
 };
 
 // Dataset.measurementTechnique
@@ -395,7 +446,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Crime Risk', description: 'Personal crime and safety risk assessment' },
     { name: 'Health Risk', description: 'Health infrastructure and disease risk assessment' },
     { name: 'Governance', description: 'Rule of law, corruption, and institutional stability' },
-    { name: 'Environment Risk', description: 'Natural disaster and climate hazard risk' },
+    { name: 'Natural Hazard Risk', description: 'Exposure to natural hazards and ongoing natural disasters' },
   ],
   it: [
     { name: 'Punteggio di sicurezza', description: 'Punteggio di sicurezza composito su scala 1-10', unitText: 'score' },
@@ -403,7 +454,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Rischio criminalità', description: 'Valutazione del rischio di criminalità e sicurezza personale' },
     { name: 'Rischio sanitario', description: 'Valutazione del rischio sanitario e delle infrastrutture mediche' },
     { name: 'Governance', description: 'Stato di diritto, corruzione e stabilità istituzionale' },
-    { name: 'Rischio ambientale', description: 'Rischio di disastri naturali e pericoli climatici' },
+    { name: 'Rischi naturali', description: 'Esposizione ai rischi naturali e disastri naturali in corso' },
   ],
   es: [
     { name: 'Puntuación de seguridad', description: 'Puntuación de seguridad compuesta en escala 1-10', unitText: 'score' },
@@ -411,7 +462,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Riesgo de criminalidad', description: 'Evaluación del riesgo de criminalidad y seguridad personal' },
     { name: 'Riesgo sanitario', description: 'Evaluación del riesgo sanitario y de la infraestructura médica' },
     { name: 'Gobernanza', description: 'Estado de derecho, corrupción y estabilidad institucional' },
-    { name: 'Riesgo ambiental', description: 'Riesgo de desastres naturales y peligros climáticos' },
+    { name: 'Riesgos naturales', description: 'Exposición a peligros naturales y desastres naturales en curso' },
   ],
   fr: [
     { name: 'Score de sécurité', description: 'Score de sécurité composite sur une échelle de 1 à 10', unitText: 'score' },
@@ -419,7 +470,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Risque de criminalité', description: 'Évaluation du risque de criminalité et de sécurité personnelle' },
     { name: 'Risque sanitaire', description: "Évaluation du risque sanitaire et de l'infrastructure médicale" },
     { name: 'Gouvernance', description: 'État de droit, corruption et stabilité institutionnelle' },
-    { name: 'Risque environnemental', description: 'Risque de catastrophes naturelles et de dangers climatiques' },
+    { name: 'Risques naturels', description: 'Exposition aux risques naturels et catastrophes naturelles en cours' },
   ],
   pt: [
     { name: 'Pontuação de segurança', description: 'Pontuação de segurança composta na escala de 1 a 10', unitText: 'score' },
@@ -427,7 +478,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Risco de criminalidade', description: 'Avaliação do risco de criminalidade e segurança pessoal' },
     { name: 'Risco sanitário', description: 'Avaliação do risco sanitário e da infraestrutura médica' },
     { name: 'Governança', description: 'Estado de direito, corrupção e estabilidade institucional' },
-    { name: 'Risco ambiental', description: 'Risco de desastres naturais e perigos climáticos' },
+    { name: 'Riscos naturais', description: 'Exposição a riscos naturais e desastres naturais em andamento' },
   ],
   zh: [
     { name: '安全评分', description: '1-10 分制的综合安全评分', unitText: 'score' },
@@ -435,7 +486,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: '犯罪风险', description: '人身犯罪与安全风险评估' },
     { name: '健康风险', description: '医疗基础设施与疾病风险评估' },
     { name: '治理', description: '法治、腐败与制度稳定性' },
-    { name: '环境风险', description: '自然灾害与气候危害风险' },
+    { name: '自然灾害风险', description: '自然灾害暴露程度及正在发生的自然灾害' },
   ],
   de: [
     { name: 'Sicherheits-Score', description: 'Zusammengesetzter Sicherheits-Score auf einer Skala von 1 bis 10', unitText: 'score' },
@@ -443,7 +494,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: 'Kriminalitätsrisiko', description: 'Bewertung des Risikos persönlicher Kriminalität und Sicherheit' },
     { name: 'Gesundheitsrisiko', description: 'Bewertung von Gesundheitsinfrastruktur und Krankheitsrisiko' },
     { name: 'Regierungsführung', description: 'Rechtsstaatlichkeit, Korruption und institutionelle Stabilität' },
-    { name: 'Umweltrisiko', description: 'Risiko von Naturkatastrophen und klimatischen Gefahren' },
+    { name: 'Naturgefahren', description: 'Gefährdung durch Naturgefahren und laufende Naturkatastrophen' },
   ],
 };
 
@@ -451,13 +502,17 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   const countryName = getLocalizedCountryName(country, lang);
   const regionKey = getRegion(country.iso3);
   const regionName = regionDisplayNames[regionKey]?.[lang];
-  const scoreStr = country.score.toFixed(1);
+  // Formula v10 grey place: no score, band, tourist segment or score variable anywhere in the
+  // graph (validate-seo asserts it); the same five node types are kept.
+  const scored = isScored(country);
+  const scoreStr = scored ? country.score.toFixed(1) : '';
   // Band on the displayed 1-decimal value so the label matches the number shown.
   const scoreRounded = Number(scoreStr);
   const bandIdx = scoreRounded >= 7 ? 0 : scoreRounded >= 5 ? 1 : 2;
   const band = riskBands[lang][bandIdx];
   const tourType = touristTypes[lang][bandIdx];
   const year = new Date().getFullYear();
+  const variables = scored ? datasetVariablesByLang[lang] : datasetVariablesByLang[lang].slice(1);
 
   // Entity grounding: link the Place node to Wikidata/Wikipedia when we have a
   // mapping. Wikipedia link prefers the article in the PAGE's own language
@@ -517,14 +572,14 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
       {
         '@type': 'TouristDestination',
         name: countryName,
-        description: touristDescriptions[lang](countryName, scoreStr, band),
-        touristType: tourType,
+        description: scored ? touristDescriptions[lang](countryName, scoreStr, band) : touristDescriptionsGrey[lang](countryName),
+        ...(scored && { touristType: tourType }),
         url: canonicalUrl,
       },
       {
         '@type': 'Dataset',
         name: datasetNames[lang](countryName, year),
-        description: datasetDescriptions[lang](countryName),
+        description: scored ? datasetDescriptions[lang](countryName) : datasetDescriptionsGrey[lang](countryName),
         url: canonicalUrl,
         inLanguage: localeMap[lang],
         license: 'https://creativecommons.org/licenses/by-nc/4.0/',
@@ -538,7 +593,7 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
         // Same daily snapshot date as WebPage.dateModified / the visible "Last update".
         ...(dateModified && { dateModified }),
         creator: organizationRef,
-        variableMeasured: datasetVariablesByLang[lang].map((v) => ({
+        variableMeasured: variables.map((v) => ({
           '@type': 'PropertyValue',
           name: v.name,
           description: v.description,
@@ -756,10 +811,12 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // actually goes in the {name} slot; the bare `name` is still what the
   // other locales' preposition/article wrappers below take as input.
   const displayName = lang === 'en' ? getEnglishCountryPhrase(country.iso3, name) : name;
-  const score = country.score;
   const now = new Date();
   const year = now.getFullYear().toString();
   const monthYear = now.toLocaleDateString(localeMap[lang], { month: 'long', year: 'numeric' });
+  const scored = isScored(country);
+  // Grey place (formula v10): no score, band or pillar figure; the slots below are never read.
+  const score = scored ? country.score : 0;
 
   // Single source of truth for band + risk label (band-copy.ts / bands.ts) —
   // must agree with ScoreHero's pill and the answer-first paragraph for this
@@ -785,12 +842,19 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const weakest10 = weakest.score * 10;
   const labels = faqPillarLabels[lang];
 
-  // Practical meaning of the weakest pillar, and the indicator-driven clause
-  // naming the actual signals behind its low score (both feed Q1 and Q2).
-  const weakestBand: 'critical' | 'mid' | 'strong' = weakest10 < 4 ? 'critical' : weakest10 < 7 ? 'mid' : 'strong';
+  // Q2 ("biggest risk") talks about the same pillar as the page summary: the direct-risk pillar
+  // that pulls the score down the most (selectDriverPillar, country-summary.ts), which is not
+  // always the lowest pillar (Ecuador: crime 4.4, not governance 4.0). Its band picks the A2
+  // variant; the "other area to watch" is the lowest remaining pillar.
+  const driverPick = selectDriverPillar(country.pillars);
+  const riskPillar = driverPick.pillar;
+  const risk10 = riskPillar.score * 10;
+  const riskOther = sorted.find((p) => p.name !== riskPillar.name) ?? riskPillar;
+  const weakestBand: 'critical' | 'mid' | 'strong' =
+    driverPick.frame === 'allGood' ? 'strong' : risk10 < 4 ? 'critical' : risk10 < 7 ? 'mid' : 'strong';
   let driverClause = '';
   if (weakestBand !== 'strong') {
-    const driverLabels = selectPillarDriverLabels(weakest, lang);
+    const driverLabels = selectPillarDriverLabels(riskPillar, lang);
     if (driverLabels.length === 1) {
       driverClause = copy.a2DriverClause.one.replace('{labels}', driverLabels[0]);
     } else if (driverLabels.length >= 2) {
@@ -839,6 +903,17 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // Collapse any double ASCII spaces left when the {drivers} clause is empty.
   const tidy = (s: string) => s.replace(/ {2,}/g, ' ').trim();
 
+  // Grey place (formula v10 insufficient_data): A1 says why there is no score (no figure at all),
+  // no "biggest risk" answer (its pillar values are internal), A3 the advisories as usual.
+  if (!scored) {
+    const a1Grey = tidy(fill(copy.a1Grey));
+    const a3Grey = buildAdvisoryAnswer(country, lang, copy, slots, fill, tidy, joiner, true);
+    return [
+      { question: fill(copy.q1), answer: a1Grey },
+      { question: fill(copy.q3), answer: a3Grey },
+    ];
+  }
+
   // A1 — verdict, how the score works, why this country's number (drag pillars
   // + what the weakest one means), provenance. Provenance is the country's own
   // advisory/source counts (provenance-copy.ts), never a fixed "40+" claim —
@@ -849,14 +924,48 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   const provenance = buildProvenanceSentence(getProvenanceCounts(country), displayName, lang, country.iso3);
   const a1 = tidy([verdictOpener, copy.a1Formula, drivers, provenance].map(fill).join(joiner));
 
-  // A2 — severity-banded weakest-pillar answer: "biggest risk" phrasing only
-  // when the pillar is genuinely weak, so top scorers don't read as alarmist.
-  // critical/mid carry the pillar meaning + the indicator-driven {drivers} clause.
-  const a2 = tidy(fill(copy.a2[weakestBand]));
+  // A2 — severity-banded "biggest risk" answer about the driver pillar: "biggest risk" phrasing
+  // only when the pillar is genuinely weak, so top scorers don't read as alarmist. critical/mid
+  // carry the pillar meaning + the indicator-driven {drivers} clause. The 'strong' variant keeps
+  // the lowest/highest pillars ("even its weakest area ..."), which is then the same pillar.
+  const a2Slots: Record<string, string> =
+    weakestBand === 'strong'
+      ? slots
+      : {
+          ...slots,
+          weakest: labels[riskPillar.name],
+          weakestScore: risk10.toFixed(1),
+          second: labels[riskOther.name],
+          secondScore: (riskOther.score * 10).toFixed(1),
+          meaning: copy.pillarMeaning[riskPillar.name],
+        };
+  const a2 = tidy(copy.a2[weakestBand].replace(/\{(\w+)\}/g, (m, key) => a2Slots[key] ?? m));
 
-  // A3 — government-advisory summary built from country.advisories: count,
-  // consensus band, named governments, majority-Level-4 severe-advisory note, or a
-  // distinct zero-advisory sentence for micro-territories.
+  const a3 = buildAdvisoryAnswer(country, lang, copy, slots, fill, tidy, joiner, false);
+
+  return [
+    { question: fill(copy.q1), answer: a1 },
+    { question: fill(copy.q2), answer: a2 },
+    { question: fill(copy.q3), answer: a3 },
+  ];
+}
+
+/**
+ * A3 of the country FAQ: the government-advisory summary built from country.advisories (count,
+ * consensus band, named governments, majority-Level-4 note) or a zero-advisory sentence. `grey`
+ * (formula v10 insufficient_data): no "pillar scores above" to point to and no severe-advisory
+ * score note, since there is no score.
+ */
+function buildAdvisoryAnswer(
+  country: ScoredCountry,
+  lang: Lang,
+  copy: (typeof countryFaqCopy)[Lang],
+  slots: Record<string, string>,
+  fill: (tpl: string) => string,
+  tidy: (s: string) => string,
+  joiner: string,
+  grey: boolean,
+): string {
   const advisories = country.advisories ?? {};
   const presentAdvisories = (Object.entries(advisories) as [string, { level: number | string; source?: string }][])
     .map(([key, info]) => ({ key, level: Number(info?.level) }))
@@ -864,7 +973,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
 
   let a3: string;
   if (presentAdvisories.length === 0) {
-    a3 = tidy(fill(copy.a3None));
+    a3 = tidy(fill(grey ? copy.a3NoneGrey : copy.a3None));
   } else {
     const n = presentAdvisories.length;
     // Consensus (modal) level; ties resolve to the higher (more cautious) level.
@@ -910,15 +1019,10 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     // (importance-weighted severeShare, count-damped by N_SEV in engine.ts) —
     // when it fires, copy.a3Cap explains the severe-advisory DOWN-WEIGHTING
     // that nudges the score toward a low value, not a cap to a fixed number.
-    if (counts[4] >= Math.ceil(n / 2 + 0.1)) a3Parts.push(copy.a3Cap);
+    if (!grey && counts[4] >= Math.ceil(n / 2 + 0.1)) a3Parts.push(copy.a3Cap);
     a3 = tidy(a3Parts.map(fill).join(joiner));
   }
-
-  return [
-    { question: fill(copy.q1), answer: a1 },
-    { question: fill(copy.q2), answer: a2 },
-    { question: fill(copy.q3), answer: a3 },
-  ];
+  return a3;
 }
 
 /**
@@ -956,13 +1060,13 @@ const siteDatasetNames: Record<Lang, (year: number) => string> = {
   de: (y) => `Globale Reisesicherheits-Scores ${y}`,
 };
 const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
-  en: (n) => `Daily updated safety scores for ${n} countries, aggregated from government advisories, health data, conflict indicators, and environmental metrics.`,
-  it: (n) => `Punteggi di sicurezza aggiornati ogni giorno per ${n} paesi, aggregati da avvisi governativi, dati sanitari, indicatori di conflitto e metriche ambientali.`,
-  es: (n) => `Puntuaciones de seguridad actualizadas a diario para ${n} países, agregadas a partir de avisos gubernamentales, datos sanitarios, indicadores de conflicto y métricas ambientales.`,
-  fr: (n) => `Scores de sécurité mis à jour chaque jour pour ${n} pays, agrégés à partir des avis gouvernementaux, données sanitaires, indicateurs de conflit et mesures environnementales.`,
-  pt: (n) => `Pontuações de segurança atualizadas diariamente para ${n} países, agregadas a partir de avisos governamentais, dados de saúde, indicadores de conflito e métricas ambientais.`,
-  zh: (n) => `每日更新的 ${n} 个国家安全评分，综合政府旅行警告、卫生数据、冲突指标和环境指标。`,
-  de: (n) => `Täglich aktualisierte Sicherheits-Scores für ${n} Länder, aggregiert aus Regierungs-Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Umweltmetriken.`,
+  en: (n) => `Safety scores for ${n} countries and territories, recalculated daily from government advisories, health data, conflict indicators and natural-hazard data.`,
+  it: (n) => `Punteggi di sicurezza per ${n} paesi e territori, ricalcolati ogni giorno da avvisi governativi, dati sanitari, indicatori di conflitto e dati sui rischi naturali.`,
+  es: (n) => `Puntuaciones de seguridad para ${n} países y territorios, recalculadas a diario a partir de avisos gubernamentales, datos sanitarios, indicadores de conflicto y datos de riesgos naturales.`,
+  fr: (n) => `Scores de sécurité pour ${n} pays et territoires, recalculés chaque jour à partir des avis gouvernementaux, de données sanitaires, d'indicateurs de conflit et de données sur les risques naturels.`,
+  pt: (n) => `Pontuações de segurança para ${n} países e territórios, recalculadas diariamente a partir de alertas governamentais, dados de saúde, indicadores de conflito e dados de riscos naturais.`,
+  zh: (n) => `${n}个国家和地区的安全评分，每日根据政府旅行警告、卫生数据、冲突指标和自然灾害数据重新计算。`,
+  de: (n) => `Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus staatlichen Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Daten zu Naturgefahren.`,
 };
 
 /**
@@ -1079,13 +1183,13 @@ const methodologyDatasetNames: Record<Lang, string> = {
   de: 'IsItSafeToTravel globale Sicherheits-Scores',
 };
 const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
-  en: (n) => `Daily updated composite safety scores for ${n} countries, aggregating ${SOURCE_COUNT_DISPLAY} public data sources.`,
-  it: (n) => `Punteggi di sicurezza compositi aggiornati ogni giorno per ${n} paesi, aggregando ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
-  es: (n) => `Puntuaciones de seguridad compuestas actualizadas a diario para ${n} países, con ${SOURCE_COUNT_DISPLAY} fuentes públicas agregadas.`,
-  fr: (n) => `Scores de sécurité composites mis à jour chaque jour pour ${n} pays, agrégeant ${SOURCE_COUNT_DISPLAY} sources publiques.`,
-  pt: (n) => `Pontuações de segurança compostas atualizadas diariamente para ${n} países, agregando ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
-  zh: (n) => `每日更新的 ${n} 个国家综合安全评分，汇总 ${SOURCE_COUNT_DISPLAY} 个公开数据来源。`,
-  de: (n) => `Täglich aktualisierte zusammengesetzte Sicherheits-Scores für ${n} Länder, aggregiert aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
+  en: (n) => `Composite safety scores for ${n} countries and territories, recalculated daily from ${SOURCE_COUNT_DISPLAY} public data sources.`,
+  it: (n) => `Punteggi di sicurezza compositi per ${n} paesi e territori, ricalcolati ogni giorno da ${SOURCE_COUNT_DISPLAY} fonti pubbliche.`,
+  es: (n) => `Puntuaciones de seguridad compuestas para ${n} países y territorios, recalculadas a diario a partir de ${SOURCE_COUNT_DISPLAY} fuentes públicas.`,
+  fr: (n) => `Scores de sécurité composites pour ${n} pays et territoires, recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
+  pt: (n) => `Pontuações de segurança compostas para ${n} países e territórios, recalculadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
+  zh: (n) => `${n}个国家和地区的综合安全评分，每日根据${SOURCE_COUNT_DISPLAY}个公开数据来源重新计算。`,
+  de: (n) => `Zusammengesetzte Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
 };
 
 /**

@@ -1,4 +1,15 @@
 ---
+// Pillar bars + per-pillar indicator tables on the country page.
+//
+// Formula v10 (SPEC §7 "Indicator table"): every indicator row shows the source's OWN value on the
+// source's own scale ("45.7 per 100,000 people", "2.54 · GPI scale 1–5, lower is better",
+// "4.1 / 10 · INFORM risk, higher is worse"), the source with its edition ("INFORM Risk 2026",
+// "GPI 2026", "V-Dem v16") and the real data year. World Bank rows carry the publication-lag
+// note. v9.1 printed a normalised "x.x/10" per indicator, which nobody can check at the source.
+// Only indicators the current formula scores are listed (src/lib/indicator-display.ts): rows a
+// pre-v10 snapshot still carries (child mortality, PM2.5, two mislabelled INFORM columns) are not.
+//
+// Never rendered for a grey place (formula v10 insufficient_data): its pillar values are internal.
 import type { PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
@@ -6,6 +17,14 @@ import { useTranslations } from '../../i18n/utils';
 import { pillarToColor } from '../../lib/colors';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../../pipeline/scoring/engine';
 import { getIndicatorLabel } from '../../i18n/indicator-labels';
+import {
+  displayedIndicators,
+  formatIndicatorValue,
+  indicatorSourceLabel,
+  isWorldBankIndicator,
+  pillarEvidenceCoverage,
+  worldBankLagNote,
+} from '../../lib/indicator-display';
 import PillarCoverageTip from './PillarCoverageTip.astro';
 
 interface Props {
@@ -44,6 +63,7 @@ const pillarKeys: Record<string, string> = {
   governance: 'country.pillar.governance',
   environment: 'country.pillar.environment',
 };
+const lagNote = worldBankLagNote(lang);
 ---
 
 <section id="pillars" class="py-6 px-4 max-w-2xl mx-auto">
@@ -57,7 +77,7 @@ const pillarKeys: Record<string, string> = {
       const displayScore = (pillar.score * 10).toFixed(1);
       const barWidth = Math.max(pillar.score * 180, 2);
       const color = pillarToColor(pillar.score);
-      const lowCoverage = pillar.dataCompleteness < LOW_COVERAGE_FLAG_THRESHOLD;
+      const lowCoverage = pillarEvidenceCoverage(pillar) < LOW_COVERAGE_FLAG_THRESHOLD;
 
       return (
         <div class="flex items-center gap-3">
@@ -89,8 +109,16 @@ const pillarKeys: Record<string, string> = {
         const displayScore = (pillar.score * 10).toFixed(1);
         const s = Number(displayScore); // band on the displayed 1-decimal value
         const riskLevel = s >= 7 ? t('country.risk_low') : s >= 4 ? t('country.risk_moderate') : t('country.risk_high');
-        const coveragePercent = Math.round(pillar.dataCompleteness * 100);
-        const lowCoverage = pillar.dataCompleteness < LOW_COVERAGE_FLAG_THRESHOLD;
+        const coverage = pillarEvidenceCoverage(pillar);
+        const coveragePercent = Math.round(coverage * 100);
+        const lowCoverage = coverage < LOW_COVERAGE_FLAG_THRESHOLD;
+        const rows = displayedIndicators(pillar).map((ind) => ({
+          ind,
+          label: getIndicatorLabel(ind.name, t),
+          display: formatIndicatorValue(ind, lang),
+          source: indicatorSourceLabel(ind, lang),
+          worldBank: isWorldBankIndicator(ind),
+        }));
 
         return (
           <div class="mb-6">
@@ -103,23 +131,37 @@ const pillarKeys: Record<string, string> = {
               </span>
             </h3>
 
-            {pillar.indicators.length > 0 && (
+            {rows.length > 0 && (
               <table class="w-full text-xs border-collapse">
                 <thead>
                   <tr class="border-b border-sand-200 dark:border-sand-700">
-                    <th class="text-left py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_indicators')}</th>
-                    <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_value')}</th>
-                    <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_source')}</th>
-                    <th class="text-right py-1.5 text-sand-600 dark:text-sand-400">{t('country.pillar_year')}</th>
+                    <th class="text-left py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_indicators')}</th>
+                    <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_value')}</th>
+                    <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_source')}</th>
+                    <th class="text-right py-1.5 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_year')}</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {pillar.indicators.map((ind) => (
-                    <tr class="border-b border-sand-100 dark:border-sand-800">
-                      <td class="py-1.5 text-sand-600 dark:text-sand-300">{getIndicatorLabel(ind.name, t)}</td>
-                      <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{(ind.normalizedValue * 10).toFixed(1)}/10</td>
-                      <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.source}</td>
-                      <td class="py-1.5 text-right text-sand-600 dark:text-sand-300">{ind.year}</td>
+                  {rows.map((row) => (
+                    <tr class="border-b border-sand-100 dark:border-sand-800 align-top">
+                      <td class="py-1.5 pr-2 text-sand-700 dark:text-sand-200">
+                        {row.label}
+                        {row.worldBank && (
+                          <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{lagNote}</span>
+                        )}
+                      </td>
+                      <td class="py-1.5 pr-2 text-right text-sand-700 dark:text-sand-200">
+                        {row.display ? (
+                          <>
+                            <span class="font-medium tabular-nums whitespace-nowrap">{row.display.value}</span>
+                            <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{row.display.unit}</span>
+                          </>
+                        ) : (
+                          <span class="tabular-nums">{row.ind.rawValue}</span>
+                        )}
+                      </td>
+                      <td class="py-1.5 pr-2 text-right text-sand-600 dark:text-sand-300 whitespace-nowrap">{row.source}</td>
+                      <td class="py-1.5 text-right text-sand-600 dark:text-sand-300 tabular-nums">{row.ind.year}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -132,6 +174,9 @@ const pillarKeys: Record<string, string> = {
   </details>
 
   <p class="mt-3 text-xs text-sand-600 dark:text-sand-400">
+    {t('country.update_cadence')}
+  </p>
+  <p class="mt-1 text-xs text-sand-600 dark:text-sand-400">
     {methodologyLeadBefore}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{t('about.methodology_link_text' as any)}</a>{methodologyLeadAfter}
   </p>
 </section>

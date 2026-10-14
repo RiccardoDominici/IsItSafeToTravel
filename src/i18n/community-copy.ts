@@ -65,6 +65,8 @@ export interface CommunityCopy {
   dataScoreLabel: string;
   adjustmentLabel: string;
   finalScoreLabel: string;
+  /** Shown under the breakdown only when the rounded figures do not add up (6.7 + 0.5 shown as 7.1). */
+  roundingNote: string;
   /** {votes} {minVotes} {origins} {minOrigins} */
   insufficient: string;
   /** How votes count, scored country. {minVotes} {minOrigins} {cap} */
@@ -93,6 +95,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Data score',
     adjustmentLabel: 'Community adjustment',
     finalScoreLabel: 'Safety score',
+    roundingNote: 'Figures are rounded to one decimal, so they may not add up exactly.',
     insufficient:
       'Not enough votes yet ({votes}/{minVotes} votes, {origins}/{minOrigins} countries of origin) — vote to make the community count.',
     rulesScored:
@@ -123,6 +126,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Punteggio dai dati',
     adjustmentLabel: 'Correzione della community',
     finalScoreLabel: 'Punteggio di sicurezza',
+    roundingNote: 'I valori sono arrotondati a un decimale, quindi la somma può non tornare esattamente.',
     insufficient:
       'Non ci sono ancora abbastanza voti ({votes}/{minVotes} voti, {origins}/{minOrigins} paesi di provenienza): vota anche tu per far contare la community.',
     rulesScored:
@@ -147,6 +151,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Puntuación según los datos',
     adjustmentLabel: 'Ajuste de la comunidad',
     finalScoreLabel: 'Puntuación de seguridad',
+    roundingNote: 'Las cifras están redondeadas a un decimal, así que la suma puede no cuadrar exactamente.',
     insufficient:
       'Aún no hay suficientes votos ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origen): vota para que la comunidad cuente.',
     rulesScored:
@@ -177,6 +182,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Score issu des données',
     adjustmentLabel: 'Ajustement communautaire',
     finalScoreLabel: 'Score de sécurité',
+    roundingNote: 'Les valeurs sont arrondies à une décimale : leur somme peut différer légèrement.',
     insufficient: `Pas encore assez de votes ({votes}/{minVotes} votes, {origins}/{minOrigins} pays d'origine)${NBSP}: votez pour que la communauté compte.`,
     rulesScored:
       "Dès qu'un pays réunit {minVotes} votes venant d'au moins {minOrigins} pays d'origine, les votes des voyageurs peuvent faire varier son score de sécurité de ±{cap} point au maximum. Aucun pays d'origine ne peut peser plus de la moitié.",
@@ -199,6 +205,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Pontuação dos dados',
     adjustmentLabel: 'Ajuste da comunidade',
     finalScoreLabel: 'Pontuação de segurança',
+    roundingNote: 'Os valores são arredondados para uma casa decimal, por isso a soma pode não bater exatamente.',
     insufficient:
       'Ainda não há votos suficientes ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origem): vote para que a comunidade conte.',
     rulesScored:
@@ -223,6 +230,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: '数据评分',
     adjustmentLabel: '社区调整',
     finalScoreLabel: '安全评分',
+    roundingNote: '数值已四舍五入到一位小数，相加结果可能略有出入。',
     insufficient:
       // Never "N 个来源" here: scripts/validate-seo.ts reads "<number> 个来源" as a data-source count.
       '投票还不够（{votes}/{minVotes} 票，来自 {origins}/{minOrigins} 个国家或地区）——投出您的一票，让社区的声音被计入。',
@@ -248,6 +256,7 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     dataScoreLabel: 'Datenbasierter Wert',
     adjustmentLabel: 'Community-Anpassung',
     finalScoreLabel: 'Sicherheitsbewertung',
+    roundingNote: 'Die Werte sind auf eine Nachkommastelle gerundet, die Summe kann daher leicht abweichen.',
     insufficient:
       'Noch nicht genügend Stimmen ({votes}/{minVotes} Stimmen, {origins}/{minOrigins} Herkunftsländer): Stimmen Sie ab, damit die Community zählt.',
     rulesScored:
