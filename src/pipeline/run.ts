@@ -6,6 +6,8 @@ import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
 import { injectUcdpForDate } from './backfill.js';
 import { aggregateVotes } from './sentiment/aggregate.js';
+import { SENTIMENT_WINDOW_DAYS } from './sentiment/constants.js';
+import { loadLegacyScoreLookup } from './sentiment/legacy-scores.js';
 import { fetchVotes } from './sentiment/fetch-votes.js';
 import { writeSentimentSnapshot, writeSentimentHistoryIndex, getSentimentDir } from './sentiment/snapshot.js';
 import { computeNews } from './news/engine.js';
@@ -16,9 +18,6 @@ import { runStalenessMonitor, worldbankIndicatorsUsedBy } from './staleness.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-
-/** Only aggregate votes newer than this window (Pitfall 8: D1 free-tier rows-read budget). */
-const SENTIMENT_WINDOW_DAYS = 180;
 
 export interface PipelineResult {
   success: boolean;
@@ -101,15 +100,53 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
 
   console.log(`Loaded ${rawDataMap.size} source(s) with raw data`);
 
+  // Stage 2c: Sentiment — runs BEFORE scoring (formula v10, SPEC §6 "Run order").
+  // The engine applies the community adjustment from data/sentiment/latest.json, so the
+  // file must hold today's aggregation; run after scoring it would lag one day and the
+  // first adjustments would surface as score-jump news the day after the switch. The
+  // aggregator anchors each vote on its stored score (or the score history for legacy
+  // rows), so it needs nothing from today's scoring.
+  // Display-only community sentiment (D-06/D-14): wrapped so ANY failure here
+  // (missing CF credentials, D1 unreachable, unexpected error) only warns and
+  // never changes PipelineResult.success or aborts the run.
+  console.log('\n--- Stage 2c: Sentiment ---');
+  try {
+    // Only votes inside SENTIMENT_WINDOW_DAYS are read (Pitfall 8: D1 free-tier rows-read budget).
+    const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
+    const { ok, rows } = await fetchVotes(cutoff);
+
+    if (ok) {
+      // Votes stored with their score need no lookup; legacy rows are anchored to the score history.
+      const { lookup } = loadLegacyScoreLookup(rows);
+      const { snapshot, droppedVotes } = aggregateVotes(rows, lookup, Date.now());
+      writeSentimentSnapshot(date, snapshot);
+      writeSentimentHistoryIndex();
+      const countries = Object.values(snapshot.countries);
+      const activeCount = countries.filter((c) => c.status === 'active').length;
+      console.log(
+        `[Sentiment] ${countries.length} countries (${activeCount} active) from ${rows.length} vote(s); ${droppedVotes} unplaceable`,
+      );
+    } else {
+      const latestPath = join(getSentimentDir(), 'latest.json');
+      if (existsSync(latestPath)) {
+        console.warn('[Sentiment] D1 read unavailable — keeping last-known data/sentiment/latest.json');
+      } else {
+        writeSentimentSnapshot(date, { generatedAt: new Date().toISOString(), countries: {} });
+        console.warn(
+          '[Sentiment] D1 read unavailable and no prior snapshot — wrote empty-but-valid data/sentiment/latest.json',
+        );
+      }
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    console.warn(`[Sentiment] Sentiment stage failed unexpectedly (non-fatal): ${message}`);
+  }
+
   // Stage 3: Score
   console.log('\n--- Stage 3: Score ---');
-  // Formula v10 community component (SPEC §5): the engine reads data/sentiment/latest.json.
-  // Stage 6 below rewrites that file AFTER scoring, so this run applies the community
-  // snapshot of the previous run (one-day lag). A missing or pre-v10 file means no
-  // adjustment for anyone.
-  // MERGE NOTE (feat/community-v10, SPEC §6 "Run order"): move Stage 6 above this stage once
-  // its aggregator no longer needs the day's official scores; otherwise the first community
-  // adjustments land the day after the v10 switch as score-jump news.
+  // Formula v10 community component (SPEC §5): the engine reads data/sentiment/latest.json,
+  // written by the sentiment stage above in this same run. A missing or pre-v10 file means
+  // no adjustment for anyone.
   const community = loadCommunitySnapshot();
   const scoredCountries = computeAllScores(rawDataMap, weightsConfig, date, { community });
   console.log(`Scored ${scoredCountries.length} countries`);
@@ -132,40 +169,6 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // Stage 5: History Index
   console.log('\n--- Stage 5: History Index ---');
   writeHistoryIndex();
-
-  // Stage 6: Sentiment
-  // Display-only community sentiment (D-06/D-14): wrapped so ANY failure here
-  // (missing CF credentials, D1 unreachable, unexpected error) only warns and
-  // never changes PipelineResult.success or aborts the run.
-  console.log('\n--- Stage 6: Sentiment ---');
-  try {
-    const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
-    const { ok, rows } = await fetchVotes(cutoff);
-    // Only countries with an official score anchor relative votes (grey ones have none).
-    const officialScores = new Map(withScore.map((c) => [c.iso3, c.score]));
-
-    if (ok) {
-      const sentimentSnapshot = aggregateVotes(rows, officialScores, Date.now());
-      writeSentimentSnapshot(date, sentimentSnapshot);
-      writeSentimentHistoryIndex();
-      console.log(
-        `[Sentiment] Aggregated ${Object.keys(sentimentSnapshot.countries).length} countries from ${rows.length} vote(s)`,
-      );
-    } else {
-      const latestPath = join(getSentimentDir(), 'latest.json');
-      if (existsSync(latestPath)) {
-        console.warn('[Sentiment] D1 read unavailable — keeping last-known data/sentiment/latest.json');
-      } else {
-        writeSentimentSnapshot(date, { generatedAt: new Date().toISOString(), countries: {} });
-        console.warn(
-          '[Sentiment] D1 read unavailable and no prior snapshot — wrote empty-but-valid data/sentiment/latest.json',
-        );
-      }
-    }
-  } catch (error) {
-    const message = error instanceof Error ? error.message : String(error);
-    console.warn(`[Sentiment] Stage 6 failed unexpectedly (non-fatal): ${message}`);
-  }
 
   // Stage 7: Daily News / "Safety Movers" (display-only, must never abort the run).
   // Diffs today's snapshot against the most recent prior one; wrapped in try/catch so

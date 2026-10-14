@@ -1,59 +1,67 @@
 ---
-// Phase 39 (39-06): 5-level calibration vote widget — the interactive half of the
-// Sentiment surface (lives inside SentimentPillar's <slot/>, composed by 39-08).
-// No-framework, progressive-enhancement pattern matching src/pages/en/feedback/index.astro
-// (define:vars + fetch POST + hidden/classList state-swap) and the localStorage precedent in
-// src/components/DarkModeToggle.astro (direct get/set, re-init on astro:after-swap).
+// Community vote widget, the interactive half of the community block (lives inside
+// SentimentPillar's <slot/>). Two modes (formula v10, SPEC §5):
+//  - scored country: the relative question "does this score feel right?", 5 levels posted as
+//    `delta` -2..+2 (way too high .. way too low);
+//  - grey country (no official score): "Partial data" notice plus the absolute question "how safe
+//    did you feel?", 5 levels posted as `rating` 1..5 (very unsafe .. very safe).
+// The mode comes from the same isGreyScore predicate the build uses for /published-scores.json,
+// which the vote API reads, so the page never posts a vote type the API would refuse.
+// The score itself is never posted: the API looks up the published score server-side.
+// No-framework, progressive-enhancement pattern (define:vars + fetch POST + hidden/classList
+// state swap), as in src/pages/en/feedback/index.astro.
 import type { Lang } from '../../i18n/ui';
-import { useTranslations } from '../../i18n/utils';
+import { communityCopy, voteQuestion } from '../../i18n/community-copy';
+import { isGreyScore } from '../../lib/published-scores';
 
 interface Props {
   iso3: string;
-  officialScore: number;
+  /** The published (final) score shown on this page; null for a grey country. */
+  officialScore: number | null;
+  /** Bare localized country name (getLocalizedCountryName). */
   countryName?: string;
   lang: Lang;
 }
 
-const { iso3, countryName = '', lang } = Astro.props;
-const t = useTranslations(lang);
+const { iso3, officialScore, countryName = '', lang } = Astro.props;
+const copy = communityCopy[lang];
+
+const isGrey = isGreyScore(officialScore);
+/** Body field the vote is posted in; the API accepts exactly one of the two per country. */
+const field = isGrey ? 'rating' : 'delta';
+const question = voteQuestion(lang, isGrey ? 'absolute' : 'relative', iso3, countryName);
+const options = isGrey
+  ? copy.absoluteLevels.map((label, i) => ({ value: i + 1, label })) // rating 1..5
+  : copy.relativeLevels.map((label, i) => ({ value: i - 2, label })); // delta -2..+2
 
 // Astro exposes PUBLIC_-prefixed env vars to the client bundle at build time (RESEARCH A3).
 // D-12: absent -> no Turnstile widget rendered, POST still works (verification skipped server-side).
 const turnstileSitekey = import.meta.env.PUBLIC_TURNSTILE_SITEKEY;
 
-const question = t('sentiment.question').replace('{country}', countryName);
+const optionClass =
+  'sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800';
+const radioDotClass =
+  'w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900';
 ---
 
-<div class="sentiment-vote">
-  <form id="sentiment-vote-form" novalidate>
+<div class="sentiment-vote" data-vote-mode={isGrey ? 'absolute' : 'relative'}>
+  {isGrey && (
+    <div class="mb-4 rounded-lg border border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-900/40 p-3">
+      <p class="text-sm font-semibold text-sand-700 dark:text-sand-200">{copy.partialDataTitle}</p>
+      <p class="text-sm text-sand-600 dark:text-sand-400">{copy.partialDataBody}</p>
+    </div>
+  )}
+
+  <form id="sentiment-vote-form" data-field={field} novalidate>
     <fieldset class="space-y-2">
       <legend class="text-base font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{question}</legend>
-
-      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
-        <input type="radio" name="calibration" value="-2" class="peer sr-only" />
-        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
-        <span class="font-medium">{t('sentiment.level_way_high')}</span>
-      </label>
-      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
-        <input type="radio" name="calibration" value="-1" class="peer sr-only" />
-        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
-        <span class="font-medium">{t('sentiment.level_high')}</span>
-      </label>
-      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
-        <input type="radio" name="calibration" value="0" class="peer sr-only" />
-        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
-        <span class="font-medium">{t('sentiment.level_right')}</span>
-      </label>
-      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
-        <input type="radio" name="calibration" value="1" class="peer sr-only" />
-        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
-        <span class="font-medium">{t('sentiment.level_low')}</span>
-      </label>
-      <label class="sentiment-vote-option flex items-center gap-3 min-h-[44px] px-3 py-2.5 rounded-lg border transition-colors cursor-pointer text-sm text-sand-700 dark:text-sand-200 border-sand-200 dark:border-sand-700 hover:border-sand-300 hover:bg-sand-50 dark:hover:border-sand-600 dark:hover:bg-sand-700/50 has-[:checked]:border-terracotta-500 has-[:checked]:bg-terracotta-500/10 dark:has-[:checked]:bg-terracotta-500/20 has-[:checked]:text-sand-900 dark:has-[:checked]:text-sand-50 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-terracotta-500 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-offset-white dark:has-[:focus-visible]:ring-offset-sand-800">
-        <input type="radio" name="calibration" value="2" class="peer sr-only" />
-        <span aria-hidden="true" class="w-5 h-5 shrink-0 rounded-full border-2 border-sand-300 dark:border-sand-600 bg-white dark:bg-sand-900 transition-all duration-150 peer-checked:border-terracotta-500 peer-checked:bg-terracotta-500 peer-checked:ring-2 peer-checked:ring-inset peer-checked:ring-white dark:peer-checked:ring-sand-900"></span>
-        <span class="font-medium">{t('sentiment.level_way_low')}</span>
-      </label>
+      {options.map((option) => (
+        <label class={optionClass}>
+          <input type="radio" name="vote" value={String(option.value)} class="peer sr-only" />
+          <span aria-hidden="true" class={radioDotClass}></span>
+          <span class="font-medium">{option.label}</span>
+        </label>
+      ))}
     </fieldset>
 
     {turnstileSitekey && (
@@ -68,7 +76,7 @@ const question = t('sentiment.question').replace('{country}', countryName);
       disabled
       class="hidden w-full sm:w-auto mt-4 inline-flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 min-h-[44px] font-heading font-semibold text-white bg-terracotta-500 shadow-sm transition-colors hover:bg-terracotta-600 hover:shadow-md disabled:bg-sand-200 dark:disabled:bg-sand-700 disabled:text-sand-500 dark:disabled:text-sand-400 disabled:shadow-none disabled:cursor-not-allowed"
     >
-      <span>{t('sentiment.submit')}</span>
+      <span>{copy.submit}</span>
       <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 shrink-0"><path d="M3 10a1 1 0 0 1 1-1h9.586l-3.293-3.293a1 1 0 1 1 1.414-1.414l5 5a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414-1.414L13.586 11H4a1 1 0 0 1-1-1Z"/></svg>
     </button>
   </form>
@@ -78,15 +86,15 @@ const question = t('sentiment.question').replace('{country}', countryName);
       <div class="flex items-start gap-2.5">
         <svg aria-hidden="true" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 shrink-0 mt-0.5 text-terracotta-600 dark:text-terracotta-400"><path fill-rule="evenodd" d="M16.7 5.3a1 1 0 0 1 0 1.4l-7.5 7.5a1 1 0 0 1-1.4 0l-3.5-3.5a1 1 0 1 1 1.4-1.4l2.8 2.79 6.8-6.79a1 1 0 0 1 1.4 0Z" clip-rule="evenodd"/></svg>
         <div>
-          <p class="text-sm font-semibold text-sand-800 dark:text-sand-100">{t('sentiment.thanks_title')}</p>
-          <p class="text-sm text-sand-600 dark:text-sand-400">{t('sentiment.thanks_body')}</p>
+          <p class="text-sm font-semibold text-sand-800 dark:text-sand-100">{copy.thanksTitle}</p>
+          <p class="text-sm text-sand-600 dark:text-sand-400">{copy.thanksBody}</p>
         </div>
       </div>
     </div>
     <!-- Muted, informational only — deliberately no alert-role semantics (would steal
          focus / conflict with silent degradation, per UI-SPEC Accessibility + T-39-22). -->
     <p id="sentiment-vote-error" class="hidden mt-3 text-xs text-sand-600 dark:text-sand-400">
-      {t('sentiment.error')}
+      {copy.error}
     </p>
   </div>
 </div>
@@ -103,10 +111,12 @@ const question = t('sentiment.question').replace('{country}', countryName);
     const errorEl = document.getElementById('sentiment-vote-error');
     if (!form || !submitBtn || !thanksEl || !errorEl) return;
 
+    // 'delta' (scored country, -2..+2) or 'rating' (grey country, 1..5), set at build time.
+    const field = form.dataset.field === 'rating' ? 'rating' : 'delta';
     const storageKey = 'sentiment-voted-' + iso3;
     // UTC day stamp, matching the server's UTC day-bucketed dedupe window.
     const todayUtc = new Date().toISOString().slice(0, 10);
-    const radios = form.querySelectorAll('input[name="calibration"]');
+    const radios = form.querySelectorAll('input[name="vote"]');
 
     function showThanks() {
       form.classList.add('hidden');
@@ -140,12 +150,12 @@ const question = t('sentiment.question').replace('{country}', countryName);
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const checked = form.querySelector('input[name="calibration"]:checked');
+      const checked = form.querySelector('input[name="vote"]:checked');
       if (!checked) return;
 
-      const delta = Number(checked.value);
       const tokenInput = form.querySelector('input[name="cf-turnstile-response"]');
-      const token = tokenInput ? tokenInput.value : undefined;
+      const payload = { iso3, token: tokenInput ? tokenInput.value : undefined };
+      payload[field] = Number(checked.value);
 
       submitBtn.disabled = true;
       errorEl.classList.add('hidden');
@@ -154,10 +164,13 @@ const question = t('sentiment.question').replace('{country}', countryName);
         const res = await fetch('/api/vote', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ iso3, delta, token }),
+          body: JSON.stringify(payload),
         });
+        // The API answers 200 {ok:false} when it could not store the vote (its catch-all), so the
+        // body decides, not just the HTTP status: never thank someone for a vote that was lost.
+        const out = await res.json().catch(() => null);
 
-        if (res.ok) {
+        if (res.ok && out && out.ok === true) {
           try {
             localStorage.setItem(storageKey, todayUtc);
           } catch {

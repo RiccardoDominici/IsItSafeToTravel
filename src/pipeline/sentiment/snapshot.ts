@@ -1,7 +1,7 @@
 import { writeJson, readJson } from '../utils/fs.js';
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
-import type { SentimentSnapshot } from '../types.js';
+import type { SentimentEntry, SentimentSnapshot } from '../types.js';
 
 /**
  * Bake sentiment snapshots to `data/sentiment/*.json` — a directory kept
@@ -10,9 +10,31 @@ import type { SentimentSnapshot } from '../types.js';
  * directory's consolidated history file.
  */
 
+/** One day of a country's community reading. `status` is null for snapshots written before v10. */
+export interface SentimentHistoryPoint {
+  date: string;
+  perceived: number;
+  votes: number;
+  status: 'active' | 'insufficient' | null;
+}
+
 export interface SentimentHistoryIndex {
   generatedAt: string;
-  countries: Record<string, Array<{ date: string; correction: number; count: number }>>;
+  countries: Record<string, SentimentHistoryPoint[]>;
+}
+
+/**
+ * Files written before formula v10 carry `count` and no status (v9.1 shape). They are read as they
+ * are, so the index can still be rebuilt from the full history.
+ */
+function toHistoryPoint(date: string, entry: SentimentEntry): SentimentHistoryPoint {
+  const legacy = entry as Partial<SentimentEntry> & { count?: number };
+  return {
+    date,
+    perceived: entry.perceived,
+    votes: legacy.votes ?? legacy.count ?? 0,
+    status: legacy.status ?? null,
+  };
 }
 
 export function getSentimentDir(): string {
@@ -57,7 +79,7 @@ function listSentimentSnapshotDates(): string[] {
  */
 export function writeSentimentHistoryIndex(): SentimentHistoryIndex {
   const dates = listSentimentSnapshotDates();
-  const countries: Record<string, Array<{ date: string; correction: number; count: number }>> = {};
+  const countries: Record<string, SentimentHistoryPoint[]> = {};
 
   for (const date of dates) {
     const snapshotPath = join(getSentimentDir(), `${date}.json`);
@@ -66,7 +88,7 @@ export function writeSentimentHistoryIndex(): SentimentHistoryIndex {
 
     for (const [iso3, entry] of Object.entries(snapshot.countries)) {
       if (!countries[iso3]) countries[iso3] = [];
-      countries[iso3].push({ date, correction: entry.correction, count: entry.count });
+      countries[iso3].push(toHistoryPoint(date, entry));
     }
   }
 

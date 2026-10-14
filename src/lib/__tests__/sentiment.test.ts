@@ -2,7 +2,7 @@ import { describe, it, before, after } from 'node:test';
 import { strict as assert } from 'node:assert';
 import fs from 'node:fs';
 import path from 'node:path';
-import { loadSentimentForCountry, loadAllSentiment, MIN_VOTE_FLOOR, pickVoteNextSuggestions, POPULAR_TOURIST_DESTINATIONS } from '../sentiment.js';
+import { loadSentimentForCountry, loadAllSentiment, MIN_VOTE_FLOOR, MIN_ORIGIN_FLOOR, pickVoteNextSuggestions, POPULAR_TOURIST_DESTINATIONS } from '../sentiment.js';
 import type { ScoredCountry } from '../../pipeline/types.js';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'sentiment');
@@ -10,9 +10,13 @@ const LATEST_PATH = path.join(DATA_DIR, 'latest.json');
 
 // --- SENT-05: build-time loader never throws, degrades to null (D-14) ---
 
-describe('sentiment.ts: MIN_VOTE_FLOOR', () => {
-  it('is exported as 5 (mirrors SENTIMENT_MIN_VOTES / below-floor display gate)', () => {
-    assert.equal(MIN_VOTE_FLOOR, 5);
+describe('sentiment.ts: activation floors (formula v10, SPEC §5)', () => {
+  it('MIN_VOTE_FLOOR is 30 votes', () => {
+    assert.equal(MIN_VOTE_FLOOR, 30);
+  });
+
+  it('MIN_ORIGIN_FLOOR is 3 known countries of origin', () => {
+    assert.equal(MIN_ORIGIN_FLOOR, 3);
   });
 });
 
@@ -47,12 +51,34 @@ describe('sentiment.ts: loadSentimentForCountry graceful degradation', () => {
       const fixture = {
         generatedAt: '2026-07-02T00:00:00.000Z',
         countries: {
-          ITA: { iso3: 'ITA', count: 12, avgDelta: 0.4, correction: 0.4, perceived: 8.2, official: 7.8 },
+          ITA: { iso3: 'ITA', votes: 34, origins: 4, topOriginShare: 0.4, nEff: 21.5, perceived: 8.2, status: 'active' },
         },
       };
       fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
       const result = loadSentimentForCountry('ITA');
       assert.deepEqual(result, fixture.countries.ITA);
+    });
+
+    it('ignores a pre-v10 entry (count/correction, no status) and returns null', () => {
+      const fixture = {
+        generatedAt: '2026-07-02T00:00:00.000Z',
+        countries: {
+          ITA: { iso3: 'ITA', count: 12, avgDelta: 0.4, correction: 0.4, perceived: 8.2, official: 7.8 },
+        },
+      };
+      fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
+      assert.equal(loadSentimentForCountry('ITA'), null);
+    });
+
+    it('ignores a v10 entry missing a field the block renders (origins)', () => {
+      const fixture = {
+        generatedAt: '2026-10-14T00:00:00.000Z',
+        countries: {
+          ITA: { iso3: 'ITA', votes: 34, topOriginShare: 0.4, nEff: 21.5, perceived: 8.2, status: 'active' },
+        },
+      };
+      fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
+      assert.equal(loadSentimentForCountry('ITA'), null);
     });
 
     it('returns null when the file exists but the country is absent', () => {
@@ -101,8 +127,10 @@ describe('sentiment.ts: loadAllSentiment graceful degradation', () => {
       const fixture = {
         generatedAt: '2026-09-26T00:00:00.000Z',
         countries: {
-          ITA: { iso3: 'ITA', count: 12, avgDelta: 0.4, correction: 0.4, perceived: 8.2, official: 7.8 },
-          CHN: { iso3: 'CHN', count: 55, avgDelta: 1.4, correction: 0.71, perceived: 7.54, official: 6.83 },
+          ITA: { iso3: 'ITA', votes: 34, origins: 4, topOriginShare: 0.4, nEff: 21.5, perceived: 8.2, status: 'active' },
+          CHN: { iso3: 'CHN', votes: 73, origins: 13, topOriginShare: 0.3, nEff: 40.1, perceived: 7.54, status: 'active' },
+          // Pre-v10 leftover: must be filtered out, not rendered.
+          OLD: { iso3: 'OLD', count: 9, avgDelta: 0.1, correction: 0.1, perceived: 6.1, official: 6.0 },
         },
       };
       fs.writeFileSync(LATEST_PATH, JSON.stringify(fixture), 'utf-8');
@@ -112,6 +140,7 @@ describe('sentiment.ts: loadAllSentiment graceful degradation', () => {
         result.find((e) => e.iso3 === 'ITA'),
         fixture.countries.ITA
       );
+      assert.ok(!result.some((e) => e.iso3 === 'OLD'));
     });
 
     it('returns [] when the file has zero countries', () => {
