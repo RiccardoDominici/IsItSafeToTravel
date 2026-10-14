@@ -17,7 +17,7 @@ const DAY_S = 86_400;
 const nowMs = Date.UTC(2026, 9, 14, 12); // 2026-10-14T12:00Z, fixed reference time
 const nowS = nowMs / 1000;
 
-const NO_LOOKUP: PublishedScoreLookup = { scoreOn: () => null };
+const NO_LOOKUP: PublishedScoreLookup = { scoreAt: () => null };
 
 /** Build a vote. Defaults: relative delta 0, origin FR, stored score 6, cast now. */
 function vote(o: {
@@ -161,8 +161,8 @@ describe('aggregateVotes: perceived score P', () => {
   it('uses the score stored with the vote and never calls the lookup for it', () => {
     const calls: string[] = [];
     const spy: PublishedScoreLookup = {
-      scoreOn: (iso3, date) => {
-        calls.push(`${iso3}:${date}`);
+      scoreAt: (iso3, epochSeconds) => {
+        calls.push(`${iso3}:${epochSeconds}`);
         return 1;
       },
     };
@@ -176,8 +176,8 @@ describe('aggregateVotes: perceived score P', () => {
     assert.ok(Math.abs(entry.perceived - 6.5) < 1e-12);
   });
 
-  it('legacy relative votes are anchored to the published score of their UTC date', () => {
-    // 2026-10-13 published 7 for AAA. Three legacy votes cast on that day with delta +2 -> 8 each.
+  it('legacy relative votes are anchored to the score the lookup gives for their moment', () => {
+    // AAA was live at 7 when three legacy votes were cast yesterday with delta +2 -> 8 each.
     const yesterday = nowS - DAY_S;
     const legacy: VoteRow = {
       iso3: 'AAA',
@@ -188,7 +188,7 @@ describe('aggregateVotes: perceived score P', () => {
       created_at: yesterday,
     };
     const lookup: PublishedScoreLookup = {
-      scoreOn: (iso3, date) => (iso3 === 'AAA' && date === '2026-10-13' ? 7 : null),
+      scoreAt: (iso3, epochSeconds) => (iso3 === 'AAA' && epochSeconds === yesterday ? 7 : null),
     };
     const rows = [
       legacy,
