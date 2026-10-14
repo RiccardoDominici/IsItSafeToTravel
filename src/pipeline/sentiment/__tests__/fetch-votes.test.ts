@@ -1,6 +1,6 @@
 import { describe, it, afterEach } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { fetchVotes, SENTIMENT_D1_DATABASE_ID } from '../fetch-votes.js';
+import { fetchVotes, SENTIMENT_D1_DATABASE_ID, VOTE_COLUMNS, VOTE_COLUMNS_PRE_RATING } from '../fetch-votes.js';
 
 const ORIGINAL_FETCH = globalThis.fetch;
 const ORIGINAL_ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
@@ -157,5 +157,84 @@ describe('fetchVotes: successful response', () => {
 
     const result = await fetchVotes(0);
     assert.deepEqual(result, { ok: true, rows: [] });
+  });
+});
+
+describe('fetchVotes: database before migration 005 (no votes.rating)', () => {
+  /** D1 as it answers today: selecting `rating` fails with SQLITE_ERROR 7500, anything else works. */
+  function preMigrationD1(sqlSeen: string[]) {
+    return (async (_url: string, init?: RequestInit) => {
+      const sql = JSON.parse(String(init?.body)).sql as string;
+      sqlSeen.push(sql);
+      if (/\brating\b/.test(sql)) {
+        return {
+          ok: false,
+          status: 400,
+          json: async () => ({
+            result: [],
+            success: false,
+            errors: [{ code: 7500, message: 'no such column: rating at offset 20: SQLITE_ERROR' }],
+            messages: [],
+          }),
+        } as unknown as Response;
+      }
+      return {
+        ok: true,
+        status: 200,
+        json: async () => ({
+          success: true,
+          result: [{ success: true, results: [{ iso3: 'CHN', delta: 2, official_score: null, country_iso: 'CN', created_at: 1_700_000_000 }] }],
+        }),
+      } as unknown as Response;
+    }) as typeof fetch;
+  }
+
+  it('retries without the rating column and maps rating to null', async () => {
+    process.env.CLOUDFLARE_ACCOUNT_ID = 'test-account';
+    process.env.CLOUDFLARE_API_TOKEN = 'test-token';
+    const sqlSeen: string[] = [];
+    globalThis.fetch = preMigrationD1(sqlSeen);
+
+    const result = await fetchVotes(0);
+
+    assert.equal(result.ok, true);
+    assert.deepEqual(result.rows, [
+      { iso3: 'CHN', delta: 2, rating: null, official_score: null, country_iso: 'CN', created_at: 1_700_000_000 },
+    ]);
+    assert.equal(sqlSeen.length, 2);
+    assert.ok(sqlSeen[0].includes(VOTE_COLUMNS));
+    assert.ok(sqlSeen[1].includes(`SELECT ${VOTE_COLUMNS_PRE_RATING} FROM votes`));
+  });
+
+  it('does not retry on any other failure', async () => {
+    process.env.CLOUDFLARE_ACCOUNT_ID = 'test-account';
+    process.env.CLOUDFLARE_API_TOKEN = 'test-token';
+    let calls = 0;
+    globalThis.fetch = (async () => {
+      calls++;
+      return {
+        ok: false,
+        status: 400,
+        json: async () => ({ success: false, errors: [{ code: 7500, message: 'no such table: votes' }] }),
+      } as unknown as Response;
+    }) as typeof fetch;
+
+    assert.deepEqual(await fetchVotes(0), { ok: false, rows: [] });
+    assert.equal(calls, 1);
+  });
+});
+
+describe('fetchVotes: a 2xx envelope that reports failure', () => {
+  it('is a failed read, never "zero votes" (which would wipe every community reading)', async () => {
+    process.env.CLOUDFLARE_ACCOUNT_ID = 'test-account';
+    process.env.CLOUDFLARE_API_TOKEN = 'test-token';
+    for (const body of [
+      { success: false, errors: [{ code: 7500, message: 'boom' }], result: [] },
+      { success: true, result: [{ success: false, results: [] }] },
+    ]) {
+      globalThis.fetch = (async () =>
+        ({ ok: true, status: 200, json: async () => body }) as unknown as Response) as typeof fetch;
+      assert.deepEqual(await fetchVotes(0), { ok: false, rows: [] });
+    }
   });
 });
