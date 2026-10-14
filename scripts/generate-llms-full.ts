@@ -24,10 +24,12 @@ const LANG_LABEL: Record<Lang, string> = {
 };
 
 // ── paths ────────────────────────────────────────────────────────────────────
+// LLMS_LATEST_JSON / LLMS_OUT_DIR override input and output for testing only.
 const ROOT = path.resolve(import.meta.dirname, "..");
-const LATEST_JSON = path.join(ROOT, "data/scores/latest.json");
-const OUT_FULL = path.join(ROOT, "public/llms-full.txt");
-const OUT_LLMS = path.join(ROOT, "public/llms.txt");
+const LATEST_JSON = process.env.LLMS_LATEST_JSON ?? path.join(ROOT, "data/scores/latest.json");
+const OUT_DIR = process.env.LLMS_OUT_DIR ?? path.join(ROOT, "public");
+const OUT_FULL = path.join(OUT_DIR, "llms-full.txt");
+const OUT_LLMS = path.join(OUT_DIR, "llms.txt");
 
 // ── types (minimal, matching pipeline output) ────────────────────────────────
 interface PillarScore {
@@ -41,13 +43,32 @@ interface PillarScore {
 interface ScoredCountry {
   iso3: string;
   name: { en: string; it: string; es: string; fr: string; pt: string; zh?: string; de?: string };
-  score: number; // 1–10
-  scoreDisplay: number;
+  /** 1–10; null when formula v10 has no official score for this place (scoreStatus insufficient_data). */
+  score: number | null;
+  scoreDisplay: number | null;
+  scoreStatus?: "scored" | "insufficient_data";
   pillars: PillarScore[];
   advisories: Record<string, unknown>;
-  sources?: unknown[];
+  sources?: Array<{ name?: string }>;
   dataCompleteness?: number;
 }
+
+/** A country with an official score (formula v10 grey places have none). */
+type Scored = ScoredCountry & { score: number };
+const hasOfficialScore = (c: ScoredCountry): c is Scored =>
+  typeof c.score === "number" && c.scoreStatus !== "insufficient_data";
+
+// Display names for the source keys a grey place can list (ScoredCountry.sources[].name).
+const SOURCE_LABEL: Record<string, string> = {
+  advisories: "government travel advisories",
+  gpi: "Global Peace Index",
+  inform: "INFORM Risk Index",
+  vdem: "V-Dem",
+  worldbank: "World Bank",
+  ucdp: "UCDP",
+  reliefweb: "ReliefWeb",
+  gdacs: "GDACS",
+};
 
 interface LatestData {
   date: string;
@@ -78,6 +99,59 @@ function fmt(n: number): string {
   return n.toFixed(1);
 }
 
+/** "- **Government advisories:** US Level 2 (as of ...); ..." or null without any. */
+function advisoriesLine(c: ScoredCountry): string | null {
+  const advParts: string[] = [];
+  const advObj = (c.advisories || {}) as Record<string, any>;
+  for (const code of ["us", "uk", "ca", "au", "de", "nz"]) {
+    const a = advObj[code];
+    if (a && a.level !== undefined && a.level !== null && a.level !== "") {
+      const lvl = typeof a.level === "number" ? `Level ${a.level}` : String(a.level);
+      const upd = a.updatedAt ? ` (as of ${String(a.updatedAt).slice(0, 10)})` : "";
+      advParts.push(`${code.toUpperCase()} ${lvl}${upd}`);
+    }
+  }
+  return advParts.length ? `- **Government advisories:** ${advParts.join("; ")}` : null;
+}
+
+/** "More info" + "Other languages" lines shared by every country block. */
+function linkLines(c: ScoredCountry): string[] {
+  // GEO-02: this same page also exists in 6 other languages, at a locale-specific
+  // slug (routes[lang].country — e.g. "paese" for it, "land" for de). One compact
+  // line keeps the per-country block a fixed height instead of a full extra
+  // section per language.
+  const iso3Lower = c.iso3.toLowerCase();
+  const otherLangLinks = NON_EN_LANGS
+    .map((lang) => `[${lang.toUpperCase()}](https://isitsafetotravel.org/${lang}/${routes[lang].country}/${iso3Lower}/)`)
+    .join(" · ");
+  return [
+    `- **More info:** https://isitsafetotravel.org/en/country/${iso3Lower}/`,
+    `- **Other languages:** ${otherLangLinks}`,
+  ];
+}
+
+/**
+ * Formula v10 grey place: no score, no pillar numbers (they rest on too little data to
+ * mean anything), only what is known and why. Worded without "<number> sources" so the
+ * build's source-count consistency check (validate-seo.ts) never mistakes a per-place
+ * count for the site-wide one.
+ */
+function partialDataBlock(c: ScoredCountry, today: string): string[] {
+  const available = (c.sources ?? [])
+    .map((s) => (s.name ? SOURCE_LABEL[s.name] ?? s.name : null))
+    .filter((name): name is string => Boolean(name));
+  const lines = [
+    `### ${c.name.en} (${c.iso3})`,
+    `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, and this place has fewer${available.length ? ` (available: ${available.join(", ")})` : ""}. Travellers can still rate it on its page.`,
+    "- **Safety Score:** none (partial data)",
+  ];
+  const advisoryLine = advisoriesLine(c);
+  if (advisoryLine) lines.push(advisoryLine);
+  lines.push(...linkLines(c));
+  lines.push("");
+  return lines;
+}
+
 // ── main ─────────────────────────────────────────────────────────────────────
 function main() {
   const raw = fs.readFileSync(LATEST_JSON, "utf-8");
@@ -97,20 +171,26 @@ function main() {
   );
 
   // Data-coverage floor for rankings — keep MIN_RANKING_SOURCES in sync with
-  // the on-site ranking pages (hub-data.ts hasSufficientData).
+  // the on-site ranking pages (hub-data.ts hasSufficientData) and with
+  // weights.json formulaV9.minSources (formula v10 grey rule).
   const MIN_RANKING_SOURCES = 4;
-  const hasSufficientData = (c: ScoredCountry) =>
-    (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+  const hasSufficientData = (c: ScoredCountry): c is Scored =>
+    hasOfficialScore(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
 
-  // Global rank (all countries, score desc) + percentile + global average
-  const totalCountries = countries.length;
-  const byScoreDesc = [...countries].sort((a, b) => b.score - a.score);
+  // Global rank (countries with an official score, score desc) + percentile + average.
+  // Formula v10 grey places (score null) have no rank and stay out of the average.
+  const scoredCountries = countries.filter(hasOfficialScore);
+  const totalCountries = scoredCountries.length;
+  const byScoreDesc = [...scoredCountries].sort((a, b) => b.score - a.score);
   const rankByIso3: Record<string, number> = {};
   byScoreDesc.forEach((c, i) => {
     rankByIso3[c.iso3] = i + 1;
   });
   const globalAvg =
-    countries.reduce((sum, c) => sum + c.score, 0) / totalCountries;
+    totalCountries > 0 ? scoredCountries.reduce((sum, c) => sum + c.score, 0) / totalCountries : 0;
+  const minScore = totalCountries > 0 ? byScoreDesc[byScoreDesc.length - 1].score : 0;
+  const maxScore = totalCountries > 0 ? byScoreDesc[0].score : 0;
+  const greyCount = countries.length - totalCountries;
 
   // ────── build llms-full.txt ──────
   const lines: string[] = [];
@@ -119,9 +199,9 @@ function main() {
   lines.push("");
   lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." Data is updated daily and licensed under CC BY-NC 4.0.`);
   lines.push("");
-  lines.push(`> **Source:** IsItSafeToTravel.org — Free, independently run travel safety platform. Data updated daily from ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories (e.g. US, UK, Canada, Australia) plus World Bank, V-Dem, Global Peace Index, INFORM Risk Index, UCDP, ReliefWeb, and GDACS.`);
+  lines.push(`> **Source:** IsItSafeToTravel.org — Free, independently run travel safety platform. Scores combine ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories (e.g. US, UK, Canada, Australia) with World Bank, V-Dem, Global Peace Index, INFORM Risk Index, UCDP, ReliefWeb, and GDACS data.`);
   lines.push("");
-  lines.push(`> **Data snapshot:** ${today}. Scores are recomputed once a day from ${SOURCE_COUNT_DISPLAY} public sources.`);
+  lines.push(`> **Data snapshot:** ${today}. Scores are recalculated once a day from ${SOURCE_COUNT_DISPLAY} public sources: government advisories and disaster alerts change daily, international indices once or twice a year.`);
   lines.push("");
 
   // How to Cite
@@ -162,19 +242,23 @@ function main() {
   lines.push("## Methodology");
   lines.push("");
   lines.push("IsItSafeToTravel.org calculates composite safety scores using 5 weighted pillars:");
-  lines.push(`- **Conflict** (weight: ${wpct("conflict")}) — Armed conflict, political violence, terrorism risk, plus UCDP conflict-death counts (log-normalized)`);
-  lines.push(`- **Crime** (weight: ${wpct("crime")}) — Violent crime rates, theft, organized crime, plus the World Bank intentional-homicide rate (population-reliability scaled)`);
-  lines.push(`- **Health** (weight: ${wpct("health")}) — Disease risk, healthcare quality, pandemic preparedness`);
-  lines.push(`- **Governance** (weight: ${wpct("governance")}) — Political stability, rule of law, corruption`);
-  lines.push(`- **Environment** (weight: ${wpct("environment")}) — Natural disaster risk, climate hazards`);
+  lines.push(`- **Conflict** (weight: ${wpct("conflict")}) — Global Peace Index ongoing-conflict domain, the consensus of government travel advisories, and UCDP conflict-death counts (log-normalized)`);
+  lines.push(`- **Crime** (weight: ${wpct("crime")}) — Global Peace Index safety & security domain plus the World Bank intentional-homicide rate (population-reliability scaled)`);
+  lines.push(`- **Health** (weight: ${wpct("health")}) — INFORM access to health care and epidemic risk`);
+  lines.push(`- **Governance** (weight: ${wpct("governance")}) — V-Dem rule of law, public administration and corruption, plus INFORM governance`);
+  lines.push(`- **Natural hazards** (weight: ${wpct("environment")}) — INFORM natural-hazard exposure plus active ReliefWeb and GDACS disaster alerts`);
   lines.push("");
-  lines.push(`The overall score is an **uncertainty-weighted (Bayesian shrinkage) geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would, and each pillar is shrunk toward a conservative, region-anchored prior in proportion to how much fresh data backs it, so thin or stale evidence never masquerades as certainty. A calibrated, importance-weighted consensus of ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories feeds into the Conflict pillar alongside UCDP Georeferenced Event Dataset conflict-death counts (via the Our World in Data mirror, CC-BY), and a count-damped modifier gently discounts the score when advisories broadly agree on "Do Not Travel" — there are no hard caps or floors. Scores range from roughly 3.4 to 8.9 (global mean ~6.60) and are recomputed daily; each country also carries a confidence value (0-1) showing how much data backs its score.`);
+  lines.push(`The overall score is an **uncertainty-weighted (Bayesian shrinkage) geometric mean** of the five pillar scores — the geometric mean penalizes a single very-low category more heavily than a simple average would, and each pillar is shrunk toward a conservative, region-anchored prior in proportion to how much data backs it, so thin evidence never masquerades as certainty. A calibrated, importance-weighted consensus of ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories feeds into the Conflict pillar alongside UCDP Georeferenced Event Dataset conflict-death counts (via the Our World in Data mirror, CC-BY), and a count-damped modifier gently discounts the score when advisories broadly agree on "Do Not Travel" — there are no hard caps or floors. Only the latest edition of each index is used, and any value older than five years counts as missing. A place backed by fewer than four independent data sources gets no official score ("partial data") unless government advisories or recent conflict deaths signal danger. Once enough travellers from enough countries have voted, the community rating moves a score by at most one point. Scores currently range from ${fmt(minScore)} to ${fmt(maxScore)} (mean ${fmt(globalAvg)}) and are recalculated daily; each country also carries a confidence value (0-1) showing how much data backs its score.`);
   lines.push("");
 
   // Global Safety Score
   lines.push("## Global Safety Score");
   lines.push("");
-  lines.push(`Current global safety score: **${fmt(globalScore)}/10** (average across all ${countries.length} countries)`);
+  lines.push(
+    greyCount > 0
+      ? `Current global safety score: **${fmt(globalScore)}/10** (average across the ${totalCountries} countries with an official score; ${greyCount} places have partial data and no score)`
+      : `Current global safety score: **${fmt(globalScore)}/10** (average across all ${countries.length} countries)`,
+  );
   lines.push("");
 
   // All Country Safety Scores
@@ -182,6 +266,10 @@ function main() {
   lines.push("");
 
   for (const c of sorted) {
+    if (!hasOfficialScore(c)) {
+      lines.push(...partialDataBlock(c, today));
+      continue;
+    }
     const pillarMap: Record<string, number> = {};
     for (const p of c.pillars) {
       pillarMap[p.name] = p.score;
@@ -218,33 +306,13 @@ function main() {
     lines.push(
       `- **Strongest pillar:** ${strongest.name} (${pillarDisplay(strongest.score)}/10) | **Weakest pillar:** ${weakest.name} (${pillarDisplay(weakest.score)}/10)`
     );
-    const advParts: string[] = [];
-    const advObj = (c.advisories || {}) as Record<string, any>;
-    for (const code of ["us", "uk", "ca", "au", "de", "nz"]) {
-      const a = advObj[code];
-      if (a && a.level !== undefined && a.level !== null && a.level !== "") {
-        const lvl = typeof a.level === "number" ? `Level ${a.level}` : String(a.level);
-        const upd = a.updatedAt ? ` (as of ${String(a.updatedAt).slice(0, 10)})` : "";
-        advParts.push(`${code.toUpperCase()} ${lvl}${upd}`);
-      }
-    }
-    if (advParts.length) {
-      lines.push(`- **Government advisories:** ${advParts.join("; ")}`);
-    }
+    const advisoryLine = advisoriesLine(c);
+    if (advisoryLine) lines.push(advisoryLine);
     // sourceCount is the per-country INDICATOR total (sum across pillars), not
     // the number of upstream sources — labeling it "public sources" published a
     // fifth conflicting source count (2026-08 SEO audit follow-up).
-    lines.push(`- **Data inputs:** ${sourceCount} indicators across 5 pillars, updated daily`);
-    lines.push(`- **More info:** https://isitsafetotravel.org/en/country/${c.iso3.toLowerCase()}/`);
-    // GEO-02: this same page also exists in 6 other languages, at a locale-specific
-    // slug (routes[lang].country — e.g. "paese" for it, "land" for de). One compact
-    // line keeps the per-country block a fixed height instead of a full extra
-    // section per language.
-    const iso3Lower = c.iso3.toLowerCase();
-    const otherLangLinks = NON_EN_LANGS
-      .map((lang) => `[${lang.toUpperCase()}](https://isitsafetotravel.org/${lang}/${routes[lang].country}/${iso3Lower}/)`)
-      .join(" · ");
-    lines.push(`- **Other languages:** ${otherLangLinks}`);
+    lines.push(`- **Data inputs:** ${sourceCount} indicators across 5 pillars, score recalculated daily`);
+    lines.push(...linkLines(c));
     lines.push("");
   }
 
@@ -299,7 +367,9 @@ function main() {
   for (const key of ["europe", "asia", "americas", "oceania", "middle_east", "africa", "other"]) {
     const group = regionGroups[key];
     if (!group || group.length === 0) continue;
-    const avg = group.reduce((sum, c) => sum + c.score, 0) / group.length;
+    // Average over the places with an official score (formula v10 grey places have none).
+    const scoredInGroup = group.filter(hasOfficialScore);
+    const avg = scoredInGroup.length > 0 ? scoredInGroup.reduce((sum, c) => sum + c.score, 0) / scoredInGroup.length : NaN;
     const eligible = group.filter(hasSufficientData).sort((a, b) => b.score - a.score);
     const safest = eligible.length
       ? `${eligible[0].name.en} (${fmt(eligible[0].score)}/10)`
@@ -307,7 +377,7 @@ function main() {
     const lowest = eligible.length
       ? `${eligible[eligible.length - 1].name.en} (${fmt(eligible[eligible.length - 1].score)}/10)`
       : "—";
-    lines.push(`| ${REGION_LABELS[key]} | ${fmt(avg)}/10 | ${group.length} | ${safest} | ${lowest} |`);
+    lines.push(`| ${REGION_LABELS[key]} | ${Number.isNaN(avg) ? "—" : `${fmt(avg)}/10`} | ${group.length} | ${safest} | ${lowest} |`);
   }
   lines.push("");
 
@@ -378,7 +448,7 @@ function main() {
 - [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
 - [Full dataset (CSV)](https://isitsafetotravel.org/scores.csv): One row per country — score, band, 5 pillar scores, confidence, advisory count, data date
 - [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — updated daily
-- Scores updated daily via automated GitHub Actions pipeline
+- Scores recalculated daily via automated GitHub Actions pipeline (advisories and disaster alerts change daily; international indices once or twice a year)
 - Sources: government travel advisories, Global Peace Index (GPI), World Bank intentional-homicide rate, INFORM Risk Index, UCDP conflict-event data, V-Dem, ReliefWeb, GDACS
 - Composite scoring uses an uncertainty-weighted (Bayesian shrinkage) weighted geometric mean across 5 safety pillars, not a simple average — a single very-low pillar pulls the composite down more than an average would
 - All data is from publicly available sources, licensed CC BY-NC 4.0

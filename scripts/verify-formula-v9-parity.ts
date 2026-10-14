@@ -178,16 +178,19 @@ function main(): void {
     }
     if (Number.isNaN(row.newScore)) continue; // defensive: skip malformed fixture rows
 
-    const delta = Math.abs(got.score - row.newScore);
+    // v9.x configs score every country, so score is never null here; NaN keeps a
+    // hypothetical null from passing silently: a NaN delta fails the gate below.
+    const gotScore = got.score ?? Number.NaN;
+    const delta = Math.abs(gotScore - row.newScore);
     comparedCount++;
     if (delta > maxDelta) {
       maxDelta = delta;
       maxDeltaIso3 = row.iso3;
     }
 
-    if (delta > GATE_THRESHOLD) {
+    if (!(delta <= GATE_THRESHOLD)) { // NaN (no score) fails too
       const { freshnessAttributable, details } = classifyFreshness(row.iso3, rawDataMap, sourcesConfig);
-      const line = `${row.iso3}: got=${got.score.toFixed(4)} expected=${row.newScore.toFixed(4)} delta=${delta.toFixed(4)}` +
+      const line = `${row.iso3}: got=${gotScore.toFixed(4)} expected=${row.newScore.toFixed(4)} delta=${delta.toFixed(4)}` +
         (details.length ? ` [${details.join(', ')}]` : '');
       if (freshnessAttributable) {
         freshnessDeviations.push(line);

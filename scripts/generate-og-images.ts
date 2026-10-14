@@ -3,7 +3,12 @@
  * Produces 1200x630 PNG images for every country page (with score badge)
  * plus a generic branded default image for non-country pages.
  *
+ * Formula v10: a country without an official score (score null, scoreStatus
+ * 'insufficient_data') gets a grey "Partial data" badge instead of a number,
+ * never a made-up score (SPEC §7).
+ *
  * Usage: npx tsx scripts/generate-og-images.ts
+ * Env overrides (testing): OG_SCORES_PATH (input snapshot), OG_OUTPUT_DIR (output folder).
  */
 
 import { Resvg } from '@resvg/resvg-js';
@@ -13,7 +18,8 @@ import path from 'node:path';
 interface CountryData {
   iso3: string;
   name: Record<string, string>;
-  score: number;
+  /** null for a formula v10 grey country (no official score). */
+  score: number | null;
 }
 
 interface LatestData {
@@ -22,8 +28,11 @@ interface LatestData {
 
 const WIDTH = 1200;
 const HEIGHT = 630;
-const OUTPUT_DIR = path.join(process.cwd(), 'public', 'og');
-const SCORES_PATH = path.join(process.cwd(), 'data', 'scores', 'latest.json');
+const OUTPUT_DIR = process.env.OG_OUTPUT_DIR ?? path.join(process.cwd(), 'public', 'og');
+const SCORES_PATH = process.env.OG_SCORES_PATH ?? path.join(process.cwd(), 'data', 'scores', 'latest.json');
+
+/** Badge colour of a grey (partial-data) country: neutral, never a risk colour. */
+const PARTIAL_DATA_COLOR = '#6b7280';
 
 function scoreColor(score: number): string {
   if (score >= 7) return '#22c55e';
@@ -40,9 +49,12 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;');
 }
 
-function buildCountrySvg(name: string, score: number): string {
-  const color = scoreColor(score);
-  const displayScore = score.toFixed(1);
+function buildCountrySvg(name: string, score: number | null): string {
+  const partial = score === null;
+  const color = partial ? PARTIAL_DATA_COLOR : scoreColor(score);
+  // Grey country: an em dash where the number would be, "Partial data" where "/10" would be.
+  const displayScore = partial ? '\u2014' : score.toFixed(1);
+  const scaleLabel = partial ? 'Partial data' : '/10';
   const escapedName = escapeXml(name);
   // Adjust font size for long country names
   const nameFontSize = name.length > 28 ? 44 : name.length > 20 ? 52 : 64;
@@ -69,7 +81,7 @@ function buildCountrySvg(name: string, score: number): string {
 
   <!-- Score number -->
   <text x="600" y="400" font-family="Arial, Helvetica, sans-serif" font-size="80" fill="${color}" font-weight="700" text-anchor="middle">${displayScore}</text>
-  <text x="600" y="440" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="${color}" font-weight="400" text-anchor="middle">/10</text>
+  <text x="600" y="440" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="${color}" font-weight="400" text-anchor="middle">${scaleLabel}</text>
 
   <!-- Bottom text -->
   <text x="600" y="580" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666" text-anchor="middle">Safety Score - Updated Daily</text>
@@ -131,7 +143,7 @@ function main(): void {
   let count = 0;
   for (const country of countries) {
     const name = country.name.en; // Use English name for OG images (universal)
-    const svg = buildCountrySvg(name, country.score);
+    const svg = buildCountrySvg(name, typeof country.score === 'number' ? country.score : null);
     const png = renderPng(svg);
     const filename = `country-${country.iso3.toLowerCase()}.png`;
     fs.writeFileSync(path.join(OUTPUT_DIR, filename), png);
