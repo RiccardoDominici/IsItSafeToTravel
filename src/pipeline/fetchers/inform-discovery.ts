@@ -102,9 +102,17 @@ export function extractInformEditionLinks(html: string, pageUrl: string): Inform
   return [...byUrl.values()];
 }
 
+/** "INFORM_Risk_Mid_2026_v073.xlsx" -> true. The Mid edition of a year follows its annual edition. */
+function isMidEdition(file: string): boolean {
+  return /^INFORM_Risk_Mid_/i.test(file);
+}
+
 /**
- * Highest version wins (v073 over v072 over v071). Ties go to the later sheet
- * year, then to file name, so the choice is deterministic.
+ * Highest version wins (v073 over v072 over v071). Ties go to the later file
+ * year, then to the Mid edition over the annual one of the same year (the JRC
+ * publishes "INFORM Risk YYYY" first and "INFORM Risk Mid YYYY" after it), then
+ * to file name, so the choice is deterministic. Without the Mid rule a plain
+ * name sort would pick INFORM_Risk_2026 over INFORM_Risk_Mid_2026 ("2" < "M").
  */
 export function selectLatestInformEdition(links: readonly InformEditionLink[]): InformEditionLink | null {
   if (links.length === 0) return null;
@@ -112,6 +120,7 @@ export function selectLatestInformEdition(links: readonly InformEditionLink[]): 
     (a, b) =>
       b.versionNumber - a.versionNumber ||
       b.fileYear - a.fileYear ||
+      Number(isMidEdition(b.file)) - Number(isMidEdition(a.file)) ||
       a.file.localeCompare(b.file),
   );
   return sorted[0];

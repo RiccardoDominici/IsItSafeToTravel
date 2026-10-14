@@ -11,8 +11,11 @@ import {
   extractInformEditionLinks,
   parseInformEditionFileName,
   selectLatestInformEdition,
+  type InformDiscoveryResult,
   type InformEditionLink,
 } from '../fetchers/inform-discovery.js';
+import { isV10InformCache, loadInformEdition } from '../fetchers/inform.js';
+import { COUNTRIES } from '../config/countries.js';
 import {
   InformSchemaError,
   parseInformEditionYear,
@@ -456,5 +459,131 @@ describe('INFORM edition store', () => {
     } finally {
       rmSync(dir, { recursive: true, force: true });
     }
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* Fallback paths (review fix): the stored edition stands in for a new edition */
+/* that cannot be downloaded or read, and a pre-v10 per-date cache is refused. */
+/* -------------------------------------------------------------------------- */
+
+describe('INFORM discovery: Mid edition tie-break', () => {
+  it('prefers the Mid edition over the annual one of the same year and version', () => {
+    const tie = [
+      link('INFORM_Risk_2026_v073.xlsx', 'v073', 73, 2026),
+      link('INFORM_Risk_Mid_2026_v073.xlsx', 'v073', 73, 2026),
+    ];
+    // A plain name sort would pick INFORM_Risk_2026 ("2" sorts before "M"), the older release.
+    assert.equal(selectLatestInformEdition(tie)?.file, 'INFORM_Risk_Mid_2026_v073.xlsx');
+    assert.equal(selectLatestInformEdition([...tie].reverse())?.file, 'INFORM_Risk_Mid_2026_v073.xlsx');
+  });
+
+  it('still lets a newer annual edition beat an older Mid edition', () => {
+    const links = [
+      link('INFORM_Risk_Mid_2026_v073.xlsx', 'v073', 73, 2026),
+      link('INFORM_Risk_2027_v073.xlsx', 'v073', 73, 2027),
+    ];
+    assert.equal(selectLatestInformEdition(links)?.file, 'INFORM_Risk_2027_v073.xlsx');
+  });
+});
+
+/** A workbook with enough real countries to pass the production MIN_INFORM_COUNTRIES floor. */
+function fullSizeWorkbook(value: number, headers?: string[]): Buffer {
+  const rows = COUNTRIES.slice(0, 160).map((c) => ({
+    iso3: c.iso3,
+    values: { Natural: value, Epidemic: value, 'Access to health care': value, Governance: value },
+  }));
+  return buildInformWorkbook({ rows, headers });
+}
+
+function discoveryOf(file: string, version: string, versionNumber: number, fileYear: number): InformDiscoveryResult {
+  return { edition: link(file, version, versionNumber, fileYear), pagesOk: ['https://example.org/page'], errors: [] };
+}
+
+describe('INFORM fetcher: a new edition that fails falls back to the stored one', () => {
+  function withStore(fn: (dir: string) => Promise<void>): () => Promise<void> {
+    return async () => {
+      const dir = mkdtempSync(join(tmpdir(), 'inform-fallback-test-'));
+      try {
+        storeInformEdition(dir, edition('INFORM_Risk_Mid_2026_v073.xlsx', 'v073'), fullSizeWorkbook(2));
+        await fn(dir);
+      } finally {
+        rmSync(dir, { recursive: true, force: true });
+      }
+    };
+  }
+
+  it('keeps the stored edition when the new workbook cannot be downloaded', withStore(async (dir) => {
+    const load = await loadInformEdition(dir, {
+      discover: async () => discoveryOf('INFORM_Risk_2027_v074.xlsx', 'v074', 74, 2027),
+      download: async () => {
+        throw new Error('download HTTP 503');
+      },
+    });
+    assert.equal(load.edition.file, 'INFORM_Risk_Mid_2026_v073.xlsx');
+    assert.equal(load.layoutFailure, false);
+    assert.equal(load.parsed.countries, 160);
+    assert.match(load.notes.join(' '), /could not be downloaded \(download HTTP 503\); kept stored edition/);
+    assert.equal(readStoredInformEdition(dir)?.file, 'INFORM_Risk_Mid_2026_v073.xlsx', 'store untouched');
+  }));
+
+  it('keeps the stored edition and flags a layout failure when the new workbook has a changed layout', withStore(async (dir) => {
+    const broken = fullSizeWorkbook(3, ['COUNTRY', 'ISO3', 'Natural', 'Epidemic', 'Governance']);
+    const load = await loadInformEdition(dir, {
+      discover: async () => discoveryOf('INFORM_Risk_2027_v074.xlsx', 'v074', 74, 2027),
+      download: async () => broken,
+    });
+    assert.equal(load.edition.file, 'INFORM_Risk_Mid_2026_v073.xlsx');
+    assert.equal(load.layoutFailure, true, 'the run summary must still show INFORM as failed');
+    assert.match(load.notes.join(' '), /failed the layout check/);
+    assert.ok(load.parsed.indicators.every((i) => i.value === 2), 'values come from the stored workbook');
+    assert.equal(existsSync(join(dir, 'INFORM_Risk_2027_v074.xlsx')), false, 'the broken edition is never stored');
+  }));
+
+  it('stores and uses a new edition that downloads and parses cleanly', withStore(async (dir) => {
+    const load = await loadInformEdition(dir, {
+      discover: async () => discoveryOf('INFORM_Risk_2027_v074.xlsx', 'v074', 74, 2027),
+      download: async () => fullSizeWorkbook(4),
+    });
+    assert.equal(load.edition.file, 'INFORM_Risk_2027_v074.xlsx');
+    assert.equal(load.layoutFailure, false);
+    assert.deepEqual(load.notes, []);
+    assert.equal(readStoredInformEdition(dir)?.file, 'INFORM_Risk_2027_v074.xlsx');
+  }));
+
+  it('rethrows when a new edition fails and nothing is stored', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'inform-fallback-test-'));
+    try {
+      await assert.rejects(
+        loadInformEdition(dir, {
+          discover: async () => discoveryOf('INFORM_Risk_2027_v074.xlsx', 'v074', 74, 2027),
+          download: async () => {
+            throw new Error('fetch failed');
+          },
+        }),
+        /fetch failed/,
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe('INFORM fetcher: per-date cache guard', () => {
+  const row = (indicatorName: string) => ({ countryIso3: 'DEU', indicatorName, value: 2, year: 2026, source: 'inform' });
+
+  it('accepts a cache written by the v10 parser', () => {
+    assert.equal(
+      isV10InformCache({ source: 'inform', fetchedAt: '2026-10-14T06:00:00Z', indicators: [row('inform_natural'), row('inform_health_access')] }),
+      true,
+    );
+  });
+
+  it('refuses a v9.1 cache (same names, wrong columns) and a missing cache', () => {
+    assert.equal(
+      isV10InformCache({ source: 'inform', fetchedAt: '2026-10-13T06:00:00Z', indicators: [row('inform_health'), row('inform_governance')] }),
+      false,
+    );
+    assert.equal(isV10InformCache(null), false);
   });
 });
