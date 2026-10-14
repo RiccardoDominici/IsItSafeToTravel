@@ -145,7 +145,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
         sg: 'Singapore MFA Travel Advisories, Country by Country',
         hk: 'Hong Kong Outbound Travel Alerts, Country by Country',
       },
-      description: "{agency}'s current travel advisories for {count} countries, grouped by level (1–4) and compared with other governments. Updated daily.",
+      description: "{agency}'s current travel advisories for {count} countries, grouped by level (1–4) and compared with other governments. Checked daily.",
       intro: "Countries below are grouped by {agency}'s current advisory level, mapped onto our shared 1-to-4 scale. Where available, we also show {agency}'s own wording and a link to its official page — always check the source directly before you travel.",
       levelHeadings: [
         'Level 1 — Normal Precautions',
@@ -198,7 +198,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       overrides: {
         it: 'Paesi sconsigliati dalla Farnesina: elenco aggiornato',
       },
-      description: "Gli avvisi di viaggio attuali di {agency} per {count} paesi, raggruppati per livello (1–4) e confrontati con gli altri governi. Aggiornati ogni giorno.",
+      description: "Gli avvisi di viaggio attuali di {agency} per {count} paesi, raggruppati per livello (1–4) e confrontati con gli altri governi. Controllati ogni giorno.",
       intro: "I paesi qui sotto sono raggruppati per livello di avviso attuale di {agency}, convertito sulla nostra scala comune da 1 a 4. Dove disponibile, mostriamo anche la formulazione originale di {agency} e un link alla sua pagina ufficiale: verifica sempre la fonte diretta prima di partire.",
       levelHeadings: [
         'Livello 1 — Normali precauzioni',
@@ -251,7 +251,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
       overrides: {
         es: 'Países desaconsejados por Exteriores: lista actualizada',
       },
-      description: 'Los avisos de viaje actuales de {agency} para {count} países, agrupados por nivel (1-4) y comparados con otros gobiernos. Actualizados a diario.',
+      description: 'Los avisos de viaje actuales de {agency} para {count} países, agrupados por nivel (1-4) y comparados con otros gobiernos. Revisados a diario.',
       intro: 'Los países de abajo están agrupados por el nivel de aviso actual de {agency}, traducido a nuestra escala común del 1 al 4. Cuando está disponible, también mostramos la redacción original de {agency} y un enlace a su página oficial: comprueba siempre la fuente directa antes de viajar.',
       levelHeadings: [
         'Nivel 1 — Precauciones normales',
@@ -305,7 +305,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
         fr: 'Pays formellement déconseillés par la France : la liste',
         be: 'Belgique : pays à éviter selon les Affaires étrangères',
       },
-      description: "Les conseils aux voyageurs actuels de {agency} pour {count} pays, regroupés par niveau (1-4) et comparés aux autres gouvernements. Mis à jour chaque jour.",
+      description: "Les conseils aux voyageurs actuels de {agency} pour {count} pays, regroupés par niveau (1-4) et comparés aux autres gouvernements. Vérifiés chaque jour.",
       intro: "Les pays ci-dessous sont regroupés par niveau d'avis actuel de {agency}, converti sur notre échelle commune de 1 à 4. Quand elle est disponible, nous affichons aussi la formulation originale de {agency} et un lien vers sa page officielle : vérifiez toujours la source directe avant de partir.",
       levelHeadings: [
         'Niveau 1 — Précautions normales',
@@ -356,7 +356,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     issuer: {
       genericTitle: '{agency}: alertas de viagem por país',
       overrides: {},
-      description: 'Os alertas de viagem atuais de {agency} para {count} países, agrupados por nível (1-4) e comparados com outros governos. Atualizados todos os dias.',
+      description: 'Os alertas de viagem atuais de {agency} para {count} países, agrupados por nível (1-4) e comparados com outros governos. Verificados todos os dias.',
       intro: 'Os países abaixo estão agrupados pelo nível de alerta atual de {agency}, convertido para a nossa escala comum de 1 a 4. Quando disponível, também mostramos a redação original de {agency} e um link para a sua página oficial: confirme sempre a fonte direta antes de viajar.',
       levelHeadings: [
         'Nível 1 — Precaução normal',
@@ -385,7 +385,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
     breadcrumbLabel: '各国政府旅行警示',
     hub: {
       title: '{count} 国政府旅行警示对比',
-      description: '对比 {count} 个政府对同一批目的地的旅行风险评估——从美国国务院到德国联邦外交部——统一换算为 1-4 级评分，每日更新。',
+      description: '对比 {count} 个政府对同一批目的地的旅行风险评估——从美国国务院到德国联邦外交部——统一换算为 1-4 级评分，每日重新计算。',
       intro1: '各国政府发布旅行警示，提醒本国公民境外可能面临的风险，从街头犯罪到武装冲突不一而足。下方每条警示都已换算为本站统一使用的 1 至 4 级评分体系，因此即便原始表述——颜色、措辞、编号层级——各不相同，也能够直接比较。',
       intro2: '没有两个政府会在所有国家的评估上完全一致。各国依赖的使馆网络、风险承受度、双边关系和更新节奏都不相同，因此同一个目的地，一国政府可能标注"正常防范"，另一国政府却标注"切勿前往"。这两种判断都不天然地更"正确"——请参阅我们的{link}，了解我们如何把它们综合成一个统一的安全评分。',
       mostRestrictive: '{government}：相较于其他政府对同一批国家的评估，目前发布的警示最为审慎。',
@@ -410,7 +410,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
         tw: '台湾外交部旅游警示：各国安全等级一览',
         hk: '香港外游警示：各国旅游安全等级一览',
       },
-      description: '{agency}目前对 {count} 个国家发布的旅行警示，按 1-4 级分组，并与其他政府的评估进行对比，每日更新。',
+      description: '{agency}目前对 {count} 个国家发布的旅行警示，按 1-4 级分组，并与其他政府的评估进行对比，每日检查更新。',
       intro: '下方国家按{agency}目前的警示等级分组，已换算为本站统一使用的 1 至 4 级评分体系。如有原始资料，我们还会附上{agency}的原文表述及其官方页面链接——出发前请您务必查阅官方原始来源。',
       levelHeadings: [
         '1 级 — 正常防范',
@@ -465,7 +465,7 @@ export const governmentAdvisoriesCopy: Record<Lang, GovernmentAdvisoriesCopy> = 
         at: 'BMEIA-Reisewarnungen Österreichs: die aktuelle Liste',
         ch: 'Reisehinweise des EDA: Länderliste der Schweiz',
       },
-      description: '{agency} listet aktuell Reisewarnungen für {count} Länder, gruppiert nach Stufe (1-4) und verglichen mit anderen Regierungen. Täglich aktualisiert.',
+      description: '{agency} listet aktuell Reisewarnungen für {count} Länder, gruppiert nach Stufe (1-4) und verglichen mit anderen Regierungen. Täglich geprüft.',
       intro: '{agency} ordnet die Länder unten nach der aktuellen Warnstufe ein, übertragen auf unsere gemeinsame 1-bis-4-Skala. Wo verfügbar, zeigen wir zusätzlich den amtlichen Wortlaut im Original sowie einen Link zur offiziellen Seite — prüfen Sie vor der Reise stets die Quelle direkt.',
       levelHeadings: [
         'Stufe 1 — Normale Vorsicht',

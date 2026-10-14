@@ -286,7 +286,7 @@ const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
         {title}
       </h1>
       <p class="text-sm text-sand-600 dark:text-sand-400">
-        {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', SOURCE_COUNT_DISPLAY) || `Rankings updated daily from ${SOURCE_COUNT_DISPLAY} data sources`}
+        {dateStr} — {t('hub.updated_daily' as any)?.replace('{count}', SOURCE_COUNT_DISPLAY) || `Rankings recalculated daily from ${SOURCE_COUNT_DISPLAY} data sources`}
       </p>
       {/* SXO-07: a visible, secondary "cite this ranking" link right by the H1 -- the
           journalist/risk-manager persona looks for this before reading the list. */}

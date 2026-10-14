@@ -58,7 +58,7 @@ export interface GovernmentsDisagreeCopy {
 export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
   en: {
     title: 'Where Governments Disagree on Travel Safety',
-    description: "Ranked by how much {count} widely-rated countries divide governments' travel advisories, updated daily.",
+    description: "Ranked by how much {count} widely-rated countries divide governments' travel advisories, recalculated daily.",
     intro: "Every government publishes its own travel advisory, and most of the time they roughly agree. This page ranks the countries where they don't — and names which governments are the outliers.",
     measureExplainer: "The disagreement score is the spread — the highest advisory level reported for a country minus the lowest — with countries tied on spread ranked by how spread out (standard deviation) the levels are.",
     methodologyNote: 'Every level here is mapped onto the same 1–4 scale explained in our {link}.',
@@ -92,7 +92,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
 
   it: {
     title: 'Dove i governi non concordano sulla sicurezza',
-    description: 'Classifica di {count} paesi ampiamente valutati in base a quanto i governi si dividono sui loro avvisi di viaggio, aggiornata ogni giorno.',
+    description: 'Classifica di {count} paesi ampiamente valutati in base a quanto i governi si dividono sui loro avvisi di viaggio, ricalcolata ogni giorno.',
     intro: "Ogni governo pubblica un proprio avviso di viaggio, e nella maggior parte dei casi sono grosso modo d'accordo. Questa pagina classifica i paesi in cui non lo sono, indicando quali governi si discostano dagli altri.",
     measureExplainer: "Il punteggio di disaccordo è lo scarto — il livello di avviso più alto registrato per un paese meno il più basso — e a parità di scarto i paesi sono ordinati in base a quanto i livelli sono dispersi (deviazione standard).",
     methodologyNote: 'Ogni livello qui riportato è convertito sulla stessa scala 1–4 spiegata nella nostra {link}.',
@@ -126,7 +126,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
 
   es: {
     title: 'Dónde los gobiernos discrepan sobre la seguridad',
-    description: 'Clasificación de {count} países ampliamente evaluados según cuánto discrepan los gobiernos en sus avisos de viaje, actualizada a diario.',
+    description: 'Clasificación de {count} países ampliamente evaluados según cuánto discrepan los gobiernos en sus avisos de viaje, recalculada a diario.',
     intro: 'Cada gobierno publica su propio aviso de viaje y, la mayoría de las veces, coinciden a grandes rasgos. Esta página clasifica los países en los que no coinciden, señalando qué gobiernos se apartan del resto.',
     measureExplainer: 'La puntuación de discrepancia es el rango: el nivel de aviso más alto registrado para un país menos el más bajo. En caso de empate, los países se ordenan según cuán dispersos están los niveles (desviación estándar).',
     methodologyNote: 'Cada nivel se traduce a la misma escala 1-4 que explicamos en nuestra {link}.',
@@ -160,7 +160,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
 
   fr: {
     title: 'Où les gouvernements divergent sur la sécurité',
-    description: 'Classement de {count} pays largement évalués selon le degré de désaccord entre gouvernements sur leurs avis aux voyageurs, mis à jour chaque jour.',
+    description: 'Classement de {count} pays largement évalués selon le degré de désaccord entre gouvernements sur leurs avis aux voyageurs, recalculé chaque jour.',
     intro: "Chaque gouvernement publie son propre avis aux voyageurs et, la plupart du temps, ils sont globalement d'accord. Cette page classe les pays où ce n'est pas le cas, en nommant les gouvernements qui s'écartent des autres.",
     measureExplainer: "Le score de désaccord est l'écart : le niveau d'avis le plus élevé enregistré pour un pays moins le plus bas ; à écart égal, les pays sont classés selon la dispersion des niveaux (écart-type).",
     methodologyNote: 'Chaque niveau est converti sur la même échelle 1-4, expliquée dans notre {link}.',
@@ -194,7 +194,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
 
   pt: {
     title: 'Onde os governos discordam sobre segurança',
-    description: 'Classificação de {count} países amplamente avaliados conforme o grau de discordância entre os alertas de viagem dos governos, atualizada todos os dias.',
+    description: 'Classificação de {count} países amplamente avaliados conforme o grau de discordância entre os alertas de viagem dos governos, recalculada todos os dias.',
     intro: 'Cada governo publica o seu próprio alerta de viagem e, na maioria das vezes, concordam a grandes traços. Esta página classifica os países em que isso não acontece, apontando quais governos se destacam dos demais.',
     measureExplainer: 'A pontuação de discordância é a amplitude — o nível de alerta mais alto registado para um país menos o mais baixo —, com empates desempatados por quão dispersos estão os níveis (desvio padrão).',
     methodologyNote: 'Cada nível é convertido para a mesma escala 1-4 explicada na nossa {link}.',
@@ -262,7 +262,7 @@ export const governmentsDisagreeCopy: Record<Lang, GovernmentsDisagreeCopy> = {
 
   de: {
     title: 'Wo Regierungen bei der Reisesicherheit uneins sind',
-    description: 'Rangliste von {count} breit bewerteten Ländern danach, wie stark sich Regierungen bei ihren Reisewarnungen uneinig sind, täglich aktualisiert.',
+    description: 'Rangliste von {count} breit bewerteten Ländern danach, wie stark sich Regierungen bei ihren Reisewarnungen uneinig sind, täglich neu berechnet.',
     intro: 'Jede Regierung veröffentlicht ihre eigene Reisewarnung, und meistens stimmen sie grob überein. Diese Seite listet die Länder, bei denen das nicht der Fall ist, und benennt, welche Regierungen von den anderen abweichen.',
     measureExplainer: 'Der Uneinigkeits-Wert ist die Spannweite — die höchste für ein Land gemeldete Warnstufe minus die niedrigste; bei Gleichstand entscheidet, wie stark die Stufen streuen (Standardabweichung).',
     methodologyNote: 'Jede Stufe wird auf dieselbe 1-4-Skala übertragen, die wir in unserer {link} erklären.',

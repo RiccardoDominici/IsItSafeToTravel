@@ -31,13 +31,13 @@ export const regionHeadings: Record<Region, Record<Lang, string>> = {
  * faqPillarLabels / country-faq-copy.ts for that).
  */
 const regionDriverPhrase: Record<Lang, Record<PillarName, string>> = {
-  en: { conflict: 'armed conflict', crime: 'high crime', health: 'weak healthcare', governance: 'weak governance', environment: 'environmental risk' },
-  it: { conflict: 'conflitti armati', crime: 'criminalità elevata', health: 'sanità debole', governance: 'governance debole', environment: 'rischi ambientali' },
-  es: { conflict: 'conflictos armados', crime: 'criminalidad elevada', health: 'sanidad débil', governance: 'gobernanza débil', environment: 'riesgos ambientales' },
-  fr: { conflict: 'conflits armés', crime: 'criminalité élevée', health: 'système de santé fragile', governance: 'gouvernance fragile', environment: 'risques environnementaux' },
-  pt: { conflict: 'conflitos armados', crime: 'criminalidade elevada', health: 'saúde frágil', governance: 'governança frágil', environment: 'riscos ambientais' },
-  zh: { conflict: '武装冲突', crime: '较高的犯罪率', health: '薄弱的医疗体系', governance: '薄弱的治理', environment: '环境风险' },
-  de: { conflict: 'bewaffnete Konflikte', crime: 'hohe Kriminalität', health: 'schwaches Gesundheitssystem', governance: 'schwache Regierungsführung', environment: 'Umweltrisiken' },
+  en: { conflict: 'armed conflict', crime: 'high crime', health: 'weak healthcare', governance: 'weak governance', environment: 'natural hazards' },
+  it: { conflict: 'conflitti armati', crime: 'criminalità elevata', health: 'sanità debole', governance: 'governance debole', environment: 'rischi naturali' },
+  es: { conflict: 'conflictos armados', crime: 'criminalidad elevada', health: 'sanidad débil', governance: 'gobernanza débil', environment: 'riesgos naturales' },
+  fr: { conflict: 'conflits armés', crime: 'criminalité élevée', health: 'système de santé fragile', governance: 'gouvernance fragile', environment: 'risques naturels' },
+  pt: { conflict: 'conflitos armados', crime: 'criminalidade elevada', health: 'saúde frágil', governance: 'governança frágil', environment: 'riscos naturais' },
+  zh: { conflict: '武装冲突', crime: '较高的犯罪率', health: '薄弱的医疗体系', governance: '薄弱的治理', environment: '自然灾害' },
+  de: { conflict: 'bewaffnete Konflikte', crime: 'hohe Kriminalität', health: 'schwaches Gesundheitssystem', governance: 'schwache Regierungsführung', environment: 'Naturgefahren' },
 };
 
 /**

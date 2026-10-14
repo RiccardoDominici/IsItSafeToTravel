@@ -41,7 +41,7 @@ const bibtexTemplate = `@misc{isafe_{iso}_{year},
   author = {{IsItSafeToTravel.org}},
   year   = {{{year}}},
   howpublished = {\\url{{url}}},
-  note   = {Data set, updated daily. Accessed {date}}
+  note   = {Data set, scores recalculated daily. Accessed {date}}
 }`;
 const badgeHtmlTemplate = '<a href="{url}"><img src="https://isitsafetotravel.org/badge/{iso}.svg" alt="{name} Safety Score" width="300" height="80"></a>';
 
@@ -56,7 +56,7 @@ const globalBibtexTemplate = `@misc{isafe_global_{year},
   author = {{IsItSafeToTravel.org}},
   year   = {{{year}}},
   howpublished = {\\url{{url}}},
-  note   = {Data set, updated daily. Accessed {date}}
+  note   = {Data set, scores recalculated daily. Accessed {date}}
 }`;
 
 // Page copy is inlined per-language (same pattern as ApiDocs.astro / RegionsIndex)
@@ -109,10 +109,10 @@ interface CiteCopy {
 const copy: Record<Lang, CiteCopy> = {
   en: {
     title: 'How to Cite This Data',
-    description: "Cite our daily travel-safety scores for {countryCount} countries. Ready-made attribution in text, HTML, Markdown, APA, MLA and BibTeX. Free, CC BY-NC 4.0.",
+    description: "Cite our travel-safety scores for {countryCount} countries, recalculated daily. Ready-made attribution in text, HTML, Markdown, APA, MLA and BibTeX. CC BY-NC 4.0.",
     intro: 'Ready-made citations for journalists, researchers, teachers and bloggers. Pick a country (or the whole dataset), then copy one — plain text, a website link, Markdown, or an academic format.',
     whatHeading: "What you're citing",
-    whatText: 'Every score here comes from an open dataset: daily-updated safety scores for {countryCount} countries, aggregated from {sourceCount} public sources including government advisories, the World Bank, INFORM and the Global Peace Index. Free under Creative Commons BY-NC 4.0. Because it updates daily, always include the date you accessed it.',
+    whatText: 'Every score here comes from an open dataset: safety scores for {countryCount} countries, recalculated daily from {sourceCount} public sources including government advisories, the World Bank, INFORM and the Global Peace Index. Government advisories and disaster alerts change daily; international indices are published once or twice a year. Free under Creative Commons BY-NC 4.0. Because scores are recalculated daily, always include the date you accessed it.',
     globalOption: '— Whole dataset (all countries) —',
     globalPlainTemplate: 'Global travel-safety scores for {countryCount} countries. IsItSafeToTravel.org, accessed {date}. {url}',
     globalMarkdownTemplate: '[Global travel-safety scores for {countryCount} countries — IsItSafeToTravel.org]({url}) (accessed {date})',
@@ -152,10 +152,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   it: {
     title: 'Come citare questi dati',
-    description: 'Cita i nostri punteggi di sicurezza giornalieri per {countryCount} paesi. Attribuzione pronta in testo, HTML, Markdown, APA, MLA e BibTeX. CC BY-NC 4.0.',
+    description: 'Cita i nostri punteggi di sicurezza per {countryCount} paesi, ricalcolati ogni giorno. Attribuzione pronta in testo, HTML, Markdown, APA, MLA e BibTeX. CC BY-NC 4.0.',
     intro: "Citazioni pronte per giornalisti, ricercatori, insegnanti e blogger. Scegli un paese (o l'intero dataset), poi copiane una — testo semplice, un link al sito, Markdown o un formato accademico.",
     whatHeading: 'Cosa stai citando',
-    whatText: 'Ogni punteggio proviene da un dataset aperto: punteggi di sicurezza aggiornati ogni giorno per {countryCount} paesi, da {sourceCount} fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e Global Peace Index. Gratis con licenza Creative Commons BY-NC 4.0. Poiché si aggiorna ogni giorno, indica sempre la data di consultazione.',
+    whatText: "Ogni punteggio proviene da un dataset aperto: punteggi di sicurezza per {countryCount} paesi, ricalcolati ogni giorno da {sourceCount} fonti pubbliche tra cui avvisi governativi, Banca Mondiale, INFORM e Global Peace Index. Gli avvisi governativi e le allerte per disastri cambiano ogni giorno; gli indici internazionali vengono pubblicati una o due volte l'anno. Gratis con licenza Creative Commons BY-NC 4.0. Poiché i punteggi vengono ricalcolati ogni giorno, indica sempre la data di consultazione.",
     globalOption: '— Intero dataset (tutti i paesi) —',
     globalPlainTemplate: 'Punteggi di sicurezza di viaggio globali per oltre 240 paesi. IsItSafeToTravel.org, consultato il {date}. {url}',
     globalMarkdownTemplate: '[Punteggi di sicurezza di viaggio globali per oltre 240 paesi — IsItSafeToTravel.org]({url}) (consultato il {date})',
@@ -195,10 +195,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   es: {
     title: 'Cómo citar estos datos',
-    description: 'Cita nuestras puntuaciones diarias de seguridad para {countryCount} países. Atribución lista en texto, HTML, Markdown, APA, MLA y BibTeX. CC BY-NC 4.0.',
+    description: 'Cita nuestras puntuaciones de seguridad para {countryCount} países, recalculadas a diario. Atribución lista en texto, HTML, Markdown, APA, MLA y BibTeX. CC BY-NC 4.0.',
     intro: 'Citas listas para periodistas, investigadores, docentes y blogueros. Elige un país (o todo el conjunto de datos) y copia una — texto simple, un enlace, Markdown o un formato académico.',
     whatHeading: 'Qué estás citando',
-    whatText: 'Cada puntuación proviene de un dataset abierto: puntuaciones actualizadas a diario para {countryCount} países, de {sourceCount} fuentes públicas incluidos avisos gubernamentales, Banco Mundial, INFORM y el Global Peace Index. Gratis bajo Creative Commons BY-NC 4.0. Como se actualiza a diario, incluye siempre la fecha de consulta.',
+    whatText: 'Cada puntuación proviene de un dataset abierto: puntuaciones de seguridad para {countryCount} países, recalculadas a diario a partir de {sourceCount} fuentes públicas, incluidos avisos gubernamentales, Banco Mundial, INFORM y el Global Peace Index. Los avisos gubernamentales y las alertas de desastres cambian a diario; los índices internacionales se publican una o dos veces al año. Gratis bajo Creative Commons BY-NC 4.0. Como las puntuaciones se recalculan a diario, incluye siempre la fecha de consulta.',
     globalOption: '— Todo el conjunto de datos (todos los países) —',
     globalPlainTemplate: 'Puntuaciones globales de seguridad de viaje para más de 240 países. IsItSafeToTravel.org, consultado el {date}. {url}',
     globalMarkdownTemplate: '[Puntuaciones globales de seguridad de viaje para más de 240 países — IsItSafeToTravel.org]({url}) (consultado el {date})',
@@ -238,10 +238,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   fr: {
     title: 'Comment citer ces données',
-    description: "Citez nos scores quotidiens de sécurité voyage pour {countryCount} pays. Attribution prête en texte, HTML, Markdown, APA, MLA et BibTeX. CC BY-NC 4.0.",
+    description: "Citez nos scores de sécurité voyage, recalculés chaque jour, pour {countryCount} pays. Attribution prête en texte, HTML, Markdown, APA, MLA et BibTeX. CC BY-NC 4.0.",
     intro: "Citations prêtes à l'emploi pour journalistes, chercheurs, enseignants et blogueurs. Choisissez un pays (ou le jeu de données complet), puis copiez-en une — texte brut, un lien, Markdown ou un format académique.",
     whatHeading: 'Ce que vous citez',
-    whatText: "Chaque score provient d'un jeu de données ouvert : scores mis à jour chaque jour pour {countryCount} pays, à partir de {sourceCount} sources publiques dont les avis gouvernementaux, la Banque mondiale, INFORM et le Global Peace Index. Gratuit sous Creative Commons BY-NC 4.0. Comme il change chaque jour, indiquez toujours votre date de consultation.",
+    whatText: "Chaque score provient d'un jeu de données ouvert : scores de sécurité pour {countryCount} pays, recalculés chaque jour à partir de {sourceCount} sources publiques dont les avis gouvernementaux, la Banque mondiale, INFORM et le Global Peace Index. Les avis gouvernementaux et les alertes de catastrophe changent chaque jour ; les indices internationaux ne sont publiés qu'une ou deux fois par an. Gratuit sous Creative Commons BY-NC 4.0. Comme les scores sont recalculés chaque jour, indiquez toujours votre date de consultation.",
     globalOption: '— Jeu de données complet (tous les pays) —',
     globalPlainTemplate: 'Scores mondiaux de sécurité voyage pour plus de 240 pays. IsItSafeToTravel.org, consulté le {date}. {url}',
     globalMarkdownTemplate: '[Scores mondiaux de sécurité voyage pour plus de 240 pays — IsItSafeToTravel.org]({url}) (consulté le {date})',
@@ -281,10 +281,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   pt: {
     title: 'Como citar estes dados',
-    description: 'Cite as nossas pontuações diárias de segurança para {countryCount} países. Atribuição pronta em texto, HTML, Markdown, APA e BibTeX. CC BY-NC 4.0.',
+    description: 'Cite as nossas pontuações de segurança para {countryCount} países, recalculadas diariamente. Atribuição pronta em texto, HTML, Markdown, APA e BibTeX. CC BY-NC 4.0.',
     intro: 'Citações prontas para jornalistas, pesquisadores, professores e blogueiros. Escolha um país (ou todo o conjunto de dados) e copie uma — texto simples, um link, Markdown ou um formato acadêmico.',
     whatHeading: 'O que você está citando',
-    whatText: 'Cada pontuação vem de um dataset aberto: pontuações atualizadas diariamente para {countryCount} países, de {sourceCount} fontes públicas incluindo avisos governamentais, Banco Mundial, INFORM e o Global Peace Index. Grátis sob Creative Commons BY-NC 4.0. Como é atualizado diariamente, inclua sempre a data de acesso.',
+    whatText: 'Cada pontuação vem de um dataset aberto: pontuações de segurança para {countryCount} países, recalculadas diariamente a partir de {sourceCount} fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM e o Global Peace Index. Os avisos governamentais e os alertas de desastres mudam diariamente; os índices internacionais são publicados uma ou duas vezes por ano. Grátis sob Creative Commons BY-NC 4.0. Como as pontuações são recalculadas diariamente, inclua sempre a data de acesso.',
     globalOption: '— Conjunto de dados completo (todos os países) —',
     globalPlainTemplate: 'Pontuações globais de segurança de viagem para mais de 240 países. IsItSafeToTravel.org, acessado em {date}. {url}',
     globalMarkdownTemplate: '[Pontuações globais de segurança de viagem para mais de 240 países — IsItSafeToTravel.org]({url}) (acessado em {date})',
@@ -324,10 +324,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   zh: {
     title: '如何引用此数据',
-    description: '引用或链接 IsItSafeToTravel 每日更新的 {countryCount} 国家旅行安全评分。提供纯文本、HTML、Markdown、APA、MLA 和 BibTeX 现成署名。免费，CC BY-NC 4.0。',
+    description: '引用或链接 IsItSafeToTravel 每日重新计算的 {countryCount} 国家旅行安全评分。提供纯文本、HTML、Markdown、APA、MLA 和 BibTeX 现成署名。免费，CC BY-NC 4.0。',
     intro: '为记者、研究人员、教师和博主提供的现成引用。选择一个国家（或整个数据集），然后复制一个——纯文本、网站链接、Markdown 或学术格式。',
     whatHeading: '您引用的内容',
-    whatText: '每个评分都来自一个开放数据集：{countryCount} 国家每日更新的安全评分，汇总自 {sourceCount} 个公开来源，包括政府旅行警告、世界银行、INFORM 和全球和平指数。采用 Creative Commons BY-NC 4.0 免费授权。由于每日更新，请始终注明访问日期。',
+    whatText: '每个评分都来自一个开放数据集：{countryCount} 国家的安全评分，每日基于 {sourceCount} 个公开来源重新计算，包括政府旅行警告、世界银行、INFORM 和全球和平指数。政府旅行警告和灾害预警每天都会变化，国际指数则每年只发布一到两次。采用 Creative Commons BY-NC 4.0 免费授权。由于评分每日重新计算，请始终注明访问日期。',
     globalOption: '— 整个数据集（所有国家）—',
     globalPlainTemplate: '全球旅行安全评分（{countryCount} 个国家和地区）。IsItSafeToTravel.org，访问于 {date}。{url}',
     globalMarkdownTemplate: '[全球旅行安全评分（{countryCount} 个国家和地区）— IsItSafeToTravel.org]({url})（访问于 {date}）',
@@ -367,10 +367,10 @@ const copy: Record<Lang, CiteCopy> = {
   },
   de: {
     title: 'Diese Daten zitieren',
-    description: 'Zitieren Sie unsere täglichen Reise-Sicherheits-Scores für {countryCount} Länder. Fertige Namensnennung in Text, HTML, Markdown, APA und BibTeX. CC BY-NC 4.0.',
+    description: 'Zitieren Sie unsere täglich neu berechneten Sicherheits-Scores für {countryCount} Länder. Fertige Namensnennung in Text, HTML, Markdown, APA und BibTeX. CC BY-NC 4.0.',
     intro: 'Fertige Zitate für Journalisten, Forschende, Lehrkräfte und Blogger. Wählen Sie ein Land (oder den gesamten Datensatz) und kopieren Sie eine — Klartext, einen Website-Link, Markdown oder ein akademisches Format.',
     whatHeading: 'Was Sie zitieren',
-    whatText: 'Jeder Score stammt aus einem offenen Datensatz: täglich aktualisierte Sicherheits-Scores für {countryCount} Länder aus {sourceCount} öffentlichen Quellen, darunter Regierungshinweise, Weltbank, INFORM und Global Peace Index. Kostenlos unter Creative Commons BY-NC 4.0. Da er sich täglich ändert, geben Sie stets Ihr Zugriffsdatum an.',
+    whatText: 'Jeder Score stammt aus einem offenen Datensatz: Sicherheits-Scores für {countryCount} Länder, täglich neu berechnet aus {sourceCount} öffentlichen Quellen, darunter Regierungshinweise, Weltbank, INFORM und Global Peace Index. Regierungshinweise und Katastrophenwarnungen ändern sich täglich, internationale Indizes erscheinen nur ein- bis zweimal im Jahr. Kostenlos unter Creative Commons BY-NC 4.0. Da die Scores täglich neu berechnet werden, geben Sie stets Ihr Zugriffsdatum an.',
     globalOption: '— Gesamter Datensatz (alle Länder) —',
     globalPlainTemplate: 'Globale Reise-Sicherheits-Scores für über 240 Länder. IsItSafeToTravel.org, abgerufen am {date}. {url}',
     globalMarkdownTemplate: '[Globale Reise-Sicherheits-Scores für über 240 Länder — IsItSafeToTravel.org]({url}) (abgerufen am {date})',

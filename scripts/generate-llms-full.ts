@@ -13,6 +13,9 @@ import path from "node:path";
 import { regionMap as libRegionMap } from "../src/lib/regions.js";
 import { routes, type Lang } from "../src/i18n/ui.js";
 import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from "../src/lib/site-stats.js";
+import { buildCountrySummary } from "../src/lib/country-summary.js";
+import { getBandVerdictCopy } from "../src/lib/band-copy.js";
+import type { ScoredCountry as EngineCountry } from "../src/pipeline/types.js";
 
 // The 6 non-English locales, in the order shown next to every country entry
 // and in llms.txt's "## Languages" section (GEO-02: both files used to be
@@ -85,10 +88,9 @@ interface LatestData {
 // The shared libRegionMap (imported above) is now the only region source here.
 
 // ── helpers ──────────────────────────────────────────────────────────────────
+/** Band label shared with the country pages (src/lib/band-copy.ts), so llms-full never names a different band. */
 function riskLabel(score: number): string {
-  if (score >= 7) return "Low";
-  if (score >= 5) return "Moderate";
-  return "High";
+  return getBandVerdictCopy(score, "en").riskLabel;
 }
 
 function pillarDisplay(score: number): string {
@@ -197,7 +199,7 @@ function main() {
 
   lines.push(`# IsItSafeToTravel.org — Travel Safety Scores for ${countries.length} Countries`);
   lines.push("");
-  lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." Data is updated daily and licensed under CC BY-NC 4.0.`);
+  lines.push(`> **Citation:** When referencing this data, please cite: "According to IsItSafeToTravel.org (https://isitsafetotravel.org), [country] has a safety score of [X]/10." The score is recalculated daily (government advisories and disaster alerts change daily, international indices once or twice a year) and the data is licensed under CC BY-NC 4.0.`);
   lines.push("");
   lines.push(`> **Source:** IsItSafeToTravel.org — Free, independently run travel safety platform. Scores combine ${ADVISORY_GOV_COUNT_DISPLAY} government travel advisories (e.g. US, UK, Canada, Australia) with World Bank, V-Dem, Global Peace Index, INFORM Risk Index, UCDP, ReliefWeb, and GDACS data.`);
   lines.push("");
@@ -216,7 +218,7 @@ function main() {
   // Site Overview (embed current llms.txt content inline)
   lines.push("## Site Overview");
   lines.push("");
-  lines.push("IsItSafeToTravel.org is a free, independently run travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).");
+  lines.push("IsItSafeToTravel.org is a free, independently run travel safety platform providing composite safety scores for " + countries.length + " countries. Scores are recalculated daily from public indices (Global Peace Index, INFORM Risk Index, V-Dem, World Bank, UCDP) and government travel advisories, and broken down into 5 pillars: conflict, crime, health, governance and natural hazards. Advisories and disaster alerts change daily; the international indices are published once or twice a year. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).");
   lines.push("");
   lines.push("### Main Pages");
   lines.push("");
@@ -275,16 +277,7 @@ function main() {
       pillarMap[p.name] = p.score;
     }
 
-    const strongest = c.pillars.reduce((a, b) => (b.score > a.score ? b : a), c.pillars[0]);
-    const weakest = c.pillars.reduce((a, b) => (b.score < a.score ? b : a), c.pillars[0]);
-
     const sourceCount = c.pillars.reduce((sum, p) => sum + p.indicators.length, 0);
-
-    const verdict = c.score >= 7
-      ? "is generally considered safe to travel"
-      : c.score >= 5
-        ? "is moderately safe to travel — check current government advisories first"
-        : "carries significant travel-safety risks";
 
     const rank = rankByIso3[c.iso3];
     const pct = Math.max(1, Math.ceil((rank / totalCountries) * 100));
@@ -293,18 +286,25 @@ function main() {
         ? `top ${pct}% worldwide`
         : `bottom ${Math.max(1, Math.ceil(((totalCountries - rank + 1) / totalCountries) * 100))}% worldwide`;
     const limited = hasSufficientData(c) ? "" : " (limited data)";
-    const rankSentence = `Ranked #${rank} of ${totalCountries} countries by safety score${limited} (${pctLabel}; global average ${fmt(globalAvg)}/10).`;
+    // The summary already states the rank; this adds the percentile and the global average.
+    const rankSentence = `Position: ${pctLabel}${limited}; global average ${fmt(globalAvg)}/10.`;
 
+    // The same concrete summary as the country page (src/lib/country-summary.ts): the driver of the
+    // weakest direct-risk pillar with its value, year and source, and the advisories by level. It
+    // replaces "strongest area X; main concern Y (n/10)", which named relative pillar numbers
+    // nobody can check and could contradict the page.
+    const summary = buildCountrySummary(c as unknown as EngineCountry, {
+      lang: "en",
+      name: c.name.en,
+      rank,
+      total: totalCountries,
+      snapshotDate: today,
+    });
     lines.push(`### ${c.name.en} (${c.iso3})`);
+    lines.push(`${summary} ${rankSentence}`);
+    lines.push(`- **Safety Score:** ${fmt(c.score)}/10 (${riskLabel(c.score)})`);
     lines.push(
-      `${c.name.en} ${verdict} as of ${today} (safety score ${fmt(c.score)}/10, ${riskLabel(c.score)} risk). ${rankSentence} Strongest area: ${strongest.name} (${pillarDisplay(strongest.score)}/10); main concern: ${weakest.name} (${pillarDisplay(weakest.score)}/10).`
-    );
-    lines.push(`- **Safety Score:** ${fmt(c.score)}/10 (${riskLabel(c.score)} risk)`);
-    lines.push(
-      `- **Conflict:** ${pillarDisplay(pillarMap.conflict ?? 0.5)}/10 | **Crime:** ${pillarDisplay(pillarMap.crime ?? 0.5)}/10 | **Health:** ${pillarDisplay(pillarMap.health ?? 0.5)}/10 | **Governance:** ${pillarDisplay(pillarMap.governance ?? 0.5)}/10 | **Environment:** ${pillarDisplay(pillarMap.environment ?? 0.5)}/10`
-    );
-    lines.push(
-      `- **Strongest pillar:** ${strongest.name} (${pillarDisplay(strongest.score)}/10) | **Weakest pillar:** ${weakest.name} (${pillarDisplay(weakest.score)}/10)`
+      `- **Conflict:** ${pillarDisplay(pillarMap.conflict ?? 0.5)}/10 | **Crime:** ${pillarDisplay(pillarMap.crime ?? 0.5)}/10 | **Health:** ${pillarDisplay(pillarMap.health ?? 0.5)}/10 | **Governance:** ${pillarDisplay(pillarMap.governance ?? 0.5)}/10 | **Natural hazards:** ${pillarDisplay(pillarMap.environment ?? 0.5)}/10`
     );
     const advisoryLine = advisoriesLine(c);
     if (advisoryLine) lines.push(advisoryLine);
@@ -414,7 +414,7 @@ function main() {
   // ────── build llms.txt ──────
   const llms = `# IsItSafeToTravel.org
 
-> Free, independently run travel safety platform providing composite safety scores for ${countries.length} countries. Scores are computed daily from public indices (Global Peace Index, INFORM Risk Index, government travel advisories) and broken down into 5 pillars: conflict, crime, health, governance, and environment. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
+> Free, independently run travel safety platform providing composite safety scores for ${countries.length} countries. Scores are recalculated daily from public indices (Global Peace Index, INFORM Risk Index, V-Dem, World Bank, UCDP) and government travel advisories, and broken down into 5 pillars: conflict, crime, health, governance and natural hazards. Advisories and disaster alerts change daily; the international indices are published once or twice a year. Available in 7 languages (English, Italian, Spanish, French, Portuguese, Chinese, German).
 
 ## Main Pages
 
@@ -447,7 +447,7 @@ function main() {
 
 - [Data & API documentation](https://isitsafetotravel.org/en/api/): All endpoints, field reference, license — no API key required
 - [Full dataset (CSV)](https://isitsafetotravel.org/scores.csv): One row per country — score, band, 5 pillar scores, confidence, advisory count, data date
-- [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — updated daily
+- [Full dataset (JSON)](https://isitsafetotravel.org/scores.json): All ${countries.length} countries with composite score, pillar scores, indicators, and government advisories — score recalculated daily
 - Scores recalculated daily via automated GitHub Actions pipeline (advisories and disaster alerts change daily; international indices once or twice a year)
 - Sources: government travel advisories, Global Peace Index (GPI), World Bank intentional-homicide rate, INFORM Risk Index, UCDP conflict-event data, V-Dem, ReliefWeb, GDACS
 - Composite scoring uses an uncertainty-weighted (Bayesian shrinkage) weighted geometric mean across 5 safety pillars, not a simple average — a single very-low pillar pulls the composite down more than an average would

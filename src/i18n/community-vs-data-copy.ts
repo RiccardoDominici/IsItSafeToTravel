@@ -153,7 +153,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Vote on {name} →',
     howToReadTitle: 'How to Read This Page',
     howToReadP1:
-      '"Our score" is the data-driven number you see on every country page: a composite of conflict, crime, health, governance and environment indicators, recomputed daily. "Community score" is what travelers tell us: each vote says whether our score felt too high, about right or too low, and we turn it into the score that traveler would have given — the score shown at the time, moved half a point per step.',
+      '"Our score" is the data-driven number you see on every country page: a composite of conflict, crime, health, governance and natural hazard indicators, recomputed daily. "Community score" is what travelers tell us: each vote says whether our score felt too high, about right or too low, and we turn it into the score that traveler would have given — the score shown at the time, moved half a point per step.',
     howToReadP2:
       'We don\'t just average every vote equally. Newer votes count more than older ones — their weight halves every 30 days — and no single country of origin can carry more than half of the total weight, so one country\'s visitors can\'t decide the result on their own. Once a country has enough votes from enough countries of origin, the community can move our safety score by at most 1 point in either direction, and by less while votes are few. That cap keeps a handful of very vocal votes from swamping a number meant to reflect broad, verified data.',
     howToReadP3:
@@ -206,7 +206,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Vota {name} →',
     howToReadTitle: 'Come leggere questa pagina',
     howToReadP1:
-      '«Il nostro punteggio» è il numero basato sui dati che vedi su ogni pagina paese: un composito di indicatori su conflitti, criminalità, salute, governance e ambiente, ricalcolato ogni giorno. «Il punteggio della community» è ciò che ci dicono i viaggiatori: ogni voto indica se il nostro punteggio è sembrato troppo alto, giusto o troppo basso, e lo trasformiamo nel punteggio che quel viaggiatore avrebbe dato, cioè quello mostrato in quel momento spostato di mezzo punto per livello.',
+      '«Il nostro punteggio» è il numero basato sui dati che vedi su ogni pagina paese: un composito di indicatori su conflitti, criminalità, salute, governance e rischi naturali, ricalcolato ogni giorno. «Il punteggio della community» è ciò che ci dicono i viaggiatori: ogni voto indica se il nostro punteggio è sembrato troppo alto, giusto o troppo basso, e lo trasformiamo nel punteggio che quel viaggiatore avrebbe dato, cioè quello mostrato in quel momento spostato di mezzo punto per livello.',
     howToReadP2:
       'Non facciamo una semplice media di tutti i voti. I voti più recenti contano più di quelli vecchi — il loro peso si dimezza ogni 30 giorni — e nessun singolo paese di provenienza può pesare più della metà del totale, così i visitatori di un solo paese non possono decidere il risultato da soli. Quando un paese ha abbastanza voti da abbastanza paesi di provenienza, la community può spostare il nostro punteggio di sicurezza al massimo di 1 punto in una direzione o nell\'altra, e di meno finché i voti sono pochi. Questo limite evita che un piccolo gruppo di voti molto convinti stravolga un numero che deve riflettere dati ampi e verificati.',
     howToReadP3:
@@ -255,7 +255,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Vota por {name} →',
     howToReadTitle: 'Cómo leer esta página',
     howToReadP1:
-      '«Nuestra puntuación» es el número basado en datos que ves en cada página de país: un compuesto de indicadores de conflicto, criminalidad, salud, gobernanza y medio ambiente, recalculado cada día. «La puntuación de la comunidad» es lo que nos dicen los viajeros: cada voto indica si nuestra puntuación les pareció demasiado alta, acertada o demasiado baja, y lo convertimos en la puntuación que ese viajero habría dado, es decir, la que se mostraba en ese momento desplazada medio punto por nivel.',
+      '«Nuestra puntuación» es el número basado en datos que ves en cada página de país: un compuesto de indicadores de conflicto, criminalidad, salud, gobernanza y riesgos naturales, recalculado cada día. «La puntuación de la comunidad» es lo que nos dicen los viajeros: cada voto indica si nuestra puntuación les pareció demasiado alta, acertada o demasiado baja, y lo convertimos en la puntuación que ese viajero habría dado, es decir, la que se mostraba en ese momento desplazada medio punto por nivel.',
     howToReadP2:
       'No calculamos una media simple de todos los votos. Los votos recientes cuentan más que los antiguos — su peso se reduce a la mitad cada 30 días —, y ningún país de origen puede acaparar más de la mitad del peso total, así que los visitantes de un solo país no deciden el resultado por sí solos. Cuando un país reúne suficientes votos de suficientes países de origen, la comunidad puede mover nuestra puntuación de seguridad como máximo 1 punto en cualquier dirección, y menos mientras haya pocos votos. Ese límite evita que un puñado de votos muy vehementes desborde un número que debe reflejar datos amplios y verificados.',
     howToReadP3:
@@ -304,7 +304,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Votez pour {name} →',
     howToReadTitle: 'Comment lire cette page',
     howToReadP1:
-      '« Notre score » est le chiffre fondé sur les données que vous voyez sur chaque page pays : un composite d\'indicateurs de conflit, de criminalité, de santé, de gouvernance et d\'environnement, recalculé chaque jour. « Le score de la communauté » reflète ce que disent les voyageurs : chaque vote indique si notre score leur a semblé trop élevé, juste ou trop bas, et nous le convertissons en la note que ce voyageur aurait donnée, c\'est-à-dire le score affiché à ce moment-là, décalé d\'un demi-point par niveau.',
+      '« Notre score » est le chiffre fondé sur les données que vous voyez sur chaque page pays : un composite d\'indicateurs de conflit, de criminalité, de santé, de gouvernance et de risques naturels, recalculé chaque jour. « Le score de la communauté » reflète ce que disent les voyageurs : chaque vote indique si notre score leur a semblé trop élevé, juste ou trop bas, et nous le convertissons en la note que ce voyageur aurait donnée, c\'est-à-dire le score affiché à ce moment-là, décalé d\'un demi-point par niveau.',
     howToReadP2:
       'Nous ne faisons pas une simple moyenne de tous les votes. Les votes récents comptent davantage que les anciens — leur poids est divisé par deux tous les 30 jours —, et aucun pays d\'origine ne peut peser plus de la moitié du total, si bien que les visiteurs d\'un seul pays ne décident pas seuls du résultat. Une fois qu\'un pays a réuni assez de votes venant d\'assez de pays d\'origine, la communauté peut déplacer notre score de sécurité d\'au plus 1 point, dans un sens ou dans l\'autre, et de moins tant que les votes sont peu nombreux. Ce plafond évite qu\'une poignée de votes très tranchés ne submerge un chiffre censé refléter des données larges et vérifiées.',
     howToReadP3:
@@ -353,7 +353,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Vote em {name} →',
     howToReadTitle: 'Como ler esta página',
     howToReadP1:
-      '«Nossa pontuação» é o número baseado em dados que você vê em cada página de país: um composto de indicadores de conflito, criminalidade, saúde, governança e meio ambiente, recalculado todos os dias. «A pontuação da comunidade» é o que os viajantes nos dizem: cada voto indica se a nossa pontuação pareceu alta demais, correta ou baixa demais, e é convertido na pontuação que esse viajante teria dado: a pontuação exibida naquele momento, deslocada meio ponto por nível.',
+      '«Nossa pontuação» é o número baseado em dados que você vê em cada página de país: um composto de indicadores de conflito, criminalidade, saúde, governança e riscos naturais, recalculado todos os dias. «A pontuação da comunidade» é o que os viajantes nos dizem: cada voto indica se a nossa pontuação pareceu alta demais, correta ou baixa demais, e é convertido na pontuação que esse viajante teria dado: a pontuação exibida naquele momento, deslocada meio ponto por nível.',
     howToReadP2:
       'Não fazemos uma simples média de todos os votos. Votos mais recentes contam mais do que os antigos — o peso deles cai pela metade a cada 30 dias —, e nenhum país de origem pode responder por mais da metade do peso total, assim os visitantes de um único país não decidem o resultado sozinhos. Quando um país reúne votos suficientes de países de origem suficientes, a comunidade pode mover a nossa pontuação de segurança em no máximo 1 ponto em qualquer direção, e menos enquanto houver poucos votos. Esse limite evita que um punhado de votos muito vocais domine um número que deveria refletir dados amplos e verificados.',
     howToReadP3:
@@ -397,7 +397,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: '为{name}投票 →',
     howToReadTitle: '如何解读这个页面',
     howToReadP1:
-      '「我们的评分」就是您在每个国家页面上看到的、基于数据计算出的数字：由冲突、犯罪、健康、治理和环境这五类指标综合而成，每天重新计算。「社区评分」反映的是旅行者的反馈：每一票表示我们的评分偏高、基本准确还是偏低，我们再把它换算成这位旅行者心目中的评分，即以投票时显示的评分为基准，每一级上下移动 0.5 分。',
+      '「我们的评分」就是您在每个国家页面上看到的、基于数据计算出的数字：由冲突、犯罪、健康、治理和自然灾害这五类指标综合而成，每天重新计算。「社区评分」反映的是旅行者的反馈：每一票表示我们的评分偏高、基本准确还是偏低，我们再把它换算成这位旅行者心目中的评分，即以投票时显示的评分为基准，每一级上下移动 0.5 分。',
     howToReadP2:
       '我们并不是简单地把所有投票取平均。较新的投票权重更高——权重每 30 天减半——而且任何单一来源国家或地区的权重都不超过总权重的一半，因此单个国家的访客无法单独决定结果。当一个国家获得足够多、来自足够多国家或地区的投票后，社区意见最多只能把我们的安全评分向任一方向调整 1 分，票数较少时影响更小。这个上限可以防止少数意见强烈的投票，压过本应反映大量、可核实数据的评分。',
     howToReadP3:
@@ -446,7 +446,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     voteLinkText: 'Für {name} abstimmen →',
     howToReadTitle: 'So lesen Sie diese Seite',
     howToReadP1:
-      '„Unsere Bewertung“ ist die datenbasierte Zahl, die Sie auf jeder Länderseite sehen: ein Composite aus Indikatoren zu Konflikt, Kriminalität, Gesundheit, Regierungsführung und Umwelt, täglich neu berechnet. Die „Community-Bewertung“ gibt wieder, was Reisende berichten: Jede Stimme sagt, ob unsere Bewertung zu hoch, passend oder zu niedrig wirkte, und wir rechnen sie in die Bewertung um, die diese Person vergeben hätte: die damals angezeigte Bewertung, verschoben um einen halben Punkt pro Stufe.',
+      '„Unsere Bewertung“ ist die datenbasierte Zahl, die Sie auf jeder Länderseite sehen: ein Composite aus Indikatoren zu Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren, täglich neu berechnet. Die „Community-Bewertung“ gibt wieder, was Reisende berichten: Jede Stimme sagt, ob unsere Bewertung zu hoch, passend oder zu niedrig wirkte, und wir rechnen sie in die Bewertung um, die diese Person vergeben hätte: die damals angezeigte Bewertung, verschoben um einen halben Punkt pro Stufe.',
     howToReadP2:
       'Wir bilden keinen einfachen Durchschnitt aller Stimmen. Neuere Stimmen zählen mehr als ältere — ihr Gewicht halbiert sich alle 30 Tage —, und kein einzelnes Herkunftsland darf mehr als die Hälfte des Gesamtgewichts ausmachen, sodass die Besucher eines einzigen Landes das Ergebnis nicht allein bestimmen. Sobald ein Land genug Stimmen aus genug Herkunftsländern hat, kann die Community unsere Sicherheitsbewertung höchstens um 1 Punkt in die eine oder andere Richtung verschieben, und weniger, solange es nur wenige Stimmen gibt. Diese Obergrenze verhindert, dass eine Handvoll sehr lautstarker Stimmen eine Zahl überrollt, die breite, geprüfte Daten widerspiegeln soll.',
     howToReadP3:

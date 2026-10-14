@@ -84,7 +84,7 @@ function buildCountrySvg(name: string, score: number | null): string {
   <text x="600" y="440" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="${color}" font-weight="400" text-anchor="middle">${scaleLabel}</text>
 
   <!-- Bottom text -->
-  <text x="600" y="580" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666" text-anchor="middle">Safety Score - Updated Daily</text>
+  <text x="600" y="580" font-family="Arial, Helvetica, sans-serif" font-size="18" fill="#666" text-anchor="middle">Safety Score - Recalculated Daily</text>
 </svg>`;
 }
 
@@ -106,7 +106,7 @@ function buildDefaultSvg(): string {
   <text x="600" y="320" font-family="Arial, Helvetica, sans-serif" font-size="28" fill="#555" font-weight="400" text-anchor="middle">Travel Safety Scores for 248 Countries</text>
 
   <!-- Sub-tagline -->
-  <text x="600" y="380" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#888" font-weight="400" text-anchor="middle">Free - Open Source - Updated Daily</text>
+  <text x="600" y="380" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#888" font-weight="400" text-anchor="middle">Free - Open Source - Recalculated Daily</text>
 
   <!-- Decorative score circles -->
   <circle cx="300" cy="490" r="30" fill="#22c55e" opacity="0.2"/>
