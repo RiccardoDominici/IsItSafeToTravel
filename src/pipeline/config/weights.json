@@ -118,6 +118,11 @@
     "maxAgeYears": 5,
     "_comment_minSources": "v10 SPEC §4: fewer distinct sources than this after the max-age filter => scoreStatus insufficient_data (score null), unless the danger guard holds (src/pipeline/scoring/status.ts). Same floor as MIN_RANKING_SOURCES in src/lib/hub-data.ts, scripts/generate-llms-full.ts and src/pipeline/news/engine.ts.",
     "minSources": 4,
+    "_comment_calibration": "v10 SPEC §3 scale-continuity map, S_data = clamp(alpha + beta * S_raw, 1, 10). FROZEN on 2026-10-14, never refitted: computed by scripts/calibrate-v10.ts on the frozen fixture scripts/fixtures/v10/raw-2026-10-14 against the PUBLISHED v9.1 scores of that date (data/scores/2026-10-14.json = latest.json, copied to scripts/fixtures/v10/v91-scores-2026-10-14.json) over the 192 countries scored by both: v9.1 mean 6.8381 / SD 1.3304, v10 raw mean 6.5417 / SD 1.3450, beta = SD ratio, alpha = mean_v91 - beta * mean_v10raw. The evaluation prototype's alpha 0.235 / beta 0.998 is reproduced by the same script logic when the target is v9.1 RE-RUN with the 5-year max-age filter (mean 6.7625); calibrating against the published scores also absorbs the max-age filter's own -0.08 shift, so the switch day does not move the scale. Band changes vs v9.1 on the 192: 49 uncalibrated, 29 calibrated.",
+    "calibration": {
+      "alpha": 0.367609,
+      "beta": 0.989118
+    },
     "_comment_community": "v10 SPEC §5: adjustment = clamp(Z * (P - S_data), -cap, +cap), Z = nEff / (nEff + k), applied only to officially scored countries whose entry in data/sentiment/latest.json is active AND meets minVotes/minOrigins/originCap (re-checked by the engine). Same values as src/pipeline/sentiment/constants.ts on the community branch.",
     "community": {
       "k": 30,

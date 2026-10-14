@@ -1,0 +1,67 @@
+{
+  "date": "2026-10-14",
+  "builtBy": "scripts/build-v10-fixture.ts",
+  "copiedFromDataRaw": {
+    "advisories-info.json": "5690e41f52da7621184e0a9fa280c838",
+    "advisories-parsed.json": "4f24dbcd3429b6d6a26b679f30dd3699",
+    "advisories-tier1-info.json": "9770627c02f4c4008d6725126e081ebe",
+    "advisories-tier1-parsed.json": "613ac9b9470f873db10fcf5d82d621da",
+    "advisories-tier2a-info.json": "3298d6748f7bfc8f823520fb3eff7e0b",
+    "advisories-tier2a-parsed.json": "34799eace58e8ad15dbcf508772b88be",
+    "advisories-tier2b-info.json": "6deacf433188cf4bd74431684cb0accf",
+    "advisories-tier2b-parsed.json": "576bffa1e6f7f482697e82633e924310",
+    "advisories-tier3a-info.json": "598b88e1d7e4bfe989eb5606bccc7f47",
+    "advisories-tier3a-parsed.json": "f806bd2dbf3067770fa15d65e85ef9cf",
+    "advisories-tier3b-info.json": "520475f6e75ffe1419c9c11114d8966c",
+    "advisories-tier3b-parsed.json": "e8d2c1be3ac5e596918f1785ea31c273",
+    "gdacs-parsed.json": "bd9d7f6c325f374a35154cb3974fbc35",
+    "reliefweb-parsed.json": "ea3f3c4965dde4826bcc3c0008446091",
+    "ucdp-parsed.json": "4be23a0038fdbc06988d87459ef2b2ca",
+    "vdem-parsed.json": "6384ef5c4a5d98e48dc1de41b08cf948",
+    "worldbank-parsed.json": "d91f141172d841d9734afaadc6b10d6d"
+  },
+  "inform": {
+    "parser": "src/pipeline/fetchers/inform-parse.ts parseInformWorkbook",
+    "workbook": "data/raw/inform/INFORM_Risk_Mid_2026_v073.xlsx",
+    "workbookMd5": "6c3838678ee1b41a0f67a9f1cad6647d",
+    "sheet": "INFORM Risk 2026 (a-z)",
+    "editionYear": 2026,
+    "countries": 191,
+    "mapping": [
+      {
+        "header": "Natural",
+        "indicator": "inform_natural",
+        "column": 7
+      },
+      {
+        "header": "Epidemic",
+        "indicator": "inform_epidemic",
+        "column": 14
+      },
+      {
+        "header": "Access to health care",
+        "indicator": "inform_health_access",
+        "column": 37
+      },
+      {
+        "header": "Governance",
+        "indicator": "inform_governance",
+        "column": 33
+      }
+    ]
+  },
+  "gpi": {
+    "parser": "src/pipeline/fetchers/gpi.ts gpiEntriesToIndicators",
+    "input": "scripts/fixtures/v10/inputs/gpi-2026-domains.json",
+    "inputMd5": "34705389adefae3991d93c4353a47efc",
+    "year": 2026,
+    "rows": 648,
+    "gpiConflictRows": 162,
+    "reproducesCommittedFields": "486 rows of data/raw/2026-10-14/gpi-parsed.json, 0 mismatches"
+  },
+  "v91Reference": {
+    "snapshot": "data/scores/2026-10-14.json",
+    "snapshotMd5": "46b0e5319f7d8fb5f0b087f30cae1eea",
+    "countries": 248
+  }
+}

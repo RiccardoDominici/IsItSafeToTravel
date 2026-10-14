@@ -270,6 +270,15 @@ describe('v10 calibration', () => {
     assert.equal(calibrateScore(6.123, undefined), 6.123);
   });
 
+  it('weights.json freezes alpha and beta, and every scored country stays within [1, 10]', () => {
+    const cal = WEIGHTS.formulaV9!.calibration;
+    assert.ok(cal, 'formulaV9.calibration must be frozen in weights.json');
+    assert.ok(Number.isFinite(cal.alpha) && Number.isFinite(cal.beta) && cal.beta > 0);
+    for (const raw of [1, 3.4, 6.5, 8.9, 10]) {
+      const s = calibrateScore(raw, cal);
+      assert.ok(s >= 1 && s <= 10);
+    }
+  });
 });
 
 /* -------------------------------------------------------------------------- */
