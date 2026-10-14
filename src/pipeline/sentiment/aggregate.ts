@@ -1,94 +1,104 @@
-import type { VoteRow, SentimentEntry, SentimentSnapshot } from '../types.js';
+import type { SentimentEntry, SentimentSnapshot, VoteRow } from '../types.js';
+import {
+  SENTIMENT_HALF_LIFE_DAYS,
+  SENTIMENT_MIN_ORIGINS,
+  SENTIMENT_MIN_VOTES,
+  SENTIMENT_WINDOW_DAYS,
+} from './constants.js';
+import { applyOriginCap, normalizeOrigin, UNKNOWN_ORIGIN } from './origin-cap.js';
+import { perceivedScore, type PublishedScoreLookup } from './perceive.js';
 
 /**
- * Compute a recency-weighted, capped, display-only "Community Sentiment" correction
- * for each country from raw vote deltas.
+ * Community aggregation (formula v10, SPEC §5). Turns raw vote rows into one entry per country:
+ * the recency-weighted mean perceived score P, after the origin cap, with an activation status.
  *
- * This module is intentionally pure and structurally independent of the scoring
- * engine (`src/pipeline/scoring/engine.ts`) and its closed `PillarName` union — the
- * output NEVER feeds `computeAllScores`'s weighted geometric mean (D-06).
+ * The output is data only. The score engine reads it and decides how much the community moves the
+ * score (SPEC §5: adjustment = clamp(Z · (P − S_data), −1, +1)). This module never touches scores.
  *
- * Recency weighting mirrors `src/pipeline/scoring/freshness.ts`'s exponential
- * half-life shape: weight_i = 0.5 ** (ageDays_i / SENTIMENT_HALF_LIFE_DAYS).
+ * Pure given `lookup` and `nowMs`, so it is deterministic under test.
  */
 
-/** Number of days until a vote's recency weight reaches 0.5. */
-export const SENTIMENT_HALF_LIFE_DAYS = 30;
+export interface AggregationResult {
+  snapshot: SentimentSnapshot;
+  /** Votes inside the window that could not be placed on the scale (see perceivedScore). */
+  droppedVotes: number;
+}
 
-/** Score-points of correction per unit of (recency-weighted) average delta. */
-export const SENTIMENT_DELTA_SCALE = 0.5;
-
-/** Hard cap (in score points, 1-10 scale) on how far sentiment can nudge a score (D-08). */
-export const SENTIMENT_CORRECTION_CAP = 1.0;
-
-/** Minimum vote count required before a country's sentiment is surfaced (D-09). */
-export const SENTIMENT_MIN_VOTES = 5;
-
-/** Clamp `v` to the inclusive range [lo, hi]. */
-function clamp(v: number, lo: number, hi: number): number {
-  return Math.min(hi, Math.max(lo, v));
+interface PlacedVote {
+  perceived: number;
+  weight: number;
+  origin: string;
 }
 
 /**
- * Aggregate raw vote rows into a per-country SentimentSnapshot.
- *
- * @param rows - Raw vote rows (untrusted deltas, already range-validated at ingestion).
- * @param officialScores - Map of iso3 -> official score (1-10) at aggregation time.
- *   Countries without an entry here are skipped entirely (no perceived value possible).
- * @param nowMs - Reference "now" in epoch milliseconds, used to compute vote age.
+ * Aggregate raw vote rows into per-country entries. A country appears only if at least one of its
+ * votes could be placed. Entries carry status 'active' only when BOTH activation floors hold:
+ * at least SENTIMENT_MIN_VOTES usable votes and at least SENTIMENT_MIN_ORIGINS known origins.
  */
 export function aggregateVotes(
-  rows: VoteRow[],
-  officialScores: Map<string, number>,
+  rows: readonly VoteRow[],
+  lookup: PublishedScoreLookup,
   nowMs: number,
-): SentimentSnapshot {
+): AggregationResult {
   const nowS = nowMs / 1000;
+  const windowStartS = nowS - SENTIMENT_WINDOW_DAYS * 86_400;
 
-  // Group rows by iso3.
   const byIso3 = new Map<string, VoteRow[]>();
   for (const row of rows) {
+    if (row.created_at < windowStartS) continue;
     const list = byIso3.get(row.iso3);
-    if (list) {
-      list.push(row);
-    } else {
-      byIso3.set(row.iso3, [row]);
-    }
+    if (list) list.push(row);
+    else byIso3.set(row.iso3, [row]);
   }
 
   const countries: Record<string, SentimentEntry> = {};
+  let droppedVotes = 0;
 
   for (const [iso3, countryRows] of byIso3) {
-    const official = officialScores.get(iso3);
-    if (official === undefined) continue; // no official score to correct — skip
-
-    if (countryRows.length < SENTIMENT_MIN_VOTES) continue; // below display floor (D-09)
-
-    let weightedSum = 0;
-    let weightTotal = 0;
+    const placed: PlacedVote[] = [];
     for (const row of countryRows) {
+      const perceived = perceivedScore(row, lookup);
+      if (perceived === null) {
+        droppedVotes++;
+        continue;
+      }
+      // Ages at or below zero (clock skew, same-second votes) count as fresh, as before.
       const ageDays = (nowS - row.created_at) / 86_400;
-      // Guard negative ages (clock skew / future timestamps) by treating as fresh.
       const weight = ageDays <= 0 ? 1 : Math.pow(0.5, ageDays / SENTIMENT_HALF_LIFE_DAYS);
-      weightedSum += weight * row.delta;
-      weightTotal += weight;
+      placed.push({ perceived, weight, origin: normalizeOrigin(row.country_iso) });
     }
+    if (placed.length === 0) continue;
 
-    const avgDelta = weightTotal > 0 ? weightedSum / weightTotal : 0;
-    const correction = clamp(avgDelta * SENTIMENT_DELTA_SCALE, -SENTIMENT_CORRECTION_CAP, SENTIMENT_CORRECTION_CAP);
-    const perceived = clamp(official + correction, 1, 10);
+    const { weights, shares } = applyOriginCap(
+      placed.map((p) => ({ origin: p.origin, weight: p.weight })),
+    );
+
+    let totalWeight = 0;
+    let sumSquaredWeight = 0;
+    let weightedPerceived = 0;
+    placed.forEach((p, i) => {
+      const w = weights[i];
+      totalWeight += w;
+      sumSquaredWeight += w * w;
+      weightedPerceived += w * p.perceived;
+    });
+
+    const knownOrigins = new Set(placed.map((p) => p.origin).filter((o) => o !== UNKNOWN_ORIGIN));
+    const votes = placed.length;
 
     countries[iso3] = {
       iso3,
-      count: countryRows.length,
-      avgDelta,
-      correction,
-      perceived,
-      official,
+      votes,
+      origins: knownOrigins.size,
+      topOriginShare: Math.max(...shares.values()),
+      nEff: (totalWeight * totalWeight) / sumSquaredWeight,
+      perceived: weightedPerceived / totalWeight,
+      status: votes >= SENTIMENT_MIN_VOTES && knownOrigins.size >= SENTIMENT_MIN_ORIGINS ? 'active' : 'insufficient',
     };
   }
 
   return {
-    generatedAt: new Date(nowMs).toISOString(),
-    countries,
+    snapshot: { generatedAt: new Date(nowMs).toISOString(), countries },
+    droppedVotes,
   };
 }

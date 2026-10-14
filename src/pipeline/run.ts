@@ -5,6 +5,8 @@ import { writeHistoryIndex } from './scoring/history.js';
 import { readJson, getRawDir } from './utils/fs.js';
 import { injectUcdpForDate } from './backfill.js';
 import { aggregateVotes } from './sentiment/aggregate.js';
+import { SENTIMENT_WINDOW_DAYS } from './sentiment/constants.js';
+import { loadLegacyScoreLookup } from './sentiment/legacy-scores.js';
 import { fetchVotes } from './sentiment/fetch-votes.js';
 import { writeSentimentSnapshot, writeSentimentHistoryIndex, getSentimentDir } from './sentiment/snapshot.js';
 import { computeNews } from './news/engine.js';
@@ -14,9 +16,6 @@ import { listSnapshotDates, loadSnapshot } from './scoring/snapshot.js';
 import type { WeightsConfig, RawSourceData } from './types.js';
 import { readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-
-/** Only aggregate votes newer than this window (Pitfall 8: D1 free-tier rows-read budget). */
-const SENTIMENT_WINDOW_DAYS = 180;
 
 export interface PipelineResult {
   success: boolean;
@@ -109,16 +108,20 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
   // never changes PipelineResult.success or aborts the run.
   console.log('\n--- Stage 6: Sentiment ---');
   try {
+    // Only votes inside SENTIMENT_WINDOW_DAYS are read (Pitfall 8: D1 free-tier rows-read budget).
     const cutoff = Math.floor(Date.now() / 1000) - SENTIMENT_WINDOW_DAYS * 86_400;
     const { ok, rows } = await fetchVotes(cutoff);
-    const officialScores = new Map(scoredCountries.map((c) => [c.iso3, c.score]));
 
     if (ok) {
-      const sentimentSnapshot = aggregateVotes(rows, officialScores, Date.now());
-      writeSentimentSnapshot(date, sentimentSnapshot);
+      // Votes stored with their score need no lookup; legacy rows are anchored to the score history.
+      const { lookup } = loadLegacyScoreLookup(rows);
+      const { snapshot, droppedVotes } = aggregateVotes(rows, lookup, Date.now());
+      writeSentimentSnapshot(date, snapshot);
       writeSentimentHistoryIndex();
+      const countries = Object.values(snapshot.countries);
+      const activeCount = countries.filter((c) => c.status === 'active').length;
       console.log(
-        `[Sentiment] Aggregated ${Object.keys(sentimentSnapshot.countries).length} countries from ${rows.length} vote(s)`,
+        `[Sentiment] ${countries.length} countries (${activeCount} active) from ${rows.length} vote(s); ${droppedVotes} unplaceable`,
       );
     } else {
       const latestPath = join(getSentimentDir(), 'latest.json');

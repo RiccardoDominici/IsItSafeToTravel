@@ -15,6 +15,9 @@ export const SENTIMENT_D1_DATABASE_ID = '83acaffe-32ff-43fc-b68f-5343d01000d5';
 interface D1QueryResultRow {
   iso3: string;
   delta: number;
+  rating: number | null;
+  official_score: number | null;
+  country_iso: string | null;
   created_at: number;
 }
 
@@ -49,7 +52,7 @@ export async function fetchVotes(sinceEpochSeconds: number): Promise<{ ok: boole
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          sql: 'SELECT iso3, delta, created_at FROM votes WHERE created_at > ? ORDER BY created_at DESC;',
+          sql: 'SELECT iso3, delta, rating, official_score, country_iso, created_at FROM votes WHERE created_at > ? ORDER BY created_at DESC;',
           params: [sinceEpochSeconds],
         }),
         signal: AbortSignal.timeout(30_000),
@@ -64,9 +67,14 @@ export async function fetchVotes(sinceEpochSeconds: number): Promise<{ ok: boole
     const json = (await response.json()) as D1QueryResponse;
     const results = json.result?.[0]?.results ?? [];
 
+    // `?? null` keeps the mapping total: rows read before migration 005 or from a stub lack the
+    // newer columns, and the aggregation treats null as "not stored".
     const rows: VoteRow[] = results.map((r) => ({
       iso3: r.iso3,
       delta: r.delta,
+      rating: r.rating ?? null,
+      official_score: r.official_score ?? null,
+      country_iso: r.country_iso ?? null,
       created_at: r.created_at,
     }));
 

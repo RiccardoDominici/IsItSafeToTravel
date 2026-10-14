@@ -114,7 +114,8 @@ describe('fetchVotes: successful response', () => {
           result: [
             {
               results: [
-                { iso3: 'ITA', delta: 1, created_at: 1_700_000_000 },
+                { iso3: 'ITA', delta: 1, rating: null, official_score: 6.5, country_iso: 'IT', created_at: 1_700_000_000 },
+                // A row without the v10 columns (pre-migration stub) must still map cleanly to null.
                 { iso3: 'FRA', delta: -2, created_at: 1_700_000_100 },
               ],
             },
@@ -127,9 +128,14 @@ describe('fetchVotes: successful response', () => {
 
     assert.equal(result.ok, true);
     assert.deepEqual(result.rows, [
-      { iso3: 'ITA', delta: 1, created_at: 1_700_000_000 },
-      { iso3: 'FRA', delta: -2, created_at: 1_700_000_100 },
+      { iso3: 'ITA', delta: 1, rating: null, official_score: 6.5, country_iso: 'IT', created_at: 1_700_000_000 },
+      { iso3: 'FRA', delta: -2, rating: null, official_score: null, country_iso: null, created_at: 1_700_000_100 },
     ]);
+    const sql = JSON.parse(String(capturedInit?.body)).sql as string;
+    assert.ok(
+      sql.includes('SELECT iso3, delta, rating, official_score, country_iso, created_at FROM votes'),
+      `the query must select the v10 columns, got: ${sql}`,
+    );
     assert.ok(
       capturedUrl.includes(
         `https://api.cloudflare.com/client/v4/accounts/test-account/d1/database/${SENTIMENT_D1_DATABASE_ID}/query`,

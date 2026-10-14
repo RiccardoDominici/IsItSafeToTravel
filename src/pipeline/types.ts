@@ -236,27 +236,31 @@ export interface DailySnapshot {
   dataRevision?: number;
 }
 
-// --- Sentiment (display-only, NOT a scoring pillar) ---
+// --- Community sentiment (formula v10, SPEC §5) ---
 // IMPORTANT: These types are structurally independent of PillarName / PillarScore /
 // ScoredCountry.pillars. They must NEVER be added to the closed PillarName union or
-// appended to ScoredCountry.pillars — doing so would silently feed sentiment into
-// computeAllScores's weighted geometric mean (violates D-06). See 39-PATTERNS.md.
+// appended to ScoredCountry.pillars: the community is a bounded adjustment applied AFTER
+// the pillar score, never a pillar inside computeAllScores's weighted geometric mean (D-06).
 export interface VoteRow {
   iso3: string;
-  delta: number; // -2..+2
+  delta: number; // -2..+2 for relative votes; 0 placeholder on rating votes (migration 005)
+  rating: number | null; // 1..5 absolute level for grey countries; null for relative votes
+  official_score: number | null; // published score stored with the vote; null on legacy rows
+  country_iso: string | null; // voter origin (ISO-2); null, 'T1' or 'XX' = unknown origin
   created_at: number; // unix epoch seconds
 }
 
 export interface SentimentEntry {
   iso3: string;
-  count: number; // total votes considered
-  avgDelta: number; // recency-weighted mean of deltas (unclamped, for transparency)
-  correction: number; // clamp(avgDelta * SCALE, -CAP, +CAP), score points
-  perceived: number; // clamp(official + correction, 1, 10)
-  official: number; // official score used at aggregation time
+  votes: number; // usable votes inside the 180-day window
+  origins: number; // distinct known countries of origin (the unknown group is not counted)
+  topOriginShare: number; // largest origin's share of vote weight AFTER the 50% cap, 0..1
+  nEff: number; // effective sample size (sum w)^2 / sum w^2 over the capped weights
+  perceived: number; // P: recency-weighted mean perceived score on the 1..10 scale
+  status: 'active' | 'insufficient'; // active = >= 30 votes AND >= 3 known origins
 }
 
 export interface SentimentSnapshot {
   generatedAt: string; // ISO 8601
-  countries: Record<string, SentimentEntry>; // keyed by ISO3, only countries with >= SENTIMENT_MIN_VOTES votes
+  countries: Record<string, SentimentEntry>; // keyed by ISO3; every country with >= 1 usable vote
 }
