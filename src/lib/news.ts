@@ -175,8 +175,16 @@ export function renderNewsEvent(e: NewsEvent, lang: Lang, t: (key: any) => strin
         : [];
 
   return {
-    headline: fill(t(headlineKey), values),
-    detail: fill(t(detailKey), values),
+    headline: upperFirst(fill(t(headlineKey), values)),
+    detail: upperFirst(fill(t(detailKey), values)),
     links,
   };
+}
+
+/** A headline or detail is a sentence, and some start with an English name
+ *  that carries "the" ("the Cayman Islands enters…" must read "The Cayman
+ *  Islands enters…"). Upper-casing the first character is a no-op for
+ *  every other template and language (zh has no case). */
+function upperFirst(s: string): string {
+  return s.charAt(0).toUpperCase() + s.slice(1);
 }

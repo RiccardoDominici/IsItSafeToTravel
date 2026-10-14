@@ -252,3 +252,60 @@ describe('comparison heading: getComparisonSubject / getPortugueseDe', () => {
     }
   });
 });
+
+// --- 4. Portuguese (pt-BR) articles — audit 2026-10-14 ---
+// An external reader called the copy machine-made; titles read "para Brasil",
+// "a Quênia", "o Ilhas Salomão". These pin the corrected forms.
+
+describe('pt articles: masculine countries, feminine compounds, island names', () => {
+  const ptName = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name.pt;
+  const para = (iso3: string) => getPortuguesePhrase(iso3, ptName(iso3), 'para');
+
+  it('common masculine countries take "o", including "-a" names that are masculine', () => {
+    assert.equal(para('BRA'), 'para o Brasil');
+    assert.equal(para('ECU'), 'para o Equador');
+    assert.equal(para('MEX'), 'para o México');
+    assert.equal(para('KEN'), 'para o Quênia');
+    assert.equal(para('LKA'), 'para o Sri Lanka');
+  });
+
+  it('feminine compounds take "a" from their head noun', () => {
+    assert.equal(para('KOR'), 'para a Coreia do Sul');
+    assert.equal(para('ZAF'), 'para a África do Sul');
+    assert.equal(para('VAT'), 'para a Cidade do Vaticano');
+    assert.equal(para('REU'), 'para a Reunião');
+  });
+
+  it('island groups follow "Ilhas"/"Ilha", never the last word', () => {
+    assert.equal(para('SLB'), 'para as Ilhas Salomão');
+    assert.equal(para('ALA'), 'para as Ilhas Aland');
+    assert.equal(para('IMN'), 'para a Ilha de Man');
+  });
+
+  it('island states and saint-named islands stay bare', () => {
+    assert.equal(para('MLT'), 'para Malta');
+    assert.equal(para('ABW'), 'para Aruba');
+    assert.equal(para('LCA'), 'para Santa Lúcia');
+  });
+
+  it('"a" contracts with the new articles', () => {
+    assert.equal(getPortuguesePhrase('BRA', ptName('BRA'), 'a'), 'ao Brasil');
+    assert.equal(getPortuguesePhrase('KOR', ptName('KOR'), 'a'), 'à Coreia do Sul');
+    assert.equal(getPortuguesePhrase('CYM', ptName('CYM'), 'a'), 'às Ilhas Cayman');
+  });
+});
+
+describe('en article: island groups and descriptive names take "the"', () => {
+  const enName = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name.en;
+  it('plural island groups and descriptive names', () => {
+    assert.equal(getEnglishCountryPhrase('CYM', enName('CYM')), 'the Cayman Islands');
+    assert.equal(getEnglishCountryPhrase('ALA', enName('ALA')), 'the Aland Islands');
+    assert.equal(getEnglishCountryPhrase('CAF', enName('CAF')), 'the Central African Republic');
+    assert.equal(getEnglishCountryPhrase('IMN', enName('IMN')), 'the Isle of Man');
+  });
+  it('singular islands and saint names stay bare', () => {
+    assert.equal(getEnglishCountryPhrase('SGS', enName('SGS')), 'South Georgia');
+    assert.equal(getEnglishCountryPhrase('SHN', enName('SHN')), 'Saint Helena');
+    assert.equal(getEnglishCountryPhrase('JPN', enName('JPN')), 'Japan');
+  });
+});

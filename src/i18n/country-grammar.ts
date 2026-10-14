@@ -149,7 +149,7 @@ const OVERRIDES: Record<string, CountryGrammar> = {
   DJI: { it: { article: '', prep: 'a' }, fr: { form: 'a-bare' } },
   HTI: { it: { article: '', prep: 'a' }, fr: { form: 'a-bare' } },
   PAN: { it: { article: '', prep: 'a' } },
-  VAT: { it: { article: 'la', prep: 'in' }, pt: { article: '' } }, // "Città del Vaticano" — Città (city) is feminine; pt "Vaticano" is a documented no-article exception
+  VAT: { it: { article: 'la', prep: 'in' } }, // "Città del Vaticano" — Città (city) is feminine; pt is set in PT_ARTICLES below ("a Cidade do Vaticano": the site's pt name is the full "Cidade do Vaticano", whose head noun is feminine)
 
   // ---- pt-only documented no-article exceptions beyond the above (source:
   // rioandlearn.com / Ciberdúvidas) ----
@@ -212,6 +212,51 @@ OVERRIDES.OMN = { ...OVERRIDES.OMN, fr: { form: 'en' } }; // "Oman" vowel-initia
 // BHS/COM/PHL all set fr.form via the table already).
 for (const iso3 of ['MHL', 'SLB', 'CYM', 'FLK', 'FRO', 'VGB', 'VIR', 'TCA', 'CCK', 'COK']) {
   OVERRIDES[iso3] = { ...OVERRIDES[iso3], fr: { form: 'aux' } };
+}
+
+// Portuguese articles the productive rules in getPtArticle cannot infer.
+// The site's Portuguese is Brazilian ("Irã", "Quênia", "Polônia"), so these
+// follow pt-BR usage. Audit 2026-10-14 (an external reader called the copy
+// machine-made): the no-article default left the most-visited masculine
+// countries reading "para Brasil" / "para Equador" / "para México", and the
+// "-a ⇒ feminine" rule produced "a Quênia", "a Sri Lanka", "a Malta". Only
+// forms used consistently in Brazilian Portuguese are listed; names whose
+// usage genuinely varies (Djibuti, Mianmar, Burquina Faso, Camarões,
+// Eswatini…) keep the no-article default, per the module's "least likely to
+// be wrong" principle. Applied with a spread, like the French loop above, so
+// rows that already carry it/de/fr data keep it.
+const PT_ARTICLES: Partial<Record<PtArticle, string[]>> = {
+  // masculine, always with "o": "no Brasil", "no Quênia", "no Sri Lanka"
+  o: [
+    'BRA', 'ECU', 'PER', 'CHL', 'CAN', 'MEX', 'URY', 'PRY', 'PAN', 'SUR', 'HTI',
+    'EGY', 'IRQ', 'LBN', 'QAT', 'KWT', 'BHR', 'YEM', 'NPL', 'LAO', 'BGD', 'BRN',
+    'KHM', 'LKA', 'KEN', 'SEN', 'TCD', 'NER', 'MLI', 'TGO', 'BEN', 'BDI', 'LSO',
+    'MWI', 'ZWE', 'SSD', 'LUX', 'MNE', 'XKX', 'LIE', 'IOT', 'ESH',
+  ],
+  // feminine compounds whose last word does not end in "-a": "a Coreia do Sul",
+  // "a África do Sul", "a Costa do Marfim", "a Guiné", "a Reunião" (the "-ão"
+  // rule would say "o"), "a Cidade do Vaticano" (head noun "Cidade")
+  a: ['KOR', 'PRK', 'ZAF', 'MKD', 'CIV', 'GIN', 'GNB', 'GNQ', 'PNG', 'SGS', 'REU', 'VAT'],
+  as: ['ATF'], // "as Terras Austrais Francesas"
+  // names ending in "-a" used without an article: island states and
+  // territories named like places ("em Malta", "em Aruba", "em Antígua e
+  // Barbuda"), and African countries Brazilian Portuguese uses bare
+  // ("em Gana", "em Ruanda", "em Uganda", "em Botsuana")
+  '': ['MLT', 'AND', 'WSM', 'TON', 'GRD', 'DMA', 'ABW', 'AIA', 'ATG', 'BES', 'WLF', 'ASM', 'GHA', 'RWA', 'UGA', 'BWA'],
+};
+for (const [article, isos] of Object.entries(PT_ARTICLES) as [PtArticle, string[]][]) {
+  for (const iso3 of isos) OVERRIDES[iso3] = { ...OVERRIDES[iso3], pt: { article } };
+}
+
+// English names that read wrong without "the" (audit 2026-10-14: the live
+// comparison heading said "How does Aland Islands compare…"): plural island
+// groups and descriptive names. "South Georgia" and "Saint Helena"-style
+// names correctly stay bare, so this is a list, not an "…Islands" rule.
+for (const iso3 of [
+  'ALA', 'CYM', 'CCK', 'COK', 'FLK', 'FRO', 'MHL', 'MNP', 'SLB', 'TCA', 'UMI', 'VIR', 'VGB',
+  'CAF', 'IMN', 'IOT', 'ATF', 'GMB',
+]) {
+  OVERRIDES[iso3] = { ...OVERRIDES[iso3], enArticle: true };
 }
 
 // ---------------------------------------------------------------------------
@@ -279,6 +324,15 @@ const PT_A_CONTRACT: Record<PtArticle, string> = { '': 'a', o: 'ao', a: 'à', os
 function getPtArticle(iso3: string, bareName: string): PtArticle {
   const override = OVERRIDES[iso3]?.pt?.article;
   if (override !== undefined) return override;
+  // Compound place names take the article of their HEAD noun, not of their
+  // last word (audit 2026-10-14): "as Ilhas Salomão" — before this rule the
+  // "-ão" rule below fired on "Salomão" and produced "o Ilhas Salomão" —
+  // and "a Ilha de Man". Saint-named islands are used bare, like city names
+  // ("em Santa Lúcia", "em São Tomé"), so the "-a ⇒ feminine" rule below
+  // must not reach them.
+  if (/^Ilhas\s/.test(bareName)) return 'as';
+  if (/^Ilha\s/.test(bareName)) return 'a';
+  if (/^(Santa|Santo|São)\s/.test(bareName)) return '';
   // Productive rule: nouns ending in "-ão" are reliably masculine in
   // Portuguese ("o Japão", confirmed rioandlearn.com; same pattern extends
   // to Azerbaijão, Butão — not individually confirmed but the same
