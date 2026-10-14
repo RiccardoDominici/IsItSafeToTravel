@@ -48,55 +48,55 @@ type CatalogDescriptions = Record<CatalogSourceKey, string>;
  */
 const CATALOG_DESCRIPTIONS: Record<Exclude<Lang, 'en'>, CatalogDescriptions> = {
   it: {
-    worldbank: 'Indicatori di Sviluppo della Banca Mondiale -- tasso di mortalità infantile e inquinamento atmosferico da PM2.5',
+    worldbank: 'Indicatori di sviluppo della Banca Mondiale -- tasso di omicidi volontari (con la popolazione)',
     vdem: "V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- indici di Stato di Diritto, Corruzione Politica e Pubblica Amministrazione (Coppedge et al., DOI 10.23696/vdemds26)",
-    gpi: 'Indice Globale della Pace (IEP) -- classifica annuale della pacificità',
-    inform: 'Indice di Rischio INFORM (ONU OCHA) -- pericolosità, esposizione, vulnerabilità e capacità di risposta',
+    gpi: 'Global Peace Index (IEP) -- punteggio complessivo e domini militarizzazione e sicurezza',
+    inform: 'INFORM Risk Index (Commissione europea, JRC) -- rischi naturali, rischio di epidemie, accesso alle cure mediche e governance',
     reliefweb: 'ReliefWeb (ONU OCHA) -- rapporti sulla situazione umanitaria e allerte per disastri',
     gdacs: 'GDACS (Sistema Globale di Allerta e Coordinamento Disastri) -- allerte per disastri naturali',
     ucdp: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- decessi per conflitti statali e unilaterali, tramite il mirror di Our World in Data (CC-BY)',
   },
   es: {
-    worldbank: 'Indicadores de Desarrollo del Banco Mundial -- tasa de mortalidad infantil y contaminación atmosférica por PM2.5',
+    worldbank: 'Indicadores de desarrollo del Banco Mundial -- tasa de homicidios intencionales (con la población)',
     vdem: "V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- índices de Estado de Derecho, Corrupción Política y Administración Pública (Coppedge et al., DOI 10.23696/vdemds26)",
-    gpi: 'Índice Global de Paz (IEP) -- ranking anual de pacificidad',
-    inform: 'Índice de Riesgo INFORM (ONU OCHA) -- peligrosidad, exposición, vulnerabilidad y capacidad de respuesta',
+    gpi: 'Global Peace Index (IEP) -- puntuación general y dominios de militarización y seguridad',
+    inform: 'INFORM Risk Index (Comisión Europea, JRC) -- riesgos naturales, riesgo de epidemias, acceso a la atención sanitaria y gobernanza',
     reliefweb: 'ReliefWeb (ONU OCHA) -- informes de situación humanitaria y alertas de desastres',
     gdacs: 'GDACS (Sistema Global de Alerta y Coordinación de Desastres) -- alertas de desastres naturales',
     ucdp: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- muertes por conflictos estatales y unilaterales, a través del espejo de Our World in Data (CC-BY)',
   },
   fr: {
-    worldbank: "Indicateurs de Développement de la Banque Mondiale -- mortalité infantile et pollution de l'air aux PM2,5",
+    worldbank: "Indicateurs de développement de la Banque mondiale -- taux d'homicides volontaires (avec la population)",
     vdem: "V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- indices d'État de droit, de Corruption Politique et d'Administration Publique (Coppedge et al., DOI 10.23696/vdemds26)",
-    gpi: 'Indice Mondial de la Paix (IEP) -- classement annuel de la paix',
-    inform: 'Indice de Risque INFORM (ONU OCHA) -- aléas, exposition, vulnérabilité et capacité de réponse',
+    gpi: 'Global Peace Index (IEP) -- score global et domaines militarisation et sûreté',
+    inform: "INFORM Risk Index (Commission européenne, JRC) -- risques naturels, risque d'épidémie, accès aux soins et gouvernance",
     reliefweb: 'ReliefWeb (ONU OCHA) -- rapports de situation humanitaire et alertes de catastrophes',
     gdacs: "GDACS (Système Mondial d'Alerte et de Coordination des Catastrophes) -- alertes de catastrophes naturelles",
     ucdp: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- décès liés aux conflits étatiques et unilatéraux, via le miroir Our World in Data (CC-BY)',
   },
   pt: {
-    worldbank: 'Indicadores de Desenvolvimento do Banco Mundial -- taxa de mortalidade infantil e poluição atmosférica por PM2,5',
+    worldbank: 'Indicadores de desenvolvimento do Banco Mundial -- taxa de homicídios intencionais (com a população)',
     vdem: "V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- índices de Estado de Direito, Corrupção Política e Administração Pública (Coppedge et al., DOI 10.23696/vdemds26)",
-    gpi: 'Índice Global da Paz (IEP) -- ranking anual de pacificidade',
-    inform: 'Índice de Risco INFORM (ONU OCHA) -- perigo, exposição, vulnerabilidade e capacidade de resposta',
+    gpi: 'Global Peace Index (IEP) -- pontuação geral e domínios de militarização e segurança',
+    inform: 'INFORM Risk Index (Comissão Europeia, JRC) -- riscos naturais, risco de epidemias, acesso a cuidados de saúde e governança',
     reliefweb: 'ReliefWeb (ONU OCHA) -- relatórios de situação humanitária e alertas de desastres',
     gdacs: 'GDACS (Sistema Global de Alerta e Coordenação de Desastres) -- alertas de desastres naturais',
     ucdp: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- mortes por conflitos estatais e unilaterais, via o espelho do Our World in Data (CC-BY)',
   },
   zh: {
-    worldbank: '世界银行发展指标——儿童死亡率与 PM2.5 空气污染',
+    worldbank: '世界银行发展指标——故意杀人率（含人口数据）',
     vdem: 'V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- 法治、政治腐败与公共行政指数 (Coppedge et al., DOI 10.23696/vdemds26)',
-    gpi: '全球和平指数（IEP）——年度和平程度排名',
-    inform: 'INFORM 风险指数（联合国 OCHA）——灾害强度、暴露度、脆弱性与应对能力',
+    gpi: '全球和平指数（IEP）——总体评分及军事化、安全与治安领域',
+    inform: 'INFORM风险指数（欧盟委员会联合研究中心）——自然灾害、流行病风险、医疗服务可及性与治理',
     reliefweb: 'ReliefWeb（联合国 OCHA）——人道主义局势报告与灾害预警',
     gdacs: 'GDACS（全球灾害预警与协调系统）——自然灾害预警',
     ucdp: 'UCDP Georeferenced Event Dataset（Uppsala Conflict Data Program）——国家间及单方面暴力导致的死亡人数，通过 Our World in Data 镜像获取（CC-BY 许可）',
   },
   de: {
-    worldbank: 'Weltbank-Entwicklungsindikatoren -- Kindersterblichkeit und PM2.5-Luftverschmutzung',
+    worldbank: 'Weltbank-Entwicklungsindikatoren -- Rate vorsätzlicher Tötungsdelikte (mit Bevölkerungszahl)',
     vdem: 'V-Dem Institute Country-Year Dataset v16 (CC-BY-SA 4.0) -- Indizes für Rechtsstaatlichkeit, politische Korruption und öffentliche Verwaltung (Coppedge et al., DOI 10.23696/vdemds26)',
-    gpi: 'Globaler Friedensindex (IEP) -- jährliches Friedensranking',
-    inform: 'INFORM-Risikoindex (UN OCHA) -- Gefährdung, Exposition, Vulnerabilität und Bewältigungskapazität',
+    gpi: 'Global Peace Index (IEP) -- Gesamtwert sowie die Bereiche Militarisierung und Sicherheit',
+    inform: 'INFORM Risk Index (Europäische Kommission, JRC) -- Naturgefahren, Epidemierisiko, Zugang zur Gesundheitsversorgung und Regierungsführung',
     reliefweb: 'ReliefWeb (UN OCHA) -- humanitäre Lageberichte und Katastrophenwarnungen',
     gdacs: 'GDACS (Globales Katastrophenwarn- und Koordinationssystem) -- Naturkatastrophenwarnungen',
     ucdp: 'UCDP Georeferenced Event Dataset (Uppsala Conflict Data Program) -- staatliche und einseitige Konflikttote, über den Our World in Data-Spiegel (CC-BY)',
@@ -121,55 +121,62 @@ export function getLocalizedSourceDescription(
 
 /** Short "what this measures" labels for the /sources/ methodology tables (baselineSources/
  *  signalSources in src/pages/*\/{sources,fonti,fuentes,sources,fontes,sources,quellen}/index.astro).
- *  Same catalog keys as CatalogSourceKey, minus 'ucdp' (not currently listed on that page). */
-type SourceMeasuresKey = 'worldbank' | 'vdem' | 'gpi' | 'inform' | 'reliefweb' | 'gdacs';
+ *  Same catalog keys as CatalogSourceKey. Formula v10 indicator set (no child mortality, PM2.5 or
+ *  INFORM "climate"/"health" columns any more). */
+type SourceMeasuresKey = 'worldbank' | 'vdem' | 'gpi' | 'inform' | 'reliefweb' | 'gdacs' | 'ucdp';
 
 export const SOURCE_MEASURES: Record<Exclude<Lang, 'en'>, Record<SourceMeasuresKey, string>> = {
   it: {
-    worldbank: 'Mortalità Infantile, Inquinamento Atmosferico da PM2.5',
-    vdem: 'Stato di Diritto, Corruzione Politica, Qualità della Pubblica Amministrazione',
-    gpi: 'Pace Generale, Sicurezza e Protezione, Militarizzazione',
-    inform: 'Salute, Rischio Epidemico, Governance, Rischio Naturale, Rischio Climatico',
+    worldbank: 'Tasso di omicidi volontari (con la popolazione)',
+    vdem: 'Stato di diritto, corruzione politica, imparzialità della pubblica amministrazione',
+    gpi: 'Pace complessiva, sicurezza e protezione, militarizzazione',
+    inform: 'Rischi naturali, rischio di epidemie, accesso alle cure mediche, governance',
+    ucdp: 'Morti nei conflitti armati per paese e anno',
     reliefweb: 'Disastri umanitari attivi e crisi in corso',
     gdacs: 'Allerte per disastri naturali (terremoti, alluvioni, cicloni)',
   },
   es: {
-    worldbank: 'Mortalidad Infantil, Contaminación Atmosférica por PM2.5',
-    vdem: 'Estado de Derecho, Corrupción Política, Calidad de la Administración Pública',
-    gpi: 'Paz General, Seguridad y Protección, Militarización',
-    inform: 'Salud, Riesgo Epidémico, Gobernanza, Riesgo Natural, Riesgo Climático',
+    worldbank: 'Tasa de homicidios intencionales (con la población)',
+    vdem: 'Estado de derecho, corrupción política, imparcialidad de la administración pública',
+    gpi: 'Paz general, seguridad y protección, militarización',
+    inform: 'Riesgos naturales, riesgo de epidemias, acceso a la atención sanitaria, gobernanza',
+    ucdp: 'Muertes en conflictos armados por país y año',
     reliefweb: 'Desastres humanitarios activos y crisis en curso',
     gdacs: 'Alertas de desastres naturales (terremotos, inundaciones, ciclones)',
   },
   fr: {
-    worldbank: 'Mortalité Infantile, Pollution Atmosphérique aux PM2,5',
-    vdem: "État de Droit, Corruption Politique, Qualité de l'Administration Publique",
-    gpi: 'Paix Générale, Sûreté et Sécurité, Militarisation',
-    inform: 'Santé, Risque Épidémique, Gouvernance, Risque Naturel, Risque Climatique',
+    worldbank: "Taux d'homicides volontaires (avec la population)",
+    vdem: "État de droit, corruption politique, impartialité de l'administration publique",
+    gpi: 'Paix globale, sûreté et sécurité, militarisation',
+    inform: "Risques naturels, risque d'épidémie, accès aux soins, gouvernance",
+    ucdp: 'Morts dans les conflits armés par pays et par année',
     reliefweb: 'Catastrophes humanitaires actives et crises en cours',
     gdacs: 'Alertes de catastrophes naturelles (séismes, inondations, cyclones)',
   },
   pt: {
-    worldbank: 'Mortalidade Infantil, Poluição Atmosférica por PM2,5',
-    vdem: 'Estado de Direito, Corrupção Política, Qualidade da Administração Pública',
-    gpi: 'Paz Geral, Segurança e Proteção, Militarização',
-    inform: 'Saúde, Risco Epidêmico, Governança, Risco Natural, Risco Climático',
+    worldbank: 'Taxa de homicídios intencionais (com a população)',
+    vdem: 'Estado de direito, corrupção política, imparcialidade da administração pública',
+    gpi: 'Paz geral, segurança e proteção, militarização',
+    inform: 'Riscos naturais, risco de epidemias, acesso a cuidados de saúde, governança',
+    ucdp: 'Mortes em conflitos armados por país e ano',
     reliefweb: 'Desastres humanitários ativos e crises em curso',
     gdacs: 'Alertas de desastres naturais (terremotos, inundações, ciclones)',
   },
   zh: {
-    worldbank: '儿童死亡率、PM2.5 空气污染',
-    vdem: '法治、政治腐败、公共行政质量',
+    worldbank: '故意杀人率（含人口数据）',
+    vdem: '法治、政治腐败、公共行政公正性',
     gpi: '总体和平水平、安全与治安、军事化程度',
-    inform: '健康、流行病风险、治理、自然灾害风险、气候风险',
+    inform: '自然灾害、流行病风险、医疗服务可及性、治理',
+    ucdp: '各国每年武装冲突死亡人数',
     reliefweb: '活跃的人道主义灾难与危机',
     gdacs: '自然灾害预警（地震、洪水、飓风）',
   },
   de: {
-    worldbank: 'Kindersterblichkeit, PM2.5-Luftverschmutzung',
-    vdem: 'Rechtsstaatlichkeit, politische Korruption, Qualität der öffentlichen Verwaltung',
-    gpi: 'Allgemeiner Frieden, Sicherheit & Schutz, Militarisierung',
-    inform: 'Gesundheit, Epidemierisiko, Regierungsführung, Naturgefahrenrisiko, Klimarisiko',
+    worldbank: 'Rate vorsätzlicher Tötungsdelikte (mit Bevölkerungszahl)',
+    vdem: 'Rechtsstaatlichkeit, politische Korruption, unparteiische öffentliche Verwaltung',
+    gpi: 'Allgemeiner Frieden, Sicherheit und Schutz, Militarisierung',
+    inform: 'Naturgefahren, Epidemierisiko, Zugang zur Gesundheitsversorgung, Regierungsführung',
+    ucdp: 'Tote in bewaffneten Konflikten je Land und Jahr',
     reliefweb: 'Aktive humanitäre Katastrophen und Krisen',
     gdacs: 'Naturkatastrophenwarnungen (Erdbeben, Überschwemmungen, Wirbelstürme)',
   },
@@ -291,4 +298,34 @@ export function buildLocalizedAdvisoryDescription(
   const last = names[names.length - 1];
   const rest = names.slice(0, -1);
   return g.many(names.length, rest, last);
+}
+
+/** Per-locale "edition" lines for the /sources/ baseline table (formula v10, SPEC §7). */
+const EDITION_LINE: Record<Lang, Record<'gpi' | 'inform' | 'vdem' | 'worldbank' | 'ucdp', string>> = {
+  en: { gpi: 'Edition: GPI {gpi}', inform: 'Edition: {inform}', vdem: 'Edition: V-Dem v16, data year {vdem}', worldbank: 'Latest published year varies by country', ucdp: 'Latest data year: {ucdp}' },
+  it: { gpi: 'Edizione: GPI {gpi}', inform: 'Edizione: {inform}', vdem: 'Edizione: V-Dem v16, dati {vdem}', worldbank: "L'ultimo anno pubblicato varia da paese a paese", ucdp: 'Ultimo anno di dati: {ucdp}' },
+  es: { gpi: 'Edición: GPI {gpi}', inform: 'Edición: {inform}', vdem: 'Edición: V-Dem v16, datos de {vdem}', worldbank: 'El último año publicado varía según el país', ucdp: 'Último año con datos: {ucdp}' },
+  fr: { gpi: 'Édition\u00a0: GPI {gpi}', inform: 'Édition\u00a0: {inform}', vdem: 'Édition\u00a0: V-Dem v16, données {vdem}', worldbank: 'La dernière année publiée varie selon le pays', ucdp: 'Dernière année de données\u00a0: {ucdp}' },
+  pt: { gpi: 'Edição: GPI {gpi}', inform: 'Edição: {inform}', vdem: 'Edição: V-Dem v16, dados de {vdem}', worldbank: 'O último ano publicado varia de país para país', ucdp: 'Último ano com dados: {ucdp}' },
+  zh: { gpi: '版本：GPI {gpi}', inform: '版本：{inform}', vdem: '版本：V-Dem v16，{vdem}年数据', worldbank: '各国最新发布年份不同', ucdp: '最新数据年份：{ucdp}' },
+  de: { gpi: 'Ausgabe: GPI {gpi}', inform: 'Ausgabe: {inform}', vdem: 'Ausgabe: V-Dem v16, Daten von {vdem}', worldbank: 'Das neueste veröffentlichte Jahr ist je nach Land unterschiedlich', ucdp: 'Neuestes Datenjahr: {ucdp}' },
+};
+
+/**
+ * The edition line of a baseline source on /sources/ ("Edition: INFORM Risk 2026 (v0.7.3)"),
+ * filled from src/lib/source-editions.ts; '' for sources without one.
+ */
+export function sourceEditionLine(
+  lang: Lang,
+  sourceKey: string,
+  editions: { gpi: string; inform: string; vdem: string; ucdp: string },
+): string {
+  const table = EDITION_LINE[lang] as Record<string, string>;
+  const template = table[sourceKey];
+  if (!template) return '';
+  return template
+    .replace('{gpi}', editions.gpi)
+    .replace('{inform}', editions.inform)
+    .replace('{vdem}', editions.vdem)
+    .replace('{ucdp}', editions.ucdp);
 }

@@ -6,7 +6,8 @@ import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
 import { ADVISORY_STATUS } from '../../../lib/site-stats';
-import { getLocalizedSourceMeasures, ADVISORY_ISO3 } from '../../../i18n/source-descriptions';
+import { getLocalizedSourceMeasures, ADVISORY_ISO3, sourceEditionLine } from '../../../i18n/source-descriptions';
+import { getSourceEditions } from '../../../lib/source-editions';
 import { getLocalizedCountryName } from '../../../lib/scores';
 
 const lang: Lang = 'en';
@@ -56,11 +57,15 @@ const advisorySources = [
   { key: 'pt', country: 'Portugal', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
 ];
 
+// Formula v10 baseline sources. The edition line under each name comes from the data
+// (src/lib/source-editions.ts), so "INFORM Risk 2026" or "GPI 2026" never goes stale by hand.
+const editions = getSourceEditions();
 const baselineSources = [
-  { key: 'worldbank', name: 'World Bank Development Indicators', measures: 'Child Mortality, PM2.5 Air Pollution', frequency: 'Annual', url: 'https://data.worldbank.org/', citation: '' },
-  { key: 'vdem', name: 'V-Dem Institute (v16)', measures: 'Rule of Law, Political Corruption, Public Administration Quality', frequency: 'Annual', url: 'https://www.v-dem.net/data/the-v-dem-dataset/', citation: 'Coppedge et al. — V-Dem Country-Year Dataset v16, DOI 10.23696/vdemds26, CC-BY-SA 4.0' },
-  { key: 'gpi', name: 'Global Peace Index (IEP)', measures: 'Overall peace, Safety & Security, Militarisation', frequency: 'Annual', url: 'https://www.visionofhumanity.org/maps/', citation: '' },
-  { key: 'inform', name: 'INFORM Risk Index', measures: 'Health, Epidemic, Governance, Natural Hazard, Climate Risk', frequency: 'Quarterly', url: 'https://drmkc.jrc.ec.europa.eu/inform-index/', citation: '' },
+  { key: 'worldbank', name: 'World Bank Development Indicators', measures: 'Intentional homicide rate (with population)', frequency: 'Annual', url: 'https://data.worldbank.org/', citation: '' },
+  { key: 'vdem', name: 'V-Dem Institute (v16)', measures: 'Rule of law, political corruption, impartial public administration', frequency: 'Annual', url: 'https://www.v-dem.net/data/the-v-dem-dataset/', citation: 'Coppedge et al. — V-Dem Country-Year Dataset v16, DOI 10.23696/vdemds26, CC-BY-SA 4.0' },
+  { key: 'gpi', name: 'Global Peace Index (IEP)', measures: 'Overall peace, safety and security, militarisation', frequency: 'Annual', url: 'https://www.visionofhumanity.org/maps/', citation: '' },
+  { key: 'inform', name: 'INFORM Risk Index (European Commission JRC)', measures: 'Natural hazards, epidemic risk, access to health care, governance', frequency: 'Twice_yearly', url: 'https://drmkc.jrc.ec.europa.eu/inform-index/', citation: '' },
+  { key: 'ucdp', name: 'UCDP / Our World in Data', measures: 'Deaths in armed conflict per country and year', frequency: 'Quarterly', url: 'https://ucdp.uu.se/', citation: '' },
 ];
 
 const signalSources = [
@@ -97,6 +102,9 @@ const signalSources = [
               <tr class="border-b border-sand-200 dark:border-sand-700">
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">
                   {src.name}
+                  {sourceEditionLine(lang, src.key, editions) && (
+                    <div class="text-xs text-sand-600 dark:text-sand-400 mt-1 font-normal">{sourceEditionLine(lang, src.key, editions)}</div>
+                  )}
                   {src.citation && (
                     <div class="text-xs text-sand-600 dark:text-sand-400 mt-1 font-normal">{src.citation}</div>
                   )}

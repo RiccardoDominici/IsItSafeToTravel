@@ -1,0 +1,148 @@
+---
+// Formula v10 sections of the methodology page (SPEC §7), shared by the 7 localized methodology
+// routes: the indicator table (pillar, indicator, source with edition, licence) built from
+// weights.json, the rules that decide what counts (with stable anchors: the grey hero of every
+// partial-data page links to #grey-rule), and the dated v10 changelog entry.
+// Copy: src/i18n/methodology-v10-copy.ts. Editions: src/lib/source-editions.ts (from the data).
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { getIndicatorLabel } from '../../i18n/indicator-labels';
+import { methodologyV10Copy, FORMULA_V10_RELEASE_DATE } from '../../i18n/methodology-v10-copy';
+import { getSourceEditions } from '../../lib/source-editions';
+import weightsConfig from '../../pipeline/config/weights.json';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const copy = methodologyV10Copy[lang];
+const editions = getSourceEditions();
+
+type SourceKey = keyof typeof copy.sources;
+type LicenceKey = keyof typeof copy.licences;
+
+/** Which source feeds an indicator (keys of weights.json). */
+function sourceOf(indicator: string): SourceKey {
+  if (indicator === 'A') return 'advisories';
+  if (indicator.startsWith('gpi_')) return 'gpi';
+  if (indicator.startsWith('inform_')) return 'inform';
+  if (indicator.startsWith('vdem_')) return 'vdem';
+  if (indicator.startsWith('wb_')) return 'worldbank';
+  if (indicator.startsWith('ucdp_')) return 'ucdp';
+  if (indicator.startsWith('reliefweb_')) return 'reliefweb';
+  return 'gdacs';
+}
+
+const LICENCE: Record<SourceKey, { key: LicenceKey; url?: string }> = {
+  gpi: { key: 'iep', url: 'https://www.visionofhumanity.org/maps/' },
+  advisories: { key: 'government' },
+  ucdp: { key: 'ccBy', url: 'https://creativecommons.org/licenses/by/4.0/' },
+  worldbank: { key: 'ccBy', url: 'https://creativecommons.org/licenses/by/4.0/' },
+  inform: { key: 'ccBy', url: 'https://creativecommons.org/licenses/by/4.0/' },
+  vdem: { key: 'ccBySa', url: 'https://creativecommons.org/licenses/by-sa/4.0/' },
+  reliefweb: { key: 'reliefweb', url: 'https://reliefweb.int/terms-conditions' },
+  gdacs: { key: 'gdacs', url: 'https://www.gdacs.org/' },
+};
+
+const EDITION: Record<SourceKey, string> = {
+  gpi: editions.gpi,
+  advisories: '',
+  ucdp: editions.ucdp,
+  worldbank: '',
+  inform: editions.inform,
+  vdem: editions.vdem,
+  reliefweb: '',
+  gdacs: '',
+};
+
+const pillarKeys: Record<string, string> = {
+  conflict: 'country.pillar.conflict',
+  crime: 'country.pillar.crime',
+  health: 'country.pillar.health',
+  governance: 'country.pillar.governance',
+  environment: 'country.pillar.environment',
+};
+
+const rows = weightsConfig.pillars.map((pillar) => ({
+  pillar: `${t(pillarKeys[pillar.name] as any)} (${Math.round(pillar.weight * 100)}%)`,
+  indicators: pillar.indicators.map((name) => {
+    const source = sourceOf(name);
+    return {
+      label: getIndicatorLabel(name, t),
+      source: copy.sources[source].replace('{edition}', EDITION[source]),
+      licence: copy.licences[LICENCE[source].key],
+      licenceUrl: LICENCE[source].url,
+    };
+  }),
+}));
+
+const DATE_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
+const releaseDate = new Date(`${FORMULA_V10_RELEASE_DATE}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const [entryBefore, entryAfter] = copy.changelogEntryTitle.split('{date}');
+---
+
+<section id="formula-v10" class="mb-10">
+  <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{copy.indicatorsTitle}</h2>
+  <p class="text-sand-700 dark:text-sand-300 leading-relaxed mb-4">{copy.indicatorsIntro}</p>
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm border-collapse">
+      <thead>
+        <tr class="border-b border-sand-300 dark:border-sand-600">
+          <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{copy.table.pillar}</th>
+          <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{copy.table.indicator}</th>
+          <th class="text-left py-2 pr-4 text-sand-600 dark:text-sand-400 font-medium">{copy.table.source}</th>
+          <th class="text-left py-2 text-sand-600 dark:text-sand-400 font-medium">{copy.table.licence}</th>
+        </tr>
+      </thead>
+      <tbody>
+        {rows.map((row) =>
+          row.indicators.map((ind, i) => (
+            <tr class:list={['align-top', i === row.indicators.length - 1 ? 'border-b border-sand-300 dark:border-sand-600' : 'border-b border-sand-100 dark:border-sand-800']}>
+              {i === 0 && (
+                <td rowspan={row.indicators.length} class="py-2 pr-4 font-medium text-sand-800 dark:text-sand-100 whitespace-nowrap">{row.pillar}</td>
+              )}
+              <td class="py-2 pr-4 text-sand-700 dark:text-sand-200">{ind.label}</td>
+              <td class="py-2 pr-4 text-sand-600 dark:text-sand-300">{ind.source}</td>
+              <td class="py-2 text-sand-600 dark:text-sand-300 whitespace-nowrap">
+                {ind.licenceUrl ? (
+                  <a href={ind.licenceUrl} target="_blank" rel="noopener noreferrer" class="underline hover:text-terracotta-600 dark:hover:text-terracotta-400">{ind.licence}</a>
+                ) : (
+                  ind.licence
+                )}
+              </td>
+            </tr>
+          )),
+        )}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="rules" class="mb-10">
+  <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{copy.rulesTitle}</h2>
+  <ul class="space-y-3">
+    {copy.rules.map((rule) => (
+      <li id={rule.id} class="scroll-mt-24 rounded-lg border border-sand-200 dark:border-sand-700 p-4">
+        <p class="font-semibold text-sand-800 dark:text-sand-100">{rule.title}</p>
+        <p class="mt-1 text-sand-700 dark:text-sand-300 leading-relaxed">{rule.text}</p>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<section id="changelog" class="mb-10">
+  <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{copy.changelogTitle}</h2>
+  <h3 id="v10" class="font-semibold text-sand-800 dark:text-sand-100 mb-2">
+    {entryBefore}<time datetime={FORMULA_V10_RELEASE_DATE}>{releaseDate}</time>{entryAfter}
+  </h3>
+  <ul class="list-disc pl-5 space-y-1.5 text-sand-700 dark:text-sand-300 leading-relaxed">
+    {copy.changelogItems.map((item) => <li>{item}</li>)}
+  </ul>
+</section>

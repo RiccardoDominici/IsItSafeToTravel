@@ -45,7 +45,7 @@ describe('Phase 1: EN page renders locale-appropriate content', () => {
 
   it('contains English meta description', () => {
     assert.ok(
-      html.includes('Free daily-updated safety scores for 248 countries'),
+      html.includes('Free safety scores for 248 countries, recalculated daily'),
       'EN page must contain English meta description'
     );
   });
@@ -81,7 +81,7 @@ describe('Phase 1: IT page renders locale-appropriate content', () => {
 
   it('contains Italian meta description', () => {
     assert.ok(
-      html.includes('Punteggi di sicurezza gratuiti per 248 paesi, aggiornati ogni giorno'),
+      html.includes('Punteggi di sicurezza gratuiti per 248 paesi, ricalcolati ogni giorno'),
       'IT page must contain Italian meta description'
     );
   });

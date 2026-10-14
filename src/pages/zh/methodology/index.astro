@@ -2,6 +2,7 @@
 export const prerender = true;
 import Base from '../../../layouts/Base.astro';
 import Breadcrumb from '../../../components/Breadcrumb.astro';
+import MethodologyV10 from '../../../components/pages/MethodologyV10.astro';
 import { useTranslations } from '../../../i18n/utils';
 import type { Lang } from '../../../i18n/ui';
 import { buildWebPageJsonLd, buildFaqPageJsonLd, buildMethodologyDatasetJsonLd } from '../../../lib/seo';
@@ -38,8 +39,9 @@ const jsonLd = {
 const dataSources = [
   { key: 'wb', frequency: t('methodology.frequency.annual') },
   { key: 'gpi', frequency: t('methodology.frequency.annual') },
+  { key: 'vdem', frequency: t('methodology.frequency.annual') },
   { key: 'ucdp', frequency: t('methodology.frequency.quarterly') },
-  { key: 'inform', frequency: t('methodology.frequency.quarterly') },
+  { key: 'inform', frequency: t('methodology.frequency.twice_yearly' as any) },
   { key: 'us_advisory', frequency: t('methodology.frequency.varies') },
   { key: 'uk_advisory', frequency: t('methodology.frequency.varies') },
   { key: 'ca_advisory', frequency: t('methodology.frequency.varies') },
@@ -111,6 +113,9 @@ const advisorySources = [
       <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{t('methodology.overview_title')}</h2>
       <p class="text-sand-700 dark:text-sand-300 leading-relaxed">{t('methodology.overview_text')}</p>
     </section>
+
+    <!-- Formula v10: indicators with source/edition/licence, the rules that decide what counts, changelog -->
+    <MethodologyV10 lang={lang} />
 
     <!-- Category Weights Table -->
     <section class="mb-10">

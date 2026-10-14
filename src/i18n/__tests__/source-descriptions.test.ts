@@ -128,7 +128,8 @@ describe('getLocalizedSourceDescription', () => {
   it('returns the localized text for a known key in a non-English language', () => {
     const result = getLocalizedSourceDescription('it', 'gpi', 'stored English text');
     assert.notEqual(result, 'stored English text');
-    assert.match(result, /pacificità/);
+    // Formula v10: names the GPI parts the score actually uses (SOURCE_CATALOG.gpi in engine.ts).
+    assert.match(result, /militarizzazione/);
   });
 
   it('falls back to the stored text for an unrecognized key (never blank)', () => {
@@ -164,6 +165,12 @@ describe('getLocalizedSourceMeasures', () => {
   });
 
   it('falls back to the stored text for an unrecognized key', () => {
-    assert.equal(getLocalizedSourceMeasures('de', 'ucdp', 'stored measures'), 'stored measures');
+    // 'ucdp' is a real key since the /sources/ page lists UCDP (formula v10); use a future one.
+    assert.equal(getLocalizedSourceMeasures('de', 'some_future_source', 'stored measures'), 'stored measures');
+  });
+
+  it('describes the formula v10 indicator set (no child mortality or PM2.5)', () => {
+    assert.match(getLocalizedSourceMeasures('it', 'worldbank', 'stored'), /omicidi/);
+    assert.doesNotMatch(getLocalizedSourceMeasures('de', 'worldbank', 'stored'), /Kindersterblichkeit|PM2/);
   });
 });
