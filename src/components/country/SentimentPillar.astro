@@ -14,14 +14,7 @@ interface Props {
 const { sentiment, lang } = Astro.props;
 const t = useTranslations(lang);
 
-const hasEnough = sentiment !== null && sentiment.count >= MIN_VOTE_FLOOR;
-
-/** Format a signed score-point delta, e.g. "+0.4", "−0.7" (never a bare hyphen). */
-function formatSignedDelta(n: number): string {
-  const abs = Math.abs(n).toFixed(1);
-  const sign = n < 0 ? '−' : '+';
-  return `${sign}${abs}`;
-}
+const hasEnough = sentiment !== null && sentiment.status === 'active';
 
 const label = t('country.pillar.sentiment');
 
@@ -52,11 +45,8 @@ const emptyState = {
 const displayScore = hasEnough ? sentiment!.perceived.toFixed(1) : null;
 const barWidth = hasEnough ? Math.max((sentiment!.perceived / 10) * 180, 2) : 0;
 const color = hasEnough ? pillarToColor(sentiment!.perceived / 10) : '';
-const correctionText = hasEnough
-  ? t('sentiment.correction_label').replace('{delta}', formatSignedDelta(sentiment!.correction))
-  : '';
 const voteCountText = hasEnough
-  ? t('sentiment.vote_count').replace('{count}', String(sentiment!.count))
+  ? t('sentiment.vote_count').replace('{count}', String(sentiment!.votes))
   : '';
 ---
 
@@ -85,7 +75,6 @@ const voteCountText = hasEnough
         </span>
       </div>
       <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[calc(7rem+0.75rem)]">
-        <span class="text-xs font-medium text-sand-600 dark:text-sand-400">{correctionText}</span>
         <span class="text-xs text-sand-600 dark:text-sand-400">{voteCountText}</span>
       </div>
     </div>

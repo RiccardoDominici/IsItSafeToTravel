@@ -38,9 +38,10 @@ const siteUrl = 'https://isitsafetotravel.org';
 
 const countries = loadLatestScores();
 const countryByIso3 = new Map(countries.map((co) => [co.iso3, co]));
-const sentimentEntries = loadAllSentiment();
+// Only countries whose community reading is active (>= 30 votes from >= 3 origins, SPEC §5) rank here.
+const sentimentEntries = loadAllSentiment().filter((s) => s.status === 'active');
 
-/** Signed delta, U+2212 minus (never a bare hyphen) -- matches SentimentPillar.astro's formatSignedDelta. */
+/** Signed delta, U+2212 minus (never a bare hyphen), as shown on the community block. */
 function formatSigned(n: number): string {
   return `${n < 0 ? '−' : '+'}${Math.abs(n).toFixed(1)}`;
 }
@@ -70,9 +71,11 @@ const ranked: RankedEntry[] = sentimentEntries
   .map((s): RankedEntry | null => {
     const country = countryByIso3.get(s.iso3);
     if (!country) return null; // sentiment references a country absent from today's snapshot (defensive, shouldn't happen)
+    // A grey country (score null, SPEC §4) has no official number to compare against: never ranked.
+    if (typeof country.score !== 'number') return null;
 
-    // "Our score" always comes from TODAY's live snapshot, never sentiment.official
-    // (the value the aggregation pipeline had on hand when IT last ran) -- so this
+    // "Our score" always comes from TODAY's live snapshot, never a score copied into the
+    // sentiment file (the community file stores none) -- so this
     // page and the linked country page's ScoreHero always show the identical
     // number, even on the rare day Stage 6 fails non-fatally and keeps a stale
     // sentiment file (src/pipeline/run.ts, "keeping last-known data/sentiment/
@@ -97,7 +100,7 @@ const ranked: RankedEntry[] = sentimentEntries
       official,
       community,
       gap,
-      votes: s.count,
+      votes: s.votes,
       driverText,
     };
   })

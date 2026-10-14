@@ -1,16 +1,20 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import type { ScoredCountry, SentimentEntry } from '../pipeline/types';
+import { SENTIMENT_MIN_ORIGINS, SENTIMENT_MIN_VOTES } from '../pipeline/sentiment/constants';
 import { hasSufficientData } from './hub-data';
 
 const DATA_DIR = path.join(process.cwd(), 'data', 'sentiment');
 
 /**
- * Minimum vote count before a country's community sentiment is considered
- * display-worthy. Mirrors SENTIMENT_MIN_VOTES used by the aggregation pipeline
- * (39-04) — the same floor gates the below-floor empty state in SentimentPillar (D-09).
+ * Votes needed before a country's community reading is active (formula v10, SPEC §5). Same
+ * constant the pipeline's activation rule uses. Below it the community block shows progress, not
+ * a number.
  */
-export const MIN_VOTE_FLOOR = 5;
+export const MIN_VOTE_FLOOR = SENTIMENT_MIN_VOTES;
+
+/** Distinct known countries of origin needed before a community reading is active (SPEC §5). */
+export const MIN_ORIGIN_FLOOR = SENTIMENT_MIN_ORIGINS;
 
 interface SentimentLatestFile {
   generatedAt: string;
@@ -18,37 +22,50 @@ interface SentimentLatestFile {
 }
 
 /**
- * Load the per-country community sentiment entry baked at build time by the daily
- * aggregation pipeline (39-04). Mirrors src/lib/scores.ts's graceful-degradation
- * pattern: a missing file (first build / degraded pipeline), a missing country, or
- * malformed JSON all resolve to null rather than throwing (D-14), so a build never
- * fails on absent or partial sentiment data.
+ * True for an entry in the formula-v10 shape. Files written before v10 (v9.1 `count` /
+ * `correction`) are ignored, so the page shows "not enough votes yet" until the next pipeline run
+ * rewrites latest.json, instead of rendering half-populated numbers.
+ */
+function isCommunityEntry(x: unknown): x is SentimentEntry {
+  const e = x as Partial<SentimentEntry> | null | undefined;
+  return (
+    !!e &&
+    typeof e.iso3 === 'string' &&
+    typeof e.votes === 'number' &&
+    typeof e.perceived === 'number' &&
+    (e.status === 'active' || e.status === 'insufficient')
+  );
+}
+
+/**
+ * Load the per-country community entry baked at build time by the daily aggregation pipeline.
+ * Mirrors src/lib/scores.ts's graceful-degradation pattern: a missing file (first build / degraded
+ * pipeline), a missing country, or malformed JSON all resolve to null rather than throwing (D-14),
+ * so a build never fails on absent or partial sentiment data.
  */
 export function loadSentimentForCountry(iso3: string): SentimentEntry | null {
   const filePath = path.join(DATA_DIR, 'latest.json');
   if (!fs.existsSync(filePath)) return null;
   try {
     const parsed: SentimentLatestFile = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    return parsed.countries?.[iso3] ?? null;
+    const entry: unknown = parsed.countries?.[iso3];
+    return isCommunityEntry(entry) ? entry : null;
   } catch {
     return null;
   }
 }
 
 /**
- * Load every published SentimentEntry (community-vs-data ranking page, 39-11).
- * Same graceful-degradation contract as loadSentimentForCountry: a missing
- * file or malformed JSON resolves to [] rather than throwing, so a build never
- * fails on absent or partial sentiment data. Entries are already floor-gated
- * at aggregation time (aggregateVotes skips anything below SENTIMENT_MIN_VOTES),
- * so every entry returned here is display-worthy as-is.
+ * Load every community entry, active or not (callers decide what to show: the community-vs-data
+ * ranking keeps only status 'active'). Same graceful-degradation contract as
+ * loadSentimentForCountry: a missing file or malformed JSON resolves to [].
  */
 export function loadAllSentiment(): SentimentEntry[] {
   const filePath = path.join(DATA_DIR, 'latest.json');
   if (!fs.existsSync(filePath)) return [];
   try {
     const parsed: SentimentLatestFile = JSON.parse(fs.readFileSync(filePath, 'utf-8'));
-    return Object.values(parsed.countries ?? {});
+    return Object.values(parsed.countries ?? {}).filter(isCommunityEntry);
   } catch {
     return [];
   }
