@@ -3,11 +3,40 @@ import { strict as assert } from 'node:assert';
 import {
   isValidDelta,
   isValidIso3,
+  isValidRating,
   isJsonContentType,
   isSameOriginOrAbsent,
   normalizeOfficialScore,
   voterHash,
 } from '../vote.ts';
+
+describe('isValidRating', () => {
+  it('accepts every absolute level 1..5 (grey countries)', () => {
+    for (const r of [1, 2, 3, 4, 5]) {
+      assert.equal(isValidRating(r), true, `expected ${r} to be valid`);
+    }
+  });
+
+  it('rejects 0 and 6 (outside the five levels)', () => {
+    assert.equal(isValidRating(0), false);
+    assert.equal(isValidRating(6), false);
+  });
+
+  it('rejects a non-integer level', () => {
+    assert.equal(isValidRating(2.5), false);
+  });
+
+  it('rejects a numeric string and a boolean', () => {
+    assert.equal(isValidRating('3'), false);
+    assert.equal(isValidRating(true), false);
+  });
+
+  it('rejects null, undefined and NaN', () => {
+    assert.equal(isValidRating(null), false);
+    assert.equal(isValidRating(undefined), false);
+    assert.equal(isValidRating(NaN), false);
+  });
+});
 
 describe('isValidDelta', () => {
   it('accepts every valid calibration delta (-2..2)', () => {

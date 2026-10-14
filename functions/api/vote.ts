@@ -1,8 +1,13 @@
 // Phase 39: Community Sentiment Score — vote ingestion endpoint.
-// POST /api/vote  { iso3, delta, token? }
+// POST /api/vote  { iso3, delta, token? }    scored country (published score is a number)
+//                 { iso3, rating, token? }   grey country (published score null), formula v10 SPEC §5
 // Mirrors functions/api/feedback.ts (corsHeaders, try/catch shape, context.env?.X access),
 // with one deliberate inversion: missing optional env (TURNSTILE_SECRET_KEY) must DEGRADE
 // gracefully (skip verification, keep working) instead of 500ing — D-12/D-14.
+// The published score is read server-side (env.ASSETS -> /scores.json) and stored with the
+// vote; any client-sent score is ignored.
+
+import { classifyCountry, loadPublishedScoreIndex } from '../lib/published-scores';
 
 // Claude's-discretion tunable thresholds (CONTEXT.md "Claude's Discretion").
 const DEDUPE_WINDOW_DAYS = 1; // per-country daily dedupe window (voter_hash, UTC day bucket)
@@ -50,6 +55,16 @@ function json(body: unknown, status: number): Response {
 /** True only for the 5 valid calibration deltas (D-02): -2, -1, 0, 1, 2. */
 export function isValidDelta(x: unknown): boolean {
   return typeof x === 'number' && Number.isInteger(x) && VALID_DELTAS.has(x);
+}
+
+/** True only for an integer absolute rating 1..5 (grey countries: 1 = very unsafe, 5 = very safe). */
+export function isValidRating(x: unknown): boolean {
+  return typeof x === 'number' && Number.isInteger(x) && x >= 1 && x <= 5;
+}
+
+/** True when a body field carries a value; undefined and null count as absent. */
+function hasValue(x: unknown): boolean {
+  return x !== undefined && x !== null;
 }
 
 /** True only for an uppercase 3-letter ISO3 code present in the embedded allowlist. */
@@ -120,14 +135,37 @@ export async function onRequestPost(context: any) {
       return json({ ok: false, reason: 'invalid_json' }, 400);
     }
 
-    // (2) Validate iso3 + delta.
-    if (!isValidIso3(body?.iso3) || !isValidDelta(body?.delta)) {
+    // (2) Validate iso3. The vote TYPE depends on the country's published score (SPEC §5),
+    // so the payload is checked after the lookup in step (3).
+    if (!isValidIso3(body?.iso3)) {
       return json({ ok: false, reason: 'invalid_input' }, 400);
     }
     const iso3: string = body.iso3;
-    const delta: number = body.delta;
 
-    // (3) Env-gated Turnstile: only verify if the secret is configured (D-12). Absence
+    // (3) Published score, read server-side and never taken from the client. Scored countries
+    // take a relative delta; grey countries (score null) take an absolute rating. If the score
+    // file is unreadable or the country is missing, the vote type cannot be verified, so refuse
+    // instead of storing a row we cannot classify.
+    const publishedIndex = await loadPublishedScoreIndex(context.env?.ASSETS, context.request.url);
+    const kind = publishedIndex ? classifyCountry(publishedIndex, iso3) : null;
+    if (!kind) {
+      return json({ ok: false, reason: 'score_unavailable' }, 503);
+    }
+    // A relative vote carries only delta and an absolute vote only rating. A value in the other
+    // field is rejected, never stored: this also catches a stale page still sending delta for a
+    // country that has since turned grey.
+    const payloadOk =
+      kind === 'grey'
+        ? isValidRating(body?.rating) && !hasValue(body?.delta)
+        : isValidDelta(body?.delta) && !hasValue(body?.rating);
+    if (!payloadOk) {
+      return json({ ok: false, reason: 'invalid_input' }, 400);
+    }
+    // delta is NOT NULL in D1, so rating rows store the 0 placeholder (see migration 005).
+    const delta: number = kind === 'scored' ? body.delta : 0;
+    const rating: number | null = kind === 'grey' ? body.rating : null;
+
+    // (4) Env-gated Turnstile: only verify if the secret is configured (D-12). Absence
     // means SKIP entirely and continue — never 500 on a missing optional secret.
     const turnstileSecret = context.env?.TURNSTILE_SECRET_KEY;
     if (turnstileSecret) {
@@ -146,7 +184,7 @@ export async function onRequestPost(context: any) {
       }
     }
 
-    // (4) Salted, cookie-free hashes. Never log the raw ip.
+    // (5) Salted, cookie-free hashes. Never log the raw ip.
     const ip = context.request.headers.get('CF-Connecting-IP') ?? '';
     const salt = context.env?.VOTE_HASH_SALT ?? FALLBACK_SALT;
     const nowMs = Date.now();
@@ -160,7 +198,7 @@ export async function onRequestPost(context: any) {
     // city, no lat/long — see LEGAL-PRIVACY-ASSESSMENT.md §B (legitimate interest, Art. 6(1)(f)).
     const country = context.request.cf?.country ?? context.request.headers.get('CF-IPCountry') ?? null;
 
-    // (5) Graceful degradation: no D1 binding attached -> never break the UX (D-14).
+    // (6) Graceful degradation: no D1 binding attached -> never break the UX (D-14).
     const db = context.env?.DB;
     if (!db) {
       return json({ ok: false, reason: 'no_db' }, 200);
@@ -168,7 +206,7 @@ export async function onRequestPost(context: any) {
 
     const nowSec = Math.floor(nowMs / 1000);
 
-    // (6) Per-country daily dedupe: same salted voter hash within the window is rejected
+    // (7) Per-country daily dedupe: same salted voter hash within the window is rejected
     // WITHOUT inserting a new row.
     const dedupeWindowStart = nowSec - DEDUPE_WINDOW_DAYS * 86400;
     const dedupeRow = await db
@@ -179,7 +217,7 @@ export async function onRequestPost(context: any) {
       return json({ ok: true, deduped: true }, 200);
     }
 
-    // (7) Per-visitor daily volume cap.
+    // (8) Per-visitor daily volume cap.
     const dayWindowStart = nowSec - 86400;
     const dayRow = await db
       .prepare('SELECT COUNT(*) AS n FROM votes WHERE day_hash = ? AND created_at > ?')
@@ -189,23 +227,24 @@ export async function onRequestPost(context: any) {
       return json({ ok: false, reason: 'rate' }, 429);
     }
 
-    // (8) Single parameterized INSERT — never string-concatenate SQL (T-39-01).
-    // officialScore must be a validated 1-10 number or null — never undefined, since D1
-    // .bind() throws D1_TYPE_ERROR on undefined. INSERT OR IGNORE + the UNIQUE index on
-    // (iso3, voter_hash) is the authoritative dedupe (WR-01); the step-6 SELECT above is
-    // just a cheap pre-check that saves a write for the common case.
-    const officialScore = normalizeOfficialScore(body.officialScore);
+    // (9) Single parameterized INSERT — never string-concatenate SQL (T-39-01).
+    // official_score is the server-side published score (scored countries only; null otherwise)
+    // and rating the grey-country answer (null otherwise). Both are validated values or null,
+    // never undefined, since D1 .bind() throws D1_TYPE_ERROR on undefined. INSERT OR IGNORE + the
+    // UNIQUE index on (iso3, voter_hash) is the authoritative dedupe (WR-01); the step-7 SELECT
+    // above is just a cheap pre-check that saves a write for the common case.
+    const officialScore = kind === 'scored' ? normalizeOfficialScore(publishedIndex?.get(iso3)) : null;
     const res = await db
       .prepare(
-        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso) VALUES (?, ?, ?, ?, ?, ?, ?)'
+        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso, rating) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
       )
-      .bind(iso3, delta, officialScore ?? null, voter_hash, day_hash, nowSec, country)
+      .bind(iso3, delta, officialScore, voter_hash, day_hash, nowSec, country, rating)
       .run();
     if (res.meta?.changes === 0) {
       return json({ ok: true, deduped: true }, 200);
     }
 
-    // (9)
+    // (10)
     return json({ ok: true }, 200);
   } catch {
     // Any unexpected failure must never break the static site.
