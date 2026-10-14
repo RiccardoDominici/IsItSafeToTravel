@@ -19,7 +19,7 @@ import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 import CommunityGapCard from './CommunityGapCard.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
-import { loadAllSentiment, MIN_VOTE_FLOOR, pickVoteNextSuggestions } from '../lib/sentiment';
+import { loadAllSentiment, MIN_ORIGIN_FLOOR, MIN_VOTE_FLOOR, pickVoteNextSuggestions } from '../lib/sentiment';
 import { selectPillarExtremes } from '../lib/pillar-extremes';
 import { faqPillarLabels } from '../lib/country-faq-copy';
 import { getLastmodMap } from '../lib/lastmod';
@@ -161,9 +161,12 @@ const suggested = isShortList ? pickVoteNextSuggestions(countries, listedIso3) :
 
 const growingBodyText = c.growingBody
   .replace('{floor}', String(MIN_VOTE_FLOOR))
+  .replace('{origins}', String(MIN_ORIGIN_FLOOR))
   .replace('{count}', String(ranked.length))
   .replace('{countryNoun}', countryNounForCount);
-const emptyStateBodyText = c.emptyStateBody.replace('{floor}', String(MIN_VOTE_FLOOR));
+const emptyStateBodyText = c.emptyStateBody
+  .replace('{floor}', String(MIN_VOTE_FLOOR))
+  .replace('{origins}', String(MIN_ORIGIN_FLOOR));
 
 const canonicalUrl = `${siteUrl}/${lang}/${r['community-vs-data']}/`;
 const breadcrumbItems = [
