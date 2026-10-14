@@ -6,6 +6,7 @@ import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
 import { SOURCE_COUNT_DISPLAY } from '../lib/site-stats';
 import { getLastmodMap } from '../lib/lastmod';
 import { buildCitePageJsonLd } from '../lib/seo';
+import { scoredOnly } from '../lib/score-status';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 
@@ -16,7 +17,9 @@ interface Props {
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
-const countries = loadLatestScores().sort((a, b) =>
+// Citations carry the score, so only countries with an official score are listed (formula v10
+// grey places have none).
+const countries = scoredOnly(loadLatestScores()).sort((a, b) =>
   getLocalizedCountryName(a, lang).localeCompare(getLocalizedCountryName(b, lang)),
 );
 const snapshotDate = getLastmodMap().snapshotDate;

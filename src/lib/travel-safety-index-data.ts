@@ -3,10 +3,12 @@ import type { Region } from './regions';
 import { loadLatestSnapshot, loadHistoricalScores, getScoreDelta } from './scores';
 import { hasSufficientData } from './hub-data';
 import { getRegion } from './regions';
+import type { Scored } from './score-status';
 
 export interface IndexRow {
   rank: number;
-  country: ScoredCountry;
+  /** Ranked rows only ever hold countries with an official score (hasSufficientData). */
+  country: Scored<ScoredCountry>;
   region: Region | 'other';
   /** 7-day score delta, or null when there isn't enough history to compute one
    *  (same window/logic as getBiggestMovers in hub-data.ts). */
@@ -25,8 +27,8 @@ export interface TravelSafetyIndexData {
   excludedCount: number;
   /** Ranked rows, score descending, includedCount long. */
   rows: IndexRow[];
-  safest: ScoredCountry;
-  leastSafe: ScoredCountry;
+  safest: Scored<ScoredCountry>;
+  leastSafe: Scored<ScoredCountry>;
 }
 
 /**

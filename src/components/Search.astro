@@ -5,6 +5,7 @@ import { routes } from '../i18n/ui';
 import { COUNTRIES } from '../pipeline/config/countries';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
 import { scoreToColor } from '../lib/colors';
+import { isScored } from '../lib/score-status';
 
 interface Props {
   lang: Lang;
@@ -21,8 +22,9 @@ const searchData = COUNTRIES.map(c => {
   return {
     iso3: c.iso3,
     name: getLocalizedCountryName(c, lang),
-    score: scored?.scoreDisplay ?? null,
-    color: scored ? scoreToColor(scored.score) : null,
+    // Grey places (formula v10, no official score) stay searchable, without a score chip.
+    score: scored && isScored(scored) ? scored.scoreDisplay : null,
+    color: scored && isScored(scored) ? scoreToColor(scored.score) : null,
   };
 });
 ---

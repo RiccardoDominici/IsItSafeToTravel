@@ -7,11 +7,14 @@ import { useTranslations } from '../../../i18n/utils';
 import { routes } from '../../../i18n/ui';
 import type { Lang } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
+import { scoredOnly } from '../../../lib/score-status';
 
 const lang: Lang = 'fr';
 const t = useTranslations(lang);
 const r = routes[lang];
-const countries = loadLatestScores().sort((a, b) => getLocalizedCountryName(a, lang).localeCompare(getLocalizedCountryName(b, lang)));
+// Only countries with an official score: a badge shows that score (formula v10 grey places have
+// none; /badge/{iso3}.svg still answers for them with a neutral "partial data" badge).
+const countries = scoredOnly(loadLatestScores()).sort((a, b) => getLocalizedCountryName(a, lang).localeCompare(getLocalizedCountryName(b, lang)));
 const title = t('badge.title' as any);
 const description = t('badge.description' as any);
 const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['embed-badge']}/`;

@@ -41,6 +41,7 @@ import type { ScoredCountry } from '../pipeline/types';
 import { borderMap, getNeighbors } from './neighbors';
 import { getRegion } from './regions';
 import { hasSufficientData } from './hub-data';
+import { officialScore, type Scored } from './score-status';
 
 /** Fewer data-sufficient real neighbours than this, and nearby countries are added. */
 export const MIN_NEIGHBOURS_BEFORE_FILL = 3;
@@ -58,18 +59,18 @@ export type CoordMap = Readonly<Record<string, readonly number[] | undefined>>;
 
 /** What the comparison table shows for a country, besides the country itself. */
 export interface ComparisonSelection {
-  /** Real neighbours that pass hasSufficientData, score descending, max 6. */
-  neighbours: ScoredCountry[];
+  /** Real neighbours that pass hasSufficientData (so they have an official score), score descending, max 6. */
+  neighbours: Scored<ScoredCountry>[];
   /** Nearest countries by distance. Empty unless neighbours.length < MIN_NEIGHBOURS_BEFORE_FILL. */
-  nearby: ScoredCountry[];
+  nearby: Scored<ScoredCountry>[];
 }
 
 /** What the related-countries block shows for a country. */
 export interface RelatedSelection {
   /** Same region, closest total score first. Empty when the subject fails the data floor. */
-  sameRegion: ScoredCountry[];
+  sameRegion: Scored<ScoredCountry>[];
   /** Most similar risk profile first. Empty when the subject fails the data floor. Never repeats a sameRegion entry. */
-  similarProfile: ScoredCountry[];
+  similarProfile: Scored<ScoredCountry>[];
 }
 
 /** Plain code-unit ascending order on iso3 (locale-independent tie-break). */
@@ -77,8 +78,8 @@ function byIso3(a: ScoredCountry, b: ScoredCountry): number {
   return a.iso3 < b.iso3 ? -1 : a.iso3 > b.iso3 ? 1 : 0;
 }
 
-/** Absolute total-score gap: the closeness measure for the same-region list. */
-function scoreGap(candidate: ScoredCountry, subject: ScoredCountry): number {
+/** Absolute total-score gap: the closeness measure for the same-region list (scored countries only). */
+function scoreGap(candidate: Scored<ScoredCountry>, subject: Scored<ScoredCountry>): number {
   return Math.abs(candidate.score - subject.score);
 }
 
@@ -137,7 +138,7 @@ export function selectComparison(
   allCountries: ScoredCountry[],
   coords: CoordMap,
 ): ComparisonSelection {
-  const neighbours = getNeighbors(country.iso3, allCountries, hasSufficientData);
+  const neighbours = getNeighbors<Scored<ScoredCountry>>(country.iso3, allCountries, hasSufficientData);
   if (neighbours.length >= MIN_NEIGHBOURS_BEFORE_FILL) {
     return { neighbours, nearby: [] };
   }
@@ -152,7 +153,7 @@ export function selectComparison(
     ...neighbours.map((c) => c.iso3),
   ]);
   const nearby = allCountries
-    .filter((c) => !excluded.has(c.iso3) && hasSufficientData(c))
+    .filter((c): c is Scored<ScoredCountry> => !excluded.has(c.iso3) && hasSufficientData(c))
     .flatMap((c) => {
       const at = coordsOf(c.iso3, coords);
       return at ? [{ c, km: haversineKm(subject, at) }] : [];
@@ -165,11 +166,19 @@ export function selectComparison(
   return { neighbours, nearby };
 }
 
-/** Rows for the comparison table: the country itself plus its selected others, by score descending. */
+/**
+ * Rows for the comparison table: the country itself plus its selected others, by score
+ * descending. A grey subject (formula v10, no official score; its others always have one, since
+ * they pass hasSufficientData) has no place in a score order: it comes first, as the row the
+ * table is about, and the table renders it without numbers.
+ */
 export function comparisonRows(country: ScoredCountry, selection: ComparisonSelection): ScoredCountry[] {
-  return [country, ...selection.neighbours, ...selection.nearby].sort(
-    (a, b) => b.score - a.score || byIso3(a, b),
-  );
+  return [country, ...selection.neighbours, ...selection.nearby].sort((a, b) => {
+    const sa = officialScore(a);
+    const sb = officialScore(b);
+    if (sa === null || sb === null) return (sa === null ? 0 : 1) - (sb === null ? 0 : 1) || byIso3(a, b);
+    return sb - sa || byIso3(a, b);
+  });
 }
 
 /**
@@ -193,10 +202,12 @@ export function selectRelated(
     ...shown.neighbours.map((c) => c.iso3),
     ...shown.nearby.map((c) => c.iso3),
   ]);
-  const candidates = allCountries.filter((c) => !excluded.has(c.iso3) && hasSufficientData(c));
+  const candidates = allCountries.filter(
+    (c): c is Scored<ScoredCountry> => !excluded.has(c.iso3) && hasSufficientData(c),
+  );
 
   const region = getRegion(country.iso3);
-  const sameRegion: ScoredCountry[] =
+  const sameRegion: Scored<ScoredCountry>[] =
     region === 'other'
       ? []
       : candidates
@@ -208,7 +219,7 @@ export function selectRelated(
   const similarProfile = candidates
     .filter((c) => !regionShown.has(c.iso3))
     .map((c) => ({ c, d: profileDistance(country, c) }))
-    .filter((x): x is { c: ScoredCountry; d: number } => x.d !== null)
+    .filter((x): x is { c: Scored<ScoredCountry>; d: number } => x.d !== null)
     .sort((x, y) => x.d - y.d || byIso3(x.c, y.c))
     .slice(0, RELATED_LIST_SIZE)
     .map((x) => x.c);

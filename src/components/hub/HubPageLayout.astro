@@ -25,6 +25,7 @@ import {
   soloFemaleGuidance,
   familyRankingExplainer,
 } from '../../i18n/hub-enrichment-copy';
+import type { Scored } from '../../lib/score-status';
 
 interface Props {
   lang: Lang;
@@ -32,7 +33,8 @@ interface Props {
   description: string;
   intro: string;
   jsonLd: Record<string, unknown>;
-  countries: ScoredCountry[];
+  /** Ranked countries: every ranking only holds countries with an official score (formula v10 grey places are never ranked). */
+  countries: Scored<ScoredCountry>[];
   /** When set, renders a visible FAQ section and merges a FAQPage node into the JSON-LD @graph. */
   hubType?: HubType;
   showDelta?: boolean;
@@ -122,7 +124,7 @@ function pillarScore(country: ScoredCountry, name: PillarName): number {
  * the specific pillars THAT hub actually weighs (see hub-data.ts), or — for
  * the two trend hubs — the 7-day delta the page already computed.
  */
-function buildBlurb(country: ScoredCountry): string {
+function buildBlurb(country: Scored<ScoredCountry>): string {
   const labels = faqPillarLabels[lang];
   // English needs "the" for the ~15 plural/union country names in this
   // subject-position blurb ("the United States scores 8/10", not "United

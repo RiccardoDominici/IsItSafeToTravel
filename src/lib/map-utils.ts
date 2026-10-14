@@ -63,6 +63,13 @@ export const ISO_NUMERIC_TO_ALPHA3: Record<string, string> = {
 // --- Color constants ---
 export const UNSCORED_COLOR = '#9ca3af';
 export const UNSCORED_COLOR_DARK = '#4b5563';
+/**
+ * Formula v10 grey places ("Partial data": in the dataset, fewer than 4 independent sources, no
+ * official score). A warm neutral, distinct from UNSCORED (areas the dataset does not cover) and
+ * from every point of the red-yellow-blue score scale, with its own legend entry.
+ */
+export const PARTIAL_DATA_COLOR = '#d6d0c7';
+export const PARTIAL_DATA_COLOR_DARK = '#6b645c';
 
 /**
  * Maps a safety score (1-10) to a CSS color string.

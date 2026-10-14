@@ -7,6 +7,8 @@ import { getComparisonSubject } from '../../i18n/country-grammar';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { comparisonRows, selectComparison } from '../../lib/comparisons';
 import countryCoords from '../../data/country-coords.json';
+import { officialScore } from '../../lib/score-status';
+import { communityCopy } from '../../i18n/community-copy';
 
 // One comparison section for the country page: real neighbours (borderMap), plus
 // "nearby" fillers, the nearest countries by distance within 2000 km, when a country
@@ -68,6 +70,8 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
             const isNearby = nearbyIso3.has(c.iso3);
             const rowClass = isCurrentCountry ? 'bg-terracotta-50 dark:bg-terracotta-900/20' : '';
             const pillarScoreMap = new Map(c.pillars.map(p => [p.name, p.score]));
+            // Formula v10 grey subject (no official score): its row carries no number at all.
+            const rowScore = officialScore(c);
             return (
               <tr class:list={['border-b border-sand-200 dark:border-sand-700', rowClass]}>
                 <td class="py-2 pr-3 font-medium text-sand-800 dark:text-sand-100">
@@ -80,17 +84,28 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
                     </span>
                   )}
                 </td>
-                <td class:list={['py-2 pr-3 font-bold', getScoreColor(c.score)]}>
-                  {c.score.toFixed(1)}
-                </td>
-                {pillarKeys.map((key) => {
-                  const pScore = (pillarScoreMap.get(key) ?? 0) * 10;
-                  return (
-                    <td class:list={['py-2 pr-3', getScoreColor(pScore)]}>
-                      {pScore.toFixed(1)}
+                {rowScore === null ? (
+                  <>
+                    <td class="py-2 pr-3 text-xs font-medium text-sand-600 dark:text-sand-400 whitespace-nowrap">{communityCopy[lang].partialDataTitle}</td>
+                    {pillarKeys.map(() => (
+                      <td class="py-2 pr-3 text-sand-500 dark:text-sand-500" aria-hidden="true">–</td>
+                    ))}
+                  </>
+                ) : (
+                  <>
+                    <td class:list={['py-2 pr-3 font-bold', getScoreColor(rowScore)]}>
+                      {rowScore.toFixed(1)}
                     </td>
-                  );
-                })}
+                    {pillarKeys.map((key) => {
+                      const pScore = (pillarScoreMap.get(key) ?? 0) * 10;
+                      return (
+                        <td class:list={['py-2 pr-3', getScoreColor(pScore)]}>
+                          {pScore.toFixed(1)}
+                        </td>
+                      );
+                    })}
+                  </>
+                )}
               </tr>
             );
           })}

@@ -6,10 +6,12 @@ import { getLocalizedCountryName } from '../../lib/scores';
 import { selectPillarExtremes } from '../../lib/pillar-extremes';
 import { faqPillarLabels } from '../../lib/country-faq-copy';
 import { riskDriverBadge } from '../../i18n/hub-enrichment-copy';
+import type { Scored } from '../../lib/score-status';
 
 interface Props {
   rank: number;
-  country: ScoredCountry;
+  /** Rankings only hold countries with an official score (formula v10). */
+  country: Scored<ScoredCountry>;
   lang: Lang;
   showDelta?: boolean;
   delta?: number;

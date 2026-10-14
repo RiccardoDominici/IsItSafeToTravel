@@ -12,6 +12,7 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../../lib/scores';
 import { scoreToColor } from '../../lib/colors';
 import { buildWebPageJsonLd } from '../../lib/seo';
+import { scoredOnly } from '../../lib/score-status';
 import { useTranslations } from '../../i18n/utils';
 import { routes } from '../../i18n/ui';
 import type { Lang } from '../../i18n/ui';
@@ -23,7 +24,9 @@ interface Props {
 const { lang } = Astro.props as Props;
 const t = useTranslations(lang);
 
-const scores = loadLatestScores();
+// The comparison shows scores and pillar figures side by side: grey places (formula v10, no
+// official score) are not selectable.
+const scores = scoredOnly(loadLatestScores());
 const canonicalUrl = `https://isitsafetotravel.org/${lang}/${routes[lang].compare}/`;
 const jsonLd = buildWebPageJsonLd(t('compare.title'), t('compare.description'), canonicalUrl, lang);
 

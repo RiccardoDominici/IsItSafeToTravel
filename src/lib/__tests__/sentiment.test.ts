@@ -171,10 +171,15 @@ describe('sentiment.ts: POPULAR_TOURIST_DESTINATIONS', () => {
 });
 
 describe('sentiment.ts: pickVoteNextSuggestions', () => {
-  /** Minimal ScoredCountry stand-in -- only iso3 and sources.length (hasSufficientData's input) matter here. */
+  /**
+   * Minimal ScoredCountry stand-in -- only iso3, an official score and sources.length (the inputs of
+   * hasSufficientData, which since formula v10 also requires an official score) matter here.
+   */
   function makeCountry(iso3: string, sourceCount = 5): ScoredCountry {
     return {
       iso3,
+      score: 6.5,
+      scoreDisplay: 7,
       sources: Array.from({ length: sourceCount }, () => ({ name: 'stub', url: '', fetchedAt: '', description: '' })),
     } as unknown as ScoredCountry;
   }

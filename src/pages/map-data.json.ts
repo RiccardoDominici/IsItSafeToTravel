@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { loadLatestScores } from '../lib/scores';
+import { isScored } from '../lib/score-status';
 
 export const prerender = true;
 
@@ -17,12 +18,16 @@ export const GET: APIRoute = () => {
         advisories[key] = { level: (adv as { level: number | string }).level };
       }
     }
+    // Formula v10 grey place: score null + scoreStatus, and no pillar values (they are internal
+    // and never shown as numbers). The map paints it in the "partial data" grey.
+    const scored = isScored(c);
     return {
       iso3: c.iso3,
       name: c.name,
-      score: c.score,
-      scoreDisplay: c.scoreDisplay,
-      pillars: c.pillars.map((p) => ({ name: p.name, score: p.score })),
+      score: scored ? c.score : null,
+      scoreDisplay: scored ? c.scoreDisplay : null,
+      scoreStatus: scored ? 'scored' : 'insufficient_data',
+      pillars: scored ? c.pillars.map((p) => ({ name: p.name, score: p.score })) : [],
       advisories,
     };
   });

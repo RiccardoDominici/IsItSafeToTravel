@@ -2,6 +2,7 @@
 import type { ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
+import { officialScore } from '../../lib/score-status';
 
 interface Props {
   country: ScoredCountry;
@@ -76,7 +77,8 @@ const L = labels[lang];
 // Band-matching order: safest-first for high scorers, dangerous-first otherwise.
 // Aligned to the v9 "positive" band (>=7) under the new compressed mean (6.75).
 // Band on the displayed 1-decimal value for boundary consistency with the hero verdict.
-const safestFirst = Number(country.score.toFixed(1)) >= 7;
+// A grey place (formula v10, no official score) keeps the default order.
+const safestFirst = Number((officialScore(country) ?? 0).toFixed(1)) >= 7;
 const rankLinks = safestFirst
   ? [
       { href: safestUrl, label: L.safest },

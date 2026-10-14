@@ -1,8 +1,9 @@
 import type { ScoredCountry } from '../pipeline/types';
 import type { HistoryPoint } from './scores';
-import { loadLatestScores, loadHistoricalScores, getScoreDelta } from './scores';
+import { loadLatestScores, loadHistoricalScores, getScoreDelta, sevenDayDelta } from './scores';
 import { getCountriesByRegion } from './regions';
 import type { Region } from './regions';
+import { isScored, type Scored } from './score-status';
 
 // Data-coverage floor: micro-territories with only 1-3 reporting sources receive
 // sparse, optimistic default scores that pollute rankings (e.g. uninhabited
@@ -10,18 +11,26 @@ import type { Region } from './regions';
 // before a country is eligible for a score-based ranking.
 // Keep MIN_RANKING_SOURCES in sync with scripts/generate-llms-full.ts.
 const MIN_RANKING_SOURCES = 4;
-export function hasSufficientData(c: ScoredCountry): boolean {
-  return (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+
+/**
+ * Ranking eligibility: an official score (formula v10: not a grey `insufficient_data` place, see
+ * score-status.ts) AND the 4-source floor. The two coincide except for the v10 danger guard (a
+ * data-poor place scored only because of acute danger signals keeps its score on its own page but
+ * is not ranked). A type guard, so `.filter(hasSufficientData)` yields countries whose `.score` is
+ * a number. With pre-v10 snapshots every country is scored and this is the plain 4-source floor.
+ */
+export function hasSufficientData(c: ScoredCountry): c is Scored<ScoredCountry> {
+  return isScored(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
 }
 
 /** Returns top N countries (with sufficient data) sorted by score descending */
-export function getSafestCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries].filter(hasSufficientData).sort((a, b) => b.score - a.score).slice(0, n);
+export function getSafestCountries(countries: ScoredCountry[], n: number): Scored<ScoredCountry>[] {
+  return countries.filter(hasSufficientData).sort((a, b) => b.score - a.score).slice(0, n);
 }
 
 /** Returns bottom N countries (with sufficient data) sorted by score ascending */
-export function getMostDangerousCountries(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries].filter(hasSufficientData).sort((a, b) => a.score - b.score).slice(0, n);
+export function getMostDangerousCountries(countries: ScoredCountry[], n: number): Scored<ScoredCountry>[] {
+  return countries.filter(hasSufficientData).sort((a, b) => a.score - b.score).slice(0, n);
 }
 
 // Biggest 7-day score movers, for the "biggest movers" block on the two
@@ -45,13 +54,13 @@ export function getBiggestMovers(n: number): { country: ScoredCountry; delta: nu
 }
 
 /** For solo travelers: weighted by crime (40%) + governance (40%) + overall (20%) */
-export function getSafestForSoloTravelers(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries]
+export function getSafestForSoloTravelers(countries: ScoredCountry[], n: number): Scored<ScoredCountry>[] {
+  return countries
     .filter(hasSufficientData)
     .map(c => {
       const crime = c.pillars.find(p => p.name === 'crime')?.score ?? 0;
       const governance = c.pillars.find(p => p.name === 'governance')?.score ?? 0;
-      const overall = c.score / 10; // normalize to 0-1
+      const overall = c.score / 10; // normalize to 0-1 (hasSufficientData: always a number here)
       const weighted = crime * 0.4 + governance * 0.4 + overall * 0.2;
       return { ...c, _soloScore: weighted };
     })
@@ -60,8 +69,8 @@ export function getSafestForSoloTravelers(countries: ScoredCountry[], n: number)
 }
 
 /** For families: weighted by health (35%) + governance (35%) + crime (20%) + overall (10%) */
-export function getSafestForFamilies(countries: ScoredCountry[], n: number): ScoredCountry[] {
-  return [...countries]
+export function getSafestForFamilies(countries: ScoredCountry[], n: number): Scored<ScoredCountry>[] {
+  return countries
     .filter(hasSufficientData)
     .map(c => {
       const health = c.pillars.find(p => p.name === 'health')?.score ?? 0;
@@ -75,9 +84,14 @@ export function getSafestForFamilies(countries: ScoredCountry[], n: number): Sco
     .slice(0, n);
 }
 
-/** Countries where majority of advisories are level 4 (Do Not Travel) */
-export function getCountriesToAvoid(countries: ScoredCountry[]): ScoredCountry[] {
-  return [...countries]
+/**
+ * Countries where majority of advisories are level 4 (Do Not Travel). Only scored countries:
+ * the list is ordered by score and shows it. A grey place cannot hit this rule anyway, since a
+ * level-4 majority trips the v10 danger guard and keeps it scored (pipeline/scoring/status.ts).
+ */
+export function getCountriesToAvoid(countries: ScoredCountry[]): Scored<ScoredCountry>[] {
+  return countries
+    .filter((c): c is Scored<ScoredCountry> => isScored(c))
     .filter(c => {
       const advisories = Object.values(c.advisories || {});
       if (advisories.length === 0) return false;
@@ -87,32 +101,38 @@ export function getCountriesToAvoid(countries: ScoredCountry[]): ScoredCountry[]
     .sort((a, b) => a.score - b.score);
 }
 
+/**
+ * Countries with a 7-day score change in the given direction, largest first. Only countries with
+ * an official score (a grey place has no score to move); unlike the other hubs these two never
+ * applied the 4-source floor, and that is kept. The delta comes from sevenDayDelta (scores.ts),
+ * which never compares scores across a formula change: the day formula v10 replaced v9.1, every
+ * country "moved" without anything happening on the ground.
+ */
+function trendingCountries(
+  countries: ScoredCountry[],
+  history: Map<string, HistoryPoint[]>,
+  n: number,
+  direction: 'up' | 'down',
+): Array<Scored<ScoredCountry> & { delta: number }> {
+  return countries
+    .filter((c): c is Scored<ScoredCountry> => isScored(c))
+    .map((c) => {
+      const delta = sevenDayDelta(history.get(c.iso3));
+      if (delta === null) return null;
+      return (direction === 'up' ? delta > 0 : delta < 0) ? { ...c, delta } : null;
+    })
+    .filter((c): c is Scored<ScoredCountry> & { delta: number } => c !== null)
+    .sort((a, b) => (direction === 'up' ? b.delta - a.delta : a.delta - b.delta))
+    .slice(0, n);
+}
+
 /** Countries with biggest positive delta in last 7 days */
 export function getImprovingSafety(
   countries: ScoredCountry[],
   history: Map<string, HistoryPoint[]>,
   n: number
-): Array<ScoredCountry & { delta: number }> {
-  return countries
-    .map(c => {
-      const points = history.get(c.iso3);
-      if (!points || points.length < 2) return null;
-      const latest = points[points.length - 1];
-      const latestDate = new Date(latest.date).getTime();
-      const targetDate = latestDate - 7 * 24 * 60 * 60 * 1000;
-      let closestIdx = -1;
-      let closestDiff = Infinity;
-      for (let i = 0; i < points.length - 1; i++) {
-        const diff = Math.abs(new Date(points[i].date).getTime() - targetDate);
-        if (diff < closestDiff) { closestDiff = diff; closestIdx = i; }
-      }
-      if (closestIdx === -1 || closestDiff > 14 * 24 * 60 * 60 * 1000) return null;
-      const delta = latest.score - points[closestIdx].score;
-      return delta > 0 ? { ...c, delta } : null;
-    })
-    .filter((c): c is ScoredCountry & { delta: number } => c !== null)
-    .sort((a, b) => b.delta - a.delta)
-    .slice(0, n);
+): Array<Scored<ScoredCountry> & { delta: number }> {
+  return trendingCountries(countries, history, n, 'up');
 }
 
 /** Countries with biggest negative delta in last 7 days */
@@ -120,27 +140,8 @@ export function getDecliningCountries(
   countries: ScoredCountry[],
   history: Map<string, HistoryPoint[]>,
   n: number
-): Array<ScoredCountry & { delta: number }> {
-  return countries
-    .map(c => {
-      const points = history.get(c.iso3);
-      if (!points || points.length < 2) return null;
-      const latest = points[points.length - 1];
-      const latestDate = new Date(latest.date).getTime();
-      const targetDate = latestDate - 7 * 24 * 60 * 60 * 1000;
-      let closestIdx = -1;
-      let closestDiff = Infinity;
-      for (let i = 0; i < points.length - 1; i++) {
-        const diff = Math.abs(new Date(points[i].date).getTime() - targetDate);
-        if (diff < closestDiff) { closestDiff = diff; closestIdx = i; }
-      }
-      if (closestIdx === -1 || closestDiff > 14 * 24 * 60 * 60 * 1000) return null;
-      const delta = latest.score - points[closestIdx].score;
-      return delta < 0 ? { ...c, delta } : null;
-    })
-    .filter((c): c is ScoredCountry & { delta: number } => c !== null)
-    .sort((a, b) => a.delta - b.delta)
-    .slice(0, n);
+): Array<Scored<ScoredCountry> & { delta: number }> {
+  return trendingCountries(countries, history, n, 'down');
 }
 
 /** Re-export for convenience */

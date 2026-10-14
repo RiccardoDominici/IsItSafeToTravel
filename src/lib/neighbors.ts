@@ -1,4 +1,5 @@
 import type { ScoredCountry } from '../pipeline/types';
+import { officialScore } from './score-status';
 
 /**
  * Static border map: ISO3 -> array of bordering ISO3 codes.
@@ -235,20 +236,22 @@ export const borderMap: Record<string, string[]> = {
  * list. France has 8 borders, two of them 3-source micro-states; capping first
  * would silently drop a comparable neighbour.
  */
-export function getNeighbors(
+export function getNeighbors<T extends ScoredCountry = ScoredCountry>(
   iso3: string,
   allCountries: ScoredCountry[],
-  include: (c: ScoredCountry) => boolean = () => true,
-): ScoredCountry[] {
+  include: ((c: ScoredCountry) => c is T) | ((c: ScoredCountry) => boolean) = () => true,
+): T[] {
   const borders = borderMap[iso3];
   if (!borders || borders.length === 0) return [];
 
   const countryMap = new Map(allCountries.map(c => [c.iso3, c]));
 
+  // Official score descending; a grey neighbour (formula v10, no score) sorts last, so it can
+  // only fill a slot no scored neighbour wants (callers that need scores filter it out first).
   return borders
     .filter(b => countryMap.has(b))
     .map(b => countryMap.get(b)!)
-    .filter(include)
-    .sort((a, b) => b.score - a.score)
+    .filter((c): c is T => include(c))
+    .sort((a, b) => (officialScore(b) ?? -1) - (officialScore(a) ?? -1))
     .slice(0, 6);
 }

@@ -1,4 +1,5 @@
 import type { ScoredCountry } from '../pipeline/types';
+import { scoredOnly, type Scored } from './score-status';
 
 export type Region = 'europe' | 'asia' | 'africa' | 'americas' | 'oceania' | 'middle_east';
 
@@ -82,9 +83,13 @@ export function getRegion(iso3: string): Region | 'other' {
   return (regionMap[iso3] as Region) ?? 'other';
 }
 
-/** Get all countries in a specific region, sorted by score descending */
-export function getCountriesByRegion(countries: ScoredCountry[], region: Region): ScoredCountry[] {
-  return countries
+/**
+ * Get the countries of a region that have an official score, sorted by score descending (the
+ * region hubs are rankings). Grey places (formula v10 `insufficient_data`, see score-status.ts)
+ * have no score to rank by and are left out; with pre-v10 data every country is scored.
+ */
+export function getCountriesByRegion(countries: ScoredCountry[], region: Region): Scored<ScoredCountry>[] {
+  return scoredOnly(countries)
     .filter(c => getRegion(c.iso3) === region)
     .sort((a, b) => b.score - a.score);
 }

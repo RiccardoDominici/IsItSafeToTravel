@@ -2,6 +2,7 @@
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
+import { communityCopy } from '../i18n/community-copy';
 
 interface Props {
   lang: Lang;
@@ -12,6 +13,8 @@ const t = useTranslations(lang);
 
 const translations = {
   nodata: t('map.tooltip.nodata'),
+  // Formula v10 grey places: shown on the map, never with a number.
+  partialData: communityCopy[lang].partialDataTitle,
   zoomIn: t('map.zoom.in'),
   zoomOut: t('map.zoom.out'),
   ctrlZoom: t('map.ctrl_zoom'),
@@ -162,11 +165,18 @@ const nc = noscriptCopy[lang];
     </div>
   </div>
 
-  <!-- Legend -->
-  <div class="absolute bottom-4 left-4 flex items-center gap-2 z-10 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
-    <span>{legendDanger}</span>
-    <div class="w-24 h-3 rounded" style="background: linear-gradient(to right, #9e3a2a, #d4b83c, #4a7fbf);"></div>
-    <span>{legendSafe}</span>
+  <!-- Legend: score scale + the "partial data" grey (formula v10: places without an official score) -->
+  <div class="absolute bottom-4 left-4 flex flex-wrap items-center gap-x-2 gap-y-1 max-w-[calc(100%-5rem)] z-10 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
+    <span class="inline-flex items-center gap-2">
+      <span>{legendDanger}</span>
+      <span class="w-20 sm:w-24 h-3 rounded" style="background: linear-gradient(to right, #9e3a2a, #d4b83c, #4a7fbf);" aria-hidden="true"></span>
+      <span>{legendSafe}</span>
+    </span>
+    <span class="inline-flex items-center gap-1.5">
+      {/* Same hex as PARTIAL_DATA_COLOR / PARTIAL_DATA_COLOR_DARK in map-utils.ts (the map fill). */}
+      <span class="w-3 h-3 rounded-sm border border-sand-300 dark:border-sand-500 bg-[#d6d0c7] dark:bg-[#6b645c]" aria-hidden="true"></span>
+      <span>{communityCopy[lang].partialDataTitle}</span>
+    </span>
   </div>
 </div>
 
@@ -177,17 +187,21 @@ const nc = noscriptCopy[lang];
     safetyColorScale,
     UNSCORED_COLOR,
     UNSCORED_COLOR_DARK,
+    PARTIAL_DATA_COLOR,
+    PARTIAL_DATA_COLOR_DARK,
     ISO_NUMERIC_TO_ALPHA3,
   } from '../lib/map-utils';
 
   interface ScoreEntry {
     iso3: string;
     name: string;
-    score: number;
+    /** null for a formula v10 grey place (no official score). */
+    score: number | null;
   }
 
   interface Translations {
     nodata: string;
+    partialData: string;
     zoomIn: string;
     zoomOut: string;
     ctrlZoom: string;
@@ -353,13 +367,17 @@ const nc = noscriptCopy[lang];
     // Track active pillar filter (null = overall/composite)
     let currentPillar: string | null = null;
 
-    // Build lookup maps
+    // Build lookup maps. Grey places (score null) go to greySet: painted in the partial-data grey,
+    // clickable, never coloured on the score scale.
     const scoreMap = new Map<string, number>();
+    const greySet = new Set<string>();
     const nameMap = new Map<string, string>();
     for (const s of scores) {
-      scoreMap.set(s.iso3, s.score);
+      if (typeof s.score === 'number' && Number.isFinite(s.score)) scoreMap.set(s.iso3, s.score);
+      else greySet.add(s.iso3);
       nameMap.set(s.iso3, s.name);
     }
+    const partialColor = () => (isDark() ? PARTIAL_DATA_COLOR_DARK : PARTIAL_DATA_COLOR);
 
     // Detect dark mode
     const isDark = () => document.documentElement.classList.contains('dark');
@@ -560,7 +578,9 @@ const nc = noscriptCopy[lang];
       }
 
       const displayName = name || iso3;
-      const scoreHtml = displayScore
+      const scoreHtml = greySet.has(iso3)
+        ? `<div class="font-medium">${displayName}</div><div>${translations.partialData}</div>`
+        : displayScore
         ? displayScore.label
           ? `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)} (${displayScore.label})</div>`
           : `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)}</div>`
@@ -626,7 +646,7 @@ const nc = noscriptCopy[lang];
 
     // Navigation helper
     function navigateToCountry(iso3: string) {
-      if (!scoreMap.has(iso3)) return;
+      if (!scoreMap.has(iso3) && !greySet.has(iso3)) return;
       window.location.href = `/${lang}/${countryRoute}/${iso3.toLowerCase()}/`;
     }
 
@@ -648,6 +668,7 @@ const nc = noscriptCopy[lang];
           .attr('fill', (d: any) => {
             const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
             if (!iso3) return isDark() ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+            if (greySet.has(iso3)) return partialColor();
             return scoreMap.has(iso3)
               ? safetyColorScale(scoreMap.get(iso3)!)
               : isDark()
@@ -658,7 +679,7 @@ const nc = noscriptCopy[lang];
           .attr('stroke-width', 0.5)
           .style('cursor', (d: any) => {
             const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
-            return iso3 && scoreMap.has(iso3) ? 'pointer' : 'default';
+            return iso3 && (scoreMap.has(iso3) || greySet.has(iso3)) ? 'pointer' : 'default';
           })
           .on('mouseenter', function (event: MouseEvent, d: any) {
             // Ignore the synthetic hover a tap generates: mutating the DOM in
@@ -724,6 +745,8 @@ const nc = noscriptCopy[lang];
             .attr('fill', (d: any) => {
               const iso3 = ISO_NUMERIC_TO_ALPHA3[String(d.id)];
               if (!iso3) return dark ? UNSCORED_COLOR_DARK : UNSCORED_COLOR;
+              // Grey places stay partial-data grey under every filter (no pillar figures either).
+              if (greySet.has(iso3)) return dark ? PARTIAL_DATA_COLOR_DARK : PARTIAL_DATA_COLOR;
 
               if (pillarName) {
                 const pillarScore = pillarScoreMap.get(iso3)?.get(pillarName);

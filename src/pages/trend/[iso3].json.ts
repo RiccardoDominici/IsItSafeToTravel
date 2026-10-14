@@ -6,6 +6,7 @@ import {
   type HistoryPoint,
   type PillarHistoryData,
 } from '../../lib/scores';
+import { isScored } from '../../lib/score-status';
 
 export const prerender = true;
 
@@ -13,6 +14,8 @@ export const prerender = true;
 // per-pillar history in one cacheable JSON asset (e.g. /trend/ita.json). The chart
 // fetches this lazily instead of inlining ~250KB of history into every page's HTML.
 const history = loadHistoricalScores();
+// Formula v10 grey places: no score trend (the country page renders no chart for them).
+const greyIso3 = new Set(loadLatestScores().filter((c) => !isScored(c)).map((c) => c.iso3));
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 const round3 = (n: number): number => Math.round(n * 1000) / 1000;
@@ -22,6 +25,9 @@ export const getStaticPaths: GetStaticPaths = () =>
 
 export const GET: APIRoute = ({ params }) => {
   const iso3 = (params.iso3 ?? '').toUpperCase();
+  if (greyIso3.has(iso3)) {
+    return new Response(JSON.stringify({ history: [], pillars: null }), { headers: { 'Content-Type': 'application/json' } });
+  }
 
   const points: HistoryPoint[] = (history.get(iso3) ?? []).map((p) =>
     p.dc !== undefined

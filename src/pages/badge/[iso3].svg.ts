@@ -1,5 +1,6 @@
 import type { APIRoute, GetStaticPaths } from 'astro';
 import { loadLatestScores } from '../../lib/scores';
+import { officialScore } from '../../lib/score-status';
 
 export const prerender = true;
 
@@ -7,19 +8,25 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const countries = loadLatestScores();
   return countries.map((c) => ({
     params: { iso3: c.iso3.toLowerCase() },
-    props: { name: c.name.en, score: c.score },
+    // null for a formula v10 grey place (no official score): the badge then says "Partial data"
+    // in neutral grey, never a number or a band colour. Badges already embedded elsewhere keep working.
+    props: { name: c.name.en, score: officialScore(c) },
   }));
 };
 
 export const GET: APIRoute = ({ props }) => {
-  const { name, score: rawScore } = props as { name: string; score: number };
-  const roundedScore = rawScore.toFixed(1);
+  const { name, score: rawScore } = props as { name: string; score: number | null };
+  const isGrey = rawScore === null;
+  const roundedScore = isGrey ? '' : rawScore.toFixed(1);
   const score = Number(roundedScore); // band on the displayed 1-decimal value
 
-  // Color based on score
+  // Color based on score (neutral stone grey when there is no official score)
   let bgColor: string;
   let accentColor: string;
-  if (score >= 7) {
+  if (isGrey) {
+    bgColor = '#57534e'; // stone-600
+    accentColor = '#d6d3d1'; // stone-300
+  } else if (score >= 7) {
     bgColor = '#065f46'; // emerald-800
     accentColor = '#34d399'; // emerald-400
   } else if (score >= 5) {
@@ -45,9 +52,12 @@ export const GET: APIRoute = ({ props }) => {
   <rect x="4" y="0" width="4" height="80" fill="${bgColor}"/>
   <text x="20" y="22" font-family="system-ui,-apple-system,sans-serif" font-size="10" fill="#a8a29e">IsItSafeToTravel.org</text>
   <text x="20" y="45" font-family="system-ui,-apple-system,sans-serif" font-size="16" font-weight="bold" fill="#fafaf9">${escapedName}</text>
-  <text x="20" y="65" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#a8a29e">Safety Score</text>
+  ${isGrey
+    ? `<text x="20" y="65" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#a8a29e">No official safety score yet</text>
+  <text x="280" y="48" font-family="system-ui,-apple-system,sans-serif" font-size="14" font-weight="bold" fill="${accentColor}" text-anchor="end">Partial data</text>`
+    : `<text x="20" y="65" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#a8a29e">Safety Score</text>
   <text x="280" y="52" font-family="system-ui,-apple-system,sans-serif" font-size="28" font-weight="bold" fill="${accentColor}" text-anchor="end">${roundedScore}</text>
-  <text x="280" y="68" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#78716c" text-anchor="end">/10</text>
+  <text x="280" y="68" font-family="system-ui,-apple-system,sans-serif" font-size="11" fill="#78716c" text-anchor="end">/10</text>`}
 </svg>`;
 
   return new Response(svg, {

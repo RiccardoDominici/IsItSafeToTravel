@@ -1,6 +1,7 @@
 import type { DailySnapshot, PillarName, ScoredCountry } from '../pipeline/types';
 import { getLocalizedCountryName } from './scores';
 import { getBand } from './bands';
+import { isScored } from './score-status';
 
 /**
  * Shared CSV serializer for the public scores dataset — the tabular twin of
@@ -32,6 +33,10 @@ const CSV_HEADER = [
   'confidence',
   'advisory_sources',
   'data_date',
+  // Formula v10 (SPEC §4/§7): 'scored', or 'insufficient_data' for a grey place, whose score,
+  // band and pillar cells are left empty (no official score; its internal pillar values are never
+  // rendered as numbers). Appended last so existing column positions are unchanged.
+  'score_status',
 ];
 
 /**
@@ -64,9 +69,10 @@ function countAdvisorySources(country: ScoredCountry): number {
 }
 
 function countryRow(country: ScoredCountry, dataDate: string): string {
+  const scored = isScored(country);
   const pillarValues = PILLAR_ORDER.map((name) => {
     const pillar = country.pillars.find((p) => p.name === name);
-    if (!pillar) return '';
+    if (!pillar || !scored) return '';
     // Same 0-1 -> 1-10 transform used for pillar display everywhere else on the
     // site (SafetyMap.astro's tooltip: pillarScore * 9 + 1) — keeps every
     // score-shaped column in this CSV on the same familiar 1-10 scale as the
@@ -78,12 +84,13 @@ function countryRow(country: ScoredCountry, dataDate: string): string {
   const fields: (string | number)[] = [
     country.iso3,
     getLocalizedCountryName(country, 'en'),
-    country.score.toFixed(1),
-    getBand(country.score),
+    scored ? country.score.toFixed(1) : '',
+    scored ? getBand(country.score) : '',
     ...pillarValues,
     country.confidence.toFixed(2),
     countAdvisorySources(country),
     dataDate,
+    scored ? 'scored' : 'insufficient_data',
   ];
   return fields.map(csvField).join(',');
 }

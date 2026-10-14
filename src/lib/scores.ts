@@ -7,6 +7,12 @@ import { COUNTRIES } from '../pipeline/config/countries';
 const DATA_DIR = path.join(process.cwd(), 'data', 'scores');
 const HISTORY_INDEX_PATH = path.join(DATA_DIR, 'history-index.json');
 
+/**
+ * One day of a country's official score. Days without an official score (formula v10 grey
+ * `insufficient_data`, stored as `score: null` in history-index.json) are left out when the
+ * history is loaded: every consumer here (trend chart, 7-day deltas, movers) charts or compares
+ * official scores only, and a grey day has none.
+ */
 export interface HistoryPoint {
   date: string;
   score: number;
@@ -18,8 +24,105 @@ export type PillarHistoryData = Record<PillarName, HistoryPoint[]>;
 interface HistoryIndex {
   generatedAt: string;
   global: Array<{ date: string; score: number }>;
-  countries: Record<string, Array<{ date: string; score: number; dc?: number }>>;
+  countries: Record<string, Array<{ date: string; score: number | null; dc?: number }>>;
   pillarHistory?: Record<string, Record<PillarName, Array<{ date: string; score: number }>>>;
+}
+
+/** A formula change visible in the score history (formula v10, SPEC §6: "the trend chart marks the v10 date"). */
+export interface FormulaChange {
+  /** First snapshot date computed with the new formula (YYYY-MM-DD). */
+  date: string;
+  /** Formula major version from that snapshot's weightsVersion, e.g. "10". */
+  version: string;
+}
+
+let historyIndexCache: HistoryIndex | null | undefined;
+
+/**
+ * history-index.json, parsed once per build process. It is tens of MB and every country page
+ * route (7 locales x 248 countries) reads pillar history from it: re-parsing it per call made
+ * getStaticPaths alone cost minutes per build. Read-only for the whole build, so caching is safe.
+ */
+function readHistoryIndex(): HistoryIndex | null {
+  if (historyIndexCache === undefined) {
+    historyIndexCache = fs.existsSync(HISTORY_INDEX_PATH)
+      ? (JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8')) as HistoryIndex)
+      : null;
+  }
+  return historyIndexCache;
+}
+
+let formulaChangeCache: FormulaChange | null | undefined;
+
+/**
+ * The first daily snapshot computed with formula v10 or later, read from the snapshot headers in
+ * data/scores (each file starts with `{"date":…,"weightsVersion":"10.0.0",…}`, so only the first
+ * bytes of each file are read, never the ~0.9 MB body). null while every snapshot is pre-v10,
+ * e.g. right after the v10 code ships and before the first v10 pipeline run.
+ *
+ * Data-driven rather than a hard-coded date: the switch happens on whichever day the first v10
+ * pipeline run lands, and past snapshots stay v9.1 (SPEC §6).
+ */
+export function getFormulaChange(): FormulaChange | null {
+  if (formulaChangeCache !== undefined) return formulaChangeCache;
+  formulaChangeCache = null;
+  if (!fs.existsSync(DATA_DIR)) return formulaChangeCache;
+  const files = fs.readdirSync(DATA_DIR).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
+  const buf = Buffer.alloc(512);
+  for (const file of files) {
+    let head = '';
+    const fd = fs.openSync(path.join(DATA_DIR, file), 'r');
+    try {
+      const n = fs.readSync(fd, buf, 0, buf.length, 0);
+      head = buf.toString('utf-8', 0, n);
+    } finally {
+      fs.closeSync(fd);
+    }
+    const major = /"weightsVersion"\s*:\s*"(\d+)\./.exec(head)?.[1];
+    if (major && Number(major) >= 10) {
+      formulaChangeCache = { date: file.slice(0, 10), version: major };
+      break;
+    }
+  }
+  return formulaChangeCache;
+}
+
+/**
+ * Score change over the last ~7 days for one country's history (latest point minus the point
+ * closest to 7 days earlier, which must lie within 14 days of that target), or null.
+ *
+ * Never across a formula change: when the latest point is on or after the switch date, earlier
+ * points are ignored. On the day formula v10 replaced v9.1 most countries "moved" although nothing
+ * happened on the ground; showing that as a 7-day trend (hero badge, improving/declining hubs,
+ * biggest movers) would be false.
+ */
+export function sevenDayDelta(
+  points: readonly HistoryPoint[] | undefined,
+  formulaChange: FormulaChange | null = getFormulaChange(),
+): number | null {
+  if (!points || points.length < 2) return null;
+  const latest = points[points.length - 1];
+  const comparable =
+    formulaChange && latest.date >= formulaChange.date ? points.filter((p) => p.date >= formulaChange.date) : points;
+  if (comparable.length < 2) return null;
+
+  const latestDate = new Date(latest.date).getTime();
+  const targetDate = latestDate - 7 * 24 * 60 * 60 * 1000; // 7 days ago
+
+  // Find the closest point to 7 days back
+  let closestIdx = -1;
+  let closestDiff = Infinity;
+  for (let i = 0; i < comparable.length - 1; i++) {
+    const diff = Math.abs(new Date(comparable[i].date).getTime() - targetDate);
+    if (diff < closestDiff) {
+      closestDiff = diff;
+      closestIdx = i;
+    }
+  }
+
+  // If no point exists within 14 days of the target, there is no 7-day delta
+  if (closestIdx === -1 || closestDiff > 14 * 24 * 60 * 60 * 1000) return null;
+  return latest.score - comparable[closestIdx].score;
 }
 
 /** Load the full latest snapshot (includes metadata + countries). */
@@ -56,9 +159,7 @@ export function loadHistoricalScores(days?: number): Map<string, HistoryPoint[]>
  * Returns array of {date, score} points, or empty array if file missing.
  */
 export function loadGlobalHistory(): Array<{ date: string; score: number }> {
-  if (!fs.existsSync(HISTORY_INDEX_PATH)) return [];
-  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
-  return index.global ?? [];
+  return readHistoryIndex()?.global ?? [];
 }
 
 /**
@@ -66,57 +167,38 @@ export function loadGlobalHistory(): Array<{ date: string; score: number }> {
  * Returns pillar-keyed object with date/score arrays, or null if not available.
  */
 export function loadPillarHistory(iso3: string): PillarHistoryData | null {
-  if (!fs.existsSync(HISTORY_INDEX_PATH)) return null;
-  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
-  if (!index.pillarHistory || !index.pillarHistory[iso3]) return null;
+  const index = readHistoryIndex();
+  if (!index?.pillarHistory || !index.pillarHistory[iso3]) return null;
   return index.pillarHistory[iso3];
 }
 
 /**
  * Compute the score delta for a country by comparing the latest score
- * with the score from approximately 7 days ago.
+ * with the score from approximately 7 days ago (sevenDayDelta: never across a formula change).
  * Returns null if insufficient history data.
  */
 export function getScoreDelta(
   iso3: string,
   history: Map<string, HistoryPoint[]>
 ): { delta: number; period: string } | null {
-  const points = history.get(iso3);
-  if (!points || points.length < 2) return null;
-
-  const latest = points[points.length - 1];
-  const latestDate = new Date(latest.date).getTime();
-  const targetDate = latestDate - 7 * 24 * 60 * 60 * 1000; // 7 days ago
-
-  // Find the closest point to 7 days back
-  let closestIdx = -1;
-  let closestDiff = Infinity;
-
-  for (let i = 0; i < points.length - 1; i++) {
-    const pointDate = new Date(points[i].date).getTime();
-    const diff = Math.abs(pointDate - targetDate);
-    if (diff < closestDiff) {
-      closestDiff = diff;
-      closestIdx = i;
-    }
-  }
-
-  // If no point exists within 14 days of the target, return null
-  if (closestIdx === -1 || closestDiff > 14 * 24 * 60 * 60 * 1000) return null;
-
-  const delta = latest.score - points[closestIdx].score;
-  return { delta, period: '7d' };
+  const delta = sevenDayDelta(history.get(iso3));
+  return delta === null ? null : { delta, period: '7d' };
 }
 
 function loadFromHistoryIndex(days?: number): Map<string, HistoryPoint[]> {
   const history = new Map<string, HistoryPoint[]>();
-  const index: HistoryIndex = JSON.parse(fs.readFileSync(HISTORY_INDEX_PATH, 'utf-8'));
+  const index = readHistoryIndex();
+  if (!index) return history;
 
   for (const [iso3, points] of Object.entries(index.countries)) {
     const filtered = days ? points.slice(-days) : points;
-    if (filtered.length > 0) {
-      history.set(iso3, filtered.map(p => p.dc !== undefined ? { date: p.date, score: p.score, dc: p.dc } : { date: p.date, score: p.score }));
+    // Grey days (formula v10, score null) carry no official score: left out (see HistoryPoint).
+    const official: HistoryPoint[] = [];
+    for (const p of filtered) {
+      if (typeof p.score !== 'number' || !Number.isFinite(p.score)) continue;
+      official.push(p.dc !== undefined ? { date: p.date, score: p.score, dc: p.dc } : { date: p.date, score: p.score });
     }
+    if (official.length > 0) history.set(iso3, official);
   }
 
   return history;
@@ -137,6 +219,8 @@ function loadFromIndividualSnapshots(days?: number): Map<string, HistoryPoint[]>
       fs.readFileSync(path.join(DATA_DIR, file), 'utf-8')
     );
     for (const country of snapshot.countries) {
+      // Grey days (formula v10, no official score) are left out, as in loadFromHistoryIndex.
+      if (typeof country.score !== 'number' || !Number.isFinite(country.score)) continue;
       const points = history.get(country.iso3) ?? [];
       points.push({ date: snapshot.date, score: country.score });
       history.set(country.iso3, points);
