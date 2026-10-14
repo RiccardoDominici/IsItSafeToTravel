@@ -38,6 +38,11 @@
 /scores.json
   X-Robots-Tag: noindex
 
+# iso3 -> published score map read by the vote endpoint (src/pages/published-scores.json.ts):
+# an internal data file, not a page.
+/published-scores.json
+  X-Robots-Tag: noindex
+
 # CSV twin of scores.json (src/lib/dataset-csv.ts / src/pages/scores.csv.ts). No
 # server adapter is configured, so Astro's static build discards the Response's
 # own headers at build time (see the doc comment in scores.csv.ts) — Content-Type

@@ -4,8 +4,8 @@
 // Mirrors functions/api/feedback.ts (corsHeaders, try/catch shape, context.env?.X access),
 // with one deliberate inversion: missing optional env (TURNSTILE_SECRET_KEY) must DEGRADE
 // gracefully (skip verification, keep working) instead of 500ing — D-12/D-14.
-// The published score is read server-side (env.ASSETS -> /scores.json) and stored with the
-// vote; any client-sent score is ignored.
+// The published score is read server-side (env.ASSETS -> /published-scores.json, built with the
+// pages of the same deployment) and stored with the vote; any client-sent score is ignored.
 
 import { classifyCountry, loadPublishedScoreIndex } from '../lib/published-scores';
 
