@@ -38,12 +38,20 @@ interface StoredVote {
   rating: number | null;
 }
 
-/** Just enough of the D1 prepare/bind/first/run surface the handler uses. */
-function fakeDb() {
+/**
+ * Just enough of the D1 prepare/bind/first/run surface the handler uses. `hasRatingColumn: false`
+ * models the live database before migration 005: any statement naming `rating` fails the way D1
+ * does ("no such column: rating").
+ */
+function fakeDb(opts: { hasRatingColumn?: boolean } = {}) {
+  const hasRatingColumn = opts.hasRatingColumn ?? true;
   const rows: StoredVote[] = [];
   return {
     rows,
     prepare(sql: string) {
+      if (!hasRatingColumn && /\brating\b/.test(sql)) {
+        throw new Error('no such column: rating: SQLITE_ERROR');
+      }
       return {
         bind(...args: unknown[]) {
           return {
@@ -60,14 +68,30 @@ function fakeDb() {
               throw new Error(`unexpected SELECT: ${sql}`);
             },
             async run() {
-              if (!sql.startsWith('INSERT OR IGNORE INTO votes')) throw new Error(`unexpected write: ${sql}`);
-              const [iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso, rating] = args as [
-                string, number, number | null, string, string, number, string | null, number | null,
-              ];
-              if (rows.some((r) => r.iso3 === iso3 && r.voter_hash === voter_hash)) {
+              const match = /^INSERT OR IGNORE INTO votes \(([^)]+)\) VALUES/.exec(sql);
+              if (!match) throw new Error(`unexpected write: ${sql}`);
+              // Map the bound values by the column list the handler actually wrote, like SQLite does:
+              // a column the statement leaves out keeps its default (NULL for rating).
+              const columns = match[1].split(',').map((c) => c.trim());
+              assert.equal(args.length, columns.length, 'one bound value per named column');
+              const value = (name: string): unknown => {
+                const i = columns.indexOf(name);
+                return i === -1 ? null : args[i];
+              };
+              const row: StoredVote = {
+                iso3: value('iso3') as string,
+                delta: value('delta') as number,
+                official_score: value('official_score') as number | null,
+                voter_hash: value('voter_hash') as string,
+                day_hash: value('day_hash') as string,
+                created_at: value('created_at') as number,
+                country_iso: value('country_iso') as string | null,
+                rating: value('rating') as number | null,
+              };
+              if (rows.some((r) => r.iso3 === row.iso3 && r.voter_hash === row.voter_hash)) {
                 return { meta: { changes: 0 } };
               }
-              rows.push({ iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso, rating });
+              rows.push(row);
               return { meta: { changes: 1 } };
             },
           };
@@ -264,6 +288,25 @@ describe('published score cache (per isolate)', () => {
     resetPublishedScoreCache();
     await post({ body: { iso3: 'FRA', delta: 1 }, ip: '198.51.100.5', db, assets });
     assert.equal(assets.calls.length, 2);
+  });
+});
+
+describe('POST /api/vote: database before migration 005 (no votes.rating column)', () => {
+  it('still stores a relative vote, because its INSERT never names the rating column', async () => {
+    const db = fakeDb({ hasRatingColumn: false });
+    const out = await post({ body: { iso3: 'FRA', delta: -1 }, db, assets: fakeAssets({ countries: publishedCountries() }) });
+    assert.equal(out.status, 200);
+    assert.deepEqual(out.body, { ok: true });
+    assert.equal(db.rows.length, 1);
+    assert.equal(db.rows[0].official_score, FRA_SCORE);
+    assert.equal(db.rows[0].rating, null);
+  });
+
+  it('cannot store an absolute vote (needs the column) and says so with ok:false', async () => {
+    const db = fakeDb({ hasRatingColumn: false });
+    const out = await post({ body: { iso3: GREY, rating: 4 }, db, assets: fakeAssets({ countries: publishedCountries() }) });
+    assert.equal(out.body.ok, false, 'the widget must not thank the visitor for a vote that was not stored');
+    assert.equal(db.rows.length, 0);
   });
 });
 

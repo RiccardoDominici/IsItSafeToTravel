@@ -67,6 +67,49 @@ function hasValue(x: unknown): boolean {
   return x !== undefined && x !== null;
 }
 
+/** One vote row, already validated, as handed to {@link buildVoteInsert}. */
+export interface VoteInsertRow {
+  iso3: string;
+  delta: number;
+  officialScore: number | null;
+  voterHash: string;
+  dayHash: string;
+  createdAt: number;
+  countryIso: string | null;
+  /** Absolute grey-country rating 1..5, or null for a relative (delta) vote. */
+  rating: number | null;
+}
+
+/**
+ * Parameterized INSERT for one vote. The `rating` column (migration 005) is named only for an
+ * absolute vote: a relative vote leaves it to its NULL default, so relative votes keep working
+ * on a database where migration 005 has not been applied yet. Without this split, every vote
+ * would fail with "no such column: rating" and the handler's catch-all would answer 200, i.e.
+ * votes would be lost silently until the migration landed. Absolute votes exist only for grey
+ * countries (formula v10), which appear only after the migration is required anyway.
+ */
+export function buildVoteInsert(row: VoteInsertRow): { sql: string; params: unknown[] } {
+  const columns = ['iso3', 'delta', 'official_score', 'voter_hash', 'day_hash', 'created_at', 'country_iso'];
+  const params: unknown[] = [
+    row.iso3,
+    row.delta,
+    row.officialScore,
+    row.voterHash,
+    row.dayHash,
+    row.createdAt,
+    row.countryIso,
+  ];
+  if (row.rating !== null) {
+    columns.push('rating');
+    params.push(row.rating);
+  }
+  const placeholders = columns.map(() => '?').join(', ');
+  return {
+    sql: `INSERT OR IGNORE INTO votes (${columns.join(', ')}) VALUES (${placeholders})`,
+    params,
+  };
+}
+
 /** True only for an uppercase 3-letter ISO3 code present in the embedded allowlist. */
 export function isValidIso3(x: unknown): boolean {
   return typeof x === 'string' && VALID_ISO3.has(x);
@@ -234,12 +277,17 @@ export async function onRequestPost(context: any) {
     // UNIQUE index on (iso3, voter_hash) is the authoritative dedupe (WR-01); the step-7 SELECT
     // above is just a cheap pre-check that saves a write for the common case.
     const officialScore = kind === 'scored' ? normalizeOfficialScore(publishedIndex?.get(iso3)) : null;
-    const res = await db
-      .prepare(
-        'INSERT OR IGNORE INTO votes (iso3, delta, official_score, voter_hash, day_hash, created_at, country_iso, rating) VALUES (?, ?, ?, ?, ?, ?, ?, ?)'
-      )
-      .bind(iso3, delta, officialScore, voter_hash, day_hash, nowSec, country, rating)
-      .run();
+    const insert = buildVoteInsert({
+      iso3,
+      delta,
+      officialScore,
+      voterHash: voter_hash,
+      dayHash: day_hash,
+      createdAt: nowSec,
+      countryIso: country,
+      rating,
+    });
+    const res = await db.prepare(insert.sql).bind(...insert.params).run();
     if (res.meta?.changes === 0) {
       return json({ ok: true, deduped: true }, 200);
     }
