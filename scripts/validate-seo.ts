@@ -371,6 +371,96 @@ function validateJsonLd() {
 }
 
 // =====================================================================
+// 2a. GREY PLACES (formula v10, SPEC §4/§7): no score anywhere
+// =====================================================================
+// A place with fewer than four independent sources has no official score (scores.json: score
+// null, scoreStatus 'insufficient_data'). Its page must keep the country @graph invariants
+// (WebPage + Place + FAQPage + TouristDestination + Dataset) but carry no rating, no score and no
+// band anywhere in its JSON-LD, title or hero; scored pages must still show their score. Every grey
+// place is checked in all 7 locales, not a sample: one leaked number is the whole defect.
+// With a pre-v10 snapshot (every country scored) the grey set is empty and only the scored-side
+// check runs.
+
+/** "5.9/10", "5,9/10", "5.9 / 10": a score-shaped figure. */
+const SCORE_FIGURE = /\d+[.,]\d\s*\/\s*10\b/;
+
+function jsonLdBlocks(html: string): string[] {
+  const re = /<script\s+type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi;
+  const blocks: string[] = [];
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(html)) !== null) blocks.push(m[1]);
+  return blocks;
+}
+
+function validateGreyPlaces() {
+  console.log("\n--- Grey places (formula v10 insufficient_data) ---");
+  const scoresPath = path.join(DIST, "scores.json");
+  if (!fs.existsSync(scoresPath)) {
+    check("grey: scores.json present in dist", false, scoresPath);
+    return;
+  }
+  const { countries } = JSON.parse(fs.readFileSync(scoresPath, "utf-8")) as {
+    countries: Array<{ iso3: string; score: number | null; scoreStatus?: string }>;
+  };
+  const isGreyEntry = (c: { score: number | null; scoreStatus?: string }) =>
+    c.scoreStatus === "insufficient_data" || typeof c.score !== "number" || !Number.isFinite(c.score);
+  const grey = countries.filter(isGreyEntry).map((c) => c.iso3.toLowerCase());
+  const scored = countries.filter((c) => !isGreyEntry(c)).map((c) => c.iso3.toLowerCase());
+  console.log(`  (${grey.length} grey, ${scored.length} scored in dist/scores.json)`);
+
+  const expectedTypes = ["WebPage", "Place", "FAQPage", "TouristDestination", "Dataset"];
+  let pages = 0;
+  for (const code of grey) {
+    for (const lang of LANGUAGES) {
+      const label = `${lang}/${COUNTRY_SEGMENT[lang]}/${code}`;
+      const filePath = path.join(DIST, lang, COUNTRY_SEGMENT[lang], code, "index.html");
+      if (!fs.existsSync(filePath)) {
+        check(`grey(${label}): page exists`, false);
+        continue;
+      }
+      pages++;
+      const html = readHtml(filePath);
+      const blocks = jsonLdBlocks(html);
+      const graphTypes = new Set<string>();
+      let rating = false;
+      let figure = false;
+      for (const raw of blocks) {
+        if (/"(@type)"\s*:\s*"(Rating|AggregateRating|Review)"/.test(raw) || /"ratingValue"/.test(raw)) rating = true;
+        if (SCORE_FIGURE.test(raw)) figure = true;
+        try {
+          const parsed = JSON.parse(raw);
+          for (const node of Array.isArray(parsed["@graph"]) ? parsed["@graph"] : [parsed]) {
+            const t = node?.["@type"];
+            for (const one of Array.isArray(t) ? t : [t]) if (typeof one === "string") graphTypes.add(one);
+          }
+        } catch {
+          check(`grey(${label}): JSON-LD parses`, false);
+        }
+      }
+      for (const expected of expectedTypes) {
+        check(`grey(${label}): @graph has ${expected}`, graphTypes.has(expected), `types: [${[...graphTypes].join(", ")}]`);
+      }
+      check(`grey(${label}): no Rating/AggregateRating/Review in JSON-LD`, !rating);
+      check(`grey(${label}): no score figure in JSON-LD`, !figure);
+      const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? "";
+      check(`grey(${label}): no score figure in <title>`, !SCORE_FIGURE.test(title), title);
+      check(`grey(${label}): hero is in the partial-data state`, html.includes('data-score-status="insufficient_data"'));
+    }
+  }
+  console.log(`  (checked ${pages} grey country pages)`);
+
+  // Scored side: a sample keeps its number in the title and never renders the grey hero.
+  for (const code of sampleArray(scored, 6)) {
+    const filePath = path.join(DIST, "en", "country", code, "index.html");
+    if (!fs.existsSync(filePath)) continue;
+    const html = readHtml(filePath);
+    const title = html.match(/<title>([^<]*)<\/title>/i)?.[1] ?? "";
+    check(`scored(en/country/${code}): title carries the score`, SCORE_FIGURE.test(title), title);
+    check(`scored(en/country/${code}): hero is not grey`, !html.includes('data-score-status="insufficient_data"'));
+  }
+}
+
+// =====================================================================
 // 2b. SCHEMA CONNECTIONS & i18n (S1/S2/S6/S7/S9/S10/GEO-07 — 2026-09 audit)
 // =====================================================================
 // The 2026-09 SEO audit found every JSON-LD node on the site was an island
@@ -1651,6 +1741,7 @@ function main() {
   validateHreflang();
   validateAllHreflangTargets();
   validateJsonLd();
+  validateGreyPlaces();
   validateSchemaConnections();
   validateHubSchema();
   validateMeta();

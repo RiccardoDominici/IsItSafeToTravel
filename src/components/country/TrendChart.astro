@@ -3,6 +3,7 @@ import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
 import type { FormulaChange, HistoryPoint } from '../../lib/scores';
+import { formulaChangeInRange, formulaChangeTexts } from '../../i18n/formula-change-copy';
 
 interface Props {
   data: HistoryPoint[];
@@ -21,28 +22,9 @@ interface Props {
 const { data, pillarData, lang, iso3, formulaChange = null } = Astro.props;
 const t = useTranslations(lang);
 
-const formulaCopy: Record<Lang, { marker: string; note: string }> = {
-  en: { marker: 'Formula v{v}', note: 'The dashed line marks {date}, when the score moved to formula v{v}; earlier points were computed with the previous formula.' },
-  it: { marker: 'Formula v{v}', note: 'La linea tratteggiata indica il {date}, quando il punteggio è passato alla formula v{v}; i valori precedenti sono stati calcolati con la formula precedente.' },
-  es: { marker: 'Fórmula v{v}', note: 'La línea discontinua marca el {date}, cuando la puntuación pasó a la fórmula v{v}; los valores anteriores se calcularon con la fórmula anterior.' },
-  fr: { marker: 'Formule v{v}', note: 'La ligne pointillée marque le {date}, date du passage du score à la formule v{v} ; les valeurs antérieures ont été calculées avec la formule précédente.' },
-  pt: { marker: 'Fórmula v{v}', note: 'A linha tracejada marca {date}, quando a pontuação passou para a fórmula v{v}; os valores anteriores foram calculados com a fórmula anterior.' },
-  zh: { marker: '公式 v{v}', note: '虚线标出{date}，即评分改用公式 v{v} 的日期；此前的数值按旧公式计算。' },
-  de: { marker: 'Formel v{v}', note: 'Die gestrichelte Linie markiert den {date}, an dem die Bewertung auf Formel v{v} umgestellt wurde; frühere Werte wurden mit der vorherigen Formel berechnet.' },
-};
-const DATE_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
-// Only worth saying when the switch date falls inside the plotted history.
-const showFormulaNote =
-  formulaChange !== null && data.length >= 2 && data[0].date < formulaChange.date && data[data.length - 1].date >= formulaChange.date;
-const formulaMarker = formulaChange ? formulaCopy[lang].marker.replace('{v}', formulaChange.version) : '';
-const formulaNote = formulaChange
-  ? formulaCopy[lang].note
-      .replaceAll('{v}', formulaChange.version)
-      .replace(
-        '{date}',
-        new Date(`${formulaChange.date}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' }),
-      )
-  : '';
+// Formula switch marker and caption (shared with the global chart, src/i18n/formula-change-copy.ts).
+const { marker: formulaMarker, note: formulaNote } = formulaChangeTexts(lang, formulaChange);
+const showFormulaNote = formulaChangeInRange(formulaChange, data.map((d) => d.date));
 
 // Small, page-local labels for the chart chrome (loading state, time-range
 // buttons, reset) -- these were hardcoded English strings, invisible to a
