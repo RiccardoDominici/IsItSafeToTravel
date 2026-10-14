@@ -15,6 +15,10 @@
  * an engine change: if it is intended, re-freeze the fixture CSV with --write in the same
  * commit and explain why; never edit the CSV by hand.
  *
+ * DRIFT SENSITIVITY: after a pass, the gate re-scores with one frozen constant nudged by
+ * 1e-6 (the health pillar map's alpha) and fails if that nudge goes unnoticed, so a gate
+ * that has silently stopped comparing anything cannot pass.
+ *
  * Unlike the v9.1 gate, nothing here fetches data or rewrites repo data: it reads only the
  * fixture folder and weights.json, and --write writes only the CSV.
  *
@@ -24,10 +28,12 @@ import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { computeAllScores } from '../src/pipeline/scoring/engine.js';
 import { parseCommunitySnapshot } from '../src/pipeline/scoring/community.js';
-import type { PillarName, ScoredCountry } from '../src/pipeline/types.js';
+import type { PillarName, ScoredCountry, WeightsConfig } from '../src/pipeline/types.js';
 import { FIXTURE_DATE, FIXTURE_RAW_DIR, FIXTURE_ROOT, PARITY_CSV_PATH, loadRawFolder, readWeights } from './lib/v10-fixture.js';
 
 const TOLERANCE = 1e-9;
+/** Size of the nudge used by the drift-sensitivity self-check. */
+const SENSITIVITY_NUDGE = 1e-6;
 const SENTIMENT_PATH = join(FIXTURE_ROOT, `sentiment-synthetic-${FIXTURE_DATE}.json`);
 const PILLARS: PillarName[] = ['conflict', 'crime', 'health', 'governance', 'environment'];
 
@@ -95,6 +101,37 @@ function compare(expected: Row, actual: Row): string[] {
   return problems;
 }
 
+/** Score both scenarios (no community, synthetic community) and build the comparable rows. */
+function scoreRows(weights: WeightsConfig, community: ReturnType<typeof parseCommunitySnapshot>): Row[] {
+  const options = { rawDir: FIXTURE_RAW_DIR };
+  const log = console.log;
+  console.log = () => {};
+  try {
+    const base = computeAllScores(loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE), weights, FIXTURE_DATE, { ...options, community: null });
+    const withCommunity = computeAllScores(loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE), weights, FIXTURE_DATE, { ...options, community });
+    return buildRows(base, withCommunity);
+  } finally {
+    console.log = log;
+  }
+}
+
+/** Every difference between the frozen CSV rows and freshly scored rows. */
+function diffRows(expectedRows: Row[], rows: Row[]): string[] {
+  const expected = new Map(expectedRows.map((r) => [r.iso3, r]));
+  const failures: string[] = [];
+  for (const row of rows) {
+    const exp = expected.get(row.iso3);
+    if (!exp) {
+      failures.push(`${row.iso3}: not in the frozen CSV`);
+      continue;
+    }
+    for (const problem of compare(exp, row)) failures.push(`${row.iso3}: ${problem}`);
+    expected.delete(row.iso3);
+  }
+  for (const iso3 of expected.keys()) failures.push(`${iso3}: in the frozen CSV but not scored`);
+  return failures;
+}
+
 function main(): void {
   const write = process.argv.includes('--write');
   const weights = readWeights();
@@ -108,10 +145,7 @@ function main(): void {
     process.exit(1);
   }
 
-  const options = { rawDir: FIXTURE_RAW_DIR };
-  const base = computeAllScores(loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE), weights, FIXTURE_DATE, { ...options, community: null });
-  const withCommunity = computeAllScores(loadRawFolder(FIXTURE_RAW_DIR, FIXTURE_DATE), weights, FIXTURE_DATE, { ...options, community });
-  const rows = buildRows(base, withCommunity);
+  const rows = scoreRows(weights, community);
 
   if (write) {
     writeFileSync(PARITY_CSV_PATH, toCsv(rows), 'utf-8');
@@ -123,18 +157,8 @@ function main(): void {
     console.error(`FATAL: ${PARITY_CSV_PATH} missing; freeze it with --write`);
     process.exit(1);
   }
-  const expected = new Map(parseCsv(readFileSync(PARITY_CSV_PATH, 'utf-8')).map((r) => [r.iso3, r]));
-  const failures: string[] = [];
-  for (const row of rows) {
-    const exp = expected.get(row.iso3);
-    if (!exp) {
-      failures.push(`${row.iso3}: not in the frozen CSV`);
-      continue;
-    }
-    for (const problem of compare(exp, row)) failures.push(`${row.iso3}: ${problem}`);
-    expected.delete(row.iso3);
-  }
-  for (const iso3 of expected.keys()) failures.push(`${iso3}: in the frozen CSV but not scored`);
+  const frozenRows = parseCsv(readFileSync(PARITY_CSV_PATH, 'utf-8'));
+  const failures = diffRows(frozenRows, rows);
 
   const scored = rows.filter((r) => r.score_status === 'scored').length;
   console.log(`=== Formula v10 parity gate on ${FIXTURE_DATE} (weights ${weights.version}) ===`);
@@ -144,6 +168,26 @@ function main(): void {
     for (const line of failures.slice(0, 50)) console.log(`  ${line}`);
     if (failures.length > 50) console.log(`  ... and ${failures.length - 50} more`);
     console.log('\nPARITY GATE: FAILED');
+    process.exit(1);
+  }
+
+  // Drift sensitivity: the same comparison must notice a 1e-6 change to a frozen constant.
+  const healthMap = weights.formulaV9?.pillarCalibration?.health;
+  if (!healthMap) {
+    console.log('PARITY GATE: FAILED (no pillarCalibration.health to run the drift-sensitivity check on)');
+    process.exit(1);
+  }
+  const nudged: WeightsConfig = {
+    ...weights,
+    formulaV9: {
+      ...weights.formulaV9!,
+      pillarCalibration: { ...weights.formulaV9!.pillarCalibration, health: { ...healthMap, alpha: healthMap.alpha + SENSITIVITY_NUDGE } },
+    },
+  };
+  const detected = diffRows(frozenRows, scoreRows(nudged, community)).length;
+  console.log(`Drift sensitivity: nudging pillarCalibration.health.alpha by ${SENSITIVITY_NUDGE} changes ${detected} value(s) beyond ${TOLERANCE}`);
+  if (detected === 0) {
+    console.log('PARITY GATE: FAILED (the gate did not notice a constant change)');
     process.exit(1);
   }
   console.log('PARITY GATE: PASSED');
