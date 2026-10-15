@@ -1,6 +1,6 @@
 /**
- * Locks the land-border map, the sovereign-state map and the M49 sub-regions
- * against the 248 places.
+ * Locks the land-border map, the sovereign-state map, the M49 sub-regions and the
+ * derived proximity file (src/data/country-proximity.json) against the 248 places.
  *
  * WHY (2026-10 audit, I37): 48 places had no border entry (Jersey without the UK,
  * Western Sahara without Algeria, French Guiana without Brazil) and 40 pairs were
@@ -20,7 +20,14 @@ const root = process.cwd();
 const places: string[] = JSON.parse(fs.readFileSync(path.join(root, 'public', 'scores.json'), 'utf8'))
   .countries.map((c: { iso3: string }) => c.iso3)
   .sort();
+const proximity: Record<string, Record<string, number>> = JSON.parse(
+  fs.readFileSync(path.join(root, 'src', 'data', 'country-proximity.json'), 'utf8'),
+);
 const placeSet = new Set(places);
+
+/** Real land borders Natural Earth v5.1.2 does not draw (see scripts/generate-country-proximity.ts). */
+const NOT_IN_NATURAL_EARTH = new Set(['CAN-GRL']);
+const pair = (a: string, b: string): string => (a < b ? `${a}-${b}` : `${b}-${a}`);
 
 describe('landBorders', () => {
   it('has exactly one entry for every place, and no unknown code', () => {
@@ -79,6 +86,15 @@ describe('landBorders', () => {
     assert.deepEqual([...getLandNeighbours('GIB')], ['ESP']);
     assert.ok(!getLandNeighbours('MAR').includes('MRT'), 'Morocco and Mauritania meet only through Western Sahara');
   });
+
+  it('every declared land border touches in the Natural Earth outlines (proximity 0 km)', () => {
+    for (const [a, list] of Object.entries(landBorders)) {
+      for (const b of list) {
+        if (NOT_IN_NATURAL_EARTH.has(pair(a, b))) continue;
+        assert.equal(proximity[a]?.[b], 0, `${a}-${b}: declared land border, proximity ${proximity[a]?.[b]} km`);
+      }
+    }
+  });
 });
 
 describe('sovereignState', () => {
@@ -120,5 +136,47 @@ describe('subregions (UN M49)', () => {
     assert.notEqual(getSubregion('DZA'), getSubregion('ZMB'));
     assert.equal(getSubregion('XKX'), 'southern_europe');
     assert.equal(getSubregion('TWN'), 'eastern_asia');
+  });
+});
+
+describe('country-proximity.json', () => {
+  it('has an entry for every place, with whole, non-negative km to known places only', () => {
+    assert.deepEqual(Object.keys(proximity).sort(), places);
+    for (const [a, row] of Object.entries(proximity)) {
+      for (const [b, km] of Object.entries(row)) {
+        assert.ok(placeSet.has(b) && b !== a, `${a}: bad key ${b}`);
+        assert.ok(Number.isInteger(km) && km >= 0, `${a}-${b}: ${km} is not a whole km`);
+      }
+    }
+  });
+
+  it('stores every land neighbour and the sovereign state of each place', () => {
+    for (const a of places) {
+      for (const b of getLandNeighbours(a)) assert.ok(b in proximity[a], `${a}: land neighbour ${b} missing`);
+      const state = getSovereignState(a);
+      if (state) assert.ok(state in proximity[a], `${a}: sovereign ${state} missing`);
+    }
+  });
+
+  it('agrees in both directions where both sides store a pair', () => {
+    for (const [a, row] of Object.entries(proximity)) {
+      for (const [b, km] of Object.entries(row)) {
+        if (a in proximity[b]) assert.equal(proximity[b][a], km, `${a}-${b}`);
+      }
+    }
+  });
+
+  it('measures coast to coast, not centre to centre (the audit cases)', () => {
+    const near = (a: string, b: string, lo: number, hi: number): void => {
+      const km = proximity[a][b];
+      assert.ok(km >= lo && km <= hi, `${a}-${b}: ${km} km, expected ${lo}-${hi}`);
+    };
+    near('MLT', 'ITA', 60, 100); // Malta-Sicily
+    near('MLT', 'LBY', 300, 380); // Libya's coast, not its Saharan centroid
+    near('KWT', 'IRN', 10, 40); // across the head of the Gulf
+    near('KOR', 'CHN', 150, 200); // Yellow Sea
+    near('TLS', 'AUS', 400, 500); // Timor Sea
+    near('ABW', 'VEN', 15, 35);
+    near('MYT', 'COM', 50, 90);
   });
 });

@@ -104,6 +104,8 @@ const REMOTE_ISLETS_LEFT_OUT: ReadonlyArray<{ place: string; name: string; box: 
   { place: 'AUS', name: 'Macquarie Island', box: [158.5, -55.3, 159.2, -54.3] },
   // Uninhabited nature reserve, ~1,000 km north-east of the North Island: made Tonga "about 790 km" from New Zealand.
   { place: 'NZL', name: 'Kermadec Islands', box: [-179.3, -31.7, -177.4, -28.9] },
+  // Uninhabited reef ~450 km south-west of Viti Levu: made Vanuatu "about 510 km" from Fiji.
+  { place: 'FJI', name: 'Ceva-i-Ra (Conway Reef)', box: [174.3, -22.0, 174.9, -21.4] },
 ];
 
 /** True when every vertex of the polygon's outer ring lies inside the box. */

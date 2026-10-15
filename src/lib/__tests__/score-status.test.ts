@@ -86,12 +86,18 @@ describe('score-status consumers', () => {
     assert.deepEqual(getCountriesByRegion(list, 'europe').map((c) => c.iso3), ['DEU', 'FRA']);
   });
 
-  it('comparison rows put a grey subject first and order the scored rows by score', () => {
+  it('comparison rows put a grey subject first and keep the others in distance order, not by score', () => {
     const subject = country('ALA', null, { scoreStatus: 'insufficient_data' });
-    const fin = country('FIN', 8.6) as ScoredCountry & { score: number; scoreDisplay: number };
-    const swe = country('SWE', 8.1) as ScoredCountry & { score: number; scoreDisplay: number };
-    const rows = comparisonRows(subject, { neighbours: [swe, fin], nearby: [] });
-    assert.deepEqual(rows.map((c) => c.iso3), ['ALA', 'FIN', 'SWE']);
+    const fin = country('FIN', 8.6);
+    const swe = country('SWE', 8.9);
+    const rows = comparisonRows(subject, {
+      others: [
+        { country: fin, relation: 'sea', km: 9 },
+        { country: swe, relation: 'sea', km: 35 },
+      ],
+    });
+    assert.deepEqual(rows.map((r) => r.country.iso3), ['ALA', 'FIN', 'SWE']);
+    assert.equal(rows[0].relation, 'self');
   });
 });
 

@@ -6,6 +6,7 @@ import { getRegion } from '../../lib/regions';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { selectComparison, selectRelated } from '../../lib/comparisons';
 import countryCoords from '../../data/country-coords.json';
+import countryProximity from '../../data/country-proximity.json';
 
 interface Props {
   country: ScoredCountry;
@@ -35,12 +36,15 @@ function getScoreBadgeClasses(rawScore: number): string {
   return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
 }
 
-// Same-region and similar-risk-profile lists. Both skip countries the comparison table
-// already shows and countries below the data floor. For a subject below the floor the whole
-// block is withheld: its score and pillars are prior-driven (src/lib/comparisons.ts). The
-// section renders nothing when both lists are empty.
-const comparison = selectComparison(country, allCountries, countryCoords);
-const { sameRegion, similarProfile } = selectRelated(country, allCountries, comparison);
+// Same-region list: the three nearest places in the UN M49 sub-region (Southern Asia,
+// Northern Africa, ...), shown by score. Similar-risk-profile list: closest pillar profile.
+// Both skip countries the comparison table already shows and countries below the data
+// floor. For a subject below the floor the whole block is withheld: its score and pillars
+// are prior-driven (src/lib/comparisons.ts). The section renders nothing when both lists
+// are empty.
+const geo = { proximity: countryProximity, coords: countryCoords };
+const comparison = selectComparison(country, allCountries, geo);
+const { sameRegion, similarProfile } = selectRelated(country, allCountries, comparison, geo);
 
 const r = routes[lang];
 function countryUrl(iso3: string): string {
