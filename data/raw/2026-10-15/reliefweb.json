@@ -6,7 +6,7 @@
       "href": "https://api.reliefweb.int/v2/disasters?appname=RDominici-isitsafetotravelsafetyscoring-a7x2"
     }
   },
-  "took": 9,
+  "took": 10,
   "totalCount": 101,
   "count": 101,
   "data": [
@@ -75,70 +75,6 @@
       "href": "https://api.reliefweb.int/v2/disasters/15360"
     },
     {
-      "id": "51538",
-      "score": 1,
-      "fields": {
-        "name": "South Sudan: Measles - Dec 2022",
-        "status": "ongoing",
-        "glide": "EP-2023-000048-SSD",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/8657",
-            "id": 8657,
-            "name": "South Sudan",
-            "shortname": "South Sudan",
-            "iso3": "ssd",
-            "location": {
-              "lat": 6.9,
-              "lon": 30.5
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/51538"
-    },
-    {
-      "id": "51475",
-      "score": 1,
-      "fields": {
-        "name": "Nigeria: Lassa Fever Outbreak - Jan 2023",
-        "status": "ongoing",
-        "glide": "EP-2023-000090-NGA",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/175",
-            "id": 175,
-            "name": "Nigeria",
-            "shortname": "Nigeria",
-            "iso3": "nga",
-            "location": {
-              "lat": 9.59,
-              "lon": 8.11
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/51475"
-    },
-    {
       "id": "52000",
       "score": 1,
       "fields": {
@@ -201,6 +137,256 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/51995"
+    },
+    {
+      "id": "52558",
+      "score": 1,
+      "fields": {
+        "name": "Bangladesh: Measles Outbreak - Mar 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000048-BGD",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/31",
+            "id": 31,
+            "name": "Bangladesh",
+            "shortname": "Bangladesh",
+            "iso3": "bgd",
+            "location": {
+              "lat": 23.84,
+              "lon": 90.27
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52558"
+    },
+    {
+      "id": "52556",
+      "score": 1,
+      "fields": {
+        "name": "Yemen: Floods - Mar 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000044-YEM",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/255",
+            "id": 255,
+            "name": "Yemen",
+            "shortname": "Yemen",
+            "iso3": "yem",
+            "location": {
+              "lat": 15.94,
+              "lon": 47.62
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52556"
+    },
+    {
+      "id": "52553",
+      "score": 1,
+      "fields": {
+        "name": "Afghanistan: Floods - Mar 2026",
+        "status": "ongoing",
+        "glide": "FF-2026-000043-AFG",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/13",
+            "id": 13,
+            "name": "Afghanistan",
+            "shortname": "Afghanistan",
+            "iso3": "afg",
+            "location": {
+              "lat": 33.84,
+              "lon": 66.03
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4624,
+            "name": "Flash Flood",
+            "code": "FF"
+          },
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52553"
+    },
+    {
+      "id": "52549",
+      "score": 1,
+      "fields": {
+        "name": "Suriname: Chikungunya Virus Outbreak - Mar 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000037-SUR",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/221",
+            "id": 221,
+            "name": "Suriname",
+            "shortname": "Suriname",
+            "iso3": "sur",
+            "location": {
+              "lat": 3.69,
+              "lon": -55.91
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52549"
+    },
+    {
+      "id": "52530",
+      "score": 1,
+      "fields": {
+        "name": "Ecuador: Floods - Jan 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000027-ECU",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/81",
+            "id": 81,
+            "name": "Ecuador",
+            "shortname": "Ecuador",
+            "iso3": "ecu",
+            "location": {
+              "lat": -1.16,
+              "lon": -78.43
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          },
+          {
+            "id": 4728,
+            "name": "Land Slide",
+            "code": "LS"
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52530"
+    },
+    {
+      "id": "52512",
+      "score": 1,
+      "fields": {
+        "name": "Tropical Cyclone Fytia - Jan 2026",
+        "status": "ongoing",
+        "glide": "TC-2026-000009-MDG",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/144",
+            "id": 144,
+            "name": "Madagascar",
+            "shortname": "Madagascar",
+            "iso3": "mdg",
+            "location": {
+              "lat": -19.37,
+              "lon": 46.71
+            },
+            "primary": true
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/164",
+            "id": 164,
+            "name": "Mozambique",
+            "shortname": "Mozambique",
+            "iso3": "moz",
+            "location": {
+              "lat": -18.09,
+              "lon": 34.75
+            }
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL"
+          },
+          {
+            "id": 4618,
+            "name": "Tropical Cyclone",
+            "code": "TC",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52512"
+    },
+    {
+      "id": "52503",
+      "score": 1,
+      "fields": {
+        "name": "Zambia: Floods - Jan 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000020-ZMB",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/256",
+            "id": 256,
+            "name": "Zambia",
+            "shortname": "Zambia",
+            "iso3": "zmb",
+            "location": {
+              "lat": -14,
+              "lon": 27.43
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52503"
     },
     {
       "id": "52496",
@@ -556,22 +742,22 @@
       "href": "https://api.reliefweb.int/v2/disasters/52270"
     },
     {
-      "id": "52558",
+      "id": "51538",
       "score": 1,
       "fields": {
-        "name": "Bangladesh: Measles Outbreak - Mar 2026",
+        "name": "South Sudan: Measles - Dec 2022",
         "status": "ongoing",
-        "glide": "EP-2026-000048-BGD",
+        "glide": "EP-2023-000048-SSD",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/31",
-            "id": 31,
-            "name": "Bangladesh",
-            "shortname": "Bangladesh",
-            "iso3": "bgd",
+            "href": "https://api.reliefweb.int/v2/countries/8657",
+            "id": 8657,
+            "name": "South Sudan",
+            "shortname": "South Sudan",
+            "iso3": "ssd",
             "location": {
-              "lat": 23.84,
-              "lon": 90.27
+              "lat": 6.9,
+              "lon": 30.5
             },
             "primary": true
           }
@@ -585,225 +771,7 @@
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/52558"
-    },
-    {
-      "id": "52556",
-      "score": 1,
-      "fields": {
-        "name": "Yemen: Floods - Mar 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000044-YEM",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/255",
-            "id": 255,
-            "name": "Yemen",
-            "shortname": "Yemen",
-            "iso3": "yem",
-            "location": {
-              "lat": 15.94,
-              "lon": 47.62
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52556"
-    },
-    {
-      "id": "52553",
-      "score": 1,
-      "fields": {
-        "name": "Afghanistan: Floods - Mar 2026",
-        "status": "ongoing",
-        "glide": "FF-2026-000043-AFG",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/13",
-            "id": 13,
-            "name": "Afghanistan",
-            "shortname": "Afghanistan",
-            "iso3": "afg",
-            "location": {
-              "lat": 33.84,
-              "lon": 66.03
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4624,
-            "name": "Flash Flood",
-            "code": "FF"
-          },
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52553"
-    },
-    {
-      "id": "52549",
-      "score": 1,
-      "fields": {
-        "name": "Suriname: Chikungunya Virus Outbreak - Mar 2026",
-        "status": "ongoing",
-        "glide": "EP-2026-000037-SUR",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/221",
-            "id": 221,
-            "name": "Suriname",
-            "shortname": "Suriname",
-            "iso3": "sur",
-            "location": {
-              "lat": 3.69,
-              "lon": -55.91
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52549"
-    },
-    {
-      "id": "52530",
-      "score": 1,
-      "fields": {
-        "name": "Ecuador: Floods - Jan 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000027-ECU",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/81",
-            "id": 81,
-            "name": "Ecuador",
-            "shortname": "Ecuador",
-            "iso3": "ecu",
-            "location": {
-              "lat": -1.16,
-              "lon": -78.43
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          },
-          {
-            "id": 4728,
-            "name": "Land Slide",
-            "code": "LS"
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52530"
-    },
-    {
-      "id": "52512",
-      "score": 1,
-      "fields": {
-        "name": "Tropical Cyclone Fytia - Jan 2026",
-        "status": "ongoing",
-        "glide": "TC-2026-000009-MDG",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/144",
-            "id": 144,
-            "name": "Madagascar",
-            "shortname": "Madagascar",
-            "iso3": "mdg",
-            "location": {
-              "lat": -19.37,
-              "lon": 46.71
-            },
-            "primary": true
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/164",
-            "id": 164,
-            "name": "Mozambique",
-            "shortname": "Mozambique",
-            "iso3": "moz",
-            "location": {
-              "lat": -18.09,
-              "lon": 34.75
-            }
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL"
-          },
-          {
-            "id": 4618,
-            "name": "Tropical Cyclone",
-            "code": "TC",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52512"
-    },
-    {
-      "id": "52503",
-      "score": 1,
-      "fields": {
-        "name": "Zambia: Floods - Jan 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000020-ZMB",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/256",
-            "id": 256,
-            "name": "Zambia",
-            "shortname": "Zambia",
-            "iso3": "zmb",
-            "location": {
-              "lat": -14,
-              "lon": 27.43
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52503"
+      "href": "https://api.reliefweb.int/v2/disasters/51538"
     },
     {
       "id": "52702",
@@ -836,38 +804,6 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/52702"
-    },
-    {
-      "id": "52692",
-      "score": 1,
-      "fields": {
-        "name": "Niger: Floods - Sep 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000181-NER",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/174",
-            "id": 174,
-            "name": "Niger",
-            "shortname": "Niger",
-            "iso3": "ner",
-            "location": {
-              "lat": 17.43,
-              "lon": 9.4
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52692"
     },
     {
       "id": "52687",
@@ -1203,6 +1139,70 @@
       "href": "https://api.reliefweb.int/v2/disasters/52693"
     },
     {
+      "id": "51475",
+      "score": 1,
+      "fields": {
+        "name": "Nigeria: Lassa Fever Outbreak - Jan 2023",
+        "status": "ongoing",
+        "glide": "EP-2023-000090-NGA",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/175",
+            "id": 175,
+            "name": "Nigeria",
+            "shortname": "Nigeria",
+            "iso3": "nga",
+            "location": {
+              "lat": 9.59,
+              "lon": 8.11
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/51475"
+    },
+    {
+      "id": "52692",
+      "score": 1,
+      "fields": {
+        "name": "Niger: Floods - Sep 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000181-NER",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/174",
+            "id": 174,
+            "name": "Niger",
+            "shortname": "Niger",
+            "iso3": "ner",
+            "location": {
+              "lat": 17.43,
+              "lon": 9.4
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52692"
+    },
+    {
       "id": "46459",
       "score": 1,
       "fields": {
@@ -1297,6 +1297,326 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/23101"
+    },
+    {
+      "id": "52679",
+      "score": 1,
+      "fields": {
+        "name": "Sierra Leone: Flash Floods - Aug 2026",
+        "status": "ongoing",
+        "glide": "FF-2026-000152-SLE",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/211",
+            "id": 211,
+            "name": "Sierra Leone",
+            "shortname": "Sierra Leone",
+            "iso3": "sle",
+            "location": {
+              "lat": 8.56,
+              "lon": -11.79
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4624,
+            "name": "Flash Flood",
+            "code": "FF",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52679"
+    },
+    {
+      "id": "52670",
+      "score": 1,
+      "fields": {
+        "name": "Colombia: Earthquake - Aug 2026",
+        "status": "ongoing",
+        "glide": "EQ-2026-000146-COL",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/64",
+            "id": 64,
+            "name": "Colombia",
+            "shortname": "Colombia",
+            "iso3": "col",
+            "location": {
+              "lat": 3.9,
+              "lon": -73.07
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4628,
+            "name": "Earthquake",
+            "code": "EQ",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52670"
+    },
+    {
+      "id": "52659",
+      "score": 1,
+      "fields": {
+        "name": "Afghanistan: Flash Floods - Jul 2026",
+        "status": "ongoing",
+        "glide": "FF-2026-000120-AFG",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/13",
+            "id": 13,
+            "name": "Afghanistan",
+            "shortname": "Afghanistan",
+            "iso3": "afg",
+            "location": {
+              "lat": 33.84,
+              "lon": 66.03
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4624,
+            "name": "Flash Flood",
+            "code": "FF",
+            "primary": true
+          },
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL"
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52659"
+    },
+    {
+      "id": "52604",
+      "score": 1,
+      "fields": {
+        "name": "Sri Lanka: Dengue Outbreak - May 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000085-LKA",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/219",
+            "id": 219,
+            "name": "Sri Lanka",
+            "shortname": "Sri Lanka",
+            "iso3": "lka",
+            "location": {
+              "lat": 7.61,
+              "lon": 80.7
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52604"
+    },
+    {
+      "id": "52601",
+      "score": 1,
+      "fields": {
+        "name": "Syria: Floods - May 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000080-SYR",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/226",
+            "id": 226,
+            "name": "Syrian Arab Republic",
+            "shortname": "Syria",
+            "iso3": "syr",
+            "location": {
+              "lat": 35.01,
+              "lon": 38.51
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52601"
+    },
+    {
+      "id": "52600",
+      "score": 1,
+      "fields": {
+        "name": "Philippines: Earthquake and Tsunami - Jun 2026",
+        "status": "ongoing",
+        "glide": "EQ-2026-000083-PHL",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/120",
+            "id": 120,
+            "name": "Indonesia",
+            "shortname": "Indonesia",
+            "iso3": "idn",
+            "location": {
+              "lat": -2.28,
+              "lon": 117.37
+            }
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/188",
+            "id": 188,
+            "name": "Philippines",
+            "shortname": "Philippines",
+            "iso3": "phl",
+            "location": {
+              "lat": 11.74,
+              "lon": 122.88
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4628,
+            "name": "Earthquake",
+            "code": "EQ",
+            "primary": true
+          },
+          {
+            "id": 4687,
+            "name": "Tsunami",
+            "code": "TS"
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52600"
+    },
+    {
+      "id": "43154",
+      "score": 1,
+      "fields": {
+        "name": "Nigeria: Cholera Outbreak - Jun 2017",
+        "status": "ongoing",
+        "glide": "EP-2017-000077-NGA",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/49",
+            "id": 49,
+            "name": "Cameroon",
+            "shortname": "Cameroon",
+            "iso3": "cmr",
+            "location": {
+              "lat": 4.81,
+              "lon": 12.21
+            }
+          },
+          {
+            "href": "https://api.reliefweb.int/v2/countries/175",
+            "id": 175,
+            "name": "Nigeria",
+            "shortname": "Nigeria",
+            "iso3": "nga",
+            "location": {
+              "lat": 9.59,
+              "lon": 8.11
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/43154"
+    },
+    {
+      "id": "52040",
+      "score": 1,
+      "fields": {
+        "name": "Angola: Drought - 2024-2026",
+        "status": "ongoing",
+        "glide": "DR-2024-000095-AGO",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/19",
+            "id": 19,
+            "name": "Angola",
+            "shortname": "Angola",
+            "iso3": "ago",
+            "location": {
+              "lat": -12.1,
+              "lon": 17.91
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4672,
+            "name": "Drought",
+            "code": "DR",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52040"
+    },
+    {
+      "id": "52015",
+      "score": 1,
+      "fields": {
+        "name": "Mozambique: Drought - May 2024",
+        "status": "ongoing",
+        "glide": "DR-2024-000073-MOZ",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/164",
+            "id": 164,
+            "name": "Mozambique",
+            "shortname": "Mozambique",
+            "iso3": "moz",
+            "location": {
+              "lat": -18.09,
+              "lon": 34.75
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4672,
+            "name": "Drought",
+            "code": "DR",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52015"
     },
     {
       "id": "50620",
@@ -1724,102 +2044,6 @@
       "href": "https://api.reliefweb.int/v2/disasters/52262"
     },
     {
-      "id": "51337",
-      "score": 1,
-      "fields": {
-        "name": "Ethiopia: Cholera Outbreak - Sep 2022",
-        "status": "ongoing",
-        "glide": "EP-2022-000323-ETH",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/87",
-            "id": 87,
-            "name": "Ethiopia",
-            "shortname": "Ethiopia",
-            "iso3": "eth",
-            "location": {
-              "lat": 8.63,
-              "lon": 39.62
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/51337"
-    },
-    {
-      "id": "52040",
-      "score": 1,
-      "fields": {
-        "name": "Angola: Drought - 2024-2026",
-        "status": "ongoing",
-        "glide": "DR-2024-000095-AGO",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/19",
-            "id": 19,
-            "name": "Angola",
-            "shortname": "Angola",
-            "iso3": "ago",
-            "location": {
-              "lat": -12.1,
-              "lon": 17.91
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4672,
-            "name": "Drought",
-            "code": "DR",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52040"
-    },
-    {
-      "id": "52015",
-      "score": 1,
-      "fields": {
-        "name": "Mozambique: Drought - May 2024",
-        "status": "ongoing",
-        "glide": "DR-2024-000073-MOZ",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/164",
-            "id": 164,
-            "name": "Mozambique",
-            "shortname": "Mozambique",
-            "iso3": "moz",
-            "location": {
-              "lat": -18.09,
-              "lon": 34.75
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4672,
-            "name": "Drought",
-            "code": "DR",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52015"
-    },
-    {
       "id": "50824",
       "score": 1,
       "fields": {
@@ -2224,123 +2448,22 @@
       "href": "https://api.reliefweb.int/v2/disasters/52435"
     },
     {
-      "id": "52679",
+      "id": "51337",
       "score": 1,
       "fields": {
-        "name": "Sierra Leone: Flash Floods - Aug 2026",
+        "name": "Ethiopia: Cholera Outbreak - Sep 2022",
         "status": "ongoing",
-        "glide": "FF-2026-000152-SLE",
+        "glide": "EP-2022-000323-ETH",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/211",
-            "id": 211,
-            "name": "Sierra Leone",
-            "shortname": "Sierra Leone",
-            "iso3": "sle",
+            "href": "https://api.reliefweb.int/v2/countries/87",
+            "id": 87,
+            "name": "Ethiopia",
+            "shortname": "Ethiopia",
+            "iso3": "eth",
             "location": {
-              "lat": 8.56,
-              "lon": -11.79
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4624,
-            "name": "Flash Flood",
-            "code": "FF",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52679"
-    },
-    {
-      "id": "52670",
-      "score": 1,
-      "fields": {
-        "name": "Colombia: Earthquake - Aug 2026",
-        "status": "ongoing",
-        "glide": "EQ-2026-000146-COL",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/64",
-            "id": 64,
-            "name": "Colombia",
-            "shortname": "Colombia",
-            "iso3": "col",
-            "location": {
-              "lat": 3.9,
-              "lon": -73.07
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4628,
-            "name": "Earthquake",
-            "code": "EQ",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52670"
-    },
-    {
-      "id": "52659",
-      "score": 1,
-      "fields": {
-        "name": "Afghanistan: Flash Floods - Jul 2026",
-        "status": "ongoing",
-        "glide": "FF-2026-000120-AFG",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/13",
-            "id": 13,
-            "name": "Afghanistan",
-            "shortname": "Afghanistan",
-            "iso3": "afg",
-            "location": {
-              "lat": 33.84,
-              "lon": 66.03
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4624,
-            "name": "Flash Flood",
-            "code": "FF",
-            "primary": true
-          },
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL"
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52659"
-    },
-    {
-      "id": "52604",
-      "score": 1,
-      "fields": {
-        "name": "Sri Lanka: Dengue Outbreak - May 2026",
-        "status": "ongoing",
-        "glide": "EP-2026-000085-LKA",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/219",
-            "id": 219,
-            "name": "Sri Lanka",
-            "shortname": "Sri Lanka",
-            "iso3": "lka",
-            "location": {
-              "lat": 7.61,
-              "lon": 80.7
+              "lat": 8.63,
+              "lon": 39.62
             },
             "primary": true
           }
@@ -2354,130 +2477,7 @@
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/52604"
-    },
-    {
-      "id": "52601",
-      "score": 1,
-      "fields": {
-        "name": "Syria: Floods - May 2026",
-        "status": "ongoing",
-        "glide": "FL-2026-000080-SYR",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/226",
-            "id": 226,
-            "name": "Syrian Arab Republic",
-            "shortname": "Syria",
-            "iso3": "syr",
-            "location": {
-              "lat": 35.01,
-              "lon": 38.51
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52601"
-    },
-    {
-      "id": "52600",
-      "score": 1,
-      "fields": {
-        "name": "Philippines: Earthquake and Tsunami - Jun 2026",
-        "status": "ongoing",
-        "glide": "EQ-2026-000083-PHL",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/120",
-            "id": 120,
-            "name": "Indonesia",
-            "shortname": "Indonesia",
-            "iso3": "idn",
-            "location": {
-              "lat": -2.28,
-              "lon": 117.37
-            }
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/188",
-            "id": 188,
-            "name": "Philippines",
-            "shortname": "Philippines",
-            "iso3": "phl",
-            "location": {
-              "lat": 11.74,
-              "lon": 122.88
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4628,
-            "name": "Earthquake",
-            "code": "EQ",
-            "primary": true
-          },
-          {
-            "id": 4687,
-            "name": "Tsunami",
-            "code": "TS"
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52600"
-    },
-    {
-      "id": "43154",
-      "score": 1,
-      "fields": {
-        "name": "Nigeria: Cholera Outbreak - Jun 2017",
-        "status": "ongoing",
-        "glide": "EP-2017-000077-NGA",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/49",
-            "id": 49,
-            "name": "Cameroon",
-            "shortname": "Cameroon",
-            "iso3": "cmr",
-            "location": {
-              "lat": 4.81,
-              "lon": 12.21
-            }
-          },
-          {
-            "href": "https://api.reliefweb.int/v2/countries/175",
-            "id": 175,
-            "name": "Nigeria",
-            "shortname": "Nigeria",
-            "iso3": "nga",
-            "location": {
-              "lat": 9.59,
-              "lon": 8.11
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/43154"
+      "href": "https://api.reliefweb.int/v2/disasters/51337"
     },
     {
       "id": "52658",
@@ -2929,54 +2929,54 @@
       "href": "https://api.reliefweb.int/v2/disasters/52019"
     },
     {
-      "id": "51453",
+      "id": "51911",
       "score": 1,
       "fields": {
-        "name": "Mozambique: Cholera Outbreak - 2022-2026",
+        "name": "Zambia: Drought - 2024-2026",
         "status": "ongoing",
-        "glide": "EP-2023-000006-MOZ",
+        "glide": "DR-2024-000018-ZMB",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/164",
-            "id": 164,
-            "name": "Mozambique",
-            "shortname": "Mozambique",
-            "iso3": "moz",
+            "href": "https://api.reliefweb.int/v2/countries/256",
+            "id": 256,
+            "name": "Zambia",
+            "shortname": "Zambia",
+            "iso3": "zmb",
             "location": {
-              "lat": -18.09,
-              "lon": 34.75
+              "lat": -14,
+              "lon": 27.43
             },
             "primary": true
           }
         ],
         "type": [
           {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
+            "id": 4672,
+            "name": "Drought",
+            "code": "DR",
             "primary": true
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/51453"
+      "href": "https://api.reliefweb.int/v2/disasters/51911"
     },
     {
-      "id": "51442",
+      "id": "52700",
       "score": 1,
       "fields": {
-        "name": "Burundi: Cholera Outbreak - Jan 2023",
+        "name": "Bangladesh: Dengue Outbreak - Sep 2026",
         "status": "ongoing",
-        "glide": "EP-2023-000075-BDI",
+        "glide": "EP-2026-000174-BGD",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/47",
-            "id": 47,
-            "name": "Burundi",
-            "shortname": "Burundi",
-            "iso3": "bdi",
+            "href": "https://api.reliefweb.int/v2/countries/31",
+            "id": 31,
+            "name": "Bangladesh",
+            "shortname": "Bangladesh",
+            "iso3": "bgd",
             "location": {
-              "lat": -3.53,
-              "lon": 29.89
+              "lat": 23.84,
+              "lon": 90.27
             },
             "primary": true
           }
@@ -2990,7 +2990,172 @@
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/51442"
+      "href": "https://api.reliefweb.int/v2/disasters/52700"
+    },
+    {
+      "id": "52699",
+      "score": 1,
+      "fields": {
+        "name": "Liberia: Floods - Aug 2026",
+        "status": "ongoing",
+        "glide": "FL-2026-000175-LBR",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/139",
+            "id": 139,
+            "name": "Liberia",
+            "shortname": "Liberia",
+            "iso3": "lbr",
+            "location": {
+              "lat": 6.45,
+              "lon": -9.31
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52699"
+    },
+    {
+      "id": "52676",
+      "score": 1,
+      "fields": {
+        "name": "Indonesia: Earthquake - Aug 2026",
+        "status": "ongoing",
+        "glide": "EQ-2026-000150-IDN",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/120",
+            "id": 120,
+            "name": "Indonesia",
+            "shortname": "Indonesia",
+            "iso3": "idn",
+            "location": {
+              "lat": -2.28,
+              "lon": 117.37
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4628,
+            "name": "Earthquake",
+            "code": "EQ",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52676"
+    },
+    {
+      "id": "52669",
+      "score": 1,
+      "fields": {
+        "name": "India: Flash Floods - Jul 2026",
+        "status": "ongoing",
+        "glide": "FF-2026-000139-IND",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/119",
+            "id": 119,
+            "name": "India",
+            "shortname": "India",
+            "iso3": "ind",
+            "location": {
+              "lat": 22.76,
+              "lon": 79.28
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4624,
+            "name": "Flash Flood",
+            "code": "FF",
+            "primary": true
+          },
+          {
+            "id": 4611,
+            "name": "Flood",
+            "code": "FL"
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52669"
+    },
+    {
+      "id": "52657",
+      "score": 1,
+      "fields": {
+        "name": "Chad: Cholera Outbreak - Jun 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000134-TCD",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/55",
+            "id": 55,
+            "name": "Chad",
+            "shortname": "Chad",
+            "iso3": "tcd",
+            "location": {
+              "lat": 15.36,
+              "lon": 18.66
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52657"
+    },
+    {
+      "id": "52608",
+      "score": 1,
+      "fields": {
+        "name": "Venezuela: Earthquakes - Jun 2026",
+        "status": "ongoing",
+        "glide": "EQ-2026-000093-VEN",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/250",
+            "id": 250,
+            "name": "Venezuela (Bolivarian Republic of)",
+            "shortname": "Venezuela",
+            "iso3": "ven",
+            "location": {
+              "lat": 7.62,
+              "lon": -65.8
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4628,
+            "name": "Earthquake",
+            "code": "EQ",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52608"
     },
     {
       "id": "52546",
@@ -3339,22 +3504,22 @@
       "href": "https://api.reliefweb.int/v2/disasters/52508"
     },
     {
-      "id": "52700",
+      "id": "51453",
       "score": 1,
       "fields": {
-        "name": "Bangladesh: Dengue Outbreak - Sep 2026",
+        "name": "Mozambique: Cholera Outbreak - 2022-2026",
         "status": "ongoing",
-        "glide": "EP-2026-000174-BGD",
+        "glide": "EP-2023-000006-MOZ",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/31",
-            "id": 31,
-            "name": "Bangladesh",
-            "shortname": "Bangladesh",
-            "iso3": "bgd",
+            "href": "https://api.reliefweb.int/v2/countries/164",
+            "id": 164,
+            "name": "Mozambique",
+            "shortname": "Mozambique",
+            "iso3": "moz",
             "location": {
-              "lat": 23.84,
-              "lon": 90.27
+              "lat": -18.09,
+              "lon": 34.75
             },
             "primary": true
           }
@@ -3368,126 +3533,25 @@
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/52700"
+      "href": "https://api.reliefweb.int/v2/disasters/51453"
     },
     {
-      "id": "52699",
+      "id": "51442",
       "score": 1,
       "fields": {
-        "name": "Liberia: Floods - Aug 2026",
+        "name": "Burundi: Cholera Outbreak - Jan 2023",
         "status": "ongoing",
-        "glide": "FL-2026-000175-LBR",
+        "glide": "EP-2023-000075-BDI",
         "country": [
           {
-            "href": "https://api.reliefweb.int/v2/countries/139",
-            "id": 139,
-            "name": "Liberia",
-            "shortname": "Liberia",
-            "iso3": "lbr",
+            "href": "https://api.reliefweb.int/v2/countries/47",
+            "id": 47,
+            "name": "Burundi",
+            "shortname": "Burundi",
+            "iso3": "bdi",
             "location": {
-              "lat": 6.45,
-              "lon": -9.31
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52699"
-    },
-    {
-      "id": "52676",
-      "score": 1,
-      "fields": {
-        "name": "Indonesia: Earthquake - Aug 2026",
-        "status": "ongoing",
-        "glide": "EQ-2026-000150-IDN",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/120",
-            "id": 120,
-            "name": "Indonesia",
-            "shortname": "Indonesia",
-            "iso3": "idn",
-            "location": {
-              "lat": -2.28,
-              "lon": 117.37
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4628,
-            "name": "Earthquake",
-            "code": "EQ",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52676"
-    },
-    {
-      "id": "52669",
-      "score": 1,
-      "fields": {
-        "name": "India: Flash Floods - Jul 2026",
-        "status": "ongoing",
-        "glide": "FF-2026-000139-IND",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/119",
-            "id": 119,
-            "name": "India",
-            "shortname": "India",
-            "iso3": "ind",
-            "location": {
-              "lat": 22.76,
-              "lon": 79.28
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4624,
-            "name": "Flash Flood",
-            "code": "FF",
-            "primary": true
-          },
-          {
-            "id": 4611,
-            "name": "Flood",
-            "code": "FL"
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52669"
-    },
-    {
-      "id": "52657",
-      "score": 1,
-      "fields": {
-        "name": "Chad: Cholera Outbreak - Jun 2026",
-        "status": "ongoing",
-        "glide": "EP-2026-000134-TCD",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/55",
-            "id": 55,
-            "name": "Chad",
-            "shortname": "Chad",
-            "iso3": "tcd",
-            "location": {
-              "lat": 15.36,
-              "lon": 18.66
+              "lat": -3.53,
+              "lon": 29.89
             },
             "primary": true
           }
@@ -3501,71 +3565,7 @@
           }
         ]
       },
-      "href": "https://api.reliefweb.int/v2/disasters/52657"
-    },
-    {
-      "id": "52612",
-      "score": 1,
-      "fields": {
-        "name": "Central African Republic: Cholera Outbreak - Jun 2026",
-        "status": "ongoing",
-        "glide": "EP-2026-000107-CAF",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/54",
-            "id": 54,
-            "name": "Central African Republic",
-            "shortname": "CAR",
-            "iso3": "caf",
-            "location": {
-              "lat": 6.57,
-              "lon": 20.48
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4642,
-            "name": "Epidemic",
-            "code": "EP",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52612"
-    },
-    {
-      "id": "52608",
-      "score": 1,
-      "fields": {
-        "name": "Venezuela: Earthquakes - Jun 2026",
-        "status": "ongoing",
-        "glide": "EQ-2026-000093-VEN",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/250",
-            "id": 250,
-            "name": "Venezuela (Bolivarian Republic of)",
-            "shortname": "Venezuela",
-            "iso3": "ven",
-            "location": {
-              "lat": 7.62,
-              "lon": -65.8
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4628,
-            "name": "Earthquake",
-            "code": "EQ",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/52608"
+      "href": "https://api.reliefweb.int/v2/disasters/51442"
     },
     {
       "id": "52684",
@@ -3621,38 +3621,6 @@
       "href": "https://api.reliefweb.int/v2/disasters/52684"
     },
     {
-      "id": "51911",
-      "score": 1,
-      "fields": {
-        "name": "Zambia: Drought - 2024-2026",
-        "status": "ongoing",
-        "glide": "DR-2024-000018-ZMB",
-        "country": [
-          {
-            "href": "https://api.reliefweb.int/v2/countries/256",
-            "id": 256,
-            "name": "Zambia",
-            "shortname": "Zambia",
-            "iso3": "zmb",
-            "location": {
-              "lat": -14,
-              "lon": 27.43
-            },
-            "primary": true
-          }
-        ],
-        "type": [
-          {
-            "id": 4672,
-            "name": "Drought",
-            "code": "DR",
-            "primary": true
-          }
-        ]
-      },
-      "href": "https://api.reliefweb.int/v2/disasters/51911"
-    },
-    {
       "id": "51805",
       "score": 1,
       "fields": {
@@ -3683,6 +3651,38 @@
         ]
       },
       "href": "https://api.reliefweb.int/v2/disasters/51805"
+    },
+    {
+      "id": "52612",
+      "score": 1,
+      "fields": {
+        "name": "Central African Republic: Cholera Outbreak - Jun 2026",
+        "status": "ongoing",
+        "glide": "EP-2026-000107-CAF",
+        "country": [
+          {
+            "href": "https://api.reliefweb.int/v2/countries/54",
+            "id": 54,
+            "name": "Central African Republic",
+            "shortname": "CAR",
+            "iso3": "caf",
+            "location": {
+              "lat": 6.57,
+              "lon": 20.48
+            },
+            "primary": true
+          }
+        ],
+        "type": [
+          {
+            "id": 4642,
+            "name": "Epidemic",
+            "code": "EP",
+            "primary": true
+          }
+        ]
+      },
+      "href": "https://api.reliefweb.int/v2/disasters/52612"
     }
   ]
 }

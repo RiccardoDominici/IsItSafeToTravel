@@ -1,6 +1,6 @@
 {
   "source": "reliefweb",
-  "fetchedAt": "2026-10-15T09:54:19.061Z",
+  "fetchedAt": "2026-10-15T10:57:20.629Z",
   "indicators": [
     {
       "countryIso3": "SOM",
@@ -17,20 +17,6 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "SSD",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 3,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "NGA",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 2,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
       "countryIso3": "MWI",
       "indicatorName": "reliefweb_active_disasters",
       "value": 3,
@@ -41,55 +27,6 @@
       "countryIso3": "ZWE",
       "indicatorName": "reliefweb_active_disasters",
       "value": 4,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "MOZ",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 6,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "PAN",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "DZA",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 2,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "ECU",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 3,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "MDG",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 6,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "REU",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "GHA",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
       "year": 2026,
       "source": "reliefweb"
     },
@@ -122,6 +59,27 @@
       "source": "reliefweb"
     },
     {
+      "countryIso3": "ECU",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 3,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "MDG",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 6,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "MOZ",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 6,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
       "countryIso3": "ZMB",
       "indicatorName": "reliefweb_active_disasters",
       "value": 3,
@@ -129,16 +87,44 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "GNB",
+      "countryIso3": "SSD",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 3,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "PAN",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
       "year": 2026,
       "source": "reliefweb"
     },
     {
-      "countryIso3": "NER",
+      "countryIso3": "DZA",
       "indicatorName": "reliefweb_active_disasters",
       "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "REU",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "GHA",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "GNB",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
       "year": 2026,
       "source": "reliefweb"
     },
@@ -192,9 +178,65 @@
       "source": "reliefweb"
     },
     {
+      "countryIso3": "NGA",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "NER",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
       "countryIso3": "ETH",
       "indicatorName": "reliefweb_active_disasters",
       "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "SLE",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "COL",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "LKA",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "SYR",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "IDN",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 2,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "AGO",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 3,
       "year": 2026,
       "source": "reliefweb"
     },
@@ -318,20 +360,6 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "AGO",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 3,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "SYR",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 2,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
       "countryIso3": "BWA",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
@@ -389,34 +417,6 @@
     },
     {
       "countryIso3": "BOL",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 2,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "SLE",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "COL",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 2,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "LKA",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "IDN",
       "indicatorName": "reliefweb_active_disasters",
       "value": 2,
       "year": 2026,
@@ -486,27 +486,6 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "BDI",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "BFA",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
-      "countryIso3": "MKD",
-      "indicatorName": "reliefweb_active_disasters",
-      "value": 1,
-      "year": 2026,
-      "source": "reliefweb"
-    },
-    {
       "countryIso3": "LBR",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
@@ -528,7 +507,21 @@
       "source": "reliefweb"
     },
     {
-      "countryIso3": "CAF",
+      "countryIso3": "BFA",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "MKD",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "BDI",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
       "year": 2026,
@@ -543,6 +536,13 @@
     },
     {
       "countryIso3": "NPL",
+      "indicatorName": "reliefweb_active_disasters",
+      "value": 1,
+      "year": 2026,
+      "source": "reliefweb"
+    },
+    {
+      "countryIso3": "CAF",
       "indicatorName": "reliefweb_active_disasters",
       "value": 1,
       "year": 2026,
