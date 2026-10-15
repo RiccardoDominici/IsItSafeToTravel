@@ -1489,6 +1489,66 @@ const BE_CALM_PATTERNS = [
 ];
 
 /**
+ * Is `cur` (one accent-folded sentence) Belgium's top-tier verdict -- ALL travel advised against --
+ * aimed at the country itself? Belgium words its tiers on the "Derniere mise a jour" page as fixed
+ * sentences (verified live 2026-10-15): "Tous les voyages au Yemen sont deconseilles" (Yemen),
+ * "Tous les voyages vers et dans le pays sont deconseilles" (Somalia), "Tous les voyages en
+ * Republique centrafricaine, a l'exception de Bangui, la capitale du pays, sont deconseilles"
+ * (CAR), "Dans le reste du pays, tous les voyages sont deconseilles" (Burkina Faso) -- versus the
+ * second tier, the SAME construction with "non-essentiels" ("tous les voyages non-essentiels vers
+ * Bahrein sont deconseilles"), which stays 3 through the plain 'deconseill' stem.
+ *
+ * The target must be the country itself: its own name or "le pays" right after the preposition,
+ * or a catch-all ("reste du pays", "l'ensemble du pays/territoire", "tout le pays/territoire").
+ * That is what keeps the regional uses an earlier version of the BE parser escalated by mistake
+ * (Somalia's Puntland paragraph "Tous les voyages, meme d'ordre humanitaire, sont strictement
+ * deconseilles", the Philippines' "tout voyage est deconseille dans la partie occidentale de
+ * Mindanao") out of this path: neither names the country as the target. A sentence with a
+ * regional word, or with another country named next to a generic "le pays", never qualifies.
+ */
+const BE_ALL_TRAVEL = /\b(?:tous les voyages|tout voyage|tous les deplacements|tout deplacement)\b/;
+
+/** "after dark" / "alone" qualifiers that turn a travel sentence into a manner tip (see the night
+ *  veto in normalizeBeLevel). "de jour comme de nuit" (day AND night) is the opposite, not a qualifier. */
+function hasBeTimeOrSoloQualifier(cur: string): boolean {
+  return /tombee de la nuit|\bde nuit\b|\bla nuit\b|\bnocturnes?\b|\bseul(?:e|es|s)?\b/.test(cur.replace(/de jour comme de nuit/g, ''));
+}
+
+function isBeAllTravelToCountry(cur: string, countryFold: string, regionalWords: string[]): boolean {
+  if (!BE_ALL_TRAVEL.test(cur) || !cur.includes('deconseill')) return false;
+  if (hasBeTimeOrSoloQualifier(cur)) return false; // "tous les deplacements de nuit ..." is a manner tip
+  if (/non[- ]?essentiel/.test(cur)) return false; // second tier, not "all travel"
+  if (regionalWords.some((w) => cur.includes(w))) return false;
+  const prep = "\\b(?:vers|en|au|aux|a|dans)(?: et (?:vers|en|au|aux|a|dans))? (?:le |la |les |l['\u2019])?";
+  const ownName = new RegExp(`${prep}${escapeRegexLiteral(countryFold)}(?![a-z])`);
+  if (ownName.test(cur)) return true;
+  // A generic "pays"/"territoire" target must END the noun phrase (punctuation or the verb next):
+  // Israel's own page says "Tous les voyages dans le reste du Territoire palestinien occupe sont
+  // vivement deconseilles" -- "reste du territoire" followed by ANOTHER territory's qualifier,
+  // which must not become Israel's level.
+  const end = '(?=\\s*[,.;:!?)]|\\s*$|\\s+(?:sont|est|restent|reste|demeurent|demeure)\\b)';
+  const generic = new RegExp(
+    `(?:${prep}pays|reste du (?:pays|territoire)|ensemble du (?:pays|territoire)|tout le (?:pays|territoire))${end}`,
+  );
+  if (!generic.test(cur)) return false;
+  return !BE_OTHER_COUNTRY_NAMES.some((n) => n !== countryFold && cur.includes(n));
+}
+
+/**
+ * Keep only the blocks of Belgium's "Derniere mise a jour" page that carry a travel VERDICT
+ * ("deconseill...", or "quitter" governed by an advisory verb, the same two triggers
+ * normalizeBeLevel escalates on). The rest of that page is seasonal or practical notices (heat
+ * waves, wildfires, registration rules -- Italy's: "Accordez une attention particuliere aux
+ * personnes agees", a heat-wave tip) whose generic caution words would otherwise read as level 2
+ * for countries Belgium itself calls safe on the same page. The security article keeps supplying
+ * its own level-2 cues and calm statements exactly as before.
+ */
+export function isBeVerdictBlock(block: string): boolean {
+  const f = foldFr(block);
+  return f.includes('deconseill') || (/\bquitter\b/.test(f) && /(?<!de)conseill|recommand/.test(f));
+}
+
+/**
  * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
  *
  * Belgium publishes no numeric/color level: the actual verdict lives in free-text prose on
@@ -1623,6 +1683,11 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     'certaines parties', 'certains endroits', 'ces zones', 'ces regions', 'cette region',
     'localite', 'quartier', 'comte', 'bidonville', 'canton', 'township',
     'certains etats', 'certain etat', // e.g. Mexico's "voyages... vers certains États"
+    // Added 2026-10-15 (latest-update pages, see findBeUpdateLink): Kosovo's restricts "les voyages
+    // non essentiels vers les quatre communes dites du « Nord Kosovo »" -- the country's own name
+    // inside the REGION's name otherwise confirms it as whole-country (3 instead of the regional
+    // cap); Mexico's points to "les Etats ou les voyages non essentiels sont deconseilles".
+    'communes', 'municipalit', 'etats ou',
   ];
   const WHOLE_COUNTRY_PHRASES = [
     'le pays', 'tout le pays', 'ensemble du pays', 'ensemble du territoire',
@@ -1702,11 +1767,23 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
       // consequence-of-something-else clause; (2) it still requires its OWN stricter whole-country
       // check below (requireCountryNameOnly) -- the generic "le pays" fallback other triggers use
       // is too weak a signal on its own for this specific verb.
-      const hasQuitter = /\bquitter\b/.test(cur) && /conseil|recommand/.test(cur);
+      // Repair 2026-10-15: the governing verb must be a POSITIVE "conseill-"/"recommand-" verb.
+      // The bare /conseil/ also matched "DEconseille" -- Venezuela's update page says "Il est
+      // vivement deconseille de quitter le Venezuela par voie terrestre" (advised AGAINST leaving
+      // by land, a route warning), which read as "leave the country" (4) -- and the noun "conseils"
+      // (Russia's "Des conseils essentiels ... pour quitter la Russie", a pointer to transport tips).
+      const hasQuitter = /\bquitter\b/.test(cur) && /(?<!de)conseill|recommand/.test(cur);
 
       let sentenceLevel = 0;
       let requireCountryNameOnly = false;
-      if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) {
+      // Belgium's own top tier, stated with the country itself as the target -- already confirmed
+      // whole-country by its own wording, so it skips the look-back confirmation below (see
+      // isBeAllTravelToCountry). Checked first: "tous les voyages ... deconseilles" otherwise only
+      // reaches the plain 'deconseill' stem (3).
+      const allTravelToCountry = isBeAllTravelToCountry(cur, countryFold, REGIONAL_WORDS);
+      if (allTravelToCountry) {
+        sentenceLevel = 4;
+      } else if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) {
         sentenceLevel = 4;
       } else if (hasQuitter) {
         sentenceLevel = 4;
@@ -1717,7 +1794,7 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
 
       if (sentenceLevel === 0) continue;
 
-      if (sentenceLevel > 2) {
+      if (sentenceLevel > 2 && !allTravelToCountry) {
         // Whole-country confirmation looks one sentence back too (within the same paragraph):
         // "en Corée du Nord... Tous les voyages sont déconseillés" names the country once and
         // refers back to it implicitly, which is normal French, not a scope expansion.
@@ -1742,9 +1819,16 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
           if (p === 'interieur du pays' && cur.includes(p) && BE_MANNER_QUALIFIER.test(cur)) return false;
           return true;
         });
-        const wholeCountryConfirmed = requireCountryNameOnly
-          ? countryNameConfirmed
-          : countryNameConfirmed || (!mentionsOtherCountry && hasGenericWholeCountryPhrase);
+        // Repair 2026-10-15: a sentence about WHEN or HOW to move (after dark, alone) is a manner tip
+        // wherever it applies, never a verdict on going at all -- Papua New Guinea's update page:
+        // "Les deplacements apres la tombee de la nuit sont fortement deconseilles dans tout le pays"
+        // read as a whole-country 4. Same idea as BE_MANNER_QUALIFIER, which only guarded the
+        // "interieur du pays" phrase.
+        const wholeCountryConfirmed =
+          !hasBeTimeOrSoloQualifier(cur) &&
+          (requireCountryNameOnly
+            ? countryNameConfirmed
+            : countryNameConfirmed || (!mentionsOtherCountry && hasGenericWholeCountryPhrase));
         const regionalHit = REGIONAL_WORDS.some((w) => window.includes(w));
 
         if (!wholeCountryConfirmed || regionalHit) sentenceLevel = 2;
