@@ -17,13 +17,14 @@ import { getCountryByIso2, getCountryByName } from '../config/countries.js';
  * depend on page markup.
  *
  * Level mapping: `advisory-state` is Canada's own 0-3 national risk level:
- *   0 "Take normal security precautions"  -> 1
+ *   0 "Exercise normal security precautions" -> 1
  *   1 "Exercise a high degree of caution" -> 2
  *   2 "Avoid non-essential travel"        -> 3
  *   3 "Avoid all travel"                  -> 4
  * `has-regional-advisory` marks stricter advice for named regions (Mexico, Colombia,
  * India...). Per the project's standing rule, a regional advisory never becomes the
- * national level. It only appears in the label ("..., with regional advisories").
+ * national level. It only appears in the label, in Canada's own form:
+ * "Exercise a high degree of caution (with regional advisories)".
  */
 
 export const CA_OPEN_DATA_URLS = [
@@ -37,9 +38,9 @@ export const CA_FETCH_HEADERS = {
   'User-Agent': 'Mozilla/5.0 (compatible; IsItSafeToTravelBot/1.0; +https://isitsafetotravel.org)',
 };
 
-/** Canada's own wording for each unified level (travel.gc.ca risk-level legend). */
+/** Canada's own wording for each unified level, as the feed's eng.advisory-text writes it. */
 export const CA_LEVEL_TEXT: Record<number, string> = {
-  1: 'Take normal security precautions',
+  1: 'Exercise normal security precautions',
   2: 'Exercise a high degree of caution',
   3: 'Avoid non-essential travel',
   4: 'Avoid all travel',
@@ -124,7 +125,7 @@ export function parseCaOpenData(json: unknown, currentYear: number): CaParseResu
     result.advisoryInfo[country.iso3] = {
       ca: {
         level,
-        text: `${CA_LEVEL_TEXT[level]}${regional ? ', with regional advisories' : ''}`,
+        text: `${CA_LEVEL_TEXT[level]}${regional ? ' (with regional advisories)' : ''}`,
         source: 'Government of Canada',
         url: slug ? `https://travel.gc.ca/destinations/${slug}` : 'https://travel.gc.ca/travelling/advisories',
         ...(updatedAt ? { updatedAt } : {}),

@@ -1,5 +1,8 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { parseCaOpenData, summarizeCaOpenData, CA_LEVEL_TEXT } from '../fetchers/advisories-ca.js';
 
 /**
@@ -8,7 +11,8 @@ import { parseCaOpenData, summarizeCaOpenData, CA_LEVEL_TEXT } from '../fetchers
  * 0-3, `has-regional-advisory` 0/1, `date-published.date`, `eng.{name,url-slug,advisory-text}`.
  * The live feed could not be reached from the build machine (sandbox DNS), so the levels below
  * are the travel.gc.ca levels the 2026-10-01 HTML parse recorded (the last good read), not a
- * live capture. Thailand, Peru and Nauru are synthetic edge cases.
+ * live capture. Thailand, Peru and Nauru are synthetic edge cases. Field names and label
+ * wording match a real 2025-03-07 copy of the index (227 countries parsed, 0 mismatches).
  */
 function entry(iso2: string, name: string, slug: string, state: number | null, text: string, regional = 0) {
   return {
@@ -36,9 +40,9 @@ const FEED = {
     CO: entry('CO', 'Colombia', 'colombia', 1, 'Exercise a high degree of caution (with regional advisories)', 1),
     SA: entry('SA', 'Saudi Arabia', 'saudi-arabia', 2, 'Avoid non-essential travel'),
     FR: entry('FR', 'France', 'france', 1, 'Exercise a high degree of caution'),
-    JP: entry('JP', 'Japan', 'japan', 0, 'Take normal security precautions'),
-    'PT-20': entry('PT-20', 'Azores', 'azores', 0, 'Take normal security precautions'),
-    XK: entry('XK', 'Kosovo', 'kosovo', 0, 'Take normal security precautions'),
+    JP: entry('JP', 'Japan', 'japan', 0, 'Exercise normal security precautions'),
+    'PT-20': entry('PT-20', 'Azores', 'azores', 0, 'Exercise normal security precautions'),
+    XK: entry('XK', 'Kosovo', 'kosovo', 0, 'Exercise normal security precautions'),
     // advisory-state missing: the English label still says the level.
     TH: entry('TH', 'Thailand', 'thailand', null, 'Exercise a high degree of caution', 1),
     // Neither a usable state nor a known label: skipped, never guessed.
@@ -64,7 +68,7 @@ describe('parseCaOpenData', () => {
   it('a regional advisory never raises the national level; it only shows in the label', () => {
     assert.equal(level('MEX'), 2);
     assert.equal(level('COL'), 2);
-    assert.equal(result.advisoryInfo.MEX.ca.text, 'Exercise a high degree of caution, with regional advisories');
+    assert.equal(result.advisoryInfo.MEX.ca.text, 'Exercise a high degree of caution (with regional advisories)');
     assert.equal(result.advisoryInfo.JPN.ca.text, CA_LEVEL_TEXT[1]);
   });
 
@@ -114,5 +118,43 @@ describe('summarizeCaOpenData', () => {
     const rows = summarizeCaOpenData(FEED);
     assert.equal(rows.length, Object.keys(FEED.data).length);
     assert.deepEqual(rows[0], { key: 'AF', state: 3, regional: 0, published: '2026-09-24 10:24:57' });
+  });
+});
+
+/**
+ * A real copy of the feed: 16 records of index-alpha-eng.json as generated 2025-03-07 (from a
+ * public GitHub mirror; "recent-updates" prose removed). Open Government Licence - Canada.
+ */
+describe('parseCaOpenData on a real 2025-03-07 excerpt of the feed', () => {
+  const real = JSON.parse(
+    readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'ca-open-data-2025-03-07.json'), 'utf-8'),
+  );
+  const result = parseCaOpenData(real, 2025);
+  const level = (iso3: string) => result.advisoryInfo[iso3]?.ca.level;
+
+  it('reads every record but the Azores, with no state/label disagreement', () => {
+    assert.equal(result.indicators.length, 15);
+    assert.deepEqual(result.unmatched, ['PT-20 (Azores)']);
+    assert.deepEqual(result.mismatches, []);
+    assert.deepEqual(result.unreadable, []);
+  });
+
+  it('"Avoid all travel" countries are 4, Israel "Avoid non-essential travel" is 3, Mexico/Colombia/Turkey/India are 2 with regional advisories, the US is 1', () => {
+    for (const iso3 of ['AFG', 'SYR', 'PRK', 'UKR', 'RUS', 'VEN', 'HTI']) assert.equal(level(iso3), 4, iso3);
+    assert.equal(level('ISR'), 3);
+    for (const iso3 of ['MEX', 'COL', 'TUR', 'IND']) {
+      assert.equal(level(iso3), 2, iso3);
+      assert.match(result.advisoryInfo[iso3].ca.text, /\(with regional advisories\)$/);
+    }
+    assert.equal(level('FRA'), 2);
+    assert.equal(level('USA'), 1);
+    assert.equal(result.advisoryInfo.USA.ca.text, 'Exercise normal security precautions');
+    assert.equal(level('XKX'), 1, 'regional advisories do not raise Kosovo above its national 1');
+  });
+
+  it('uses the travel.gc.ca slugs the feed carries (Türkiye renamed)', () => {
+    assert.equal(result.advisoryInfo.TUR.ca.url, 'https://travel.gc.ca/destinations/turkiye');
+    assert.equal(result.advisoryInfo.ISR.ca.url, 'https://travel.gc.ca/destinations/israel-the-west-bank-and-the-gaza-strip');
+    assert.equal(result.advisoryInfo.MEX.ca.updatedAt, '2025-03-06');
   });
 });
