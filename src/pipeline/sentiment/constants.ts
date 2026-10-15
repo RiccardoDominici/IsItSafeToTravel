@@ -27,9 +27,10 @@ export const SENTIMENT_DELTA_SCALE = 0.5;
 export const SENTIMENT_ABSOLUTE_SCORES: readonly number[] = [2, 4, 6, 8, 10];
 
 /**
- * Legacy relative votes carry no stored score, so they are anchored to the published score of
- * their UTC date. If that date has no snapshot, the nearest earlier snapshot within this many
- * days stands in (it is the score that was live then).
+ * Legacy relative votes carry no stored score. They are anchored to the score that was live when
+ * they were cast (frozen table data/sentiment/legacy-anchors.json); a row missing from that table
+ * falls back to the published score of its UTC date. If that date has no snapshot, the nearest
+ * earlier snapshot within this many days stands in (it is the score that was live then).
  */
 export const SENTIMENT_LEGACY_FALLBACK_DAYS = 7;
 

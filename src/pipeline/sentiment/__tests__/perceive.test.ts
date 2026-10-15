@@ -3,7 +3,7 @@ import { strict as assert } from 'node:assert';
 import { needsLegacyLookup, perceivedScore, utcDateOf, type PublishedScoreLookup } from '../perceive.js';
 import type { VoteRow } from '../../types.js';
 
-const NO_LOOKUP: PublishedScoreLookup = { scoreOn: () => null };
+const NO_LOOKUP: PublishedScoreLookup = { scoreAt: () => null };
 
 function row(o: Partial<VoteRow> = {}): VoteRow {
   return {
@@ -66,17 +66,19 @@ describe('perceivedScore: relative votes (scored countries)', () => {
     assert.ok(Math.abs(perceivedScore(row({ official_score: 7.25, delta: -2 }), NO_LOOKUP)! - 6.25) < 1e-12);
   });
 
-  it('anchors a legacy row to the published score of its UTC date', () => {
-    const calls: Array<[string, string]> = [];
+  it("anchors a legacy row to the score the lookup gives for the vote's exact moment", () => {
+    const calls: Array<[string, number]> = [];
     const lookup: PublishedScoreLookup = {
-      scoreOn: (iso3, date) => {
-        calls.push([iso3, date]);
+      scoreAt: (iso3, epochSeconds) => {
+        calls.push([iso3, epochSeconds]);
         return 7;
       },
     };
-    const legacy = row({ official_score: null, delta: 2, created_at: Date.UTC(2026, 9, 13, 8) / 1000 });
+    const castAt = Date.UTC(2026, 9, 13, 8, 15, 42) / 1000;
+    const legacy = row({ official_score: null, delta: 2, created_at: castAt });
     assert.equal(perceivedScore(legacy, lookup), 8);
-    assert.deepEqual(calls, [['AAA', '2026-10-13']]);
+    // The full timestamp, not just the day: the live score can change during a UTC day.
+    assert.deepEqual(calls, [['AAA', castAt]]);
   });
 
   it('is null for a legacy row whose score cannot be resolved', () => {
@@ -85,7 +87,7 @@ describe('perceivedScore: relative votes (scored countries)', () => {
 
   it('treats an out-of-range stored score as missing and falls back to the lookup', () => {
     for (const bad of [0, 11, Number.NaN]) {
-      const lookup: PublishedScoreLookup = { scoreOn: () => 5 };
+      const lookup: PublishedScoreLookup = { scoreAt: () => 5 };
       assert.equal(perceivedScore(row({ official_score: bad, delta: 0 }), lookup), 5, `stored ${bad}`);
     }
   });

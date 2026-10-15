@@ -118,8 +118,12 @@ Votes stay in D1 `votes` (`isitsafetotravel-sentiment`).
 Per vote, a **perceived score**:
 - relative vote (scored country): `S_shown + 0.5 · delta` (delta −2…+2). `S_shown` = the
   published score at vote time, stored server-side in `official_score` from now on (it is NULL
-  in all 322 existing rows: the widget never sent it). Legacy rows: the published score of that
-  country on the vote's UTC date from the score history.
+  in all 322 existing rows: the widget never sent it). Legacy rows: the score that was live on
+  the site when the vote was cast, from the frozen table `data/sentiment/legacy-anchors.json`
+  (built from master's git history by `scripts/build-legacy-vote-anchors.ts`, cross-checked
+  against the deploy runs). The per-day snapshots cannot stand in: they were regenerated under
+  v9/v9.1 on 2026-07-08 (China live 2.66, snapshot 6.51) and miss intra-day changes. A row not
+  in the table falls back to the published score of the vote's UTC date from the score history.
 - absolute vote (grey country, new): `rating` 1…5 → 2, 4, 6, 8, 10.
 
 Per target country, over the existing 180-day window with recency weight `0.5^(age/30d)`:

@@ -116,7 +116,8 @@ export async function runPipeline(dateOverride?: string): Promise<PipelineResult
     const { ok, rows } = await fetchVotes(cutoff);
 
     if (ok) {
-      // Votes stored with their score need no lookup; legacy rows are anchored to the score history.
+      // Votes stored with their score need no lookup; legacy rows are anchored to the score live
+      // when they were cast (frozen data/sentiment/legacy-anchors.json, else the per-day snapshots).
       const { lookup } = loadLegacyScoreLookup(rows);
       const { snapshot, droppedVotes } = aggregateVotes(rows, lookup, Date.now());
       writeSentimentSnapshot(date, snapshot);
