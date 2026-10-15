@@ -54,4 +54,15 @@ describe('normalizeJpNoDetailLevel / resolveJpCountryLevel (JP/MOFA pages withou
       '<a class="underline" href="/x.html">【危険レベル】<br>●ウクライナ全土<br>　レベル４：退避してください。渡航は止めてください。（退避勧告）（継続）<br><br>【ポイント】<br>●戦闘が継続しています。</a></div></div></div>';
     assert.equal(resolveJpCountryLevel(html, 'ウクライナ'), 4);
   });
+
+  it('the legend-only fallback is shifted too: a lone kiken_level_chuui (MOFA 1) block with no region text is 2, not 1', () => {
+    const html =
+      '<div id="kikendetail"><div class="kiken_levels"><div class="kiken_level_base kiken_level_chuui">十分注意してください</div></div></div></div></div>';
+    assert.equal(resolveJpCountryLevel(html, 'テスト'), 2);
+  });
+
+  it('no double shift on pages outside the numbered system: North Korea stays 4, "no danger information" stays 1', () => {
+    assert.equal(resolveJpCountryLevel(PRK_PAGE, '北朝鮮'), 4);
+    assert.equal(resolveJpCountryLevel(FRA_PAGE, 'フランス'), 1);
+  });
 });

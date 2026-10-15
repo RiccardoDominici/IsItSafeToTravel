@@ -1,6 +1,6 @@
 import { describe, it } from 'node:test';
 import { strict as assert } from 'node:assert';
-import { normalizeJpRegionalLevel } from '../normalize/advisory-levels.js';
+import { normalizeJpLevel, normalizeJpRegionalLevel } from '../normalize/advisory-levels.js';
 
 /**
  * Regression coverage for the 2026-09-26 JP (MOFA) regional-promotion repair
@@ -62,11 +62,11 @@ describe('normalizeJpRegionalLevel (JP/MOFA whole-country vs. regional scoping)'
     assert.equal(normalizeJpRegionalLevel(html, 'トルコ', 4), 2);
   });
 
-  it('Russia: the "the area OTHER THAN the Ukraine-border-strip, INCLUDING MOSCOW" catch-all is Level 3, which already exceeds the Level-2 regional-cap ceiling -> stays 3, is NOT raised to the border strip\'s own Level 4', () => {
+  it('Russia: the "the area OTHER THAN the Ukraine-border-strip, INCLUDING MOSCOW" catch-all is MOFA 3 "do not travel" -> unified 4 since the 2026-10-15 one-step shift (was 3); the whole-country statement decides, not the border strip', () => {
     const html = KIKENDETAIL_WRAP(
       '<a class="underline" href="/x.html">【危険レベル】<br>●ウクライナとの国境周辺地域<br>レベル4：退避してください。渡航は止めてください。（退避勧告）（継続）<br><br>●ウクライナとの国境周辺地域を除く地域（モスクワ市を含む）<br>レベル3：渡航は止めてください。（渡航中止勧告）（継続：ただし書きの修正）<br>ただし、真にやむを得ない事情がある場合には渡航・滞在することは妨げません。<br><br>【ポイント】<br>●上記を除く地域（モスクワ市を含む）の危険レベル３を継続します。</a>',
     );
-    assert.equal(normalizeJpRegionalLevel(html, 'ロシア', 4), 3);
+    assert.equal(normalizeJpRegionalLevel(html, 'ロシア', 4), 4);
   });
 
   it('Iraq: the country\'s own catch-all ("上記以外の地域" = the area other than the above) IS Level 4 -- a genuine whole-country "do not travel" that must NOT be capped down just because 8 named southeastern provinces were downgraded to 3', () => {
@@ -83,11 +83,11 @@ describe('normalizeJpRegionalLevel (JP/MOFA whole-country vs. regional scoping)'
     assert.equal(normalizeJpRegionalLevel(html, 'ウクライナ', 4), 4);
   });
 
-  it('Pakistan: "KP province\'s [the area other than what is designated Level 3/2 BELOW]" is possessively scoped to that ONE province via a LONG unpunctuated relative clause (not a short, 0-gap "の" like Ethiopia\'s) -- still not the whole country; the true catch-all is "Islamabad Capital Territory, Lahore-inclusive Punjab, ..., Karachi-inclusive Sindh" at Level 2, capped at 2 by the Afghan-border/former-FATA/Quetta Level-4 zones', () => {
+  it('Pakistan: "KP province\'s [the area other than what is designated Level 3/2 BELOW]" is possessively scoped to that ONE province via a LONG unpunctuated relative clause (not a short, 0-gap "の" like Ethiopia\'s) -- still not the whole country; the true catch-all is "Islamabad Capital Territory, Lahore-inclusive Punjab, ..., Karachi-inclusive Sindh" at MOFA 2 "avoid non-essential travel" -> unified 3 (2 before the 2026-10-15 shift); the Level-4 border zones stay capped', () => {
     const html = KIKENDETAIL_WRAP(
       '<a class="underline" href="/x.html">【危険度】<br>●アフガニスタンとの国境周辺地帯、ハイバル・パフトゥンハー州（KP州）の以下レベル３及びレベル２で指定した以外の地域、旧連邦直轄部族地域(旧FATA)全域、インドとの管理ライン（LoC）等周辺地帯、及びバロチスタン州クエッタ市<br>レベル４：退避を勧告します。渡航は止めてください。（退避勧告）《継続》<br>●バロチスタン州全域（アフガニスタンとの国境周辺地帯、クエッタ市、デラ・ブグディ郡及びコールー郡を除く）<br>レベル３：渡航は止めて下さい。（渡航中止勧告）《引き上げ》<br>●イスラマバード首都圏、ラホール市を含むパンジャーブ州、カラチ市を含むシンド州（ジャコババード郡を除く）<br>レベル２：不要不急の渡航は止めてください。《継続》<br><br>【ポイント】<br>●バロチスタン州の情勢は不安定です。</a>',
     );
-    assert.equal(normalizeJpRegionalLevel(html, 'パキスタン', 4), 2);
+    assert.equal(normalizeJpRegionalLevel(html, 'パキスタン', 4), 3);
   });
 
   it('Ethiopia: "Afar province\'s the-above-excluded area" is possessively scoped to ONE named province (not the whole country) despite containing "上記以外の" -- the true catch-all is "首都アディスアベバを含む上記以外の地域" (capital Addis Ababa included), Level 1, capped at 2 by the Level-4 border zones', () => {
@@ -119,5 +119,33 @@ describe('normalizeJpRegionalLevel (JP/MOFA whole-country vs. regional scoping)'
       '<a class="underline" href="/x.html">●2025年9月末から10月上旬にかけて、首都アンタナナリボを中心にデモが発生しました。<br>●貧困に起因する強盗、スリ、ひったくりが多発しており、注意が必要です。</a>',
     );
     assert.equal(normalizeJpRegionalLevel(html, 'マダガスカル', 1), 1);
+  });
+});
+
+/**
+ * The one-step shift (owner decision 2026-10-15). MOFA's scale starts a step lower than ours:
+ * 0 no danger information, 1 「十分注意してください」, 2 「不要不急の渡航は止めてください」,
+ * 3 「渡航は止めてください（渡航中止勧告）」, 4 「退避してください」. Until 2026-10-15 MOFA N was
+ * published as unified N, so 115 of 203 countries read "normal precautions" although 1 is
+ * MOFA's "exercise sufficient caution".
+ */
+describe('normalizeJpLevel: MOFA 0-4 -> unified 1-4, one step up', () => {
+  it('maps 0->1, 1->2, 2->3, 3->4, 4->4', () => {
+    assert.deepEqual([0, 1, 2, 3, 4].map(normalizeJpLevel), [1, 2, 3, 4, 4]);
+  });
+
+  it('a whole-country MOFA 1 "exercise sufficient caution" is unified 2, a whole-country MOFA 2 is 3', () => {
+    const page = (level: string, action: string) =>
+      KIKENDETAIL_WRAP(`<a class="underline" href="/x.html">【危険レベル】<br>●全土<br>　レベル${level}：${action}（継続）<br><br>【ポイント】<br>●x</a>`);
+    assert.equal(normalizeJpRegionalLevel(page('1', '十分注意してください。'), 'テスト', 2), 2);
+    assert.equal(normalizeJpRegionalLevel(page('２', '不要不急の渡航は止めてください。'), 'テスト', 3), 3);
+    assert.equal(normalizeJpRegionalLevel(page('3', '渡航は止めてください。（渡航中止勧告）'), 'テスト', 4), 4);
+  });
+
+  it('the regional cap still holds on the unified scale: a MOFA 4 border strip next to a MOFA 1 catch-all gives 2 (Armenia, Cameroon, India above)', () => {
+    const html = KIKENDETAIL_WRAP(
+      '<a class="underline" href="/x.html">【危険レベル】<br>●国境地帯<br>　レベル4：退避してください。渡航は止めてください。（退避勧告）<br>●上記以外の地域<br>　レベル1：十分注意してください。<br><br>【ポイント】<br>●x</a>',
+    );
+    assert.equal(normalizeJpRegionalLevel(html, 'テスト', 4), 2);
   });
 });

@@ -67,12 +67,15 @@ const NL_LEVEL_TEXT: Record<number, string> = {
   4: 'Niet reizen',
 };
 
-// Level 4 also carries North Korea's whole-territory "refrain from travelling, regardless of
-// purpose" request (normalizeJpNoDetailLevel), not only MOFA's numbered evacuation advisory.
+// Unified level -> MOFA's wording, after the one-step shift (normalizeJpLevel, owner decision
+// 2026-10-15): unified 2 is MOFA 1 "exercise sufficient caution", 3 is MOFA 2 "avoid
+// non-essential travel", 4 is MOFA 3 "do not travel" or MOFA 4 "evacuate". Level 4 also
+// carries North Korea's whole-territory "refrain from travelling, regardless of purpose"
+// request (normalizeJpNoDetailLevel), outside MOFA's numbered system.
 const JP_LEVEL_TEXT: Record<number, string> = {
-  1: 'Exercise caution',
-  2: 'Avoid non-essential travel',
-  3: 'Do not travel (advisory)',
+  1: 'No danger information issued',
+  2: 'Exercise sufficient caution',
+  3: 'Avoid non-essential travel',
   4: 'Do not travel / evacuate (advisory)',
 };
 
@@ -173,7 +176,9 @@ const JP_DISCOVERY_ANCHORS: Record<string, number> = {
   FRA: 1, USA: 1, SGP: 1, AUS: 1, CAN: 1, GBR: 1, VAT: 1, CHN: 1,
   MEX: 2, ECU: 2,
   BHR: 2, XKX: 2,
-  RUS: 3, BLR: 3,
+  // MOFA 3 "do not travel" on the catch-all covering Moscow/Minsk: unified 4 since the
+  // 2026-10-15 one-step shift (was 3).
+  RUS: 4, BLR: 4,
 };
 
 interface FetcherResult {
