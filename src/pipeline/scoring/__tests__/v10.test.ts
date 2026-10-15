@@ -243,6 +243,23 @@ describe('v10 computeAllScores: grey countries and the danger guard (synthetic, 
     assert.equal(governance.indicators.some((i) => i.name === 'vdem_rule_of_law'), false, 'the 1870 value is not scored');
   });
 
+  it('disaster alerts are data but not coverage: GUM with advisories, World Bank, ReliefWeb and GDACS stays grey', () => {
+    // The live case of 2026-10-15: a GDACS alert gave Guam a fourth "source" and a score resting
+    // on two real datasets. The alert feeds still enter the natural-hazards pillar.
+    const gum = bySource([
+      [row('GUM', 'advisory_level_us', 1, 2026, 'advisories_us')],
+      [row('GUM', 'wb_homicide', 2.5, 2023, 'worldbank'), row('GUM', 'wb_population', 170_000, 2025, 'worldbank')],
+      [row('GUM', 'reliefweb_active_disasters', 1, 2026, 'reliefweb')],
+      [row('GUM', 'gdacs_disaster_alerts', 1, 2026, 'gdacs')],
+    ]);
+    const result = scoreAll(gum, { GUM: { us: advisory(1, 'US') } }).get('GUM')!;
+    assert.deepEqual(result.sources.map((s) => s.name).sort(), ['advisories', 'gdacs', 'reliefweb', 'worldbank']);
+    assert.equal(result.scoreStatus, 'insufficient_data', '2 coverage sources (alerts excluded) < 4');
+    assert.equal(result.score, null);
+    const hazards = result.pillars.find((p) => p.name === 'environment')!;
+    assert.ok(hazards.indicators.some((i) => i.name === 'gdacs_disaster_alerts'), 'the alert still feeds its pillar');
+  });
+
   it('pre-v10 config (no minSources/maxAgeYears): every country is scored, as in v9.1', () => {
     const { minSources, maxAgeYears, ...legacyF9 } = WEIGHTS.formulaV9!;
     void minSources;

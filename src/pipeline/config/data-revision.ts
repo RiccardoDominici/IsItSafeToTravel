@@ -150,7 +150,11 @@
  *          instead of a prior-driven number, so they leave every score-derived surface;
  *       d) per-pillar scale continuity for health, governance and environment (weights.json
  *          formulaV9.pillarCalibration) and the bounded community adjustment (at most +/-1.0
- *          point, only for active communities).
+ *          point, only for active communities);
+ *       e) (same day, after the first v10 run) the disaster-alert feeds GDACS and ReliefWeb no
+ *          longer count toward the four-source floor (scoring/coverage.ts): a GDACS alert had
+ *          given Guam a fourth "source" and a score resting on two real datasets. Only Guam
+ *          changed (scored 6.55 -> grey); it lands on 2026-10-15 under this same revision.
  *     Without this bump the switch run would diff v9.1 against v10 and email 28 band changes and
  *     dozens of score jumps that are the formula change, not news. The first production run must
  *     ALSO be dispatched with skip_digest=true (SPEC §6): the digest step reads the news file, and

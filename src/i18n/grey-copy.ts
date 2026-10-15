@@ -10,6 +10,7 @@
  * zh never puts a space between a country name and the Chinese text around it.
  */
 import type { Lang } from './ui';
+import { isEventFeedSource } from '../pipeline/scoring/coverage';
 
 export interface GreyCopy {
   /** Big neutral line in place of the score. */
@@ -28,6 +29,11 @@ export interface GreyCopy {
   titleSuffix: string;
   /** Display names of the non-advisory sources. */
   sources: Record<'worldbank' | 'gpi' | 'inform' | 'vdem' | 'ucdp' | 'reliefweb' | 'gdacs', string>;
+  /**
+   * A disaster-alert feed in the list: it covers the place only while a disaster is under way,
+   * so it does not count toward the four (src/pipeline/scoring/coverage.ts). {source} = its name.
+   */
+  alertItem: string;
 }
 
 export const greyCopy: Record<Lang, GreyCopy> = {
@@ -40,6 +46,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'How we decide when to publish a score',
     titleSuffix: 'Partial Data, No Score Yet',
     sources: { worldbank: 'World Bank', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'UCDP conflict data', reliefweb: 'ReliefWeb', gdacs: 'GDACS disaster alerts' },
+    alertItem: '{source} (only while a disaster is under way, so not counted toward the four)',
   },
   it: {
     noScore: 'Nessun punteggio di sicurezza ufficiale',
@@ -50,6 +57,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'Come decidiamo quando pubblicare un punteggio',
     titleSuffix: 'Dati parziali',
     sources: { worldbank: 'Banca Mondiale', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'dati sui conflitti UCDP', reliefweb: 'ReliefWeb', gdacs: 'allerte per disastri GDACS' },
+    alertItem: '{source} (solo durante un disastro in corso, quindi non conta tra le quattro)',
   },
   es: {
     noScore: 'Sin puntuación de seguridad oficial',
@@ -60,6 +68,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'Cómo decidimos cuándo publicar una puntuación',
     titleSuffix: 'Datos parciales',
     sources: { worldbank: 'Banco Mundial', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'datos de conflictos de UCDP', reliefweb: 'ReliefWeb', gdacs: 'alertas de desastres de GDACS' },
+    alertItem: '{source} (solo mientras hay un desastre en curso, así que no cuenta entre las cuatro)',
   },
   fr: {
     noScore: 'Pas de score de sécurité officiel',
@@ -70,6 +79,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'Comment nous décidons de publier un score',
     titleSuffix: 'Données partielles',
     sources: { worldbank: 'Banque mondiale', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'données de conflits UCDP', reliefweb: 'ReliefWeb', gdacs: 'alertes aux catastrophes GDACS' },
+    alertItem: '{source} (seulement pendant une catastrophe en cours, donc non comptée parmi les quatre)',
   },
   pt: {
     noScore: 'Sem pontuação de segurança oficial',
@@ -80,6 +90,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'Como decidimos quando publicar uma pontuação',
     titleSuffix: 'Dados parciais',
     sources: { worldbank: 'Banco Mundial', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'dados de conflitos do UCDP', reliefweb: 'ReliefWeb', gdacs: 'alertas de desastres do GDACS' },
+    alertItem: '{source} (apenas enquanto há um desastre em curso, por isso não conta entre as quatro)',
   },
   zh: {
     noScore: '暂无官方安全评分',
@@ -90,6 +101,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: '我们如何决定是否发布评分',
     titleSuffix: '数据不完整',
     sources: { worldbank: '世界银行', gpi: '全球和平指数', inform: 'INFORM 风险指数', vdem: 'V-Dem', ucdp: 'UCDP 冲突数据', reliefweb: 'ReliefWeb', gdacs: 'GDACS 灾害警报' },
+    alertItem: '{source}（仅在灾害发生期间提供，因此不计入这四个来源）',
   },
   de: {
     noScore: 'Keine offizielle Sicherheitsbewertung',
@@ -100,6 +112,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
     methodologyLink: 'Wann wir eine Bewertung veröffentlichen',
     titleSuffix: 'Unvollständige Datenlage',
     sources: { worldbank: 'Weltbank', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', vdem: 'V-Dem', ucdp: 'UCDP-Konfliktdaten', reliefweb: 'ReliefWeb', gdacs: 'GDACS-Katastrophenwarnungen' },
+    alertItem: '{source} (nur während einer laufenden Katastrophe, zählt daher nicht zu den vier)',
   },
 };
 
@@ -116,8 +129,10 @@ export function greySourceItems(
   }
   for (const name of sourceNames) {
     if (name === 'advisories') continue;
-    const label = (copy.sources as Record<string, string>)[name];
-    items.push(label ?? name);
+    const label = (copy.sources as Record<string, string>)[name] ?? name;
+    // A disaster-alert feed is listed (it is data we have) but marked as not counting, so the
+    // list never shows four items under "fewer than four cover this place".
+    items.push(isEventFeedSource(name) ? copy.alertItem.replace('{source}', label) : label);
   }
   return items;
 }

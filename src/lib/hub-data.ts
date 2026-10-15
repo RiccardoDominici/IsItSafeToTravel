@@ -4,13 +4,14 @@ import { loadLatestScores, loadHistoricalScores, getScoreDelta, sevenDayDelta } 
 import { getCountriesByRegion } from './regions';
 import type { Region } from './regions';
 import { isScored, type Scored } from './score-status';
+import { meetsCoverageFloor } from '../pipeline/scoring/coverage';
 
 // Data-coverage floor: micro-territories with only 1-3 reporting sources receive
 // sparse, optimistic default scores that pollute rankings (e.g. uninhabited
 // Pitcairn / Falklands ranking as "safest"). Require enough independent sources
-// before a country is eligible for a score-based ranking.
-// Keep MIN_RANKING_SOURCES in sync with scripts/generate-llms-full.ts.
-const MIN_RANKING_SOURCES = 4;
+// before a country is eligible for a score-based ranking. The floor and the way
+// sources are counted (disaster-alert feeds excluded) live in
+// src/pipeline/scoring/coverage.ts, shared with the engine, llms.txt and the news.
 
 /**
  * Ranking eligibility: an official score (formula v10: not a grey `insufficient_data` place, see
@@ -20,7 +21,7 @@ const MIN_RANKING_SOURCES = 4;
  * a number. With pre-v10 snapshots every country is scored and this is the plain 4-source floor.
  */
 export function hasSufficientData(c: ScoredCountry): c is Scored<ScoredCountry> {
-  return isScored(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+  return isScored(c) && meetsCoverageFloor(c.sources);
 }
 
 /** Returns top N countries (with sufficient data) sorted by score descending */

@@ -16,6 +16,7 @@ import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from "../src/lib/sit
 import { buildCountrySummary } from "../src/lib/country-summary.js";
 import { getBandVerdictCopy } from "../src/lib/band-copy.js";
 import type { ScoredCountry as EngineCountry } from "../src/pipeline/types.js";
+import { MIN_COVERAGE_SOURCES, isEventFeedSource, meetsCoverageFloor } from "../src/pipeline/scoring/coverage.js";
 
 // The 6 non-English locales, in the order shown next to every country entry
 // and in llms.txt's "## Languages" section (GEO-02: both files used to be
@@ -139,12 +140,19 @@ function linkLines(c: ScoredCountry): string[] {
  * count for the site-wide one.
  */
 function partialDataBlock(c: ScoredCountry, today: string): string[] {
-  const available = (c.sources ?? [])
-    .map((s) => (s.name ? SOURCE_LABEL[s.name] ?? s.name : null))
-    .filter((name): name is string => Boolean(name));
+  const label = (name: string): string => SOURCE_LABEL[name] ?? name;
+  const named = (c.sources ?? []).filter((s): s is { name: string } => Boolean(s.name));
+  // Disaster-alert feeds are data we have, but they cover a place only while a disaster is under
+  // way and never count toward the four (src/pipeline/scoring/coverage.ts): listed apart.
+  const available = named.filter((s) => !isEventFeedSource(s.name)).map((s) => label(s.name));
+  const alerts = named.filter((s) => isEventFeedSource(s.name)).map((s) => label(s.name));
+  const parts = [
+    available.length ? `available: ${available.join(", ")}` : "",
+    alerts.length ? `active disaster alerts, not counted: ${alerts.join(", ")}` : "",
+  ].filter(Boolean);
   const lines = [
     `### ${c.name.en} (${c.iso3})`,
-    `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, and this place has fewer${available.length ? ` (available: ${available.join(", ")})` : ""}. Travellers can still rate it on its page.`,
+    `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, and this place has fewer${parts.length ? ` (${parts.join("; ")})` : ""}. Travellers can still rate it on its page.`,
     "- **Safety Score:** none (partial data)",
   ];
   const advisoryLine = advisoriesLine(c);
@@ -172,12 +180,12 @@ function main() {
     a.name.en.localeCompare(b.name.en)
   );
 
-  // Data-coverage floor for rankings — keep MIN_RANKING_SOURCES in sync with
-  // the on-site ranking pages (hub-data.ts hasSufficientData) and with
-  // weights.json formulaV9.minSources (formula v10 grey rule).
-  const MIN_RANKING_SOURCES = 4;
+  // Data-coverage floor for rankings: the same definition as the on-site ranking pages
+  // (hub-data.ts hasSufficientData) and the engine's grey rule (src/pipeline/scoring/coverage.ts,
+  // disaster-alert feeds not counted).
+  const MIN_RANKING_SOURCES = MIN_COVERAGE_SOURCES;
   const hasSufficientData = (c: ScoredCountry): c is Scored =>
-    hasOfficialScore(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+    hasOfficialScore(c) && meetsCoverageFloor(c.sources);
 
   // Global rank (countries with an official score, score desc) + percentile + average.
   // Formula v10 grey places (score null) have no rank and stay out of the average.

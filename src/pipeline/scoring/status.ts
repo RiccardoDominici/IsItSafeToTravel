@@ -3,9 +3,10 @@ import type { ScoreStatus } from '../types.js';
 /**
  * Formula v10 official grey rule (SPEC §4).
  *
- * A country with fewer than `minSources` distinct data sources (after the max-age filter,
- * counted exactly like the site's hasSufficientData: one entry of ScoredCountry.sources
- * per source key) gets no official score: scoreStatus 'insufficient_data'.
+ * A country with fewer than `minSources` coverage sources (after the max-age filter, counted
+ * by coverage.ts coverageSourceCount exactly like the site's hasSufficientData: one entry of
+ * ScoredCountry.sources per source key, the disaster-alert feeds GDACS/ReliefWeb excluded)
+ * gets no official score: scoreStatus 'insufficient_data'.
  *
  * DANGER GUARD (invariant, not a tunable): a country showing any sign of acute danger is
  * ALWAYS scored, however thin its data, so a dangerous place can never hide behind a grey

@@ -2,6 +2,7 @@ import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
 import { applyMaxAge, formatMaxAgeLog } from './max-age.js';
 import { decideScoreStatus } from './status.js';
+import { coverageSourceCount } from './coverage.js';
 import { computeCommunityComponent, type CommunityEntry, type CommunityLookup } from './community.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
 import { getRegion } from '../../lib/regions.js';
@@ -51,8 +52,8 @@ export const PILLAR_CALIBRATION_MIN = 0.001;
  * 9. per-pillar scale continuity (pillarCalibration): the shrunk value of a pillar whose
  *    indicators changed is mapped p' = clamp(alpha + beta * p, 0.001, 1) BEFORE step 5,
  *    so its mean/spread, and therefore its effective weight, stay those of v9.1;
- * 10. scoreStatus: < minSources sources => 'insufficient_data' (score null) unless the
- *    danger guard holds (status.ts);
+ * 10. scoreStatus: < minSources coverage sources (coverage.ts: disaster-alert feeds do not
+ *    count) => 'insufficient_data' (score null) unless the danger guard holds (status.ts);
  * 11. bounded community adjustment, score = clamp(S_data + adj, 1, 10) (community.ts).
  * There is no global calibration of the final score.
  * Without those fields (pre-v10 or synthetic configs) the output equals v9.1 exactly.
@@ -320,6 +321,7 @@ export function calibratePillar(p: number, calibration: CalibrationConfig | unde
 
 /** Per-country diagnostics computeAllScores aggregates into its run summary. */
 export interface CountryScoreDiagnostics {
+  /** Coverage sources (coverage.ts: disaster-alert feeds excluded), the grey rule's count. */
   sourceCount: number;
   /** True when only the danger guard kept this data-poor country scored. */
   guardApplied: boolean;
@@ -482,11 +484,12 @@ export function computeCountryScoreDetailed(
   void composite; // retained for potential future diagnostics; not part of ScoredCountry today
 
   // --- Formula v10: official status (grey rule + danger guard), calibration, community ---
-  // `sources` was built by computeAllScores from the max-age-filtered data, so its length
-  // is the v10 source count (same semantics as the site's hasSufficientData).
+  // `sources` was built by computeAllScores from the max-age-filtered data; coverageSourceCount
+  // drops the disaster-alert feeds (coverage.ts), the same count the site's hasSufficientData uses.
+  const coverageSources = coverageSourceCount(sources);
   const level4Governments = Object.values(advisoryLevels).filter((level) => level === 4).length;
   const ucdpRow = rawByName.get('ucdp_conflict_deaths');
-  const statusDecision = decideScoreStatus(sources.length, f9.minSources, {
+  const statusDecision = decideScoreStatus(coverageSources, f9.minSources, {
     level4Governments,
     severeShare,
     ucdpDeaths: ucdpRow && Number.isFinite(ucdpRow.value) ? ucdpRow.value : null,
@@ -538,7 +541,7 @@ export function computeCountryScoreDetailed(
   return {
     country,
     diagnostics: {
-      sourceCount: sources.length,
+      sourceCount: coverageSources,
       guardApplied: statusDecision.guardApplied,
       guardReasons: statusDecision.guardReasons,
       communityRejected: rejectedActive,
@@ -945,7 +948,7 @@ export function formatRunSummary(
   if (minSources === undefined) return [];
   const grey = results.filter((c) => c.scoreStatus === 'insufficient_data');
   const lines = [
-    `[STATUS] ${results.length - grey.length} scored, ${grey.length} insufficient_data (< ${minSources} sources after the max-age filter)`,
+    `[STATUS] ${results.length - grey.length} scored, ${grey.length} insufficient_data (< ${minSources} coverage sources after the max-age filter; disaster alerts not counted)`,
   ];
   const guarded = results.filter((c) => diagnostics.get(c.iso3)?.guardApplied);
   lines.push(

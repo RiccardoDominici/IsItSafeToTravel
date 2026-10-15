@@ -4,6 +4,7 @@
 import type { DailySnapshot, ScoredCountry } from '../types.js';
 import { getBand, bandDirection, bandCrossConfirmed } from '../../lib/bands.js';
 import type { NewsEvent, NewsEventType, NewsEventParams } from './types.js';
+import { meetsCoverageFloor } from '../scoring/coverage.js';
 import {
   SCORE_JUMP_MIN,
   RANK_OVERTAKE_MAX_RANK,
@@ -17,11 +18,9 @@ import {
   daysBetween,
 } from './types.js';
 
-// Data-coverage floor, same idea as src/lib/hub-data.ts / scripts/generate-llms-full.ts.
-// This is now a 3rd duplication of MIN_RANKING_SOURCES (flagged in PLAN-news.md "Top risks") —
-// keep all three in sync, or sparse micro-territories pollute rank-based news events.
-// Formula v10 moves the same floor into the engine (weights.json formulaV9.minSources).
-const MIN_RANKING_SOURCES = 4;
+// Data-coverage floor shared with the engine, the rankings and llms.txt (scoring/coverage.ts:
+// one definition, disaster-alert feeds not counted), so sparse micro-territories never enter
+// rank-based news events.
 
 /**
  * Formula v10 (SPEC §4): a grey country (scoreStatus 'insufficient_data', score null) has
@@ -33,7 +32,7 @@ const hasOfficialScore = (c: ScoredCountry | undefined): c is WithOfficialScore 
   c !== undefined && typeof c.score === 'number' && c.scoreStatus !== 'insufficient_data';
 
 const hasSufficientData = (c: ScoredCountry): c is WithOfficialScore =>
-  hasOfficialScore(c) && (c.sources?.length ?? 0) >= MIN_RANKING_SOURCES;
+  hasOfficialScore(c) && meetsCoverageFloor(c.sources);
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 
