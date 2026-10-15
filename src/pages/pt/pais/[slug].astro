@@ -12,7 +12,7 @@ import { getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { getLastmodMap } from '../../../lib/lastmod';
 import { isScored } from '../../../lib/score-status';
-import { greyCopy } from '../../../i18n/grey-copy';
+import { greyTitleSuffix } from '../../../i18n/grey-copy';
 import type { Lang } from '../../../i18n/ui';
 import { getPortuguesePhrase } from '../../../i18n/country-grammar';
 
@@ -38,7 +38,7 @@ const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
 const titlePara = getPortuguesePhrase(country.iso3, name, 'para');
 const title = isScored(country)
   ? `É seguro viajar ${titlePara}? ${country.score.toFixed(1)}/10 (2026)`
-  : `É seguro viajar ${titlePara}? ${greyCopy[lang].titleSuffix} (2026)`;
+  : `É seguro viajar ${titlePara}? ${greyTitleSuffix(lang, country)} (2026)`;
 ---
 <Base lang={lang} title={title} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <CountryPageBody {...props} lang={lang} canonicalUrl={canonicalUrl} />

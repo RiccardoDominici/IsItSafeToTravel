@@ -91,6 +91,8 @@ describe('I27: grey places with nothing to list', () => {
       const html = countryPage(c.iso3);
       assert.ok(html.includes('No data yet'), `${c.iso3}: no "No data yet"`);
       assert.ok(!html.includes('What we do have'), `${c.iso3}: empty "What we do have" heading`);
+      const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
+      assert.ok(title.includes('No Data Yet') && !title.includes('Partial'), `${c.iso3}: title "${title}"`);
     }
     console.log(`  (${none.length} no-data grey places checked)`);
   });
