@@ -237,8 +237,10 @@ describe('v10 computeAllScores: grey countries and the danger guard (synthetic, 
       [row('VAT', 'vdem_rule_of_law', 0.9, 1870, 'vdem')],
     ]);
     const result = scoreAll(vat, { VAT: { us: advisory(1, 'US') } }).get('VAT')!;
-    assert.deepEqual(result.sources.map((s) => s.name).sort(), ['advisories', 'inform', 'worldbank']);
-    assert.equal(result.scoreStatus, 'insufficient_data', '3 in-age sources < 4');
+    // Since the I29 coverage rule (coverage.ts) the population-only World Bank entry is not a
+    // source either: it supplies no value the score uses.
+    assert.deepEqual(result.sources.map((s) => s.name).sort(), ['advisories', 'inform']);
+    assert.equal(result.scoreStatus, 'insufficient_data', '2 sources supplying scored values < 4');
     const governance = result.pillars.find((p) => p.name === 'governance')!;
     assert.equal(governance.indicators.some((i) => i.name === 'vdem_rule_of_law'), false, 'the 1870 value is not scored');
   });

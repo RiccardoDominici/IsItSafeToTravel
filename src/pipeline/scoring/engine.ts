@@ -2,7 +2,7 @@ import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
 import { applyMaxAge, formatMaxAgeLog } from './max-age.js';
 import { decideScoreStatus } from './status.js';
-import { coverageSourceCount } from './coverage.js';
+import { ADVISORY_SOURCE, coverageSourceCount, sourcesSupplyingScoredValues } from './coverage.js';
 import { computeCommunityComponent, type CommunityEntry, type CommunityLookup } from './community.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
 import { getRegion } from '../../lib/regions.js';
@@ -555,9 +555,17 @@ export function computeCountryScoreDetailed(
   void composite; // retained for potential future diagnostics; not part of ScoredCountry today
 
   // --- Formula v10: official status (grey rule + danger guard), calibration, community ---
-  // `sources` was built by computeAllScores from the max-age-filtered data; coverageSourceCount
-  // drops the disaster-alert feeds (coverage.ts), the same count the site's hasSufficientData uses.
-  const coverageSources = coverageSourceCount(sources);
+  // `sources` was built by computeAllScores from the max-age-filtered data. Only the sources that
+  // supplied a value the pillars used stay (coverage.ts sourcesSupplyingScoredValues, I29: a World
+  // Bank entry held up by the population alone is dropped), and that list is what gets published,
+  // so the floor, the rankings and the page's source list count the same sources.
+  // coverageSourceCount then drops the disaster-alert feeds, as the site's hasSufficientData does.
+  const scoredSources = new Set<string>(
+    Object.values(presentIndicatorsByPillar).flatMap((inds) => (inds ?? []).map((i) => i.source)),
+  );
+  if (A !== null) scoredSources.add(ADVISORY_SOURCE);
+  const usedSources = sourcesSupplyingScoredValues(sources, scoredSources);
+  const coverageSources = coverageSourceCount(usedSources);
   const level4Governments = Object.values(advisoryLevels).filter((level) => level === 4).length;
   const ucdpRow = rawByName.get('ucdp_conflict_deaths');
   const statusDecision = decideScoreStatus(coverageSources, f9.minSources, {
@@ -606,7 +614,7 @@ export function computeCountryScoreDetailed(
     dataCompleteness: Math.round(overallCompleteness * 1000) / 1000,
     confidence,
     lastUpdated: new Date().toISOString(),
-    sources,
+    sources: usedSources,
   };
 
   return {
