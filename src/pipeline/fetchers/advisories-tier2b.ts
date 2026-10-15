@@ -5,6 +5,7 @@ import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js
 import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
   normalizeBeLevel,
+  isBeVerdictBlock,
   normalizeDkTier,
   normalizeSgLevel,
   normalizeRoLevel,
@@ -124,19 +125,42 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
 const BE_ARTICLE_SELECTOR = 'article.node--type-country-detailed';
 const BE_BLOCK_SELECTOR = `${BE_ARTICLE_SELECTOR} p, ${BE_ARTICLE_SELECTOR} li, ${BE_ARTICLE_SELECTOR} h2, ${BE_ARTICLE_SELECTOR} h3, ${BE_ARTICLE_SELECTOR} h4`;
 
-/** Find the "Sécurité générale" sub-page link on a Belgian MFA country hub page. */
-function findBeSecurityLink($: cheerio.CheerioAPI): string | null {
+/** First link on a Belgian MFA country hub page whose (accent-folded) text starts with `prefix`. */
+function findBeHubLink($: cheerio.CheerioAPI, prefix: string): string | null {
   let href: string | null = null;
   $('a').each((_, el) => {
     if (href) return;
     const text = $(el).text().trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    if (text.startsWith('securite generale')) href = $(el).attr('href') || null;
+    if (text.startsWith(prefix)) href = $(el).attr('href') || null;
   });
   return href;
 }
 
-/** Extract the security article's block elements, one per array entry, for normalizeBeLevel. */
-function extractBeArticleBlocks($: cheerio.CheerioAPI): string[] {
+/** Find the "Sécurité générale" sub-page link on a Belgian MFA country hub page. */
+export function findBeSecurityLink($: cheerio.CheerioAPI): string | null {
+  return findBeHubLink($, 'securite generale');
+}
+
+/**
+ * Find the "Dernière mise à jour" (latest update) sub-page link on a Belgian MFA country hub page.
+ *
+ * Repair 2026-10-15 (advisory-outlier audit): Belgium states its CURRENT verdict on this page, and
+ * for several countries ONLY there -- the "Sécurité générale" article the fetcher used to read alone
+ * is background prose that can omit it entirely (verified live 2026-10-15): Yemen's security article
+ * never says "déconseillé" about travelling at all, its update page opens "Tous les voyages au Yémen
+ * sont déconseillés. Les compatriotes qui se trouvent au Yémen sont priés de quitter le pays";
+ * Somalia's update page opens "Tous les voyages vers et dans le pays sont déconseillés"; Bahrain's
+ * security article reads calm ("il est possible de s'y rendre en sécurité") while its update page
+ * says "tous les voyages non-essentiels vers Bahreïn sont déconseillés pour le moment". Reading only
+ * the security article left Yemen and Somalia at 2 and Bahrain at 1.
+ */
+export function findBeUpdateLink($: cheerio.CheerioAPI): string | null {
+  return findBeHubLink($, 'derniere mise a jour');
+}
+
+/** Extract an advisory article's block elements (security or latest-update page), one per array
+ *  entry, for normalizeBeLevel. Both page types use the same `country-detailed` article template. */
+export function extractBeArticleBlocks($: cheerio.CheerioAPI): string[] {
   const blocks: string[] = [];
   $(BE_BLOCK_SELECTOR).each((_, el) => {
     const text = $(el).text().replace(/\s+/g, ' ').trim();
@@ -212,20 +236,33 @@ async function fetchBeAdvisories(
         const hubHtml = await hubResponse.text();
         const hub$ = cheerio.load(hubHtml);
         const secHref = findBeSecurityLink(hub$);
-        if (!secHref) return; // page structure changed again -- skip rather than guess
+        const updHref = findBeUpdateLink(hub$);
+        if (!secHref && !updHref) return; // page structure changed again -- skip rather than guess
 
-        const secUrl = secHref.startsWith('http') ? secHref : `https://diplomatie.belgium.be${secHref}`;
-        const secResponse = await fetch(secUrl, {
-          signal: AbortSignal.timeout(15_000),
-          headers: FETCH_HEADERS,
-        });
-        if (!secResponse.ok) return;
-
-        const secHtml = await secResponse.text();
-        const sec$ = cheerio.load(secHtml);
-        const blocks = extractBeArticleBlocks(sec$);
+        const absolute = (href: string) => (href.startsWith('http') ? href : `https://diplomatie.belgium.be${href}`);
+        // One article's blocks, or [] when the link is absent or the fetch fails -- a missing half
+        // must never drop the other one (each page alone was enough before this repair).
+        const fetchBlocks = async (href: string | null): Promise<string[]> => {
+          if (!href) return [];
+          try {
+            const res = await fetch(absolute(href), { signal: AbortSignal.timeout(15_000), headers: FETCH_HEADERS });
+            if (!res.ok) return [];
+            return extractBeArticleBlocks(cheerio.load(await res.text()));
+          } catch {
+            return [];
+          }
+        };
+        // Latest update FIRST (the current verdict -- see findBeUpdateLink), then the security
+        // article's background. Only the update page's VERDICT blocks are kept (isBeVerdictBlock):
+        // its seasonal/practical notices would otherwise add generic level-2 cues. normalizeBeLevel
+        // takes the most severe whole-country-confirmed sentence across both, and still falls back
+        // to the security article's calm statements when neither carries any verdict.
+        const updBlocks = (await fetchBlocks(updHref)).filter(isBeVerdictBlock);
+        const secBlocks = await fetchBlocks(secHref);
+        const blocks = [...updBlocks, ...secBlocks];
         const level = normalizeBeLevel(blocks.join('\n'), entry.country.name.fr);
-        if (level === null) return; // no advisory evidence in the fetched article — don't publish a made-up level
+        if (level === null) return; // no advisory evidence in the fetched articles — don't publish a made-up level
+        const secUrl = absolute((secHref ?? updHref) as string);
 
         indicators.push({
           countryIso3: entry.country.iso3,
@@ -494,7 +531,11 @@ async function fetchSgAdvisories(
           if (text) paragraphs.push(text);
         });
 
-        const level = normalizeSgLevel(paragraphs.join('\n'));
+        // The page's own <h1> is MFA's name for the country ("Iran", "Lebanon"), which is how its
+        // verdict sentences name it; our English name is a fallback alias. normalizeSgLevel only
+        // uses these to recognise a verdict that positively names the WHOLE country.
+        const pageName = page$('h1').first().text().replace(/\s+/g, ' ').trim();
+        const level = normalizeSgLevel(paragraphs.join('\n'), [pageName, entry.country.name.en]);
         if (level === null) return; // no explicit notice published for this country -- skip, don't fabricate
 
         indicators.push({

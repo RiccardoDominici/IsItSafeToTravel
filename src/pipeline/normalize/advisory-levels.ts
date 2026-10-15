@@ -198,6 +198,33 @@ function matchesRestOfCountry(objectClause: string, countryName: string): boolea
   return true;
 }
 
+/**
+ * An exception carve-out inside a warning's object clause: "mit Ausnahme von/der/des ...",
+ * "ausgenommen ...", "außer ...", delimited by spaced dashes, commas or parentheses.
+ *
+ * Burkina Faso's real page (verified live 2026-10-15) reads "Vor Reisen nach Burkina Faso - mit
+ * Ausnahme von Ouagadougou und Bobo-Dioulasso - wird gewarnt": a formal travel warning for the
+ * whole country EXCEPT two named cities, i.e. the country's own catch-all is "do not travel".
+ * The "und" between the two EXCLUDED cities tripped the multiple-objects guard in
+ * normalizeDeContentText (meant for "Abchasien, Südossetien und ..." lists of COVERED regions),
+ * so the sentence fell through to the regional Level 2 while 12 of 20 peer governments say 4.
+ * Same doctrine as JP's "全土（ミスラタ市を除く）" (whole territory excluding one city) and
+ * Sudan/Niger's "zendo (excluding <city>)": a whole-country statement with named exceptions is
+ * the whole-country level; a warning that only NAMES regions still caps at 2.
+ *
+ * The dash form needs whitespace around the dash, so a hyphenated place name inside the
+ * carve-out ("Bobo-Dioulasso") is never mistaken for its closing delimiter.
+ */
+const DE_EXCEPTION_CLAUSE_RES = [
+  /\s[-–—]\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b.*?\s[-–—](?=\s)/gi,
+  /,\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b[^,]*,/gi,
+  /\(\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b[^)]*\)/gi,
+];
+
+function stripDeExceptionClauses(objectClause: string): string {
+  return DE_EXCEPTION_CLAUSE_RES.reduce((acc, re) => acc.replace(re, ' '), objectClause);
+}
+
 export function normalizeDeContentText(contentHtml: string, countryName: string): UnifiedLevel {
   if (!contentHtml) return 1;
   // Headings never end in a period, so a bare tag strip merges them into the
@@ -230,13 +257,16 @@ export function normalizeDeContentText(contentHtml: string, countryName: string)
 
     const wordIdx = sentence.toLowerCase().indexOf('wird');
     const objectClause = wordIdx >= 0 ? sentence.slice(0, wordIdx) : sentence;
+    // The regional-word and conjunction guards below judge what the warning COVERS, so they
+    // must not see the places it carves OUT (see stripDeExceptionClauses).
+    const coveredClause = stripDeExceptionClauses(objectClause);
 
     const isRestOfCountry = matchesRestOfCountry(objectClause, countryName);
     const isBareCountry =
       !isRestOfCountry &&
-      namesCountry(objectClause, countryName) &&
-      !DE_REGIONAL_WORDS.test(objectClause) &&
-      !/\bund\b|\bsowie\b|,/i.test(objectClause);
+      namesCountry(coveredClause, countryName) &&
+      !DE_REGIONAL_WORDS.test(coveredClause) &&
+      !/\bund\b|\bsowie\b|,/i.test(coveredClause);
 
     const level: UnifiedLevel =
       isRestOfCountry || isBareCountry ? (verb === 'gewarnt' ? 4 : 3) : 2;
@@ -603,6 +633,65 @@ export function normalizeJpRegionalLevel(
   return Math.max(wholeLevel, Math.min(2, regionalMax)) as UnifiedLevel;
 }
 
+/** MOFA's own "no danger information is currently issued" sentence (France/USA/UK/... real
+ * pages: `<div class="kiken_unit"><p>現在、危険情報は出ておりません。</p></div>`). Its
+ * opposite, "現在、危険情報が出ております。" ("danger information IS currently issued"),
+ * always comes with a `#kikendetail` breakdown and never reaches normalizeJpNoDetailLevel. */
+const JP_NO_HAZARD_RE = /危険情報は出ておりません/;
+/** A country-WIDE scope word opening a statement: "全土" (the whole territory), the only
+ * wording the one real non-numbered page uses ("●全土：..."). Regional statements never
+ * reach this function -- MOFA puts every region-by-region breakdown in `#kikendetail`. */
+const JP_WHOLE_TERRITORY_RE = /全土/;
+/**
+ * Country-wide action phrases a page WITHOUT the numbered `#kikendetail` breakdown can carry,
+ * mapped straight to the unified scale (most severe first). These are MOFA's canonical action
+ * wordings (退避 evacuate / 渡航は止めて stop travel / 不要不急 non-essential / 十分注意 caution)
+ * plus "渡航（を|は）自粛" -- "refrain from travelling", the wording of the standing
+ * government-wide request outside the numbered system that MOFA keeps for North Korea, issued
+ * "目的のいかんを問わず" (REGARDLESS OF PURPOSE), i.e. against all travel: unified 4.
+ */
+const JP_NO_DETAIL_ACTIONS: { re: RegExp; level: UnifiedLevel }[] = [
+  { re: /退避/, level: 4 },
+  { re: /渡航(?:を|は)?(?:自粛|止めて|中止)/, level: 4 },
+  { re: /不要不急/, level: 3 },
+  { re: /十分注意/, level: 2 },
+];
+
+/**
+ * Level of a MOFA country page that has NO `#kikendetail` block (the numbered, region-by-region
+ * breakdown normalizeJpRegionalLevel reads). The fetcher used to treat every such page as
+ * "no advisory published -> Level 1" (parseJpKikenLevel's no-div branch). That holds for the
+ * pages carrying MOFA's own "現在、危険情報は出ておりません。" sentence, but not for North
+ * Korea's: its `kiken_unit` box holds a free-form, non-numbered statement instead --
+ * "●全土：「渡航を自粛してください。」（2026年現在有効）" ("whole territory: 'please refrain
+ * from travelling' (in force in 2026)") and "目的のいかんを問わず，北朝鮮への渡航は自粛して
+ * ください。" ("regardless of purpose, refrain from travelling to North Korea") -- verified live
+ * 2026-10-15. That page read as Level 1 "Exercise caution", against a peer median of 4.
+ *
+ * Returns 1 only for the affirmative "no danger information" sentence; the mapped level for a
+ * "全土" (whole-territory) statement carrying one of JP_NO_DETAIL_ACTIONS; null (never guess)
+ * for anything else, so an unknown future layout drops the country instead of defaulting it
+ * to "safe".
+ */
+export function normalizeJpNoDetailLevel(html: string): UnifiedLevel | null {
+  const unitIdx = html.indexOf('<div class="kiken_unit">');
+  if (unitIdx === -1) return null;
+  const unitEnd = html.indexOf('</div>', unitIdx);
+  const unitText = decodeJpEntities(
+    html
+      .slice(unitIdx, unitEnd === -1 ? unitIdx + 8000 : unitEnd)
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, ''),
+  );
+
+  if (JP_NO_HAZARD_RE.test(unitText)) return 1;
+  if (!JP_WHOLE_TERRITORY_RE.test(unitText)) return null;
+  for (const { re, level } of JP_NO_DETAIL_ACTIONS) {
+    if (re.test(unitText)) return level;
+  }
+  return null;
+}
+
 /**
  * Named-region / border-zone / city markers that cap an MZV "neodporúča"
  * (does not recommend) clause at a SUB-national scope rather than the whole
@@ -633,6 +722,17 @@ const SK_WHOLE_COUNTRY_ALL_TRAVEL = /žiadn\w*|\w*koľvek\b/i;
  *  git history) into this repair's new whole-country "neodporúča" scan, which would otherwise
  *  wrongly treat it as a real avoid-travel clause. */
 const SK_INSURANCE_GUARD = /poisten\w*/i;
+
+/** "Odporúčame zachovávať zvýšenú ostražitosť" (we recommend keeping up INCREASED VIGILANCE) --
+ *  MZV's other wording for its Level-2 "zvýšená opatrnosť" (increased caution) advice. Kuwait's real
+ *  text (open-data dump, fetched 2026-10-15) pairs it with "Kuvajt patrí medzi krajiny s vysokou
+ *  úrovňou bezpečnosti" (a high level of security), so with only "opatrnosť" in Priority 4 the calm
+ *  sentence won and Kuwait read Level 1 -- against 19 of 21 peers at 2 or more. Only counted as a
+ *  RECOMMENDATION (odporúča.../zachováva.../dodržiava... right before it): the same two words also
+ *  name France's Vigipirate alert tier ("je aktuálne nastavený na stupeň zvýšená ostražitosť"), a
+ *  description of the local alert system, not MZV advice. */
+const SK_INCREASED_VIGILANCE_ADVICE =
+  /(?:odporúč|zachováv|dodržiav)\S*\s+(?:\S+\s+){0,3}zvýšen\S{0,4}\s+ostražitos\S{0,4}/i;
 
 /** Affirmative "this is calm" statements MZV actually uses (2026-09-25 repair -- see the doc
  *  comment on normalizeSkSecurityText for why Priority 5 now REQUIRES one of these instead of
@@ -805,10 +905,12 @@ export function normalizeSkSecurityText(rawHtml: string | null | undefined): Uni
   if (wholeCountryAvoid !== null) return wholeCountryAvoid;
 
   // Priority 4: "increased caution" / "consider necessity of travel" recommendation, no digit
-  // stated -- MZV's own two ways of phrasing its Level-2 tier.
+  // stated -- MZV's own two ways of phrasing its Level-2 tier -- plus "increased vigilance"
+  // (SK_INCREASED_VIGILANCE_ADVICE, added 2026-10-15).
   if (
     /zvýšen\S{0,4}\s+opatrnos\S{0,4}/i.test(text) ||
-    /zvá[žz]i\S{0,4}\s+nevyhnutnos\S{0,4}\s+cestovani\S{0,4}/i.test(text)
+    /zvá[žz]i\S{0,4}\s+nevyhnutnos\S{0,4}\s+cestovani\S{0,4}/i.test(text) ||
+    SK_INCREASED_VIGILANCE_ADVICE.test(text)
   ) {
     return 2;
   }
@@ -919,6 +1021,29 @@ function namesAnotherCountry(tail: string, ownNameFolded: string): boolean {
 }
 
 /**
+ * France's own level vocabulary, on the accent-/apostrophe-folded text extractFrTerritoryLevel
+ * works on. Shared by sectionKeywordBoundaries (section headings/inline uses), the named-target
+ * pass and the "a named zone is flagged" fallback, so all three always agree on what counts.
+ *
+ * Level 3 had only ONE spelling, "deconseille(e)(s) sauf raison imperative" with the two parts
+ * adjacent (France's section-heading form). Repair 2026-10-15 (advisory-outlier audit): France
+ * writes the same orange verdict in two more shapes that the adjacency requirement never matched,
+ * so those countries silently fell to the "no keyword at all -> 1" default (verified live
+ * 2026-10-15):
+ *  - an inserted addressee/comma clause and the plural "raisons": Bahrain's ENTIRE section is
+ *    "Il est deconseille aux ressortissants francais, sauf pour des raisons imperatives, de se
+ *    rendre a Bahrein." (same sentence on Israel's page; Azerbaijan's Iran-border zone reads
+ *    "il est deconseille aux voyageurs, sauf raison imperative, de se rendre a la frontiere");
+ *  - "non-essential travel is advised against", France's other orange formula: Cuba's ENTIRE
+ *    section is "...les voyages non essentiels vers l'ile sont deconseilles."
+ * The inserted clause is bounded (no period/comma inside, <= 40 chars) so it can never bridge two
+ * sentences or two list items.
+ */
+const FR_LEVEL4_KEYWORD = /formellement deconseill|classe[e]? en zone rouge/;
+const FR_LEVEL3_KEYWORD =
+  /deconseille[a-z]{0,2}(?: [^.,]{1,40}?)?,? sauf (?:pour (?:des|une) )?raisons? imperatives?|(?:voyages?|deplacements?|sejours?) non[- ]essentiels?[^.]{0,80}?deconseill/;
+
+/**
  * Every occurrence of a level keyword in `section`, EXCLUDING ones that fall inside an "a
  * l'exception de(s) ...," clause (the Kenya bug -- that clause names what's carved OUT of the
  * "reste"/"ensemble" statement it precedes, not a level for that statement itself). Sorted by
@@ -937,8 +1062,8 @@ function sectionKeywordBoundaries(section: string): { index: number; level: Unif
   const insideException = (pos: number) => exceptionSpans.some(([start, end]) => pos >= start && pos < end);
 
   const KEYWORD_RES: [RegExp, UnifiedLevel][] = [
-    [/formellement deconseill|classe[e]? en zone rouge/g, 4],
-    [/deconseille[a-z]{0,2} sauf raison imperative/g, 3],
+    [new RegExp(FR_LEVEL4_KEYWORD.source, 'g'), 4],
+    [new RegExp(FR_LEVEL3_KEYWORD.source, 'g'), 3],
     [/vigilance renforcee/g, 2],
     [/vigilance normale/g, 1],
   ];
@@ -1045,6 +1170,80 @@ function sentenceBoundsAt(text: string, pos: number): [number, number] {
   return [start, text.length];
 }
 
+/**
+ * Whole-country statements whose travel TARGET is the country itself, named -- the third way
+ * France words a national verdict, next to the subject phrases ("l'ensemble/le reste du
+ * territoire") and the demonym form ("le territoire iranien est") that extractFrTerritoryLevel's
+ * main loop already reads. Repair 2026-10-15 (advisory-outlier audit), verified live that day:
+ *  - Niger: "Tout deplacement au Niger est formellement deconseille." (the whole section) -> 4.
+ *  - Bangladesh: "Tout deplacement au Bangladesh est deconseille sauf raison imperative, du fait
+ *    du risque terroriste." -> 3.
+ *  - Bahrain: "Il est deconseille aux ressortissants francais, sauf pour des raisons imperatives,
+ *    de se rendre a Bahrein." -> 3 (same sentence for Israel on the joint Israel/Palestine page).
+ *  - Cuba: "Compte tenu de la crise energetique a Cuba [...], les voyages non essentiels vers
+ *    l'ile sont deconseilles." -> 3 ("l'ile" is the anaphoric target; accepted only when the same
+ *    sentence names the country and no "de <name>" follows, so "l'ile de Saint-Martin" on
+ *    Bangladesh's page or "l'ile de Bali" never qualifies).
+ * Without this pass all four fell through to the "named zone flagged -> 2" cap (Niger,
+ * Bangladesh, Israel) or to "no keyword at all -> 1" (Bahrain, Cuba).
+ *
+ * Deliberately stricter than the subject-phrase loop, because a named target needs no
+ * cross-sentence inference: the level keyword must sit in the SAME sentence (forward first, then
+ * backward -- Bahrain's "Il est deconseille ... de se rendre a Bahrein" puts it before the
+ * target), never in a neighbouring heading. The country name must be followed by a non-letter,
+ * and must not be the start of a LONGER country name ("Guinee" vs "Guinee-Bissau"/"Guinee
+ * equatoriale", "Soudan" vs "Soudan du Sud"), so another country's verdict quoted for context
+ * can never be read as this one's. A sub-region named as the target ("se rendre dans le nord du
+ * Niger", "a la frontiere entre l'Azerbaidjan et l'Iran") does not match at all: the preposition
+ * has to be followed directly by the country's own name.
+ */
+function frNamedTargetLevel(
+  section: string,
+  boundaries: { index: number; level: UnifiedLevel }[],
+  ownNameFolded: string,
+): UnifiedLevel | null {
+  if (ownNameFolded.length < 3) return null;
+  const name = escapeRegexLiteral(ownNameFolded);
+  const longerNames = COUNTRIES.map((c) => foldFrName(c.name.fr)).filter(
+    (n) => n !== ownNameFolded && (n.startsWith(`${ownNameFolded} `) || n.startsWith(`${ownNameFolded}-`)),
+  );
+  const ownNameRe = new RegExp(`(?<![a-z])${name}(?![a-z-])`);
+  const targetRes: { re: RegExp; needsOwnName: boolean }[] = [
+    {
+      re: new RegExp(
+        `(?:(?:se rendre|aller|sejourner|voyager) (?:a|au|aux|en|dans)|(?:deplacements?|voyages?|sejours?)(?: non[- ]essentiels?)? (?:a|au|aux|en|vers|dans)) l?(?=${name}(?![a-z]))`,
+        'g',
+      ),
+      needsOwnName: false,
+    },
+    {
+      re: /(?:deplacements?|voyages?|sejours?)(?: non[- ]essentiels?)? (?:a|au|aux|en|vers|dans|sur) (?:lile|larchipel)(?![a-z-])(?! d)/g,
+      needsOwnName: true,
+    },
+  ];
+
+  const hits: { index: number; end: number; needsOwnName: boolean }[] = [];
+  for (const { re, needsOwnName } of targetRes) {
+    for (const m of section.matchAll(re)) {
+      const end = m.index + m[0].length;
+      if (!needsOwnName && longerNames.some((n) => section.startsWith(n, end))) continue; // "Guinee-Bissau" on Guinea's page
+      hits.push({ index: m.index, end: needsOwnName ? end : end + ownNameFolded.length, needsOwnName });
+    }
+  }
+  hits.sort((a, b) => a.index - b.index);
+
+  for (const hit of hits) {
+    const [sentenceStart, sentenceEnd] = sentenceBoundsAt(section, hit.index);
+    if (hit.needsOwnName && !ownNameRe.test(section.slice(sentenceStart, sentenceEnd))) continue;
+    const inSentence = boundaries.filter((b) => b.index >= sentenceStart && b.index < sentenceEnd);
+    const forward = inSentence.find((b) => b.index >= hit.end);
+    const backward = inSentence.filter((b) => b.index < hit.end).pop();
+    const level = forward?.level ?? backward?.level;
+    if (level !== undefined) return level;
+  }
+  return null;
+}
+
 export function extractFrTerritoryLevel(rawText: string, countryNameFr: string): UnifiedLevel | null {
   const text = rawText
     .toLowerCase()
@@ -1067,7 +1266,13 @@ export function extractFrTerritoryLevel(rawText: string, countryNameFr: string):
   // territory via its own demonym adjective, so -- unlike the other two -- it is not run
   // through namesAnotherCountry below (that guard's "de la/du <name>" shape does not apply to
   // it, and no live bug has ever been found through this alternative).
-  const wholeCountryRe = /(?<ensemble>(?:la totalite|lintegralite|lensemble) du (?:territoire|pays))|(?<reste>reste du (?:territoire|pays))|(?<adj>le territoire [a-z-]+ est)/g;
+  //
+  // "la majeure partie du territoire/pays" (added 2026-10-15, advisory-outlier audit): France's
+  // own wording for "everything except the named zones" -- Azerbaijan's page reads "La majeure
+  // partie du territoire azerbaidjanais est placee en orange ... et reste deconseillee sauf raison
+  // imperative", the named red zones being Karabakh and the Armenian border. Same subject role,
+  // same guards as "l'ensemble du territoire".
+  const wholeCountryRe = /(?<ensemble>(?:la totalite|lintegralite|lensemble|la majeure partie) du (?:territoire|pays))|(?<reste>reste du (?:territoire|pays))|(?<adj>le territoire [a-z-]+ est)/g;
 
   let subjectMatch: RegExpExecArray | null;
   while ((subjectMatch = wholeCountryRe.exec(section)) !== null) {
@@ -1094,9 +1299,14 @@ export function extractFrTerritoryLevel(rawText: string, countryNameFr: string):
     // keep scanning for another whole-country match rather than giving up immediately.
   }
 
+  // No subject-phrase statement: France may instead name the COUNTRY ITSELF as the travel target
+  // ("Tout deplacement au Niger est formellement deconseille") -- see frNamedTargetLevel.
+  const namedTargetLevel = frNamedTargetLevel(section, boundaries, ownNameFolded);
+  if (namedTargetLevel !== null) return namedTargetLevel;
+
   // No usable whole-country statement: a named zone is still flagged somewhere in the section,
   // so this is a real (sub-national) warning -- cap it at "increased caution".
-  if (/formellement deconseill|deconseille[a-z]{0,2} sauf raison imperative|vigilance renforcee/.test(section)) {
+  if (FR_LEVEL4_KEYWORD.test(section) || FR_LEVEL3_KEYWORD.test(section) || /vigilance renforcee/.test(section)) {
     return 2;
   }
 
@@ -1322,6 +1532,66 @@ const BE_CALM_PATTERNS = [
 ];
 
 /**
+ * Is `cur` (one accent-folded sentence) Belgium's top-tier verdict -- ALL travel advised against --
+ * aimed at the country itself? Belgium words its tiers on the "Derniere mise a jour" page as fixed
+ * sentences (verified live 2026-10-15): "Tous les voyages au Yemen sont deconseilles" (Yemen),
+ * "Tous les voyages vers et dans le pays sont deconseilles" (Somalia), "Tous les voyages en
+ * Republique centrafricaine, a l'exception de Bangui, la capitale du pays, sont deconseilles"
+ * (CAR), "Dans le reste du pays, tous les voyages sont deconseilles" (Burkina Faso) -- versus the
+ * second tier, the SAME construction with "non-essentiels" ("tous les voyages non-essentiels vers
+ * Bahrein sont deconseilles"), which stays 3 through the plain 'deconseill' stem.
+ *
+ * The target must be the country itself: its own name or "le pays" right after the preposition,
+ * or a catch-all ("reste du pays", "l'ensemble du pays/territoire", "tout le pays/territoire").
+ * That is what keeps the regional uses an earlier version of the BE parser escalated by mistake
+ * (Somalia's Puntland paragraph "Tous les voyages, meme d'ordre humanitaire, sont strictement
+ * deconseilles", the Philippines' "tout voyage est deconseille dans la partie occidentale de
+ * Mindanao") out of this path: neither names the country as the target. A sentence with a
+ * regional word, or with another country named next to a generic "le pays", never qualifies.
+ */
+const BE_ALL_TRAVEL = /\b(?:tous les voyages|tout voyage|tous les deplacements|tout deplacement)\b/;
+
+/** "after dark" / "alone" qualifiers that turn a travel sentence into a manner tip (see the night
+ *  veto in normalizeBeLevel). "de jour comme de nuit" (day AND night) is the opposite, not a qualifier. */
+function hasBeTimeOrSoloQualifier(cur: string): boolean {
+  return /tombee de la nuit|\bde nuit\b|\bla nuit\b|\bnocturnes?\b|\bseul(?:e|es|s)?\b/.test(cur.replace(/de jour comme de nuit/g, ''));
+}
+
+function isBeAllTravelToCountry(cur: string, countryFold: string, regionalWords: string[]): boolean {
+  if (!BE_ALL_TRAVEL.test(cur) || !cur.includes('deconseill')) return false;
+  if (hasBeTimeOrSoloQualifier(cur)) return false; // "tous les deplacements de nuit ..." is a manner tip
+  if (/non[- ]?essentiel/.test(cur)) return false; // second tier, not "all travel"
+  if (regionalWords.some((w) => cur.includes(w))) return false;
+  const prep = "\\b(?:vers|en|au|aux|a|dans)(?: et (?:vers|en|au|aux|a|dans))? (?:le |la |les |l['\u2019])?";
+  const ownName = new RegExp(`${prep}${escapeRegexLiteral(countryFold)}(?![a-z])`);
+  if (ownName.test(cur)) return true;
+  // A generic "pays"/"territoire" target must END the noun phrase (punctuation or the verb next):
+  // Israel's own page says "Tous les voyages dans le reste du Territoire palestinien occupe sont
+  // vivement deconseilles" -- "reste du territoire" followed by ANOTHER territory's qualifier,
+  // which must not become Israel's level.
+  const end = '(?=\\s*[,.;:!?)]|\\s*$|\\s+(?:sont|est|restent|reste|demeurent|demeure)\\b)';
+  const generic = new RegExp(
+    `(?:${prep}pays|reste du (?:pays|territoire)|ensemble du (?:pays|territoire)|tout le (?:pays|territoire))${end}`,
+  );
+  if (!generic.test(cur)) return false;
+  return !BE_OTHER_COUNTRY_NAMES.some((n) => n !== countryFold && cur.includes(n));
+}
+
+/**
+ * Keep only the blocks of Belgium's "Derniere mise a jour" page that carry a travel VERDICT
+ * ("deconseill...", or "quitter" governed by an advisory verb, the same two triggers
+ * normalizeBeLevel escalates on). The rest of that page is seasonal or practical notices (heat
+ * waves, wildfires, registration rules -- Italy's: "Accordez une attention particuliere aux
+ * personnes agees", a heat-wave tip) whose generic caution words would otherwise read as level 2
+ * for countries Belgium itself calls safe on the same page. The security article keeps supplying
+ * its own level-2 cues and calm statements exactly as before.
+ */
+export function isBeVerdictBlock(block: string): boolean {
+  const f = foldFr(block);
+  return f.includes('deconseill') || (/\bquitter\b/.test(f) && /(?<!de)conseill|recommand/.test(f));
+}
+
+/**
  * Normalize Belgium (diplomatie.belgium.be) French advisory text to unified 1-4 scale.
  *
  * Belgium publishes no numeric/color level: the actual verdict lives in free-text prose on
@@ -1456,6 +1726,11 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
     'certaines parties', 'certains endroits', 'ces zones', 'ces regions', 'cette region',
     'localite', 'quartier', 'comte', 'bidonville', 'canton', 'township',
     'certains etats', 'certain etat', // e.g. Mexico's "voyages... vers certains États"
+    // Added 2026-10-15 (latest-update pages, see findBeUpdateLink): Kosovo's restricts "les voyages
+    // non essentiels vers les quatre communes dites du « Nord Kosovo »" -- the country's own name
+    // inside the REGION's name otherwise confirms it as whole-country (3 instead of the regional
+    // cap); Mexico's points to "les Etats ou les voyages non essentiels sont deconseilles".
+    'communes', 'municipalit', 'etats ou',
   ];
   const WHOLE_COUNTRY_PHRASES = [
     'le pays', 'tout le pays', 'ensemble du pays', 'ensemble du territoire',
@@ -1535,11 +1810,23 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
       // consequence-of-something-else clause; (2) it still requires its OWN stricter whole-country
       // check below (requireCountryNameOnly) -- the generic "le pays" fallback other triggers use
       // is too weak a signal on its own for this specific verb.
-      const hasQuitter = /\bquitter\b/.test(cur) && /conseil|recommand/.test(cur);
+      // Repair 2026-10-15: the governing verb must be a POSITIVE "conseill-"/"recommand-" verb.
+      // The bare /conseil/ also matched "DEconseille" -- Venezuela's update page says "Il est
+      // vivement deconseille de quitter le Venezuela par voie terrestre" (advised AGAINST leaving
+      // by land, a route warning), which read as "leave the country" (4) -- and the noun "conseils"
+      // (Russia's "Des conseils essentiels ... pour quitter la Russie", a pointer to transport tips).
+      const hasQuitter = /\bquitter\b/.test(cur) && /(?<!de)conseill|recommand/.test(cur);
 
       let sentenceLevel = 0;
       let requireCountryNameOnly = false;
-      if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) {
+      // Belgium's own top tier, stated with the country itself as the target -- already confirmed
+      // whole-country by its own wording, so it skips the look-back confirmation below (see
+      // isBeAllTravelToCountry). Checked first: "tous les voyages ... deconseilles" otherwise only
+      // reaches the plain 'deconseill' stem (3).
+      const allTravelToCountry = isBeAllTravelToCountry(cur, countryFold, REGIONAL_WORDS);
+      if (allTravelToCountry) {
+        sentenceLevel = 4;
+      } else if (hasTravelWord && LEVEL4_STRONG.some((w) => cur.includes(w))) {
         sentenceLevel = 4;
       } else if (hasQuitter) {
         sentenceLevel = 4;
@@ -1550,7 +1837,7 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
 
       if (sentenceLevel === 0) continue;
 
-      if (sentenceLevel > 2) {
+      if (sentenceLevel > 2 && !allTravelToCountry) {
         // Whole-country confirmation looks one sentence back too (within the same paragraph):
         // "en Corée du Nord... Tous les voyages sont déconseillés" names the country once and
         // refers back to it implicitly, which is normal French, not a scope expansion.
@@ -1575,9 +1862,16 @@ export function normalizeBeLevel(text: string, countryNameFr: string): UnifiedLe
           if (p === 'interieur du pays' && cur.includes(p) && BE_MANNER_QUALIFIER.test(cur)) return false;
           return true;
         });
-        const wholeCountryConfirmed = requireCountryNameOnly
-          ? countryNameConfirmed
-          : countryNameConfirmed || (!mentionsOtherCountry && hasGenericWholeCountryPhrase);
+        // Repair 2026-10-15: a sentence about WHEN or HOW to move (after dark, alone) is a manner tip
+        // wherever it applies, never a verdict on going at all -- Papua New Guinea's update page:
+        // "Les deplacements apres la tombee de la nuit sont fortement deconseilles dans tout le pays"
+        // read as a whole-country 4. Same idea as BE_MANNER_QUALIFIER, which only guarded the
+        // "interieur du pays" phrase.
+        const wholeCountryConfirmed =
+          !hasBeTimeOrSoloQualifier(cur) &&
+          (requireCountryNameOnly
+            ? countryNameConfirmed
+            : countryNameConfirmed || (!mentionsOtherCountry && hasGenericWholeCountryPhrase));
         const regionalHit = REGIONAL_WORDS.some((w) => window.includes(w));
 
         if (!wholeCountryConfirmed || regionalHit) sentenceLevel = 2;
@@ -1615,6 +1909,87 @@ export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high')
   if (modifier === 'high') return 4;
   if (modifier === 'medium') return 3;
   return 2; // minimal | low
+}
+
+const SG_REGIONAL_WORDS = [
+  'the region', 'border region', 'border area', 'conflict area', 'the following area',
+  'certain area', 'autonomous oblast', 'autonomous region',
+];
+
+/**
+ * Level-3/4 verdict phrases. `kind` says how the phrase's SCOPE is read (sgOccurrenceIsWholeCountry):
+ *  - 'travel': "<verb> ... travel" + its object ("to Lebanon", "to the border areas ...").
+ *  - 'leave-country': "should leave the country" -- whole-country by construction.
+ *  - 'leave': an object-less departure instruction. The two pre-existing ones ("leave/evacuate
+ *    immediately") keep their old paragraph-level reading; the two added 2026-10-15 ("leave as
+ *    soon as practicable/possible") only count when the same sentence names the country itself
+ *    ("Singaporeans who are currently in Iran ... leave as soon as practicable") -- the same words
+ *    also appear in generic crowd advice ("if caught in a demonstration, leave as soon as
+ *    possible"), which must never read as a whole-country evacuation.
+ */
+const SG_VERDICTS: { re: RegExp; level: 3 | 4; kind: 'travel' | 'leave-country' | 'leave'; needsCountry?: boolean }[] = [
+  { re: /defer all travel|avoid all travel/g, level: 4, kind: 'travel' },
+  { re: /do not travel/g, level: 4, kind: 'travel' },
+  { re: /leave immediately|evacuate immediately/g, level: 4, kind: 'leave' },
+  // Only as an instruction ("should leave the country immediately", Lebanon/Yemen): the bare words
+  // are also exit-visa and police-report boilerplate on calm pages ("a specified period of time in
+  // which to leave the country legally" -- Bhutan/Nepal; "before you leave the country" -- Thailand).
+  {
+    re: /(?:should|must|(?:are|is) (?:strongly )?(?:advised|urged|encouraged) to) leave the country/g,
+    level: 4,
+    kind: 'leave-country',
+  },
+  { re: /leave as soon as (?:practicable|possible)/g, level: 4, kind: 'leave', needsCountry: true },
+  {
+    re: /defer all non-essential travel|avoid all non-essential travel|avoid non-essential travel|defer non-essential travel/g,
+    level: 3,
+    kind: 'travel',
+  },
+];
+
+/**
+ * "The region" is not always SUB-national. Since 1 March 2026 MFA has carried the same paragraph,
+ * verbatim, on twelve "Travel Advisory" pages (Bahrain, Iran, Iraq, Israel, Jordan, Kuwait, Lebanon,
+ * Palestinian Territories, Qatar, Syria, UAE, Yemen -- full 191-page sweep, 2026-10-15): "Due to
+ * the escalating security situation in the Middle East, Singaporeans are advised to defer all
+ * travel to the region." Its region is the Middle East, which contains the whole of each of those
+ * countries, and Bahrain's/Kuwait's/Jordan's/... next paragraph confirms the reading ("While
+ * Singaporeans are advised to defer travel to the region, those who intend to travel to or reside
+ * in Bahrain ..."). The regional cap exists for warnings about PART of a country (a border strip,
+ * an oblast -- DATA_REVISION 6); a warning that covers a whole multi-country region covers the
+ * whole country, so it is the national level (4). Reversal of the 2026-09-25 reading noted in
+ * normalizeSgLevel's doc comment, which capped this paragraph at 2 as if it were sub-national.
+ * Only a bare "the region" anaphor whose own sentence names a multi-country region qualifies.
+ */
+const SG_SUPRANATIONAL_REGION_RE = /\bthe middle east\b/;
+
+function escapeSgName(name: string): string {
+  return name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Does this verdict occurrence POSITIVELY name the whole country as its scope? Only then is it
+ * exempt from the paragraph-wide regional cap below. `after` is the rest of the sentence after the
+ * phrase, `sentence` the whole sentence; `names` are the page's own country names (lower-case).
+ * The country name must be the HEAD of the object -- not followed by "'s"/"-" ("to Israel's
+ * borders with ...", "to the Tajikistan-Afghanistan border areas" stay regional) -- and the object
+ * must carry no regional word of its own.
+ */
+function sgOccurrenceIsWholeCountry(
+  kind: 'travel' | 'leave-country' | 'leave',
+  after: string,
+  sentence: string,
+  names: string[],
+): boolean {
+  if (kind === 'leave-country') return true;
+  const nameAlt = ['the country', ...names.map(escapeSgName)].join('|');
+  if (kind === 'travel') {
+    if (/^\s*to\s+the\s+region(?![\w'’-])/.test(after) && SG_SUPRANATIONAL_REGION_RE.test(sentence)) return true;
+    if (SG_REGIONAL_WORDS.some((w) => after.includes(w))) return false;
+    return new RegExp(`^\\s*(?:to|in|within)\\s+(?:the\\s+)?(?:${nameAlt})(?![\\w'’-])`).test(after);
+  }
+  if (SG_REGIONAL_WORDS.some((w) => sentence.includes(w))) return false;
+  return new RegExp(`\\b(?:in|from)\\s+(?:the\\s+)?(?:${nameAlt})(?![\\w'’-])`).test(sentence);
 }
 
 /**
@@ -1658,36 +2033,67 @@ export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high')
  * Korea/Libya/Ukraine's real pages (this list's original 2026-09-25 calibration set) that
  * neither new phrase appears in any of their genuine whole-country paragraphs — no
  * regression there.
+ *
+ * 2026-10-15 (advisory-outlier audit, every page re-read live): the regional cap used to fire on a
+ * regional word ANYWHERE in the paragraph, including a mere context clause in front of a verdict
+ * that names the country itself -- Lebanon's "In view of the volatile situation in THE REGION,
+ * Singaporeans are advised to defer all travel to Lebanon. Singaporeans currently in Lebanon should
+ * leave the country immediately" read Level 2 (14 of 23 peers: 4). A verdict whose object
+ * positively names the country ("to Lebanon", "the country", see sgOccurrenceIsWholeCountry) is
+ * now exempt from the cap; everything else is capped exactly as before. Two wording gaps closed
+ * at the same time: Haiti's "Singaporeans should defer non-essential travel to Haiti" (no "all",
+ * so it fell through to the page's "exercise a high degree of caution" = 2; now 3) and Iran's
+ * "Singaporeans who are currently in Iran should ... leave as soon as practicable" (an
+ * evacuation call, 4; only counted when the sentence names the country). `countryNames` are the
+ * page's own names for the country (its <h1>, plus our English name). Without them only the
+ * name-free "leave the country" exemption applies.
+ *
+ * Also 2026-10-15: the Middle-East-wide "defer all travel to the region" paragraph described above
+ * (Bahrain/Kuwait/Qatar/UAE) is no longer capped -- see SG_SUPRANATIONAL_REGION_RE for why "the
+ * region" there is the whole Middle East, not part of the country.
  */
-export function normalizeSgLevel(text: string): UnifiedLevel | null {
+export function normalizeSgLevel(text: string, countryNames: string[] = []): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
-
-  const REGIONAL_WORDS = [
-    'the region', 'border region', 'border area', 'conflict area', 'the following area',
-    'certain area', 'autonomous oblast', 'autonomous region',
-  ];
+  const names = countryNames.map((n) => n.trim().toLowerCase()).filter((n) => n.length > 0);
 
   let level: UnifiedLevel | null = null;
 
   for (const paragraph of text.split('\n')) {
     const lower = paragraph.toLowerCase();
+    const regionalInParagraph = SG_REGIONAL_WORDS.some((w) => lower.includes(w));
     let paragraphLevel: UnifiedLevel | 0 = 0;
 
-    // "do not travel" alone is also generic crime-safety phrasing ("do not travel alone at
-    // night") on plenty of otherwise-calm pages (e.g. Ethiopia) -- exclude that manner-qualified
-    // form specifically rather than dropping the cue outright, since a bare "Do not travel to
-    // X" verdict is a real, distinct level-4 pattern worth keeping.
-    if (lower.includes('defer all travel') || lower.includes('avoid all travel')
-      || (lower.includes('do not travel') && !lower.includes('do not travel alone'))
-      || lower.includes('leave immediately') || lower.includes('evacuate immediately')) paragraphLevel = 4;
-    else if (lower.includes('defer all non-essential travel') || lower.includes('avoid all non-essential travel')
-      || lower.includes('avoid non-essential travel')) paragraphLevel = 3;
-    else if (lower.includes('exercise a high degree of caution') || lower.includes('exercise increased caution')
-      || lower.includes('exercise extra caution') || lower.includes('high degree of vigilance')) paragraphLevel = 2;
+    for (const { re, level: phraseLevel, kind, needsCountry } of SG_VERDICTS) {
+      // "do not travel" alone is also generic crime-safety phrasing ("do not travel alone at
+      // night") on plenty of otherwise-calm pages (e.g. Ethiopia) -- exclude that manner-qualified
+      // form specifically rather than dropping the cue outright, since a bare "Do not travel to
+      // X" verdict is a real, distinct level-4 pattern worth keeping.
+      if (re.source === 'do not travel' && lower.includes('do not travel alone')) continue;
+      for (const m of lower.matchAll(re)) {
+        const start = m.index as number;
+        const end = start + m[0].length;
+        const sentenceStart = Math.max(lower.lastIndexOf('. ', start) + 1, 0);
+        const stop = lower.slice(end).search(/[.;!?](?:\s|$)/);
+        const after = stop === -1 ? lower.slice(end) : lower.slice(end, end + stop);
+        const sentence = lower.slice(sentenceStart, end + after.length);
+        const whole = sgOccurrenceIsWholeCountry(kind, after, sentence, names);
+        if (needsCountry && !whole) continue;
+        // The regional cap (a paragraph naming "the region"/"border areas"/... cannot promote a
+        // country past 2, see the doc comment above) applies to every occurrence EXCEPT one that
+        // positively names the whole country: Lebanon's real paragraph opens "In view of the
+        // volatile situation in the region, Singaporeans are advised to defer all travel to
+        // Lebanon. Singaporeans currently in Lebanon should leave the country immediately ..."
+        // and was capped at 2 by that contextual "the region" until 2026-10-15.
+        const occurrenceLevel = whole || !regionalInParagraph ? phraseLevel : 2;
+        if (occurrenceLevel > paragraphLevel) paragraphLevel = occurrenceLevel;
+      }
+    }
+
+    if (paragraphLevel === 0
+      && (lower.includes('exercise a high degree of caution') || lower.includes('exercise increased caution')
+        || lower.includes('exercise extra caution') || lower.includes('high degree of vigilance'))) paragraphLevel = 2;
 
     if (paragraphLevel === 0) continue;
-
-    if (paragraphLevel > 2 && REGIONAL_WORDS.some((w) => lower.includes(w))) paragraphLevel = 2;
 
     if (level === null || paragraphLevel > level) level = paragraphLevel;
   }
@@ -1716,13 +2122,37 @@ export function normalizeRoLevel(level: number): UnifiedLevel {
  * from being read as a country-specific warning. Returns null when the page
  * doesn't have this heading at all (different template, or genuinely no
  * content), so the caller can skip the country rather than guess.
+ *
+ * Repair 2026-10-15 (advisory-outlier audit): the section end only recognised
+ * headings of 2-4 ALL-CAPS words followed by an em dash or hyphen. RS's most
+ * common next heading is the SINGLE word "TRANSPORT" (130 of 183 live pages:
+ * 82 "TRANSPORT —", 42 with an EN dash "TRANSPORT –", 6 "TRANSPORT -"; plus
+ * 41 "OTHER —/–/-", "TRANSPORTATION –", "TELECOMMUNICATIONS -"), and the en
+ * dash was not recognised even after a two-word heading ("OTHER INFORMATION
+ * –", 28 pages). So the
+ * "security" section silently ran on through the whole TRANSPORT section,
+ * whose road/rail prose then read as a security verdict: Portugal's "Alfa
+ * Pendular (HIGH LEVEL of service ...)" and Sao Tome's "Driving at night is
+ * NOT RECOMMENDED" both turned calm countries into a level-3 "avoid
+ * non-essential travel" (verified live 2026-10-15). RS_NEXT_HEADING now also
+ * ends the section at a single ALL-CAPS word of 4+ letters followed by an em
+ * or en dash, or by a spaced hyphen (" - "), and accepts the en dash after
+ * multi-word headings. The 4-letter minimum and the spaced-hyphen requirement
+ * keep prose tokens out: across all 183 live pages the only other
+ * ALL-CAPS-plus-dash tokens are acronyms glued to a hyphen ("COVID-19",
+ * "HIV-", "EU-", "WI-", "UA-" from analytics script text) or 3-letter ones
+ * ("USD -"); every one of the 183 new section ends was checked to be a real
+ * heading (or the unchanged 600-character cap).
  */
+const RS_NEXT_HEADING = /[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}\s*[—–-]|\b[A-Z]{4,}(?:\s*[—–]|\s+-\s)/;
+
 export function extractRsSecuritySection(bodyText: string): string | null {
   const startIdx = bodyText.search(/SECURITY SITUATION/i);
   if (startIdx === -1) return null;
   const rest = bodyText.slice(startIdx + 'SECURITY SITUATION'.length);
-  // Next heading: a run of 2-4 ALL-CAPS words followed by a dash, e.g. "TRANSPORT —".
-  const nextHeadingIdx = rest.search(/[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}\s*[—-]/);
+  // Next heading: one ALL-CAPS word (4+ letters) or a run of 2-4 followed by a dash, e.g.
+  // "TRANSPORT —", "TRANSPORT –", "OTHER INFORMATION —" (see RS_NEXT_HEADING above).
+  const nextHeadingIdx = rest.search(RS_NEXT_HEADING);
   return nextHeadingIdx === -1 ? rest.slice(0, 600) : rest.slice(0, nextHeadingIdx);
 }
 
@@ -1781,20 +2211,155 @@ export function extractRsSecuritySection(bodyText: string): string | null {
  * other country this doc comment's own history calls out as genuine
  * (Afghanistan, Israel, Jordan, Oman, Ukraine): all name the country itself
  * (or a generic "this country") immediately after "to", none regress.
+ *
+ * Repair 2026-10-15 (advisory-outlier audit): the level-3 keywords ran as bare
+ * substrings over the whole section, so they fired on things that are not a
+ * travel recommendation at all. Found by comparing every issuer's level with
+ * the other governments' median for the same country; RS had 7 calm countries
+ * (Argentina, Botswana, Marshall Islands, Namibia, Netherlands, Portugal, Sao
+ * Tome and Principe) at 3 while 14-19 peers said 1. Verified against the live
+ * English pages AND their Serbian originals on 2026-10-15:
+ *   - "not recommended" is RS's stock wording for personal-safety TIPS: "It is
+ *     not recommended to wear valuable jewellery" (Argentina, whose page says
+ *     "the security situation in the city of Buenos Aires is not risky"),
+ *     "Individual movement in unsafe zones is not recommended" (Botswana),
+ *     "Walking at night is not recommended" (Namibia), "Movement outside of
+ *     these zones is not recommended" (Dominican Republic). 18 of the 35
+ *     level-3 countries of the 2026-10-14 run were tips like these.
+ *   - "high level" matched CALM prose: "The Marshall Islands enjoy a relatively
+ *     HIGH LEVEL of safety", "In Morocco, security is at a HIGH LEVEL",
+ *     "Security in the capital Kigali is at a HIGH LEVEL", Portugal's train
+ *     "high level of service". Of its 6 live hits the only real warning was
+ *     Afghanistan's "extremely high level of threat", already Level 4 through
+ *     "extremely high".
+ *   - 7 more were REGIONAL ("travel to the border areas towards Azerbaijan is
+ *     not advised", "travel to the northern part of the country is not
+ *     recommended", "travel is not recommended to the cities of Huaquillas and
+ *     Arenillas"), which the project's doctrine caps at 2 -- the same rule the
+ *     2026-09-26 Panama fix above applied to level 4.
+ * Level 3 now needs what RS's genuine level-3 sentences all have: the phrase
+ * within ~80 characters of a travel/visit verb whose destination is the
+ * country itself ("travelling to the Central African Republic is not
+ * recommended", "not recommended to travel in the coming period to Iraq",
+ * "travel to Oman is not recommended", "advised against traveling to this
+ * country", "We do not advise citizens ... to travel to Somalia, unless in dire
+ * need", "not recommended to travel or move around the territory of Mali").
+ * A sub-national destination (RS_SUBNATIONAL_DESTINATION) caps at 2; a phrase
+ * with no travel destination at all (a tip about jewellery, night walks,
+ * motorcycle taxis, leaving the tourist zones) is a caution, level 2 -- never
+ * a whole-country "avoid travel". "high level of risk/threat/danger/crime"
+ * (the Netherlands' national terrorism threat level, "a high level of risk of
+ * terrorist attacks was declared at the state level") is read like Germany's
+ * existing "increased level of security risk": 2. RS's own calm wording that
+ * the old keyword list missed ("relatively high level of safety ... generally
+ * safe for living and traveling", "security ... is at a high level", "Security
+ * in Sao Tome and Principe is relatively good", "generally a safe country",
+ * "one of the safer countries") is level 1 -- still checked LAST, so any
+ * caution sentence in the same section wins, and level 1 still requires an
+ * affirmative statement. Level 4 gains "recommended to leave the country"
+ * (Iran: "All those who are in Iran are recommended to leave the country as
+ * soon as possible"), which the over-long section used to reach only by
+ * accident (a journalists-only sentence from a later paragraph).
+ * Net effect on the 183 live pages (2026-10-15): 31 levels change, 27 of
+ * them 3 -> 2 (23) or 3 -> 1 (4), plus Hungary 2 -> 1; level-3 count 35 -> 6 (CAR, Iraq, Mali, Oman,
+ * Somalia, Chad -- each with a quoted whole-country sentence); coverage 105
+ * -> 104 (Cabo Verde gains a calm level 1; Egypt and Gabon, whose only level
+ * keyword was leaked TRANSPORT prose, now honestly resolve to no level).
+ * Sentences are split on terminal punctuation followed by whitespace OR
+ * directly by a capital letter: RS joins paragraphs with <br>, which cheerio's
+ * text() renders as nothing ("...in Europe.However, petty theft..."), and the
+ * old whitespace-only split glued such sentences together.
  */
 const RS_REGIONAL_TRAVEL_TARGET =
   /travel(?:l?ing)?\s+to\s+(?:the\s+)?(?:[a-z'-]+\s+){0,2}(?:province|region|state|prefecture|governorate|district|county|zone|island|peninsula|coast\w*)\b/i;
 
+/** RS's level-3 recommendation wording (see the 2026-10-15 repair note above for why these alone are not enough). */
+const RS_LEVEL3_PHRASE = /not recommended|not advise|advised against|reconsider/g;
+
+/**
+ * A travel/visit verb and the destination that follows it: "travel(ling) [<= 5 words] to|in|into|around|within
+ * <destination>" or "visit <destination>". Group 1/2 = the destination text. "travel" used as a modifier
+ * ("travel agencies are obliged to ensure ...", "travel documents") is excluded: there the "to" that follows is
+ * an infinitive, not a destination.
+ */
+const RS_TRAVEL_DESTINATION =
+  /\b(?:travel(?:l?ing|s)?(?!\s+(?:agenc|document|insurance|advi[cs]|warning|permit|ban\b|restriction))|trips?|journeys?)\b(?:\s+[^\s.;:!?]+){0,5}?\s+(?:to|in|into|around|within)\s+([^.;!?]{1,80})|\bvisit(?:s|ing)?\s+([^.;!?]{1,80})/g;
+
+/**
+ * A destination that is a part of the country, not the country: "the border areas towards Azerbaijan", "the
+ * northern part of the country", "the cities of Huaquillas", "certain areas such as the Jaffna Peninsula", "the
+ * remote parts of the interior", "the Chapare region", "the north of the country". Anchored at the start of the
+ * destination text (up to three leading words), like RS_REGIONAL_TRAVEL_TARGET, so a name mentioned later in a
+ * whole-country sentence cannot trigger it. Nouns that are also part of COUNTRY names are guarded: bare compass
+ * words ("South Sudan", "North Macedonia", "East Timor" -- only "<compass> of" counts), "states" after
+ * "united"/"federated", "coast" after "ivory", "city" after "vatican", and "island" only in the singular ("the
+ * Marshall/Solomon/Cook Islands" are countries).
+ */
+const RS_SUBNATIONAL_DESTINATION =
+  /^(?:the\s+)?(?:(?:north|south|east|west)\s+of\b|(?:[\w'’-]+\s+){0,3}?(?:provinces?|regions?|(?<!united\s)(?<!federated\s)states?|prefectures?|governorates?|districts?|count(?:y|ies)|departments?|cantons?|zones?|island|peninsulas?|(?<!ivory\s)coast\w*|border\w*|areas?|parts?|(?<!vatican\s)cit(?:y|ies)|capital|towns?|localit(?:y|ies)|municipalit(?:y|ies))\b)/;
+
+/** Max distance (characters) between a level-3 phrase and the travel verb it governs, in either order. */
+const RS_PHRASE_TO_TRAVEL_MAX_GAP = 80;
+
+/**
+ * Classify one sentence's level-3 phrase(s): 'whole' (a country-wide "travel to X is not recommended"),
+ * 'scoped' (same, but the destination is a part of the country -> capped at 2), 'tip' (no travel destination
+ * near the phrase -> a personal-safety caution, 2), or null (no level-3 phrase in the sentence). Each phrase is
+ * paired with its NEAREST travel construction only, so "travel to the north is not recommended, while travel to
+ * <the rest> ..." cannot borrow the second, unrelated destination.
+ */
+function classifyRsLevel3Sentence(sentence: string): 'whole' | 'scoped' | 'tip' | null {
+  const phrases = [...sentence.matchAll(RS_LEVEL3_PHRASE)];
+  if (phrases.length === 0) return null;
+  const travels = [...sentence.matchAll(RS_TRAVEL_DESTINATION)];
+  let sawScoped = false;
+  for (const p of phrases) {
+    const pStart = p.index as number;
+    const pEnd = pStart + p[0].length;
+    let nearest: { gap: number; destination: string } | null = null;
+    for (const t of travels) {
+      const tStart = t.index as number;
+      const destination = t[1] ?? t[2] ?? '';
+      const verbEnd = tStart + t[0].length - destination.length;
+      const gap = tStart >= pEnd ? tStart - pEnd : pStart >= verbEnd ? pStart - verbEnd : 0;
+      if (gap <= RS_PHRASE_TO_TRAVEL_MAX_GAP && (nearest === null || gap < nearest.gap)) {
+        nearest = { gap, destination: destination.trim() };
+      }
+    }
+    if (nearest === null) continue; // a tip: no travel destination near this phrase
+    if (!RS_SUBNATIONAL_DESTINATION.test(nearest.destination)) return 'whole';
+    sawScoped = true;
+  }
+  return sawScoped ? 'scoped' : 'tip';
+}
+
+/** Split on terminal punctuation followed by whitespace, or directly by a capital letter (<br>-joined paragraphs). */
+function splitRsSentences(text: string): string[] {
+  return text.split(/(?<=[.!?])\s+|(?<=[.!?])(?=[A-Z])/);
+}
+
 export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
   const lower = sectionText.toLowerCase();
-  if (lower.includes('do not travel') || lower.includes('extremely high') || lower.includes('leave immediately')) {
+  if (
+    lower.includes('do not travel') ||
+    lower.includes('extremely high') ||
+    lower.includes('leave immediately') ||
+    // Iran, live 2026-10-15: "All those who are in Iran are recommended to leave the country as soon as
+    // possible" -- the same evacuation advice as "leave immediately". (Before the 2026-10-15 section-boundary
+    // repair Iran reached 4 only by accident, through a journalists-only sentence the over-long section
+    // swallowed from a later paragraph.) Requires the advisory verb, so customs prose like "an exit visa when
+    // leaving the country" cannot match.
+    /\b(?:recommended|advised|urged) to leave the country\b/.test(lower)
+  ) {
     return 4;
   }
+  // Split BEFORE lowercasing: the glued-paragraph boundary is only visible as "lowercase.Uppercase".
+  const sentences = splitRsSentences(sectionText).map((s) => s.toLowerCase());
 
   // Sentence-scoped: either construction can name a sub-national destination
   // instead of the country (see the repair note above).
   let sawScoped4 = false;
-  for (const sentence of lower.split(/(?<=[.!?])\s+/)) {
+  for (const sentence of sentences) {
     const hit =
       /refrain from (all |any(?: type of)? )?travel/.test(sentence) || /advis\w*\s+not\s+to\s+travel/.test(sentence);
     if (!hit) continue;
@@ -1802,19 +2367,39 @@ export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
     else return 4; // genuine, unscoped -- no need to keep scanning
   }
 
+  // Level 3 only for a country-wide travel recommendation; regional ones and personal-safety tips are
+  // cautions (2) -- see the 2026-10-15 repair note above.
+  let sawLevel3Scoped = false;
+  let sawLevel3Tip = false;
+  for (const sentence of sentences) {
+    const kind = classifyRsLevel3Sentence(sentence);
+    if (kind === 'whole') return 3;
+    if (kind === 'scoped') sawLevel3Scoped = true;
+    else if (kind === 'tip') sawLevel3Tip = true;
+  }
+
   if (
-    lower.includes('not recommended') ||
-    lower.includes('not advise') ||
-    lower.includes('advised against') ||
-    lower.includes('reconsider') ||
-    lower.includes('high level')
-  ) return 3;
-  if (lower.includes('increased') || lower.includes('caution') || lower.includes('elevated')) return 2;
+    lower.includes('increased') ||
+    lower.includes('caution') ||
+    lower.includes('elevated') ||
+    /\bhigh level of (?:[a-z-]+\s+){0,2}?(?:risk|threat|danger|crime|criminality|insecurity)\b/.test(lower) ||
+    sawLevel3Scoped ||
+    sawLevel3Tip
+  ) return 2;
   if (
     /security situation.{0,30}is good/.test(lower) ||
     /high[\s-]level(?:\s+of)?\s+security|high security level/.test(lower) ||
     lower.includes('public peace and order') ||
-    lower.includes('safest countries')
+    lower.includes('safest countries') ||
+    // RS calm wording verified live 2026-10-15 (Marshall Islands, Morocco, Sao Tome and Principe, Cabo Verde,
+    // Netherlands, Hungary). A "security is good" clause only counts when the same sentence does not go on to
+    // qualify it ("security is generally good, BUT the risk of robberies, armed attacks ... should not be ruled
+    // out" -- Gabon -- is a caution, not a calm statement).
+    lower.includes('safer countries') ||
+    /\bhigh level of safety\b/.test(lower) ||
+    /\bsecurity\b[^.]{0,60}\bis at a high level\b/.test(lower) ||
+    /\bsecurity\b[^.]{0,60}\bis (?:relatively |generally |very )?good\b(?![^.]*\b(?:but|however)\b)/.test(lower) ||
+    /\b(?:is|are) generally (?:a )?safe\b/.test(lower)
   ) return 1;
   // A regionally-scoped "refrain from travel" was found but nothing else in
   // the section matched a lower tier either -- a real regional warning
@@ -1940,8 +2525,14 @@ const IT_SUBNATIONAL_MARKERS = [
  * a GENUINE country-wide ban, verified 2026-09-26) and "stato" (the past participle of "essere"
  * makes a bare stem match almost every sentence in the corpus; the existing "nello stato di"
  * phrase already covers the federated-country case, e.g. Nigeria/Mexico/India/USA states).
+ * `\bquartier[ei]\b` (city neighbourhoods) added 2026-10-15 (advisory-outlier audit): a warning
+ * about some DISTRICTS of a city is as sub-national as one about a province -- Nicaragua's "e'
+ * sconsigliabile recarsi in alcuni QUARTIERI periferici delle principali citta'" and Tunisia's
+ * "nelle zone periferiche e nei QUARTIERI degradati dei principali centri urbani" were both
+ * promoting their whole country to Level 3. Noun forms only ("quartiere/i"), so the unrelated
+ * "quartier generale" (headquarters) is not matched.
  */
-const IT_REGIONAL_STEM_MARKERS = /\bregion[ei]\b|\bprovinc\w*|\bdistrett\w*|\bconfin\w*|\bfrontier\w*|\bexclav\w*|\benclav\w*|\bseparatist\w*/i;
+const IT_REGIONAL_STEM_MARKERS = /\bregion[ei]\b|\bprovinc\w*|\bdistrett\w*|\bconfin\w*|\bfrontier\w*|\bexclav\w*|\benclav\w*|\bseparatist\w*|\bquartier[ei]\b/i;
 
 /**
  * Does `sentence` contain "a qualsiasi titolo" ("for whatever reason") used as Farnesina's
@@ -2019,6 +2610,52 @@ function stripParentheticals(sentence: string): string {
  */
 const IT_MOVEMENT_CAUTION_WORDS =
   /massima (prudenza|cautela|attenzione|vigilanza)|particolare (attenzione|prudenza|cautela)|(elevata|alta) (attenzione|prudenza|cautela)|alto livello di attenzione/;
+
+/**
+ * What a Level-3 "sconsigli*" (advise against) sentence must be ABOUT: travel to, or a stay in, the country.
+ * Repair 2026-10-15 (advisory-outlier audit): LEVEL3_PATTERNS used to carry a bare `sconsigli` alternative, so ANY
+ * unscoped "sconsiglia..." in `Indicazioni-generali` promoted the whole country to Level 3 ("reconsider travel"),
+ * whatever was being advised against. Farnesina uses the same verb for everyday activity tips, and the full
+ * 223-dossier sweep (live 2026-10-15) found them promoting calm countries:
+ *  - Kazakhstan: "La situazione di sicurezza in Kazakhastan e' generalmente stabile. [...] E' SCONSIGLIATO
+ *    FOTOGRAFARE edifici ed infrastrutture pubbliche" (photographing public buildings) -> was 3, peers' median 1.
+ *  - Namibia: "Nella città di Windhoek, si SCONSIGLIA DI PERNOTTARE nei quartieri meridionali ed occidentali"
+ *    (staying overnight in two districts of the capital) -> was 3, peers' median 1.
+ *  - Cuba (changing money in the street), Egypt (unlicensed excursion operators, illegal taxis, insurance without
+ *    excess), Eritrea (entering territorial waters by boat), Madagascar (walking home alone) -- same mechanism.
+ * Every genuine whole-country Level 3/4 "sconsigli*" sentence in that sweep names travel itself ("sono sconsigliati
+ * i viaggi nel Paese" Iraq, "sconsigliare qualsiasi viaggio in Iran", "si sconsigliano viaggi non necessari nel
+ * Paese" Guinea-Bissau/Papua New Guinea, "i viaggi non essenziali in Corea del Nord sono sconsigliati", Libya,
+ * Chad, Myanmar, Nigeria...) or a stay in the country ("sia i viaggi, sia la permanenza nel Paese", Somalia).
+ * A "sconsigli*" sentence without such an object still counts toward Level 2 via LEVEL2_PATTERNS, exactly as before.
+ */
+const IT_TRAVEL_OBJECT = /\bviagg\w*|\brecars\w*|\brecarvisi\b|\bsoggiorn\w*|\bpermanenz\w*/;
+
+/**
+ * Time-of-day and route qualifiers that scope a sentence to an ACTIVITY, not to the country as a whole -- the IT
+ * counterpart of ES_ZONE_MARKERS' "de noche|por la noche|nocturno". A sentence carrying one never reaches the
+ * whole-country Level 3/4 checks (it falls through to Level 2). Repair 2026-10-15, found by the same sweep:
+ *  - Nepal: "si raccomanda di EVITARE I VIAGGI NELLE ORE NOTTURNE" (avoid travelling at night) matched LEVEL3's
+ *    "evitare i viaggi" -> was 3.
+ *  - Benin: "Eventuali VIAGGI VIA TERRA, tra Nigeria e Benin, restano comunque sconsigliati per le pessime
+ *    condizioni del manto stradale" (the overland Lagos-Cotonou route, because of the road surface) -> was 3.
+ *  - Ethiopia: "si sconsigliano in tutto il Paese trasferimenti in auto durante le ore NOTTURNE".
+ */
+const IT_ACTIVITY_SCOPE_MARKERS = /\bnotturn\w*|\bdi notte\b|\bore serali\b|\bdopo il tramonto\b|\bvia terra\b/;
+
+/**
+ * "evitare le aree/zone ..." -- Farnesina's plainest avoid-this-AREA wording. The Level 2 rule documented on
+ * normalizeItLevel ("named danger zone with an avoid-verb ... sconsiglia/evitare/non recarsi/interdetto") never
+ * actually matched it: LEVEL2_PATTERNS only knows "evitare (i) viaggi" and "evitare di recarsi". Repair 2026-10-15
+ * (advisory-outlier audit): Jordan's dossier says "si raccomanda di EVITARE LE AREE immediatamente prossime al
+ * CONFINE occidentale, a quello settentrionale con la Siria [...] e con l'Iraq" -- a genuine named-zone warning
+ * that left Jordan on the Level 1 fallback. Only counted together with a sub-national marker (isSubNational), because
+ * the same verb+noun also introduces generic tips with no named place ("evitare le zone isolate", "evitare le aree
+ * interessate dalle manifestazioni" -- Bulgaria, Serbia, New Zealand), which must stay Level 1. Measured on all 223
+ * live dossiers: Jordan, Guatemala (Mexico border, named departments) and Suriname (Brokopondo district) move 1 -> 2,
+ * nothing else changes.
+ */
+const IT_AVOID_AREA = /\bevitar\w*\s+(?:le\s+|la\s+|tutte\s+le\s+)?(?:aree|area|zone|zona)\b/;
 
 function hasMovementCaution(sentence: string): boolean {
   return IT_MOVEMENT_CAUTION_WORDS.test(sentence) && /\bspostament\w*/.test(sentence);
@@ -2099,8 +2736,12 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
     /viagg\w*\s+(a\s+|in\s+)+tutto\s+il\s+(paese|territorio)/,
     /preclusa la possibilit[aà] di recarsi/,
   ];
+  // Bare "sconsigli*" is deliberately NOT in this list (repair 2026-10-15): it only counts toward Level 3 when TRAVEL
+  // itself is what is advised against -- see IT_TRAVEL_OBJECT's doc comment for the live false-3s it produced.
   const LEVEL3_PATTERNS =
-    /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi|sconsigli/;
+    /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi/;
+  const isLevel3Sentence = (sentence: string) =>
+    LEVEL3_PATTERNS.test(sentence) || (/sconsigli/.test(sentence) && IT_TRAVEL_OBJECT.test(sentence));
   const LEVEL2_PATTERNS = /sconsigli|evitare\s+(i\s+)?viaggi|evitare di recarsi|non recarsi|interdett/;
 
   const isSubNational = (sentence: string) =>
@@ -2120,17 +2761,19 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
     // cleaned sentence, so a foreign country's ban tucked into a "(...)" aside can never be
     // misread as this country's own.
     const s = stripParentheticals(rawSentence);
-    const subNational = isSubNational(s);
+    // A sentence scoped to a sub-national place OR to a time of day / route (IT_ACTIVITY_SCOPE_MARKERS) can never
+    // carry a whole-country Level 3/4 -- it falls through to the Level 2 check below, like a regional warning.
+    const scoped = isSubNational(s) || IT_ACTIVITY_SCOPE_MARKERS.test(s);
 
-    if (!subNational && (hasBanningQualsiasiTitolo(s) || LEVEL4_PATTERNS.some((re) => re.test(s)))) {
+    if (!scoped && (hasBanningQualsiasiTitolo(s) || LEVEL4_PATTERNS.some((re) => re.test(s)))) {
       sawLevel4 = true;
       continue;
     }
-    if (section === 'general' && !subNational && LEVEL3_PATTERNS.test(s)) {
+    if (section === 'general' && !scoped && isLevel3Sentence(s)) {
       sawLevel3 = true;
       continue;
     }
-    if (LEVEL2_PATTERNS.test(s) || hasMovementCaution(s)) sawLevel2 = true;
+    if (LEVEL2_PATTERNS.test(s) || hasMovementCaution(s) || (IT_AVOID_AREA.test(s) && isSubNational(s))) sawLevel2 = true;
   }
 
   if (sawLevel4) return 4;
@@ -2168,6 +2811,18 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
 const ES_ZONE_MARKERS =
   /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|fronter\w* con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno|\bzonas?\b|\bregi[oó]n(es)?\b|pen[ií]nsula/;
 const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
+
+/** An intensifier ("extremar/extrema/mucha precaución") that qualifies the TRIP ITSELF -- the only form Spain's
+ *  whole-country Level 3 banners take (see normalizeEsLevel's 2026-10-15 repair note): "viajar con extrema/mucha
+ *  precaución", "durante el/su viaje", "al viajar" NOT followed by a destination ("al viajar a determinadas zonas
+ *  del país" is Jamaica's zone-scoped wording), "a la hora de viajar", or Spain's "recomendación general" heading
+ *  (Angola: "RECOMENDACIÓN GENERAL: SE RECOMIENDA EXTREMAR LA PRECAUCIÓN Y EVITAR DETERMINADAS ZONAS"). */
+const ES_GENERAL_TRIP =
+  /\bviajar\s+con\s+(?:\w+\s+)?(?:extrema|mucha)\s+precauci|\b(?:durante|en)\s+(?:el|su)\s+viaje\b|\bal\s+viajar\b(?!\s+(?:a|al|por|hacia)\b)|\ba\s+la\s+hora\s+de\s+viajar\b|recomendaci[oó]n\s+general/;
+/** The coordinated "Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" / "Y EVITAR DETERMINADAS ZONAS" caveat of Spain's
+ *  banners -- a separate instruction about zones, cut off before checking whether the intensifier ITSELF is
+ *  zone-scoped (Ethiopia, Cameroon, Mexico, Lesotho, Angola... must stay Level 3). */
+const ES_COORDINATED_AVOID_CLAUSE = /\s+y\s+(?:abstenerse|evitar)\b.*$/;
 
 /**
  * Normalize Spain (Exteriores) advisory text to unified 1-4 scale.
@@ -2227,6 +2882,11 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     /desaconseja\w*.{0,25}completamente/, /completamente.{0,25}desaconseja/,
     /desaconseja\w*.{0,25}totalmente/, /totalmente.{0,25}desaconseja/,
     /desaconseja\w*.{0,25}encarecidamente/, /encarecidamente.{0,25}desaconseja/,
+    // "absolutamente" added 2026-10-15 (advisory-outlier audit): Niger's banner "Dadas las circunstancias, SE
+    // DESACONSEJA ABSOLUTAMENTE VIAJAR A NÍGER" matched none of the three adverbs above, so Spain's do-not-travel
+    // for Niger was only ever read as Level 3 -- and only by accident, via an unrelated "extremar las
+    // precauciones en las viviendas particulares" home-security tip the intensity rule below now ignores.
+    /desaconseja\w*.{0,25}absolutamente/, /absolutamente.{0,25}desaconseja/,
     /\bse desaconseja (el viaje|viajar)\b/,
     /\brecomienda\s+no\s+viajar\b/,
   ];
@@ -2241,14 +2901,32 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
   // A sentence using either level-4 verb, downgraded by its own "salvo/excepto" clause, is level 3.
   const LEVEL3_EXCEPTION_VERB = /desaconseja|recomienda\s+no\s+viajar/;
   // "Extremar/mucha precaución" is Spain's own whole-country Level 3 intensifier (Ethiopia:
-  // "SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" --
-  // deliberately NOT gated on ES_ZONE_MARKERS like the Level 4 checks above: that "zonas" clause
-  // is a SEPARATE, additional caveat, not what "mucha precaución" itself is scoped to; the banner
-  // as a whole is Spain's overall country assessment). Checked per SENTENCE (not the whole
-  // notice) only to exclude a health/hygiene use of the same words -- Togo's page reads "se
-  // recomienda EXTREMAR LA PRECAUCIÓN y adoptar medidas de HIGIENE, lavarse frecuentemente las
-  // manos..." in its own Sanidad section, about disease prevention, not a security assessment;
-  // ES_HEALTH_CONTEXT excludes just that sentence.
+  // "SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS").
+  // The "zonas" clause there is a SEPARATE, coordinated caveat ("Y ABSTENERSE/EVITAR ..."), not what
+  // "mucha precaución" itself is scoped to, so it is cut off (ES_COORDINATED_AVOID_CLAUSE) before the
+  // zone check -- what remains must be zone-free. Checked per SENTENCE (not the whole notice) also to
+  // exclude a health/hygiene use of the same words -- Togo's page reads "se recomienda EXTREMAR LA
+  // PRECAUCIÓN y adoptar medidas de HIGIENE, lavarse frecuentemente las manos..." in its own Sanidad
+  // section, about disease prevention, not a security assessment; ES_HEALTH_CONTEXT excludes just that
+  // sentence.
+  //
+  // Repair 2026-10-15 (advisory-outlier audit): the intensifier used to count anywhere, in any sentence,
+  // whatever it was scoped to. Two calm countries were reported as Level 3 against a peer median of 1:
+  //  - Serbia: banner "SE RECOMIENDA EXTREMAR LA PRECAUCIÓN EN ALGUNAS ZONAS. Serbia es, en términos
+  //    generales, un país seguro, pero se recomienda extremar las precauciones si se viaja a Kosovo" --
+  //    the intensifier is about some zones (Kosovo), the country itself is "un país seguro".
+  //  - Mongolia: banner "SE RECOMIENDA VIAJAR CON PRECAUCIÓN" (Level 2), plus "se recomienda extremar las
+  //    precauciones de cara a viajes y turismo de aventura fuera de centros urbanos que contemplen la
+  //    visita a zonas desérticas, esteparias..." -- adventure trips into remote zones, not the country.
+  // The full 197-country sweep (live 2026-10-15) found the same mechanism in body-text tips on pages whose
+  // banner is the plain Level 2 "VIAJAR CON PRECAUCIÓN": "extremar la precaución en todos los
+  // desplazamientos en vehículo" (El Salvador), "...para evitar picaduras de mosquito" (Panamá), "...en los
+  // desplazamientos a pie" (Tanzania), "...en el trato con la población local" (Madagascar), "...en las zonas
+  // fronterizas" (Kirguistán, Ruanda), bad roads (Georgia). An intensifier now counts toward the
+  // whole-country Level 3 only when it qualifies the TRIP ITSELF (ES_GENERAL_TRIP -- every Level 3 banner in
+  // the sweep is phrased that way: "VIAJAR CON EXTREMA/MUCHA PRECAUCIÓN", "EXTREMAR LA PRECAUCIÓN DURANTE EL
+  // VIAJE / AL VIAJAR / A LA HORA DE VIAJAR", "RECOMENDACIÓN GENERAL: ... EXTREMAR LA PRECAUCIÓN") and names
+  // no zone; any other security intensifier is still a real caution statement and counts as Level 2.
   const PRECAUCION_INTENSITY_PATTERNS = [
     /extremar\w*.{0,15}precauci[oó]n/, /precauci[oó]n\w*.{0,15}extrem/,
     /\bextrema\s+precauci[oó]n/, /\bmucha\s+precauci[oó]n/,
@@ -2290,14 +2968,17 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     if (!zoneScoped && hasException && LEVEL3_EXCEPTION_VERB.test(s)) sawLevel3 = true;
   }
 
-  const hasSecurityPrecautionIntensity = splitIntoSentences(notas).some(
+  const intensitySentences = splitIntoSentences(notas).filter(
     (s) => !ES_HEALTH_CONTEXT.test(s) && PRECAUCION_INTENSITY_PATTERNS.some((re) => re.test(s)),
+  );
+  const hasWholeCountryIntensity = intensitySentences.some(
+    (s) => ES_GENERAL_TRIP.test(s) && !ES_ZONE_MARKERS.test(s.replace(ES_COORDINATED_AVOID_CLAUSE, '')),
   );
 
   if (sawLevel4) return 4;
   if (sawLevel3) return 3;
-  if (hasSecurityPrecautionIntensity || LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
-  if (LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
+  if (hasWholeCountryIntensity || LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
+  if (intensitySentences.length > 0 || LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
   // A substantive notice that matched none of the above is Cuba's case (see calibration note): a real
   // advisory Spain didn't phrase with any of its fixed severity verbs, not an all-clear. Emit nothing
   // rather than guess -- the caller (fetchEsAdvisories) already skips a null and reports no ES level.
@@ -2457,37 +3138,150 @@ export function normalizePlLevel(text: string): UnifiedLevel {
 // itself is narrative prose. Same approach as normalizePtLevel: classify
 // clause-by-clause, and only let a clause drive the COUNTRY-WIDE level when
 // it carries no regional qualifier (oblast, hranice/příhraniční, pásmo,
-// provincie, okres, "některých států" ...) -- MZV routinely names the worst
-// sub-regions explicitly (e.g. Pákistán's Afghan/Indian border areas and
+// provincie, region, okres, "některých států" ...) -- MZV routinely names the
+// worst sub-regions explicitly (e.g. Pákistán's Afghan/Indian border areas and
 // Balúčistán) while giving the rest of the country a lower, separate rating,
 // and a border-zone warning must not promote the whole country past level 2.
+//
+// Repair 2026-10-15 (advisory-outlier audit; every phrase below was read on the
+// live mzv.gov.cz article that day). Fourteen countries sat two or more levels
+// away from the other governments' median, and in thirteen of them the cause was
+// this parser's vocabulary, not MZV (the fourteenth, Nigérie, has no current
+// warning article at all -- see the audit report):
+//   1. MZV's whole-country warning is normally a VERB -- "MZV varuje před cestami
+//      do Myanmaru", "důrazně varuje občany před cestami do země" (Írán), "varuje
+//      občany ČR před cestami do Severní Koreje" (KLDR), "varuje před jakýmikoliv
+//      cestami do země" (Haiti) -- while the old pattern only knew two NOUN
+//      spellings ("varování před cestami do země" / "na celé území"). Every
+//      verb-form warning fell through to 2, or to 1 when nothing else matched.
+//   2. The call to leave is "vyzývá občany ČR k opuštění země" (Bělorusko,
+//      Libanon, Írán, Mali) or "vyzývá ..., aby zemi urychleně opustili" (Haiti);
+//      the old pattern only had "opustit zemi" / "opusťte zemi".
+//   3. "doporučuje omezit cesty ... jen NA nezbytně nutné" (Burkina Faso, Niger)
+//      -- the old level-3 pattern only accepted "jen V(E) nezbytných případech" --
+//      and "zvažit nezbytnost" was a misspelling of "zvážit" that never matched.
+//   4. "Do ostatních částí země ... omezit cesty jen na nezbytně nutné" (Niger) is
+//      the REST-OF-THE-COUNTRY catch-all, i.e. the national level by this project's
+//      doctrine (same as BMEIA's "Rest des Landes" or MOFA's "上記以外の地域"), but
+//      the stem "část" made it read as regional; likewise "Varování před cestami je
+//      platné do všech částí Libanonu" (ALL parts). Such catch-all/whole idioms are
+//      blanked before the regional test (CZ_WHOLE_COUNTRY_IDIOMS).
+//   5. "region", "distrikt" and the adjective stem "hranič-" (příhraniční, pohraničí)
+//      were missing from the regional stems: Mongolia's "doporučuje cestovat do regionu
+//      Uvs ... jen ve zcela nezbytných případech" (one aimag under a foot-and-mouth
+//      quarantine) became a whole-country level 3. Likewise the anaphoric "Na uvedených
+//      územích ... jen ve zcela nezbytných případech" (Kolumbie: "in the territories
+//      mentioned above") had made Colombia a whole-country 3 -- same trap as ES's "la
+//      zona" in rev 6.
+//   6. A warning article whose text matched nothing defaulted to level 1 -- which is
+//      how KLDR (an explicit "varuje ... před cestami") and Jižní Súdán ended up as
+//      "Běžná opatrnost". Unrecognized prose now returns null (never guess, as for
+//      SK/BE since revs 3-4); level 1 stays reserved for the page's own "Nebylo
+//      nalezeno žádné aktuální upozornění nebo varování" state (no article linked),
+//      which fetchCzAdvisories handles before calling this.
+// Note: JavaScript's \w and \b are ASCII-only, so every pattern below spells Czech
+// letters out or uses \p{L} with the `u` flag (same trap as the SK parser). The stems are
+// substrings, so three lookbehinds/lookaheads keep everyday words out: "zahraniční" (foreign --
+// as in "Ministerstvo zahraničních věcí", the sentence subject of most warnings!) is not
+// "hranič-", "zaměstnanci"/"náměstí" (employees/square) are not "měst-", and "částečný"
+// (partial, e.g. "částečná mobilizace") is not "část-".
 const CZ_REGIONAL_SCOPE =
-  /oblast|hranic|pásm|provinci|okres|někter[éý]ch stát|měst|část/;
+  /oblast|hranic|(?<!za)hranič|pásm|provinci|region|okres|distrikt|někter[éý]ch stát|(?<!za|ná)měst|část(?!eč)|(?:uveden|zmíněn)\p{L}*\s+územ/u;
 
-const CZ_STRONG_UNSCOPED =
-  /nedoporučujeme cestovat|necestujte|varování před cestami do země|varování před cestami na celé území|opusťte zemi|opustit zemi/;
+/** Whole-country / rest-of-country idioms built on a CZ_REGIONAL_SCOPE stem that mean the
+ * OPPOSITE of a regional scope -- "Do ostatních částí země MZV ČR doporučuje omezit cesty jen na
+ * nezbytně nutné" (Niger) and "Do ostatních oblastí Pákistánu ... jen ve zcela nezbytných
+ * případech" (the REST of the country: its catch-all, i.e. the national level), "do všech částí
+ * Libanonu" (ALL parts), "včetně hlavního města" (INCLUDING the capital). Blanked out of a clause
+ * before the regional test so they cannot demote a whole-country statement to "regional".
+ * Deliberately narrow: "všech" only with "část-" ("do všech příhraničních oblastí" stays regional),
+ * and no compass words at all -- "do jižního Nigeru" would be regional, but so would "do Jižního
+ * Súdánu" and "do Severní Koreje", which are country names. */
+const CZ_WHOLE_COUNTRY_IDIOMS =
+  /(?:ostatní\p{L}*|zbývající\p{L}*)\s+(?:část\p{L}*|oblast\p{L}*|region\p{L}*)|všech\s+část\p{L}*|(?:včetně|vč\.)\s+hlavního\s+města/gu;
 
-const CZ_AVOID_NON_ESSENTIAL =
-  /zvažit nezbytnost cesty|doporučujeme se vyhnout|(jen|pouze) ve? (zcela )?nezbytn/;
+/** Level-4 (do not travel / leave) phrase families, all taken from live MZV articles -- see
+ * points 1-2 above. The leave-the-country forms require a governing advisory verb earlier in
+ * the clause, so Írán's "je zemi možné opustit přes pozemní hraniční přechody" (it is POSSIBLE
+ * to leave overland -- information, not advice) is not one. */
+const CZ_STRONG_UNSCOPED = new RegExp(
+  [
+    // "varuje / varujeme / důrazně varuje [občany ČR] před [jakýmikoliv] cestami|cestováním|cestou",
+    // also "varuje v souvislosti s aktuální bezpečnostní situací před cestami do ..." (Moldavsko)
+    'varuj\\p{L}*[^.;!?]{0,80}?\\s+před\\s+(?:\\p{L}+\\s+)?cest',
+    // the noun: "varování před cestami do země / na celé území / je platné do všech částí ..."
+    'varování\\s+před\\s+(?:\\p{L}+\\s+)?cest',
+    // "vyzývá (občany ČR) k (okamžitému) opuštění země", "vyzývá ..., aby zemi urychleně opustili",
+    // "doporučuje opustit zemi" -- the advisory verb must come first, and a contingency PLAN or
+    // POSSIBILITY of leaving ("doporučujeme mít připravený plán opuštění země" -- BLR/RUS say the
+    // same to those who stay) is not a call to leave
+    '(?:vyzýv|vyzv|doporuč|žád|apel)\\p{L}*[^.;!?]{0,120}?(?<!(?:plán|možnost)\\p{L}{0,3}\\s+(?:pro\\s+|k\\s+)?)(?:opuštění\\s+(?:země|území)|opustit\\s+(?:zemi|území)|(?:zemi|území)\\s+(?:\\p{L}+\\s+)?opustil)',
+    'opusťte\\s+(?:\\p{L}+\\s+)?(?:zemi|území)',
+  ].join('|'),
+  'u',
+);
 
+/** The plainer "do not travel" advice -- "nedoporučujeme cestovat do Mali", "nedoporučuje
+ * (jakékoliv) cesty do ...", "necestujte" -- doubles as MZV's wording for MANNER tips in the very
+ * same articles ("Nedoporučuje se cestovat autem po setmění", "necestujte v noci"), so it only
+ * counts when the clause carries none of the manner/time qualifiers below (CZ_MANNER_TIP). */
+const CZ_STRONG_ADVICE = /nedoporuču\p{L}*\s+(?:\p{L}+\s+){0,2}?cest(?:ovat|y|ování)|necestujte/u;
+const CZ_MANNER_TIP =
+  /po setmění|v noci|v nočních hodinách|autem|autobus\p{L}*|vlak\p{L}*|pěšky|stopem|motork\p{L}*|taxi\p{L}*|bez doprovodu|individuáln\p{L}*|samostatn\p{L}*|mimo hlavní/u;
+
+/** A clause that LIFTS or no longer applies a warning ("MZV ČR ruší varování před cestami
+ * do ...", "varování ... bylo zrušeno") must not be read as one. */
+const CZ_WARNING_LIFTED =
+  /(?:ruší|zruš\p{L}*|odvol\p{L}*)\s+(?:\p{L}+\s+){0,3}?varování|varování(?:\s+\S+){0,6}?\s+(?:zrušen\p{L}*|odvolán\p{L}*|neplatí)/u;
+
+/** Level-3 (avoid non-essential travel) phrase families -- see point 3 above. */
+const CZ_AVOID_NON_ESSENTIAL = new RegExp(
+  [
+    // "zvážit / zvažte nezbytnost (své) cesty"
+    'zv(?:á|a)ž\\p{L}*\\s+(?:\\p{L}+\\s+)?nezbytnost',
+    'doporučujeme se vyhnout',
+    // "(cestovat) jen ve zcela nezbytných případech", "omezit cesty jen na nezbytně nutné"
+    '(?:jen|pouze)\\s+(?:ve?|na)\\s+(?:zcela\\s+)?nezbytn',
+  ].join('|'),
+  'u',
+);
+
+/** Level-2 (increased caution) vocabulary. "vyhýbat se (případným) shromážděním / demonstracím",
+ * "vyhýbejte se davům" is MZV's standard caution advice; added 2026-10-15 for Hongkong, whose only
+ * warning article (the National Security Law notice: "MZV ČR doporučuje ... sledovat aktuální
+ * situaci a vyhýbat se případným shromážděním") would otherwise be unclassifiable now that
+ * unmatched prose no longer defaults to level 1 (point 6 above). */
 const CZ_CAUTION =
-  /zvýšen[áé] opatrnost|zvýšené riziko|bezpečnostní riziko|zesílená ostražitost/;
+  /zvýšen[áé] opatrnost|zvýšené riziko|bezpečnostní riziko|zesílená ostražitost|vyh(?:ýb|yb|n)\p{L}*\s+se\s+(?:\p{L}+\s+){0,2}?(?:shromážděn|demonstrac|dav)/u;
+
+/** Each article opens with "<Title> Stále v platnosti: 15. 10. 2026 Publikováno: 11.10.2023 /
+ * 13:00 | Aktualizováno: 26.08.2026 / 10:21" -- the TITLE names the country ("Palestinská
+ * autonomní území: varování před cestami") even when the body restricts the warning to named
+ * regions (there: the northern West Bank and Gaza, the rest of the West Bank being "jen ve zcela
+ * nezbytných případech"). Only the body states scope, so every such header (several articles
+ * may be concatenated) is removed before classifying: from the end of the previous sentence up to
+ * the publication/update stamp. A page without the stamp is left untouched. */
+const CZ_ARTICLE_HEADER =
+  /[^.!?]*?stále v platnosti:[^|]*?publikováno:\s*\d{1,2}\.\s*\d{1,2}\.\s*\d{4}(?:\s*\/\s*\d{1,2}:\d{2})?(?:\s*\|\s*aktualizováno:\s*\d{1,2}\.\s*\d{1,2}\.\s*\d{4}(?:\s*\/\s*\d{1,2}:\d{2})?)?/gu;
+
+/** "... varuje před cestami do severní části Západního břehu Jordánu A DO ostatních částí
+ * Západního břehu Jordánu doporučuje cestovat jen ve zcela nezbytných případech" (Palestina):
+ * one sentence, two destinations, each with its own advice. A coordinating "a" that opens a NEW
+ * destination ("a do", "a na", "a v(e)") starts a new clause, so each advice is scoped by its
+ * own destination instead of by the other one's regional noun. */
+const CZ_CLAUSE_SPLIT = /(?<=[.;!?])\s+|\n+|\s+a\s+(?=(?:do|na|ve?)\s)/u;
 
 /**
- * Normalize Czech Republic (MZV) advisory narrative text to unified 1-4
- * scale. Returns null only when there is no real text to classify (empty
- * fetch) -- a country whose "cestovani" page loaded fine but has no
- * "Aktuální doporučení a varování" section is a valid level-1 baseline (MZV
- * publishes one comprehensive page per country, so the section's absence
- * IS the "nothing to flag" statement), and free-form warning prose that
- * matches none of the keywords below (e.g. a hurricane-season notice with
- * no explicit caution language) also resolves to level 1 rather than being
- * dropped, consistent with the other MZV-style sources in this file.
+ * Normalize Czech Republic (MZV) advisory narrative text (the combined text of the warning
+ * article(s) linked from a country's "Aktuální doporučení a varování" section) to the unified
+ * 1-4 scale. Returns null when there is no real text, and -- since the 2026-10-15 repair --
+ * also when the article matches none of the patterns above (never guess: see point 6 of the
+ * section comment). A country with NO warning article at all is the caller's level-1 case.
  */
 export function normalizeCzLevel(text: string): UnifiedLevel | null {
   if (!text || text.trim().length < 10) return null;
-  const lower = text.toLowerCase();
-  const clauses = lower.split(/(?<=[.;!?])\s+|\n+/);
+  const lower = text.toLowerCase().replace(/\u00a0/g, ' ').replace(CZ_ARTICLE_HEADER, ' ');
+  const clauses = lower.split(CZ_CLAUSE_SPLIT);
 
   let saw4 = false;
   let saw3 = false;
@@ -2495,9 +3289,11 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
   let sawCaution = false;
 
   for (const clause of clauses) {
-    if (!clause.trim()) continue;
-    const regional = CZ_REGIONAL_SCOPE.test(clause);
-    const strong = CZ_STRONG_UNSCOPED.test(clause);
+    if (!clause || !clause.trim()) continue;
+    const regional = CZ_REGIONAL_SCOPE.test(clause.replace(CZ_WHOLE_COUNTRY_IDIOMS, ' '));
+    const strong =
+      (CZ_STRONG_UNSCOPED.test(clause) || (CZ_STRONG_ADVICE.test(clause) && !CZ_MANNER_TIP.test(clause))) &&
+      !CZ_WARNING_LIFTED.test(clause);
     const nonEssential = CZ_AVOID_NON_ESSENTIAL.test(clause);
 
     if (strong && !regional) {
@@ -2514,7 +3310,7 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
   if (saw4) return 4;
   if (saw3) return 3;
   if (sawScoped || sawCaution) return 2;
-  return 1;
+  return null; // a warning article we cannot classify -- never default to level 1
 }
 
 /**

@@ -193,3 +193,25 @@ describe('normalizeSkSecurityText (SK/MZV per-country page)', () => {
     assert.equal(normalizeSkSecurityText(html), null);
   });
 });
+
+/**
+ * 2026-10-15 advisory-outlier audit. Kuwait read Level 1 against 19 of 21 peers at 2 or more: its
+ * MZV text calls Kuwait a country "s vysokou úrovňou bezpečnosti" (calm, Priority 5) but closes with
+ * "Odporúčame zachovávať zvýšenú ostražitosť a vyhýbať sa zhromaždeniam" -- we recommend keeping up
+ * INCREASED VIGILANCE and avoiding gatherings, MZV's synonym for its Level-2 "zvýšená opatrnosť"
+ * advice, which Priority 4 did not know. Fixture: verbatim (trimmed) "Bezpecnostna situacia" field of
+ * the open-data resource "Traveling - Kuwait" (CKAN /datastore/dump download, fetched 2026-10-15).
+ */
+describe('normalizeSkSecurityText: "zvýšená ostražitosť" advice is Level 2 (2026-10-15)', () => {
+  it('Kuwait: calm opening + "Odporúčame zachovávať zvýšenú ostražitosť" -> Level 2, not 1', () => {
+    const html =
+      '<p>Kuvajt patrí medzi krajiny s <strong>vysokou úrovňou bezpečnosti</strong>.</p>\n\n<h3>Bezpečnostné riziká v regióne</h3>\n\n<p>Napriek tomu, vzhľadom na bezpečnostnú situáciu v susednom Iraku, <strong>nie je možné vylúčiť riziko teroristických útokov</strong>, a to aj proti cudzincom.</p>\n\n<h3>Kriminalita</h3>\n\n<p>Kriminalita v Kuvajte je <strong>nízka</strong>.</p>\n\n<h3>Všeobecné odporúčania</h3>\n\n<p><strong>Odporúčame zachovávať zvýšenú ostražitosť a vyhýbať sa zhromaždeniam.</strong></p>';
+    assert.equal(normalizeSkSecurityText(html), 2);
+  });
+
+  it('a local alert tier NAMED "zvýšená ostražitosť" (France\'s Vigipirate, described, not advised) does not count on its own', () => {
+    const html =
+      '<p>Francúzsky bezpečnostný plán Vigipirate je aktuálne nastavený na stupeň <strong>zvýšená ostražitosť (vigilance renforcée)</strong>, ktorý predstavuje stredný z troch stupňov varovania pred teroristickou hrozbou.</p><p>Bezpečnostná situácia je vo všeobecnosti stabilná.</p>';
+    assert.equal(normalizeSkSecurityText(html), 1);
+  });
+});

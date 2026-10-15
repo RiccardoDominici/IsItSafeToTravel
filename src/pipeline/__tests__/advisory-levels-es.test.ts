@@ -148,4 +148,66 @@ describe('normalizeEsLevel (ES/Exteriores "Notas importantes" banner)', () => {
       ' SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS. ÚLTIMA HORA: Se ha producido un grave deterioro de la situación de seguridad en la región de Tigray.';
     assert.equal(normalizeEsLevel(notas), 3);
   });
+
+  /**
+   * Regression coverage for the 2026-10-15 advisory-outlier audit. Serbia and Mongolia were reported as Level 3
+   * against a peer median of Level 1: the "extremar/mucha precaución" intensifier counted as a whole-country
+   * Level 3 wherever it appeared, whatever it was scoped to. It now counts only when it qualifies the trip itself
+   * and names no zone (ES_GENERAL_TRIP / ES_COORDINATED_AVOID_CLAUSE); a scoped intensifier is a Level 2 caution.
+   * The same full-corpus sweep exposed Niger's "SE DESACONSEJA ABSOLUTAMENTE VIAJAR" (a Level 4 adverb the list
+   * did not have). Fixtures are VERBATIM excerpts (trimmed) of the live "Notas importantes", fetched 2026-10-15.
+   */
+  it('Serbia: "EXTREMAR LA PRECAUCIÓN EN ALGUNAS ZONAS" + "un país seguro, pero ... si se viaja a Kosovo" is a zone-scoped intensifier -> 2, not 3', () => {
+    const notas =
+      ' SE RECOMIENDA EXTREMAR LA PRECAUCIÓN EN ALGUNAS ZONAS. Serbia es, en términos generales, un país seguro, pero se recomienda extremar las precauciones si se viaja a Kosovo*. Se sugiere leer con atención el resto de estas recomendaciones de viaje.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Mongolia: banner "VIAJAR CON PRECAUCIÓN" + "extremar las precauciones de cara a viajes y turismo de aventura ... zonas desérticas" -> 2, not 3', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN. Se sugiere leer con atención el resto de las recomendaciones de viaje.\u200bEn la actualidad la entrada a Mongolia no está sujeta a restricciones sanitarias de ningún tipo. Se recomienda extremar las precauciones de cara a viajes y turismo de aventura fuera de centros urbanos que contemplen la visita a zonas desérticas, esteparias, montañosas y boscosas en las que la cobertura telefónica sea nula o limitada y la presencia de vida humana sea escasa o nula. ';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('El Salvador: banner "VIAJAR CON PRECAUCIÓN" + a road-safety tip "extremar la precaución en todos los desplazamientos en vehículo" -> 2, not 3', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN. Se sugiere leer con atención el resto de estas recomendaciones de viaje, especialmente el apartado relativo a condiciones de seguridad. SEGURIDAD VIALAunque algunas carreteras principales del país presentan un estado relativamente bueno, al menos en comparación con otros países de la región, la conducción es muy a menudo errática y los accidentes con víctimas mortales son muy frecuentes. Se recomienda extremar la precaución en todos los desplazamientos en vehículo.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Republic of the Congo: "EN CASO DE VIAJAR POR LA REGIÓN DEL POOL Y LAS REGIONES FRONTERIZAS ..., SE RECOMIENDA EXTREMAR LA PRECAUCIÓN" is regional -> 2, not 3 (and not dropped to no-data)', () => {
+    const notas =
+      ' SeguridadEN CASO DE VIAJAR POR LA REGIÓN DEL POOL Y LAS REGIONES FRONTERIZAS CON LA REPÚBLICA CENTROAFRICANA (RCA) Y LA REPUBLICA DEMOCRATICA DEL CONGO (RDC), SE RECOMIENDA EXTREMAR LA PRECAUCIÓN. A pesar de los acuerdos alcanzados para pacificar la región del pool, sigue siendo una zona delicada en lo relativo la seguridad, por lo que se recomienda extremar la precaución, especialmente si se transita durante la noche.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Jamaica: "extremar la precaución al viajar a determinadas zonas del país" names zones -> 2 (the banner is "VIAJAR CON PRECAUCIÓN Y ABSTENERSE ..."), not 3', () => {
+    const notas =
+      ' SE RECOMIENDA VIAJAR CON PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS, ESPECIALMENTE DE NOCHE. Tras el paso del huracán Melissa, se recomienda extremar la precaución al viajar a determinadas zonas del país, especialmente en Saint Elizabeth, Westmoreland, Manchester, Hanover, Trelawny y St. James que fueron algunas de las más afectadas.';
+    assert.equal(normalizeEsLevel(notas), 2);
+  });
+
+  it('Niger: "SE DESACONSEJA ABSOLUTAMENTE VIAJAR A NÍGER" -> Level 4 (was read as 3 only via a home-security tip)', () => {
+    const notas =
+      ' La situación de seguridad en Níger es extremadamente grave. La actividad terrorista está en aumento y el riesgo de secuestro a extranjeros es muy elevado. Dadas las circunstancias, SE DESACONSEJA ABSOLUTAMENTE VIAJAR A NÍGER.Si se encuentra en Níger , le rogamos que se ponga en contacto lo antes posible con la Embajada y se inscriba en el Registro de Matrícula Consular. Se recomienda extremar las precauciones en las viviendas particulares y no abrir a desconocidos. Se desaconseja absolutamente todo desplazamiento fuera de la ciudad de Niamey y en el resto del territorio del país.';
+    assert.equal(normalizeEsLevel(notas), 4);
+  });
+
+  it('Lesotho (regression guard): "EXTREMAR LAS PRECAUCIONES AL VIAJAR Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" qualifies the trip itself -> still 3', () => {
+    const notas =
+      ' SE RECOMIENDA EXTREMAR LAS PRECAUCIONES AL VIAJAR Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS.Se recomienda tomar medidas de seguridad personal, evitar concentraciones y restringir los movimientos durante la noche. ';
+    assert.equal(normalizeEsLevel(notas), 3);
+  });
+
+  it('Comoros (regression guard): "EXTREMAR LA PRECAUCIÓN DURANTE EL VIAJE" -> still 3', () => {
+    const notas =
+      ' SE RECOMIENDA EXTREMAR LA PRECAUCIÓN DURANTE EL VIAJE. Se sugiere leer con atención el resto de estas recomendaciones de viaje.';
+    assert.equal(normalizeEsLevel(notas), 3);
+  });
+
+  it('Angola (regression guard): "RECOMENDACIÓN GENERAL: SE RECOMIENDA EXTREMAR LA PRECAUCIÓN Y EVITAR DETERMINADAS ZONAS" -> still 3', () => {
+    const notas =
+      ' RECOMENDACIÓN GENERAL: SE RECOMIENDA EXTREMAR LA PRECAUCIÓN Y EVITAR DETERMINADAS ZONAS. En los últimos tiempos han aumentado los asaltos a ciudadanos extranjeros.';
+    assert.equal(normalizeEsLevel(notas), 3);
+  });
 });

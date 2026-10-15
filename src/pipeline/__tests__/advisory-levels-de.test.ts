@@ -183,6 +183,51 @@ describe('normalizeDeContentText (DE/AA per-country content)', () => {
   });
 });
 
+/**
+ * 2026-10-15 advisory-outlier audit: Burkina Faso read Level 2 while 12 of 20 peer governments
+ * say 4. AA's real page (opendata content 212336, fetched 2026-10-15) carries a formal travel
+ * warning for the whole country except two cities -- "Vor Reisen nach Burkina Faso - mit
+ * Ausnahme von Ouagadougou und Bobo-Dioulasso - wird gewarnt" -- and the "und" between the two
+ * EXCLUDED cities tripped the multiple-objects guard meant for lists of COVERED regions.
+ * Fixture: verbatim excerpt of that content field.
+ */
+describe('normalizeDeContentText: exception carve-outs are not extra objects (BFA, 2026-10-15)', () => {
+  const BFA_HTML =
+    '<h2>Sicherheit - Teilreisewarnung</h2><p><strong>Vor Reisen nach Burkina Faso - mit Ausnahme von Ouagadougou und Bobo-Dioulasso - wird gewarnt.</strong></p><p><strong>Von der Nutzung der Straßenverbindung N1 zwischen Ouagadougou und Bobo-Dioulasso wird dringend abgeraten.</strong></p><h3>Terrorismus</h3><p><span>Die Zahl sicherheitsrelevanter Vorfälle verbleibt auf hohem Niveau. </span></p>';
+
+  it('Burkina Faso: whole-country "gewarnt" with two excluded cities -> Level 4 (was 2)', () => {
+    assert.equal(normalizeDeContentText(BFA_HTML, 'Burkina Faso'), 4);
+  });
+
+  it('Burkina Faso, fetcher formula: partialWarning=true (2) combined with the text level -> 4', () => {
+    const boolLevel = normalizeDeLevel({
+      warning: false,
+      partialWarning: true,
+      situationWarning: false,
+      situationPartWarning: false,
+    });
+    assert.equal(Math.max(boolLevel, normalizeDeContentText(BFA_HTML, 'Burkina Faso')), 4);
+  });
+
+  it('a carve-out does not turn a REGIONAL warning into a national one: Gaza + West Bank "(mit Ausnahme von Ost-Jerusalem)" never names Israel -> stays 2', () => {
+    const html =
+      '<p><strong>Vor Reisen in den Gazastreifen und in das Westjordanland (mit Ausnahme von Ost-Jerusalem) wird gewarnt.</strong></p>';
+    assert.equal(normalizeDeContentText(html, 'Israel'), 2);
+  });
+
+  it('a hyphenated name inside the carve-out ("Bobo-Dioulasso") is not taken as its closing dash, so the "und" after it is still stripped -> 4', () => {
+    const html =
+      '<p>Vor Reisen nach Burkina Faso - mit Ausnahme von Bobo-Dioulasso und Ouagadougou - wird gewarnt.</p>';
+    assert.equal(normalizeDeContentText(html, 'Burkina Faso'), 4);
+  });
+
+  it('only the carve-out is stripped: a covered list after it ("sowie in die Grenzregion zu Mali") still makes the clause regional -> 2', () => {
+    const html =
+      '<p>Vor Reisen nach Burkina Faso - mit Ausnahme von Bobo-Dioulasso - sowie in die Grenzregion zu Mali wird gewarnt.</p>';
+    assert.equal(normalizeDeContentText(html, 'Burkina Faso'), 2);
+  });
+});
+
 describe('normalizeDeLevel + normalizeDeContentText combined (the actual fetcher formula: Math.max of both)', () => {
   it('Lebanon: partialWarning=true (boolean level 2) combined with the text-derived catch-all (level 3) -> final Level 3', () => {
     const boolLevel = normalizeDeLevel({
