@@ -34,15 +34,35 @@ import {
   getGermanCopula,
   getFrenchPreposition,
   getH1CountryPhrase,
+  getSpanishA,
+  getSpanishWithArticle,
+  getItalianWithArticle,
+  getItalianArticulated,
+  getItalianAgreement,
+  getFrenchWithArticle,
+  getFrenchDe,
+  getFrenchAgreement,
+  getGermanDative,
+  getGermanVon,
+  getGermanLocative,
+  getPortugueseEm,
+  getPortugueseAgreement,
+  isEnglishPlural,
 } from '../country-grammar.js';
 
-// Real Intl.DisplayNames('de-DE') output for every country — the actual bare
-// name getLocalizedCountryName falls back to for 'de' at runtime, since
-// COUNTRIES (src/pipeline/config/countries.ts) has no de column at all.
+// The bare German name getLocalizedCountryName resolves at runtime: the pinned
+// name.de from COUNTRIES where there is one (die Nördlichen Marianen, Hongkong…),
+// else the real Intl.DisplayNames('de-DE') output.
 const deDisplayNames = new Intl.DisplayNames(['de-DE'], { type: 'region' });
 function bareDeName(iso2: string, iso3: string): string {
-  return deDisplayNames.of(iso2) ?? iso3;
+  const pinned = COUNTRIES.find((c) => c.iso3 === iso3)?.name.de;
+  return pinned ?? deDisplayNames.of(iso2) ?? iso3;
 }
+
+// Places whose German phrase replaces the bare strong-declension name with its
+// weak form after the article ("die Nördlichen Marianen"), or with a full
+// directional phrase (SGS) — see the DeForm docstring in country-grammar.ts.
+const DE_REWRITTEN = new Set(['USA', 'GBR', 'ARE', 'MNP', 'VIR', 'VGB', 'UMI', 'ATF', 'BES', 'PSE', 'IOT', 'SGS']);
 
 // --- 1. Coverage: every iso3, every locale, no crash, non-empty output ---
 
@@ -72,18 +92,22 @@ describe('country-grammar coverage (all 248 countries)', () => {
 
     it(`${iso3}: every locative/directional form still contains the bare name`, () => {
       // Whatever article/preposition gets glued on, the underlying place
-      // name itself must never be dropped or mangled — EXCEPT the 3 German
-      // "weakForm" entries (USA/GBR/ARE), which by design replace the bare
+      // name itself must never be dropped or mangled — EXCEPT the German
+      // "weakForm" entries, which by design replace the bare
       // strong-declension adjective ("Vereinigte Staaten") with the correct
       // weak-declension one once an article precedes it ("Vereinigten
       // Staaten") — see the DeForm docstring in country-grammar.ts, and the
-      // dedicated weak-declension assertions further down this file.
+      // dedicated weak-declension assertions further down this file — and
+      // the French "sur l'île X" form, which lowercases the generic "île".
       assert.ok(getItalianLocative(iso3, name.it).includes(name.it));
       assert.ok(getPortuguesePhrase(iso3, name.pt, 'para').includes(name.pt));
-      if (!['USA', 'GBR', 'ARE'].includes(iso3)) {
+      assert.ok(getSpanishA(iso3, name.es).includes(name.es));
+      if (!DE_REWRITTEN.has(iso3)) {
         assert.ok(getGermanDirectional(iso3, deName).includes(deName));
       }
-      assert.ok(getFrenchPreposition(iso3, name.fr).includes(name.fr));
+      if (iso3 !== 'SJM') {
+        assert.ok(getFrenchPreposition(iso3, name.fr).includes(name.fr.replace(/^Île /, 'île ')));
+      }
     });
   }
 });
@@ -105,8 +129,8 @@ const GOLDEN: Golden[] = [
   { iso3: 'USA', deName: 'Vereinigte Staaten', en: 'the United States', itLocative: 'negli Stati Uniti', ptPara: 'para os Estados Unidos', deDirectional: 'in die Vereinigten Staaten', deNominative: 'die Vereinigten Staaten', fr: 'aux États-Unis' },
   { iso3: 'GBR', deName: 'Vereinigtes Königreich', en: 'the United Kingdom', itLocative: 'nel Regno Unito', ptPara: 'para o Reino Unido', deDirectional: 'ins Vereinigte Königreich', deNominative: 'das Vereinigte Königreich', fr: 'au Royaume-Uni' },
   { iso3: 'NLD', deName: 'Niederlande', en: 'the Netherlands', itLocative: 'nei Paesi Bassi', ptPara: 'para os Países Baixos', deDirectional: 'in die Niederlande', deNominative: 'die Niederlande', fr: 'aux Pays-Bas' },
-  { iso3: 'PHL', deName: 'Philippinen', en: 'the Philippines', itLocative: 'nelle Filippine', ptPara: 'para as Filipinas', deDirectional: 'in die Philippinen', deNominative: 'die Philippinen', fr: 'aux Philippines' },
-  { iso3: 'MDV', deName: 'Malediven', en: 'the Maldives', itLocative: 'alle Maldive', ptPara: 'para as Maldivas', deDirectional: 'in die Malediven', deNominative: 'die Malediven', fr: 'aux Maldives' },
+  { iso3: 'PHL', deName: 'Philippinen', en: 'the Philippines', itLocative: 'nelle Filippine', ptPara: 'para as Filipinas', deDirectional: 'auf die Philippinen', deNominative: 'die Philippinen', fr: 'aux Philippines' },
+  { iso3: 'MDV', deName: 'Malediven', en: 'the Maldives', itLocative: 'alle Maldive', ptPara: 'para as Maldivas', deDirectional: 'auf die Malediven', deNominative: 'die Malediven', fr: 'aux Maldives' },
   { iso3: 'TUR', deName: 'Türkei', en: 'Turkey', itLocative: 'in Turchia', ptPara: 'para a Turquia', deDirectional: 'in die Türkei', deNominative: 'die Türkei', fr: 'en Turquie' },
   { iso3: 'CHE', deName: 'Schweiz', en: 'Switzerland', itLocative: 'in Svizzera', ptPara: 'para a Suíça', deDirectional: 'in die Schweiz', deNominative: 'die Schweiz', fr: 'en Suisse' },
   { iso3: 'IRN', deName: 'Iran', en: 'Iran', itLocative: 'in Iran', ptPara: 'para o Irã', deDirectional: 'in den Iran', deNominative: 'der Iran', fr: 'en Iran' },
@@ -149,13 +173,13 @@ describe('country-grammar golden checks', () => {
       assert.equal(getFrenchPreposition(g.iso3, name.fr), g.fr);
     });
 
-    it(`${g.iso3}: getH1CountryPhrase matches the per-locale wrapper for en/it/pt/de`, () => {
+    it(`${g.iso3}: getH1CountryPhrase matches the per-locale wrapper for en/it/es/pt/de`, () => {
       assert.equal(getH1CountryPhrase('en', g.iso3, name.en), g.en);
       assert.equal(getH1CountryPhrase('it', g.iso3, name.it), g.itLocative);
+      assert.equal(getH1CountryPhrase('es', g.iso3, name.es), getSpanishA(g.iso3, name.es));
       assert.equal(getH1CountryPhrase('pt', g.iso3, name.pt), g.ptPara);
       assert.equal(getH1CountryPhrase('de', g.iso3, g.deName), g.deDirectional);
-      // es/fr/zh keep the bare name in the H1 (see getH1CountryPhrase docstring).
-      assert.equal(getH1CountryPhrase('es', g.iso3, name.es), name.es);
+      // fr/zh keep the bare name in the H1 (see getH1CountryPhrase docstring).
       assert.equal(getH1CountryPhrase('fr', g.iso3, name.fr), name.fr);
     });
   }
@@ -284,6 +308,7 @@ describe('pt articles: masculine countries, feminine compounds, island names', (
 
   it('island states and saint-named islands stay bare', () => {
     assert.equal(para('MLT'), 'para Malta');
+    assert.equal(para('BHS'), 'para as Bahamas'); // the one Brazilian exception: "as Bahamas"
     assert.equal(para('ABW'), 'para Aruba');
     assert.equal(para('LCA'), 'para Santa Lúcia');
   });
@@ -307,5 +332,102 @@ describe('en article: island groups and descriptive names take "the"', () => {
     assert.equal(getEnglishCountryPhrase('SGS', enName('SGS')), 'South Georgia');
     assert.equal(getEnglishCountryPhrase('SHN', enName('SHN')), 'Saint Helena');
     assert.equal(getEnglishCountryPhrase('JPN', enName('JPN')), 'Japan');
+  });
+});
+
+// --- 5. Article helpers for sentences that put the name after "di"/"de"/"von"
+// or in subject position (2026-10-15 audit I19, I38, I39, I40, I48) ---
+
+describe('it: article, articulated preposition and agreement', () => {
+  const it_ = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name.it;
+  it('definite article: il / lo / la / l\' / gli / le, none for city-like places', () => {
+    const cases: [string, string][] = [
+      ['JPN', 'il Giappone'], ['FRA', 'la Francia'], ['AFG', "l'Afghanistan"], ['YEM', 'lo Yemen'],
+      ['LKA', 'lo Sri Lanka'], ['ZWE', 'lo Zimbabwe'], ['CAN', 'il Canada'], ['GMB', 'il Gambia'],
+      ['HND', "l'Honduras"], ['USA', 'gli Stati Uniti'], ['NLD', 'i Paesi Bassi'], ['MDV', 'le Maldive'],
+      ['CIV', "la Costa d'Avorio"], ['COG', 'la Repubblica del Congo'], ['CXR', "l'Isola di Natale"],
+      ['MLT', 'Malta'], ['HKG', 'Hong Kong'], ['ISR', 'Israele'],
+    ];
+    for (const [iso3, expected] of cases) assert.equal(getItalianWithArticle(iso3, it_(iso3)), expected, iso3);
+  });
+  it('"di"/"su"/"per" with the article (I38: "di Afghanistan", "su Emirati Arabi Uniti")', () => {
+    assert.equal(getItalianArticulated('AFG', it_('AFG'), 'di'), "dell'Afghanistan");
+    assert.equal(getItalianArticulated('ARE', it_('ARE'), 'su'), 'sugli Emirati Arabi Uniti');
+    assert.equal(getItalianArticulated('JPN', it_('JPN'), 'per'), 'per il Giappone');
+    assert.equal(getItalianArticulated('MLT', it_('MLT'), 'di'), 'di Malta');
+    assert.equal(getItalianArticulated('BHS', it_('BHS'), 'di'), 'delle Bahamas');
+  });
+  it('agreement: gender and number of the subject ("le Bahamas sono", "il Giappone è")', () => {
+    assert.deepEqual(getItalianAgreement('BHS', it_('BHS')), { gender: 'f', plural: true });
+    assert.deepEqual(getItalianAgreement('USA', it_('USA')), { gender: 'm', plural: true });
+    assert.deepEqual(getItalianAgreement('JPN', it_('JPN')), { gender: 'm', plural: false });
+    assert.deepEqual(getItalianAgreement('ITA', it_('ITA')), { gender: 'f', plural: false });
+    assert.deepEqual(getItalianAgreement('KEN', it_('KEN')), { gender: 'm', plural: false });
+  });
+});
+
+describe('fr: article, "de" and agreement (I39)', () => {
+  const fr = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name.fr;
+  it('le / la / l\' / les, none for city-like places', () => {
+    const cases: [string, string, string][] = [
+      ['JPN', 'le Japon', 'du Japon'], ['FRA', 'la France', 'de la France'], ['AFG', "l'Afghanistan", "de l'Afghanistan"],
+      ['MDV', 'les Maldives', 'des Maldives'], ['USA', 'les États-Unis', 'des États-Unis'], ['BRB', 'la Barbade', 'de la Barbade'],
+      ['IMN', "l'île de Man", "de l'île de Man"], ['CUB', 'Cuba', 'de Cuba'], ['ISR', 'Israël', "d'Israël"],
+      ['HTI', 'Haïti', "d'Haïti"], ['HND', 'le Honduras', 'du Honduras'], ['COG', 'la République du Congo', 'de la République du Congo'],
+    ];
+    for (const [iso3, art, de] of cases) {
+      assert.equal(getFrenchWithArticle(iso3, fr(iso3)), art, iso3);
+      assert.equal(getFrenchDe(iso3, fr(iso3)), de, iso3);
+    }
+  });
+  it('agreement ("les Maldives sont", "le Japon est", "l\'Italie est")', () => {
+    assert.deepEqual(getFrenchAgreement('MDV', fr('MDV')), { gender: 'f', plural: true });
+    assert.deepEqual(getFrenchAgreement('USA', fr('USA')), { gender: 'm', plural: true });
+    assert.deepEqual(getFrenchAgreement('JPN', fr('JPN')), { gender: 'm', plural: false });
+    assert.deepEqual(getFrenchAgreement('ITA', fr('ITA')), { gender: 'f', plural: false });
+    assert.deepEqual(getFrenchAgreement('IRN', fr('IRN')), { gender: 'm', plural: false });
+  });
+});
+
+describe('de: dative, "von" and locative (I48, I19)', () => {
+  const de = (iso2: string, iso3: string) => bareDeName(iso2, iso3);
+  it('weak "-en" adjectives and plural "-n" in the dative', () => {
+    assert.equal(getGermanVon('ARE', de('AE', 'ARE')), 'von den Vereinigten Arabischen Emiraten');
+    assert.equal(getGermanVon('USA', de('US', 'USA')), 'von den Vereinigten Staaten');
+    assert.equal(getGermanVon('GBR', de('GB', 'GBR')), 'vom Vereinigten Königreich');
+    assert.equal(getGermanVon('IRN', de('IR', 'IRN')), 'vom Iran');
+    assert.equal(getGermanVon('TUR', de('TR', 'TUR')), 'von der Türkei');
+    assert.equal(getGermanVon('JPN', de('JP', 'JPN')), 'von Japan');
+    assert.equal(getGermanDative('DOM', de('DO', 'DOM')), 'der Dominikanischen Republik');
+    assert.equal(getGermanDative('NLD', de('NL', 'NLD')), 'den Niederlanden');
+    assert.equal(getGermanDative('FRO', de('FO', 'FRO')), 'den Färöern');
+  });
+  it('locative: im / in der / in den / auf den', () => {
+    assert.equal(getGermanLocative('IRN', de('IR', 'IRN')), 'im Iran');
+    assert.equal(getGermanLocative('CHE', de('CH', 'CHE')), 'in der Schweiz');
+    assert.equal(getGermanLocative('NLD', de('NL', 'NLD')), 'in den Niederlanden');
+    assert.equal(getGermanLocative('MDV', de('MV', 'MDV')), 'auf den Malediven');
+    assert.equal(getGermanLocative('JPN', de('JP', 'JPN')), 'in Japan');
+    assert.equal(getGermanLocative('SGS', de('GS', 'SGS')), 'in Südgeorgien und auf den Südlichen Sandwichinseln');
+  });
+});
+
+describe('pt / es / en: the remaining helpers', () => {
+  const name = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name;
+  it('pt "em" contracted with the article, and agreement', () => {
+    assert.equal(getPortugueseEm('BRA', name('BRA').pt), 'no Brasil');
+    assert.equal(getPortugueseEm('FRA', name('FRA').pt), 'na França');
+    assert.equal(getPortugueseEm('USA', name('USA').pt), 'nos Estados Unidos');
+    assert.equal(getPortugueseEm('PRT', name('PRT').pt), 'em Portugal');
+    assert.deepEqual(getPortugueseAgreement('PHL', name('PHL').pt), { gender: 'f', plural: true });
+  });
+  it('es article only where Spanish always writes one', () => {
+    assert.equal(getSpanishWithArticle('GBR', name('GBR').es), 'el Reino Unido');
+    assert.equal(getSpanishWithArticle('JPN', name('JPN').es), 'Japón');
+  });
+  it('en plural: island groups only', () => {
+    assert.equal(isEnglishPlural('CYM'), true);
+    assert.equal(isEnglishPlural('USA'), false);
+    assert.equal(isEnglishPlural('PHL'), false);
   });
 });

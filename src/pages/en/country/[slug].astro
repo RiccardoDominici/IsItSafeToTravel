@@ -11,10 +11,10 @@ import { buildCountryPagePaths, type CountryPageProps } from '../../../lib/count
 import { getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { getLastmodMap } from '../../../lib/lastmod';
-import { isScored } from '../../../lib/score-status';
+import { officialScore } from '../../../lib/score-status';
+import { getCountryPageTitle } from '../../../i18n/country-title';
 import { greyCopy } from '../../../i18n/grey-copy';
 import type { Lang } from '../../../i18n/ui';
-import { getEnglishCountryPhrase } from '../../../i18n/country-grammar';
 
 const lang: Lang = 'en';
 
@@ -34,12 +34,9 @@ const canonicalUrl = new URL(Astro.url.pathname, Astro.site).href;
 // lastmod (lm.countries) is a crawl hint that stays sitemap-only (2026-08 SEO audit).
 const dateModified = getLastmodMap().snapshotDate.slice(0, 10);
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
-// Title needs "the" for plural/union names (the United States, the
-// Philippines, the Netherlands) — see src/i18n/country-grammar.ts.
-const titleName = getEnglishCountryPhrase(country.iso3, name);
-const title = isScored(country)
-  ? `Is ${titleName} Safe? ${country.score.toFixed(1)}/10 Safety Score (2026)`
-  : `Is ${titleName} Safe? ${greyCopy[lang].titleSuffix} (2026)`;
+// Title per locale (article, preposition and verb agreement for every place) — built and tested in
+// src/i18n/country-title.ts, so all 248 x 7 titles can be proofread at once.
+const title = getCountryPageTitle(lang, country.iso3, name, officialScore(country), greyCopy[lang].titleSuffix);
 ---
 <Base lang={lang} title={title} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <CountryPageBody {...props} lang={lang} canonicalUrl={canonicalUrl} />

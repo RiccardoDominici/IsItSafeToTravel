@@ -1243,7 +1243,9 @@ export const ui = {
     'country.answer_first': '{name} tiene una puntuación de seguridad de {score}/10 a fecha de {date}, clasificado como {riskLevel}, puesto {rank} de {total} países del mundo. La mayor preocupación es {weakestPillar} ({weakestScore}/10), mientras que el punto más fuerte es {strongestPillar} ({strongestScore}/10). Esta puntuación se calcula diariamente a partir de {sourceCount} fuentes públicas independientes.',
     'country.updated_daily_badge': 'Puntuación recalculada a diario',
     'country.update_cadence': 'Puntuación recalculada a diario; los avisos gubernamentales y las alertas de desastres cambian cada día, los índices internacionales una o dos veces al año.',
-    'country.h1_question': '¿Es seguro viajar a {name} ahora mismo?',
+    // {name} is the full "a Japón" / "al Reino Unido" / "a las Islas Caimán" phrase from
+    // getH1CountryPhrase (src/i18n/country-grammar.ts): "a" must contract with "el".
+    'country.h1_question': '¿Es seguro viajar {name} ahora mismo?',
     'country.compare_title': '¿Cómo se compara {name} con sus países vecinos?',
     'country.compare_title_nearby': '¿Cómo se compara {name} con sus países vecinos y cercanos?',
     'country.compare_nearby': 'cercano',
