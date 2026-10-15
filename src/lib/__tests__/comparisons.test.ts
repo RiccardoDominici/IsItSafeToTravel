@@ -21,6 +21,7 @@ import {
   selectRelated,
   profileDistance,
   comparisonRows,
+  comparisonPillarCells,
   roundDistanceKm,
   proximityKm,
   MIN_NEIGHBOURS_BEFORE_FILL,
@@ -36,6 +37,7 @@ import {
 import { hasSufficientData } from '../hub-data.js';
 import { landBorders, getLandNeighbours, getSovereignState } from '../neighbors.js';
 import { getSubregion } from '../subregions.js';
+import { isEstimatedPillar } from '../pillar-presentation.js';
 
 const root = process.cwd();
 const readJson = <T>(...parts: string[]): T => JSON.parse(fs.readFileSync(path.join(root, ...parts), 'utf8')) as T;
@@ -239,6 +241,41 @@ describe('comparisonRows, roundDistanceKm, proximityKm', () => {
     assert.equal(proximityKm('BBB', 'AAA', p), 12);
     assert.equal(proximityKm('AAA', 'CCC', p), null);
     assert.equal(proximityKm('ZZZ', 'AAA', p), null);
+  });
+});
+
+// --- pillar cells -----------------------------------------------------------
+
+describe('comparisonPillarCells: estimated pillars show no number (I31 rule, as the pillar bars)', () => {
+  const names = ['conflict', 'crime', 'health', 'governance', 'environment'] as const;
+  const real: ScoredCountry[] = readJson<{ countries: ScoredCountry[] }>('public', 'scores.json').countries;
+
+  it('a pillar with nothing measured (or missing) is null, a measured one is its score out of 10', () => {
+    const c = country('AAA', 6.0);
+    const conflict = c.pillars.find((p) => p.name === 'conflict')!;
+    const crime = c.pillars.find((p) => p.name === 'crime')!;
+    assert.equal(isEstimatedPillar(conflict), false, 'fixture: advisory slot counts as measured');
+    assert.equal(isEstimatedPillar(crime), true, 'fixture: no crime indicator');
+    const withoutHealth = { ...c, pillars: c.pillars.filter((p) => p.name !== 'health') } as ScoredCountry;
+    const cells = comparisonPillarCells(withoutHealth, names);
+    assert.deepEqual(cells.map((x) => x.name), [...names]);
+    assert.equal(cells[0].score10, conflict.score * 10);
+    assert.equal(cells[1].score10, null);
+    assert.equal(cells[2].score10, null, 'a missing pillar is not 0.0');
+  });
+
+  it('on the real data: null exactly for the estimated pillars (Nauru crime), numbers elsewhere', () => {
+    for (const c of real) {
+      for (const cell of comparisonPillarCells(c, names)) {
+        const pillar = c.pillars.find((p) => p.name === cell.name);
+        const estimated = !pillar || isEstimatedPillar(pillar);
+        assert.equal(cell.score10 === null, estimated, `${c.iso3}/${cell.name}`);
+      }
+    }
+    const nru = real.find((c) => c.iso3 === 'NRU');
+    if (nru && nru.pillars.some((p) => p.name === 'crime' && isEstimatedPillar(p))) {
+      assert.equal(comparisonPillarCells(nru, ['crime'])[0].score10, null);
+    }
   });
 });
 
