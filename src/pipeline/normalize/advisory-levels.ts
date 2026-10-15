@@ -1898,6 +1898,70 @@ export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high')
   return 2; // minimal | low
 }
 
+const SG_REGIONAL_WORDS = [
+  'the region', 'border region', 'border area', 'conflict area', 'the following area',
+  'certain area', 'autonomous oblast', 'autonomous region',
+];
+
+/**
+ * Level-3/4 verdict phrases. `kind` says how the phrase's SCOPE is read (sgOccurrenceIsWholeCountry):
+ *  - 'travel': "<verb> ... travel" + its object ("to Lebanon", "to the border areas ...").
+ *  - 'leave-country': "should leave the country" -- whole-country by construction.
+ *  - 'leave': an object-less departure instruction. The two pre-existing ones ("leave/evacuate
+ *    immediately") keep their old paragraph-level reading; the two added 2026-10-15 ("leave as
+ *    soon as practicable/possible") only count when the same sentence names the country itself
+ *    ("Singaporeans who are currently in Iran ... leave as soon as practicable") -- the same words
+ *    also appear in generic crowd advice ("if caught in a demonstration, leave as soon as
+ *    possible"), which must never read as a whole-country evacuation.
+ */
+const SG_VERDICTS: { re: RegExp; level: 3 | 4; kind: 'travel' | 'leave-country' | 'leave'; needsCountry?: boolean }[] = [
+  { re: /defer all travel|avoid all travel/g, level: 4, kind: 'travel' },
+  { re: /do not travel/g, level: 4, kind: 'travel' },
+  { re: /leave immediately|evacuate immediately/g, level: 4, kind: 'leave' },
+  // Only as an instruction ("should leave the country immediately", Lebanon/Yemen): the bare words
+  // are also exit-visa and police-report boilerplate on calm pages ("a specified period of time in
+  // which to leave the country legally" -- Bhutan/Nepal; "before you leave the country" -- Thailand).
+  {
+    re: /(?:should|must|(?:are|is) (?:strongly )?(?:advised|urged|encouraged) to) leave the country/g,
+    level: 4,
+    kind: 'leave-country',
+  },
+  { re: /leave as soon as (?:practicable|possible)/g, level: 4, kind: 'leave', needsCountry: true },
+  {
+    re: /defer all non-essential travel|avoid all non-essential travel|avoid non-essential travel|defer non-essential travel/g,
+    level: 3,
+    kind: 'travel',
+  },
+];
+
+function escapeSgName(name: string): string {
+  return name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+/**
+ * Does this verdict occurrence POSITIVELY name the whole country as its scope? Only then is it
+ * exempt from the paragraph-wide regional cap below. `after` is the rest of the sentence after the
+ * phrase, `sentence` the whole sentence; `names` are the page's own country names (lower-case).
+ * The country name must be the HEAD of the object -- not followed by "'s"/"-" ("to Israel's
+ * borders with ...", "to the Tajikistan-Afghanistan border areas" stay regional) -- and the object
+ * must carry no regional word of its own.
+ */
+function sgOccurrenceIsWholeCountry(
+  kind: 'travel' | 'leave-country' | 'leave',
+  after: string,
+  sentence: string,
+  names: string[],
+): boolean {
+  if (kind === 'leave-country') return true;
+  const nameAlt = ['the country', ...names.map(escapeSgName)].join('|');
+  if (kind === 'travel') {
+    if (SG_REGIONAL_WORDS.some((w) => after.includes(w))) return false;
+    return new RegExp(`^\\s*(?:to|in|within)\\s+(?:the\\s+)?(?:${nameAlt})(?![\\w'’-])`).test(after);
+  }
+  if (SG_REGIONAL_WORDS.some((w) => sentence.includes(w))) return false;
+  return new RegExp(`\\b(?:in|from)\\s+(?:the\\s+)?(?:${nameAlt})(?![\\w'’-])`).test(sentence);
+}
+
 /**
  * Normalize Singapore (mfa.gov.sg) English advisory text to unified 1-4 scale.
  *
@@ -1939,36 +2003,63 @@ export function normalizeDkTier(modifier: 'minimal' | 'low' | 'medium' | 'high')
  * Korea/Libya/Ukraine's real pages (this list's original 2026-09-25 calibration set) that
  * neither new phrase appears in any of their genuine whole-country paragraphs — no
  * regression there.
+ *
+ * 2026-10-15 (advisory-outlier audit, every page re-read live): the regional cap used to fire on a
+ * regional word ANYWHERE in the paragraph, including a mere context clause in front of a verdict
+ * that names the country itself -- Lebanon's "In view of the volatile situation in THE REGION,
+ * Singaporeans are advised to defer all travel to Lebanon. Singaporeans currently in Lebanon should
+ * leave the country immediately" read Level 2 (14 of 23 peers: 4). A verdict whose object
+ * positively names the country ("to Lebanon", "the country", see sgOccurrenceIsWholeCountry) is
+ * now exempt from the cap; everything else is capped exactly as before. Two wording gaps closed
+ * at the same time: Haiti's "Singaporeans should defer non-essential travel to Haiti" (no "all",
+ * so it fell through to the page's "exercise a high degree of caution" = 2; now 3) and Iran's
+ * "Singaporeans who are currently in Iran should ... leave as soon as practicable" (an
+ * evacuation call, 4; only counted when the sentence names the country). `countryNames` are the
+ * page's own names for the country (its <h1>, plus our English name). Without them only the
+ * name-free "leave the country" exemption applies.
  */
-export function normalizeSgLevel(text: string): UnifiedLevel | null {
+export function normalizeSgLevel(text: string, countryNames: string[] = []): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
-
-  const REGIONAL_WORDS = [
-    'the region', 'border region', 'border area', 'conflict area', 'the following area',
-    'certain area', 'autonomous oblast', 'autonomous region',
-  ];
+  const names = countryNames.map((n) => n.trim().toLowerCase()).filter((n) => n.length > 0);
 
   let level: UnifiedLevel | null = null;
 
   for (const paragraph of text.split('\n')) {
     const lower = paragraph.toLowerCase();
+    const regionalInParagraph = SG_REGIONAL_WORDS.some((w) => lower.includes(w));
     let paragraphLevel: UnifiedLevel | 0 = 0;
 
-    // "do not travel" alone is also generic crime-safety phrasing ("do not travel alone at
-    // night") on plenty of otherwise-calm pages (e.g. Ethiopia) -- exclude that manner-qualified
-    // form specifically rather than dropping the cue outright, since a bare "Do not travel to
-    // X" verdict is a real, distinct level-4 pattern worth keeping.
-    if (lower.includes('defer all travel') || lower.includes('avoid all travel')
-      || (lower.includes('do not travel') && !lower.includes('do not travel alone'))
-      || lower.includes('leave immediately') || lower.includes('evacuate immediately')) paragraphLevel = 4;
-    else if (lower.includes('defer all non-essential travel') || lower.includes('avoid all non-essential travel')
-      || lower.includes('avoid non-essential travel')) paragraphLevel = 3;
-    else if (lower.includes('exercise a high degree of caution') || lower.includes('exercise increased caution')
-      || lower.includes('exercise extra caution') || lower.includes('high degree of vigilance')) paragraphLevel = 2;
+    for (const { re, level: phraseLevel, kind, needsCountry } of SG_VERDICTS) {
+      // "do not travel" alone is also generic crime-safety phrasing ("do not travel alone at
+      // night") on plenty of otherwise-calm pages (e.g. Ethiopia) -- exclude that manner-qualified
+      // form specifically rather than dropping the cue outright, since a bare "Do not travel to
+      // X" verdict is a real, distinct level-4 pattern worth keeping.
+      if (re.source === 'do not travel' && lower.includes('do not travel alone')) continue;
+      for (const m of lower.matchAll(re)) {
+        const start = m.index as number;
+        const end = start + m[0].length;
+        const sentenceStart = Math.max(lower.lastIndexOf('. ', start) + 1, 0);
+        const stop = lower.slice(end).search(/[.;!?](?:\s|$)/);
+        const after = stop === -1 ? lower.slice(end) : lower.slice(end, end + stop);
+        const sentence = lower.slice(sentenceStart, end + after.length);
+        const whole = sgOccurrenceIsWholeCountry(kind, after, sentence, names);
+        if (needsCountry && !whole) continue;
+        // The regional cap (a paragraph naming "the region"/"border areas"/... cannot promote a
+        // country past 2, see the doc comment above) applies to every occurrence EXCEPT one that
+        // positively names the whole country: Lebanon's real paragraph opens "In view of the
+        // volatile situation in the region, Singaporeans are advised to defer all travel to
+        // Lebanon. Singaporeans currently in Lebanon should leave the country immediately ..."
+        // and was capped at 2 by that contextual "the region" until 2026-10-15.
+        const occurrenceLevel = whole || !regionalInParagraph ? phraseLevel : 2;
+        if (occurrenceLevel > paragraphLevel) paragraphLevel = occurrenceLevel;
+      }
+    }
+
+    if (paragraphLevel === 0
+      && (lower.includes('exercise a high degree of caution') || lower.includes('exercise increased caution')
+        || lower.includes('exercise extra caution') || lower.includes('high degree of vigilance'))) paragraphLevel = 2;
 
     if (paragraphLevel === 0) continue;
-
-    if (paragraphLevel > 2 && REGIONAL_WORDS.some((w) => lower.includes(w))) paragraphLevel = 2;
 
     if (level === null || paragraphLevel > level) level = paragraphLevel;
   }

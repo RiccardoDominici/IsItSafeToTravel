@@ -531,7 +531,11 @@ async function fetchSgAdvisories(
           if (text) paragraphs.push(text);
         });
 
-        const level = normalizeSgLevel(paragraphs.join('\n'));
+        // The page's own <h1> is MFA's name for the country ("Iran", "Lebanon"), which is how its
+        // verdict sentences name it; our English name is a fallback alias. normalizeSgLevel only
+        // uses these to recognise a verdict that positively names the WHOLE country.
+        const pageName = page$('h1').first().text().replace(/\s+/g, ' ').trim();
+        const level = normalizeSgLevel(paragraphs.join('\n'), [pageName, entry.country.name.en]);
         if (level === null) return; // no explicit notice published for this country -- skip, don't fabricate
 
         indicators.push({
