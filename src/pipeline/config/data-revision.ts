@@ -193,10 +193,22 @@
  *       e) a source counts, and is listed, only when it supplies a value the score uses: 96 source
  *          lists lose a population-only World Bank entry and nine places go grey (BRN, FSM, KIR,
  *          MHL, NRU, PLW, TON, TUV, WSM).
+ *     The same release also changes advisory inputs (same audit, same switch run):
+ *       f) Canada is read from Global Affairs Canada's open-data JSON (OGL-Canada) instead of the
+ *          travel.gc.ca markup, which had been dead since 2026-10-01 (the old fallback kept
+ *          republishing that day); a US/UK/CA/AU cache now counts for 7 days at most, then the
+ *          issuer is dropped and the staleness alert fires;
+ *       g) country names are matched accent- and apostrophe-insensitively: the UK FCDO now
+ *          resolves 228 places instead of 193 (North Korea, Hong Kong, Côte d'Ivoire...) and the
+ *          US feed resolves Côte d'Ivoire, the Republic of the Congo and São Tomé and Príncipe;
+ *       h) the UK level reads the whole-country verdict (Sudan, Somalia, CAR, Libya, Ukraine 3 -> 4),
+ *          Japan's MOFA levels map one step up (display only: jp is frozen-excluded), and a
+ *          ministry's page about its own country is no longer an advisory (Austria, Argentina).
  *     10 band changes on the 2026-10-15 data. Without this bump the switch run would report them,
  *     the nine new grey places and dozens of score jumps as news. Dispatch the first production
- *     run with skip_digest=true as for rev 7. DATA_REVISION_SINCE does not move: no advisory
- *     cache is affected.
+ *     run with skip_digest=true as for rev 7. DATA_REVISION_SINCE does not move: the switch run
+ *     is dispatched on 2026-10-15 itself and rewrites that day's advisory caches with the new
+ *     parsers, and every older cache is already excluded by rev 7's cutoff.
  */
 export const DATA_REVISION = 8;
 
