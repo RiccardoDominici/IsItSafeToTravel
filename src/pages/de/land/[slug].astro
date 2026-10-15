@@ -12,7 +12,7 @@ import { getLocalizedCountryName } from '../../../lib/scores';
 import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/seo';
 import { getLastmodMap } from '../../../lib/lastmod';
 import { isScored } from '../../../lib/score-status';
-import { greyCopy } from '../../../i18n/grey-copy';
+import { greyTitleSuffix } from '../../../i18n/grey-copy';
 import type { Lang } from '../../../i18n/ui';
 import { getGermanNominative, getGermanCopula } from '../../../i18n/country-grammar';
 
@@ -40,7 +40,7 @@ const titleNominative = getGermanNominative(country.iso3, name);
 const titleCopula = getGermanCopula(country.iso3, name);
 const title = isScored(country)
   ? `${titleCopula} ${titleNominative} sicher? Score ${country.score.toFixed(1)}/10 (2026)`
-  : `${titleCopula} ${titleNominative} sicher? ${greyCopy[lang].titleSuffix} (2026)`;
+  : `${titleCopula} ${titleNominative} sicher? ${greyTitleSuffix(lang, country)} (2026)`;
 ---
 <Base lang={lang} title={title} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <CountryPageBody {...props} lang={lang} canonicalUrl={canonicalUrl} />

@@ -17,7 +17,6 @@ import type { CountryPageProps } from '../../lib/country-page';
 import { getLocalizedCountryName, getFormulaChange } from '../../lib/scores';
 import { getLastmodMap } from '../../lib/lastmod';
 import { isScored, officialScore } from '../../lib/score-status';
-import { getMainCityIata, getMainCityName } from '../../lib/iata-cities';
 import Breadcrumb from '../Breadcrumb.astro';
 import ScoreHero from './ScoreHero.astro';
 import AnswerFirstParagraph from './AnswerFirstParagraph.astro';
@@ -31,7 +30,6 @@ import RelatedCountries from './RelatedCountries.astro';
 import AuthorityLinks from './AuthorityLinks.astro';
 import TrendChart from './TrendChart.astro';
 import SourcesList from './SourcesList.astro';
-import TravelDealsWidget from '../TravelDealsWidget.astro';
 import NewsletterSignup from '../NewsletterSignup.astro';
 
 interface Props extends CountryPageProps {
@@ -67,8 +65,6 @@ const advisorySources = Object.keys(country.advisories || {}).map((key) => ({
   key,
   name: t(`country.advisory.${key}` as any),
 }));
-const iata = getMainCityIata(country.iso3);
-const cityName = iata ? getMainCityName(country.iso3, lang) : null;
 const formulaChange = getFormulaChange();
 ---
 
@@ -125,13 +121,6 @@ const formulaChange = getFormulaChange();
 
   <AdvisorySection advisories={country.advisories} lang={lang} advisorySources={advisorySources} />
   <FaqSection country={country} lang={lang} />
-  <TravelDealsWidget
-    lang={lang}
-    destinationIata={iata ?? undefined}
-    destinationCityName={cityName ?? undefined}
-    countryName={name}
-    mode="country"
-  />
   <NewsletterSignup lang={lang} placement="country" countrySlug={country.iso3.toLowerCase()} />
   <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
   <RelatedCountries country={country} allCountries={allCountries} lang={lang} />

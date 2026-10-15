@@ -23,7 +23,9 @@ const searchData = COUNTRIES.map(c => {
     iso3: c.iso3,
     name: getLocalizedCountryName(c, lang),
     // Grey places (formula v10, no official score) stay searchable, without a score chip.
-    score: scored && isScored(scored) ? scored.scoreDisplay : null,
+    // One decimal, as on the country page: the integer scoreDisplay could sit in another band
+    // than the page's own number (6.7 shown as "7/10"; audit I08).
+    score: scored && isScored(scored) ? scored.score.toFixed(1) : null,
     color: scored && isScored(scored) ? scoreToColor(scored.score) : null,
   };
 });
@@ -79,7 +81,8 @@ const searchData = COUNTRIES.map(c => {
   interface SearchItem {
     iso3: string;
     name: string;
-    score: number | null;
+    /** One-decimal score as displayed ("6.7"); null for a grey place. */
+    score: string | null;
     color: string | null;
   }
 

@@ -51,9 +51,11 @@ function escapeXml(str: string): string {
 
 function buildCountrySvg(name: string, score: number | null): string {
   const partial = score === null;
-  const color = partial ? PARTIAL_DATA_COLOR : scoreColor(score);
   // Grey country: an em dash where the number would be, "Partial data" where "/10" would be.
   const displayScore = partial ? '\u2014' : score.toFixed(1);
+  // Colour on the printed one-decimal value, as the embed badge does: a raw 4.97 prints "5.0" and
+  // must not take the below-5 red (audit I08: no shown number on the other side of a band edge).
+  const color = partial ? PARTIAL_DATA_COLOR : scoreColor(Number(displayScore));
   const scaleLabel = partial ? 'Partial data' : '/10';
   const escapedName = escapeXml(name);
   // Adjust font size for long country names

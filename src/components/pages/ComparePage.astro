@@ -34,7 +34,8 @@ const countryData = scores.map(country => ({
   iso3: country.iso3,
   name: getLocalizedCountryName(country, lang),
   score: country.score,
-  scoreDisplay: country.scoreDisplay,
+  // One decimal, the number the country page shows; never the integer scoreDisplay (audit I08).
+  scoreDisplay: country.score.toFixed(1),
   pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),
   color: scoreToColor(country.score),
 }));
@@ -239,7 +240,7 @@ const ec = emptyStateCopy[lang];
     iso3: string;
     name: string;
     score: number;
-    scoreDisplay: number;
+    scoreDisplay: string;
     pillars: Array<{ name: string; score: number }>;
     color: string;
   }
@@ -475,7 +476,7 @@ const ec = emptyStateCopy[lang];
         <h3 class="text-sm font-medium text-sand-600 dark:text-sand-400 mb-2 truncate">${country.name}</h3>
         <div class="inline-flex flex-col items-center justify-center rounded-xl px-4 py-3" style="background-color: ${country.color}; color: #fff;">
           <span class="text-3xl font-heading font-bold">${country.scoreDisplay}</span>
-          <span class="text-xs opacity-90">${country.score.toFixed(1)}/10</span>
+          <span class="text-xs opacity-90">/10</span>
         </div>
       `;
       grid.appendChild(card);
