@@ -51,23 +51,43 @@ AI answer engines.
   `src/lib/hub-data.ts`; the same threshold is duplicated in `scripts/generate-llms-full.ts`
   (`MIN_RANKING_SOURCES`). Keep them in sync, or sparse micro-territories pollute the lists.
 
-## Scoring (`src/pipeline/scoring/engine.ts`) — Formula v9.1
+## Scoring (`src/pipeline/scoring/engine.ts`) — Formula v10 (live from 2026-10-15)
 
-Uncertainty-weighted (Bayesian shrinkage) scoring. Per pillar: precision-weighted value shrunk
-toward a conservative advisory/region-informed prior (`p̂ = (n·p + K·μ)/(n + K)`, K=1.0) —
-missing data collapses to the prior, never inflates. Composite = weighted **geometric** mean of
-5 pillars (conflict 30% / crime 25% / health 20% / governance 15% / environment 10%, UNCHANGED)
-blended with an acute soft-min term over conflict+crime (λ=0.25, down-only), times a count-damped
-severe-advisory modifier (`1 − 0.32·severeShare·nAdv/(nAdv+6)`); `score = 1 + 9·composite^0.96`.
-Crime = GPI Safety & Security (67%) + World Bank intentional-homicide rate (33%, precision scaled
-by population, half-saturation `P_HALF=200000` — small-population homicide rates are damped as
-statistical noise). Conflict = GPI overall (32.75%) + GPI militarisation (11.25%) + advisory
-consensus `A` (28%) + UCDP GED conflict-deaths (28%, log-normalized, `D_MAX=24000`). A continuous
-advisory nudge/severe ramp replaces hard thresholds — no hard caps, floors, or eligibility gates.
-Scores ≈ [3.4, 8.9], mean ~6.60; bands UNCHANGED: <5 danger / 5–6 high caution / 6–7 moderate /
-7–8 good / ≥8 excellent. Constants frozen in `weights.json` (key stays `formulaV9` regardless of
-formula version); parity fixture: `scripts/verify-formula-v91-parity.ts`. `confidence` field per
-country (score-adjacent "limited data" UI flag below 0.4).
+Spec + rationale: `.planning/quick/261014-formula-v10/SPEC.md` (origin: an external critique of
+stale, mislabelled and irrelevant data). Mechanics are v9.1's: uncertainty-weighted (Bayesian
+shrinkage) scoring, per pillar a precision-weighted value shrunk toward a conservative
+advisory/region-informed prior (`p̂ = (n·p + K·μ)/(n + K)`, K=1.0). Composite = weighted
+**geometric** mean of 5 pillars (conflict 30% / crime 25% / health 20% / governance 15% /
+environment 10%) blended with an acute soft-min over conflict+crime (λ=0.25, down-only), times a
+count-damped severe-advisory modifier (`1 − 0.32·severeShare·nAdv/(nAdv+6)`);
+`score = 1 + 9·composite^0.96`. Pillar key `environment` stays; its UI label is "Natural hazards".
+- Conflict = GPI overall (32.75%) + GPI militarisation (11.25%) + advisory consensus `A` (28%) +
+  UCDP GED deaths (28%, log, `D_MAX=24000`); `gpi_conflict` is fetched but unscored. Crime = GPI
+  Safety & Security (67%) + World Bank homicide (33%, population-damped, `P_HALF=200000`).
+  Health = INFORM Access to health care (55%) + INFORM Epidemic (45%). Governance = 3 V-Dem
+  indices + the INFORM **Governance** column (25% each). Environment = INFORM Natural (25%) +
+  ReliefWeb (10%) + GDACS (10%). No GPI sub-indicators (labels ambiguous), no WHO road deaths
+  (licence forbids modification and use next to commercial promotion).
+- Only the newest edition of a source counts; a non-advisory value older than `maxAgeYears` (5)
+  is missing. INFORM's newest `.xlsx` is discovered on each run (`fetchers/inform-discovery.ts`,
+  `inform-edition.ts`) and downloaded only when the edition changes; its year is the edition's.
+- Health/governance/environment get a frozen per-pillar affine map (`pillarCalibration`, fitted
+  once on 2026-10-14, never refitted) so the indicator swap did not move the scale.
+- **Grey rule:** < `minSources` (4) independent sources → `score: null`,
+  `scoreStatus: 'insufficient_data'` (56 places on the switch day), unless the danger guard fires
+  (≥ 3 governments at level 4, severeShare ≥ 0.5, or UCDP deaths > 0). UI code must go through
+  `src/lib/score-status.ts` (`isScored`, `officialScore`, `scoredOnly`, `buildRankMap`), never
+  read `.score` directly: grey places show "Partial data" and no number anywhere.
+- **Community:** the sentiment stage (Stage 2c) runs BEFORE scoring. Vote → perceived score
+  (published score + 0.5·delta; grey places take an absolute rating 1–5 → 2…10; legacy votes
+  are anchored via `data/sentiment/legacy-anchors.json`), 180-day window, 30-day half-life, one
+  origin country ≤ 50% of the weight. Active at ≥ 30 votes from ≥ 3 origins:
+  `score = dataScore + clamp(Z·(P − dataScore), ±1.0)`, `Z = nEff/(nEff+30)`.
+Scores ≈ [3.4, 8.9], mean ~6.76; bands UNCHANGED: <5 danger / 5–6 high caution / 6–7 moderate /
+7–8 good / ≥8 excellent. Constants frozen in `src/pipeline/config/weights.json` (key stays
+`formulaV9` regardless of formula version); parity: `scripts/verify-formula-v10-parity.ts` on
+`scripts/fixtures/v10/raw-2026-10-14`. Snapshots before 2026-10-15 are v9.1 (trend charts mark
+the switch). `confidence` field per country (score-adjacent "limited data" UI flag below 0.4).
 
 ## Daily news ("safety movers") + newsletter
 
