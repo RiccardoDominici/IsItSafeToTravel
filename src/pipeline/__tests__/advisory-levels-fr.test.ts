@@ -98,3 +98,73 @@ describe('extractFrTerritoryLevel (FR/diplomatie.gouv.fr) -- regional-promotion 
     assert.equal(extractFrTerritoryLevel(text, 'Birmanie'), 3);
   });
 });
+
+/**
+ * Regression coverage for the 2026-10-15 advisory-outlier audit: France's level for Niger, Bahrain
+ * and Cuba sat two levels away from the other governments' median (Niger 2 vs 4, Bahrain and Cuba
+ * 1 vs 3) although each page states a clear national verdict. Two wording gaps, both in
+ * extractFrTerritoryLevel: (1) the country ITSELF named as the travel target ("Tout deplacement au
+ * Niger est ...", "... de se rendre a Bahrein") was not a recognized whole-country statement --
+ * only subject phrases like "l'ensemble du territoire" were; (2) the orange level only matched
+ * "deconseille sauf raison imperative" with the two parts adjacent, never "deconseille aux
+ * ressortissants francais, sauf pour des raisons imperatives," nor "les voyages non essentiels
+ * ... sont deconseilles". Fixtures are VERBATIM excerpts of the live pages' `$('body').text()`
+ * (accents kept -- extractFrTerritoryLevel folds them itself), fetched 2026-10-15 from
+ * https://www.diplomatie.gouv.fr/fr/information-par-pays/<slug>/conseils-aux-voyageurs-securite.
+ */
+describe('extractFrTerritoryLevel (FR) -- country named as the travel target, orange-level wording', () => {
+  it('Niger: "Tout déplacement au Niger est formellement déconseillé." -- 4, not the regional cap 2', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 11/03/2026, information toujours valable à la date du jour Zones formellement déconseillées (en rouge) Tout déplacement au Niger est formellement déconseillé. Les ressortissants français au Niger sont appelés à la plus grande vigilance : il est essentiel de limiter les déplacements, de se tenir à l’écart de tout rassemblement et de se tenir régulièrement informés de la situation. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Niger'), 4);
+  });
+
+  it('Bahrain: "Il est déconseillé aux ressortissants français, sauf pour des raisons impératives, de se rendre à Bahreïn." -- 3, not 1', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 17/07/2026, information toujours valable à la date du jour Il est déconseillé aux ressortissants français, sauf pour des raisons impératives, de se rendre à Bahreïn. L’accès à l’extrême sud de l’île est interdit (zone militaire). Il est défendu d’emprunter les routes signalées par un panneau "private road". De manière générale, il est déconseillé de s’approcher de sites militaires. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Bahreïn'), 3);
+  });
+
+  it('Kuwait: same national sentence, plus a formally-advised-against 5 km border strip -- the strip stays regional: 3, not 4', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 17/07/2026, information toujours valable à la date du jour Il est déconseillé aux ressortissants français, sauf pour des raisons impératives, de se rendre au Koweït. En outre, il est formellement déconseillé de se rendre dans une zone de 5 km de large à la frontière avec l’Irak (hormis la localité dite d’Abdali Farms) et dans les îles de Warbah et de Boubiyan, qui font l’objet de missions de sécurisation des forces armées. Recommandations générales D’une façon générale, il est recommandé d’éviter tout rassemblement, ainsi que la proximité des lieux de culte. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Koweït'), 3);
+  });
+
+  it('Cuba: "les voyages non essentiels vers l’île sont déconseillés" (the whole section) -- 3, not 1', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 27/03/2026, information toujours valable à la date du jour Compte tenu de la crise énergétique à Cuba et de ses multiples répercussions, y compris pour les liaisons aériennes, les voyages non essentiels vers l’île sont déconseillés. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Cuba'), 3);
+  });
+
+  it('Bangladesh: "Tout déplacement au Bangladesh est déconseillé sauf raison impérative" -- 3; the red Myanmar-border zone and "l’île de Saint-Martin" stay regional', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 06/03/2026, information toujours valable à la date du jour Zones formellement déconseillées (rouge) Régions frontalières de la Birmanie Dans le contexte de tensions liées à l’afflux de réfugiés Rohingyas au Bangladesh, il est formellement déconseillé de se rendre dans les zones frontalières de la Birmanie, ainsi que l’île de Saint-Martin, sujettes aux trafics de drogues et d’êtres humains ainsi qu’à la piraterie maritime dans le golfe du Bengale. Zones déconseillées sauf raison impérative (orange) Tout déplacement au Bangladesh est déconseillé sauf raison impérative, du fait du risque terroriste. Le tourisme est donc à exclure. La région des Chittagong Hills Tracks (districts de Khagrachari, Rangamati et de Bandarban) est particulièrement déconseillée en raison de conflits récurrents entre différentes communautés. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Bangladesh'), 3);
+  });
+
+  it('Azerbaijan: "La majeure partie du territoire azerbaïdjanais est placé en orange ... et reste déconseillée sauf raison impérative" -- 3; Karabakh and the Armenian border stay regional', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 06/03/2026, information toujours valable à la date du jour Zones formellement déconseillées Ancien oblast autonome du Haut-Karabagh et anciens districts adjacents Il est formellement déconseillé aux citoyens français de se rendre dans la région de l’ancien oblast autonome du Haut-Karabagh et à ses abords (majeure partie des anciens districts adjacents). Zone frontalière avec l’Arménie Les zones frontalières avec l’Arménie (y compris dans la région du Nakhitchevan) sont formellement déconseillées en raison du risque d’affrontements armés et de la présence de nombreuses mines anti-personnel. Zones déconseillées sauf raison impérative La majeure partie du territoire azerbaïdjanais est placé en orange sur la carte des Conseils aux voyageurs et reste déconseillée sauf raison impérative. Les régions frontalières ci-après nécessitent également la plus grande vigilance. Zone frontalière avec l’Iran En raison de l’existence de trafics et de l’absence de signalisation claire, il est déconseillé aux voyageurs, sauf raison impérative, de se rendre à la frontière entre l’Azerbaïdjan et l’Iran, y compris au Nakhitchevan. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Azerbaïdjan'), 3);
+  });
+
+  it('joint Israel/Palestine page: Israel’s own sentence gives Israël 3, and is NOT read as Palestine’s (which keeps the regional cap, 2)', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 13/03/2026, information toujours valable à la date du jour Israël Il demeure déconseillé aux ressortissants français, sauf pour des raisons impératives, de se rendre en Israël. Il est en outre formellement déconseillé aux voyageurs de se rendre dans les régions suivantes : Frontières nord / Plateau du Golan Des tirs de roquettes ou des attaques de drones en provenance du Liban et de Syrie peuvent atteindre le nord d’Israël et le plateau du Golan (territoire occupé et annexé par Israël). Il est donc formellement déconseillé de se rendre sur le plateau du Golan et le long de la frontière avec le Liban. Palestine a) Cisjordanie Les déplacements en Cisjordanie sont déconseillés, sauf raison impérative, compte tenu de la situation sécuritaire depuis le 7 octobre 2023. b) Bande de Gaza Il demeure formellement déconseillé aux ressortissants français de se rendre dans la Bande de Gaza. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Israël'), 3);
+    assert.equal(extractFrTerritoryLevel(text, 'Palestine'), 2);
+  });
+
+  it('Uzbekistan: "Il est formellement déconseillé de se rendre en Afghanistan" is a cross-reference to ANOTHER country -- stays 2 (its own "l’ensemble du pays est placé en vigilance renforcée")', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 11/03/2026, information toujours valable à la date du jour Zones formellement déconseillées La zone frontalière avec l’Afghanistan peut être le théâtre de tensions et d’incidents inopinés pouvant se transformer en affrontements. Les déplacements dans cette zone sont déconseillés (y compris dans la ville de Termez intra-muros, sauf raison impérative). Il est formellement déconseillé de se rendre en Afghanistan, pays figurant en rouge sur la carte sécuritaire (voir la fiche pays Afghanistan). Zones en vigilance renforcée En dehors des zones frontalières, l’ensemble du pays est placé en vigilance renforcée. La situation sécuritaire en Ouzbékistan est calme et le dispositif policier structuré. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Ouzbékistan'), 2);
+  });
+
+  it('a country name that is only the PREFIX of the target ("Guinée" in "Guinée-Bissau") is not the page’s own country (synthetic guard)', () => {
+    const text =
+      'Zones de vigilance Dernière actualisation le 01/10/2026, information toujours valable à la date du jour Il est formellement déconseillé de se rendre en Guinée-Bissau. Le reste du pays est placé en vigilance normale. Risques encourus';
+    assert.equal(extractFrTerritoryLevel(text, 'Guinée'), 1);
+  });
+});

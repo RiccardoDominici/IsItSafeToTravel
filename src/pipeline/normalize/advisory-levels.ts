@@ -978,6 +978,29 @@ function namesAnotherCountry(tail: string, ownNameFolded: string): boolean {
 }
 
 /**
+ * France's own level vocabulary, on the accent-/apostrophe-folded text extractFrTerritoryLevel
+ * works on. Shared by sectionKeywordBoundaries (section headings/inline uses), the named-target
+ * pass and the "a named zone is flagged" fallback, so all three always agree on what counts.
+ *
+ * Level 3 had only ONE spelling, "deconseille(e)(s) sauf raison imperative" with the two parts
+ * adjacent (France's section-heading form). Repair 2026-10-15 (advisory-outlier audit): France
+ * writes the same orange verdict in two more shapes that the adjacency requirement never matched,
+ * so those countries silently fell to the "no keyword at all -> 1" default (verified live
+ * 2026-10-15):
+ *  - an inserted addressee/comma clause and the plural "raisons": Bahrain's ENTIRE section is
+ *    "Il est deconseille aux ressortissants francais, sauf pour des raisons imperatives, de se
+ *    rendre a Bahrein." (same sentence on Israel's page; Azerbaijan's Iran-border zone reads
+ *    "il est deconseille aux voyageurs, sauf raison imperative, de se rendre a la frontiere");
+ *  - "non-essential travel is advised against", France's other orange formula: Cuba's ENTIRE
+ *    section is "...les voyages non essentiels vers l'ile sont deconseilles."
+ * The inserted clause is bounded (no period/comma inside, <= 40 chars) so it can never bridge two
+ * sentences or two list items.
+ */
+const FR_LEVEL4_KEYWORD = /formellement deconseill|classe[e]? en zone rouge/;
+const FR_LEVEL3_KEYWORD =
+  /deconseille[a-z]{0,2}(?: [^.,]{1,40}?)?,? sauf (?:pour (?:des|une) )?raisons? imperatives?|(?:voyages?|deplacements?|sejours?) non[- ]essentiels?[^.]{0,80}?deconseill/;
+
+/**
  * Every occurrence of a level keyword in `section`, EXCLUDING ones that fall inside an "a
  * l'exception de(s) ...," clause (the Kenya bug -- that clause names what's carved OUT of the
  * "reste"/"ensemble" statement it precedes, not a level for that statement itself). Sorted by
@@ -996,8 +1019,8 @@ function sectionKeywordBoundaries(section: string): { index: number; level: Unif
   const insideException = (pos: number) => exceptionSpans.some(([start, end]) => pos >= start && pos < end);
 
   const KEYWORD_RES: [RegExp, UnifiedLevel][] = [
-    [/formellement deconseill|classe[e]? en zone rouge/g, 4],
-    [/deconseille[a-z]{0,2} sauf raison imperative/g, 3],
+    [new RegExp(FR_LEVEL4_KEYWORD.source, 'g'), 4],
+    [new RegExp(FR_LEVEL3_KEYWORD.source, 'g'), 3],
     [/vigilance renforcee/g, 2],
     [/vigilance normale/g, 1],
   ];
@@ -1104,6 +1127,80 @@ function sentenceBoundsAt(text: string, pos: number): [number, number] {
   return [start, text.length];
 }
 
+/**
+ * Whole-country statements whose travel TARGET is the country itself, named -- the third way
+ * France words a national verdict, next to the subject phrases ("l'ensemble/le reste du
+ * territoire") and the demonym form ("le territoire iranien est") that extractFrTerritoryLevel's
+ * main loop already reads. Repair 2026-10-15 (advisory-outlier audit), verified live that day:
+ *  - Niger: "Tout deplacement au Niger est formellement deconseille." (the whole section) -> 4.
+ *  - Bangladesh: "Tout deplacement au Bangladesh est deconseille sauf raison imperative, du fait
+ *    du risque terroriste." -> 3.
+ *  - Bahrain: "Il est deconseille aux ressortissants francais, sauf pour des raisons imperatives,
+ *    de se rendre a Bahrein." -> 3 (same sentence for Israel on the joint Israel/Palestine page).
+ *  - Cuba: "Compte tenu de la crise energetique a Cuba [...], les voyages non essentiels vers
+ *    l'ile sont deconseilles." -> 3 ("l'ile" is the anaphoric target; accepted only when the same
+ *    sentence names the country and no "de <name>" follows, so "l'ile de Saint-Martin" on
+ *    Bangladesh's page or "l'ile de Bali" never qualifies).
+ * Without this pass all four fell through to the "named zone flagged -> 2" cap (Niger,
+ * Bangladesh, Israel) or to "no keyword at all -> 1" (Bahrain, Cuba).
+ *
+ * Deliberately stricter than the subject-phrase loop, because a named target needs no
+ * cross-sentence inference: the level keyword must sit in the SAME sentence (forward first, then
+ * backward -- Bahrain's "Il est deconseille ... de se rendre a Bahrein" puts it before the
+ * target), never in a neighbouring heading. The country name must be followed by a non-letter,
+ * and must not be the start of a LONGER country name ("Guinee" vs "Guinee-Bissau"/"Guinee
+ * equatoriale", "Soudan" vs "Soudan du Sud"), so another country's verdict quoted for context
+ * can never be read as this one's. A sub-region named as the target ("se rendre dans le nord du
+ * Niger", "a la frontiere entre l'Azerbaidjan et l'Iran") does not match at all: the preposition
+ * has to be followed directly by the country's own name.
+ */
+function frNamedTargetLevel(
+  section: string,
+  boundaries: { index: number; level: UnifiedLevel }[],
+  ownNameFolded: string,
+): UnifiedLevel | null {
+  if (ownNameFolded.length < 3) return null;
+  const name = escapeRegexLiteral(ownNameFolded);
+  const longerNames = COUNTRIES.map((c) => foldFrName(c.name.fr)).filter(
+    (n) => n !== ownNameFolded && (n.startsWith(`${ownNameFolded} `) || n.startsWith(`${ownNameFolded}-`)),
+  );
+  const ownNameRe = new RegExp(`(?<![a-z])${name}(?![a-z-])`);
+  const targetRes: { re: RegExp; needsOwnName: boolean }[] = [
+    {
+      re: new RegExp(
+        `(?:(?:se rendre|aller|sejourner|voyager) (?:a|au|aux|en|dans)|(?:deplacements?|voyages?|sejours?)(?: non[- ]essentiels?)? (?:a|au|aux|en|vers|dans)) l?(?=${name}(?![a-z]))`,
+        'g',
+      ),
+      needsOwnName: false,
+    },
+    {
+      re: /(?:deplacements?|voyages?|sejours?)(?: non[- ]essentiels?)? (?:a|au|aux|en|vers|dans|sur) (?:lile|larchipel)(?![a-z-])(?! d)/g,
+      needsOwnName: true,
+    },
+  ];
+
+  const hits: { index: number; end: number; needsOwnName: boolean }[] = [];
+  for (const { re, needsOwnName } of targetRes) {
+    for (const m of section.matchAll(re)) {
+      const end = m.index + m[0].length;
+      if (!needsOwnName && longerNames.some((n) => section.startsWith(n, end))) continue; // "Guinee-Bissau" on Guinea's page
+      hits.push({ index: m.index, end: needsOwnName ? end : end + ownNameFolded.length, needsOwnName });
+    }
+  }
+  hits.sort((a, b) => a.index - b.index);
+
+  for (const hit of hits) {
+    const [sentenceStart, sentenceEnd] = sentenceBoundsAt(section, hit.index);
+    if (hit.needsOwnName && !ownNameRe.test(section.slice(sentenceStart, sentenceEnd))) continue;
+    const inSentence = boundaries.filter((b) => b.index >= sentenceStart && b.index < sentenceEnd);
+    const forward = inSentence.find((b) => b.index >= hit.end);
+    const backward = inSentence.filter((b) => b.index < hit.end).pop();
+    const level = forward?.level ?? backward?.level;
+    if (level !== undefined) return level;
+  }
+  return null;
+}
+
 export function extractFrTerritoryLevel(rawText: string, countryNameFr: string): UnifiedLevel | null {
   const text = rawText
     .toLowerCase()
@@ -1126,7 +1223,13 @@ export function extractFrTerritoryLevel(rawText: string, countryNameFr: string):
   // territory via its own demonym adjective, so -- unlike the other two -- it is not run
   // through namesAnotherCountry below (that guard's "de la/du <name>" shape does not apply to
   // it, and no live bug has ever been found through this alternative).
-  const wholeCountryRe = /(?<ensemble>(?:la totalite|lintegralite|lensemble) du (?:territoire|pays))|(?<reste>reste du (?:territoire|pays))|(?<adj>le territoire [a-z-]+ est)/g;
+  //
+  // "la majeure partie du territoire/pays" (added 2026-10-15, advisory-outlier audit): France's
+  // own wording for "everything except the named zones" -- Azerbaijan's page reads "La majeure
+  // partie du territoire azerbaidjanais est placee en orange ... et reste deconseillee sauf raison
+  // imperative", the named red zones being Karabakh and the Armenian border. Same subject role,
+  // same guards as "l'ensemble du territoire".
+  const wholeCountryRe = /(?<ensemble>(?:la totalite|lintegralite|lensemble|la majeure partie) du (?:territoire|pays))|(?<reste>reste du (?:territoire|pays))|(?<adj>le territoire [a-z-]+ est)/g;
 
   let subjectMatch: RegExpExecArray | null;
   while ((subjectMatch = wholeCountryRe.exec(section)) !== null) {
@@ -1153,9 +1256,14 @@ export function extractFrTerritoryLevel(rawText: string, countryNameFr: string):
     // keep scanning for another whole-country match rather than giving up immediately.
   }
 
+  // No subject-phrase statement: France may instead name the COUNTRY ITSELF as the travel target
+  // ("Tout deplacement au Niger est formellement deconseille") -- see frNamedTargetLevel.
+  const namedTargetLevel = frNamedTargetLevel(section, boundaries, ownNameFolded);
+  if (namedTargetLevel !== null) return namedTargetLevel;
+
   // No usable whole-country statement: a named zone is still flagged somewhere in the section,
   // so this is a real (sub-national) warning -- cap it at "increased caution".
-  if (/formellement deconseill|deconseille[a-z]{0,2} sauf raison imperative|vigilance renforcee/.test(section)) {
+  if (FR_LEVEL4_KEYWORD.test(section) || FR_LEVEL3_KEYWORD.test(section) || /vigilance renforcee/.test(section)) {
     return 2;
   }
 
