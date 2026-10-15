@@ -41,10 +41,11 @@
  * (Malta got Tunisia but not Libya, Kuwait missed Iran); "same region" meant a
  * continent, ordered by score (Afghanistan got North Korea).
  */
-import type { ScoredCountry } from '../pipeline/types';
+import type { PillarName, ScoredCountry } from '../pipeline/types';
 import { getLandNeighbours, getSovereignState } from './neighbors';
 import { getSubregion } from './subregions';
 import { hasSufficientData } from './hub-data';
+import { isEstimatedPillar } from './pillar-presentation';
 import type { Scored } from './score-status';
 
 /** Fewer land-neighbour + sovereign rows than this, and across-sea places are added. */
@@ -96,6 +97,13 @@ export interface RelatedSelection {
   sameRegion: Scored<ScoredCountry>[];
   /** Most similar risk profile first. Empty when the subject fails the data floor. Never repeats a sameRegion entry. */
   similarProfile: Scored<ScoredCountry>[];
+}
+
+/** One pillar cell of a comparison row. */
+export interface PillarCell {
+  name: PillarName;
+  /** Score out of 10, or null when nothing measured stands behind the pillar (shown as "No data"). */
+  score10: number | null;
 }
 
 /** Plain code-unit ascending order on iso3 (locale-independent tie-break). */
@@ -237,6 +245,20 @@ export function selectComparison(
   fillUpTo(MIN_ROWS_REMOTE, REMOTE_MAX_KM);
 
   return { others: rows.sort(byDistance(subject, geo)) };
+}
+
+/**
+ * The pillar cells of one comparison row, in the order of `names`. Same rule as the pillar bars
+ * (isEstimatedPillar, audit I31): a pillar with no measured indicator holds the engine's regional
+ * prior, so it gets no number here either (it printed Nauru's crime prior as a measured 5.7). A
+ * pillar missing from the data is treated the same way instead of showing 0.0.
+ */
+export function comparisonPillarCells(country: ScoredCountry, names: readonly PillarName[]): PillarCell[] {
+  const byName = new Map(country.pillars.map((p) => [p.name, p]));
+  return names.map((name) => {
+    const pillar = byName.get(name);
+    return { name, score10: pillar && !isEstimatedPillar(pillar) ? pillar.score * 10 : null };
+  });
 }
 
 /**
