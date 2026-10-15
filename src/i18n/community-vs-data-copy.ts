@@ -52,7 +52,7 @@ export interface CommunityVsDataCopy {
   rankingTitle: string;
   /** Deliberately short (one word) -- CommunityGapCard.astro's desktop bar rows put this in a fixed ~8rem column. */
   ourScoreLabel: string;
-  /** Same length constraint as ourScoreLabel; reuses ui.ts's sentiment.badge wording per locale for consistency with the country page's own "Community" pill. */
+  /** Same length constraint as ourScoreLabel; the one-word "Community" wording per locale (the country page's former "Community" pill, removed 2026-10-15). */
   communityScoreLabel: string;
   /** {gap} — short, prominent per-row chip. */
   gapChipSafer: string;

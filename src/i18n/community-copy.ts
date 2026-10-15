@@ -6,7 +6,7 @@
  * few lines away, e.g. country.pillar.environment), and this copy needs per-locale grammar
  * functions next to the strings, which ui.ts cannot hold. Same precedent as about-copy.ts and
  * community-vs-data-copy.ts. The older ui.ts `sentiment.*` keys are no longer read by these two
- * components (only `country.pillar.sentiment` and `sentiment.badge` still are).
+ * components (only `country.pillar.sentiment`, the block heading, still is).
  *
  * Grammar (country names inside sentences): every {place} is resolved per locale through
  * country-grammar.ts, never by pasting the bare name, so articles/prepositions agree:
@@ -69,6 +69,12 @@ export interface CommunityCopy {
   roundingNote: string;
   /** {votes} {minVotes} {origins} {minOrigins} */
   insufficient: string;
+  /**
+   * Same progress line when there are votes but none from a known country of origin (the voter's
+   * connection carried no country code), [one vote, several votes]. Without it the line read
+   * "1/30 votes, 0/3 countries of origin", a vote from no country (audit I20). Same tokens.
+   */
+  insufficientUnknownOrigin: readonly [string, string];
   /** How votes count, scored country. {minVotes} {minOrigins} {cap} */
   rulesScored: string;
   /** How votes count, grey country (no official score to move). */
@@ -98,6 +104,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     roundingNote: 'Figures are rounded to one decimal, so they may not add up exactly.',
     insufficient:
       'Not enough votes yet ({votes}/{minVotes} votes, {origins}/{minOrigins} countries of origin) — vote to make the community count.',
+    insufficientUnknownOrigin: [
+      'Not enough votes yet ({votes}/{minVotes} votes, {origins}/{minOrigins} countries of origin, as the country of origin of this vote is unknown) — vote to make the community count.',
+      'Not enough votes yet ({votes}/{minVotes} votes, {origins}/{minOrigins} countries of origin, as the country of origin of these votes is unknown) — vote to make the community count.',
+    ],
     rulesScored:
       "Once a country has {minVotes} votes from at least {minOrigins} countries of origin, travelers' votes can move its safety score by up to ±{cap} points. No single country of origin can carry more than half of the weight.",
     rulesGrey:
@@ -129,6 +139,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     roundingNote: 'I valori sono arrotondati a un decimale, quindi la somma può non tornare esattamente.',
     insufficient:
       'Non ci sono ancora abbastanza voti ({votes}/{minVotes} voti, {origins}/{minOrigins} paesi di provenienza): vota anche tu per far contare la community.',
+    insufficientUnknownOrigin: [
+      'Non ci sono ancora abbastanza voti ({votes}/{minVotes} voti, {origins}/{minOrigins} paesi di provenienza, perché il paese di provenienza di questo voto non è noto): vota anche tu per far contare la community.',
+      'Non ci sono ancora abbastanza voti ({votes}/{minVotes} voti, {origins}/{minOrigins} paesi di provenienza, perché il paese di provenienza di questi voti non è noto): vota anche tu per far contare la community.',
+    ],
     rulesScored:
       'Quando un paese raccoglie {minVotes} voti da almeno {minOrigins} paesi di provenienza, i voti dei viaggiatori possono spostarne il punteggio di sicurezza fino a ±{cap} punti. Nessun singolo paese di provenienza può pesare più della metà.',
     rulesGrey:
@@ -154,6 +168,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     roundingNote: 'Las cifras están redondeadas a un decimal, así que la suma puede no cuadrar exactamente.',
     insufficient:
       'Aún no hay suficientes votos ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origen): vota para que la comunidad cuente.',
+    insufficientUnknownOrigin: [
+      'Aún no hay suficientes votos ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origen, porque no se conoce el país de origen de este voto): vota para que la comunidad cuente.',
+      'Aún no hay suficientes votos ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origen, porque no se conoce el país de origen de estos votos): vota para que la comunidad cuente.',
+    ],
     rulesScored:
       'Cuando un país reúne {minVotes} votos de al menos {minOrigins} países de origen, los votos de los viajeros pueden mover su puntuación de seguridad hasta ±{cap} puntos. Ningún país de origen puede pesar más de la mitad.',
     rulesGrey:
@@ -184,6 +202,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     finalScoreLabel: 'Score de sécurité',
     roundingNote: 'Les valeurs sont arrondies à une décimale : leur somme peut différer légèrement.',
     insufficient: `Pas encore assez de votes ({votes}/{minVotes} votes, {origins}/{minOrigins} pays d'origine)${NBSP}: votez pour que la communauté compte.`,
+    insufficientUnknownOrigin: [
+      `Pas encore assez de votes ({votes}/{minVotes} votes, {origins}/{minOrigins} pays d'origine, car le pays d'origine de ce vote est inconnu)${NBSP}: votez pour que la communauté compte.`,
+      `Pas encore assez de votes ({votes}/{minVotes} votes, {origins}/{minOrigins} pays d'origine, car le pays d'origine de ces votes est inconnu)${NBSP}: votez pour que la communauté compte.`,
+    ],
     rulesScored:
       "Dès qu'un pays réunit {minVotes} votes venant d'au moins {minOrigins} pays d'origine, les votes des voyageurs peuvent faire varier son score de sécurité de ±{cap} point au maximum. Aucun pays d'origine ne peut peser plus de la moitié.",
     rulesGrey: `Il n'existe pas encore de score de sécurité officiel ici${NBSP}: la note de la communauté est affichée à part et n'en tient jamais lieu.`,
@@ -208,6 +230,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     roundingNote: 'Os valores são arredondados para uma casa decimal, por isso a soma pode não bater exatamente.',
     insufficient:
       'Ainda não há votos suficientes ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origem): vote para que a comunidade conte.',
+    insufficientUnknownOrigin: [
+      'Ainda não há votos suficientes ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origem, porque o país de origem deste voto é desconhecido): vote para que a comunidade conte.',
+      'Ainda não há votos suficientes ({votes}/{minVotes} votos, {origins}/{minOrigins} países de origem, porque o país de origem destes votos é desconhecido): vote para que a comunidade conte.',
+    ],
     rulesScored:
       'Quando um país reúne {minVotes} votos de pelo menos {minOrigins} países de origem, os votos dos viajantes podem mudar a pontuação de segurança desse país em até ±{cap} ponto. Nenhum país de origem pode pesar mais da metade.',
     rulesGrey:
@@ -234,6 +260,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     insufficient:
       // Never "N 个来源" here: scripts/validate-seo.ts reads "<number> 个来源" as a data-source count.
       '投票还不够（{votes}/{minVotes} 票，来自 {origins}/{minOrigins} 个国家或地区）——投出您的一票，让社区的声音被计入。',
+    insufficientUnknownOrigin: [
+      '投票还不够（{votes}/{minVotes} 票，来自 {origins}/{minOrigins} 个国家或地区，因为这一票的来源国家或地区未知）——投出您的一票，让社区的声音被计入。',
+      '投票还不够（{votes}/{minVotes} 票，来自 {origins}/{minOrigins} 个国家或地区，因为这些投票的来源国家或地区未知）——投出您的一票，让社区的声音被计入。',
+    ],
     rulesScored:
       '当一个国家获得来自至少 {minOrigins} 个国家或地区的 {minVotes} 票后，旅行者的投票最多可使其安全评分上下浮动 {cap} 分；任何单一来源国家或地区的权重都不超过一半。',
     rulesGrey: '这里还没有官方安全评分，因此社区评分单独显示，绝不会取而代之。',
@@ -259,6 +289,10 @@ export const communityCopy: Record<Lang, CommunityCopy> = {
     roundingNote: 'Die Werte sind auf eine Nachkommastelle gerundet, die Summe kann daher leicht abweichen.',
     insufficient:
       'Noch nicht genügend Stimmen ({votes}/{minVotes} Stimmen, {origins}/{minOrigins} Herkunftsländer): Stimmen Sie ab, damit die Community zählt.',
+    insufficientUnknownOrigin: [
+      'Noch nicht genügend Stimmen ({votes}/{minVotes} Stimmen, {origins}/{minOrigins} Herkunftsländer, da das Herkunftsland dieser Stimme unbekannt ist): Stimmen Sie ab, damit die Community zählt.',
+      'Noch nicht genügend Stimmen ({votes}/{minVotes} Stimmen, {origins}/{minOrigins} Herkunftsländer, da das Herkunftsland dieser Stimmen unbekannt ist): Stimmen Sie ab, damit die Community zählt.',
+    ],
     rulesScored:
       'Sobald für ein Land {minVotes} Stimmen aus mindestens {minOrigins} Herkunftsländern vorliegen, können die Stimmen der Reisenden seine Sicherheitsbewertung um bis zu ±{cap} Punkte verschieben. Kein einzelnes Herkunftsland zählt mehr als die Hälfte.',
     rulesGrey:
@@ -305,6 +339,31 @@ export function voteQuestion(lang: Lang, kind: QuestionKind, iso3: string, bareN
   const copy = communityCopy[lang];
   const template = kind === 'relative' ? copy.relativeQuestion : copy.absoluteQuestion;
   return fillCommunityTemplate(template, { place: placeFor(lang, kind, iso3, bareName) });
+}
+
+/**
+ * The grey progress line of a community that is not active yet. Each count is clamped at its
+ * floor: it is a progress meter, and "9/3 countries of origin" (a floor already met while the
+ * other is not) reads as an error; "3/3" says "done" plainly. Votes with no known country of
+ * origin count toward the votes but not the origins, so votes without a single known origin get
+ * the variant that says why the origins are still at zero.
+ */
+export function insufficientProgressText(
+  lang: Lang,
+  votes: number,
+  origins: number,
+  minVotes: number,
+  minOrigins: number,
+): string {
+  const copy = communityCopy[lang];
+  const template =
+    votes > 0 && origins === 0 ? copy.insufficientUnknownOrigin[votes === 1 ? 0 : 1] : copy.insufficient;
+  return fillCommunityTemplate(template, {
+    votes: Math.min(votes, minVotes),
+    minVotes,
+    origins: Math.min(origins, minOrigins),
+    minOrigins,
+  });
 }
 
 /** A decimal inside running prose, with the locale's separator ("1.0" en/zh, "1,0" elsewhere). */
