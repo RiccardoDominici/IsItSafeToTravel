@@ -723,6 +723,17 @@ const SK_WHOLE_COUNTRY_ALL_TRAVEL = /žiadn\w*|\w*koľvek\b/i;
  *  wrongly treat it as a real avoid-travel clause. */
 const SK_INSURANCE_GUARD = /poisten\w*/i;
 
+/** "Odporúčame zachovávať zvýšenú ostražitosť" (we recommend keeping up INCREASED VIGILANCE) --
+ *  MZV's other wording for its Level-2 "zvýšená opatrnosť" (increased caution) advice. Kuwait's real
+ *  text (open-data dump, fetched 2026-10-15) pairs it with "Kuvajt patrí medzi krajiny s vysokou
+ *  úrovňou bezpečnosti" (a high level of security), so with only "opatrnosť" in Priority 4 the calm
+ *  sentence won and Kuwait read Level 1 -- against 19 of 21 peers at 2 or more. Only counted as a
+ *  RECOMMENDATION (odporúča.../zachováva.../dodržiava... right before it): the same two words also
+ *  name France's Vigipirate alert tier ("je aktuálne nastavený na stupeň zvýšená ostražitosť"), a
+ *  description of the local alert system, not MZV advice. */
+const SK_INCREASED_VIGILANCE_ADVICE =
+  /(?:odporúč|zachováv|dodržiav)\S*\s+(?:\S+\s+){0,3}zvýšen\S{0,4}\s+ostražitos\S{0,4}/i;
+
 /** Affirmative "this is calm" statements MZV actually uses (2026-09-25 repair -- see the doc
  *  comment on normalizeSkSecurityText for why Priority 5 now REQUIRES one of these instead of
  *  defaulting to 1 on anything unmatched). Each is tied to a real live-page excerpt:
@@ -894,10 +905,12 @@ export function normalizeSkSecurityText(rawHtml: string | null | undefined): Uni
   if (wholeCountryAvoid !== null) return wholeCountryAvoid;
 
   // Priority 4: "increased caution" / "consider necessity of travel" recommendation, no digit
-  // stated -- MZV's own two ways of phrasing its Level-2 tier.
+  // stated -- MZV's own two ways of phrasing its Level-2 tier -- plus "increased vigilance"
+  // (SK_INCREASED_VIGILANCE_ADVICE, added 2026-10-15).
   if (
     /zvýšen\S{0,4}\s+opatrnos\S{0,4}/i.test(text) ||
-    /zvá[žz]i\S{0,4}\s+nevyhnutnos\S{0,4}\s+cestovani\S{0,4}/i.test(text)
+    /zvá[žz]i\S{0,4}\s+nevyhnutnos\S{0,4}\s+cestovani\S{0,4}/i.test(text) ||
+    SK_INCREASED_VIGILANCE_ADVICE.test(text)
   ) {
     return 2;
   }
