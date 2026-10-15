@@ -224,17 +224,17 @@ function gate(
 
   let wSum = 0, eSum = 0, n = 0, e5 = 0, n5 = 0, movedW = 0, towardW = 0, moved = 0;
   for (const [iso3, s] of Object.entries(sentiment)) {
-    const c = by.get(iso3);
-    const b = baseBy.get(iso3);
-    if (!c || !b || c.dataScore === null || b.dataScore === null) continue;
+    const cData = by.get(iso3)?.dataScore;
+    const bData = baseBy.get(iso3)?.dataScore;
+    if (typeof cData !== 'number' || typeof bData !== 'number') continue;
     const w = Math.min(s.votes, 10);
-    const err = Math.abs(c.dataScore - s.perceived);
+    const err = Math.abs(cData - s.perceived);
     wSum += w; eSum += w * err; n++;
     if (s.votes >= 5) { e5 += err; n5++; }
-    const d = c.dataScore - b.dataScore;
+    const d = cData - bData;
     if (Math.abs(d) >= MOVE_THRESHOLD) {
       moved++; movedW += w;
-      if (Math.sign(d) === Math.sign(s.perceived - b.dataScore)) towardW += w;
+      if (Math.sign(d) === Math.sign(s.perceived - bData)) towardW += w;
     }
   }
 
