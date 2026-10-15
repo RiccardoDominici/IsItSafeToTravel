@@ -45,6 +45,7 @@ const DEFAULT_HEADERS = [
   'Institutional',
   'Governance',
   'Access to health care',
+  'LACK OF COPING CAPACITY',
 ];
 
 interface SyntheticRow {
@@ -245,20 +246,20 @@ describe('INFORM parsing: edition year from the sheet name', () => {
 });
 
 describe('INFORM parsing: exact header mapping', () => {
-  it('maps Natural, Epidemic, Access to health care and Governance, and nothing else', () => {
+  it('maps Natural, Epidemic, Access to health care, Governance and LACK OF COPING CAPACITY, and nothing else', () => {
     const buffer = buildInformWorkbook({
       rows: [
         {
           iso3: 'DEU',
-          values: { Natural: 2.1, Human: 9.9, 'River Flood': 7.7, Epidemic: 3.3, Institutional: 8.8, Governance: 0.9, 'Access to health care': 1.5 },
+          values: { Natural: 2.1, Human: 9.9, 'River Flood': 7.7, Epidemic: 3.3, Institutional: 8.8, Governance: 0.9, 'Access to health care': 1.5, 'LACK OF COPING CAPACITY': 1.4 },
         },
         {
           iso3: 'ECU',
-          values: { Natural: 5.5, Human: 4.4, 'River Flood': 6.6, Epidemic: 4.1, Institutional: 6.2, Governance: 5.8, 'Access to health care': 4.7 },
+          values: { Natural: 5.5, Human: 4.4, 'River Flood': 6.6, Epidemic: 4.1, Institutional: 6.2, Governance: 5.8, 'Access to health care': 4.7, 'LACK OF COPING CAPACITY': 4.6 },
         },
         {
           iso3: 'ISR',
-          values: { Natural: 3.0, Human: 8.0, 'River Flood': 1.0, Epidemic: 2.0, Institutional: 4.0, Governance: 4.5, 'Access to health care': 1.2 },
+          values: { Natural: 3.0, Human: 8.0, 'River Flood': 1.0, Epidemic: 2.0, Institutional: 4.0, Governance: 4.5, 'Access to health care': 1.2, 'LACK OF COPING CAPACITY': 2.9 },
         },
       ],
     });
@@ -269,7 +270,7 @@ describe('INFORM parsing: exact header mapping', () => {
     assert.equal(parsed.editionYear, 2026);
     assert.deepEqual(
       parsed.mapping.map((m) => m.indicator).sort(),
-      ['inform_epidemic', 'inform_governance', 'inform_health_access', 'inform_natural'],
+      ['inform_coping', 'inform_epidemic', 'inform_governance', 'inform_health_access', 'inform_natural'],
     );
 
     const deu = parsed.indicators.filter((i) => i.countryIso3 === 'DEU');
@@ -279,6 +280,7 @@ describe('INFORM parsing: exact header mapping', () => {
       inform_epidemic: 3.3,
       inform_health_access: 1.5,
       inform_governance: 0.9,
+      inform_coping: 1.4,
     });
 
     const names = new Set(parsed.indicators.map((i) => i.indicatorName));
@@ -313,7 +315,7 @@ describe('INFORM parsing: exact header mapping', () => {
     assert.equal(parsed.outOfRangeSkipped, 2);
     assert.deepEqual(
       parsed.indicators.map((i) => `${i.countryIso3}:${i.indicatorName}`).sort(),
-      ['DEU:inform_epidemic', 'DEU:inform_health_access'],
+      ['DEU:inform_coping', 'DEU:inform_epidemic', 'DEU:inform_health_access'],
     );
   });
 
@@ -324,6 +326,7 @@ describe('INFORM parsing: exact header mapping', () => {
       'Epidemic',
       '  Access   to health care ',
       'Governance',
+      'LACK OF COPING CAPACITY',
     ]);
     assert.equal(resolved.find((r) => r.indicator === 'inform_health_access')?.column, 3);
   });
@@ -491,7 +494,7 @@ describe('INFORM discovery: Mid edition tie-break', () => {
 function fullSizeWorkbook(value: number, headers?: string[]): Buffer {
   const rows = COUNTRIES.slice(0, 160).map((c) => ({
     iso3: c.iso3,
-    values: { Natural: value, Epidemic: value, 'Access to health care': value, Governance: value },
+    values: { Natural: value, Epidemic: value, 'Access to health care': value, Governance: value, 'LACK OF COPING CAPACITY': value },
   }));
   return buildInformWorkbook({ rows, headers });
 }

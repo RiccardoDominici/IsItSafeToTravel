@@ -17,6 +17,10 @@ export const INFORM_COLUMN_MAP: ReadonlyArray<{ header: string; indicator: strin
   { header: 'Epidemic', indicator: 'inform_epidemic' },
   { header: 'Access to health care', indicator: 'inform_health_access' },
   { header: 'Governance', indicator: 'inform_governance' },
+  // Formula v10.1 (I49): the dimension score "LACK OF COPING CAPACITY" (upper case in the
+  // workbook, distinct from the "Lack of Coping Capacity" sheet). An engine input only: it turns
+  // natural-hazard exposure into risk (engine.ts naturalHazardRisk) and is never scored alone.
+  { header: 'LACK OF COPING CAPACITY', indicator: 'inform_coping' },
 ];
 
 /** Sheet carrying the edition year, e.g. "INFORM Risk 2026 (a-z)" or "INFORM Risk Mid 2025 (a-z)". */
