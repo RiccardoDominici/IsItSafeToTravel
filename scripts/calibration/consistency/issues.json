@@ -1,0 +1,2865 @@
+{
+ "version": 1,
+ "foundOn": "2026-10-15",
+ "siteCommit": "7c79009c",
+ "count": 68,
+ "method": "Findings grouped by root cause (one fix in one place); severity = highest confirmed finding; pages = rough count of affected pages (see pagesNote); examples validated against the built page text.",
+ "issues": [
+  {
+   "id": "I01",
+   "key": "MID_NOCRIT",
+   "title": "FAQ 'biggest risk' answer says 'No single factor stands out as critical' right after the summary names a main risk",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0310",
+    "F0460",
+    "F0055",
+    "F0262",
+    "F0267",
+    "F0039",
+    "F0246",
+    "F0500",
+    "F0044",
+    "F0045",
+    "F0104",
+    "F0113",
+    "F0259",
+    "F0068",
+    "F0070",
+    "F0075",
+    "F0076",
+    "F0078",
+    "F0218",
+    "F0222"
+   ],
+   "findingCount": 20,
+   "uncertainFindings": [],
+   "pages": 1029,
+   "pagesNote": "147 places with the 'no single factor is critical' answer next to a named main risk/concern, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/ago/",
+    "https://isitsafetotravel.org/fr/pays/tcd/",
+    "https://isitsafetotravel.org/pt/pais/kna/",
+    "https://isitsafetotravel.org/zh/country/gin/"
+   ],
+   "source": [
+    "src/lib/seo.ts:853",
+    "src/lib/country-faq-copy.ts:297",
+    "src/lib/country-faq-copy.ts:358",
+    "src/lib/country-faq-copy.ts:412",
+    "src/lib/country-faq-copy.ts:461",
+    "src/lib/country-faq-copy.ts:524",
+    "src/lib/country-faq-copy.ts:578",
+    "src/lib/country-faq-copy.ts:650"
+   ],
+   "rootCause": "Q2's variant is chosen from the driver pillar alone (critical below 4.0, 'mid' from 4.0 to 7.0), and the 'mid' template asserts that no single factor is critical, while the summary calls the same pillar 'the main risk' (below 5.0) or 'the main concern'. The check ignores governance and advisories, so TCD (governance 1.6, 8 governments at do-not-travel), PRK and KNA (64 homicides per 100,000) also say nothing is critical; 147 places get this answer.",
+   "proposedFix": "Drop the absolute claim: open the mid variant with 'The area that needs the most attention is ...', and use the critical variant whenever any displayed pillar is below 4.0 or most governments advise against travel.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I02",
+   "key": "MAINRISK",
+   "title": "The 'main risk' differs between description, summary and FAQ and is often not the weakest pillar",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0023",
+    "F0026",
+    "F0031",
+    "F0098",
+    "F0108",
+    "F0224",
+    "F0237",
+    "F0360",
+    "F0363",
+    "F0463",
+    "F0467",
+    "F0056",
+    "F0101",
+    "F0263",
+    "F0266",
+    "F0035",
+    "F0036",
+    "F0038",
+    "F0099",
+    "F0048",
+    "F0050",
+    "F0100",
+    "F0251",
+    "F0253",
+    "F0255",
+    "F0257",
+    "F0261",
+    "F0062",
+    "F0064",
+    "F0069",
+    "F0102",
+    "F0277",
+    "F0282",
+    "F0303",
+    "F0016",
+    "F0212",
+    "F0221"
+   ],
+   "findingCount": 37,
+   "uncertainFindings": [],
+   "pages": 854,
+   "pagesNote": "122 scored places whose named main-risk pillar is not their lowest bar, x7 languages",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/moz/",
+    "https://isitsafetotravel.org/en/country/tha/",
+    "https://isitsafetotravel.org/fr/pays/ven/",
+    "https://isitsafetotravel.org/de/land/gin/"
+   ],
+   "source": [
+    "src/lib/country-summary.ts:136",
+    "src/lib/country-summary.ts:146",
+    "src/lib/country-summary.ts:163",
+    "src/lib/seo.ts:262",
+    "src/lib/seo.ts:838",
+    "src/lib/seo.ts:849",
+    "src/lib/country-faq-copy.ts:292"
+   ],
+   "rootCause": "selectDriverPillar (used by the DESCRIPTION, the SUMMARY and FAQ Q2) leaves governance out unless every other pillar is 7+, and ranks the rest by weighted drag w*(-ln p), so conflict's 30% weight makes it the 'main concern' even when it is the highest bar (MOZ 5.5, THA 6.3) and a 1.5-2.7 governance pillar is never named (VEN, NIC, GIN). FAQ Q1 instead says the score is pulled down 'above all' by the lowest eligible pillar, so one page names two different main risks.",
+   "proposedFix": "Use one selection for DESCRIPTION, SUMMARY, Q1 and Q2 that matches the bars: name the lowest displayed pillar (governance included, or say explicitly that governance is context), using drag only to break near-ties. Q1's 'above all' must name the same pillar as the other three.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I03",
+   "key": "A3_NORMAL_FALSE",
+   "title": "Advisory answer says 'most governments advise only normal precautions and none raises it above a low level' while the page lists higher levels",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0020",
+    "F0028",
+    "F0496",
+    "F0053",
+    "F0057",
+    "F0033",
+    "F0040",
+    "F0244",
+    "F0042",
+    "F0047",
+    "F0049",
+    "F0051",
+    "F0506",
+    "F0063",
+    "F0065",
+    "F0072",
+    "F0079",
+    "F0089",
+    "F0278",
+    "F0479",
+    "F0013",
+    "F0014",
+    "F0018",
+    "F0088"
+   ],
+   "findingCount": 24,
+   "uncertainFindings": [],
+   "pages": 623,
+   "pagesNote": "89 places with level-2+ advisories under 'none above a low level' (7 with level 3-4), x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/gab/",
+    "https://isitsafetotravel.org/de/land/slb/",
+    "https://isitsafetotravel.org/fr/pays/sur/",
+    "https://isitsafetotravel.org/zh/country/gab/"
+   ],
+   "source": [
+    "src/lib/seo.ts:982",
+    "src/lib/seo.ts:984",
+    "src/lib/country-faq-copy.ts:313",
+    "src/lib/country-faq-copy.ts:374",
+    "src/lib/country-faq-copy.ts:428",
+    "src/lib/country-faq-copy.ts:477",
+    "src/lib/country-faq-copy.ts:540",
+    "src/lib/country-faq-copy.ts:595",
+    "src/lib/country-faq-copy.ts:666"
+   ],
+   "rootCause": "buildAdvisoryAnswer chooses the 'normal' consensus sentence from the modal level alone (a 10-of-20 plurality counts), and that sentence hard-codes 'none currently raises it above a low-level advisory' without checking the maximum level. 89 places with level-2+ advisories get it, 7 of them with level 3-4 advisories (GAB, SUR, SYC, STP, SLB, BWA...), so the FAQ contradicts the SUMMARY counts on the same page.",
+   "proposedFix": "Build the clause from the data: say 'most' only for a real majority, replace 'none above a low level' with the actual spread ('10 of 20 advise normal precautions, 7 increased caution, 2 reconsider, 1 against all travel'), and drop 'reassuring' whenever any government is at level 3 or 4.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I04",
+   "key": "TOPIC_NEG",
+   "title": "Summary's 'main concern' quotes an indicator whose own value is good, under a fixed negative label",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0025",
+    "F0029",
+    "F0105",
+    "F0106",
+    "F0112",
+    "F0227",
+    "F0231",
+    "F0311",
+    "F0313",
+    "F0328",
+    "F0357",
+    "F0464",
+    "F0498",
+    "F0499",
+    "F0054",
+    "F0059",
+    "F0426",
+    "F0146",
+    "F0245",
+    "F0450",
+    "F0131",
+    "F0258",
+    "F0292",
+    "F0067",
+    "F0073",
+    "F0119",
+    "F0147",
+    "F0281",
+    "F0438",
+    "F0017",
+    "F0111",
+    "F0118",
+    "F0349",
+    "F0350",
+    "F0351",
+    "F0535"
+   ],
+   "findingCount": 36,
+   "uncertainFindings": [],
+   "pages": 301,
+   "pagesNote": "43 scored places whose summary driver is normalised at 0.6 or better under a negative label, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/qat/",
+    "https://isitsafetotravel.org/en/country/ltu/",
+    "https://isitsafetotravel.org/es/pais/lie/",
+    "https://isitsafetotravel.org/zh/country/kwt/"
+   ],
+   "source": [
+    "src/lib/indicator-display.ts:17",
+    "src/lib/indicator-display.ts:184",
+    "src/i18n/indicator-copy.ts:88",
+    "src/i18n/indicator-copy.ts:89",
+    "src/i18n/indicator-copy.ts:94",
+    "src/i18n/indicator-copy.ts:97",
+    "src/lib/country-summary.ts:176"
+   ],
+   "rootCause": "buildDriverSentence names the lowest displayed indicator of the driver pillar (selectPillarDriver), but the pillar is often low because of something not displayed: the advisory consensus 'A', which is excluded from the pool, or the shrinkage prior. That indicator is then printed under a value-blind label from indicator-copy.ts ('a climate of violence and insecurity', 'poor public safety', 'weak governance', 'weak public administration'), so QAT's GPI 1.68 (normalised 0.77), LTU's V-Dem +0.98, CZE's 8.0 governance and LIE's 5.1 homicide rate (normalised 0.91, about two killings) become the 'main concern'; 43 scored places quote a driver normalised at 0.6 or better.",
+   "proposedFix": "Headline an indicator as the main concern only when its own normalised value is in the bad half; otherwise name the real cause ('most governments advise reconsidering travel', 'limited data: cautious estimate') or use a neutral frame. Make the labels value-aware and never pair 'weakest area' with the adjective 'weak'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I05",
+   "key": "ALLGOOD_COVERAGE",
+   "title": "Summary and FAQ say 'all five areas score at least 7' or name a weakest pillar while lower low-coverage bars are shown",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0027",
+    "F0030",
+    "F0032",
+    "F0081",
+    "F0082",
+    "F0092",
+    "F0093",
+    "F0109",
+    "F0229",
+    "F0295",
+    "F0296",
+    "F0298",
+    "F0301",
+    "F0304",
+    "F0306",
+    "F0228",
+    "F0058",
+    "F0085",
+    "F0095",
+    "F0264",
+    "F0041",
+    "F0083",
+    "F0094",
+    "F0247",
+    "F0084",
+    "F0103",
+    "F0110",
+    "F0293",
+    "F0305",
+    "F0071",
+    "F0086",
+    "F0096",
+    "F0077",
+    "F0087",
+    "F0097",
+    "F0294",
+    "F0019",
+    "F0080",
+    "F0091"
+   ],
+   "findingCount": 39,
+   "uncertainFindings": [],
+   "pages": 119,
+   "pagesNote": "17 scored places where a low-coverage pillar below the named one is left out of the text, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/nru/",
+    "https://isitsafetotravel.org/fr/pays/twn/",
+    "https://isitsafetotravel.org/de/land/mhl/",
+    "https://isitsafetotravel.org/en/country/stp/"
+   ],
+   "source": [
+    "src/lib/country-summary.ts:164",
+    "src/lib/country-summary.ts:172",
+    "src/i18n/country-summary-copy.ts:72",
+    "src/lib/seo.ts:175",
+    "src/lib/seo.ts:838",
+    "src/lib/country-faq-copy.ts:293",
+    "src/lib/country-faq-copy.ts:298"
+   ],
+   "rootCause": "selectDriverPillar and selectEligiblePillars drop pillars below MIN_PILLAR_COVERAGE (0.30) before ranking, but PillarBreakdown still draws them with their (prior) value. The 'allGood' summary frame and the FAQ 'all five pillars score well / range from X to Y' templates therefore describe only the covered pillars while saying 'all five' (NRU, PLW, TUV, TWN, BRN, MHL), and Q1/Q2 skip a lower asterisked bar (MDV crime 5.1, STP crime 4.9, TON, PSE governance 3.2).",
+   "proposedFix": "Make text and bars use the same pillar set: either stop drawing zero/low-coverage pillars as scores (see the low-coverage display issue) or keep them in the ranking. Never say 'all five' unless all five displayed bars are 7.0+, and say 'among the pillars with enough data' when some are left out.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I06",
+   "key": "VERDICT_ADV",
+   "title": "FAQ verdict says 'Yes, safe' while the same page says most governments advise reconsidering or avoiding travel",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0021",
+    "F0024",
+    "F0052",
+    "F0034",
+    "F0037",
+    "F0043",
+    "F0046",
+    "F0299",
+    "F0061",
+    "F0066",
+    "F0090",
+    "F0300",
+    "F0012",
+    "F0015",
+    "F0107"
+   ],
+   "findingCount": 15,
+   "uncertainFindings": [],
+   "pages": 70,
+   "pagesNote": "10 scored places with a 'Yes' verdict while most governments say reconsider or avoid, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/are/",
+    "https://isitsafetotravel.org/de/land/jor/",
+    "https://isitsafetotravel.org/zh/country/isr/",
+    "https://isitsafetotravel.org/es/pais/blr/"
+   ],
+   "source": [
+    "src/lib/seo.ts:828",
+    "src/lib/seo.ts:923",
+    "src/lib/country-faq-copy.ts:284",
+    "src/lib/country-faq-copy.ts:285",
+    "src/lib/country-faq-copy.ts:286"
+   ],
+   "rootCause": "a1Verdict is picked from the score band alone (getBand(score)). For the 10 scored places at 5.0+ whose modal advisory level is 3 or 4 (ARE, QAT, KWT, JOR, ISR, SAU, CUB, BLR...), Q1 opens 'Yes, generally / Yes, with some caution' while Q3 on the same page says 'The prevailing guidance is to reconsider travel'.",
+   "proposedFix": "Cap the verdict by the advisory consensus: when most governments advise reconsidering or against travel, never open with 'Yes'; use a hedged opener that cites the advisories. This holds whatever is decided on the advisory weight in the formula.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I07",
+   "key": "INFORM_SCALE",
+   "title": "'Lowest-rated area' is followed by an inverted INFORM value (2.3/10 = low exposure), mixing two scales",
+   "category": "bad-comparison",
+   "severity": "high",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0004",
+    "F0289",
+    "F0462",
+    "F0497",
+    "F0130",
+    "F0370",
+    "F0372",
+    "F0132",
+    "F0504",
+    "F0189",
+    "F0373",
+    "F0134",
+    "F0214",
+    "F0223",
+    "F0457"
+   ],
+   "findingCount": 15,
+   "uncertainFindings": [],
+   "pages": 196,
+   "pagesNote": "28 places with the 'all five >= 7 / weakest' sentence citing an inverted INFORM value, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/che/",
+    "https://isitsafetotravel.org/de/land/irl/",
+    "https://isitsafetotravel.org/pt/pais/aut/",
+    "https://isitsafetotravel.org/zh/country/plw/"
+   ],
+   "source": [
+    "src/i18n/country-summary-copy.ts:71",
+    "src/i18n/country-summary-copy.ts:72",
+    "src/i18n/indicator-copy.ts:108",
+    "src/i18n/indicator-copy.ts:111"
+   ],
+   "rootCause": "driverWeakest and driverAllGood say 'the weakest / lowest-rated area' (pillar scale, 10 = safest) and then insert the raw INFORM fact on INFORM's own scale (10 = worst), so on 28 very safe places a low-risk value such as 'exposure to natural hazards: 2.3 out of 10' reads as the weakest score, right after 'All five areas score at least 7 out of 10'.",
+   "proposedFix": "In the 'weakest' and 'allGood' frames quote the pillar value on the page's own scale ('natural hazards, 7.8/10'), or state the INFORM value as a risk level ('low exposure: 2.3 on INFORM's 0-10 risk scale'); never put an inverted-scale number right after 'lowest-rated'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I08",
+   "key": "BADGE",
+   "title": "Hero shows a big rounded integer next to the decimal score: 6.7 becomes '7' under 'Exercise caution', and the same 8.5 shows '8' or '9'",
+   "category": "contradiction",
+   "severity": "high",
+   "fixArea": "ui",
+   "languages": [
+    "en",
+    "it",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0022",
+    "F0241",
+    "F0490",
+    "F0060",
+    "F0270",
+    "F0074",
+    "F0216",
+    "F0297",
+    "F0333"
+   ],
+   "findingCount": 9,
+   "uncertainFindings": [],
+   "pages": 588,
+   "pagesNote": "84 scored places whose integer badge falls in another band or rounds an x.5 display inconsistently, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/prt/",
+    "https://isitsafetotravel.org/en/country/nzl/",
+    "https://isitsafetotravel.org/it/paese/npl/",
+    "https://isitsafetotravel.org/de/land/bel/"
+   ],
+   "source": [
+    "src/components/country/ScoreHero.astro:135",
+    "src/pipeline/scoring/engine.ts:298",
+    "src/pipeline/scoring/engine.ts:502"
+   ],
+   "rootCause": "ScoreHero prints country.scoreDisplay = Math.round(score) in the large type above '{score.toFixed(1)} out of 10'. Rounding the unrounded score makes 8.46 an '8' and 8.53 a '9' while both display 8.5, and 6.5-6.99 shows '7' beside a 6-7 band label.",
+   "proposedFix": "Make the one-decimal score the big number (or drop the integer); if an integer stays, derive it from the displayed decimal and never let it cross a band edge.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I09",
+   "key": "NEIGH_TOP6",
+   "title": "Neighbour table keeps only the six highest-scoring neighbours, hiding the most dangerous ones",
+   "category": "bad-comparison",
+   "severity": "high",
+   "fixArea": "comparisons",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0001",
+    "F0121",
+    "F0136"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 133,
+   "pagesNote": "19 places with more than six data-sufficient border neighbours (AUT,BRA,CHN,COD,DEU,HUN,IND,IRN,MLI,NER,POL,RUS,SAU,SDN,SRB,TUR,TZA,UKR,ZMB), x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/cod/",
+    "https://isitsafetotravel.org/en/country/chn/",
+    "https://isitsafetotravel.org/en/country/bra/",
+    "https://isitsafetotravel.org/en/country/deu/"
+   ],
+   "source": [
+    "src/lib/neighbors.ts:255",
+    "src/lib/neighbors.ts:256"
+   ],
+   "rootCause": "getNeighbors sorts the real borders by score, highest first, and slices to six, so on the 19 places with more than six data-sufficient neighbours the lowest scorers drop out: COD loses CAF 3.7 and SSD 3.4, CHN loses AFG, MMR, RUS, PRK and PAK, BRA loses BOL, COL and VEN.",
+   "proposedFix": "Show all land neighbours, or when a cap is needed keep the riskiest ones (sort ascending, or always include neighbours below the subject's score); sort by score only for display.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I10",
+   "key": "FORMULA_ADV",
+   "title": "Scores stay 'moderate' or 'generally safe' where most governments advise reconsidering or against travel (advisory consensus under-weighted)",
+   "category": "implausible-score",
+   "severity": "high",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0114",
+    "F0115",
+    "F0116",
+    "F0117",
+    "F0335",
+    "F0339",
+    "F0549",
+    "F0550",
+    "F0551",
+    "F0557"
+   ],
+   "findingCount": 10,
+   "uncertainFindings": [
+    "F0549",
+    "F0550",
+    "F0551",
+    "F0557"
+   ],
+   "pages": 70,
+   "pagesNote": "10 scored places at 5.0+ although half or more of their advisories are level 3-4, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/are/",
+    "https://isitsafetotravel.org/en/country/cub/",
+    "https://isitsafetotravel.org/en/country/blr/",
+    "https://isitsafetotravel.org/en/country/sau/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:13",
+    "src/pipeline/config/weights.json:87",
+    "src/pipeline/scoring/engine.ts:198",
+    "src/pipeline/scoring/engine.ts:203",
+    "src/pipeline/scoring/engine.ts:295"
+   ],
+   "rootCause": "Advisories enter only as the 'A' indicator inside the conflict pillar (28% of 30%), a prior nudge, and a severe modifier (S_MAX 0.32) that counts level-4 advisories only and is damped by nAdv/(nAdv+6). Level-3 majorities barely move the score: ARE 7.27 with 52% at level 3+, QAT 7.44, KWT 6.94 (81%), SAU 6.24, CUB 6.18 (15 of 19 at level 3-4), BLR 5.54 (12 of 19 at level 4); a UCDP year with zero deaths also gives conflict full marks (LBY conflict 5.4 with 17 of 21 at level 4).",
+   "proposedFix": "Give level-3 shares a modifier too (or let A act on the composite, not only inside conflict) and loosen the count damping; check the change against the constraints in constraints.json (ARE < 7.0, CUB <= 6.0, BLR <= 5.5).",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I11",
+   "key": "DE_TITLE",
+   "title": "de: title and H1 drop the article for feminine and plural names ('Ist Antarktis sicher?', 'Ist Salomonen sicher?', 'die Amerikanische Überseeinseln')",
+   "category": "broken-text",
+   "severity": "high",
+   "fixArea": "country-grammar",
+   "languages": [
+    "de"
+   ],
+   "findings": [
+    "F0002",
+    "F0003",
+    "F0006",
+    "F0007",
+    "F0008",
+    "F0010",
+    "F0210"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 16,
+   "pagesNote": "16 de titles/H1s",
+   "examples": [
+    "https://isitsafetotravel.org/de/land/ata/",
+    "https://isitsafetotravel.org/de/land/slb/",
+    "https://isitsafetotravel.org/de/land/mnp/",
+    "https://isitsafetotravel.org/de/land/umi/"
+   ],
+   "source": [
+    "src/i18n/country-grammar.ts:107",
+    "src/i18n/country-grammar.ts:398",
+    "src/i18n/country-grammar.ts:418",
+    "src/pages/de/land/[slug].astro:39"
+   ],
+   "rootCause": "getDeForm knows only the OVERRIDES table and four suffix rules (-ei, Republik, Königreich, -inseln), so Antarktis, Norfolkinsel, Bouvetinsel, Weihnachtsinsel, Salomonen, Färöer, Nördliche Marianen, Palästinensische Autonomiegebiete and Sonderverwaltungsregion Hongkong/Macau get no article and the singular 'Ist' (16 de titles), and plural adjective names lack the weak ending ('die Amerikanische Überseeinseln').",
+   "proposedFix": "Add overrides for these names (gender, plural flag and weakForm) and rules for '-insel' (feminine) and adjective + plural-noun names.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I12",
+   "key": "FR_PREP",
+   "title": "fr: wrong preposition or gender in titles ('Voyager au Guinée-Bissau', 'au Corée du Nord', 'au Fidji', 'au Cité du Vatican')",
+   "category": "broken-text",
+   "severity": "high",
+   "fixArea": "country-grammar",
+   "languages": [
+    "fr"
+   ],
+   "findings": [
+    "F0005",
+    "F0009",
+    "F0011",
+    "F0168",
+    "F0175",
+    "F0208",
+    "F0211"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 12,
+   "pagesNote": "fr titles with a wrong 'au'",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/gnb/",
+    "https://isitsafetotravel.org/fr/pays/prk/",
+    "https://isitsafetotravel.org/fr/pays/fji/",
+    "https://isitsafetotravel.org/fr/pays/vat/"
+   ],
+   "source": [
+    "src/i18n/country-grammar.ts:478",
+    "src/i18n/country-grammar.ts:481",
+    "src/i18n/country-grammar.ts:496"
+   ],
+   "rootCause": "inferFrForm guesses gender from the final letter (feminine only for -e/-es), so feminine names whose head noun is feminine but which do not end in -e (Guinée-Bissau, Corée du Nord/Sud, Géorgie du Sud, Cité du Vatican, Macédoine du Nord, Trinité-et-Tobago) get 'au', plural Fidji gets 'au' instead of 'aux', and Wallis-et-Futuna gets 'au' instead of 'à'.",
+   "proposedFix": "Add fr overrides for these names (en Guinée-Bissau, en Corée du Nord, aux Fidji, à Wallis-et-Futuna, à Saint-Marin, à Curaçao, à Taïwan) and take the gender from the first noun of compound names.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I13",
+   "key": "SOURCES_30PLUS",
+   "title": "Meta description promises '30+ public sources' while the page's own summary counts fewer for that country",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0226",
+    "F0230",
+    "F0265",
+    "F0271",
+    "F0475",
+    "F0471",
+    "F0473",
+    "F0474",
+    "F0272",
+    "F0274",
+    "F0477",
+    "F0280",
+    "F0215",
+    "F0219"
+   ],
+   "findingCount": 14,
+   "uncertainFindings": [],
+   "pages": 1188,
+   "pagesNote": "pages whose DESCRIPTION claims '30+' sources",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/gin/",
+    "https://isitsafetotravel.org/de/land/grd/",
+    "https://isitsafetotravel.org/zh/country/gin/",
+    "https://isitsafetotravel.org/pt/pais/tjk/"
+   ],
+   "source": [
+    "src/lib/seo.ts:311",
+    "src/lib/seo.ts:317",
+    "src/lib/site-stats.ts:120"
+   ],
+   "rootCause": "The description tail uses the site-wide SOURCE_COUNT_DISPLAY ('30+') on every scored page, but the summary on the same page counts that country's own advisories plus datasets (GIN 20 + 5 = 25, FSM 13 + 3 = 16), so almost every scored page contradicts itself.",
+   "proposedFix": "Use the country's own count from getProvenanceCounts ('Free score from 25 public sources'), or reword the tail as site-wide ('one of 30+ sources tracked site-wide').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I14",
+   "key": "A3_ONE_GREY",
+   "title": "Advisory answer says 'most governments' for a single advisory or a unanimous set, and opens 'reassuring' on no-score pages",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0156",
+    "F0233",
+    "F0392",
+    "F0494",
+    "F0180",
+    "F0186",
+    "F0268",
+    "F0454",
+    "F0476",
+    "F0164",
+    "F0249",
+    "F0314",
+    "F0173",
+    "F0317",
+    "F0320",
+    "F0453",
+    "F0195",
+    "F0196",
+    "F0495",
+    "F0511",
+    "F0275",
+    "F0440",
+    "F0151",
+    "F0387",
+    "F0493"
+   ],
+   "findingCount": 25,
+   "uncertainFindings": [],
+   "pages": 406,
+   "pagesNote": "58 places with one advisory, a unanimous level, or no score under 'most governments / reassuring', x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/imn/",
+    "https://isitsafetotravel.org/it/paese/ala/",
+    "https://isitsafetotravel.org/de/land/afg/",
+    "https://isitsafetotravel.org/es/pais/shn/"
+   ],
+   "source": [
+    "src/lib/seo.ts:908",
+    "src/lib/seo.ts:984",
+    "src/lib/country-faq-copy.ts:313",
+    "src/lib/country-faq-copy.ts:316",
+    "src/lib/country-faq-copy.ts:321"
+   ],
+   "rootCause": "The a3Consensus sentences use fixed quantifiers ('most governments ... none ...', 'Most governments now advise against all travel') with no variant for one advisory or for an all-the-same set, and grey places reuse the scored sentence (buildAdvisoryAnswer with grey = true only skips the severe note). So IMN, JEY, ALA and BVT say 'most governments' about one government, AFG says 'most' where its SUMMARY says 'all 22', and no-score pages open with 'The overall picture is reassuring'.",
+   "proposedFix": "Add count-aware variants: 'The only government with an advisory (Poland) advises normal precautions' for one advisory, 'All 22 governments ...' when unanimous, and a neutral sentence without a verdict on grey pages.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I15",
+   "key": "A3_STRONGEST",
+   "title": "'Strongest current warning' repeats the prevailing level and names only two of several issuers",
+   "category": "generic-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0232",
+    "F0234",
+    "F0312",
+    "F0524",
+    "F0269",
+    "F0325",
+    "F0508",
+    "F0243",
+    "F0250",
+    "F0501",
+    "F0503",
+    "F0260",
+    "F0526",
+    "F0327",
+    "F0361",
+    "F0437",
+    "F0517",
+    "F0525"
+   ],
+   "findingCount": 18,
+   "uncertainFindings": [],
+   "pages": 322,
+   "pagesNote": "46 places where the 'strongest warning' repeats the prevailing level or names 2 of 3+ issuers, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/per/",
+    "https://isitsafetotravel.org/en/country/sau/",
+    "https://isitsafetotravel.org/zh/country/omn/",
+    "https://isitsafetotravel.org/es/pais/bdi/"
+   ],
+   "source": [
+    "src/lib/seo.ts:988",
+    "src/lib/seo.ts:997",
+    "src/lib/seo.ts:1012",
+    "src/lib/country-faq-copy.ts:314",
+    "src/lib/country-faq-copy.ts:315"
+   ],
+   "rootCause": "The caution and reconsider templates always add 'the strongest warning - {govLevel} - comes from {governments}', where govLevel is the maximum level and governments are the first two issuers at that level (slice(0, 2)). When the maximum equals the prevailing level the clause just repeats it (PER, PAN, IDN, HKG), and when 5 or 9 governments share it only two are named, without 'among others' (SAU, TCD, OMN, BDI).",
+   "proposedFix": "Leave the clause out when the maximum level equals the prevailing one; otherwise say how many governments are at that level and name two 'among others' when there are more.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I16",
+   "key": "STRENGTH_WEAK",
+   "title": "FAQ calls a weak pillar the place's 'strongest area' on high-risk pages (Somalia health 4.1/10)",
+   "category": "generic-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0225",
+    "F0323",
+    "F0324",
+    "F0509",
+    "F0315",
+    "F0316",
+    "F0318",
+    "F0319",
+    "F0321",
+    "F0326",
+    "F0515",
+    "F0520",
+    "F0308",
+    "F0309"
+   ],
+   "findingCount": 14,
+   "uncertainFindings": [],
+   "pages": 301,
+   "pagesNote": "43 places whose FAQ 'strongest pillar/area' is below 7/10, x7",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/som/",
+    "https://isitsafetotravel.org/fr/pays/hti/",
+    "https://isitsafetotravel.org/en/country/afg/",
+    "https://isitsafetotravel.org/de/land/hti/"
+   ],
+   "source": [
+    "src/lib/seo.ts:841",
+    "src/lib/country-faq-copy.ts:292",
+    "src/lib/country-faq-copy.ts:296",
+    "src/lib/country-faq-copy.ts:297",
+    "src/lib/country-summary.ts:195"
+   ],
+   "rootCause": "a1Drivers.normal and the a2 critical/mid templates always name the highest eligible pillar as the 'strongest pillar/area' ('By contrast, ... is X's strongest area'), unlike the summary, which names a strength only at 7.0+ (STRONG_PILLAR_MIN); on high-risk pages this presents 4.1-6.1 values as strengths (SOM, HTI, CAF, COD, AFG).",
+   "proposedFix": "Apply the summary's rule in the FAQ: name the best pillar as a strength only at 7.0 or above; otherwise write 'even the best-rated area, health, is only 4.1/10'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I17",
+   "key": "GPI_TAG",
+   "title": "GPI sentence ends 'to 5 (GPI 2026)', so the edition reads as the top of the scale",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "de"
+   ],
+   "findings": [
+    "F0160",
+    "F0161",
+    "F0402",
+    "F0403",
+    "F0404",
+    "F0421",
+    "F0166",
+    "F0416",
+    "F0431",
+    "F0446",
+    "F0383"
+   ],
+   "findingCount": 11,
+   "uncertainFindings": [],
+   "pages": 312,
+   "pagesNote": "52 places whose summary quotes a GPI value, x6 languages (zh unaffected)",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/rwa/",
+    "https://isitsafetotravel.org/de/land/afg/",
+    "https://isitsafetotravel.org/pt/pais/guy/",
+    "https://isitsafetotravel.org/it/paese/arg/"
+   ],
+   "source": [
+    "src/i18n/indicator-copy.ts:104",
+    "src/i18n/indicator-copy.ts:105",
+    "src/i18n/indicator-copy.ts:151",
+    "src/i18n/indicator-copy.ts:198",
+    "src/i18n/indicator-copy.ts:245",
+    "src/i18n/indicator-copy.ts:292",
+    "src/i18n/indicator-copy.ts:386"
+   ],
+   "rootCause": "The gpi_safety_security and gpi_overall fact templates end with '... to 5 (GPI {y})' in en/it/es/fr/pt/de, so the source tag is glued to the end of the scale and the upper end is never described (zh puts it after a semicolon and is fine).",
+   "proposedFix": "Describe both ends and move the source out of the range: '... on a scale from 1 (most peaceful) to 5 (least peaceful); source: GPI 2026'. In pt also replace the calque 'avalia ... em'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I18",
+   "key": "DANGER_SOFT",
+   "title": "'No' verdict for high-risk places ends with 'travel requires serious caution', implying a careful trip is fine",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "it",
+    "es",
+    "fr",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0510",
+    "F0248",
+    "F0252",
+    "F0254",
+    "F0302",
+    "F0329",
+    "F0507",
+    "F0273",
+    "F0276",
+    "F0283",
+    "F0455"
+   ],
+   "findingCount": 11,
+   "uncertainFindings": [],
+   "pages": 168,
+   "pagesNote": "24 danger-band places, x7",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/afg/",
+    "https://isitsafetotravel.org/es/pais/hti/",
+    "https://isitsafetotravel.org/zh/country/yem/",
+    "https://isitsafetotravel.org/de/land/hti/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:287",
+    "src/lib/country-faq-copy.ts:348",
+    "src/lib/country-faq-copy.ts:402",
+    "src/lib/country-faq-copy.ts:451",
+    "src/lib/country-faq-copy.ts:514",
+    "src/lib/country-faq-copy.ts:568",
+    "src/lib/country-faq-copy.ts:637"
+   ],
+   "rootCause": "a1Verdict.danger closes with 'and travel requires serious caution' (and its translations) for every place under 5.0, including those where most or all governments advise against all travel (AFG, HTI, MLI, IRN, SYR, YEM, TCD), which softens the 'No' and contradicts the advisory answer below it.",
+   "proposedFix": "Split the danger verdict: where most governments advise against all travel, say so and advise against travel; keep 'requires serious caution' only for danger-band places without a level-4 majority.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I19",
+   "key": "ISSUER_ARTICLE",
+   "title": "Advisory issuers are named without article or case after a preposition ('comes from United States', 'émane de États-Unis', 'stammt von Vereinigte Staaten')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "en",
+    "it",
+    "fr",
+    "pt",
+    "de"
+   ],
+   "findings": [
+    "F0157",
+    "F0159",
+    "F0391",
+    "F0188",
+    "F0171",
+    "F0176",
+    "F0193",
+    "F0153"
+   ],
+   "findingCount": 8,
+   "uncertainFindings": [],
+   "pages": 489,
+   "pagesNote": "en/it/fr/pt/de pages naming advisory issuers without article",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/rwa/",
+    "https://isitsafetotravel.org/fr/pays/npl/",
+    "https://isitsafetotravel.org/de/land/gtm/",
+    "https://isitsafetotravel.org/pt/pais/gtm/"
+   ],
+   "source": [
+    "src/lib/seo.ts:998",
+    "src/lib/seo.ts:1012",
+    "src/lib/country-faq-copy.ts:314",
+    "src/lib/country-faq-copy.ts:375",
+    "src/lib/country-faq-copy.ts:482",
+    "src/lib/country-faq-copy.ts:541",
+    "src/lib/country-faq-copy.ts:672"
+   ],
+   "rootCause": "buildAdvisoryAnswer takes issuer names from Intl.DisplayNames (bare 'United States', 'Stati Uniti', 'États-Unis', 'Estados Unidos', 'Vereinigte Staaten') and pastes them into 'comes from {governments}', 'arriva da', 'émane de', 'vem de' and 'stammt von' with no article, contraction or case.",
+   "proposedFix": "Pass issuer names through the country-grammar helpers (en 'the United States', it 'dagli Stati Uniti', fr 'des États-Unis', pt 'dos Estados Unidos', de 'von den Vereinigten Staaten'), or rephrase as a list ('issued by: United States, Canada').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I20",
+   "key": "COMMUNITY_ORIGINS",
+   "title": "Community progress line shows '1/30 votes, 0/3 countries of origin'",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "ui",
+   "languages": [
+    "en",
+    "it",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0485",
+    "F0482",
+    "F0534",
+    "F0483",
+    "F0291",
+    "F0533",
+    "F0536",
+    "F0532"
+   ],
+   "findingCount": 8,
+   "uncertainFindings": [],
+   "pages": 28,
+   "pagesNote": "4 places showing votes from 0 countries of origin, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/jey/",
+    "https://isitsafetotravel.org/it/paese/ggy/",
+    "https://isitsafetotravel.org/zh/country/tun/",
+    "https://isitsafetotravel.org/de/land/ggy/"
+   ],
+   "source": [
+    "src/pipeline/sentiment/aggregate.ts:86",
+    "src/pipeline/sentiment/aggregate.ts:92",
+    "src/components/country/SentimentPillar.astro:89",
+    "src/i18n/community-copy.ts:100"
+   ],
+   "rootCause": "aggregate.ts counts every vote but only known origins (a vote whose country_iso is missing or unknown is left out of knownOrigins), and the progress line prints both numbers as they are, so JEY, GGY, NLD and TUN show one vote from zero countries.",
+   "proposedFix": "Say it explicitly ('1 vote, country of origin unknown'), or show unknown-origin votes as their own bucket in the progress line.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I21",
+   "key": "GREY_SOURCES",
+   "title": "Grey hero lists 'advisories from 17 governments' and other feeds under 'fewer than four sources' without saying advisories count as one",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "pt",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0461",
+    "F0469",
+    "F0287",
+    "F0429",
+    "F0284",
+    "F0217"
+   ],
+   "findingCount": 6,
+   "uncertainFindings": [],
+   "pages": 238,
+   "pagesNote": "34 grey places listing 4+ advisories or an alert feed under 'fewer than four sources', x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/glp/",
+    "https://isitsafetotravel.org/en/country/wlf/",
+    "https://isitsafetotravel.org/de/land/mco/",
+    "https://isitsafetotravel.org/pt/pais/gum/"
+   ],
+   "source": [
+    "src/i18n/grey-copy.ts:42",
+    "src/i18n/grey-copy.ts:44",
+    "src/i18n/grey-copy.ts:49",
+    "src/i18n/grey-copy.ts:93",
+    "src/i18n/grey-copy.ts:104",
+    "src/i18n/grey-copy.ts:120"
+   ],
+   "rootCause": "greySourceItems lists the advisory count ('Travel advisories from 10 governments') and the feeds, while the 'why' text says fewer than four independent sources cover the place; the copy never says that all advisories together count as one source and alert feeds not at all, and in pt and zh 'não conta entre as quatro' / '这四个来源' has no clear antecedent.",
+   "proposedFix": "Say it explicitly: 'Government advisories (10 governments, counted as one source)', and word the alert-feed note as 'not counted toward the four-source minimum'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I22",
+   "key": "DRIVER_CLAUSE",
+   "title": "FAQ driver clause ('the main signal / the lowest-scoring signals') reads unnaturally or circularly (es 'señal', fr 'sont morts liées...', pt 'governança (INFORM)', zh '这一低分')",
+   "category": "generic-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "es",
+    "fr",
+    "pt",
+    "zh"
+   ],
+   "findings": [
+    "F0411",
+    "F0169",
+    "F0514",
+    "F0516",
+    "F0521"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 201,
+   "pagesNote": "es 165 + fr 27 + pt 7 + zh 2 pages",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/bfa/",
+    "https://isitsafetotravel.org/pt/pais/mne/",
+    "https://isitsafetotravel.org/es/pais/bhs/",
+    "https://isitsafetotravel.org/zh/country/lie/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:416",
+    "src/lib/country-faq-copy.ts:466",
+    "src/lib/country-faq-copy.ts:189",
+    "src/lib/country-faq-copy.ts:213",
+    "src/lib/country-faq-copy.ts:529",
+    "src/lib/country-faq-copy.ts:582"
+   ],
+   "rootCause": "a2DriverClause and indicatorLabels are literal per-language renderings: es calques 'signal' as 'señal', fr puts the label 'morts liées aux conflits' bare after 'sont' (reads 'are dead'), pt lists 'governança (INFORM)' as a signal of the governança pillar, and the zh 'one' variant says '造成这一低分' even for pillars at 6.2-6.6.",
+   "proposedFix": "Rephrase per language with 'indicadores / indicateurs / 指标', add articles ('sont les morts liées aux conflits'), label INFORM governance as an index ('índice de governança do INFORM'), and drop '低分' for pillars at 6 or above.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I23",
+   "key": "HIGHCAUTION_LADDER",
+   "title": "5-6 band: hero says 'Only for experienced travelers' while the FAQ opens 'Yes, but only with real caution'",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "es",
+    "fr",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0472",
+    "F0256",
+    "F0492",
+    "F0484",
+    "F0456"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 126,
+   "pagesNote": "18 high-caution places (5-6), x7",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/gin/",
+    "https://isitsafetotravel.org/de/land/moz/",
+    "https://isitsafetotravel.org/zh/country/gin/",
+    "https://isitsafetotravel.org/es/pais/khm/"
+   ],
+   "source": [
+    "src/lib/band-copy.ts:46",
+    "src/lib/band-copy.ts:88",
+    "src/lib/country-faq-copy.ts:286",
+    "src/lib/country-faq-copy.ts:450",
+    "src/lib/country-faq-copy.ts:631"
+   ],
+   "rootCause": "band-copy.ts gives the high_caution band the hero badge 'Only for experienced travelers', the FAQ verdict for the same band (a1Verdict.high_caution) answers 'Yes, but only with real caution ... Many trips go fine', and the summary uses the label 'high caution': three verdicts of different strength on the 18 places between 5.0 and 6.0 (GIN, KHM, MOZ, MRT, NIC, UGA...).",
+   "proposedFix": "Use one verdict ladder: either soften the badge to the band label ('High caution') or make the FAQ opener match the badge, with the same wording in hero, summary and FAQ.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I24",
+   "key": "NAMES_DIACRITICS",
+   "title": "Country names drop diacritics or keep English spellings (Reunion, Saint Barthelemy, Papua, Benin, Cote d'Ivoire, Nepal, Ilhas Faroe)",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "en",
+    "es",
+    "fr",
+    "pt"
+   ],
+   "findings": [
+    "F0401",
+    "F0543",
+    "F0206",
+    "F0405",
+    "F0202",
+    "F0418",
+    "F0445"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 10,
+   "pagesNote": "the ten places' own pages in the affected language",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/reu/",
+    "https://isitsafetotravel.org/es/pais/png/",
+    "https://isitsafetotravel.org/fr/pays/civ/",
+    "https://isitsafetotravel.org/pt/pais/fro/"
+   ],
+   "source": [
+    "src/pipeline/config/countries.ts:22",
+    "src/pipeline/config/countries.ts:28",
+    "src/pipeline/config/countries.ts:45",
+    "src/pipeline/config/countries.ts:126",
+    "src/pipeline/config/countries.ts:139",
+    "src/pipeline/config/countries.ts:154",
+    "src/pipeline/config/countries.ts:215",
+    "src/pipeline/config/countries.ts:238",
+    "src/pipeline/config/countries.ts:239"
+   ],
+   "rootCause": "The localized names in src/pipeline/config/countries.ts use ASCII or English forms: en 'Reunion', 'Sao Tome and Principe', 'Saint Barthelemy', 'Cote d'Ivoire'; es 'Papua Nueva Guinea', 'Benin', 'Brunei'; fr 'Cote d'Ivoire', 'Nepal'; pt 'Ilhas Faroe'.",
+   "proposedFix": "Correct these entries (Réunion, São Tomé and Príncipe, Saint Barthélemy, Côte d'Ivoire, Papúa Nueva Guinea, Benín, Brunéi, Népal, Ilhas Feroé) and check that URL slugs stay unchanged.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I25",
+   "key": "DRAG_STRONG",
+   "title": "FAQ says the score is 'pulled down' by pillars that are strong or above the overall score; zh makes the second-lowest pillar the main drag",
+   "category": "generic-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "it",
+    "es",
+    "zh"
+   ],
+   "findings": [
+    "F0322",
+    "F0502",
+    "F0135",
+    "F0199",
+    "F0279"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 259,
+   "pagesNote": "37 places where a pillar at 7+ or above the overall score is said to pull the score down, x7",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/jpn/",
+    "https://isitsafetotravel.org/es/pais/can/",
+    "https://isitsafetotravel.org/zh/country/srb/"
+   ],
+   "source": [
+    "src/lib/seo.ts:838",
+    "src/lib/country-faq-copy.ts:292",
+    "src/lib/country-faq-copy.ts:353",
+    "src/lib/country-faq-copy.ts:407",
+    "src/lib/country-faq-copy.ts:573"
+   ],
+   "rootCause": "a1Drivers.normal always names the two lowest eligible pillars as what pulls the score down, whatever their values, so 8.0-8.2 pillars on very safe pages 'weigh on the score' (JPN governance 8.0, CAN 8.1, DEU crime 8.2); the zh template renders it as '拉低总分的主要是{second}，尤其是{weakest}', which makes the second-lowest pillar the main drag on every page.",
+   "proposedFix": "Call a pillar a drag only when it is below the overall score (or below 7.0), and fix the zh order to '拉低总分的主要是{weakest}，其次是{second}'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I26",
+   "key": "SOCIAL_SECURITY",
+   "title": "GPI 'societal safety and security' is translated as 'social security' (welfare, pensions) in it/es/pt",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "it",
+    "es",
+    "pt"
+   ],
+   "findings": [
+    "F0185",
+    "F0162",
+    "F0163",
+    "F0165",
+    "F0191",
+    "F0194",
+    "F0198"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 114,
+   "pagesNote": "it/es/pt pages calling GPI safety 'social security'",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/guy/",
+    "https://isitsafetotravel.org/es/pais/pan/",
+    "https://isitsafetotravel.org/pt/pais/arg/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:153",
+    "src/lib/country-faq-copy.ts:170",
+    "src/lib/country-faq-copy.ts:204"
+   ],
+   "rootCause": "indicatorLabels map gpi_safety_security to 'sicurezza sociale', 'seguridad social' and 'segurança social', which mean welfare and pensions, so the FAQ says the main signal behind a low crime pillar is 'social security'.",
+   "proposedFix": "Use 'sicurezza e protezione della società', 'seguridad ciudadana' and 'segurança pública', in line with the summary topics in indicator-copy.ts.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I27",
+   "key": "GREY_NOTHING",
+   "title": "Grey pages with no source show 'What we do have: No independent source covers this place yet' under a 'Partial data' title",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "ui",
+   "languages": [
+    "it",
+    "es",
+    "fr"
+   ],
+   "findings": [
+    "F0205",
+    "F0286",
+    "F0307",
+    "F0488",
+    "F0489"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 28,
+   "pagesNote": "4 grey places with nothing to list under 'What we have', x7",
+   "examples": [
+    "https://isitsafetotravel.org/es/pais/nfk/",
+    "https://isitsafetotravel.org/it/paese/nfk/",
+    "https://isitsafetotravel.org/fr/pays/nfk/",
+    "https://isitsafetotravel.org/es/pais/cck/"
+   ],
+   "source": [
+    "src/components/country/ScoreHero.astro:92",
+    "src/components/country/ScoreHero.astro:98",
+    "src/i18n/grey-copy.ts:45",
+    "src/i18n/grey-copy.ts:47"
+   ],
+   "rootCause": "ScoreHero always prints the haveHeading ('What we do have', 'Lo que sí tenemos') and, when the list is empty, the 'nothing' sentence under it, while the title suffix still says 'Partial data'; NFK, CCK, CXR and UMI therefore promise data and then say there is none.",
+   "proposedFix": "For places with no source at all, drop the heading and use a 'No data yet' title suffix instead of 'Partial data'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I28",
+   "key": "CONGO",
+   "title": "Republic of the Congo appears as a bare 'Congo', ambiguous with the DR Congo page",
+   "category": "other",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "en",
+    "fr",
+    "pt"
+   ],
+   "findings": [
+    "F0544",
+    "F0444",
+    "F0362"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 5,
+   "pagesNote": "COG in en/it/es/fr/pt",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/cog/",
+    "https://isitsafetotravel.org/fr/pays/cog/",
+    "https://isitsafetotravel.org/pt/pais/cog/"
+   ],
+   "source": [
+    "src/pipeline/config/countries.ts:42"
+   ],
+   "rootCause": "COG's name is 'Congo' in en/it/es/fr/pt while COD is 'Democratic Republic of the Congo', so titles read 'Is Congo Safe?' and 'Voyager au Congo'.",
+   "proposedFix": "Use 'Republic of the Congo' (it 'Repubblica del Congo', es 'República del Congo', fr 'République du Congo', pt 'República do Congo'), or 'Congo-Brazzaville' in titles.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I29",
+   "key": "PROVENANCE_COUNT",
+   "title": "'It combines N advisories and M other datasets' counts feeds with no value on the page (World Bank population) and lets FSM over the four-source floor",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "data-source",
+   "languages": [
+    "en",
+    "pt"
+   ],
+   "findings": [
+    "F0235",
+    "F0236",
+    "F0238",
+    "F0239",
+    "F0240",
+    "F0465",
+    "F0466",
+    "F0468",
+    "F0290",
+    "F0481"
+   ],
+   "findingCount": 10,
+   "uncertainFindings": [],
+   "pages": 539,
+   "pagesNote": "77 scored places whose 'N other public datasets' counts a feed with no row on the page, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/fsm/",
+    "https://isitsafetotravel.org/en/country/bgd/",
+    "https://isitsafetotravel.org/en/country/lbr/",
+    "https://isitsafetotravel.org/pt/pais/chn/"
+   ],
+   "source": [
+    "src/pipeline/scoring/engine.ts:561",
+    "src/pipeline/scoring/engine.ts:706",
+    "src/pipeline/scoring/engine.ts:722",
+    "src/lib/provenance-copy.ts:26",
+    "src/pipeline/scoring/coverage.ts:36"
+   ],
+   "rootCause": "buildSourcesForCountry lists a source whenever any raw indicator exists for the country, including wb_population (an engine input only) and retired World Bank series, so 'worldbank' appears for places with no homicide row. getProvenanceCounts and the four-source coverage floor both count it: 77 scored places claim one more dataset than their indicator table shows, and FSM gets an official score with three real feeds. The sentence also leaves out the community adjustment when one applies (CHN +0.4).",
+   "proposedFix": "List a source only when it contributes a scored indicator (ignore wb_population and retired series), recompute the four-source floor on that basis, and mention a non-zero community adjustment in the provenance sentence.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I30",
+   "key": "DESC_ALLGOOD",
+   "title": "Meta description names a 'top concern' even when every pillar is 7/10 or better",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "fr",
+    "de"
+   ],
+   "findings": [
+    "F0491",
+    "F0213",
+    "F0220"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 189,
+   "pagesNote": "27 'all areas >= 7' places whose DESCRIPTION still names a 'top concern', x7",
+   "examples": [
+    "https://isitsafetotravel.org/de/land/cze/",
+    "https://isitsafetotravel.org/de/land/irl/",
+    "https://isitsafetotravel.org/fr/pays/sgp/"
+   ],
+   "source": [
+    "src/lib/seo.ts:262",
+    "src/lib/seo.ts:291"
+   ],
+   "rootCause": "buildCountryMetaDescription always prints 'Top concern / Hauptrisiko / Risque principal: <driver pillar> (<value>)' from selectDriverPillar and ignores its frame, so on 'allGood' places (CZE governance 8.0, IRL natural hazards 7.8, SGP health 7.9) the snippet calls a strong pillar the main risk while the FAQ says no pillar signals a significant risk.",
+   "proposedFix": "When the driver frame is 'allGood' (every pillar at 7.0+), use a neutral clause ('All five pillars at 7/10 or better; lowest: natural hazards 7.8') instead of 'Top concern'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I31",
+   "key": "LOWCOV_UI",
+   "title": "Pillar bars with no indicator behind them show the prior as a measured score (Crime 5.7/10 on Pacific islands)",
+   "category": "implausible-value",
+   "severity": "medium",
+   "fixArea": "ui",
+   "languages": [
+    "en",
+    "zh"
+   ],
+   "findings": [
+    "F0242",
+    "F0330",
+    "F0342",
+    "F0343",
+    "F0345",
+    "F0346",
+    "F0348",
+    "F0352",
+    "F0200"
+   ],
+   "findingCount": 9,
+   "uncertainFindings": [],
+   "pages": 112,
+   "pagesNote": "16 scored places with a pillar bar that has no indicator behind it, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/nru/",
+    "https://isitsafetotravel.org/en/country/twn/",
+    "https://isitsafetotravel.org/en/country/brn/",
+    "https://isitsafetotravel.org/en/country/stp/"
+   ],
+   "source": [
+    "src/components/country/PillarBreakdown.astro:77",
+    "src/components/country/PillarBreakdown.astro:93",
+    "src/components/country/PillarBreakdown.astro:109",
+    "src/i18n/ui.ts:492"
+   ],
+   "rootCause": "PillarBreakdown prints (pillar.score * 10).toFixed(1) for every pillar, even one with no indicator (dataCompleteness 0), with only a generic asterisk note saying its contribution is 'reduced or excluded'. The number is then the shrinkage prior (about 5.7 crime for WSM, TON, VUT, PLW, FSM, NRU, KIR and MHL; 4.9 for STP and CPV; TWN health 6.7) and is copied into neighbours' comparison tables.",
+   "proposedFix": "Render zero-indicator pillars as 'No data' (no number, no bar) in the bars and comparison tables, and make the note say what really happens (a cautious estimate used in the score, and with what weight).",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I32",
+   "key": "LOWRISK_BAND",
+   "title": "it/es FAQ places an 8.0+ pillar in the 'low-risk band' while the same value overall is 'very low risk'",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "it",
+    "es"
+   ],
+   "findings": [
+    "F0288",
+    "F0487",
+    "F0470",
+    "F0486"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 6,
+   "pagesNote": "3 places whose weakest pillar is 8.0+ yet is placed in the 'low-risk band' (it, es), x2",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/cze/",
+    "https://isitsafetotravel.org/es/pais/lux/",
+    "https://isitsafetotravel.org/it/paese/lux/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:354",
+    "src/lib/country-faq-copy.ts:359",
+    "src/lib/country-faq-copy.ts:408",
+    "src/lib/country-faq-copy.ts:413"
+   ],
+   "rootCause": "The allStrong and strong templates hard-code 'rientra nella fascia di rischio basso' / 'se sitúa en la franja de riesgo bajo' for the weakest pillar whatever its value, while an 8.0 overall score is labelled 'rischio molto basso' / 'riesgo muy bajo'; the pillar rows use a separate 'Low' label, so the two vocabularies clash for the same number.",
+   "proposedFix": "Take the band word from the value (or reuse the pillar-row label) instead of hard-coding 'low-risk band', and align the pillar and overall band vocabularies.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I33",
+   "key": "REGION",
+   "title": "'In the same region' lists come from continent-wide buckets, picked by closest score",
+   "category": "bad-comparison",
+   "severity": "medium",
+   "fixArea": "comparisons",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0122",
+    "F0123",
+    "F0124",
+    "F0125",
+    "F0126",
+    "F0127",
+    "F0128",
+    "F0129",
+    "F0140",
+    "F0364"
+   ],
+   "findingCount": 10,
+   "uncertainFindings": [],
+   "pages": 1344,
+   "pagesNote": "192 data-sufficient places with an 'In the same region' list, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/afg/",
+    "https://isitsafetotravel.org/en/country/lao/",
+    "https://isitsafetotravel.org/en/country/dza/"
+   ],
+   "source": [
+    "src/lib/regions.ts:4",
+    "src/lib/regions.ts:15",
+    "src/lib/comparisons.ts:210",
+    "src/lib/comparisons.ts:215"
+   ],
+   "rootCause": "regionMap has six continent-scale buckets (europe, asia, africa, americas, oceania, middle_east) and selectRelated fills 'In the same region' with the three candidates closest in total score, so Afghanistan gets Myanmar and North Korea, Laos gets Tajikistan and Turkmenistan, and Algeria gets Zambia.",
+   "proposedFix": "Use UN M49 sub-regions (or a hand-made travel-region map) and pick by geographic proximity within the sub-region; order by score only for display.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I34",
+   "key": "IRRELEVANT_IND",
+   "title": "Indicators a traveller cannot act on (GPI militarisation, V-Dem public administration and corruption) are scored and listed as traveller indicators",
+   "category": "irrelevant-indicator",
+   "severity": "medium",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0353",
+    "F0354",
+    "F0355",
+    "F0356",
+    "F0358",
+    "F0359",
+    "F0538",
+    "F0539"
+   ],
+   "findingCount": 8,
+   "uncertainFindings": [],
+   "pages": 1218,
+   "pagesNote": "174 scored places listing GPI militarisation or V-Dem rows, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/afg/",
+    "https://isitsafetotravel.org/en/country/deu/",
+    "https://isitsafetotravel.org/en/country/hti/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:9",
+    "src/pipeline/config/weights.json:12",
+    "src/pipeline/config/weights.json:51",
+    "src/lib/indicator-display.ts:87",
+    "src/lib/indicator-display.ts:106"
+   ],
+   "rootCause": "weights.json scores gpi_militarisation inside the conflict pillar (11.25%) and three V-Dem state-capacity measures in governance, and displayedIndicators lists every scored indicator in the traveller table. The code already treats militarisation as 'not a travel driver' for the summary (NOT_A_TRAVEL_DRIVER) but still scores and shows it; Sudan's conflict pillar even gets 0.68 from militarisation during a civil war.",
+   "proposedFix": "Drop GPI militarisation from the conflict pillar (re-weight GPI overall, UCDP and advisories), and move the V-Dem rows behind a 'country context' disclosure or replace them with traveller-facing measures.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I35",
+   "key": "NEARBY",
+   "title": "'Nearby' fillers are picked by country-centroid distance up to 2,000 km: distant places tagged 'nearby', close coasts missed",
+   "category": "bad-comparison",
+   "severity": "medium",
+   "fixArea": "comparisons",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0120",
+    "F0137",
+    "F0138",
+    "F0139",
+    "F0141",
+    "F0148",
+    "F0368",
+    "F0369",
+    "F0375",
+    "F0376",
+    "F0377",
+    "F0378",
+    "F0379",
+    "F0380",
+    "F0382"
+   ],
+   "findingCount": 15,
+   "uncertainFindings": [],
+   "pages": 637,
+   "pagesNote": "91 of 110 places with 'nearby' fillers have one more than 500 km away (centroid distance), x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/mlt/",
+    "https://isitsafetotravel.org/en/country/myt/",
+    "https://isitsafetotravel.org/en/country/kwt/",
+    "https://isitsafetotravel.org/en/country/abw/"
+   ],
+   "source": [
+    "src/lib/comparisons.ts:53",
+    "src/lib/comparisons.ts:136",
+    "src/lib/comparisons.ts:161",
+    "src/data/country-coords.json"
+   ],
+   "rootCause": "When fewer than three real neighbours qualify, selectComparison fills up to four rows with the nearest countries by great-circle distance between single centroids (country-coords.json) within NEARBY_MAX_KM = 2,000 km and tags them all 'nearby'. Inland centroids of large countries push close coasts out (Libya for Malta, Mozambique for Mayotte, Iran for Kuwait, Indonesia for Christmas Island, Colombia for Aruba), while places 800-2,000 km away get in: 91 of 110 filled tables have a filler more than 500 km away.",
+   "proposedFix": "Measure distance to the nearest coast or border point (or several points per country), use a tighter radius, and label fillers by distance ('about 800 km away') instead of a blanket 'nearby'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I36",
+   "key": "HEALTH_CALIB",
+   "title": "Health pillar reads 1-2 points above its own inputs on high-risk pages (calibration offset on top of shrinkage)",
+   "category": "implausible-score",
+   "severity": "medium",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0331",
+    "F0332"
+   ],
+   "findingCount": 2,
+   "uncertainFindings": [],
+   "pages": 616,
+   "pagesNote": "88 scored places whose Health bar sits 1+ point above the mean of its own inputs, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/lbr/",
+    "https://isitsafetotravel.org/en/country/civ/",
+    "https://isitsafetotravel.org/en/country/caf/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:125",
+    "src/pipeline/config/weights.json:126",
+    "src/pipeline/scoring/engine.ts:467"
+   ],
+   "rootCause": "After shrinkage toward the prior, the v10 pillarCalibration maps health as p' = 0.162 + 0.914*p, which adds about 1.4 points at the low end: LBR's two fully covered health inputs normalise to 0.25 and 0.25, yet its bar is 4.6/10, and CIV, CAF and COD sit about 2 points above their inputs.",
+   "proposedFix": "Refit the health calibration without the intercept (or drop it), and check that a fully covered pillar never sits more than a few tenths above the mean of its own inputs.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I37",
+   "key": "BORDERMAP",
+   "title": "Border map gaps: 48 places (mostly territories) have no neighbour entry, so the sovereign state and real land neighbours are missing; 40 pairs are one-sided",
+   "category": "bad-comparison",
+   "severity": "medium",
+   "fixArea": "comparisons",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0142",
+    "F0143",
+    "F0144",
+    "F0145",
+    "F0149",
+    "F0366",
+    "F0367",
+    "F0381",
+    "F0556"
+   ],
+   "findingCount": 9,
+   "uncertainFindings": [
+    "F0556"
+   ],
+   "pages": 336,
+   "pagesNote": "48 places with no border-map entry and 40 one-sided pairs; pages of places without an entry, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/jey/",
+    "https://isitsafetotravel.org/en/country/sjm/",
+    "https://isitsafetotravel.org/en/country/esh/",
+    "https://isitsafetotravel.org/en/country/kor/"
+   ],
+   "source": [
+    "src/lib/neighbors.ts:9",
+    "src/lib/neighbors.ts:100",
+    "src/lib/neighbors.ts:108",
+    "src/lib/neighbors.ts:217"
+   ],
+   "rootCause": "borderMap in neighbors.ts has no entry for 48 places (JEY, GGY, IMN, NFK, SJM, ESH, GUF...), so their table is filled by distance alone and drops the sovereign state or a real land neighbour (Jersey without the UK, Svalbard without Norway, Western Sahara without Algeria, French Guiana without Brazil); 40 pairs are listed on one side only (KOR omits CHN while JPN lists it, FJI omits NZL), and TLS has only IDN.",
+   "proposedFix": "Add entries for every territory (sovereign state plus real land and maritime neighbours, as ALA already has), add key maritime links (KOR-CHN, TLS-AUS), and make the map symmetric with a unit test.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I38",
+   "key": "IT_ARTICLE",
+   "title": "it: country names without article or agreement in FAQ templates ('di Afghanistan', 'su Emirati Arabi Uniti', 'Bahamas è', 'lo colloca')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "it"
+   ],
+   "findings": [
+    "F0181",
+    "F0182",
+    "F0183",
+    "F0184",
+    "F0187",
+    "F0419"
+   ],
+   "findingCount": 6,
+   "uncertainFindings": [],
+   "pages": 216,
+   "pagesNote": "it pages with a bare country name after di/su or as subject",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/afg/",
+    "https://isitsafetotravel.org/it/paese/are/",
+    "https://isitsafetotravel.org/it/paese/bhs/",
+    "https://isitsafetotravel.org/it/paese/deu/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:335",
+    "src/lib/country-faq-copy.ts:338",
+    "src/lib/country-faq-copy.ts:353",
+    "src/lib/country-faq-copy.ts:374"
+   ],
+   "rootCause": "The it FAQ templates put the bare {name} after 'di', 'su' and 'per' and in subject position ('{name} è ...'); the article-aware helper (getItalianLocative) is used only for the q1/q2 locative, and a3Consensus.normal fixes the masculine pronoun 'lo' for every country.",
+   "proposedFix": "Add an Italian article helper (del/della/degli, sul/sulla/sugli, subject 'il Nepal', plural verb for le Bahamas and gli Emirati) and use it in every {name} slot; make the pronoun follow the gender.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I39",
+   "key": "FR_ARTICLE",
+   "title": "fr: country names without article in FAQ templates ('de Afghanistan', 'Japon est', 'Maldives est')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "fr"
+   ],
+   "findings": [
+    "F0167",
+    "F0170",
+    "F0172",
+    "F0174",
+    "F0177",
+    "F0178",
+    "F0179"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 189,
+   "pagesNote": "fr pages with a bare country name",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/afg/",
+    "https://isitsafetotravel.org/fr/pays/jpn/",
+    "https://isitsafetotravel.org/fr/pays/mdv/",
+    "https://isitsafetotravel.org/fr/pays/rus/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:447",
+    "src/lib/country-faq-copy.ts:451",
+    "src/lib/country-faq-copy.ts:456",
+    "src/lib/country-faq-copy.ts:460"
+   ],
+   "rootCause": "The fr FAQ templates insert the bare {name} after 'de'/'pour' and in subject position; only q1/q2 and the summary use getFrenchPreposition, and there is no helper for the definite article (le Japon, l'Afghanistan, les Maldives).",
+   "proposedFix": "Add a French article helper (du/de la/de l'/des; le/la/l'/les with a plural verb) and use it in every fr FAQ slot.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I40",
+   "key": "PT_ARTICLE",
+   "title": "pt: country names without article in FAQ templates ('de Nepal', 'Argentina é', 'a pontuação geral de Sudão')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "pt"
+   ],
+   "findings": [
+    "F0190",
+    "F0192",
+    "F0197",
+    "F0430"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 187,
+   "pagesNote": "pt pages with a bare country name",
+   "examples": [
+    "https://isitsafetotravel.org/pt/pais/npl/",
+    "https://isitsafetotravel.org/pt/pais/arg/",
+    "https://isitsafetotravel.org/pt/pais/sdn/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:506",
+    "src/lib/country-faq-copy.ts:519",
+    "src/lib/country-faq-copy.ts:545"
+   ],
+   "rootCause": "The pt FAQ templates use the bare {name} after 'de' and as subject (a1Verdict, a1Drivers, a2, a3Cap), although getPortugueseDe and getPortugueseWithArticle exist and are already used in q1/q2 and a3Consensus.",
+   "proposedFix": "Use nameDe ('do Nepal', 'do Sudão') and nameArt ('A Argentina é') in every pt FAQ slot.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I41",
+   "key": "LOWERCASE_EN",
+   "title": "en FAQ Q1: the sentence after the methodology boilerplate starts in lowercase ('... detail. conflict (8.7/10) is ...')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0155",
+    "F0158",
+    "F0390",
+    "F0396"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 166,
+   "pagesNote": "en pages with a lowercase sentence after 'statistical detail.'",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/aus/",
+    "https://isitsafetotravel.org/en/country/gin/",
+    "https://isitsafetotravel.org/en/country/afg/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:292",
+    "src/lib/seo.ts:925"
+   ],
+   "rootCause": "The en a1Drivers.normal template starts with the {strongest} slot, filled with a lowercase pillar label, and getCountryFaqData joins it after a1Formula without capitalising, unlike buildCountrySummary, which capitalises every en sentence.",
+   "proposedFix": "Capitalise the first letter of each joined FAQ sentence in en (as country-summary.ts does), or start the template with fixed words ('The strongest pillar is ...').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I42",
+   "key": "PRIOR",
+   "title": "Missing or down-weighted data pulls pillars to a conservative prior that misranks known safe places (Cabo Verde crime 4.9, Taiwan health 6.7, Liechtenstein crime 6.6)",
+   "category": "implausible-score",
+   "severity": "medium",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0334",
+    "F0537",
+    "F0528"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 112,
+   "pagesNote": "16 scored places with at least one pillar set entirely by the prior, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/cpv/",
+    "https://isitsafetotravel.org/en/country/twn/",
+    "https://isitsafetotravel.org/en/country/lie/"
+   ],
+   "source": [
+    "src/pipeline/scoring/engine.ts:221",
+    "src/pipeline/scoring/engine.ts:249",
+    "src/pipeline/scoring/engine.ts:446",
+    "src/pipeline/config/weights.json:83",
+    "src/pipeline/config/weights.json:94"
+   ],
+   "rootCause": "Each pillar is shrunk as p = (n*p + K*mu)/(n + K) toward mu = muBase 0.45 + region offset (+ advisory nudge). With no indicator the pillar is mu itself (CPV crime 0.49 with only level-1/2 advisories; TWN health 0.67 because INFORM does not cover Taiwan), and for small populations the homicide precision is scaled by pop/(pop + P_HALF), so Liechtenstein's good 0.91 homicide value ends as a 0.66 crime pillar and LIE ranks below Italy.",
+   "proposedFix": "Let a uniform level-1 advisory picture lift the prior for missing pillars more strongly (CPV, LIE, TWN are almost all level 1), and keep prior-only pillars from driving rankings and orderings.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I43",
+   "key": "DATA_CHECK",
+   "title": "Source values that look implausible but are passed through faithfully (unverified): North Korea health access, Venezuela and Guatemala homicide, V-Dem for Gambia and Honduras, INFORM for Vanuatu and Palestine",
+   "category": "implausible-value",
+   "severity": "medium",
+   "fixArea": "data-source",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0554",
+    "F0555",
+    "F0558",
+    "F0559",
+    "F0560",
+    "F0562",
+    "F0563"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [
+    "F0554",
+    "F0555",
+    "F0558",
+    "F0559",
+    "F0560",
+    "F0562",
+    "F0563"
+   ],
+   "pages": 49,
+   "pagesNote": "7 places x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/prk/",
+    "https://isitsafetotravel.org/en/country/ven/",
+    "https://isitsafetotravel.org/en/country/hnd/",
+    "https://isitsafetotravel.org/en/country/vut/"
+   ],
+   "source": [
+    "src/pipeline/fetchers/inform-parse.ts:18",
+    "src/pipeline/fetchers/worldbank.ts:34",
+    "src/pipeline/fetchers/vdem.ts:31"
+   ],
+   "rootCause": "The verifier confirmed that each value is what the source publishes (PRK INFORM health access 0.5, VEN homicide 12.6 for 2022, GTM 23.4, GMB and HND V-Dem close to Greece and Jordan, VUT natural exposure 5.1, PSE health access 3.7), so these are questions about source quality, not parser bugs; they could not be settled without outside data.",
+   "proposedFix": "Review these seven values against other sources (UNODC, InSight Crime, WorldRiskIndex) and decide whether to override, down-weight or footnote them.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I44",
+   "key": "CRIME_WEIGHT",
+   "title": "Violent crime is diluted by structural pillars: high-homicide countries tie low-homicide ones (Jamaica = Dominican Republic, South Africa = Indonesia)",
+   "category": "implausible-score",
+   "severity": "medium",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0336",
+    "F0337",
+    "F0340"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 42,
+   "pagesNote": "JAM, DOM, ZAF, IDN, TTO, VNM x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/jam/",
+    "https://isitsafetotravel.org/en/country/dom/",
+    "https://isitsafetotravel.org/en/country/zaf/",
+    "https://isitsafetotravel.org/en/country/idn/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:24",
+    "src/pipeline/config/weights.json:25",
+    "src/pipeline/config/weights.json:37",
+    "src/pipeline/config/weights.json:50",
+    "src/pipeline/config/weights.json:67",
+    "src/pipeline/scoring/engine.ts:296"
+   ],
+   "rootCause": "Crime is 25% of a weighted geometric mean, with homicide only a third of that pillar, while governance, health and natural hazards together weigh 45%. Jamaica (49.4 homicides per 100,000, crime 5.0, US level 3) ties the Dominican Republic (10.9, crime 6.6) at 6.8, South Africa (43.7, crime 4.5) ties Indonesia (0.3, crime 7.6) at 6.3, and Trinidad and Tobago (40.4) ties Vietnam at 6.9, because the low-homicide side has weaker governance, hazard or health pillars.",
+   "proposedFix": "Give direct violence more weight for travellers (crime and the acute soft-min term) relative to governance, health and hazards, or add a homicide penalty above a threshold (e.g. 20 per 100,000); test against the JAM<DOM, ZAF<IDN and TTO<VNM constraints.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I45",
+   "key": "ADV_PARSER_UK",
+   "title": "UK FCDO advisory label is the gov.uk page description, sometimes cut mid-word",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "advisory-parser",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0203",
+    "F0204",
+    "F0207",
+    "F0209"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 28,
+   "pagesNote": "4 places whose UK FCDO label is a page description, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/cri/",
+    "https://isitsafetotravel.org/en/country/lao/",
+    "https://isitsafetotravel.org/en/country/qat/",
+    "https://isitsafetotravel.org/en/country/tur/"
+   ],
+   "source": [
+    "src/pipeline/fetchers/advisories.ts:1016",
+    "src/pipeline/fetchers/advisories.ts:1018",
+    "src/pipeline/fetchers/advisories.ts:1039"
+   ],
+   "rootCause": "The UK fetcher uses the content API's page description as the advisory text whenever it does not start with 'FCDO travel advice'; descriptions like 'Latest FCDO travel advice for Costa Rica. Includes safety and security...' or a Laos flood update pass that test and are shown as the level label.",
+   "proposedFix": "Always derive the label from the alert_status level (UK_LEVEL_TEXT), and keep the description, if at all, as a separate 'latest update' note.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I46",
+   "key": "ADV_LEVEL_MAP",
+   "title": "Advisory level mapping misstates some issuers (UK 'avoid all travel to parts' shown as 'all but essential' for Sudan and Somalia)",
+   "category": "implausible-value",
+   "severity": "medium",
+   "fixArea": "advisory-parser",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0344",
+    "F0347",
+    "F0553"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [
+    "F0553"
+   ],
+   "pages": 28,
+   "pagesNote": "SDN, SOM, IRQ, MWI x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/sdn/",
+    "https://isitsafetotravel.org/en/country/irq/",
+    "https://isitsafetotravel.org/en/country/mwi/"
+   ],
+   "source": [
+    "src/pipeline/fetchers/advisories.ts:879",
+    "src/pipeline/fetchers/advisories.ts:882",
+    "src/pipeline/fetchers/advisories-tier2a.ts:28",
+    "src/pipeline/fetchers/advisories-tier3b.ts:70"
+   ],
+   "rootCause": "UK_ALERT_LEVEL maps 'avoid_all_travel_to_parts' to level 3 with the text 'Advise against all but essential travel', although for Sudan and Somalia the FCDO advises against all travel to nearly the whole country. The French Iraq entry ('Vigilance renforcée', level 2) and the Hungarian Malawi entry (level 4) are unverified outliers against every other issuer.",
+   "proposedFix": "Give 'avoid all travel to parts' its own label ('against all travel to parts of the country') and treat near-whole-country cases as level 4; re-check the French (IRQ) and Hungarian (MWI) parses against the live pages.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I47",
+   "key": "SCORE_SCALE",
+   "title": "Headline score can sit above every pillar bar (Brazil 6.6 with pillars 5.7-6.5)",
+   "category": "contradiction",
+   "severity": "medium",
+   "fixArea": "ui",
+   "languages": [
+    "pt"
+   ],
+   "findings": [
+    "F0285"
+   ],
+   "findingCount": 1,
+   "uncertainFindings": [],
+   "pages": 28,
+   "pagesNote": "4 scored places whose headline score exceeds every pillar bar, x7",
+   "examples": [
+    "https://isitsafetotravel.org/pt/pais/bra/",
+    "https://isitsafetotravel.org/en/country/est/"
+   ],
+   "source": [
+    "src/pipeline/scoring/engine.ts:297",
+    "src/components/country/PillarBreakdown.astro:77"
+   ],
+   "rootCause": "The headline score is 1 + 9*composite^0.96 while the bars show 10*p, so they use different scales and the score is lifted relative to the bars (BRA 6.6 vs a best pillar of 6.5; EST 8.7 vs 8.3-8.6), with nothing on the page to explain it.",
+   "proposedFix": "Show pillars on the same 1-10 transform as the score (1 + 9*p^0.96), or add a one-line note that the overall score uses a calibrated 1-10 scale.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I48",
+   "key": "DE_ARTICLE",
+   "title": "de: FAQ templates use bare names after 'von'/'für' and as subject ('von Vereinigte Arabische Emirate', 'Iran zählt', 'Philippinen sind')",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "de"
+   ],
+   "findings": [
+    "F0150",
+    "F0152",
+    "F0154"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 26,
+   "pagesNote": "de pages with a bare name after von or in subject position (pattern count)",
+   "examples": [
+    "https://isitsafetotravel.org/de/land/are/",
+    "https://isitsafetotravel.org/de/land/irn/",
+    "https://isitsafetotravel.org/de/land/phl/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:617",
+    "src/lib/country-faq-copy.ts:637",
+    "src/lib/country-faq-copy.ts:642",
+    "src/lib/country-faq-copy.ts:666"
+   ],
+   "rootCause": "The de FAQ templates put the bare {name} in subject and dative positions; only q1/q2 use getGermanDirectional and the plural verb slots, so names that need an article or a dative form (der Iran, die Philippinen, den Vereinigten Arabischen Emiraten) come out ungrammatical.",
+   "proposedFix": "Use getGermanNominative for subjects and add a dative helper ('von den ...', 'vom ...') for every de FAQ slot.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I49",
+   "key": "HAZARD_WEIGHT",
+   "title": "Natural-hazard exposure, with no preparedness term, drags very safe countries: Japan ranks below Italy",
+   "category": "implausible-score",
+   "severity": "medium",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0338",
+    "F0527"
+   ],
+   "findingCount": 2,
+   "uncertainFindings": [],
+   "pages": 14,
+   "pagesNote": "JPN, ITA x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/jpn/",
+    "https://isitsafetotravel.org/en/country/ita/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:68",
+    "src/pipeline/config/weights.json:128"
+   ],
+   "rootCause": "The natural-hazards pillar is INFORM exposure plus live GDACS/ReliefWeb alert counts with no preparedness term, and the v10 calibration stretches it (p' = -0.114 + 1.311*p); Japan's pillar falls to 0.44 (exposure 8.3/10 plus two transient GDACS alerts), which outweighs its better conflict, crime and governance and puts JPN 8.14 below ITA 8.22.",
+   "proposedFix": "Combine exposure with coping capacity (INFORM 'lack of coping capacity') in the hazard pillar, cap the effect of transient alerts, and revisit the 1.31 stretch.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I50",
+   "key": "DATA_UCDP",
+   "title": "UCDP conflict-death totals may count one-sided violence or deaths attributed to a party rather than to the territory (Argentina 45, Russia 4,420) - unverified",
+   "category": "implausible-value",
+   "severity": "medium",
+   "fixArea": "data-source",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0552",
+    "F0561"
+   ],
+   "findingCount": 2,
+   "uncertainFindings": [
+    "F0552",
+    "F0561"
+   ],
+   "pages": 14,
+   "pagesNote": "ARG, RUS x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/arg/",
+    "https://isitsafetotravel.org/en/country/rus/"
+   ],
+   "source": [
+    "src/pipeline/fetchers/ucdp.ts:12",
+    "src/pipeline/fetchers/ucdp.ts:29",
+    "src/pipeline/fetchers/ucdp.ts:82"
+   ],
+   "rootCause": "The fetcher sums OWID's per-country totals of interstate, intrastate and one-sided violence; the raw data really holds ARG 45 deaths in 2025 and RUS 4,420, but whether those are events on the country's territory or deaths attributed to it as a party could not be settled.",
+   "proposedFix": "Check the OWID/UCDP country attribution (location vs. side) and, if needed, use event-level GED filtered by location; re-run ARG and RUS.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I51",
+   "key": "ADV_SELF",
+   "title": "A country's own foreign ministry is counted as an advisory for itself (Austria, Argentina)",
+   "category": "implausible-value",
+   "severity": "medium",
+   "fixArea": "advisory-parser",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0341"
+   ],
+   "findingCount": 1,
+   "uncertainFindings": [],
+   "pages": 14,
+   "pagesNote": "2 places listing their own government's advisory: ['ARG', 'AUT'], x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/aut/",
+    "https://isitsafetotravel.org/en/country/arg/"
+   ],
+   "source": [
+    "src/pipeline/fetchers/advisories-tier2a.ts:168",
+    "src/pipeline/fetchers/advisories-tier2a.ts:177",
+    "src/pipeline/fetchers/advisories-tier2b.ts:1054"
+   ],
+   "rootCause": "The BMEIA (Austria) and Argentine fetchers turn every country entry on the ministry's page into an advisory, including the ministry's own country, and nothing downstream drops issuer = destination, so AUT lists 'Austrian Federal Ministry: Level 1' and ARG 'Argentina Ministry of Foreign Affairs: Level 2', both counted in the consensus.",
+   "proposedFix": "Drop advisory_level_<issuer> for the issuer's own ISO3 when advisories are merged (one rule for all issuers), with a unit test.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I52",
+   "key": "IT_LOCATIVE",
+   "title": "it: 'in Isola Bouvet' / 'in Isola di Natale' in title and H1 (missing article)",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "country-grammar",
+   "languages": [
+    "it"
+   ],
+   "findings": [
+    "F0201"
+   ],
+   "findingCount": 1,
+   "uncertainFindings": [],
+   "pages": 4,
+   "pagesNote": "it titles with 'in Isola'",
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/bvt/",
+    "https://isitsafetotravel.org/it/paese/cxr/"
+   ],
+   "source": [
+    "src/i18n/country-grammar.ts:286",
+    "src/i18n/country-grammar.ts:301"
+   ],
+   "rootCause": "getItForm has no rule for names that start with 'Isola', so getItalianLocative falls back to bare 'in' and produces 'in Isola Bouvet' instead of 'sull'Isola Bouvet' or 'nell'Isola di Natale'.",
+   "proposedFix": "Add the feminine 'Isola ...' rule (sull'/nell') or explicit overrides for BVT, CXR and similar names.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I53",
+   "key": "IT_ONEOFF",
+   "title": "it: other one-off wording defects ('score' in the footnote, 'paesi confinanti' for maritime neighbours, inconsistent thousands separator)",
+   "category": "broken-text",
+   "severity": "medium",
+   "fixArea": "copy-template",
+   "languages": [
+    "it"
+   ],
+   "findings": [
+    "F0133",
+    "F0420",
+    "F0422",
+    "F0424",
+    "F0425"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": null,
+   "pagesNote": null,
+   "examples": [
+    "https://isitsafetotravel.org/it/paese/kir/",
+    "https://isitsafetotravel.org/it/paese/nzl/",
+    "https://isitsafetotravel.org/it/paese/hti/"
+   ],
+   "source": [
+    "src/i18n/ui.ts:1088",
+    "src/i18n/ui.ts:656",
+    "src/lib/indicator-display.ts:113"
+   ],
+   "rootCause": "The it low-coverage note says 'score' instead of 'punteggio'; country.compare_title says 'paesi confinanti' (land borders) although the border map includes maritime neighbours (NZL lists Australia and Fiji); Intl it-IT leaves four-digit counts ungrouped ('2428 persone') while '100.000' is grouped on the same page.",
+   "proposedFix": "Use 'punteggio' and 'paesi vicini', and format counts with grouping always on.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I54",
+   "key": "TIES",
+   "title": "Tied pillars are ranked as if one were higher ('above all by health 6.6' next to crime 6.6)",
+   "category": "contradiction",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "en",
+    "es",
+    "fr",
+    "zh",
+    "de"
+   ],
+   "findings": [
+    "F0365",
+    "F0459",
+    "F0371",
+    "F0480",
+    "F0374",
+    "F0458"
+   ],
+   "findingCount": 6,
+   "uncertainFindings": [],
+   "pages": 119,
+   "pagesNote": "17 places where two pillars tie at the displayed value and the text ranks one, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/bwa/",
+    "https://isitsafetotravel.org/en/country/grc/",
+    "https://isitsafetotravel.org/zh/country/fin/",
+    "https://isitsafetotravel.org/fr/pays/bwa/"
+   ],
+   "source": [
+    "src/lib/pillar-extremes.ts:50",
+    "src/lib/pillar-extremes.ts:53",
+    "src/lib/seo.ts:838",
+    "src/lib/country-summary.ts:197"
+   ],
+   "rootCause": "Pillars are sorted on unrounded scores, and only a near-tie of the whole spread (<= 0.05, NEAR_TIE_SPREAD) is detected, so two pillars that both display 6.6 or 8.3 are still presented as 'above all' or 'best-rated' (BWA, CPV, GRC, HRV, FIN, DNK).",
+   "proposedFix": "Compare the displayed one-decimal values; when the top or bottom two tie, name both ('health and crime, both 6.6/10').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I55",
+   "key": "COMMUNITY_LABEL",
+   "title": "Community block repeats its label ('Community Sentiment Community') on every page",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "ui",
+   "languages": [
+    "en",
+    "it",
+    "es",
+    "pt"
+   ],
+   "findings": [
+    "F0394",
+    "F0398",
+    "F0423",
+    "F0540",
+    "F0413",
+    "F0428",
+    "F0512"
+   ],
+   "findingCount": 7,
+   "uncertainFindings": [],
+   "pages": 1736,
+   "pagesNote": "all 248 places x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/chn/",
+    "https://isitsafetotravel.org/es/pais/arg/",
+    "https://isitsafetotravel.org/it/paese/ita/",
+    "https://isitsafetotravel.org/pt/pais/bra/"
+   ],
+   "source": [
+    "src/components/country/SentimentPillar.astro:112",
+    "src/components/country/SentimentPillar.astro:115",
+    "src/i18n/ui.ts:70",
+    "src/i18n/ui.ts:71"
+   ],
+   "rootCause": "SentimentPillar renders the heading t('country.pillar.sentiment') ('Community Sentiment') and right after it the badge t('sentiment.badge') ('Community'), so every page in every language reads 'Sentiment della community Community', 'Sentimiento de la comunidad Comunidad' and so on.",
+   "proposedFix": "Drop the badge or give it a different word (e.g. 'Travellers' votes'), or hide it from the text and screen readers.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I56",
+   "key": "A1FORMULA",
+   "title": "Methodology sentence in FAQ Q1 keeps English '(Bayesian shrinkage)' (es, fr) and mistranslates 'instead of guessing' (de)",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "es",
+    "fr",
+    "de"
+   ],
+   "findings": [
+    "F0407",
+    "F0410",
+    "F0415",
+    "F0417",
+    "F0386"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 576,
+   "pagesNote": "es/fr pages with '(Bayesian shrinkage)' + de pages with 'statt geschätzt zu werden'",
+   "examples": [
+    "https://isitsafetotravel.org/es/pais/hti/",
+    "https://isitsafetotravel.org/fr/pays/cpv/",
+    "https://isitsafetotravel.org/de/land/npl/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:405",
+    "src/lib/country-faq-copy.ts:454",
+    "src/lib/country-faq-copy.ts:640"
+   ],
+   "rootCause": "The es and fr a1Formula strings embed the untranslated '(Bayesian shrinkage)', and the de string renders 'instead of guessing' as 'statt geschätzt zu werden' ('instead of being estimated'), on every scored page.",
+   "proposedFix": "Translate or drop the parenthesis ('contracción bayesiana', 'rétrécissement bayésien') and change the de phrase to 'statt zu raten'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I57",
+   "key": "A3CAP_CALQUE",
+   "title": "Severe-advisory note in the advisory answer is a literal calque in es, pt and zh",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "es",
+    "pt",
+    "zh"
+   ],
+   "findings": [
+    "F0408",
+    "F0412",
+    "F0513",
+    "F0432",
+    "F0436",
+    "F0522"
+   ],
+   "findingCount": 6,
+   "uncertainFindings": [],
+   "pages": 63,
+   "pagesNote": "es/pt/zh pages carrying the severe-advisory note",
+   "examples": [
+    "https://isitsafetotravel.org/es/pais/hti/",
+    "https://isitsafetotravel.org/pt/pais/mli/",
+    "https://isitsafetotravel.org/zh/country/hti/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:433",
+    "src/lib/country-faq-copy.ts:545",
+    "src/lib/country-faq-copy.ts:600"
+   ],
+   "rootCause": "a3Cap was translated word for word from 'pulled sharply toward the low end, on top of whatever its other pillars show' ('se empuja marcadamente hacia el extremo bajo', 'puxada para o lado mais baixo', '这还是在其他支柱已有表现的基础之上'), which reads as machine translation on every page where most governments advise against all travel.",
+   "proposedFix": "Rewrite it natively, e.g. es 'lo que baja mucho su puntuación global, más allá de lo que indican los demás pilares', zh '因此总分被大幅拉低，降幅超出其他支柱本身的影响'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I58",
+   "key": "GENERIC_B7",
+   "title": "Generic filler 'Stay alert to the specific risks below' closes the moderate-band verdict",
+   "category": "generic-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "fr",
+    "zh"
+   ],
+   "findings": [
+    "F0505",
+    "F0523"
+   ],
+   "findingCount": 2,
+   "uncertainFindings": [],
+   "pages": 128,
+   "pagesNote": "fr/zh pages with the generic filler",
+   "examples": [
+    "https://isitsafetotravel.org/fr/pays/cpv/",
+    "https://isitsafetotravel.org/zh/country/ago/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:285",
+    "src/lib/country-faq-copy.ts:449",
+    "src/lib/country-faq-copy.ts:566"
+   ],
+   "rootCause": "a1Verdict.moderate ends with a fixed 'Stay alert to the specific risks below' (fr 'Restez attentif aux risques spécifiques détaillés plus bas', zh '请留意下方列出的具体风险'), which names no risk and is followed by formula boilerplate rather than a list.",
+   "proposedFix": "Replace it with the page's actual top risk ('watch for street crime in cities: crime 6.3/10') or drop it.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I59",
+   "key": "A3NONE",
+   "title": "No-advisory answer uses informal '你' in zh and claims that missing advisories are 'typical of small or remote territories'",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "pt",
+    "zh"
+   ],
+   "findings": [
+    "F0443",
+    "F0448",
+    "F0452",
+    "F0451"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 8,
+   "pagesNote": "zh/pt no-advisory answers",
+   "examples": [
+    "https://isitsafetotravel.org/zh/country/cck/",
+    "https://isitsafetotravel.org/zh/country/nfk/",
+    "https://isitsafetotravel.org/pt/pais/umi/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:601",
+    "src/lib/country-faq-copy.ts:607",
+    "src/lib/country-faq-copy.ts:546",
+    "src/lib/country-faq-copy.ts:319"
+   ],
+   "rootCause": "The zh a3None and a3NoneGrey strings say '你所在国家' while the rest of the site uses 您, and every language's a3None adds an unsupported generalisation ('typically the case for very small or remote territories').",
+   "proposedFix": "Use 您 and drop the generalisation (keep only 'no government in our dataset publishes an advisory for X').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I60",
+   "key": "ZH_PUNCT",
+   "title": "zh: other one-off wording defects (ASCII punctuation, stray spaces, doubled '风险')",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "zh"
+   ],
+   "findings": [
+    "F0433",
+    "F0442",
+    "F0435",
+    "F0439",
+    "F0434",
+    "F0441"
+   ],
+   "findingCount": 6,
+   "uncertainFindings": [],
+   "pages": 248,
+   "pagesNote": "zh pages with stray spaces around names or scores",
+   "examples": [
+    "https://isitsafetotravel.org/zh/country/gin/",
+    "https://isitsafetotravel.org/zh/country/twn/",
+    "https://isitsafetotravel.org/zh/country/deu/"
+   ],
+   "source": [
+    "src/i18n/ui.ts:3446",
+    "src/lib/country-faq-copy.ts:562",
+    "src/lib/country-faq-copy.ts:564",
+    "src/i18n/country-summary-copy.ts:216",
+    "src/lib/band-copy.ts:78"
+   ],
+   "rootCause": "The zh low-coverage note uses ASCII ',' and '.', FAQ q3 puts spaces around {name} ('对 几内亚 有何评价') and two verdicts write '得分为 {score}', and the summary template '风险等级为{riskLevel}' doubles 风险 with the band label '风险极低' (or inserts the band name '高度谨慎').",
+   "proposedFix": "Use full-width punctuation, remove the spaces, and change the template to '风险等级：{riskLevel}' or use band labels without '风险'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I61",
+   "key": "STALE_WB",
+   "title": "World Bank homicide values from 2021-2022 are shown as 'latest' with a '1-2 year lag' note and weighted like current data",
+   "category": "stale-data",
+   "severity": "low",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0545",
+    "F0546",
+    "F0547",
+    "F0548"
+   ],
+   "findingCount": 4,
+   "uncertainFindings": [],
+   "pages": 245,
+   "pagesNote": "35 scored places whose homicide row is from 2022 or earlier, x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/afg/",
+    "https://isitsafetotravel.org/en/country/gbr/",
+    "https://isitsafetotravel.org/en/country/slv/"
+   ],
+   "source": [
+    "src/i18n/indicator-copy.ts:119",
+    "src/pipeline/scoring/max-age.ts:6",
+    "src/pipeline/scoring/max-age.ts:47"
+   ],
+   "rootCause": "The World Bank row note says the series lags 1-2 years, but 35 scored places carry values from 2022 or earlier (AFG, BEL, GBR, SWZ and RUS from 2021; SLV from 2022, since fallen to about 2.4), and the max-age rule only drops values older than five years, so a four- or five-year-old rate counts at full weight and can be the summary's main concern (SYC).",
+   "proposedFix": "Show the real age in the note ('2021, five years old') and down-weight homicide values by data age (e.g. halve precision after two years) instead of the all-or-nothing five-year cut.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I62",
+   "key": "DE_ONEOFF",
+   "title": "de: other one-off wording defects (English 'Score' in every title, 'Kostenloser Wert', band label used as a noun)",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "de"
+   ],
+   "findings": [
+    "F0384",
+    "F0388",
+    "F0385",
+    "F0389",
+    "F0449"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 192,
+   "pagesNote": "de titles with 'Score'",
+   "examples": [
+    "https://isitsafetotravel.org/de/land/npl/",
+    "https://isitsafetotravel.org/de/land/gin/",
+    "https://isitsafetotravel.org/de/land/pak/"
+   ],
+   "source": [
+    "src/pages/de/land/[slug].astro:42",
+    "src/lib/seo.ts:317",
+    "src/lib/country-faq-copy.ts:631",
+    "src/lib/band-copy.ts:88"
+   ],
+   "rootCause": "The de title template hard-codes 'Score {score}/10', the description tail says 'Kostenloser Wert' (unidiomatic), and the high-caution verdict inserts the band label 'hohe Vorsicht geboten' into 'ist als {riskLevel} eingestuft', which needs a noun.",
+   "proposedFix": "Use 'Sicherheitswert {score}/10', 'Kostenlose Bewertung aus ...', and a noun-form band label in the verdict.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I63",
+   "key": "ES_PILLAR_ARTICLE",
+   "title": "es: pillar names used as bare nouns ('es conflicto', 'merece atención criminalidad')",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "es"
+   ],
+   "findings": [
+    "F0406",
+    "F0409",
+    "F0414"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 166,
+   "pagesNote": "es pages with bare pillar names",
+   "examples": [
+    "https://isitsafetotravel.org/es/pais/hti/",
+    "https://isitsafetotravel.org/es/pais/bfa/",
+    "https://isitsafetotravel.org/es/pais/grc/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:407",
+    "src/lib/country-faq-copy.ts:411",
+    "src/lib/country-faq-copy.ts:412"
+   ],
+   "rootCause": "The es a1Drivers and a2 templates insert {weakest}/{strongest}/{second} bare where Spanish needs an article ('El pilar más fuerte de Grecia es el conflicto', 'También merece atención la criminalidad').",
+   "proposedFix": "Add the article to the es pillar labels used in prose ('el conflicto', 'la criminalidad', 'la salud', 'la gobernanza', 'los riesgos naturales').",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I64",
+   "key": "ZH_TERMS",
+   "title": "zh: the same advisory level and indicators are named differently in SUMMARY and FAQ (避免一切旅行 vs 切勿前往; 流行病传播 vs 流行病与疾病风险)",
+   "category": "generic-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "zh"
+   ],
+   "findings": [
+    "F0518",
+    "F0542",
+    "F0519",
+    "F0478",
+    "F0541"
+   ],
+   "findingCount": 5,
+   "uncertainFindings": [],
+   "pages": 51,
+   "pagesNote": "zh pages naming level 4 '切勿前往' in the FAQ (SUMMARY says 避免一切旅行)",
+   "examples": [
+    "https://isitsafetotravel.org/zh/country/prk/",
+    "https://isitsafetotravel.org/zh/country/pry/",
+    "https://isitsafetotravel.org/zh/country/cri/"
+   ],
+   "source": [
+    "src/i18n/country-summary-copy.ts:234",
+    "src/lib/country-faq-copy.ts:262",
+    "src/i18n/indicator-copy.ts:328",
+    "src/lib/country-faq-copy.ts:225",
+    "src/lib/country-faq-copy.ts:227"
+   ],
+   "rootCause": "zh level and indicator names live in separate tables translated independently: level 4 is '建议避免一切旅行' in country-summary-copy.ts but '切勿前往' in advisoryLevelWords, and the summary topics (流行病传播, 就医不便, 故意杀人案) differ from the FAQ labels (流行病与疾病风险, 医疗服务可及性, 谋杀率).",
+   "proposedFix": "Define one zh term per level and per indicator and use it in both tables (ideally from one shared source).",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I65",
+   "key": "EN_PLURAL",
+   "title": "en: plural names get singular verbs and \"'s\" possessives ('Is the Cayman Islands Safe?', 'the Philippines's strongest pillar')",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "country-grammar",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0395",
+    "F0399",
+    "F0447"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 29,
+   "pagesNote": "en pages with plural-name titles or possessives",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/cym/",
+    "https://isitsafetotravel.org/en/country/phl/",
+    "https://isitsafetotravel.org/en/country/mdv/"
+   ],
+   "source": [
+    "src/pages/en/country/[slug].astro:41",
+    "src/lib/country-faq-copy.ts:292",
+    "src/lib/country-faq-copy.ts:311"
+   ],
+   "rootCause": "The en title 'Is {name} Safe?', the FAQ 'has {advisoryCount}' and \"{name}'s strongest pillar\" do not handle plural names; getEnglishCountryPhrase adds 'the' but there is no plural flag for the verb or the possessive.",
+   "proposedFix": "Add an en plural flag in country-grammar.ts and use 'Are ... safe?', 'have' and \"the Philippines'\" for plural names.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I66",
+   "key": "CONFLICT_SEVERITY",
+   "title": "Conflict severity is compressed: Sudan's full-scale war (75,044 deaths) ties South Sudan (280); Burkina Faso only 0.2 below Chad",
+   "category": "implausible-score",
+   "severity": "low",
+   "fixArea": "formula",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0529",
+    "F0530",
+    "F0531"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": 28,
+   "pagesNote": "SDN, SSD, BFA, TCD x7",
+   "examples": [
+    "https://isitsafetotravel.org/en/country/sdn/",
+    "https://isitsafetotravel.org/en/country/ssd/",
+    "https://isitsafetotravel.org/en/country/bfa/",
+    "https://isitsafetotravel.org/en/country/tcd/"
+   ],
+   "source": [
+    "src/pipeline/config/weights.json:89",
+    "src/pipeline/config/weights.json:9",
+    "src/pipeline/scoring/engine.ts:296"
+   ],
+   "rootCause": "UCDP deaths are log-normalised against D_MAX = 24,000, so 75,044 deaths score the same 0 as 24,000, and the conflict pillar also averages in GPI militarisation (0.68 for Sudan). Sudan's conflict 2.1 against South Sudan's 3.2 is then offset by South Sudan's worse crime and governance, and both land at 3.4 (BFA 4.1 vs TCD 4.3 despite 4,333 vs 41 deaths).",
+   "proposedFix": "Let conflict dominate at the bottom of the scale (stronger soft-min on conflict, or an extra penalty beyond D_MAX), drop militarisation from the pillar, and test the SDN<SSD and BFA<TCD constraints.",
+   "formulaRelevant": true
+  },
+  {
+   "id": "I67",
+   "key": "PT_ONEOFF",
+   "title": "pt: 'Sim, mas apenas com cautela real' is a calque of 'real caution'",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "pt"
+   ],
+   "findings": [
+    "F0427"
+   ],
+   "findingCount": 1,
+   "uncertainFindings": [],
+   "pages": 15,
+   "pagesNote": "pt pages in the 5-6 band",
+   "examples": [
+    "https://isitsafetotravel.org/pt/pais/bdi/",
+    "https://isitsafetotravel.org/pt/pais/ecu/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:513"
+   ],
+   "rootCause": "The pt high-caution verdict renders 'Yes, but only with real caution' literally, on the 15 pt pages in the 5-6 band.",
+   "proposedFix": "Use 'Sim, mas com muita cautela'.",
+   "formulaRelevant": false
+  },
+  {
+   "id": "I68",
+   "key": "EN_ONEOFF",
+   "title": "en: other one-off wording defects (mixed US/UK spelling, band label case)",
+   "category": "broken-text",
+   "severity": "low",
+   "fixArea": "copy-template",
+   "languages": [
+    "en"
+   ],
+   "findings": [
+    "F0393",
+    "F0397",
+    "F0400"
+   ],
+   "findingCount": 3,
+   "uncertainFindings": [],
+   "pages": null,
+   "pagesNote": null,
+   "examples": [
+    "https://isitsafetotravel.org/en/country/gin/"
+   ],
+   "source": [
+    "src/lib/country-faq-copy.ts:306",
+    "src/i18n/ui.ts:60",
+    "src/lib/country-summary.ts:229"
+   ],
+   "rootCause": "en copy mixes US 'organized'/'travelers' with UK 'neighbouring'/'militarisation', and the summary lowercases the band label ('rated as high caution') while the FAQ keeps it capitalised ('classified as High caution').",
+   "proposedFix": "Pick one spelling standard for en and one case rule for band labels in the summary and the FAQ.",
+   "formulaRelevant": false
+  }
+ ]
+}

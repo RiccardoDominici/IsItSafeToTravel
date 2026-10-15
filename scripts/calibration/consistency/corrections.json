@@ -1,0 +1,137 @@
+{
+ "about": "Corrections applied by scripts/audit/assemble-consistency-db.ts after the verifier: findings whose verdict was wrong for a reason the verifier could not see (e.g. a mistake in the audit brief). Each match selects reviewer findings by batch, iso3, lang and exact quote.",
+ "corrections": [
+  {
+   "match": {
+    "batch": "batches/retry/cmp-2d.txt",
+    "iso3": "ALL",
+    "lang": "en",
+    "quote": "Montserrat | Partial data | – | – | – | – | –"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/comparisons/cmp-3.txt",
+    "iso3": "ALL",
+    "lang": "en",
+    "quote": "- Puerto Rico | Partial data | – | – | – | – | –"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/retry/cmp-2c.txt",
+    "iso3": "ALL",
+    "lang": "en",
+    "quote": "Macao | Partial data | – | – | – | – | –"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/retry/cmp-2b.txt",
+    "iso3": "JEY",
+    "lang": "en",
+    "quote": "How does Jersey compare to neighbouring and nearby countries?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/retry/cmp-1c.txt",
+    "iso3": "CUB",
+    "lang": "en",
+    "quote": "How does the Cook Islands compare to neighbouring and nearby countries?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/retry/cmp-1b.txt",
+    "iso3": "ALL",
+    "lang": "en",
+    "quote": "Saint Barthelemy | Partial data | – | – | – | – | –"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/en-2.txt",
+    "iso3": "ALL",
+    "lang": "en",
+    "quote": "COMPARISON HEADING: How does Guadeloupe compare to neighbouring and nearby countries?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/it-1.txt",
+    "iso3": "ALL",
+    "lang": "it",
+    "quote": "Come si confronta la sicurezza in Aruba con quella dei paesi confinanti e vicini?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/it-3.txt",
+    "iso3": "ALL",
+    "lang": "it",
+    "quote": "Come si confronta la sicurezza in Porto Rico con quella dei paesi confinanti e vicini?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/zh-1.txt",
+    "iso3": "ALL",
+    "lang": "zh",
+    "quote": "阿鲁巴 与邻国及附近国家相比如何？"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/de-3.txt",
+    "iso3": "ALL",
+    "lang": "de",
+    "quote": "Wie sicher ist Puerto Rico im Vergleich zu Nachbarländern und Ländern in der Nähe?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  },
+  {
+   "match": {
+    "batch": "batches/language/pt-3.txt",
+    "iso3": "ALL",
+    "lang": "pt",
+    "quote": "Como se compara a segurança das Ilhas Menores Distantes dos Estados Unidos com a dos países vizinhos e próximos?"
+   },
+   "verdict": "rejected",
+   "reason": "By design, not a defect: a grey (partial-data) place keeps its neighbour comparison table, with its own row shown as 'Partial data' next to scored neighbours (src/lib/comparisons.ts comparisonRows). The audit brief wrongly listed 'no comparison table' among the accepted grey-page traits, and the verifier confirmed against that brief.",
+   "decidedOn": "2026-10-15"
+  }
+ ]
+}

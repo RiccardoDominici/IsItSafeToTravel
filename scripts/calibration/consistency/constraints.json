@@ -1,0 +1,133 @@
+{
+ "version": 1,
+ "foundOn": "2026-10-15",
+ "dataDate": "2026-10-15",
+ "siteCommit": "7c79009c",
+ "pages": 1736,
+ "method": "scripts/calibration/consistency/README.md",
+ "count": 14,
+ "conflictsDropped": [],
+ "constraints": [
+  {
+   "id": "C001",
+   "kind": "score_at_most",
+   "iso3": "ARE",
+   "value": 6.9,
+   "rationale": "Verified on ARE: 'Generally safe 7 7.3 out of 10' (data score 7.27) with 10 of 21 governments at Level 3 (CA, US, DE, PL, HU, CZ, IE, BE, ES, TW) and Singapore at Level 4. That is 52% at reconsider or worse. The same pattern holds for BHR (6.57, 74% at L3+), KWT (6.94, 81%) and QAT (7.44, 52%), so the advisory consensus barely moves Gulf scores. I corrected the constraint to below 7.0 so ARE leaves the 'Generally safe' band.",
+   "finding": "F0114"
+  },
+  {
+   "id": "C002",
+   "kind": "score_at_most",
+   "iso3": "BLR",
+   "value": 5,
+   "rationale": "Table and latest.json both show Belarus at 5.54 (high caution) with 12 of 19 advisories at Level 4, including the US, UK, Canada, Australia, Germany, France, New Zealand and Ireland. The main risks for foreigners are arbitrary detention, the closed EU borders and the nearby war. Belarus is the only Level-4-majority country in the dataset scoring above 5.0, while North Korea, which has a similar low-crime, political-risk profile, scores 4.83. So a bound at the danger-band edge holds for any formula that respects near-universal government consensus.",
+   "finding": "F0115"
+  },
+  {
+   "id": "C003",
+   "kind": "score_at_most",
+   "iso3": "CUB",
+   "value": 6,
+   "rationale": "latest.json shows 13 of 19 sources at L3 nationwide ('avoid non-essential travel': UK, CA, AU, DE, NL, NZ, IE, BE, CH, AT, FR, TW, HU) and 2 at L4 (PL, CZ), reflecting Cuba's 2026 fuel, power and medicine collapse. A 'moderate' score of 6.18 with a 7.5 health pillar contradicts that consensus; Venezuela, with a similar advisory profile, is at 4.8. Comparing Cuba with Mexico is debatable because of Mexico's violent crime, so I keep only an absolute bound, loosened from 5.8 to 6.0 (out of the moderate band) for margin.",
+   "finding": "F0335",
+   "alsoFindings": [
+    "F0116"
+   ]
+  },
+  {
+   "id": "C004",
+   "kind": "score_at_most",
+   "iso3": "SAU",
+   "value": 5.9,
+   "rationale": "I could not verify the 2026 Houthi escalation, but the page alone shows the problem. SAU's HERO reads 'Exercise caution 6 6.2' and 'moderate risk', while its own summary lists 12 governments advising reconsidering travel and 5 against all travel (17 of 21). Germany, New Zealand, Poland, Czechia and Singapore are at Level 4. SAU still scores above TGO (6.0), which has only 1 Level 3 and 1 Level 4 advisory, so the score does not reflect the advisory consensus.",
+   "finding": "F0117"
+  },
+  {
+   "id": "C005",
+   "kind": "score_at_least",
+   "iso3": "CPV",
+   "value": 7,
+   "rationale": "The row is confirmed: crime pillar 4.9 with no homicide figure. Sao Tome has the identical 4.9, so the pillar is the conservative prior, not a measurement. Cabo Verde has no Level 3 or 4 advisories (L1x10, L2x8; the US rates it Level 1) and is a stable, low-conflict island destination. Experts would rate it at least on par with Namibia (7.3) and Botswana (7.5), so a 7.0 floor is defensible. The cause is the missing crime/homicide input collapsing to the prior.",
+   "finding": "F0334"
+  },
+  {
+   "id": "C006",
+   "kind": "safer_than",
+   "iso3": "DOM",
+   "value": "JAM",
+   "rationale": "Rows checked: both 6.8. JAM: homicide 49.4 (2023), crime 5.0, one L3 plus 16 L2. DOM: homicide 10.9, crime 6.6, no L3. Jamaica's homicide rate fell in 2024-25 but is still well above the Dominican Republic's, and the US keeps Jamaica at Level 3 against Level 2 for the DR. The tie comes from Jamaica's better governance and environment pillars offsetting a much worse violent-crime picture, and the ordering DOM > JAM is robust.",
+   "finding": "F0336"
+  },
+  {
+   "id": "C007",
+   "kind": "safer_than",
+   "iso3": "IDN",
+   "value": "ZAF",
+   "rationale": "Rows checked: both 6.3. ZAF: homicide 43.7, crime 4.5, 3x L3. IDN: homicide 0.3, crime 7.6, no L3 (L2x19). The tie comes from Indonesia's low governance (3.8), hazard (4.2) and health (5.3) pillars. For a typical tourist (Bali, Java), Indonesia is widely regarded as safer than South Africa, where violent crime (carjacking, armed robbery, express kidnapping) is the dominant risk. GPI and advisories agree, so the ordering IDN > ZAF holds with a margin despite Indonesia's terrorism and disaster exposure.",
+   "finding": "F0337"
+  },
+  {
+   "id": "C008",
+   "kind": "safer_than",
+   "iso3": "JPN",
+   "value": "ITA",
+   "rationale": "Rows checked: JPN 8.1 (crime 8.7, conflict 8.6, homicide 0.2, envi 4.4) vs ITA 8.2 (crime 8.3, homicide 0.6, envi 6.1). Japan has lower homicide and far less pickpocketing and petty crime, ranks above Italy in the GPI and in essentially every traveller-safety ranking, and has excellent disaster preparedness. Japan ranking below Italy comes only from the hazard pillar, which weighs exposure without preparedness, and almost no expert would accept that ordering.",
+   "finding": "F0338",
+   "alsoFindings": [
+    "F0527"
+   ]
+  },
+  {
+   "id": "C009",
+   "kind": "score_at_most",
+   "iso3": "PNG",
+   "value": 6,
+   "rationale": "The table row is right: PNG scores 6.2 (moderate), with L2x14 L3x5 L4x1 and the weakest health, governance and hazard pillars in the batch. latest.json shows US L3 (Reconsider Travel) and Canada L3 (Avoid non-essential travel). Port Moresby's violent crime, tribal fighting in the Highlands, weak medical care and International SOS-style 'high' security and medical ratings put PNG in high caution by any reasonable traveller standard. Its crime pillar (6.2, no homicide data) is also oddly higher than the data-poor Pacific states, so a 6.0 band-edge bound is defensible.",
+   "finding": "F0339"
+  },
+  {
+   "id": "C010",
+   "kind": "safer_than",
+   "iso3": "VNM",
+   "value": "TTO",
+   "rationale": "TTO scores 6.919 and VNM 6.924 (both shown as 6.9). TTO has 40.4 homicides per 100k, a crime pillar of 5.3 and 4 reconsider-travel advisories, against none for VNM. A traveller would see these as equally safe, which is implausible. The ordering constraint is robust.",
+   "finding": "F0340"
+  },
+  {
+   "id": "C011",
+   "kind": "safer_than",
+   "iso3": "LIE",
+   "value": "ITA",
+   "rationale": "LIE is 8.2, tied with ITA (8.2) and well below its neighbours CHE (8.9) and AUT (8.7), even though all 18 of its advisories are L1. latest.json shows the cause is not the 5.1 homicide rate, which normalises to 0.91 and is heavily damped. The real cause is that GPI does not cover Liechtenstein, so the crime pillar (0.66) and conflict/governance collapse toward the conservative prior. I replaced the absolute 8.5 bound with a relative one that survives a change of scale: Liechtenstein, with L1 advisories and no terrorism or hazard profile, is clearly safer for travellers than Italy (L2 advisories, petty crime, terrorism, seismic and volcanic hazards).",
+   "finding": "F0528"
+  },
+  {
+   "id": "C012",
+   "kind": "safer_than",
+   "iso3": "SSD",
+   "value": "SDN",
+   "rationale": "Rows check out: both 3.4, Sudan conflict pillar 2.1 vs 3.2 and 75,044 vs 280 UCDP deaths. In October 2026 Sudan is still in a full-scale civil war, with famine, mass atrocities, embassies suspended and airports hit. South Sudan is extremely dangerous too, but Juba stays operational for NGOs and the UN. Sudan below South Sudan is robust; I loosened the margin to a strict ordering (at least 0.1-0.2), because both sit at the floor of the scale.",
+   "finding": "F0529",
+   "alsoFindings": [
+    "F0530"
+   ]
+  },
+  {
+   "id": "C013",
+   "kind": "safer_than",
+   "iso3": "TCD",
+   "value": "BFA",
+   "rationale": "The rows are correct: TCD is 4.3 (conflict 4.7, 41 UCDP deaths, 8 of 21 advisories at L4) and BFA is 4.1 (conflict 2.9, 4,333 deaths, 14 of 20 at L4). Burkina Faso is among the world's most terrorism-affected countries, with most of its territory under jihadist threat and nearly every government at L4. Chad is dangerous but less so, with N'Djamena comparatively stable, so the ordering is robust; the margin required in the comparison should stay modest.",
+   "finding": "F0531"
+  },
+  {
+   "id": "C014",
+   "kind": "score_at_least",
+   "iso3": "TWN",
+   "value": 7.5,
+   "rationale": "In latest.json Taiwan's health and environment pillars have no indicators at all (INFORM does not cover Taiwan), and the crime pillar has no homicide input (the World Bank does not cover Taiwan). So the 6.7 health score is just the prior, which puts Taiwan below China and Mongolia; it is not real evidence. The exact 8.0 band-edge bound is calibration taste: Taiwan's GPI is worse than Japan's because of cross-strait tension, and its real natural-hazard exposure is high. I loosened the bound to 7.5, which still holds with a margin for a place where all 17 advisories are Level 1 and crime is low.",
+   "finding": "F0537"
+  }
+ ]
+}
