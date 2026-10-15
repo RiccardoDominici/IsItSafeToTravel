@@ -1,5 +1,5 @@
 {
-  "version": "10.0.0",
+  "version": "10.1.0",
   "_comment_pillars": "Formula v10 indicator set (SPEC §2): pillar weights unchanged from v9.1; removed wb_child_mortality, wb_air_pollution, inform_health (= INFORM Human) and inform_climate (= River Flood); INFORM governance now reads the Governance column. The 'environment' key is kept to limit blast radius; its visible label is 'Natural hazards'. Its sub-weights are relative (0.25/0.10/0.10, sum 0.45): the engine renormalises sub-weights over the indicators present, as the v10 prototype did.",
   "_comment_conflict": "The conflict pillar is EXACTLY v9.1's (gpi_overall, gpi_militarisation, advisory consensus A, UCDP deaths). gpi_conflict (the GPI Ongoing Domestic & International Conflict domain) is still fetched and stored but deliberately unscored: the GPI overall score includes militarisation, and replacing overall + militarisation with the conflict domain alone moved North Korea and Pakistan out of the danger band on 2026-10-14, so the conflict pillar was left as in v9.1 (owner/orchestrator decision 2026-10-14).",
   "pillars": [
@@ -93,7 +93,8 @@
     "gateRampWidth": 2.4,
     "muBase": 0.45,
     "muClampMin": 0.32,
-    "muClampMax": 0.60,
+    "_comment_muClampMax": "Formula v10.1 (I42, 2026-10-15 consistency audit): was 0.60. The prior is already conservative without a ceiling: its advisory nudge stops at 0.675 (Europe, unanimous level 1, any number of governments), below the lower quartile (0.77) of the pillar-weighted mean of places whose advisories are nearly all level 1 (consensus A >= 0.9; 54 places with all five pillars on 2026-10-15). The 0.60 ceiling only ever bound in Europe and pulled data-poor calm places such as Liechtenstein (no GPI coverage, crime pillar 0.66) below their peers. 1.0 = no ceiling; muClampMin is unchanged, so a danger signal still pulls missing data down. The v10 per-pillar maps below were fitted with 0.60 and stay frozen (scripts/calibrate-v10.ts restores 0.60 to reproduce them).",
+    "muClampMax": 1.0,
     "nudgeScale": 0.35,
     "nudgeDenom": 5,
     "rhoADenom": 6,
@@ -128,6 +129,10 @@
       "environment": { "alpha": -0.113726, "beta": 1.311236 }
     },
     "_comment_community": "v10 SPEC §5: adjustment = clamp(Z * (P - S_data), -cap, +cap), Z = nEff / (nEff + k), applied only to officially scored countries whose entry in data/sentiment/latest.json is active AND meets minVotes/minOrigins/originCap (re-checked by the engine). Same values as src/pipeline/sentiment/constants.ts on the community branch.",
+    "_comment_v101": "Formula v10.1 (2026-10-15 consistency audit, scripts/calibration/consistency/; each change tested alone and combined by scripts/calibration/compare-formulas.ts against the audit constraints, the community votes and the 2026-03 reference set). severeLevel3Weight (I10): a level-3 'reconsider travel' advisory counts half as much as level 4 in the severe modifier's share (severity of level L = max(0, L-2)/2), so 'reconsider travel' majorities move the score; the danger guard keeps the level-4-only share. naturalHazardCoping (I49): inform_natural scores exposure combined with INFORM's lack of coping capacity, 1 - sqrt(exposure x coping)/10 (INFORM's own geometric combination of its risk dimensions, restricted to the two that matter to a visitor); the environment map stays the frozen v10 one. ucdpTailFloor (I66): the conflict-death log curve keeps falling past D_MAX inside the pillar (a war with 75,000 deaths no longer scores like one with 24,000); -0.5 is a safety bound reached only at about 3.7 million deaths a year.",
+    "severeLevel3Weight": 0.5,
+    "naturalHazardCoping": "inform_coping",
+    "ucdpTailFloor": -0.5,
     "community": {
       "k": 30,
       "cap": 1.0,

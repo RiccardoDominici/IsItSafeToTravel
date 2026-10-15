@@ -20,6 +20,12 @@
  * This script only recomputes the constants from the frozen fixture and reports whether
  * weights.json still matches them. Reads scripts/fixtures/v10/ only; writes nothing.
  *
+ * Formula v10.1 keeps these maps frozen. Its options (level-3 severity, natural hazards weighed
+ * by coping capacity, the UCDP tail) and the prior ceiling it removed are switched back to v10
+ * here (v10Configuration), so the maps are reproduced under the configuration they were fitted
+ * with; the v10.1 changes are formula changes, not scale shifts, and a refit would undo part of
+ * them (e.g. the prior change would be re-centred away).
+ *
  * Usage: npx tsx scripts/calibrate-v10.ts
  */
 import { computeAllScores } from '../src/pipeline/scoring/engine.js';
@@ -34,6 +40,7 @@ import {
   readV91Reference,
   readWeights,
   sd,
+  v10Configuration,
   withoutPillarCalibration,
 } from './lib/v10-fixture.js';
 
@@ -49,7 +56,9 @@ function round(x: number, decimals = FROZEN_DECIMALS): number {
 }
 
 function main(): void {
-  const weights = readWeights();
+  const committed = readWeights();
+  // The maps were fitted under formula v10: reproduce them under that configuration.
+  const weights = v10Configuration(committed);
   const reference = readV91Reference();
   const quiet = console.log;
   console.log = () => {};
@@ -66,7 +75,7 @@ function main(): void {
   console.log = quiet;
 
   const scored = unmapped.filter((c) => c.scoreStatus === 'scored' && reference.countries[c.iso3]);
-  console.log(`=== Formula v10 per-pillar calibration on raw date ${FIXTURE_DATE} (weights ${weights.version}) ===`);
+  console.log(`=== Formula v10 per-pillar calibration on raw date ${FIXTURE_DATE} (weights ${committed.version}, v10 configuration) ===`);
   console.log(`Countries: ${unmapped.length} total, ${scored.length} scored by both v9.1 and v10, ${unmapped.length - scored.length} insufficient_data`);
   console.log('pillar        v9.1 mean   SD     | v10 mean   SD     | mapped');
 

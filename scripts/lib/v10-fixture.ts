@@ -63,6 +63,28 @@ export function readWeights(path: string = WEIGHTS_PATH): WeightsConfig {
   return JSON.parse(readFileSync(path, 'utf-8')) as WeightsConfig;
 }
 
+/**
+ * Formula v10.1 (weights 10.1.x) options, each optional in formulaV9; absent = v10 behaviour.
+ * Listed here so the scripts can reconstruct the exact v10 configuration the frozen per-pillar
+ * maps were fitted under (v10Configuration) and switch the changes one at a time
+ * (scripts/calibration/compare-formulas.ts).
+ */
+export const V101_OPTION_KEYS = ['severeLevel3Weight', 'naturalHazardCoping', 'ucdpTailFloor'] as const;
+
+/** v10 values of the constants v10.1 changed in place (not new keys). */
+export const V10_CHANGED_CONSTANTS = { muClampMax: 0.6 } as const;
+
+/**
+ * The formula v10 configuration inside a 10.x weights file: the v10.1 options removed and the
+ * constants it changed restored. Pillar weights, indicator weights and the frozen maps are kept.
+ * Used to reproduce the v10 maps (calibrate-v10.ts) and as the comparison baseline.
+ */
+export function v10Configuration(weights: WeightsConfig): WeightsConfig {
+  const f9: Record<string, unknown> = { ...weights.formulaV9!, ...V10_CHANGED_CONSTANTS };
+  for (const key of V101_OPTION_KEYS) delete f9[key];
+  return { ...weights, formulaV9: f9 as unknown as WeightsConfig['formulaV9'] };
+}
+
 /** The weights with the frozen per-pillar maps removed: the engine then reports unmapped pillar values. */
 export function withoutPillarCalibration(weights: WeightsConfig): WeightsConfig {
   const f9 = { ...weights.formulaV9! };

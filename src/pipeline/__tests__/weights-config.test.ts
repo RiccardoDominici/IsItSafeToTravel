@@ -89,8 +89,8 @@ describe('weights.json config validation — Formula v9.1 mechanics under v10', 
   const raw = readFileSync(weightsPath, 'utf-8');
   const config: WeightsConfig = JSON.parse(raw);
 
-  it('version is exactly "10.0.0" (formula v10, SPEC 2026-10-14)', () => {
-    assert.equal(config.version, '10.0.0');
+  it('version is exactly "10.1.0" (formula v10.1: SPEC 2026-10-14 plus the 2026-10-15 consistency-audit changes)', () => {
+    assert.equal(config.version, '10.1.0');
   });
 
   it('crime pillar gains wb_homicide (D1) alongside gpi_safety_security, subweights sum to 1.0', () => {
