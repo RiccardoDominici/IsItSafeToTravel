@@ -31,7 +31,7 @@ import {
   isWorldBankIndicator,
   pillarEvidenceCoverage,
 } from '../../lib/indicator-display';
-import { isEstimatedPillar, splitContextIndicators, type IndicatorRow } from '../../lib/pillar-presentation';
+import { isEstimatedPillar, scoreAboveAllBars, splitContextIndicators, type IndicatorRow } from '../../lib/pillar-presentation';
 import { pillarPresentationCopy } from '../../i18n/pillar-presentation-copy';
 import PillarCoverageTip from './PillarCoverageTip.astro';
 import IndicatorTable from './IndicatorTable.astro';
@@ -39,9 +39,11 @@ import IndicatorTable from './IndicatorTable.astro';
 interface Props {
   pillars: PillarScore[];
   lang: Lang;
+  /** The published overall score, for the "not an average of the bars" note (audit I47). */
+  score?: number | null;
 }
 
-const { pillars, lang } = Astro.props;
+const { pillars, lang, score = null } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
 const pc = pillarPresentationCopy[lang];
@@ -106,6 +108,10 @@ const views = pillars.map((pillar) => {
 // is a prior, not a finding).
 const sorted = [...views].sort((a, b) => Number(a.estimated) - Number(b.estimated) || a.pillar.score - b.pillar.score);
 const contextRows = views.flatMap((v) => v.contextRows);
+
+// The overall score above every bar reads as an error unless the page says why (audit I47).
+const showScoreAboveBars = scoreAboveAllBars(score, pillars);
+const [aboveBarsBefore, aboveBarsAfter] = pc.scoreAboveBarsNote.split('{link}');
 ---
 
 <section id="pillars" class="py-6 px-4 max-w-2xl mx-auto">
@@ -147,6 +153,12 @@ const contextRows = views.flatMap((v) => v.contextRows);
       </div>
     ))}
   </div>
+
+  {showScoreAboveBars && (
+    <p class="mt-3 text-xs leading-relaxed text-sand-600 dark:text-sand-400" data-note="score-above-bars">
+      {aboveBarsBefore}<a href={`/${lang}/${r.methodology}/`} class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{pc.scoreAboveBarsLinkText}</a>{aboveBarsAfter}
+    </p>
+  )}
 
   <details class="mt-4">
     <summary class="text-sm text-sand-600 dark:text-sand-400 cursor-pointer select-none hover:text-sand-800 dark:hover:text-sand-200">
