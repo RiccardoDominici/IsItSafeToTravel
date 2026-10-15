@@ -174,6 +174,18 @@ jobs:
           jpn_de=$(jq '.countries[] | select(.iso3=="JPN") | .advisories.de.level // 0' "$SNAP")
           if [ "$jpn_de" -gt 2 ]; then fail "JPN DE advisory level=$jpn_de > 2 (DE partialWarning regression)"; fi
 
+          # Core-source coverage: a scoring source that silently vanished must never be published.
+          # 2026-10-15 (run 38711757500): the GPI fetch fell back to its 2012 edition, the 5-year
+          # rule dropped it, and every score went out without the Global Peace Index (gpi=0 here,
+          # all others normal). Floors ~90% of the coverage on that day: gpi 162, inform 191,
+          # vdem 174, worldbank 215, ucdp 197. Counted from each country's `sources`, i.e. after
+          # the max-age filter, so a stale edition counts as missing too.
+          for pair in gpi:145 inform:170 vdem:155 worldbank:190 ucdp:175; do
+            src="${pair%%:*}"; min="${pair##*:}"
+            have=$(jq "[.countries[] | select(any(.sources[]?; .name==\"${src}\"))] | length" "$SNAP")
+            if [ "$have" -lt "$min" ]; then fail "${src} covers ${have} countries < ${min} (scoring source missing from the scores)"; fi
+          done
+
           # Per-source floors: each of US/UK/CA/AU should cover ≥150 countries
           for src in us uk ca au; do
             count=$(jq "[.countries[] | select(.advisories.${src} != null)] | length" "$SNAP")
