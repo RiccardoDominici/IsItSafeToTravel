@@ -1,7 +1,7 @@
 {
   "note": "Frozen one-off table: the score that was live on the site when each community vote recorded before the vote API stored official_score was cast. Written by scripts/build-legacy-vote-anchors.ts (never edit by hand); read by src/pipeline/sentiment/legacy-scores.ts, which falls back to the per-day snapshots only for rows not listed here.",
   "rule": "Key ISO3|created_at (UTC). Value: the score in data/scores/latest.json at the last first-parent commit of master touching it whose commit time + 20 min (deploy lag) precedes the vote; every entry cross-checked against the GitHub Actions deploy.yml runs.",
-  "ref": "fe09c03c79125f9768ff15d2ee56d8a8ca63c37d",
+  "ref": "98dd7d480eb8ec15cbd3210b6a44df4e7b5aa9ea",
   "anchors": {
     "ITA|2026-07-02T10:06:40Z": 7.844410917425426,
     "CAN|2026-07-02T10:20:31Z": 8.429800303675945,
@@ -324,6 +324,7 @@
     "CHN|2026-10-12T23:49:06Z": 6.833966570417748,
     "IND|2026-10-13T02:10:51Z": 5.788209776703164,
     "TUR|2026-10-13T21:19:55Z": 6.071897694523247,
-    "RWA|2026-10-13T23:16:23Z": 6.839866624135523
+    "RWA|2026-10-13T23:16:23Z": 6.839866624135523,
+    "VEN|2026-10-14T21:13:47Z": 4.922240130157447
   }
 }
