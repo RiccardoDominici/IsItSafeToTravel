@@ -28,6 +28,14 @@ export function joinList(items: readonly string[], lang: Lang): string {
   return `${items.slice(0, -1).join(copy.listSeparator)}${copy.listLastSeparator}${items[items.length - 1]}`;
 }
 
+/**
+ * Italian articles before a number agree with how it is read: "degli 8 governi" (otto), "tutti gli
+ * 11 governi" (undici), not "dei 8" / "tutti i 11" (a vowel sound takes "gli").
+ */
+export function fixItalianNumberArticles(text: string): string {
+  return text.replace(/\b([Dd])ei (?=(?:8\d*|11)\b)/g, '$1egli ').replace(/\b([Tt])utti i (?=(?:8\d*|11)\b)/g, '$1utti gli ');
+}
+
 function area(p: PillarView, lang: Lang): string {
   return countrySummaryCopy[lang].pillarArea[p.name];
 }
@@ -55,7 +63,8 @@ export function buildAdviceClause(consensus: AdvisoryConsensus, lang: Lang, mode
   const subject = k === n ? (n === 1 ? copy.adviceSubject.one : copy.adviceSubject.all) : copy.adviceSubject.some;
   const plural = !(k === n && n === 1) ? 1 : 0;
   const verb = counts[4] === k ? copy.levelPhrases[4][plural] : counts[3] === k ? copy.levelPhrases[3][plural] : copy.adviceMixed;
-  return fillTemplate(`${subject}${lang === 'zh' ? '' : ' '}${verb}`, { n: String(n), k: String(k) });
+  const clause = fillTemplate(`${subject}${lang === 'zh' ? '' : ' '}${verb}`, { n: String(n), k: String(k) });
+  return lang === 'it' ? fixItalianNumberArticles(clause) : clause;
 }
 
 /** {advice} as written, {Advice} capitalised (German starts a full sentence after a colon with a capital). */

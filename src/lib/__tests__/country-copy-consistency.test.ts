@@ -238,6 +238,13 @@ describe('advisory answer from the real distribution (I03 I14 I15 I19 I59)', () 
     assert.match(many, /comes from 5 governments, including the United States and the United Kingdom\./);
   });
 
+  it('reads the Italian article before 8 and 11 as "degli" / "gli"', () => {
+    const it8 = faq(country({ iso3: 'CYM', score: 7, pillars: {}, advisories: advisoriesOf({ 1: 7, 2: 1 }) }), 'it')[2].answer;
+    assert.match(it8, /degli 8 governi/);
+    const it11 = summary(country({ iso3: 'HRV', score: 8, pillars: {}, advisories: advisoriesOf({ 1: 11 }) }), 'it', 'Croazia');
+    assert.match(it11, /Tutti gli 11 governi/);
+  });
+
   it('names the only government instead of "most governments" for a single advisory', () => {
     const c = country({ iso3: 'IMN', score: 7.5, pillars: {}, advisories: { pl: 1 } });
     assert.match(faq(c, 'en')[2].answer, /only one government in our dataset publishes a travel advisory for the Isle of Man: Poland, which advises normal precautions\./);

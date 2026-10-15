@@ -39,6 +39,7 @@ import { formatTenths } from './display-number';
 import { getAdvisoryConsensus } from './advisory-consensus';
 import { selectPillarFocus } from './pillar-focus';
 import {
+  fixItalianNumberArticles,
   buildAdvisoryPressureSentence,
   buildBestSentence,
   buildEstimatesSentence,
@@ -114,8 +115,9 @@ export function buildAdvisorySentence(levels: readonly number[], lang: Lang, nam
   const phrase = (level: number, count: number): string =>
     copy.levelPhrases[level as 1 | 2 | 3 | 4][count === 1 ? 0 : 1];
 
+  const done = (text: string): string => (lang === 'it' ? fixItalianNumberArticles(text) : text);
   if (n === 1) return fill(copy.advisoryOne, { ...names, phrase: phrase(levels[0], 1) });
-  if (counts.size === 1) return fill(copy.advisoryAll, { ...names, n: String(n), phrase: phrase(levels[0], n) });
+  if (counts.size === 1) return done(fill(copy.advisoryAll, { ...names, n: String(n), phrase: phrase(levels[0], n) }));
 
   // Mildest level first, as the levels are numbered.
   const items = [...counts.entries()]
@@ -127,7 +129,7 @@ export function buildAdvisorySentence(levels: readonly number[], lang: Lang, nam
     closed.length === 1
       ? closed[0]
       : `${closed.slice(0, -1).join(copy.listSeparator)}${copy.listLastSeparator}${closed[closed.length - 1]}`;
-  return fill(copy.advisoryMany, { ...names, n: String(n), breakdown });
+  return done(fill(copy.advisoryMany, { ...names, n: String(n), breakdown }));
 }
 
 /** The whole summary paragraph for one country, as plain text. */
@@ -164,8 +166,9 @@ export function buildCountrySummary(country: ScoredCountry, ctx: SummaryContext)
   return [
     opener,
     ...buildFocusSentences(focus, lang, true),
-    buildTieSentence(focus, lang),
+    // Right after the focus sentence: "That score" must refer to the focus pillar, not to a tie.
     buildAdvisoryPressureSentence(focus, lang, consensus),
+    buildTieSentence(focus, lang),
     buildGovernanceContext(focus, lang),
     buildEstimatesSentence(focus, lang),
     // A strength only at 7.0+: the summary never presents the least-bad pillar as good.
