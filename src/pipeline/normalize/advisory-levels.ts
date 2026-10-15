@@ -2945,37 +2945,150 @@ export function normalizePlLevel(text: string): UnifiedLevel {
 // itself is narrative prose. Same approach as normalizePtLevel: classify
 // clause-by-clause, and only let a clause drive the COUNTRY-WIDE level when
 // it carries no regional qualifier (oblast, hranice/příhraniční, pásmo,
-// provincie, okres, "některých států" ...) -- MZV routinely names the worst
-// sub-regions explicitly (e.g. Pákistán's Afghan/Indian border areas and
+// provincie, region, okres, "některých států" ...) -- MZV routinely names the
+// worst sub-regions explicitly (e.g. Pákistán's Afghan/Indian border areas and
 // Balúčistán) while giving the rest of the country a lower, separate rating,
 // and a border-zone warning must not promote the whole country past level 2.
+//
+// Repair 2026-10-15 (advisory-outlier audit; every phrase below was read on the
+// live mzv.gov.cz article that day). Fourteen countries sat two or more levels
+// away from the other governments' median, and in thirteen of them the cause was
+// this parser's vocabulary, not MZV (the fourteenth, Nigérie, has no current
+// warning article at all -- see the audit report):
+//   1. MZV's whole-country warning is normally a VERB -- "MZV varuje před cestami
+//      do Myanmaru", "důrazně varuje občany před cestami do země" (Írán), "varuje
+//      občany ČR před cestami do Severní Koreje" (KLDR), "varuje před jakýmikoliv
+//      cestami do země" (Haiti) -- while the old pattern only knew two NOUN
+//      spellings ("varování před cestami do země" / "na celé území"). Every
+//      verb-form warning fell through to 2, or to 1 when nothing else matched.
+//   2. The call to leave is "vyzývá občany ČR k opuštění země" (Bělorusko,
+//      Libanon, Írán, Mali) or "vyzývá ..., aby zemi urychleně opustili" (Haiti);
+//      the old pattern only had "opustit zemi" / "opusťte zemi".
+//   3. "doporučuje omezit cesty ... jen NA nezbytně nutné" (Burkina Faso, Niger)
+//      -- the old level-3 pattern only accepted "jen V(E) nezbytných případech" --
+//      and "zvažit nezbytnost" was a misspelling of "zvážit" that never matched.
+//   4. "Do ostatních částí země ... omezit cesty jen na nezbytně nutné" (Niger) is
+//      the REST-OF-THE-COUNTRY catch-all, i.e. the national level by this project's
+//      doctrine (same as BMEIA's "Rest des Landes" or MOFA's "上記以外の地域"), but
+//      the stem "část" made it read as regional; likewise "Varování před cestami je
+//      platné do všech částí Libanonu" (ALL parts). Such catch-all/whole idioms are
+//      blanked before the regional test (CZ_WHOLE_COUNTRY_IDIOMS).
+//   5. "region", "distrikt" and the adjective stem "hranič-" (příhraniční, pohraničí)
+//      were missing from the regional stems: Mongolia's "doporučuje cestovat do regionu
+//      Uvs ... jen ve zcela nezbytných případech" (one aimag under a foot-and-mouth
+//      quarantine) became a whole-country level 3. Likewise the anaphoric "Na uvedených
+//      územích ... jen ve zcela nezbytných případech" (Kolumbie: "in the territories
+//      mentioned above") had made Colombia a whole-country 3 -- same trap as ES's "la
+//      zona" in rev 6.
+//   6. A warning article whose text matched nothing defaulted to level 1 -- which is
+//      how KLDR (an explicit "varuje ... před cestami") and Jižní Súdán ended up as
+//      "Běžná opatrnost". Unrecognized prose now returns null (never guess, as for
+//      SK/BE since revs 3-4); level 1 stays reserved for the page's own "Nebylo
+//      nalezeno žádné aktuální upozornění nebo varování" state (no article linked),
+//      which fetchCzAdvisories handles before calling this.
+// Note: JavaScript's \w and \b are ASCII-only, so every pattern below spells Czech
+// letters out or uses \p{L} with the `u` flag (same trap as the SK parser). The stems are
+// substrings, so three lookbehinds/lookaheads keep everyday words out: "zahraniční" (foreign --
+// as in "Ministerstvo zahraničních věcí", the sentence subject of most warnings!) is not
+// "hranič-", "zaměstnanci"/"náměstí" (employees/square) are not "měst-", and "částečný"
+// (partial, e.g. "částečná mobilizace") is not "část-".
 const CZ_REGIONAL_SCOPE =
-  /oblast|hranic|pásm|provinci|okres|někter[éý]ch stát|měst|část/;
+  /oblast|hranic|(?<!za)hranič|pásm|provinci|region|okres|distrikt|někter[éý]ch stát|(?<!za|ná)měst|část(?!eč)|(?:uveden|zmíněn)\p{L}*\s+územ/u;
 
-const CZ_STRONG_UNSCOPED =
-  /nedoporučujeme cestovat|necestujte|varování před cestami do země|varování před cestami na celé území|opusťte zemi|opustit zemi/;
+/** Whole-country / rest-of-country idioms built on a CZ_REGIONAL_SCOPE stem that mean the
+ * OPPOSITE of a regional scope -- "Do ostatních částí země MZV ČR doporučuje omezit cesty jen na
+ * nezbytně nutné" (Niger) and "Do ostatních oblastí Pákistánu ... jen ve zcela nezbytných
+ * případech" (the REST of the country: its catch-all, i.e. the national level), "do všech částí
+ * Libanonu" (ALL parts), "včetně hlavního města" (INCLUDING the capital). Blanked out of a clause
+ * before the regional test so they cannot demote a whole-country statement to "regional".
+ * Deliberately narrow: "všech" only with "část-" ("do všech příhraničních oblastí" stays regional),
+ * and no compass words at all -- "do jižního Nigeru" would be regional, but so would "do Jižního
+ * Súdánu" and "do Severní Koreje", which are country names. */
+const CZ_WHOLE_COUNTRY_IDIOMS =
+  /(?:ostatní\p{L}*|zbývající\p{L}*)\s+(?:část\p{L}*|oblast\p{L}*|region\p{L}*)|všech\s+část\p{L}*|(?:včetně|vč\.)\s+hlavního\s+města/gu;
 
-const CZ_AVOID_NON_ESSENTIAL =
-  /zvažit nezbytnost cesty|doporučujeme se vyhnout|(jen|pouze) ve? (zcela )?nezbytn/;
+/** Level-4 (do not travel / leave) phrase families, all taken from live MZV articles -- see
+ * points 1-2 above. The leave-the-country forms require a governing advisory verb earlier in
+ * the clause, so Írán's "je zemi možné opustit přes pozemní hraniční přechody" (it is POSSIBLE
+ * to leave overland -- information, not advice) is not one. */
+const CZ_STRONG_UNSCOPED = new RegExp(
+  [
+    // "varuje / varujeme / důrazně varuje [občany ČR] před [jakýmikoliv] cestami|cestováním|cestou",
+    // also "varuje v souvislosti s aktuální bezpečnostní situací před cestami do ..." (Moldavsko)
+    'varuj\\p{L}*[^.;!?]{0,80}?\\s+před\\s+(?:\\p{L}+\\s+)?cest',
+    // the noun: "varování před cestami do země / na celé území / je platné do všech částí ..."
+    'varování\\s+před\\s+(?:\\p{L}+\\s+)?cest',
+    // "vyzývá (občany ČR) k (okamžitému) opuštění země", "vyzývá ..., aby zemi urychleně opustili",
+    // "doporučuje opustit zemi" -- the advisory verb must come first, and a contingency PLAN or
+    // POSSIBILITY of leaving ("doporučujeme mít připravený plán opuštění země" -- BLR/RUS say the
+    // same to those who stay) is not a call to leave
+    '(?:vyzýv|vyzv|doporuč|žád|apel)\\p{L}*[^.;!?]{0,120}?(?<!(?:plán|možnost)\\p{L}{0,3}\\s+(?:pro\\s+|k\\s+)?)(?:opuštění\\s+(?:země|území)|opustit\\s+(?:zemi|území)|(?:zemi|území)\\s+(?:\\p{L}+\\s+)?opustil)',
+    'opusťte\\s+(?:\\p{L}+\\s+)?(?:zemi|území)',
+  ].join('|'),
+  'u',
+);
 
+/** The plainer "do not travel" advice -- "nedoporučujeme cestovat do Mali", "nedoporučuje
+ * (jakékoliv) cesty do ...", "necestujte" -- doubles as MZV's wording for MANNER tips in the very
+ * same articles ("Nedoporučuje se cestovat autem po setmění", "necestujte v noci"), so it only
+ * counts when the clause carries none of the manner/time qualifiers below (CZ_MANNER_TIP). */
+const CZ_STRONG_ADVICE = /nedoporuču\p{L}*\s+(?:\p{L}+\s+){0,2}?cest(?:ovat|y|ování)|necestujte/u;
+const CZ_MANNER_TIP =
+  /po setmění|v noci|v nočních hodinách|autem|autobus\p{L}*|vlak\p{L}*|pěšky|stopem|motork\p{L}*|taxi\p{L}*|bez doprovodu|individuáln\p{L}*|samostatn\p{L}*|mimo hlavní/u;
+
+/** A clause that LIFTS or no longer applies a warning ("MZV ČR ruší varování před cestami
+ * do ...", "varování ... bylo zrušeno") must not be read as one. */
+const CZ_WARNING_LIFTED =
+  /(?:ruší|zruš\p{L}*|odvol\p{L}*)\s+(?:\p{L}+\s+){0,3}?varování|varování(?:\s+\S+){0,6}?\s+(?:zrušen\p{L}*|odvolán\p{L}*|neplatí)/u;
+
+/** Level-3 (avoid non-essential travel) phrase families -- see point 3 above. */
+const CZ_AVOID_NON_ESSENTIAL = new RegExp(
+  [
+    // "zvážit / zvažte nezbytnost (své) cesty"
+    'zv(?:á|a)ž\\p{L}*\\s+(?:\\p{L}+\\s+)?nezbytnost',
+    'doporučujeme se vyhnout',
+    // "(cestovat) jen ve zcela nezbytných případech", "omezit cesty jen na nezbytně nutné"
+    '(?:jen|pouze)\\s+(?:ve?|na)\\s+(?:zcela\\s+)?nezbytn',
+  ].join('|'),
+  'u',
+);
+
+/** Level-2 (increased caution) vocabulary. "vyhýbat se (případným) shromážděním / demonstracím",
+ * "vyhýbejte se davům" is MZV's standard caution advice; added 2026-10-15 for Hongkong, whose only
+ * warning article (the National Security Law notice: "MZV ČR doporučuje ... sledovat aktuální
+ * situaci a vyhýbat se případným shromážděním") would otherwise be unclassifiable now that
+ * unmatched prose no longer defaults to level 1 (point 6 above). */
 const CZ_CAUTION =
-  /zvýšen[áé] opatrnost|zvýšené riziko|bezpečnostní riziko|zesílená ostražitost/;
+  /zvýšen[áé] opatrnost|zvýšené riziko|bezpečnostní riziko|zesílená ostražitost|vyh(?:ýb|yb|n)\p{L}*\s+se\s+(?:\p{L}+\s+){0,2}?(?:shromážděn|demonstrac|dav)/u;
+
+/** Each article opens with "<Title> Stále v platnosti: 15. 10. 2026 Publikováno: 11.10.2023 /
+ * 13:00 | Aktualizováno: 26.08.2026 / 10:21" -- the TITLE names the country ("Palestinská
+ * autonomní území: varování před cestami") even when the body restricts the warning to named
+ * regions (there: the northern West Bank and Gaza, the rest of the West Bank being "jen ve zcela
+ * nezbytných případech"). Only the body states scope, so every such header (several articles
+ * may be concatenated) is removed before classifying: from the end of the previous sentence up to
+ * the publication/update stamp. A page without the stamp is left untouched. */
+const CZ_ARTICLE_HEADER =
+  /[^.!?]*?stále v platnosti:[^|]*?publikováno:\s*\d{1,2}\.\s*\d{1,2}\.\s*\d{4}(?:\s*\/\s*\d{1,2}:\d{2})?(?:\s*\|\s*aktualizováno:\s*\d{1,2}\.\s*\d{1,2}\.\s*\d{4}(?:\s*\/\s*\d{1,2}:\d{2})?)?/gu;
+
+/** "... varuje před cestami do severní části Západního břehu Jordánu A DO ostatních částí
+ * Západního břehu Jordánu doporučuje cestovat jen ve zcela nezbytných případech" (Palestina):
+ * one sentence, two destinations, each with its own advice. A coordinating "a" that opens a NEW
+ * destination ("a do", "a na", "a v(e)") starts a new clause, so each advice is scoped by its
+ * own destination instead of by the other one's regional noun. */
+const CZ_CLAUSE_SPLIT = /(?<=[.;!?])\s+|\n+|\s+a\s+(?=(?:do|na|ve?)\s)/u;
 
 /**
- * Normalize Czech Republic (MZV) advisory narrative text to unified 1-4
- * scale. Returns null only when there is no real text to classify (empty
- * fetch) -- a country whose "cestovani" page loaded fine but has no
- * "Aktuální doporučení a varování" section is a valid level-1 baseline (MZV
- * publishes one comprehensive page per country, so the section's absence
- * IS the "nothing to flag" statement), and free-form warning prose that
- * matches none of the keywords below (e.g. a hurricane-season notice with
- * no explicit caution language) also resolves to level 1 rather than being
- * dropped, consistent with the other MZV-style sources in this file.
+ * Normalize Czech Republic (MZV) advisory narrative text (the combined text of the warning
+ * article(s) linked from a country's "Aktuální doporučení a varování" section) to the unified
+ * 1-4 scale. Returns null when there is no real text, and -- since the 2026-10-15 repair --
+ * also when the article matches none of the patterns above (never guess: see point 6 of the
+ * section comment). A country with NO warning article at all is the caller's level-1 case.
  */
 export function normalizeCzLevel(text: string): UnifiedLevel | null {
   if (!text || text.trim().length < 10) return null;
-  const lower = text.toLowerCase();
-  const clauses = lower.split(/(?<=[.;!?])\s+|\n+/);
+  const lower = text.toLowerCase().replace(/\u00a0/g, ' ').replace(CZ_ARTICLE_HEADER, ' ');
+  const clauses = lower.split(CZ_CLAUSE_SPLIT);
 
   let saw4 = false;
   let saw3 = false;
@@ -2983,9 +3096,11 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
   let sawCaution = false;
 
   for (const clause of clauses) {
-    if (!clause.trim()) continue;
-    const regional = CZ_REGIONAL_SCOPE.test(clause);
-    const strong = CZ_STRONG_UNSCOPED.test(clause);
+    if (!clause || !clause.trim()) continue;
+    const regional = CZ_REGIONAL_SCOPE.test(clause.replace(CZ_WHOLE_COUNTRY_IDIOMS, ' '));
+    const strong =
+      (CZ_STRONG_UNSCOPED.test(clause) || (CZ_STRONG_ADVICE.test(clause) && !CZ_MANNER_TIP.test(clause))) &&
+      !CZ_WARNING_LIFTED.test(clause);
     const nonEssential = CZ_AVOID_NON_ESSENTIAL.test(clause);
 
     if (strong && !regional) {
@@ -3002,7 +3117,7 @@ export function normalizeCzLevel(text: string): UnifiedLevel | null {
   if (saw4) return 4;
   if (saw3) return 3;
   if (sawScoped || sawCaution) return 2;
-  return 1;
+  return null; // a warning article we cannot classify -- never default to level 1
 }
 
 /**
