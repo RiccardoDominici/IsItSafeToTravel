@@ -10,6 +10,7 @@ import {
   normalizeNlColor,
   normalizeJpLevel,
   normalizeJpRegionalLevel,
+  normalizeJpNoDetailLevel,
   normalizeSkSecurityText,
 } from '../normalize/advisory-levels.js';
 import { join } from 'node:path';
@@ -65,11 +66,13 @@ const NL_LEVEL_TEXT: Record<number, string> = {
   4: 'Niet reizen',
 };
 
+// Level 4 also carries North Korea's whole-territory "refrain from travelling, regardless of
+// purpose" request (normalizeJpNoDetailLevel), not only MOFA's numbered evacuation advisory.
 const JP_LEVEL_TEXT: Record<number, string> = {
   1: 'Exercise caution',
   2: 'Avoid non-essential travel',
   3: 'Do not travel (advisory)',
-  4: 'Evacuate (advisory)',
+  4: 'Do not travel / evacuate (advisory)',
 };
 
 const SK_LEVEL_TEXT: Record<number, string> = {
@@ -499,6 +502,10 @@ function parseJpCountryIndex(html: string): JpIndexEntry[] {
  * convention). A page with NO `#kikendetail` div has no active hazard-level
  * advisory published at all, which is Level 1 (safest / no warning) —
  * verified live against USA/FRA/GBR/AUS/CAN/SGP/VAT (all lack the div).
+ * NOT true of every div-less page (2026-10-15): North Korea's has no div
+ * because its whole-territory "refrain from travel" request sits outside the
+ * numbered system, so the fetcher no longer calls this function for div-less
+ * pages at all — see resolveJpCountryLevel / normalizeJpNoDetailLevel.
  *
  * Repair 2026-09-25 (source review follow-up): returns null — never guess —
  * when the `#kikendetail` div IS present but no recognized
@@ -533,6 +540,32 @@ export function parseJpKikenLevel(html: string): number | null {
     if (lvl > max) max = lvl;
   }
   return max > 0 ? max : null; // div present but unparseable -> never guess
+}
+
+/**
+ * The country's unified advisory level from its MOFA hazard page, or null (never guess).
+ *
+ * - No `#kikendetail` block: normalizeJpNoDetailLevel reads the `kiken_unit` box instead of
+ *   assuming "no advisory". Repair 2026-10-15: parseJpKikenLevel's no-div branch returns 1
+ *   for ANY such page, but North Korea's has no numbered breakdown because its advisory sits
+ *   outside MOFA's 4-level system -- a whole-territory "渡航を自粛してください" (refrain from
+ *   travelling, regardless of purpose) -- and was published as Level 1 against a peer median
+ *   of 4. Level 1 now needs MOFA's own "危険情報は出ておりません" (no danger information).
+ * - Otherwise: parseJpKikenLevel's MAX-across-regions reading is a discovery/legend sanity
+ *   check (see its own doc comment), not the country's advisory level: it turns any single
+ *   named border strip or separatist enclave into a whole-country "do not travel" (repair
+ *   2026-09-25/26, PARSER-REGIONAL-BRIEF). normalizeJpRegionalLevel parses the actual region
+ *   breakdown and applies the project's standing doctrine — a sub-national entry never
+ *   promotes the country above Level 2, unless the country's own catch-all/main-area
+ *   statement is already higher — falling back to this same legend MAX when the page has no
+ *   parseable per-region text at all (e.g. pure prose with no "Level N" statement anywhere).
+ */
+export function resolveJpCountryLevel(html: string, japaneseName: string): UnifiedLevel | null {
+  if (!html.includes('<div id="kikendetail">')) return normalizeJpNoDetailLevel(html);
+  const rawLevel = parseJpKikenLevel(html);
+  if (rawLevel === null) return null;
+  const legendLevel = normalizeJpLevel(rawLevel);
+  return normalizeJpRegionalLevel(html, japaneseName, legendLevel) ?? legendLevel;
 }
 
 async function fetchJpAdvisories(
@@ -597,22 +630,11 @@ async function fetchJpAdvisories(
         if (!r.ok) return; // Page doesn't exist for this country
 
         const html = await r.text();
-        const rawLevel = parseJpKikenLevel(html);
-        if (rawLevel === null) {
+        const level = resolveJpCountryLevel(html, entry.japaneseName);
+        if (level === null) {
           kikenLevelUnparseable.push(country.iso3);
           return; // never guess — emit nothing for this country
         }
-        // parseJpKikenLevel's MAX-across-regions reading is a discovery/legend sanity
-        // check (see its own doc comment), not the country's advisory level: it turns any
-        // single named border strip or separatist enclave into a whole-country "do not
-        // travel" (repair 2026-09-25/26, PARSER-REGIONAL-BRIEF). normalizeJpRegionalLevel
-        // parses the actual region breakdown and applies the project's standing doctrine —
-        // a sub-national entry never promotes the country above Level 2, unless the
-        // country's own catch-all/main-area statement is already higher — falling back to
-        // this same legend MAX when the page has no parseable per-region text at all (e.g.
-        // pure prose with no "Level N" statement anywhere).
-        const legendLevel = normalizeJpLevel(rawLevel);
-        const level = normalizeJpRegionalLevel(html, entry.japaneseName, legendLevel) ?? legendLevel;
 
         indicators.push({
           countryIso3: country.iso3,

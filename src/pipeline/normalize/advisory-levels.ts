@@ -603,6 +603,65 @@ export function normalizeJpRegionalLevel(
   return Math.max(wholeLevel, Math.min(2, regionalMax)) as UnifiedLevel;
 }
 
+/** MOFA's own "no danger information is currently issued" sentence (France/USA/UK/... real
+ * pages: `<div class="kiken_unit"><p>現在、危険情報は出ておりません。</p></div>`). Its
+ * opposite, "現在、危険情報が出ております。" ("danger information IS currently issued"),
+ * always comes with a `#kikendetail` breakdown and never reaches normalizeJpNoDetailLevel. */
+const JP_NO_HAZARD_RE = /危険情報は出ておりません/;
+/** A country-WIDE scope word opening a statement: "全土" (the whole territory), the only
+ * wording the one real non-numbered page uses ("●全土：..."). Regional statements never
+ * reach this function -- MOFA puts every region-by-region breakdown in `#kikendetail`. */
+const JP_WHOLE_TERRITORY_RE = /全土/;
+/**
+ * Country-wide action phrases a page WITHOUT the numbered `#kikendetail` breakdown can carry,
+ * mapped straight to the unified scale (most severe first). These are MOFA's canonical action
+ * wordings (退避 evacuate / 渡航は止めて stop travel / 不要不急 non-essential / 十分注意 caution)
+ * plus "渡航（を|は）自粛" -- "refrain from travelling", the wording of the standing
+ * government-wide request outside the numbered system that MOFA keeps for North Korea, issued
+ * "目的のいかんを問わず" (REGARDLESS OF PURPOSE), i.e. against all travel: unified 4.
+ */
+const JP_NO_DETAIL_ACTIONS: { re: RegExp; level: UnifiedLevel }[] = [
+  { re: /退避/, level: 4 },
+  { re: /渡航(?:を|は)?(?:自粛|止めて|中止)/, level: 4 },
+  { re: /不要不急/, level: 3 },
+  { re: /十分注意/, level: 2 },
+];
+
+/**
+ * Level of a MOFA country page that has NO `#kikendetail` block (the numbered, region-by-region
+ * breakdown normalizeJpRegionalLevel reads). The fetcher used to treat every such page as
+ * "no advisory published -> Level 1" (parseJpKikenLevel's no-div branch). That holds for the
+ * pages carrying MOFA's own "現在、危険情報は出ておりません。" sentence, but not for North
+ * Korea's: its `kiken_unit` box holds a free-form, non-numbered statement instead --
+ * "●全土：「渡航を自粛してください。」（2026年現在有効）" ("whole territory: 'please refrain
+ * from travelling' (in force in 2026)") and "目的のいかんを問わず，北朝鮮への渡航は自粛して
+ * ください。" ("regardless of purpose, refrain from travelling to North Korea") -- verified live
+ * 2026-10-15. That page read as Level 1 "Exercise caution", against a peer median of 4.
+ *
+ * Returns 1 only for the affirmative "no danger information" sentence; the mapped level for a
+ * "全土" (whole-territory) statement carrying one of JP_NO_DETAIL_ACTIONS; null (never guess)
+ * for anything else, so an unknown future layout drops the country instead of defaulting it
+ * to "safe".
+ */
+export function normalizeJpNoDetailLevel(html: string): UnifiedLevel | null {
+  const unitIdx = html.indexOf('<div class="kiken_unit">');
+  if (unitIdx === -1) return null;
+  const unitEnd = html.indexOf('</div>', unitIdx);
+  const unitText = decodeJpEntities(
+    html
+      .slice(unitIdx, unitEnd === -1 ? unitIdx + 8000 : unitEnd)
+      .replace(/<br\s*\/?>/gi, '\n')
+      .replace(/<[^>]+>/g, ''),
+  );
+
+  if (JP_NO_HAZARD_RE.test(unitText)) return 1;
+  if (!JP_WHOLE_TERRITORY_RE.test(unitText)) return null;
+  for (const { re, level } of JP_NO_DETAIL_ACTIONS) {
+    if (re.test(unitText)) return level;
+  }
+  return null;
+}
+
 /**
  * Named-region / border-zone / city markers that cap an MZV "neodporúča"
  * (does not recommend) clause at a SUB-national scope rather than the whole
