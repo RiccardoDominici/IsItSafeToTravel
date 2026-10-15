@@ -159,9 +159,27 @@
  *     dozens of score jumps that are the formula change, not news. The first production run must
  *     ALSO be dispatched with skip_digest=true (SPEC §6): the digest step reads the news file, and
  *     the bump already empties it, but skipping is the belt to these braces.
- *     DATA_REVISION_SINCE stays 2026-09-26: it gates which ADVISORY caches source-floor.ts may
- *     restore, and v10 changes no advisory parser; moving it to the switch date would wrongly make
- *     every advisory cache written before the switch ineligible as a restore source.
+ *       f) (same day) advisory-outlier audit: every issuer level two or more steps from its
+ *          country's peer median (91 in the 2026-10-14 data) was re-read on the live official page
+ *          and the parser rules that produced the wrong ones were fixed generically, each commit
+ *          quoting the official sentence (merge f30faf1e). jp: North Korea's whole-territory
+ *          "渡航を自粛してください" 1 -> 4. rs: tips, transport text and calm "high level" no longer
+ *          read as level 3. fr: a sentence naming the country as destination is national. be: the
+ *          "Dernière mise à jour" verdict is read and "tous les voyages" is level 4. it: activity
+ *          tips and "evitare le aree". es: zone- or activity-scoped "extremar la precaución". cz:
+ *          MZV's "varuje před cestami" verb form, rest-of-country catch-alls, and no level-1
+ *          default for unmatched prose (North Korea and South Sudan 1 -> 4). de: a warning with
+ *          named exceptions is national (Burkina Faso 2 -> 4). sg: a verdict naming the country is
+ *          not capped, and the Middle-East-wide "defer all travel to the region" is level 4. sk:
+ *          "zvýšená ostražitosť" is level 2. About 88 countries' advisory consensus moves for this
+ *          reason alone; coverage rs 105 -> 104, be 151 -> 154, sg 43 -> 45, sk 78 -> 80.
+ *     DATA_REVISION_SINCE moves to 2026-10-15 with (f): every advisory cache written before the
+ *     first run with the fixed parsers holds pre-fix levels (Belgium's Yemen at 2, Czechia's North
+ *     Korea at 1, Singapore's Lebanon at 2), and a source-floor restore within the next 14 days
+ *     would bring them back. (The earlier v10 runs of 2026-10-15 used the old parsers, but a
+ *     restore source must be dated strictly before the run date, and later runs of the same day
+ *     rewrite that day's caches, so the 2026-10-15 caches that tomorrow's run could restore from
+ *     are the fixed ones.)
  */
 export const DATA_REVISION = 7;
 
@@ -184,5 +202,6 @@ export const DATA_REVISION = 7;
  * more days after a fix ships, before finally erroring — this closes that gap
  * outright: from DATA_REVISION_SINCE's first run onward, a fixed parser's
  * deliberate omissions stay omitted immediately.
+ * Moved from 2026-09-26 to 2026-10-15 with rev 7 (f), the advisory-outlier audit.
  */
-export const DATA_REVISION_SINCE = '2026-09-26';
+export const DATA_REVISION_SINCE = '2026-10-15';
