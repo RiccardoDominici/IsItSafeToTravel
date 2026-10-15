@@ -1,6 +1,7 @@
 import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../types.js';
 import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
+import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
 import {
@@ -1260,6 +1261,8 @@ export async function fetchTier2aAdvisories(date: string): Promise<FetchResult> 
       const cachedData = readJson<RawSourceData>(cached);
       if (cachedData) {
         console.warn(`[ADVISORIES-T2A] Using cached data from ${cached}`);
+        // A cache written before the I51 fix can still hold a ministry's page about its own country.
+        dropSelfAdvisoriesLogged('[ADVISORIES-T2A]', cachedData.indicators, {});
         writeJson(join(rawDir, 'advisories-tier2a-parsed.json'), cachedData);
         const cachedInfoPath = cached.replace(
           'advisories-tier2a-parsed.json',
@@ -1267,6 +1270,7 @@ export async function fetchTier2aAdvisories(date: string): Promise<FetchResult> 
         );
         const cachedInfo = readJson<AdvisoryInfoMap>(cachedInfoPath);
         if (cachedInfo) {
+          dropSelfAdvisoriesLogged('[ADVISORIES-T2A]', [], cachedInfo);
           writeJson(join(rawDir, 'advisories-tier2a-info.json'), cachedInfo);
         }
         const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
@@ -1313,6 +1317,10 @@ export async function fetchTier2aAdvisories(date: string): Promise<FetchResult> 
     errors,
     runDate: date,
   });
+
+  // I51: a ministry's page about its own country is never an advisory (advisory-self.ts).
+  // After the floor check, so a restored pre-fix cache entry is dropped too.
+  dropSelfAdvisoriesLogged('[ADVISORIES-T2A]', allIndicators, combinedAdvisoryInfo);
 
   // Save combined parsed data
   const sourceData: RawSourceData = {

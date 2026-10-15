@@ -4,6 +4,7 @@ import { getCountryByName, getCountryByIso2, COUNTRIES } from '../config/countri
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
+import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 
 /**
  * Minimum per-source country count expected from each tier-1 fetcher.
@@ -150,11 +151,14 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
       const cachedData = readJson<RawSourceData>(cached);
       if (cachedData) {
         console.warn(`[ADVISORIES] Using cached data from ${cached}`);
+        // A cache written before the I51 fix can still hold a ministry's page about its own country.
+        dropSelfAdvisoriesLogged('[ADVISORIES]', cachedData.indicators, {});
         writeJson(join(rawDir, 'advisories-parsed.json'), cachedData);
         // Also try to copy cached advisory info
         const cachedInfoPath = cached.replace('advisories-parsed.json', 'advisories-info.json');
         const cachedInfo = readJson<AdvisoryInfoMap>(cachedInfoPath);
         if (cachedInfo) {
+          dropSelfAdvisoriesLogged('[ADVISORIES]', [], cachedInfo);
           writeJson(join(rawDir, 'advisories-info.json'), cachedInfo);
         }
         const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
@@ -176,6 +180,9 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
       fetchedAt,
     };
   }
+
+  // I51: a ministry's page about its own country is never an advisory (advisory-self.ts).
+  dropSelfAdvisoriesLogged('[ADVISORIES]', allIndicators, combinedAdvisoryInfo);
 
   // Save combined parsed data
   const sourceData: RawSourceData = {
