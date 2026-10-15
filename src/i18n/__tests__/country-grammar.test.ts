@@ -243,11 +243,18 @@ describe('comparison heading: getComparisonSubject / getPortugueseDe', () => {
     assert.equal(getPortugueseDe('MDV', 'Maldivas'), 'das Maldivas');
   });
 
-  it('en takes "the" where the name needs it; es and zh stay bare', () => {
-    assert.deepEqual(getComparisonSubject('en', 'USA', 'United States'), { phrase: 'the United States', copula: '' });
-    assert.deepEqual(getComparisonSubject('en', 'ECU', 'Ecuador'), { phrase: 'Ecuador', copula: '' });
-    assert.deepEqual(getComparisonSubject('es', 'USA', 'Estados Unidos'), { phrase: 'Estados Unidos', copula: '' });
+  it('en takes "the" and a verb that agrees ("How do the Åland Islands compare"); zh stays bare', () => {
+    assert.deepEqual(getComparisonSubject('en', 'USA', 'United States'), { phrase: 'the United States', copula: 'does' });
+    assert.deepEqual(getComparisonSubject('en', 'ECU', 'Ecuador'), { phrase: 'Ecuador', copula: 'does' });
+    assert.deepEqual(getComparisonSubject('en', 'ALA', 'Åland Islands'), { phrase: 'the Åland Islands', copula: 'do' });
     assert.deepEqual(getComparisonSubject('zh', 'DEU', '德国'), { phrase: '德国', copula: '' });
+  });
+
+  it('es takes the article Spanish writes and a verb that agrees ("se comparan las Islas Caimán")', () => {
+    assert.deepEqual(getComparisonSubject('es', 'USA', 'Estados Unidos'), { phrase: 'Estados Unidos', copula: 'compara' });
+    assert.deepEqual(getComparisonSubject('es', 'GBR', 'Reino Unido'), { phrase: 'el Reino Unido', copula: 'compara' });
+    assert.deepEqual(getComparisonSubject('es', 'CYM', 'Islas Caimán'), { phrase: 'las Islas Caimán', copula: 'comparan' });
+    assert.deepEqual(getComparisonSubject('es', 'NLD', 'Países Bajos'), { phrase: 'los Países Bajos', copula: 'comparan' });
   });
 
   it('it uses the locative and fr the gendered preposition, so the sentence needs no article agreement', () => {
@@ -263,7 +270,7 @@ describe('comparison heading: getComparisonSubject / getPortugueseDe', () => {
     assert.deepEqual(getComparisonSubject('de', 'TUR', 'Türkei'), { phrase: 'die Türkei', copula: 'ist' });
   });
 
-  it('covers all 248 countries in every locale: non-empty phrase, copula only in German', () => {
+  it('covers all 248 countries in every locale: non-empty phrase, copula in en/es/de only', () => {
     for (const country of COUNTRIES) {
       const { iso2, iso3, name } = country;
       for (const lang of ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'] as const) {
@@ -271,6 +278,8 @@ describe('comparison heading: getComparisonSubject / getPortugueseDe', () => {
         const subject = getComparisonSubject(lang, iso3, bare);
         assert.ok(subject.phrase.length > 0, `${iso3}/${lang}: empty phrase`);
         if (lang === 'de') assert.ok(['ist', 'sind'].includes(subject.copula), `${iso3}/de: copula "${subject.copula}"`);
+        else if (lang === 'en') assert.ok(['does', 'do'].includes(subject.copula), `${iso3}/en: copula "${subject.copula}"`);
+        else if (lang === 'es') assert.ok(['compara', 'comparan'].includes(subject.copula), `${iso3}/es: copula "${subject.copula}"`);
         else assert.equal(subject.copula, '', `${iso3}/${lang}: unexpected copula`);
       }
     }

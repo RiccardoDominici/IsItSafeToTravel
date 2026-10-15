@@ -5,6 +5,11 @@ import { getRawDir, readJson, writeJson } from './utils/fs.js';
 import { getInformStoreDir, readStoredInformEdition, type StoredInformEdition } from './fetchers/inform-edition.js';
 import { WB_INDICATOR_NAMES } from './fetchers/worldbank.js';
 import { ntfyTopicFromEnv, pushNtfy, type NtfyMessage } from './utils/ntfy.js';
+import {
+  readAdvisoryFallbackReport,
+  type AdvisoryFallbackReport,
+  type AdvisoryIssuerState,
+} from './fetchers/advisory-fallback.js';
 
 /**
  * Staleness monitor (formula v10, SPEC §6).
@@ -24,6 +29,12 @@ import { ntfyTopicFromEnv, pushNtfy, type NtfyMessage } from './utils/ntfy.js';
  * with the previous report), not on every run while it persists: a World Bank
  * series can lag for months, and a daily high-priority push would be spam. The
  * workflow summary still lists every violation on every run.
+ *
+ * Base advisories (US/UK/CA/AU): the fetcher records each issuer's cache-fallback state
+ * in advisories-fallback.json (fetchers/advisory-fallback.ts). An issuer dropped because
+ * its last good reading is older than MAX_FALLBACK_AGE_DAYS (7) is a violation here, so
+ * the same warning push and workflow line cover a parser that broke a week ago. A
+ * restored issuer, still within the 7 days, is logged but not pushed.
  */
 
 /** Maximum years a source may trail the run year (SPEC §6). */
@@ -57,6 +68,20 @@ export interface StalenessCheck {
   ok: boolean;
 }
 
+/** One base-advisory issuer (US/UK/CA/AU) checked against the 7-day fallback rule. */
+export interface AdvisoryFallbackCheck {
+  /** Stable key: "advisory:<issuer>", e.g. "advisory:ca". */
+  key: string;
+  label: string;
+  state: AdvisoryIssuerState;
+  /** Last live date of the restored or refused reading, or null. */
+  lastLive: string | null;
+  ageDays: number | null;
+  maxAgeDays: number;
+  /** False only when the issuer was dropped. */
+  ok: boolean;
+}
+
 export interface StalenessReport {
   date: string;
   generatedAt: string;
@@ -65,7 +90,12 @@ export interface StalenessReport {
   /** True when the stored INFORM edition was first stored during this run. */
   newInformEdition: boolean;
   checks: StalenessCheck[];
-  /** One human-readable line per failed check. */
+  /**
+   * Base-advisory fallback checks, from this run's advisories-fallback.json. Absent in
+   * reports written before the 7-day rule, and empty when the fetcher wrote no file.
+   */
+  advisoryChecks?: AdvisoryFallbackCheck[];
+  /** One human-readable line per failed check (year checks first, then advisory checks). */
   violations: string[];
   /**
    * Keys of the current violations a successful ntfy push has covered, on this run or on
@@ -136,6 +166,27 @@ export function evaluateStaleness(
   ];
 }
 
+/** The 7-day fallback rule as checks, one per issuer in the fetcher's report. Pure. */
+export function evaluateAdvisoryFallback(report: AdvisoryFallbackReport | null): AdvisoryFallbackCheck[] {
+  return (report?.issuers ?? []).map((issuer) => ({
+    key: `advisory:${issuer.issuer}`,
+    label: `${issuer.label} travel advisories`,
+    state: issuer.state,
+    lastLive: issuer.lastLive,
+    ageDays: issuer.ageDays,
+    maxAgeDays: issuer.maxAgeDays,
+    ok: issuer.state !== 'dropped',
+  }));
+}
+
+function describeAdvisoryViolation(check: AdvisoryFallbackCheck, date: string): string {
+  const since =
+    check.lastLive === null
+      ? `no reading from the last ${check.maxAgeDays} days`
+      : `last live ${check.lastLive} (${check.ageDays} days old, max ${check.maxAgeDays})`;
+  return `${check.label}: dropped on ${date}, ${since}`;
+}
+
 function describeViolation(check: StalenessCheck): string {
   const found = check.newestYear === null ? 'no data' : `newest ${check.newestYear}`;
   const lag = `${check.maxLagYears} year${check.maxLagYears === 1 ? '' : 's'}`;
@@ -161,8 +212,11 @@ export function buildStalenessReport(input: {
   informEdition: StoredInformEdition | null;
   runStartedAt: string;
   worldbankIndicators?: readonly string[];
+  /** This run's advisories-fallback.json (null or omitted: no advisory checks). */
+  advisoryFallback?: AdvisoryFallbackReport | null;
 }): StalenessReport {
   const checks = evaluateStaleness(input.observations, input.worldbankIndicators);
+  const advisoryChecks = evaluateAdvisoryFallback(input.advisoryFallback ?? null);
   return {
     date: input.date,
     generatedAt: input.generatedAt,
@@ -170,7 +224,11 @@ export function buildStalenessReport(input: {
     informEdition: input.informEdition,
     newInformEdition: isNewEditionSince(input.informEdition, input.runStartedAt),
     checks,
-    violations: checks.filter((c) => !c.ok).map(describeViolation),
+    advisoryChecks,
+    violations: [
+      ...checks.filter((c) => !c.ok).map(describeViolation),
+      ...advisoryChecks.filter((c) => !c.ok).map((c) => describeAdvisoryViolation(c, input.date)),
+    ],
   };
 }
 
@@ -191,8 +249,9 @@ export function collectObservations(
 
 /** Log lines for the run. Violation lines start with "[STALENESS] VIOLATION" (the workflow greps for it). */
 export function formatStalenessLines(report: StalenessReport): string[] {
+  const advisoryChecks = report.advisoryChecks ?? [];
   const lines = [
-    `[STALENESS] Run year ${report.runYear} (${report.date}): ${report.checks.length} checks, ${report.violations.length} violation(s)`,
+    `[STALENESS] Run year ${report.runYear} (${report.date}): ${report.checks.length + advisoryChecks.length} checks, ${report.violations.length} violation(s)`,
   ];
   for (const check of report.checks) {
     const newest = check.newestYear === null ? 'none' : String(check.newestYear);
@@ -202,6 +261,12 @@ export function formatStalenessLines(report: StalenessReport): string[] {
         : `[STALENESS] VIOLATION ${check.label}: newest ${newest} (needs >= ${check.minYear}, max lag ${check.maxLagYears})`,
     );
   }
+  for (const check of advisoryChecks) {
+    const since = check.lastLive === null ? '' : `, last live ${check.lastLive} (${check.ageDays}d old, max ${check.maxAgeDays}d)`;
+    if (check.state === 'live') lines.push(`[STALENESS] ok ${check.label}: fetched live`);
+    else if (check.state === 'restored') lines.push(`[STALENESS] ok ${check.label}: cache fallback${since}`);
+    else lines.push(`[STALENESS] VIOLATION ${check.label}: dropped${since || `, no reading within ${check.maxAgeDays}d`}`);
+  }
   if (report.newInformEdition && report.informEdition) {
     lines.push(
       `[STALENESS] NEW INFORM edition stored: ${report.informEdition.file} (edition ${report.informEdition.editionYear})`,
@@ -210,9 +275,12 @@ export function formatStalenessLines(report: StalenessReport): string[] {
   return lines;
 }
 
-/** Keys of the checks failing in this report. */
-function violationKeys(report: Pick<StalenessReport, 'checks'>): string[] {
-  return report.checks.filter((c) => !c.ok).map((c) => c.key);
+/** The parts of a report the violation keys come from (advisoryChecks absent in old reports). */
+type ViolationSource = Pick<StalenessReport, 'checks' | 'advisoryChecks'>;
+
+/** Keys of the checks failing in this report, year checks and advisory checks alike. */
+function violationKeys(report: ViolationSource): string[] {
+  return [...report.checks, ...(report.advisoryChecks ?? [])].filter((c) => !c.ok).map((c) => c.key);
 }
 
 /**
@@ -220,7 +288,7 @@ function violationKeys(report: Pick<StalenessReport, 'checks'>): string[] {
  * `alreadyNotified` comes from the previous report's notifiedViolationKeys.
  */
 export function newViolationKeys(
-  report: Pick<StalenessReport, 'checks'>,
+  report: ViolationSource,
   alreadyNotified: readonly string[] = [],
 ): string[] {
   const covered = new Set(alreadyNotified);
@@ -251,7 +319,7 @@ export function readPreviousStalenessReport(date: string): StalenessReport | nul
  * The violations of the previous report that a push covered AND that still fail now.
  * A violation that cleared drops out, so it is pushed again if it ever comes back.
  */
-export function carriedNotifiedKeys(report: Pick<StalenessReport, 'checks'>, previous: StalenessReport | null): string[] {
+export function carriedNotifiedKeys(report: ViolationSource, previous: StalenessReport | null): string[] {
   const current = new Set(violationKeys(report));
   return (previous?.notifiedViolationKeys ?? []).filter((key) => current.has(key));
 }
@@ -312,6 +380,8 @@ export async function runStalenessMonitor(params: {
     informEdition,
     runStartedAt: params.runStartedAt,
     worldbankIndicators: params.worldbankIndicators,
+    // Written by fetchAdvisories earlier in this same run (null when it wrote none).
+    advisoryFallback: readAdvisoryFallbackReport(getRawDir(params.date)),
   });
   const previous = readPreviousStalenessReport(params.date);
   const alreadyNotified = carriedNotifiedKeys(report, previous);

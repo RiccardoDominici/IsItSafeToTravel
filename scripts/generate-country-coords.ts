@@ -7,11 +7,11 @@
  *
  * Run:  npm run generate:coords        (or: npx tsx scripts/generate-country-coords.ts)
  *
- * Why it exists: the country pages add "nearby" countries to the comparison
- * table by distance. Matching by region and score produced results like
- * Nicaragua for Ecuador and Serbia or Georgia for Aland, which are not nearby.
- * Distance needs coordinates, and they must come from a source that can be cited
- * and re-run, not typed in by hand.
+ * Why it exists: the country-page comparison table orders land neighbours by
+ * centre-to-centre distance (they all share a border, so their coast-or-border
+ * distance is 0), and falls back to it for a pair the proximity file does not store
+ * (src/data/country-proximity.json, scripts/generate-country-proximity.ts). The
+ * points must come from a source that can be cited and re-run, not typed in by hand.
  *
  * Notes:
  *  - Wikidata content is CC0, so no attribution is required.
@@ -19,8 +19,8 @@
  *    usage policy asks.
  *  - P625 is a single point per country, usually near the centroid. For large or
  *    elongated countries (Russia, USA, Canada, Chile, Indonesia) that point can
- *    sit far from the borders, so distance is a proxy. Real neighbours still come
- *    from borderMap (src/lib/neighbors.ts).
+ *    sit far from the borders, which is why "nearby" is measured coast to coast
+ *    (country-proximity.json) and land neighbours come from src/lib/neighbors.ts.
  *  - Countries without P625 are left out on purpose. No coordinates are invented:
  *    the consumer treats a missing entry as "no coordinates" and adds no nearby
  *    countries for that country.

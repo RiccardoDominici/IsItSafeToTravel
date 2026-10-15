@@ -941,16 +941,17 @@ export function getH1CountryPhrase(lang: Lang, iso3: string, bareName: string): 
 
 /**
  * Grammar-correct country phrase for the comparison heading, in the form each
- * locale's sentence needs. `phrase` fills {name}. `copula` fills {copula}
- * (German only: lowercase "ist"/"sind", so the verb agrees with plural names
- * such as die Niederlande).
+ * locale's sentence needs. `phrase` fills {name}. `copula` fills {copula}: the
+ * verb that agrees with the name in the locales whose heading makes the name
+ * the subject — en "does"/"do" ("How do the Åland Islands compare…"), es
+ * "compara"/"comparan" ("¿Cómo se comparan las Islas Caimán…"), de
+ * "ist"/"sind" ("Wie sicher sind die Niederlande…").
  *
- * The headings avoid a bare subject wherever the language would need a
- * gender- or number-dependent verb or adjective. Italian and French put the
+ * The other headings avoid a bare subject wherever the language would need a
+ * gender- or number-dependent verb or adjective: Italian and French put the
  * country in a locative ("la sicurezza in Germania", "la sécurité en France"),
- * Portuguese uses "de" plus article ("a segurança do Japão"), German uses a
- * copula. English takes the name with its article, Spanish and Chinese the
- * bare name.
+ * Portuguese uses "de" plus article ("a segurança do Japão"), Chinese needs
+ * nothing.
  */
 export function getComparisonSubject(
   lang: Lang,
@@ -959,7 +960,12 @@ export function getComparisonSubject(
 ): { phrase: string; copula: string } {
   switch (lang) {
     case 'en':
-      return { phrase: getEnglishCountryPhrase(iso3, bareName), copula: '' };
+      return { phrase: getEnglishCountryPhrase(iso3, bareName), copula: isEnglishPlural(iso3, bareName) ? 'do' : 'does' };
+    case 'es': {
+      // Plural exactly when Spanish writes a plural article (los Países Bajos, las Islas Caimán).
+      const article = getEsArticle(iso3, bareName);
+      return { phrase: getSpanishWithArticle(iso3, bareName), copula: article === 'los' || article === 'las' ? 'comparan' : 'compara' };
+    }
     case 'it':
       return { phrase: getItalianLocative(iso3, bareName), copula: '' };
     case 'fr':
@@ -969,6 +975,6 @@ export function getComparisonSubject(
     case 'de':
       return { phrase: getGermanNominative(iso3, bareName), copula: getGermanCopula(iso3, bareName).toLowerCase() };
     default:
-      return { phrase: bareName, copula: '' }; // es, zh
+      return { phrase: bareName, copula: '' }; // zh
   }
 }

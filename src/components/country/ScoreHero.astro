@@ -12,7 +12,7 @@ import { LOW_CONFIDENCE_THRESHOLD } from '../../lib/confidence';
 import { isScored } from '../../lib/score-status';
 import { countryEvidenceCoverage } from '../../lib/indicator-display';
 import { communityCopy } from '../../i18n/community-copy';
-import { greyCopy, greySourceItems } from '../../i18n/grey-copy';
+import { greyCopy, greySourceItemsFor } from '../../i18n/grey-copy';
 import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
 import { routes } from '../../i18n/ui';
 
@@ -32,7 +32,10 @@ const scored = isScored(country);
 const bareName = getLocalizedCountryName(country, lang);
 const grey = greyCopy[lang];
 const greyName = lang === 'en' ? getEnglishCountryPhrase(country.iso3, bareName) : bareName;
-const greyItems = scored ? [] : greySourceItems(lang, Object.keys(country.advisories ?? {}).length, (country.sources ?? []).map((s) => s.name));
+const greyItems = scored ? [] : greySourceItemsFor(lang, country);
+// Nothing at all to list (no advisory, no source): "No data yet" and one sentence, never a
+// "Partial data" label over a "What we do have" heading with nothing under it (audit I27).
+const greyNoData = !scored && greyItems.length === 0;
 const methodologyHref = `/${lang}/${routes[lang].methodology}/#grey-rule`;
 
 // Scored-only values (never computed from a grey place's null score).
@@ -64,6 +67,12 @@ const band = getBand(scoreValue);
 const verdictText = getBandVerdictCopy(scoreValue, lang).badge;
 const badgeClass = badgeStyles[band];
 
+// The big number is the same one-decimal score the title, summary, FAQ and every list show (owner
+// decision 2026-10-15, audit I08). It used to be country.scoreDisplay = Math.round(score): 6.7
+// printed a big "7" under an "Exercise caution" (6-7) pill, and two countries both shown as 8.5
+// read "8" and "9" depending on the unrounded value behind them.
+const heroScore = scoreValue.toFixed(1);
+
 const formattedDate = new Intl.DateTimeFormat(lang, {
   year: 'numeric',
   month: 'long',
@@ -82,20 +91,22 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
   <div class="flex justify-center mb-6">
     <p class="inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-base md:text-lg font-semibold bg-sand-200 text-sand-800 dark:bg-sand-700 dark:text-sand-100">
       <svg class="w-2.5 h-2.5 shrink-0" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><circle cx="8" cy="8" r="8"/></svg>
-      <span>{communityCopy[lang].partialDataTitle}</span>
+      <span>{greyNoData ? grey.noDataTitle : communityCopy[lang].partialDataTitle}</span>
     </p>
   </div>
 
   <div class="mx-auto max-w-xl rounded-2xl border border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-800 px-5 py-5 md:px-6 text-left">
     <p class="text-xl md:text-2xl font-heading font-bold text-sand-700 dark:text-sand-100 text-center">{grey.noScore}</p>
-    <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.why.replace('{name}', greyName)}</p>
-    <p class="mt-4 text-sm font-semibold text-sand-800 dark:text-sand-100">{grey.haveHeading}</p>
-    {greyItems.length > 0 ? (
-      <ul class="mt-1 list-disc pl-5 space-y-0.5 text-sm text-sand-700 dark:text-sand-300">
-        {greyItems.map((item) => <li>{item}</li>)}
-      </ul>
+    {greyNoData ? (
+      <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.whyNone.replace('{name}', greyName)}</p>
     ) : (
-      <p class="mt-1 text-sm text-sand-700 dark:text-sand-300">{grey.nothing}</p>
+      <>
+        <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.why.replace('{name}', greyName)}</p>
+        <p class="mt-4 text-sm font-semibold text-sand-800 dark:text-sand-100">{grey.haveHeading}</p>
+        <ul class="mt-1 list-disc pl-5 space-y-0.5 text-sm text-sand-700 dark:text-sand-300">
+          {greyItems.map((item) => <li>{item}</li>)}
+        </ul>
+      </>
     )}
     <a href={methodologyHref} class="mt-4 inline-flex items-center gap-1 text-sm font-medium text-terracotta-600 dark:text-terracotta-400 hover:underline">
       {grey.methodologyLink}<span aria-hidden="true">&rarr;</span>
@@ -131,8 +142,8 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
     class="inline-flex flex-col items-center justify-center rounded-2xl px-8 py-6 shadow-lg"
     style={`background-color: ${bgColor}; color: ${fgColor};`}
   >
-    <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
-      {country.scoreDisplay}
+    <span class="text-6xl md:text-8xl font-heading font-bold leading-none tabular-nums">
+      {heroScore}
     </span>
     {/* No opacity fade here (was opacity-90): this text is normal-weight and
         under 24px, so it needs the full 4.5:1, not the 3:1 large-text
@@ -141,9 +152,7 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
         measured 5.13:1 before any fade) -- any alpha blend risks dropping
         below AA (2026-09 contrast fix). */}
     <span class="text-lg md:text-xl font-medium mt-1">
-      {/* One string: inside the conditional below, markup follows JSX whitespace rules and
-          `{a} {b}` would lose its space ("5.9out of 10"). */}
-      {`${scoreValue.toFixed(1)} ${t('country.out_of')}`}
+      {t('country.out_of')}
     </span>
   </div>
 

@@ -16,7 +16,8 @@ import { strict as assert } from 'node:assert';
 import { COUNTRIES, getCountryByName } from '../../pipeline/config/countries.js';
 import { getLocalizedCountryName } from '../../lib/scores.js';
 import { getCountryPageTitle } from '../country-title.js';
-import { getH1CountryPhrase, getEnglishPossessive, isEnglishPlural, isGermanPlural } from '../country-grammar.js';
+import { getComparisonSubject, getH1CountryPhrase, getEnglishPossessive, isEnglishPlural, isGermanPlural } from '../country-grammar.js';
+import { greyTitleSuffix } from '../grey-copy.js';
 import { ui, type Lang } from '../ui.js';
 
 const LANGS: Lang[] = ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'];
@@ -28,6 +29,11 @@ function bare(iso3: string, lang: Lang): string {
 }
 const title = (lang: Lang, iso3: string, score: number | null = 6) => getCountryPageTitle(lang, iso3, bare(iso3, lang), score);
 const h1 = (lang: Lang, iso3: string) => ui[lang]['country.h1_question'].replace('{name}', getH1CountryPhrase(lang, iso3, bare(iso3, lang)));
+// The comparison heading, as ComparisonTable.astro fills it.
+const heading = (lang: Lang, iso3: string) => {
+  const subject = getComparisonSubject(lang, iso3, bare(iso3, lang));
+  return ui[lang]['country.compare_title'].replace('{name}', subject.phrase).replace('{copula}', subject.copula);
+};
 
 // --- 1. Golden titles ---
 
@@ -67,6 +73,13 @@ describe('de titles: article, verb number and weak adjective endings (I11, I62)'
   }
   it('grey places get the partial-data suffix and no number', () => {
     assert.equal(title('de', 'SLB', null), 'Sind die Salomonen sicher? Unvollständige Datenlage (2026)');
+  });
+  it('places with no advisory and no source get "Noch keine Daten" (greyTitleSuffix, as on the page)', () => {
+    const nothing = greyTitleSuffix('de', { advisories: {}, sources: [] });
+    assert.equal(getCountryPageTitle('de', 'NFK', bare('NFK', 'de'), null, nothing), 'Ist die Norfolkinsel sicher? Noch keine Daten (2026)');
+    assert.equal(getCountryPageTitle('en', 'CCK', bare('CCK', 'en'), null, greyTitleSuffix('en', {})), 'Are the Cocos (Keeling) Islands Safe? No Data Yet (2026)');
+    assert.equal(getCountryPageTitle('it', 'CXR', bare('CXR', 'it'), null, greyTitleSuffix('it', {})), "È sicuro viaggiare sull'Isola di Natale? Ancora nessun dato (2026)");
+    assert.equal(getCountryPageTitle('en', 'UMI', bare('UMI', 'en'), null, greyTitleSuffix('en', {})), 'Are the US Minor Outlying Islands Safe? No Data Yet (2026)');
   });
 });
 
@@ -192,6 +205,21 @@ describe('es titles and H1: the article where Spanish always writes one', () => 
   }
 });
 
+describe('comparison heading: the verb agrees with the name', () => {
+  it('en: "How do the Åland Islands compare", "How does Japan compare"', () => {
+    assert.equal(heading('en', 'ALA'), 'How do the Åland Islands compare to neighboring countries?');
+    assert.equal(heading('en', 'JPN'), 'How does Japan compare to neighboring countries?');
+    assert.equal(heading('en', 'USA'), 'How does the United States compare to neighboring countries?');
+  });
+  it('es: article and plural verb', () => {
+    assert.equal(heading('es', 'CYM'), '¿Cómo se comparan las Islas Caimán con sus países vecinos?');
+    assert.equal(heading('es', 'GBR'), '¿Cómo se compara el Reino Unido con sus países vecinos?');
+  });
+  it('de: "sind" for plural names', () => {
+    assert.equal(heading('de', 'SLB'), 'Wie sicher sind die Salomonen im Vergleich zu den Nachbarländern?');
+  });
+});
+
 describe('pt and zh titles', () => {
   it('pt: Republic of the Congo, Faroe, Åland and Bahamas', () => {
     assert.equal(title('pt', 'COG'), 'É seguro viajar para a República do Congo? 6.0/10 (2026)');
@@ -240,11 +268,11 @@ describe('names (I24, I28) and the matcher aliases that keep fetchers resolving 
 // --- 2. Guards over every place and language ---
 
 describe('every title and H1 (248 places x 7 languages)', () => {
-  const rows = COUNTRIES.flatMap((c) => LANGS.map((lang) => ({ iso3: c.iso3, lang, name: bare(c.iso3, lang), title: title(lang, c.iso3), h1: h1(lang, c.iso3) })));
+  const rows = COUNTRIES.flatMap((c) => LANGS.map((lang) => ({ iso3: c.iso3, lang, name: bare(c.iso3, lang), title: title(lang, c.iso3), h1: h1(lang, c.iso3), heading: heading(lang, c.iso3) })));
 
   it('no empty slot, doubled space, or stray placeholder', () => {
     for (const r of rows) {
-      for (const text of [r.title, r.h1]) {
+      for (const text of [r.title, r.h1, r.heading]) {
         assert.ok(!/\s{2}|undefined|\{|\}/.test(text), `${r.iso3}/${r.lang}: "${text}"`);
         assert.ok(text.includes(r.name) || r.lang === 'de' || r.lang === 'fr', `${r.iso3}/${r.lang}: name missing in "${text}"`);
       }
@@ -256,6 +284,7 @@ describe('every title and H1 (248 places x 7 languages)', () => {
       const plural = /(Islands|Territories)$/.test(r.name);
       assert.equal(isEnglishPlural(r.iso3), plural, `${r.iso3}: "${r.name}"`);
       assert.ok(r.title.startsWith(plural ? 'Are ' : 'Is '), `${r.iso3}: "${r.title}"`);
+      assert.ok(r.heading.startsWith(plural ? 'How do ' : 'How does '), `${r.iso3}: "${r.heading}"`);
     }
   });
 

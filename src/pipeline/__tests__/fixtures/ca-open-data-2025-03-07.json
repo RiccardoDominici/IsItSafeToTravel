@@ -1,0 +1,458 @@
+{
+ "metadata": {
+  "generated": {
+   "timestamp": 1741382500,
+   "date": "2025-03-07 16:21:40"
+  }
+ },
+ "data": {
+  "AF": {
+   "country-id": 1000,
+   "country-iso": "AF",
+   "country-eng": "Afghanistan",
+   "country-fra": "Afghanistan",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "Afghanistan",
+    "url-slug": "afghanistan",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Afghanistan",
+    "url-slug": "afghanistan",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "SY": {
+   "country-id": 283000,
+   "country-iso": "SY",
+   "country-eng": "Syria",
+   "country-fra": "Syrie",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "Syria",
+    "url-slug": "syria",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Syrie",
+    "url-slug": "syrie",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "KP": {
+   "country-id": 152000,
+   "country-iso": "KP",
+   "country-eng": "North Korea",
+   "country-fra": "Corée du nord",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "North Korea",
+    "url-slug": "north-korea",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Corée du Nord",
+    "url-slug": "coree-nord",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "MX": {
+   "country-id": 184000,
+   "country-iso": "MX",
+   "country-eng": "Mexico",
+   "country-fra": "Mexique",
+   "advisory-state": 1,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "Mexico",
+    "url-slug": "mexico",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise a high degree of caution (with regional advisories)"
+   },
+   "fra": {
+    "name": "Mexique",
+    "url-slug": "mexique",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Faire preuve d’une grande prudence (avec avertissements régionaux)"
+   }
+  },
+  "CO": {
+   "country-id": 60000,
+   "country-iso": "CO",
+   "country-eng": "Colombia",
+   "country-fra": "Colombie",
+   "advisory-state": 1,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "Colombia",
+    "url-slug": "colombia",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise a high degree of caution (with regional advisories)"
+   },
+   "fra": {
+    "name": "Colombie",
+    "url-slug": "colombie",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Faire preuve d’une grande prudence (avec avertissements régionaux)"
+   }
+  },
+  "FR": {
+   "country-id": 92000,
+   "country-iso": "FR",
+   "country-eng": "France",
+   "country-fra": "France",
+   "advisory-state": 1,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "France",
+    "url-slug": "france",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise a high degree of caution"
+   },
+   "fra": {
+    "name": "France",
+    "url-slug": "france",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Faire preuve d’une grande prudence"
+   }
+  },
+  "IL": {
+   "country-id": 135000,
+   "country-iso": "IL",
+   "country-eng": "Israel, the West Bank and the Gaza Strip",
+   "country-fra": "Israël, la Cisjordanie et la bande de Gaza",
+   "advisory-state": 2,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Regional advisory modified",
+   "eng": {
+    "name": "Israel, the West Bank and the Gaza Strip",
+    "url-slug": "israel-the-west-bank-and-the-gaza-strip",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid non-essential travel (with regional advisories)"
+   },
+   "fra": {
+    "name": "Israël, la Cisjordanie et la bande de Gaza",
+    "url-slug": "israel-la-cisjordanie-et-la-bande-de-gaza",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage non-essentiel (avec avertissements régionaux)"
+   }
+  },
+  "TR": {
+   "country-id": 300000,
+   "country-iso": "TR",
+   "country-eng": "Türkiye",
+   "country-fra": "Türkiye",
+   "advisory-state": 1,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "Türkiye",
+    "url-slug": "turkiye",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise a high degree of caution (with regional advisories)"
+   },
+   "fra": {
+    "name": "Türkiye",
+    "url-slug": "turkiye",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Faire preuve d’une grande prudence (avec avertissements régionaux)"
+   }
+  },
+  "US": {
+   "country-id": 308000,
+   "country-iso": "US",
+   "country-eng": "United States",
+   "country-fra": "États-Unis",
+   "advisory-state": 0,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "United States",
+    "url-slug": "united-states",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise normal security precautions"
+   },
+   "fra": {
+    "name": "États-Unis",
+    "url-slug": "etats-unis",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Prendre des mesures de sécurité normales"
+   }
+  },
+  "IN": {
+   "country-id": 128000,
+   "country-iso": "IN",
+   "country-eng": "India",
+   "country-fra": "Inde",
+   "advisory-state": 1,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "India",
+    "url-slug": "india",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise a high degree of caution (with regional advisories)"
+   },
+   "fra": {
+    "name": "Inde",
+    "url-slug": "inde",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Faire preuve d’une grande prudence (avec avertissements régionaux)"
+   }
+  },
+  "UA": {
+   "country-id": 305000,
+   "country-iso": "UA",
+   "country-eng": "Ukraine",
+   "country-fra": "Ukraine",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "Ukraine",
+    "url-slug": "ukraine",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Ukraine",
+    "url-slug": "ukraine",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "RU": {
+   "country-id": 249000,
+   "country-iso": "RU",
+   "country-eng": "Russia",
+   "country-fra": "Russie",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "Russia",
+    "url-slug": "russia",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Russie",
+    "url-slug": "russie",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "VE": {
+   "country-id": 313000,
+   "country-iso": "VE",
+   "country-eng": "Venezuela",
+   "country-fra": "Venezuela",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "Venezuela",
+    "url-slug": "venezuela",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Venezuela",
+    "url-slug": "venezuela",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "HT": {
+   "country-id": 117000,
+   "country-iso": "HT",
+   "country-eng": "Haiti",
+   "country-fra": "Haïti",
+   "advisory-state": 3,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 1,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Regular text update",
+   "eng": {
+    "name": "Haiti",
+    "url-slug": "haiti",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Avoid all travel"
+   },
+   "fra": {
+    "name": "Haïti",
+    "url-slug": "haiti",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Éviter tout voyage"
+   }
+  },
+  "XK": {
+   "country-id": 154000,
+   "country-iso": "XK",
+   "country-eng": "Kosovo",
+   "country-fra": "Kosovo",
+   "advisory-state": 0,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 1,
+   "has-content": 1,
+   "recent-updates-type": "Editorial change",
+   "eng": {
+    "name": "Kosovo",
+    "url-slug": "kosovo",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise normal security precautions (with regional advisories)"
+   },
+   "fra": {
+    "name": "Kosovo",
+    "url-slug": "kosovo",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Prendre des mesures de sécurité normales (avec avertissements régionaux)"
+   }
+  },
+  "PT-20": {
+   "country-id": 900,
+   "country-iso": "PT-20",
+   "country-eng": "Azores",
+   "country-fra": "Açores",
+   "advisory-state": 0,
+   "date-published": {
+    "timestamp": 1741290993,
+    "date": "2025-03-06 14:56:33",
+    "asp": "2025-03-06T14:56:33.5674869-05:00"
+   },
+   "has-advisory-warning": 0,
+   "has-regional-advisory": 0,
+   "has-content": 1,
+   "recent-updates-type": "Full TAA review",
+   "eng": {
+    "name": "Azores",
+    "url-slug": "azores",
+    "friendly-date": "March 6, 2025 14:56 EST",
+    "advisory-text": "Exercise normal security precautions"
+   },
+   "fra": {
+    "name": "Açores",
+    "url-slug": "acores",
+    "friendly-date": "6 mars 2025 14:56 HNE",
+    "advisory-text": "Prendre des mesures de sécurité normales"
+   }
+  }
+ }
+}

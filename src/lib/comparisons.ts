@@ -3,84 +3,112 @@
  * "related countries" block (components/country/ComparisonTable.astro and
  * RelatedCountries.astro).
  *
- * Pure: no I/O, no logging. Coordinates are passed in (src/data/country-coords.json,
- * built by scripts/generate-country-coords.ts). Every ordering ends in an iso3
- * tie-break, so the same countries always produce the same lists, whatever order
- * the caller passes them in.
+ * Pure: no I/O, no logging. Geography is passed in: coast-or-border distances
+ * (src/data/country-proximity.json, built from Natural Earth by
+ * scripts/generate-country-proximity.ts) and Wikidata points
+ * (src/data/country-coords.json). Every ordering ends in an iso3 tie-break, so the
+ * same countries always produce the same lists, whatever order the caller passes.
  *
- * Comparison rows:
- *  - Neighbours: real borders (borderMap via getNeighbors) that pass
- *    hasSufficientData, by score, max 6.
- *  - Nearby: only when fewer than MIN_NEIGHBOURS_BEFORE_FILL neighbours remain.
- *    Filled up to COMPARISON_SIZE other countries with the NEAREST countries by
- *    great-circle distance. Candidates must pass hasSufficientData, lie within
- *    NEARBY_MAX_KM of the subject, and not be the subject or one of its real
- *    borders. Nearby means geographically close: not "same region", not "similar
- *    score".
- *  - A subject or candidate without coordinates gets no nearby countries. No
- *    coordinates are invented.
- *  - When nothing qualifies, the table keeps only the real neighbours. A country
- *    with neither real neighbours nor nearby countries is not rendered.
+ * Comparison rows (selectComparison), all ordered by distance, never by score:
+ *  - Land neighbours: EVERY real land border (src/lib/neighbors.ts), places without
+ *    an official score included (the table shows "Partial data" for them). Never
+ *    capped, never filtered: China shows all 16, Afghanistan and North Korea too.
+ *    They share a border (distance 0), so among themselves they go nearest centre
+ *    first.
+ *  - The sovereign state of a territory (Jersey -> United Kingdom, Réunion -> France),
+ *    however far, labelled with its distance.
+ *  - Across-sea places: only when the two kinds above give fewer than
+ *    MIN_NEIGHBOURS_BEFORE_FILL rows. Topped up to COMPARISON_SIZE rows with the
+ *    nearest places by shortest coast-or-border distance, within NEARBY_MAX_KM, that
+ *    pass hasSufficientData (a filler is there to compare numbers with). Each is
+ *    labelled with its distance ("about 80 km away"), not a blanket "nearby".
+ *  - Remote islands only (New Zealand, Pitcairn): when that still leaves fewer than
+ *    MIN_ROWS_REMOTE rows, the nearest scored places within REMOTE_MAX_KM are added
+ *    up to MIN_ROWS_REMOTE, so the table is not empty. Labelled the same way.
  *
- * Related block:
- *  - Same region: closest total score first (data-sufficient, excluding the rows above).
+ * Related block (selectRelated):
+ *  - Same region: the RELATED_LIST_SIZE places nearest to the subject within its
+ *    UN M49 sub-region (src/lib/subregions.ts), shown by score.
  *  - Similar risk profile: smallest Euclidean distance over the five pillar scores,
  *    excluding the same-region list.
- *  - Withheld entirely (both lists) when the subject fails hasSufficientData. Its
- *    score and pillars are then prior-driven, and the same-region list orders by
- *    total score, so both lists would rest on priors.
+ *  - Both lists skip what the table shows and places below the data floor, and are
+ *    withheld entirely when the subject fails hasSufficientData (its score and
+ *    pillars would rest on priors).
  *
- * Data coverage filters the CANDIDATES, never the page: a country with thin data
- * still gets a comparison table.
- *
- * WHY: fillers used to be the countries closest in score within the same region,
- * so Ecuador got Nicaragua and Mexico and Aland got Serbia and Georgia. Those are
- * not nearby, and a reader called them wrong. Distance decides now.
+ * WHY (2026-10 audit, I09/I33/I35/I37): the table kept the six best-scoring
+ * neighbours, so China lost Afghanistan, Myanmar, Russia, North Korea and Pakistan;
+ * fillers were picked by centroid distance up to 2,000 km and all tagged "nearby"
+ * (Malta got Tunisia but not Libya, Kuwait missed Iran); "same region" meant a
+ * continent, ordered by score (Afghanistan got North Korea).
  */
-import type { ScoredCountry } from '../pipeline/types';
-import { borderMap, getNeighbors } from './neighbors';
-import { getRegion } from './regions';
+import type { PillarName, ScoredCountry } from '../pipeline/types';
+import { getLandNeighbours, getSovereignState } from './neighbors';
+import { getSubregion } from './subregions';
 import { hasSufficientData } from './hub-data';
-import { officialScore, type Scored } from './score-status';
+import { isEstimatedPillar } from './pillar-presentation';
+import type { Scored } from './score-status';
 
-/** Fewer data-sufficient real neighbours than this, and nearby countries are added. */
+/** Fewer land-neighbour + sovereign rows than this, and across-sea places are added. */
 export const MIN_NEIGHBOURS_BEFORE_FILL = 3;
-/** Other-country rows in the comparison table once filled (neighbours + nearby). */
+/** Other-country rows in the comparison table once filled. */
 export const COMPARISON_SIZE = 4;
 /** Entries per list in the related-countries block. */
 export const RELATED_LIST_SIZE = 3;
-/** A nearby country must lie within this great-circle distance of the subject (km). */
-export const NEARBY_MAX_KM = 2000;
+/** An across-sea filler must lie within this coast-or-border distance of the subject (km). */
+export const NEARBY_MAX_KM = 1000;
+/** A remote island with fewer other rows than this after the first fill gets the nearest farther places... */
+export const MIN_ROWS_REMOTE = 2;
+/** ...within this distance (km). New Zealand: Australia ~1,500 km, Fiji ~1,800 km. */
+export const REMOTE_MAX_KM = 2500;
 
 const EARTH_RADIUS_KM = 6371;
 
 /** ISO3 -> [lat, lon] (src/data/country-coords.json). A missing or malformed entry means "no coordinates". */
 export type CoordMap = Readonly<Record<string, readonly number[] | undefined>>;
+/** ISO3 -> (ISO3 -> shortest coast-or-border distance in km) (src/data/country-proximity.json). */
+export type ProximityMap = Readonly<Record<string, Readonly<Record<string, number>> | undefined>>;
 
-/** What the comparison table shows for a country, besides the country itself. */
+/** The geography every selection needs. */
+export interface Geography {
+  proximity: ProximityMap;
+  coords: CoordMap;
+}
+
+/** How a row relates to the page's place. */
+export type RowRelation = 'self' | 'land' | 'sea';
+
+/** One row of the comparison table. */
+export interface ComparisonRow {
+  country: ScoredCountry;
+  /** 'self': the page's own place. 'land': shares a land border. 'sea': across the sea, labelled with its distance. */
+  relation: RowRelation;
+  /** Shortest coast-or-border distance in km (0 for 'self' and 'land'). */
+  km: number;
+}
+
+/** What the comparison table shows besides the place itself, nearest first. */
 export interface ComparisonSelection {
-  /** Real neighbours that pass hasSufficientData (so they have an official score), score descending, max 6. */
-  neighbours: Scored<ScoredCountry>[];
-  /** Nearest countries by distance. Empty unless neighbours.length < MIN_NEIGHBOURS_BEFORE_FILL. */
-  nearby: Scored<ScoredCountry>[];
+  others: ComparisonRow[];
 }
 
 /** What the related-countries block shows for a country. */
 export interface RelatedSelection {
-  /** Same region, closest total score first. Empty when the subject fails the data floor. */
+  /** Nearest places in the same M49 sub-region, displayed by score descending. Empty when the subject fails the data floor. */
   sameRegion: Scored<ScoredCountry>[];
   /** Most similar risk profile first. Empty when the subject fails the data floor. Never repeats a sameRegion entry. */
   similarProfile: Scored<ScoredCountry>[];
 }
 
+/** One pillar cell of a comparison row. */
+export interface PillarCell {
+  name: PillarName;
+  /** Score out of 10, or null when nothing measured stands behind the pillar (shown as "No data"). */
+  score10: number | null;
+}
+
 /** Plain code-unit ascending order on iso3 (locale-independent tie-break). */
 function byIso3(a: ScoredCountry, b: ScoredCountry): number {
   return a.iso3 < b.iso3 ? -1 : a.iso3 > b.iso3 ? 1 : 0;
-}
-
-/** Absolute total-score gap: the closeness measure for the same-region list (scored countries only). */
-function scoreGap(candidate: Scored<ScoredCountry>, subject: Scored<ScoredCountry>): number {
-  return Math.abs(candidate.score - subject.score);
 }
 
 /**
@@ -109,6 +137,44 @@ export function coordsOf(iso3: string, coords: CoordMap): [number, number] | nul
   return [lat, lon];
 }
 
+/** Centre-to-centre km from the Wikidata points, or Infinity when either is missing. */
+function centreKm(a: string, b: string, coords: CoordMap): number {
+  const pa = coordsOf(a, coords);
+  const pb = coordsOf(b, coords);
+  return pa && pb ? haversineKm(pa, pb) : Infinity;
+}
+
+/**
+ * Shortest coast-or-border distance in km between two places, looked up in either
+ * direction, or null when the proximity data has no entry for the pair.
+ */
+export function proximityKm(a: string, b: string, proximity: ProximityMap): number | null {
+  const own = Object.prototype.hasOwnProperty.call(proximity, a) ? proximity[a] : undefined;
+  if (own && Object.prototype.hasOwnProperty.call(own, b) && Number.isFinite(own[b])) return own[b];
+  const other = Object.prototype.hasOwnProperty.call(proximity, b) ? proximity[b] : undefined;
+  if (other && Object.prototype.hasOwnProperty.call(other, a) && Number.isFinite(other[a])) return other[a];
+  return null;
+}
+
+/**
+ * Distance for display and ordering: coast-or-border km when known, else the
+ * centre-to-centre km (a far pair the proximity file does not store), else Infinity.
+ */
+function distanceKm(a: string, b: string, geo: Geography): number {
+  return proximityKm(a, b, geo.proximity) ?? centreKm(a, b, geo.coords);
+}
+
+/**
+ * The distance shown in a row label, rounded to what the measure supports:
+ * whole km under 10, then to 5 km under 100, 10 km under 1,000, 100 km above.
+ */
+export function roundDistanceKm(km: number): number {
+  if (km < 10) return Math.max(1, Math.round(km));
+  if (km < 100) return Math.round(km / 5) * 5;
+  if (km < 1000) return Math.round(km / 10) * 10;
+  return Math.round(km / 100) * 100;
+}
+
 /**
  * Euclidean distance between two countries over their pillar scores (0-1 each).
  * Only pillars present on both sides count. Returns null when they share none,
@@ -128,62 +194,84 @@ export function profileDistance(a: ScoredCountry, b: ScoredCountry): number | nu
   return shared === 0 ? null : Math.sqrt(sumSquares);
 }
 
+/** Row order: nearest first; equal distances (land neighbours, all 0) nearest centre first; then iso3. */
+function byDistance(subject: string, geo: Geography): (x: ComparisonRow, y: ComparisonRow) => number {
+  return (x, y) =>
+    x.km - y.km ||
+    centreKm(subject, x.country.iso3, geo.coords) - centreKm(subject, y.country.iso3, geo.coords) ||
+    byIso3(x.country, y.country);
+}
+
 /**
- * Comparison selection for one country: real neighbours first, then, only when too
- * few remain, the nearest countries by great-circle distance to top up to
- * COMPARISON_SIZE others.
+ * Comparison selection for one place: every land neighbour, the sovereign state of a
+ * territory, and, only when those give too few rows, the nearest data-sufficient
+ * places across the sea (within NEARBY_MAX_KM, or REMOTE_MAX_KM for remote islands).
+ * Rows come back nearest first.
  */
 export function selectComparison(
   country: ScoredCountry,
   allCountries: ScoredCountry[],
-  coords: CoordMap,
+  geo: Geography,
 ): ComparisonSelection {
-  const neighbours = getNeighbors<Scored<ScoredCountry>>(country.iso3, allCountries, hasSufficientData);
-  if (neighbours.length >= MIN_NEIGHBOURS_BEFORE_FILL) {
-    return { neighbours, nearby: [] };
+  const byIso = new Map(allCountries.map((c) => [c.iso3, c]));
+  const subject = country.iso3;
+
+  const land: ComparisonRow[] = getLandNeighbours(subject)
+    .filter((iso3) => byIso.has(iso3))
+    .map((iso3) => ({ country: byIso.get(iso3)!, relation: 'land' as const, km: 0 }));
+
+  const rows: ComparisonRow[] = [...land];
+  const sovereign = getSovereignState(subject);
+  if (sovereign && byIso.has(sovereign) && !land.some((r) => r.country.iso3 === sovereign)) {
+    rows.push({ country: byIso.get(sovereign)!, relation: 'sea', km: distanceKm(subject, sovereign, geo) });
   }
 
-  const subject = coordsOf(country.iso3, coords);
-  if (!subject) return { neighbours, nearby: [] };
+  // Nearest scored places across the sea, not yet in the table, within maxKm, up to `upTo` rows.
+  const fillUpTo = (upTo: number, maxKm: number): void => {
+    if (rows.length >= upTo) return;
+    const taken = new Set<string>([subject, ...rows.map((r) => r.country.iso3)]);
+    const own = Object.prototype.hasOwnProperty.call(geo.proximity, subject) ? geo.proximity[subject] : undefined;
+    const nearest = Object.entries(own ?? {})
+      .flatMap(([iso3, km]) => {
+        const c = byIso.get(iso3);
+        if (!c || taken.has(iso3) || !Number.isFinite(km) || km > maxKm || !hasSufficientData(c)) return [];
+        return [{ country: c as ScoredCountry, relation: 'sea' as const, km }];
+      })
+      .sort(byDistance(subject, geo))
+      .slice(0, upTo - rows.length);
+    rows.push(...nearest);
+  };
+  if (rows.length < MIN_NEIGHBOURS_BEFORE_FILL) fillUpTo(COMPARISON_SIZE, NEARBY_MAX_KM);
+  fillUpTo(MIN_ROWS_REMOTE, REMOTE_MAX_KM);
 
-  // Real borders are never fillers, even when the data floor would have dropped them.
-  const excluded = new Set<string>([
-    country.iso3,
-    ...(borderMap[country.iso3] ?? []),
-    ...neighbours.map((c) => c.iso3),
-  ]);
-  const nearby = allCountries
-    .filter((c): c is Scored<ScoredCountry> => !excluded.has(c.iso3) && hasSufficientData(c))
-    .flatMap((c) => {
-      const at = coordsOf(c.iso3, coords);
-      return at ? [{ c, km: haversineKm(subject, at) }] : [];
-    })
-    .filter((x) => x.km <= NEARBY_MAX_KM)
-    .sort((a, b) => a.km - b.km || byIso3(a.c, b.c))
-    .slice(0, COMPARISON_SIZE - neighbours.length)
-    .map((x) => x.c);
-
-  return { neighbours, nearby };
+  return { others: rows.sort(byDistance(subject, geo)) };
 }
 
 /**
- * Rows for the comparison table: the country itself plus its selected others, by score
- * descending. A grey subject (formula v10, no official score; its others always have one, since
- * they pass hasSufficientData) has no place in a score order: it comes first, as the row the
- * table is about, and the table renders it without numbers.
+ * The pillar cells of one comparison row, in the order of `names`. Same rule as the pillar bars
+ * (isEstimatedPillar, audit I31): a pillar with no measured indicator holds the engine's regional
+ * prior, so it gets no number here either (it printed Nauru's crime prior as a measured 5.7). A
+ * pillar missing from the data is treated the same way instead of showing 0.0.
  */
-export function comparisonRows(country: ScoredCountry, selection: ComparisonSelection): ScoredCountry[] {
-  return [country, ...selection.neighbours, ...selection.nearby].sort((a, b) => {
-    const sa = officialScore(a);
-    const sb = officialScore(b);
-    if (sa === null || sb === null) return (sa === null ? 0 : 1) - (sb === null ? 0 : 1) || byIso3(a, b);
-    return sb - sa || byIso3(a, b);
+export function comparisonPillarCells(country: ScoredCountry, names: readonly PillarName[]): PillarCell[] {
+  const byName = new Map(country.pillars.map((p) => [p.name, p]));
+  return names.map((name) => {
+    const pillar = byName.get(name);
+    return { name, score10: pillar && !isEstimatedPillar(pillar) ? pillar.score * 10 : null };
   });
 }
 
 /**
+ * Rows for the comparison table: the place itself first (the row the table is about,
+ * with or without a score), then its selected others, nearest first.
+ */
+export function comparisonRows(country: ScoredCountry, selection: ComparisonSelection): ComparisonRow[] {
+  return [{ country, relation: 'self', km: 0 }, ...selection.others];
+}
+
+/**
  * Related-countries block. `shown` is the comparison selection rendered on the
- * same page; those countries are excluded so no country appears twice.
+ * same page; those places are excluded so none appears twice.
  *
  * Withheld entirely (both lists empty) for a subject below the data floor: its score
  * and pillars are prior-driven, and both lists rest on them.
@@ -192,28 +280,27 @@ export function selectRelated(
   country: ScoredCountry,
   allCountries: ScoredCountry[],
   shown: ComparisonSelection,
+  geo: Geography,
 ): RelatedSelection {
-  // Withheld for a subject below the data floor: its score and pillars are prior-driven,
-  // so neither the same-region order nor the profile distances mean anything.
   if (!hasSufficientData(country)) return { sameRegion: [], similarProfile: [] };
 
-  const excluded = new Set<string>([
-    country.iso3,
-    ...shown.neighbours.map((c) => c.iso3),
-    ...shown.nearby.map((c) => c.iso3),
-  ]);
+  const excluded = new Set<string>([country.iso3, ...shown.others.map((r) => r.country.iso3)]);
   const candidates = allCountries.filter(
     (c): c is Scored<ScoredCountry> => !excluded.has(c.iso3) && hasSufficientData(c),
   );
 
-  const region = getRegion(country.iso3);
+  // Nearest within the sub-region picks the three; score only orders them for display.
+  const region = getSubregion(country.iso3);
   const sameRegion: Scored<ScoredCountry>[] =
-    region === 'other'
+    region === null
       ? []
       : candidates
-          .filter((c) => getRegion(c.iso3) === region)
-          .sort((a, b) => scoreGap(a, country) - scoreGap(b, country) || byIso3(a, b))
-          .slice(0, RELATED_LIST_SIZE);
+          .filter((c) => getSubregion(c.iso3) === region)
+          .map((c) => ({ c, km: distanceKm(country.iso3, c.iso3, geo) }))
+          .sort((x, y) => x.km - y.km || byIso3(x.c, y.c))
+          .slice(0, RELATED_LIST_SIZE)
+          .map((x) => x.c)
+          .sort((a, b) => b.score - a.score || byIso3(a, b));
 
   const regionShown = new Set(sameRegion.map((c) => c.iso3));
   const similarProfile = candidates

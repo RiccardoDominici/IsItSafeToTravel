@@ -290,11 +290,21 @@ export function normalizeNlColor(color: string): UnifiedLevel {
 }
 
 /**
- * Normalize Japan (MOFA) numeric level to unified 1-4 scale.
- * Clamps to valid range.
+ * Map a MOFA (anzen.mofa.go.jp) danger level to the unified 1-4 scale, one step up
+ * (owner decision, 2026-10-15). MOFA's scale starts one step lower than ours:
+ *   0 (no danger information)                                  -> 1 normal precautions
+ *   1 「十分注意してください」 exercise sufficient caution            -> 2 increased caution
+ *   2 「不要不急の渡航は止めてください」 avoid non-essential travel    -> 3 reconsider / avoid non-essential
+ *   3 「渡航は止めてください（渡航中止勧告）」 do not travel            -> 4 do not travel
+ *   4 「退避してください」 evacuate                                  -> 4
+ * Until 2026-10-15 MOFA N was published as unified N. So "exercise sufficient caution"
+ * counted as normal precautions, and "do not travel" (MOFA 3) counted as "reconsider".
+ * Callers pass MOFA's own number; the pages without a numbered breakdown
+ * (normalizeJpNoDetailLevel) map MOFA's wording straight to the unified scale and do not
+ * come through here.
  */
-export function normalizeJpLevel(level: number): UnifiedLevel {
-  return Math.min(4, Math.max(1, Math.round(level))) as UnifiedLevel;
+export function normalizeJpLevel(mofaLevel: number): UnifiedLevel {
+  return Math.min(4, Math.max(0, Math.round(mofaLevel)) + 1) as UnifiedLevel;
 }
 
 // =============================================================================
@@ -332,7 +342,8 @@ export function normalizeJpLevel(level: number): UnifiedLevel {
  * free-text region breakdown. `outerContext` is documented on classifyJpDescriptor. */
 interface JpLevelEntry {
   descriptor: string;
-  level: UnifiedLevel;
+  /** MOFA's own number (1-4) as written in the text; normalizeJpLevel maps it. */
+  level: number;
   outerContext: string;
 }
 
@@ -568,7 +579,7 @@ function parseJpLevelEntries(text: string): JpLevelEntry[] {
     const enclosing = enclosingCandidates.length ? Math.max(...enclosingCandidates) : start;
     const outerContext = body.slice(enclosing, start);
     const digit = m[1];
-    const level = Number(JP_FULLWIDTH_DIGIT[digit] ?? digit) as UnifiedLevel;
+    const level = Number(JP_FULLWIDTH_DIGIT[digit] ?? digit);
     entries.push({ descriptor, level, outerContext });
     prevEnd = matchStart + m[0].length;
   }
@@ -609,25 +620,27 @@ export function normalizeJpRegionalLevel(
   const wholeCandidates = entries.filter((e) => classifyJpDescriptor(e.descriptor, countryNameJa, e.outerContext));
   const regional = entries.filter((e) => !classifyJpDescriptor(e.descriptor, countryNameJa, e.outerContext));
 
+  // Entry levels are MOFA's numbers; both are mapped one step up (normalizeJpLevel) before
+  // the regional cap, which is a ceiling on the unified scale.
   let wholeLevel: UnifiedLevel;
   let regionalMax: number;
   if (wholeCandidates.length > 0) {
     // Conservative: if more than one candidate somehow matches, take the highest.
-    wholeLevel = Math.max(...wholeCandidates.map((e) => e.level)) as UnifiedLevel;
-    regionalMax = regional.length ? Math.max(...regional.map((e) => e.level)) : 0;
+    wholeLevel = normalizeJpLevel(Math.max(...wholeCandidates.map((e) => e.level)));
+    regionalMax = regional.length ? normalizeJpLevel(Math.max(...regional.map((e) => e.level))) : 0;
   } else {
     // No explicit whole-country marker anywhere (Turkey/Mexico/Ecuador style: a list of
     // notable named provinces per level, with everywhere else -- including the capital,
     // never explicitly named -- implicitly at the LOWEST level actually published).
     // Deliberately the MIN across ALL entries, not a hardcoded 1: Lebanon's real page has
-    // exactly two entries (Beirut-area named list = 3, everywhere-else named list = 4) that
-    // jointly exhaust the entire country with NO level-1 area published anywhere --
-    // assuming an unstated "level 1" there would invent a safety claim MOFA never made.
-    // When some entry genuinely IS level 1 (Turkey, Mexico), the min already equals 1, so
-    // this never regresses those cases; it only matters when the source never published a
-    // level-1 entry for the country AT ALL.
-    wholeLevel = Math.min(...entries.map((e) => e.level)) as UnifiedLevel;
-    regionalMax = Math.max(...entries.map((e) => e.level));
+    // exactly two entries (Beirut-area named list = MOFA 3, everywhere-else named list =
+    // MOFA 4) that jointly exhaust the entire country with NO MOFA level-1 area published
+    // anywhere -- assuming an unstated "level 1" there would invent a safety claim MOFA
+    // never made. When some entry genuinely IS MOFA level 1 (Turkey, Mexico), the min
+    // already equals 1, so this never regresses those cases; it only matters when the source
+    // never published a level-1 entry for the country AT ALL.
+    wholeLevel = normalizeJpLevel(Math.min(...entries.map((e) => e.level)));
+    regionalMax = normalizeJpLevel(Math.max(...entries.map((e) => e.level)));
   }
 
   return Math.max(wholeLevel, Math.min(2, regionalMax)) as UnifiedLevel;

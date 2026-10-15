@@ -1,9 +1,22 @@
 import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../types.js';
-import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
+import { writeJson, readJson, getRawDir } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, COUNTRIES, foldName } from '../config/countries.js';
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
+import { dropSelfAdvisoriesLogged } from './advisory-self.js';
+import { parseUkAdvisory, ukTitleNames, type UkAdvisory } from './advisories-uk.js';
+import { CA_FETCH_HEADERS, CA_OPEN_DATA_URLS, parseCaOpenData, summarizeCaOpenData } from './advisories-ca.js';
+import {
+  MAX_FALLBACK_AGE_DAYS,
+  daysBetween,
+  isFallbackFresh,
+  writeAdvisoryFallbackReport,
+  type AdvisoryIssuerStatus,
+} from './advisory-fallback.js';
+
+// Kept importable from here: tests and older callers read it from advisories.ts.
+export { daysBetween } from './advisory-fallback.js';
 
 /**
  * Minimum per-source country count expected from each tier-1 fetcher.
@@ -22,7 +35,6 @@ const US_RSS_URL = 'https://travel.state.gov/_res/rss/TAsTWs.xml';
 const US_ADVISORIES_URL =
   'https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html';
 const UK_FCDO_API_URL = 'https://www.gov.uk/api/content/foreign-travel-advice';
-const CA_ADVISORIES_URL = 'https://travel.gc.ca/destinations';
 const AU_ADVISORIES_URL = 'https://www.smartraveller.gov.au/api/smartraveller/destinations';
 const AU_ADVISORIES_FALLBACK_URL = 'https://www.smartraveller.gov.au/destinations';
 
@@ -79,14 +91,6 @@ const US_LEVEL_TEXT: Record<number, string> = {
   4: 'Do Not Travel',
 };
 
-/** Canada level number to descriptive text */
-const CA_LEVEL_TEXT: Record<number, string> = {
-  1: 'Exercise normal security precautions',
-  2: 'Exercise a high degree of caution',
-  3: 'Avoid non-essential travel',
-  4: 'Avoid all travel',
-};
-
 /** Australia level number to descriptive text */
 const AU_LEVEL_TEXT: Record<number, string> = {
   1: 'Exercise normal safety precautions',
@@ -123,51 +127,29 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
   // US: pass `errors` straight into the fetcher too, so each endpoint in its
   // internal json-api -> rss -> html chain can log its own failure reason even
   // when a later endpoint in the chain ends up succeeding (see US_ENDPOINTS).
-  const usResult = await runWithFloor('US', sourceKey.US, () =>
-    fetchUsAdvisories(rawDir, fetchedAt, currentYear, errors), errors, date);
-  allIndicators.push(...usResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, usResult.advisoryInfo);
+  const issuers: { label: string; key: AdvisorySourceKey; fetch: () => Promise<FetcherResult> }[] = [
+    { label: 'US', key: sourceKey.US, fetch: () => fetchUsAdvisories(rawDir, fetchedAt, currentYear, errors) },
+    { label: 'UK', key: sourceKey.UK, fetch: () => fetchUkAdvisories(rawDir, fetchedAt, currentYear) },
+    { label: 'CA', key: sourceKey.CA, fetch: () => fetchCaAdvisories(rawDir, fetchedAt, currentYear) },
+    { label: 'AU', key: sourceKey.AU, fetch: () => fetchAuAdvisories(rawDir, fetchedAt, currentYear) },
+  ];
+  const statuses: AdvisoryIssuerStatus[] = [];
+  for (const issuer of issuers) {
+    const { result, status } = await runWithFloor(issuer.label, issuer.key, issuer.fetch, errors, date);
+    allIndicators.push(...result.indicators);
+    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
+    statuses.push(status);
+  }
 
-  const ukResult = await runWithFloor('UK', sourceKey.UK, () =>
-    fetchUkAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...ukResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, ukResult.advisoryInfo);
+  // Per-issuer fallback state (live / restored / dropped), read by the staleness monitor:
+  // a dropped issuer is a violation there and fires the ntfy alert (advisory-fallback.ts).
+  writeAdvisoryFallbackReport(rawDir, { date, maxAgeDays: MAX_FALLBACK_AGE_DAYS, issuers: statuses });
+  console.log(`[ADVISORIES] Fallback status: ${statuses.map(describeIssuerStatus).join('; ')}`);
 
-  const caResult = await runWithFloor('CA', sourceKey.CA, () =>
-    fetchCaAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...caResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, caResult.advisoryInfo);
-
-  const auResult = await runWithFloor('AU', sourceKey.AU, () =>
-    fetchAuAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...auResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, auResult.advisoryInfo);
-
-  // If all failed, try cached data
+  // Nothing live and no fallback young enough for any issuer. There used to be a second,
+  // whole-file fallback here (copy the newest advisories-parsed.json, whatever its age);
+  // it would bypass the age limit runWithFloor just applied per issuer, so it is gone.
   if (allIndicators.length === 0) {
-    const cached = findLatestCached('advisories-parsed.json');
-    if (cached) {
-      const cachedData = readJson<RawSourceData>(cached);
-      if (cachedData) {
-        console.warn(`[ADVISORIES] Using cached data from ${cached}`);
-        writeJson(join(rawDir, 'advisories-parsed.json'), cachedData);
-        // Also try to copy cached advisory info
-        const cachedInfoPath = cached.replace('advisories-parsed.json', 'advisories-info.json');
-        const cachedInfo = readJson<AdvisoryInfoMap>(cachedInfoPath);
-        if (cachedInfo) {
-          writeJson(join(rawDir, 'advisories-info.json'), cachedInfo);
-        }
-        const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
-        return {
-          source: 'advisories',
-          success: true,
-          countriesFound: uniqueCountries.size,
-          error: `Used cached data. Errors: ${errors.join('; ')}`,
-          fetchedAt: cachedData.fetchedAt,
-        };
-      }
-    }
-
     return {
       source: 'advisories',
       success: false,
@@ -176,6 +158,9 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
       fetchedAt,
     };
   }
+
+  // I51: a ministry's page about its own country is never an advisory (advisory-self.ts).
+  dropSelfAdvisoriesLogged('[ADVISORIES]', allIndicators, combinedAdvisoryInfo);
 
   // Save combined parsed data
   const sourceData: RawSourceData = {
@@ -210,24 +195,32 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
   }
 }
 
+type AdvisorySourceKey = 'us' | 'uk' | 'ca' | 'au';
+
 /**
- * Run a sub-fetcher with a per-source floor check.
+ * Run a sub-fetcher with a per-source floor check and an age-limited cache fallback.
  *
  * If the fetcher throws OR returns fewer than PER_SOURCE_FLOOR countries, we
  * log loudly and try to recover by loading the most-recent cached
  * `advisories-info.json` that actually contains data for this source. This way
  * a single-source HTML-structure regression (like the US one that ran silently
  * 2026-05-27 → 2026-06-02) cannot drop the column to all-null again.
+ *
+ * The fallback counts only for MAX_FALLBACK_AGE_DAYS after the reading was last
+ * fetched live (advisory-fallback.ts): an older reading is refused and the issuer
+ * is dropped for the day. Before this rule the CA column republished its
+ * 2026-10-01 levels for two weeks after travel.gc.ca changed.
+ *
+ * Exported for tests; `rawBase` points them at a throwaway archive.
  */
-type AdvisorySourceKey = 'us' | 'uk' | 'ca' | 'au';
-
-async function runWithFloor(
+export async function runWithFloor(
   label: string,
   sourceKey: AdvisorySourceKey,
   fn: () => Promise<FetcherResult>,
   errors: string[],
   todayDate: string,
-): Promise<FetcherResult> {
+  rawBase: string = join(process.cwd(), 'data', 'raw'),
+): Promise<{ result: FetcherResult; status: AdvisoryIssuerStatus }> {
   console.log(`[ADVISORIES] Fetching ${label} advisories...`);
   let result: FetcherResult = { indicators: [], advisoryInfo: {} };
   try {
@@ -238,84 +231,157 @@ async function runWithFloor(
     errors.push(`${label}: ${msg}`);
   }
 
-  const countries = new Set(result.indicators.map((i) => i.countryIso3));
-  console.log(`[ADVISORIES] ${label}: ${countries.size} countries`);
+  const liveCountries = new Set(result.indicators.map((i) => i.countryIso3)).size;
+  console.log(`[ADVISORIES] ${label}: ${liveCountries} countries`);
+  const status: AdvisoryIssuerStatus = {
+    issuer: sourceKey,
+    label,
+    state: 'live',
+    liveCountries,
+    restoredCountries: 0,
+    droppedCountries: 0,
+    lastLive: null,
+    ageDays: null,
+    maxAgeDays: MAX_FALLBACK_AGE_DAYS,
+  };
+  if (liveCountries >= PER_SOURCE_FLOOR) return { result, status };
 
-  if (countries.size < PER_SOURCE_FLOOR) {
-    console.error(
-      `[ADVISORIES] ${label} below per-source floor ` +
-        `(${countries.size} < ${PER_SOURCE_FLOOR}) — attempting per-source cache fallback`,
-    );
-    errors.push(`${label}: below floor (${countries.size} < ${PER_SOURCE_FLOOR})`);
+  console.error(
+    `[ADVISORIES] ${label} below per-source floor ` +
+      `(${liveCountries} < ${PER_SOURCE_FLOOR}) — attempting per-source cache fallback`,
+  );
+  errors.push(`${label}: below floor (${liveCountries} < ${PER_SOURCE_FLOOR})`);
 
-    const cached = findLatestCachedSourceInfo(sourceKey);
-    if (cached) {
-      console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
-      const restored = restoreFromCachedInfo(cached.data, sourceKey, cached.date);
-      // Merge: keep any indicators we did get (better than nothing), and
-      // overlay the cached ones for countries we missed.
-      const have = new Set(result.indicators.map((i) => i.countryIso3));
-      for (const ind of restored.indicators) {
-        if (!have.has(ind.countryIso3)) result.indicators.push(ind);
-      }
-      // Track the OLDEST restoredFrom date among what we just merged in, so the
-      // staleness we report reflects the true last-genuinely-live date even
-      // after this same fallback has chained forward across many days.
-      let oldestRestoredFrom: string | null = null;
-      for (const [iso3, info] of Object.entries(restored.advisoryInfo)) {
-        if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
-        // Only fill in this specific source if missing
-        if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
-          result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
-          const rf = info[sourceKey]!.restoredFrom;
-          if (rf && (!oldestRestoredFrom || rf < oldestRestoredFrom)) oldestRestoredFrom = rf;
-        }
-      }
-      const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
-      console.warn(
-        `[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`,
-      );
-      if (oldestRestoredFrom) {
-        const ageDays = daysBetween(todayDate, oldestRestoredFrom);
-        console.error(
-          `[ADVISORIES] ${label}: restored data last genuinely live on ${oldestRestoredFrom} (${ageDays}d stale)`,
-        );
-        errors.push(`${label}: restored from cache dated ${oldestRestoredFrom} (${ageDays}d stale)`);
-      }
-    } else {
-      console.error(`[ADVISORIES] ${label}: no cached info available for fallback`);
-    }
+  const cached = findLatestCachedSourceInfo(sourceKey, todayDate, rawBase);
+  if (!cached) {
+    status.state = 'dropped';
+    status.reason = 'no cached reading';
+    console.error(`[ADVISORIES] ${label}: no cached info available for fallback — ${label} dropped for ${todayDate}`);
+    errors.push(`${label}: dropped (no cached reading to fall back on)`);
+    return { result, status };
   }
 
-  return result;
+  console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
+  const fallback = selectFallback(cached.data, sourceKey, cached.date, todayDate);
+
+  // Merge: keep any indicators we did get (better than nothing), and
+  // overlay the cached ones for countries we missed.
+  const have = new Set(result.indicators.map((i) => i.countryIso3));
+  let restoredCountries = 0;
+  for (const ind of fallback.fresh.indicators) {
+    if (have.has(ind.countryIso3)) continue;
+    result.indicators.push(ind);
+    restoredCountries++;
+  }
+  for (const [iso3, info] of Object.entries(fallback.fresh.advisoryInfo)) {
+    if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
+    // Only fill in this specific source if missing
+    if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
+      result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
+    }
+  }
+  status.restoredCountries = restoredCountries;
+  status.droppedCountries = fallback.staleIso3.length;
+
+  if (fallback.staleIso3.length > 0) {
+    const ageDays = daysBetween(todayDate, fallback.newestStale!);
+    console.error(
+      `[ADVISORIES] ${label}: FALLBACK TOO OLD — ${fallback.staleIso3.length} cached countries last live on ` +
+        `${fallback.newestStale} (${ageDays}d > ${MAX_FALLBACK_AGE_DAYS}d) not restored`,
+    );
+    errors.push(
+      `${label}: ${fallback.staleIso3.length} cached readings from ${fallback.newestStale} refused ` +
+        `(${ageDays}d old, max ${MAX_FALLBACK_AGE_DAYS}d)`,
+    );
+  }
+
+  if (fallback.fresh.indicators.length === 0) {
+    status.state = 'dropped';
+    status.reason = fallback.staleIso3.length > 0 ? 'fallback too old' : 'no cached reading';
+    status.lastLive = fallback.newestStale;
+    status.ageDays = fallback.newestStale ? daysBetween(todayDate, fallback.newestStale) : null;
+    console.error(
+      `[ADVISORIES] ${label}: dropped for ${todayDate} (${status.reason}` +
+        `${status.lastLive ? `, last live ${status.lastLive}` : ''}); ${liveCountries} live countries kept`,
+    );
+    return { result, status };
+  }
+
+  // The OLDEST origin among what was merged, so the staleness reported reflects the true
+  // last-genuinely-live date even after this fallback has chained forward across days.
+  status.state = 'restored';
+  status.lastLive = fallback.oldestFresh;
+  status.ageDays = fallback.oldestFresh ? daysBetween(todayDate, fallback.oldestFresh) : null;
+  const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
+  console.warn(`[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`);
+  console.error(
+    `[ADVISORIES] ${label}: restored data last genuinely live on ${status.lastLive} ` +
+      `(${status.ageDays}d stale, counts until ${MAX_FALLBACK_AGE_DAYS}d)`,
+  );
+  errors.push(`${label}: restored from cache dated ${status.lastLive} (${status.ageDays}d stale)`);
+  return { result, status };
 }
 
-/** Whole-day difference (laterYmd - earlierYmd) between two YYYY-MM-DD strings,
- *  computed via Date.UTC so it never shifts with the running process's timezone. */
-export function daysBetween(laterYmd: string, earlierYmd: string): number {
-  const toUtcMs = (ymd: string): number => {
-    const [y, m, d] = ymd.split('-').map(Number);
-    return Date.UTC(y, m - 1, d);
-  };
-  return Math.round((toUtcMs(laterYmd) - toUtcMs(earlierYmd)) / 86_400_000);
+/** One "CA dropped (fallback too old, last live 2026-10-01, 14d)" fragment of the status log line. */
+function describeIssuerStatus(s: AdvisoryIssuerStatus): string {
+  if (s.state === 'live') return `${s.label} live (${s.liveCountries})`;
+  const since = s.lastLive ? `, last live ${s.lastLive}, ${s.ageDays}d` : '';
+  if (s.state === 'restored') return `${s.label} restored (${s.restoredCountries} countries${since})`;
+  return `${s.label} DROPPED (${s.reason}${since}, max ${s.maxAgeDays}d)`;
 }
 
 /**
- * Find the most recent cached `advisories-info.json` (across data/raw/YYYY-MM-DD/)
- * that actually contains non-null data for the given source key. We skip
- * cached files that already have all-null for this source — otherwise we'd
- * happily "restore" a broken cache.
+ * Split a cached info map's entries for one source into those still young enough to
+ * restore (last live at most `maxAgeDays` before `runDate`) and those refused. An
+ * entry's last live date is its propagated `restoredFrom`, else the cache's own date.
+ * Pure.
+ */
+export function selectFallback(
+  cached: AdvisoryInfoMap,
+  sourceKey: AdvisorySourceKey,
+  cacheDate: string,
+  runDate: string,
+  maxAgeDays: number = MAX_FALLBACK_AGE_DAYS,
+): { fresh: FetcherResult; staleIso3: string[]; oldestFresh: string | null; newestStale: string | null } {
+  const restored = restoreFromCachedInfo(cached, sourceKey, cacheDate, Number(runDate.slice(0, 4)));
+  const fresh: FetcherResult = { indicators: [], advisoryInfo: {} };
+  const staleIso3: string[] = [];
+  let oldestFresh: string | null = null;
+  let newestStale: string | null = null;
+
+  for (const ind of restored.indicators) {
+    const entry = restored.advisoryInfo[ind.countryIso3]?.[sourceKey];
+    const lastLive = entry?.restoredFrom ?? cacheDate;
+    if (isFallbackFresh(lastLive, runDate, maxAgeDays)) {
+      fresh.indicators.push(ind);
+      if (entry) fresh.advisoryInfo[ind.countryIso3] = { [sourceKey]: entry } as AdvisoryInfoMap[string];
+      if (!oldestFresh || lastLive < oldestFresh) oldestFresh = lastLive;
+    } else {
+      staleIso3.push(ind.countryIso3);
+      if (!newestStale || lastLive > newestStale) newestStale = lastLive;
+    }
+  }
+  return { fresh, staleIso3, oldestFresh, newestStale };
+}
+
+/**
+ * Find the most recent cached `advisories-info.json` (across data/raw/YYYY-MM-DD/,
+ * on or before the run date) that actually contains non-null data for the given
+ * source key. We skip cached files that already have all-null for this source —
+ * otherwise we'd happily "restore" a broken cache. Age is not judged here:
+ * selectFallback applies the limit per entry.
  */
 function findLatestCachedSourceInfo(
   sourceKey: AdvisorySourceKey,
+  runDate: string,
+  rawBase: string,
 ): { path: string; date: string; data: AdvisoryInfoMap } | null {
-  const rawBase = join(process.cwd(), 'data', 'raw');
   // Scan in date order ourselves — `findLatestCached` would stop at the most
   // recent file, but we want the most recent file whose data for THIS source
   // is non-empty (skipping cached snapshots that already had the regression).
   if (!existsSync(rawBase)) return null;
   const dateDirs = readdirSync(rawBase)
-    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d <= runDate)
     .sort()
     .reverse();
   for (const dateDir of dateDirs) {
@@ -344,12 +410,12 @@ function restoreFromCachedInfo(
   cached: AdvisoryInfoMap,
   sourceKey: AdvisorySourceKey,
   cacheDate: string,
+  year: number,
 ): FetcherResult {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
   const indicatorName = `advisory_level_${sourceKey}` as const;
   const sourceTag = `advisories_${sourceKey}`;
-  const year = new Date().getFullYear();
 
   for (const [iso3, info] of Object.entries(cached)) {
     const entry = info?.[sourceKey];
@@ -591,7 +657,7 @@ async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Prom
     } catch (error) {
       if (attempt < retries) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.warn(`[ADVISORIES] US: network error fetching ${url} (${msg}), retrying...`);
+        console.warn(`[ADVISORIES] network error fetching ${url} (${msg}), retrying...`);
         await new Promise((resolve) => setTimeout(resolve, 1_500));
         continue;
       }
@@ -600,7 +666,7 @@ async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Prom
     if (response.ok) return response;
     if (response.status >= 500 && attempt < retries) {
       console.warn(
-        `[ADVISORIES] US: HTTP ${response.status} fetching ${url}, retrying...`,
+        `[ADVISORIES] HTTP ${response.status} fetching ${url}, retrying...`,
       );
       await new Promise((resolve) => setTimeout(resolve, 1_500));
       continue;
@@ -880,22 +946,6 @@ async function fetchUsAdvisories(
   return { indicators: [], advisoryInfo: {} };
 }
 
-/** UK FCDO alert_status values mapped to 1-4 advisory levels */
-const UK_ALERT_LEVEL: Record<string, number> = {
-  avoid_all_travel_to_whole_country: 4,
-  avoid_all_but_essential_travel_to_whole_country: 3,
-  avoid_all_travel_to_parts: 3,
-  avoid_all_but_essential_travel_to_parts: 2,
-};
-
-/** UK level number to descriptive text */
-const UK_LEVEL_TEXT: Record<number, string> = {
-  1: 'No specific advisory — see latest advice',
-  2: 'Exercise caution in some areas — see latest advice',
-  3: 'Advise against all but essential travel',
-  4: 'Advise against all travel',
-};
-
 /** Fetch a batch of URLs concurrently */
 async function fetchBatch<T>(
   items: T[],
@@ -1035,8 +1085,7 @@ async function fetchUkAdvisories(
 
   // Step 2: Batch-fetch individual country pages for alert_status (20 concurrent)
   await fetchBatch(countriesToFetch, async (entry) => {
-    let level: number;
-    let alertText = '';
+    let advisory: UkAdvisory;
 
     try {
       const r = await fetch(entry.apiUrl, {
@@ -1054,25 +1103,12 @@ async function fetchUkAdvisories(
       // travel" signal, not a guess.
       if (!r.ok) return;
 
+      // Level from alert_status, raised when the warnings text names the whole country;
+      // the label always describes that level, never the page description (I45/I46,
+      // advisories-uk.ts). An empty alert_status is FCDO's own "no advice against
+      // travel", level 1, not a parse failure.
       const data = await r.json() as Record<string, unknown>;
-      const details = data.details as Record<string, unknown> | undefined;
-      const alertStatus = (details?.alert_status || []) as string[];
-
-      // Use the most severe alert status. An empty array here is a real,
-      // successfully-fetched FCDO signal (no advisory against travel), not a
-      // parse failure — level 1 is correct, not a default-on-failure guess.
-      let maxLevel = 1;
-      for (const status of alertStatus) {
-        const statusLevel = UK_ALERT_LEVEL[status] ?? 1;
-        if (statusLevel > maxLevel) maxLevel = statusLevel;
-      }
-      level = maxLevel;
-
-      // Use the description from the individual page if available
-      const desc = String(data.description || '').trim();
-      if (desc && !desc.startsWith('FCDO travel advice')) {
-        alertText = desc;
-      }
+      advisory = parseUkAdvisory(data, ukTitleNames(entry.countryName));
     } catch {
       // Network-level failure (timeout, DNS, connection reset) — skip this
       // country rather than guess level 1 (audit 2026-09-25: this used to
@@ -1084,15 +1120,15 @@ async function fetchUkAdvisories(
     indicators.push({
       countryIso3: entry.iso3,
       indicatorName: 'advisory_level_uk',
-      value: level,
+      value: advisory.level,
       year: currentYear,
       source: 'advisories_uk',
     });
 
     if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
     advisoryInfo[entry.iso3].uk = {
-      level,
-      text: alertText || UK_LEVEL_TEXT[level] || `Level ${level}`,
+      level: advisory.level,
+      text: advisory.text,
       source: 'UK FCDO',
       url: `https://www.gov.uk/foreign-travel-advice/${entry.slug}`,
       updatedAt: entry.updatedAt,
@@ -1102,197 +1138,62 @@ async function fetchUkAdvisories(
   return { indicators, advisoryInfo };
 }
 
-/** banner-X class -> unified 1-4 level. */
-const CA_BANNER_TO_LEVEL: Record<string, number> = {
-  'do-not-travel': 4,
-  'reconsider-travel': 3,
-  'increased-caution': 2,
-  'normal-precautions': 1,
-};
-
 /**
- * v9.1 (SHIP-SPEC 1.1e) HARDENING: collect ALL distinct banner-X classes present
- * on the page (global match), not just the first one found. The pre-v9.1 single
- * `.match()` silently trusted whichever banner happened to appear first in the
- * HTML — the root cause of the verified GUM (Guam) ca=4 transient misparse
- * (SHIP-SPEC 1.1f correction script). Returns the distinct levels found, sorted
- * ascending; callers decide how to resolve >1 distinct level.
- */
-function parseCaAdvisoryBanners(html: string): number[] {
-  const pattern = /class=['"]banner-(do-not-travel|reconsider-travel|increased-caution|normal-precautions)['"]/gi;
-  const levels = new Set<number>();
-  let m;
-  while ((m = pattern.exec(html)) !== null) {
-    const lvl = CA_BANNER_TO_LEVEL[m[1].toLowerCase()];
-    if (lvl) levels.add(lvl);
-  }
-  return [...levels].sort((a, b) => a - b);
-}
-
-/**
- * Look up iso3's ca advisory level from the most recent PRIOR date's
- * advisories-info.json (strictly before `onOrAfterDate`, YYYY-MM-DD). Used as
- * the ambiguous-banner fallback (SHIP-SPEC 1.1e): when today's page shows >1
- * distinct banner type, trust yesterday's already-validated level rather than
- * guess which of today's banners is the "real" one.
- */
-function findPreviousCaLevel(iso3: string, onOrAfterDate: string): number | null {
-  const rawBase = join(process.cwd(), 'data', 'raw');
-  if (!existsSync(rawBase)) return null;
-  const dateDirs = readdirSync(rawBase)
-    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d < onOrAfterDate)
-    .sort()
-    .reverse();
-  for (const dateDir of dateDirs) {
-    const infoPath = join(rawBase, dateDir, 'advisories-info.json');
-    const info = readJson<AdvisoryInfoMap>(infoPath);
-    const level = info?.[iso3]?.ca?.level;
-    if (typeof level === 'number') return level;
-  }
-  return null;
-}
-
-interface CaDebugEntry {
-  iso3: string;
-  allBannerMatches: number[];
-  chosenLevel: number;
-}
-
-/**
- * Fetch Canada Government travel advisories.
- * Step 1: Extract country slugs from the dropdown on travel.gc.ca/destinations
- * Step 2: Batch-fetch individual country pages to extract advisory levels
+ * Fetch Canada's advisories from Global Affairs Canada's open-data JSON index (Open
+ * Government Licence - Canada; parser and source notes in advisories-ca.ts). Tries the
+ * alphabetical index, then the chronological one, and stops at the first that parses to
+ * at least one country.
  */
 async function fetchCaAdvisories(
   rawDir: string,
   fetchedAt: string,
   currentYear: number,
 ): Promise<FetcherResult> {
-  const indicators: RawIndicator[] = [];
-  const advisoryInfo: AdvisoryInfoMap = {};
-  const debugEntries: CaDebugEntry[] = [];
-  const snapshotDate = fetchedAt.slice(0, 10); // YYYY-MM-DD
-
-  // Step 1: Get the destinations page with the dropdown
-  const response = await fetch(CA_ADVISORIES_URL, {
-    signal: AbortSignal.timeout(30_000),
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
-      Accept: 'text/html',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  const html = await response.text();
-  writeJson(join(rawDir, 'advisories-ca.json'), {
-    url: CA_ADVISORIES_URL,
-    fetchedAt,
-    contentLength: html.length,
-    type: 'html',
-  });
-
-  // Extract country slugs from <option value="slug">Country Name</option>
-  const optionPattern = /<option\s+value="([^"]+)">([^<]+)<\/option>/gi;
-  interface CaEntry { slug: string; name: string; iso3: string }
-  const rawEntries: CaEntry[] = [];
-
-  let match;
-  while ((match = optionPattern.exec(html)) !== null) {
-    const slug = match[1].trim();
-    const name = match[2].trim();
-    if (!slug || slug === '') continue; // skip empty "Select" option
-
-    const country = getCountryByName(name);
-    if (!country) continue;
-
-    rawEntries.push({ slug, name, iso3: country.iso3 });
-  }
-
-  // v9.1 (SHIP-SPEC 1.1e): dedupe by iso3 BEFORE fetchBatch — the dropdown can
-  // list more than one slug resolving to the same country; fetching only the
-  // first avoids wasted requests and avoids two concurrent ambiguous-banner
-  // resolutions racing on the same iso3.
-  const seenIso3 = new Set<string>();
-  const entries = rawEntries.filter((e) => {
-    if (seenIso3.has(e.iso3)) return false;
-    seenIso3.add(e.iso3);
-    return true;
-  });
-
-  console.log(
-    `[ADVISORIES] CA: Found ${rawEntries.length} dropdown entries -> ${entries.length} unique countries after dedup, fetching advisory levels...`,
-  );
-
-  // Step 2: Batch-fetch individual country pages (20 concurrent)
-  await fetchBatch(entries, async (entry) => {
+  const failures: string[] = [];
+  for (const url of CA_OPEN_DATA_URLS) {
     try {
-      const r = await fetch(`https://travel.gc.ca/destinations/${entry.slug}`, {
-        signal: AbortSignal.timeout(15_000),
-        redirect: 'follow',
-        headers: {
-          'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
-          Accept: 'text/html',
-        },
+      const response = await fetchWithRetry(url, {
+        signal: AbortSignal.timeout(30_000),
+        headers: { Accept: 'application/json', ...CA_FETCH_HEADERS },
+      });
+      const json = (await response.json()) as unknown;
+      const parsed = parseCaOpenData(json, currentYear);
+      const generated = (json as { metadata?: { generated?: { date?: string } } })?.metadata?.generated?.date;
+
+      writeJson(join(rawDir, 'advisories-ca.json'), {
+        url,
+        fetchedAt,
+        endpoint: 'open-data-json',
+        generated,
+        accepted: parsed.problems.length === 0,
+        problems: parsed.problems,
+        countries: parsed.indicators.length,
+        unmatched: parsed.unmatched,
+        mismatches: parsed.mismatches,
+        entries: summarizeCaOpenData(json),
       });
 
-      if (!r.ok) return;
-
-      const pageHtml = await r.text();
-      const banners = parseCaAdvisoryBanners(pageHtml);
-
-      let level: number;
-      if (banners.length === 0) {
-        level = 2; // default to caution (unchanged pre-v9.1 fallback)
-      } else if (banners.length === 1) {
-        level = banners[0];
-      } else {
-        // v9.1 (SHIP-SPEC 1.1e): AMBIGUOUS — >1 distinct banner type present.
-        // Trust the previous day's already-validated level for this country;
-        // if none exists, fall back to the MOST SEVERE banner found (never
-        // silently pick the first match, which is what produced the GUM bug).
-        const prevLevel = findPreviousCaLevel(entry.iso3, snapshotDate);
-        level = prevLevel ?? Math.max(...banners);
-        console.error(
-          `[ADVISORIES] CA: ${entry.iso3} AMBIGUOUS banners [${banners.join(', ')}] -> ` +
-            (prevLevel !== null
-              ? `using previous-day level ${level}`
-              : `no prior data, using most-severe fallback ${level}`),
-        );
+      if (parsed.problems.length > 0) {
+        // Never publish a partly read or reshaped feed: reject it whole, loudly. runWithFloor
+        // then applies the 7-day fallback rule (restore a recent reading or drop CA).
+        console.error(`[ADVISORIES] CA: PAYLOAD REJECTED from ${url}: ${parsed.problems.join('; ')}`);
+        failures.push(`${url}: payload rejected (${parsed.problems.join('; ')})`);
+        continue;
       }
-
-      debugEntries.push({ iso3: entry.iso3, allBannerMatches: banners, chosenLevel: level });
-
-      indicators.push({
-        countryIso3: entry.iso3,
-        indicatorName: 'advisory_level_ca',
-        value: level,
-        year: currentYear,
-        source: 'advisories_ca',
-      });
-
-      // Real advisory date from the Canada.ca WET template's <meta name="dcterms.modified">
-      const modified = pageHtml.match(/name="dcterms\.modified"[^>]*content="(\d{4}-\d{2}-\d{2})"/)?.[1];
-
-      if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
-      advisoryInfo[entry.iso3].ca = {
-        level,
-        text: CA_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Government of Canada',
-        url: `https://travel.gc.ca/destinations/${entry.slug}`,
-        updatedAt: modified,
-      };
-    } catch {
-      // Individual country fetch failed — skip it
+      if (parsed.unmatched.length > 0) {
+        console.log(`[ADVISORIES] CA: ${parsed.unmatched.length} records match no country of ours (skipped): ${parsed.unmatched.join(', ')}`);
+      }
+      if (parsed.mismatches.length > 0) {
+        console.warn(`[ADVISORIES] CA: advisory-state and label disagree (advisory-state used): ${parsed.mismatches.join('; ')}`);
+      }
+      console.log(`[ADVISORIES] CA: ${parsed.indicators.length} countries from ${url} (generated ${generated ?? 'unknown'})`);
+      return { indicators: parsed.indicators, advisoryInfo: parsed.advisoryInfo };
+    } catch (error) {
+      failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, 20);
-
-  writeJson(join(rawDir, 'advisories-ca-debug.json'), debugEntries);
-
-  return { indicators, advisoryInfo };
+    console.warn(`[ADVISORIES] CA: ${failures[failures.length - 1]}`);
+  }
+  throw new Error(`every Canada open-data endpoint failed (${failures.join('; ')})`);
 }
 
 /**

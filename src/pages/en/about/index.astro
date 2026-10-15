@@ -40,6 +40,13 @@ const [feedbackBefore, feedbackAfter] = c.contactFeedback.split('{link}');
     <h1 class="text-3xl font-heading font-bold text-sand-900 dark:text-sand-50 mb-8">{c.heading}</h1>
 
     <section>
+      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.whoRunsItTitle}</h2>
+      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
+        {whoRunsBefore}<a href="https://github.com/RiccardoDominici" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.authorName}</a>{whoRunsAfter}
+      </p>
+    </section>
+
+    <section>
       <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.projectTitle}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.projectText}</p>
     </section>
@@ -71,13 +78,6 @@ const [feedbackBefore, feedbackAfter] = c.contactFeedback.split('{link}');
     <section>
       <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.correctionsTitle}</h2>
       <p class="text-sand-600 dark:text-sand-300 leading-relaxed">{c.correctionsText}</p>
-    </section>
-
-    <section>
-      <h2 class="text-xl font-heading font-bold text-sand-800 dark:text-sand-100 mb-3">{c.whoRunsItTitle}</h2>
-      <p class="text-sand-600 dark:text-sand-300 leading-relaxed">
-        {whoRunsBefore}<a href="https://github.com/RiccardoDominici" target="_blank" rel="noopener noreferrer" class="text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline">{c.authorName}</a>{whoRunsAfter}
-      </p>
     </section>
 
     <section>

@@ -13,7 +13,7 @@ import { buildCountryJsonLd, buildCountryMetaDescription } from '../../../lib/se
 import { getLastmodMap } from '../../../lib/lastmod';
 import { officialScore } from '../../../lib/score-status';
 import { getCountryPageTitle } from '../../../i18n/country-title';
-import { greyCopy } from '../../../i18n/grey-copy';
+import { greyTitleSuffix } from '../../../i18n/grey-copy';
 import type { Lang } from '../../../i18n/ui';
 
 const lang: Lang = 'it';
@@ -36,7 +36,7 @@ const dateModified = getLastmodMap().snapshotDate.slice(0, 10);
 const jsonLd = buildCountryJsonLd(country, lang, canonicalUrl, dateModified);
 // Title per locale (article, preposition and verb agreement for every place) — built and tested in
 // src/i18n/country-title.ts, so all 248 x 7 titles can be proofread at once.
-const title = getCountryPageTitle(lang, country.iso3, name, officialScore(country), greyCopy[lang].titleSuffix);
+const title = getCountryPageTitle(lang, country.iso3, name, officialScore(country), greyTitleSuffix(lang, country));
 ---
 <Base lang={lang} title={title} brandSuffix={false} description={description} jsonLd={jsonLd} ogImage={`/og/country-${country.iso3.toLowerCase()}.png`} >
   <CountryPageBody {...props} lang={lang} canonicalUrl={canonicalUrl} />

@@ -10,6 +10,13 @@
 // pre-v10 snapshot still carries (child mortality, PM2.5, two mislabelled INFORM columns) are not.
 //
 // Never rendered for a grey place (formula v10 insufficient_data): its pillar values are internal.
+//
+// 2026-10-15 (audit I31, I34; rules in src/lib/pillar-presentation.ts):
+//  - a pillar with nothing measured behind it shows "No data" in a dashed track, never the
+//    regional prior as if it were a measured "5.7/10", and says an estimate stands in for it;
+//  - GPI militarisation and the V-Dem public-administration / corruption rows describe the state,
+//    not anything a traveller meets: they leave the per-pillar tables for a collapsed "Country
+//    context" section that says why they still count in the score. The score is unchanged.
 import type { PillarScore } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
@@ -23,9 +30,11 @@ import {
   indicatorSourceLabel,
   isWorldBankIndicator,
   pillarEvidenceCoverage,
-  worldBankLagNote,
 } from '../../lib/indicator-display';
+import { isEstimatedPillar, splitContextIndicators, type IndicatorRow } from '../../lib/pillar-presentation';
+import { pillarPresentationCopy } from '../../i18n/pillar-presentation-copy';
 import PillarCoverageTip from './PillarCoverageTip.astro';
+import IndicatorTable from './IndicatorTable.astro';
 
 interface Props {
   pillars: PillarScore[];
@@ -35,6 +44,7 @@ interface Props {
 const { pillars, lang } = Astro.props;
 const t = useTranslations(lang);
 const r = routes[lang];
+const pc = pillarPresentationCopy[lang];
 
 // Contextual methodology link (2026-09-26, Task B1 / GD-05): no country page
 // linked to /methodology/ at all before this -- only Header/Footer did, which
@@ -53,9 +63,6 @@ const methodologyLinkLead: Record<Lang, string> = {
 };
 const [methodologyLeadBefore, methodologyLeadAfter] = methodologyLinkLead[lang].split('{methodology_link}');
 
-// Sort by score ascending (worst first) to draw attention to concerns
-const sorted = [...pillars].sort((a, b) => a.score - b.score);
-
 const pillarKeys: Record<string, string> = {
   conflict: 'country.pillar.conflict',
   crime: 'country.pillar.crime',
@@ -63,7 +70,42 @@ const pillarKeys: Record<string, string> = {
   governance: 'country.pillar.governance',
   environment: 'country.pillar.environment',
 };
-const lagNote = worldBankLagNote(lang);
+
+const toRow = (ind: PillarScore['indicators'][number], note?: string): IndicatorRow => ({
+  ind,
+  label: getIndicatorLabel(ind.name, t),
+  display: formatIndicatorValue(ind, lang),
+  source: indicatorSourceLabel(ind, lang),
+  worldBank: isWorldBankIndicator(ind),
+  note,
+});
+
+// One view per pillar, in weights.json order (the snapshot's order).
+const views = pillars.map((pillar) => {
+  const label = t(pillarKeys[pillar.name] as any);
+  const displayScore = (pillar.score * 10).toFixed(1);
+  const s = Number(displayScore); // band on the displayed 1-decimal value
+  const estimated = isEstimatedPillar(pillar);
+  const coverage = pillarEvidenceCoverage(pillar);
+  const { traveller, context } = splitContextIndicators(displayedIndicators(pillar));
+  return {
+    pillar,
+    label,
+    displayScore,
+    estimated,
+    riskLevel: s >= 7 ? t('country.risk_low') : s >= 4 ? t('country.risk_moderate') : t('country.risk_high'),
+    coveragePercent: Math.round(coverage * 100),
+    // An estimated pillar carries its own note; the low-coverage asterisk is for thin, not absent, data.
+    lowCoverage: !estimated && coverage < LOW_COVERAGE_FLAG_THRESHOLD,
+    rows: traveller.map((ind) => toRow(ind)),
+    contextRows: context.map((ind) => toRow(ind, pc.contextCountsIn.replace('{pillar}', label))),
+  };
+});
+
+// Worst measured pillar first, to draw attention to concerns; estimated pillars last (their value
+// is a prior, not a finding).
+const sorted = [...views].sort((a, b) => Number(a.estimated) - Number(b.estimated) || a.pillar.score - b.pillar.score);
+const contextRows = views.flatMap((v) => v.contextRows);
 ---
 
 <section id="pillars" class="py-6 px-4 max-w-2xl mx-auto">
@@ -72,30 +114,38 @@ const lagNote = worldBankLagNote(lang);
   </h2>
 
   <div class="space-y-3">
-    {sorted.map((pillar) => {
-      const label = t(pillarKeys[pillar.name] as any);
-      const displayScore = (pillar.score * 10).toFixed(1);
-      const barWidth = Math.max(pillar.score * 180, 2);
-      const color = pillarToColor(pillar.score);
-      const lowCoverage = pillarEvidenceCoverage(pillar) < LOW_COVERAGE_FLAG_THRESHOLD;
-
-      return (
-        <div class="flex items-center gap-3">
-          <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right hyphens-auto wrap-break-word">
-            {label}
-          </span>
-          <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${label}: ${displayScore}/10`}>
-            <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
-            <rect x="0" y="4" width={barWidth} height="16" rx="4" fill={color} />
-          </svg>
-          <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
-            {displayScore}/10{lowCoverage && (
-              <PillarCoverageTip text={t('country.pillar_low_coverage_note')} />
-            )}
-          </span>
-        </div>
-      );
-    })}
+    {sorted.map((v) => (
+      <div class="flex items-center gap-3" data-pillar={v.pillar.name} data-pillar-estimated={v.estimated ? 'true' : undefined}>
+        <span class="w-28 shrink-0 text-sm text-sand-600 dark:text-sand-400 text-right hyphens-auto wrap-break-word">
+          {v.label}
+        </span>
+        {v.estimated ? (
+          <>
+            {/* Same 24px row as a bar, so the measured bars stay aligned; no fill, no number. */}
+            <span class="flex-1 h-6 flex items-center">
+              <span class="w-full h-4 rounded border border-dashed border-sand-400 dark:border-sand-500 flex items-center justify-center text-[11px] leading-none text-sand-600 dark:text-sand-400">
+                {pc.noData}
+              </span>
+            </span>
+            <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
+              <PillarCoverageTip text={pc.estimateNote} />
+            </span>
+          </>
+        ) : (
+          <>
+            <svg viewBox="0 0 200 24" class="flex-1 h-6" role="img" aria-label={`${v.label}: ${v.displayScore}/10`}>
+              <rect x="0" y="4" width="200" height="16" rx="4" fill="currentColor" class="text-sand-200 dark:text-sand-700" />
+              <rect x="0" y="4" width={Math.max(v.pillar.score * 180, 2)} height="16" rx="4" fill={pillarToColor(v.pillar.score)} />
+            </svg>
+            <span class="w-14 shrink-0 text-sm font-medium text-sand-700 dark:text-sand-300 text-right">
+              {v.displayScore}/10{v.lowCoverage && (
+                <PillarCoverageTip text={pc.lowCoverageNote} />
+              )}
+            </span>
+          </>
+        )}
+      </div>
+    ))}
   </div>
 
   <details class="mt-4">
@@ -104,74 +154,43 @@ const lagNote = worldBankLagNote(lang);
     </summary>
 
     <div class="mt-4">
-      {sorted.map((pillar) => {
-        const label = t(pillarKeys[pillar.name] as any);
-        const displayScore = (pillar.score * 10).toFixed(1);
-        const s = Number(displayScore); // band on the displayed 1-decimal value
-        const riskLevel = s >= 7 ? t('country.risk_low') : s >= 4 ? t('country.risk_moderate') : t('country.risk_high');
-        const coverage = pillarEvidenceCoverage(pillar);
-        const coveragePercent = Math.round(coverage * 100);
-        const lowCoverage = coverage < LOW_COVERAGE_FLAG_THRESHOLD;
-        const rows = displayedIndicators(pillar).map((ind) => ({
-          ind,
-          label: getIndicatorLabel(ind.name, t),
-          display: formatIndicatorValue(ind, lang),
-          source: indicatorSourceLabel(ind, lang),
-          worldBank: isWorldBankIndicator(ind),
-        }));
+      {sorted.map((v) => (
+        <div class="mb-6">
+          <h3 class="text-sm font-semibold text-sand-700 dark:text-sand-200 mb-2">
+            {v.label}
+            <span class="ml-2 font-normal text-sand-600 dark:text-sand-400">
+              {v.estimated ? (
+                <>{pc.noData} · {t('country.pillar_coverage')}: {v.coveragePercent}%</>
+              ) : (
+                <>
+                  {v.displayScore}/10{v.lowCoverage && (
+                    <PillarCoverageTip text={pc.lowCoverageNote} />
+                  )} · {v.riskLevel} · {t('country.pillar_coverage')}: {v.coveragePercent}%
+                </>
+              )}
+            </span>
+          </h3>
 
-        return (
-          <div class="mb-6">
-            <h3 class="text-sm font-semibold text-sand-700 dark:text-sand-200 mb-2">
-              {label}
-              <span class="ml-2 font-normal text-sand-600 dark:text-sand-400">
-                {displayScore}/10{lowCoverage && (
-                  <PillarCoverageTip text={t('country.pillar_low_coverage_note')} />
-                )} · {riskLevel} · {t('country.pillar_coverage')}: {coveragePercent}%
-              </span>
-            </h3>
-
-            {rows.length > 0 && (
-              <table class="w-full text-xs border-collapse">
-                <thead>
-                  <tr class="border-b border-sand-200 dark:border-sand-700">
-                    <th class="text-left py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_indicators')}</th>
-                    <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_value')}</th>
-                    <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_source')}</th>
-                    <th class="text-right py-1.5 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_year')}</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {rows.map((row) => (
-                    <tr class="border-b border-sand-100 dark:border-sand-800 align-top">
-                      <td class="py-1.5 pr-2 text-sand-700 dark:text-sand-200">
-                        {row.label}
-                        {row.worldBank && (
-                          <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{lagNote}</span>
-                        )}
-                      </td>
-                      <td class="py-1.5 pr-2 text-right text-sand-700 dark:text-sand-200">
-                        {row.display ? (
-                          <>
-                            <span class="font-medium tabular-nums whitespace-nowrap">{row.display.value}</span>
-                            <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{row.display.unit}</span>
-                          </>
-                        ) : (
-                          <span class="tabular-nums">{row.ind.rawValue}</span>
-                        )}
-                      </td>
-                      <td class="py-1.5 pr-2 text-right text-sand-600 dark:text-sand-300 whitespace-nowrap">{row.source}</td>
-                      <td class="py-1.5 text-right text-sand-600 dark:text-sand-300 tabular-nums">{row.ind.year}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            )}
-          </div>
-        );
-      })}
+          {v.estimated && (
+            <p class="text-xs leading-snug text-sand-600 dark:text-sand-400">{pc.estimateNote}</p>
+          )}
+          {v.rows.length > 0 && <IndicatorTable rows={v.rows} lang={lang} />}
+        </div>
+      ))}
     </div>
   </details>
+
+  {contextRows.length > 0 && (
+    <details class="mt-3" id="country-context">
+      <summary class="text-sm text-sand-600 dark:text-sand-400 cursor-pointer select-none hover:text-sand-800 dark:hover:text-sand-200">
+        {pc.contextSummary}
+      </summary>
+      <div class="mt-3">
+        <p class="mb-3 text-xs leading-relaxed text-sand-600 dark:text-sand-400">{pc.contextIntro}</p>
+        <IndicatorTable rows={contextRows} lang={lang} />
+      </div>
+    </details>
+  )}
 
   <p class="mt-3 text-xs text-sand-600 dark:text-sand-400">
     {t('country.update_cadence')}
