@@ -1,6 +1,6 @@
 import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../types.js';
 import { writeJson, readJson, getRawDir } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, COUNTRIES, foldName } from '../config/countries.js';
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
@@ -463,11 +463,16 @@ const US_NAME_ALIASES: Record<string, string> = {
   'the gambia': 'Gambia',
   'czechia': 'Czech Republic',
   'republic of the congo': 'Congo',
+  // 2026-10-15 live RSS title: "Republic of Congo - Level 2" (no "the"); without it the Republic of
+  // the Congo had no US advisory at all.
+  'republic of congo': 'Congo',
   'kingdom of denmark': 'Denmark',
 };
 
 function resolveUsCountryName(rawName: string): string {
-  const key = rawName.trim().toLowerCase();
+  // Folded key (case, accents, apostrophe style), like getCountryByName: the live feed writes
+  // "Côte d’Ivoire" and "São Tomé and Príncipe", which an exact lower-cased key never matched.
+  const key = foldName(rawName);
   return US_NAME_ALIASES[key] || rawName.trim();
 }
 
@@ -958,6 +963,55 @@ async function fetchBatch<T>(
 }
 
 /**
+ * FCDO index titles (minus " travel advice") that are not one of our English names. Found
+ * 2026-10-15 by replaying the stored index (data/raw/<date>/advisories-uk.json): 33 of 226 pages
+ * were never fetched because FCDO writes "St Lucia", "Korea, DPR (North Korea)", "Hong Kong (SAR
+ * of China)", "USA", and suffixes British Overseas Territories. A combined page fans out to every
+ * place it covers (its one alert status applies to all of them). Keys are foldName() forms. Bermuda
+ * is not one of our places and stays unmatched.
+ */
+const UK_TITLE_TARGETS: Record<string, string[]> = {
+  'gibraltar (british overseas territory)': ['GIB'],
+  'czechia': ['CZE'],
+  'wallis & futuna islands': ['WLF'],
+  'east timor (timor-leste)': ['TLS'],
+  'pitcairn island': ['PCN'],
+  'korea, dpr (north korea)': ['PRK'],
+  'federated states of micronesia': ['FSM'],
+  'anguilla (british overseas territory)': ['AIA'],
+  'macao (sar of china)': ['MAC'],
+  'bonaire, st eustatius and saba': ['BES'],
+  'british virgin islands (british overseas territory)': ['VGB'],
+  'cayman islands (british overseas territory)': ['CYM'],
+  'st kitts and nevis': ['KNA'],
+  'st lucia': ['LCA'],
+  'st maarten': ['SXM'],
+  'st martin and st barthelemy': ['MAF', 'BLM'],
+  'st pierre & miquelon': ['SPM'],
+  'st vincent and the grenadines': ['VCT'],
+  'turks and caicos islands (british overseas territory)': ['TCA'],
+  'usa': ['USA'],
+  'antarctica/british antarctic territory': ['ATA'],
+  'falkland islands (british overseas territory)': ['FLK'],
+  'hong kong (sar of china)': ['HKG'],
+  'south georgia and south sandwich islands (british overseas territory)': ['SGS'],
+  'st helena, ascension and tristan da cunha': ['SHN'],
+  'cook islands, tokelau and niue': ['COK', 'TKL', 'NIU'],
+  'cape verde': ['CPV'],
+  'the gambia': ['GMB'],
+  'sao tome & principe': ['STP'],
+};
+
+/** ISO3 codes an FCDO index title (without " travel advice") stands for: our own English name
+ *  first (getCountryByName, accent-insensitive: "Côte d'Ivoire", "Curaçao", "Réunion"), then the
+ *  FCDO-specific titles above. Empty when the page is not one of our places. */
+export function resolveUkTitle(countryName: string): string[] {
+  const country = getCountryByName(countryName);
+  if (country) return [country.iso3];
+  return UK_TITLE_TARGETS[foldName(countryName)] ?? [];
+}
+
+/**
  * Fetch UK FCDO travel advisories.
  * Step 1: Get country list from /api/content/foreign-travel-advice
  * Step 2: Batch-fetch individual country pages to get alert_status
@@ -1011,20 +1065,22 @@ async function fetchUkAdvisories(
     if (!title) continue;
 
     const countryName = title.replace(/\s*travel advice\s*$/i, '').trim();
-    const country = getCountryByName(countryName);
-    if (!country) continue;
+    const targetIso3s = resolveUkTitle(countryName);
+    if (targetIso3s.length === 0) continue;
 
     const basePath = String(childObj.base_path || '');
     const slug = basePath ? basePath.replace(/^\/foreign-travel-advice\//, '') : countryName.toLowerCase().replace(/\s+/g, '-');
     const updatedAt = childObj.public_updated_at ? String(childObj.public_updated_at) : undefined;
 
-    countriesToFetch.push({
-      countryName,
-      slug,
-      iso3: country.iso3,
-      updatedAt,
-      apiUrl: `https://www.gov.uk/api/content/foreign-travel-advice/${slug}`,
-    });
+    for (const iso3 of targetIso3s) {
+      countriesToFetch.push({
+        countryName,
+        slug,
+        iso3,
+        updatedAt,
+        apiUrl: `https://www.gov.uk/api/content/foreign-travel-advice/${slug}`,
+      });
+    }
   }
 
   // Step 2: Batch-fetch individual country pages for alert_status (20 concurrent)

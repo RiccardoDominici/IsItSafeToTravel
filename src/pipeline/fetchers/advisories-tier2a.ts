@@ -3,7 +3,7 @@ import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES, sourceName } from '../config/countries.js';
 import {
   extractFrTerritoryLevel,
   normalizeHkAlert,
@@ -230,7 +230,7 @@ const FR_SLUG_ALIASES: Partial<Record<string, string>> = {
 function frSlug(country: typeof COUNTRIES[number]): string {
   const alias = FR_SLUG_ALIASES[country.iso3];
   if (alias) return alias;
-  return country.name.fr
+  return sourceName(country, 'fr')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -264,7 +264,7 @@ async function fetchFrAdvisories(
         $('script, style').remove();
         const bodyText = $('body').text();
 
-        const level = extractFrTerritoryLevel(bodyText, country.name.fr);
+        const level = extractFrTerritoryLevel(bodyText, sourceName(country, 'fr'));
         if (level === null) return; // no "Zones de vigilance" section found: emit nothing
 
         indicators.push({
@@ -699,7 +699,7 @@ const IE_SLUG_ALIASES: Partial<Record<string, string>> = {
 function ieSlug(country: typeof COUNTRIES[number]): string {
   const alias = IE_SLUG_ALIASES[country.iso3];
   if (alias) return alias;
-  return country.name.en
+  return sourceName(country, 'en')
     .toLowerCase()
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
@@ -950,14 +950,14 @@ async function fetchBrAdvisories(
         // an article naming only the longer country would wrongly also tag the shorter
         // one. Keep a match only if its name is not itself contained in some other match.
         const rawMatches = COUNTRIES.filter((country) => {
-          const ptName = country.name.pt ? stripBrAccents(country.name.pt) : '';
+          const ptName = stripBrAccents(sourceName(country, 'pt'));
           return ptName && titleNorm.includes(ptName);
         });
         const namedCountries = rawMatches.filter((country) => {
-          const ptName = stripBrAccents(country.name.pt!);
+          const ptName = stripBrAccents(sourceName(country, 'pt'));
           return !rawMatches.some((other) => {
             if (other.iso3 === country.iso3) return false;
-            const otherName = stripBrAccents(other.name.pt!);
+            const otherName = stripBrAccents(sourceName(other, 'pt'));
             return otherName.length > ptName.length && otherName.includes(ptName);
           });
         });
@@ -1090,7 +1090,7 @@ async function fetchPhAdvisories(
 
     // Try to extract country name from the text
     for (const country of COUNTRIES) {
-      if (textLower.includes(country.name.en.toLowerCase())) {
+      if (textLower.includes(sourceName(country, 'en').toLowerCase())) {
         // Avoid duplicate entries, keep highest level
         const existing = indicators.find(i => i.countryIso3 === country.iso3);
         if (existing) {

@@ -6,7 +6,7 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'DZA', iso2: 'DZ', name: { en: 'Algeria', it: 'Algeria', es: 'Argelia', fr: 'Algérie', pt: 'Argélia' } },
   { iso3: 'AND', iso2: 'AD', name: { en: 'Andorra', it: 'Andorra', es: 'Andorra', fr: 'Andorre', pt: 'Andorra' } },
   { iso3: 'AGO', iso2: 'AO', name: { en: 'Angola', it: 'Angola', es: 'Angola', fr: 'Angola', pt: 'Angola' } },
-  { iso3: 'ATG', iso2: 'AG', name: { en: 'Antigua and Barbuda', it: 'Antigua e Barbuda', es: 'Antigua y Barbuda', fr: 'Antigua-et-Barbuda', pt: 'Antigua e Barbuda' } },
+  { iso3: 'ATG', iso2: 'AG', name: { en: 'Antigua and Barbuda', it: 'Antigua e Barbuda', es: 'Antigua y Barbuda', fr: 'Antigua-et-Barbuda', pt: 'Antígua e Barbuda' } },
   { iso3: 'ARG', iso2: 'AR', name: { en: 'Argentina', it: 'Argentina', es: 'Argentina', fr: 'Argentine', pt: 'Argentina' } },
   { iso3: 'ARM', iso2: 'AM', name: { en: 'Armenia', it: 'Armenia', es: 'Armenia', fr: 'Arménie', pt: 'Armênia' } },
   { iso3: 'AUS', iso2: 'AU', name: { en: 'Australia', it: 'Australia', es: 'Australia', fr: 'Australie', pt: 'Austrália' } },
@@ -19,13 +19,13 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'BLR', iso2: 'BY', name: { en: 'Belarus', it: 'Bielorussia', es: 'Bielorrusia', fr: 'Biélorussie', pt: 'Bielorrússia' } },
   { iso3: 'BEL', iso2: 'BE', name: { en: 'Belgium', it: 'Belgio', es: 'Bélgica', fr: 'Belgique', pt: 'Bélgica' } },
   { iso3: 'BLZ', iso2: 'BZ', name: { en: 'Belize', it: 'Belize', es: 'Belice', fr: 'Belize', pt: 'Belize' } },
-  { iso3: 'BEN', iso2: 'BJ', name: { en: 'Benin', it: 'Benin', es: 'Benin', fr: 'Bénin', pt: 'Benim' } },
+  { iso3: 'BEN', iso2: 'BJ', name: { en: 'Benin', it: 'Benin', es: 'Benín', fr: 'Bénin', pt: 'Benim' } },
   { iso3: 'BTN', iso2: 'BT', name: { en: 'Bhutan', it: 'Bhutan', es: 'Bután', fr: 'Bhoutan', pt: 'Butão' } },
   { iso3: 'BOL', iso2: 'BO', name: { en: 'Bolivia', it: 'Bolivia', es: 'Bolivia', fr: 'Bolivie', pt: 'Bolívia' } },
   { iso3: 'BIH', iso2: 'BA', name: { en: 'Bosnia and Herzegovina', it: 'Bosnia ed Erzegovina', es: 'Bosnia y Herzegovina', fr: 'Bosnie-Herzégovine', pt: 'Bósnia e Herzegovina' } },
   { iso3: 'BWA', iso2: 'BW', name: { en: 'Botswana', it: 'Botswana', es: 'Botsuana', fr: 'Botswana', pt: 'Botsuana' } },
   { iso3: 'BRA', iso2: 'BR', name: { en: 'Brazil', it: 'Brasile', es: 'Brasil', fr: 'Brésil', pt: 'Brasil' } },
-  { iso3: 'BRN', iso2: 'BN', name: { en: 'Brunei', it: 'Brunei', es: 'Brunei', fr: 'Brunei', pt: 'Brunei' } },
+  { iso3: 'BRN', iso2: 'BN', name: { en: 'Brunei', it: 'Brunei', es: 'Brunéi', fr: 'Brunei', pt: 'Brunei', de: 'Brunei' } },
   { iso3: 'BGR', iso2: 'BG', name: { en: 'Bulgaria', it: 'Bulgaria', es: 'Bulgaria', fr: 'Bulgarie', pt: 'Bulgária' } },
   { iso3: 'BFA', iso2: 'BF', name: { en: 'Burkina Faso', it: 'Burkina Faso', es: 'Burkina Faso', fr: 'Burkina Faso', pt: 'Burquina Faso' } },
   { iso3: 'BDI', iso2: 'BI', name: { en: 'Burundi', it: 'Burundi', es: 'Burundi', fr: 'Burundi', pt: 'Burundi' } },
@@ -39,10 +39,10 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'CHN', iso2: 'CN', name: { en: 'China', it: 'Cina', es: 'China', fr: 'Chine', pt: 'China' } },
   { iso3: 'COL', iso2: 'CO', name: { en: 'Colombia', it: 'Colombia', es: 'Colombia', fr: 'Colombie', pt: 'Colômbia' } },
   { iso3: 'COM', iso2: 'KM', name: { en: 'Comoros', it: 'Comore', es: 'Comoras', fr: 'Comores', pt: 'Comores' } },
-  { iso3: 'COG', iso2: 'CG', name: { en: 'Congo', it: 'Congo', es: 'Congo', fr: 'Congo', pt: 'Congo' } },
+  { iso3: 'COG', iso2: 'CG', name: { en: 'Republic of the Congo', it: 'Repubblica del Congo', es: 'República del Congo', fr: 'République du Congo', pt: 'República do Congo' } },
   { iso3: 'COD', iso2: 'CD', name: { en: 'Democratic Republic of the Congo', it: 'Repubblica Democratica del Congo', es: 'República Democrática del Congo', fr: 'République démocratique du Congo', pt: 'República Democrática do Congo' } },
   { iso3: 'CRI', iso2: 'CR', name: { en: 'Costa Rica', it: 'Costa Rica', es: 'Costa Rica', fr: 'Costa Rica', pt: 'Costa Rica' } },
-  { iso3: 'CIV', iso2: 'CI', name: { en: "Cote d'Ivoire", it: "Costa d'Avorio", es: "Costa de Marfil", fr: "Cote d'Ivoire", pt: 'Costa do Marfim' } },
+  { iso3: 'CIV', iso2: 'CI', name: { en: "Côte d'Ivoire", it: "Costa d'Avorio", es: "Costa de Marfil", fr: "Côte d'Ivoire", pt: 'Costa do Marfim' } },
   { iso3: 'HRV', iso2: 'HR', name: { en: 'Croatia', it: 'Croazia', es: 'Croacia', fr: 'Croatie', pt: 'Croácia' } },
   { iso3: 'CUB', iso2: 'CU', name: { en: 'Cuba', it: 'Cuba', es: 'Cuba', fr: 'Cuba', pt: 'Cuba' } },
   { iso3: 'CYP', iso2: 'CY', name: { en: 'Cyprus', it: 'Cipro', es: 'Chipre', fr: 'Chypre', pt: 'Chipre' } },
@@ -53,7 +53,7 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'DOM', iso2: 'DO', name: { en: 'Dominican Republic', it: 'Repubblica Dominicana', es: 'República Dominicana', fr: 'République dominicaine', pt: 'República Dominicana' } },
   { iso3: 'ECU', iso2: 'EC', name: { en: 'Ecuador', it: 'Ecuador', es: 'Ecuador', fr: 'Équateur', pt: 'Equador' } },
   { iso3: 'EGY', iso2: 'EG', name: { en: 'Egypt', it: 'Egitto', es: 'Egipto', fr: 'Égypte', pt: 'Egito' } },
-  { iso3: 'SLV', iso2: 'SV', name: { en: 'El Salvador', it: 'El Salvador', es: 'El Salvador', fr: 'El Salvador', pt: 'El Salvador' } },
+  { iso3: 'SLV', iso2: 'SV', name: { en: 'El Salvador', it: 'El Salvador', es: 'El Salvador', fr: 'Salvador', pt: 'El Salvador' } },
   { iso3: 'GNQ', iso2: 'GQ', name: { en: 'Equatorial Guinea', it: 'Guinea Equatoriale', es: 'Guinea Ecuatorial', fr: 'Guinée équatoriale', pt: 'Guiné Equatorial' } },
   { iso3: 'ERI', iso2: 'ER', name: { en: 'Eritrea', it: 'Eritrea', es: 'Eritrea', fr: 'Érythrée', pt: 'Eritreia' } },
   { iso3: 'EST', iso2: 'EE', name: { en: 'Estonia', it: 'Estonia', es: 'Estonia', fr: 'Estonie', pt: 'Estônia' } },
@@ -123,7 +123,7 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'MMR', iso2: 'MM', name: { en: 'Myanmar', it: 'Myanmar', es: 'Myanmar', fr: 'Birmanie', pt: 'Mianmar' } },
   { iso3: 'NAM', iso2: 'NA', name: { en: 'Namibia', it: 'Namibia', es: 'Namibia', fr: 'Namibie', pt: 'Namíbia' } },
   { iso3: 'NRU', iso2: 'NR', name: { en: 'Nauru', it: 'Nauru', es: 'Nauru', fr: 'Nauru', pt: 'Nauru' } },
-  { iso3: 'NPL', iso2: 'NP', name: { en: 'Nepal', it: 'Nepal', es: 'Nepal', fr: 'Nepal', pt: 'Nepal' } },
+  { iso3: 'NPL', iso2: 'NP', name: { en: 'Nepal', it: 'Nepal', es: 'Nepal', fr: 'Népal', pt: 'Nepal' } },
   { iso3: 'NLD', iso2: 'NL', name: { en: 'Netherlands', it: 'Paesi Bassi', es: 'Países Bajos', fr: 'Pays-Bas', pt: 'Países Baixos' } },
   { iso3: 'NZL', iso2: 'NZ', name: { en: 'New Zealand', it: 'Nuova Zelanda', es: 'Nueva Zelanda', fr: 'Nouvelle-Zélande', pt: 'Nova Zelândia' } },
   { iso3: 'NIC', iso2: 'NI', name: { en: 'Nicaragua', it: 'Nicaragua', es: 'Nicaragua', fr: 'Nicaragua', pt: 'Nicarágua' } },
@@ -134,9 +134,9 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'OMN', iso2: 'OM', name: { en: 'Oman', it: 'Oman', es: 'Omán', fr: 'Oman', pt: 'Omã' } },
   { iso3: 'PAK', iso2: 'PK', name: { en: 'Pakistan', it: 'Pakistan', es: 'Pakistán', fr: 'Pakistan', pt: 'Paquistão' } },
   { iso3: 'PLW', iso2: 'PW', name: { en: 'Palau', it: 'Palau', es: 'Palaos', fr: 'Palaos', pt: 'Palau' } },
-  { iso3: 'PSE', iso2: 'PS', name: { en: 'Palestine', it: 'Palestina', es: 'Palestina', fr: 'Palestine', pt: 'Palestina' } },
+  { iso3: 'PSE', iso2: 'PS', name: { en: 'Palestine', it: 'Palestina', es: 'Palestina', fr: 'Palestine', pt: 'Palestina', de: 'Palästinensische Autonomiegebiete', zh: '巴勒斯坦' } },
   { iso3: 'PAN', iso2: 'PA', name: { en: 'Panama', it: 'Panama', es: 'Panamá', fr: 'Panama', pt: 'Panamá' } },
-  { iso3: 'PNG', iso2: 'PG', name: { en: 'Papua New Guinea', it: 'Papua Nuova Guinea', es: 'Papua Nueva Guinea', fr: 'Papouasie-Nouvelle-Guinée', pt: 'Papua-Nova Guiné' } },
+  { iso3: 'PNG', iso2: 'PG', name: { en: 'Papua New Guinea', it: 'Papua Nuova Guinea', es: 'Papúa Nueva Guinea', fr: 'Papouasie-Nouvelle-Guinée', pt: 'Papua-Nova Guiné' } },
   { iso3: 'PRY', iso2: 'PY', name: { en: 'Paraguay', it: 'Paraguay', es: 'Paraguay', fr: 'Paraguay', pt: 'Paraguai' } },
   { iso3: 'PER', iso2: 'PE', name: { en: 'Peru', it: 'Perù', es: 'Perú', fr: 'Pérou', pt: 'Peru' } },
   { iso3: 'PHL', iso2: 'PH', name: { en: 'Philippines', it: 'Filippine', es: 'Filipinas', fr: 'Philippines', pt: 'Filipinas' } },
@@ -151,7 +151,7 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'VCT', iso2: 'VC', name: { en: 'Saint Vincent and the Grenadines', it: 'Saint Vincent e Grenadine', es: 'San Vicente y las Granadinas', fr: 'Saint-Vincent-et-les-Grenadines', pt: 'São Vicente e Granadinas' } },
   { iso3: 'WSM', iso2: 'WS', name: { en: 'Samoa', it: 'Samoa', es: 'Samoa', fr: 'Samoa', pt: 'Samoa' } },
   { iso3: 'SMR', iso2: 'SM', name: { en: 'San Marino', it: 'San Marino', es: 'San Marino', fr: 'Saint-Marin', pt: 'San Marino' } },
-  { iso3: 'STP', iso2: 'ST', name: { en: 'Sao Tome and Principe', it: 'São Tomé e Príncipe', es: 'Santo Tomé y Príncipe', fr: 'Sao Tomé-et-Principe', pt: 'São Tomé e Príncipe' } },
+  { iso3: 'STP', iso2: 'ST', name: { en: 'São Tomé and Príncipe', it: 'São Tomé e Príncipe', es: 'Santo Tomé y Príncipe', fr: 'Sao Tomé-et-Principe', pt: 'São Tomé e Príncipe' } },
   { iso3: 'SAU', iso2: 'SA', name: { en: 'Saudi Arabia', it: 'Arabia Saudita', es: 'Arabia Saudita', fr: 'Arabie saoudite', pt: 'Arábia Saudita' } },
   { iso3: 'SEN', iso2: 'SN', name: { en: 'Senegal', it: 'Senegal', es: 'Senegal', fr: 'Sénégal', pt: 'Senegal' } },
   { iso3: 'SRB', iso2: 'RS', name: { en: 'Serbia', it: 'Serbia', es: 'Serbia', fr: 'Serbie', pt: 'Sérvia' } },
@@ -171,7 +171,7 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'SWE', iso2: 'SE', name: { en: 'Sweden', it: 'Svezia', es: 'Suecia', fr: 'Suède', pt: 'Suécia' } },
   { iso3: 'CHE', iso2: 'CH', name: { en: 'Switzerland', it: 'Svizzera', es: 'Suiza', fr: 'Suisse', pt: 'Suíça' } },
   { iso3: 'SYR', iso2: 'SY', name: { en: 'Syria', it: 'Siria', es: 'Siria', fr: 'Syrie', pt: 'Síria' } },
-  { iso3: 'TWN', iso2: 'TW', name: { en: 'Taiwan', it: 'Taiwan', es: 'Taiwán', fr: 'Taiwan', pt: 'Taiwan' } },
+  { iso3: 'TWN', iso2: 'TW', name: { en: 'Taiwan', it: 'Taiwan', es: 'Taiwán', fr: 'Taïwan', pt: 'Taiwan' } },
   { iso3: 'TJK', iso2: 'TJ', name: { en: 'Tajikistan', it: 'Tagikistan', es: 'Tayikistán', fr: 'Tadjikistan', pt: 'Tajiquistão' } },
   { iso3: 'TZA', iso2: 'TZ', name: { en: 'Tanzania', it: 'Tanzania', es: 'Tanzania', fr: 'Tanzanie', pt: 'Tanzânia' } },
   { iso3: 'THA', iso2: 'TH', name: { en: 'Thailand', it: 'Thailandia', es: 'Tailandia', fr: 'Thaïlande', pt: 'Tailândia' } },
@@ -185,9 +185,9 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'TUV', iso2: 'TV', name: { en: 'Tuvalu', it: 'Tuvalu', es: 'Tuvalu', fr: 'Tuvalu', pt: 'Tuvalu' } },
   { iso3: 'UGA', iso2: 'UG', name: { en: 'Uganda', it: 'Uganda', es: 'Uganda', fr: 'Ouganda', pt: 'Uganda' } },
   { iso3: 'UKR', iso2: 'UA', name: { en: 'Ukraine', it: 'Ucraina', es: 'Ucrania', fr: 'Ukraine', pt: 'Ucrânia' } },
-  { iso3: 'ARE', iso2: 'AE', name: { en: 'United Arab Emirates', it: 'Emirati Arabi Uniti', es: 'Emiratos Árabes Unidos', fr: 'Émirats arabes unis', pt: 'Emirados Árabes Unidos' } },
-  { iso3: 'GBR', iso2: 'GB', name: { en: 'United Kingdom', it: 'Regno Unito', es: 'Reino Unido', fr: 'Royaume-Uni', pt: 'Reino Unido' } },
-  { iso3: 'USA', iso2: 'US', name: { en: 'United States', it: 'Stati Uniti', es: 'Estados Unidos', fr: 'États-Unis', pt: 'Estados Unidos' } },
+  { iso3: 'ARE', iso2: 'AE', name: { en: 'United Arab Emirates', it: 'Emirati Arabi Uniti', es: 'Emiratos Árabes Unidos', fr: 'Émirats arabes unis', pt: 'Emirados Árabes Unidos', de: 'Vereinigte Arabische Emirate' } },
+  { iso3: 'GBR', iso2: 'GB', name: { en: 'United Kingdom', it: 'Regno Unito', es: 'Reino Unido', fr: 'Royaume-Uni', pt: 'Reino Unido', de: 'Vereinigtes Königreich' } },
+  { iso3: 'USA', iso2: 'US', name: { en: 'United States', it: 'Stati Uniti', es: 'Estados Unidos', fr: 'États-Unis', pt: 'Estados Unidos', de: 'Vereinigte Staaten' } },
   { iso3: 'URY', iso2: 'UY', name: { en: 'Uruguay', it: 'Uruguay', es: 'Uruguay', fr: 'Uruguay', pt: 'Uruguai' } },
   { iso3: 'UZB', iso2: 'UZ', name: { en: 'Uzbekistan', it: 'Uzbekistan', es: 'Uzbekistán', fr: 'Ouzbékistan', pt: 'Uzbequistão' } },
   { iso3: 'VUT', iso2: 'VU', name: { en: 'Vanuatu', it: 'Vanuatu', es: 'Vanuatu', fr: 'Vanuatu', pt: 'Vanuatu' } },
@@ -199,55 +199,55 @@ export const COUNTRIES: CountryEntry[] = [
   { iso3: 'ZWE', iso2: 'ZW', name: { en: 'Zimbabwe', it: 'Zimbabwe', es: 'Zimbabue', fr: 'Zimbabwe', pt: 'Zimbabue' } },
   // Additional territories and smaller states
   { iso3: 'ABW', iso2: 'AW', name: { en: 'Aruba', it: 'Aruba', es: 'Aruba', fr: 'Aruba', pt: 'Aruba' } },
-  { iso3: 'ALA', iso2: 'AX', name: { en: 'Aland Islands', it: 'Isole Åland', es: 'Islas Aland', fr: 'Îles Åland', pt: 'Ilhas Aland' } },
+  { iso3: 'ALA', iso2: 'AX', name: { en: 'Åland Islands', it: 'Isole Åland', es: 'Islas Åland', fr: 'Îles Åland', pt: 'Ilhas Åland' } },
   { iso3: 'ASM', iso2: 'AS', name: { en: 'American Samoa', it: 'Samoa Americane', es: 'Samoa Americana', fr: 'Samoa américaines', pt: 'Samoa Americana' } },
   { iso3: 'AIA', iso2: 'AI', name: { en: 'Anguilla', it: 'Anguilla', es: 'Anguila', fr: 'Anguilla', pt: 'Anguila' } },
   { iso3: 'ATA', iso2: 'AQ', name: { en: 'Antarctica', it: 'Antartide', es: 'Antártida', fr: 'Antarctique', pt: 'Antártida' } },
-  { iso3: 'BES', iso2: 'BQ', name: { en: 'Bonaire, Sint Eustatius and Saba', it: 'Bonaire, Sint Eustatius e Saba', es: 'Bonaire, San Eustaquio y Saba', fr: 'Bonaire, Saint-Eustache et Saba', pt: 'Bonaire, Santo Eustáquio e Saba' } },
+  { iso3: 'BES', iso2: 'BQ', name: { en: 'Bonaire, Sint Eustatius and Saba', it: 'Bonaire, Sint Eustatius e Saba', es: 'Bonaire, San Eustaquio y Saba', fr: 'Bonaire, Saint-Eustache et Saba', pt: 'Bonaire, Santo Eustáquio e Saba', de: 'Karibische Niederlande' } },
   { iso3: 'BVT', iso2: 'BV', name: { en: 'Bouvet Island', it: 'Isola Bouvet', es: 'Isla Bouvet', fr: 'Île Bouvet', pt: 'Ilha Bouvet' } },
-  { iso3: 'IOT', iso2: 'IO', name: { en: 'British Indian Ocean Territory', it: 'Territorio Britannico dell\'Oceano Indiano', es: 'Territorio Británico del Océano Índico', fr: 'Territoire britannique de l\'océan Indien', pt: 'Território Britânico do Oceano Índico' } },
+  { iso3: 'IOT', iso2: 'IO', name: { en: 'British Indian Ocean Territory', it: 'Territorio britannico dell\'Oceano Indiano', es: 'Territorio Británico del Océano Índico', fr: 'Territoire britannique de l\'océan Indien', pt: 'Território Britânico do Oceano Índico', de: 'Britisches Territorium im Indischen Ozean' } },
   { iso3: 'CYM', iso2: 'KY', name: { en: 'Cayman Islands', it: 'Isole Cayman', es: 'Islas Caimán', fr: 'Îles Caïmans', pt: 'Ilhas Cayman' } },
-  { iso3: 'CXR', iso2: 'CX', name: { en: 'Christmas Island', it: 'Isola di Natale', es: 'Isla de Navidad', fr: 'Île Christmas', pt: 'Ilha Christmas' } },
+  { iso3: 'CXR', iso2: 'CX', name: { en: 'Christmas Island', it: 'Isola di Natale', es: 'Isla de Navidad', fr: 'Île Christmas', pt: 'Ilha do Natal' } },
   { iso3: 'CCK', iso2: 'CC', name: { en: 'Cocos (Keeling) Islands', it: 'Isole Cocos', es: 'Islas Cocos', fr: 'Îles Cocos', pt: 'Ilhas Cocos' } },
   { iso3: 'COK', iso2: 'CK', name: { en: 'Cook Islands', it: 'Isole Cook', es: 'Islas Cook', fr: 'Îles Cook', pt: 'Ilhas Cook' } },
-  { iso3: 'CUW', iso2: 'CW', name: { en: 'Curacao', it: 'Curaçao', es: 'Curazao', fr: 'Curaçao', pt: 'Curaçao' } },
+  { iso3: 'CUW', iso2: 'CW', name: { en: 'Curaçao', it: 'Curaçao', es: 'Curazao', fr: 'Curaçao', pt: 'Curaçao' } },
   { iso3: 'FLK', iso2: 'FK', name: { en: 'Falkland Islands', it: 'Isole Falkland', es: 'Islas Malvinas', fr: 'Îles Malouines', pt: 'Ilhas Malvinas' } },
-  { iso3: 'FRO', iso2: 'FO', name: { en: 'Faroe Islands', it: 'Isole Faroe', es: 'Islas Feroe', fr: 'Îles Féroé', pt: 'Ilhas Faroe' } },
-  { iso3: 'GUF', iso2: 'GF', name: { en: 'French Guiana', it: 'Guyana Francese', es: 'Guayana Francesa', fr: 'Guyane française', pt: 'Guiana Francesa' } },
-  { iso3: 'PYF', iso2: 'PF', name: { en: 'French Polynesia', it: 'Polinesia Francese', es: 'Polinesia Francesa', fr: 'Polynésie française', pt: 'Polinésia Francesa' } },
-  { iso3: 'ATF', iso2: 'TF', name: { en: 'French Southern Territories', it: 'Terre Australi Francesi', es: 'Tierras Australes Francesas', fr: 'Terres australes françaises', pt: 'Terras Austrais Francesas' } },
+  { iso3: 'FRO', iso2: 'FO', name: { en: 'Faroe Islands', it: 'Isole Fær Øer', es: 'Islas Feroe', fr: 'Îles Féroé', pt: 'Ilhas Feroé' } },
+  { iso3: 'GUF', iso2: 'GF', name: { en: 'French Guiana', it: 'Guyana francese', es: 'Guayana Francesa', fr: 'Guyane française', pt: 'Guiana Francesa' } },
+  { iso3: 'PYF', iso2: 'PF', name: { en: 'French Polynesia', it: 'Polinesia francese', es: 'Polinesia Francesa', fr: 'Polynésie française', pt: 'Polinésia Francesa' } },
+  { iso3: 'ATF', iso2: 'TF', name: { en: 'French Southern Territories', it: 'Terre australi e antartiche francesi', es: 'Tierras Australes Francesas', fr: 'Terres australes françaises', pt: 'Terras Austrais Francesas', de: 'Französische Süd- und Antarktisgebiete' } },
   { iso3: 'GIB', iso2: 'GI', name: { en: 'Gibraltar', it: 'Gibilterra', es: 'Gibraltar', fr: 'Gibraltar', pt: 'Gibraltar' } },
   { iso3: 'GRL', iso2: 'GL', name: { en: 'Greenland', it: 'Groenlandia', es: 'Groenlandia', fr: 'Groenland', pt: 'Groenlândia' } },
   { iso3: 'GLP', iso2: 'GP', name: { en: 'Guadeloupe', it: 'Guadalupa', es: 'Guadalupe', fr: 'Guadeloupe', pt: 'Guadalupe' } },
   { iso3: 'GUM', iso2: 'GU', name: { en: 'Guam', it: 'Guam', es: 'Guam', fr: 'Guam', pt: 'Guam' } },
-  { iso3: 'HKG', iso2: 'HK', name: { en: 'Hong Kong', it: 'Hong Kong', es: 'Hong Kong', fr: 'Hong Kong', pt: 'Hong Kong' } },
+  { iso3: 'HKG', iso2: 'HK', name: { en: 'Hong Kong', it: 'Hong Kong', es: 'Hong Kong', fr: 'Hong Kong', pt: 'Hong Kong', de: 'Hongkong', zh: '中国香港' } },
   { iso3: 'IMN', iso2: 'IM', name: { en: 'Isle of Man', it: 'Isola di Man', es: 'Isla de Man', fr: 'Île de Man', pt: 'Ilha de Man' } },
   { iso3: 'JEY', iso2: 'JE', name: { en: 'Jersey', it: 'Jersey', es: 'Jersey', fr: 'Jersey', pt: 'Jersey' } },
   { iso3: 'GGY', iso2: 'GG', name: { en: 'Guernsey', it: 'Guernsey', es: 'Guernsey', fr: 'Guernesey', pt: 'Guernsey' } },
   { iso3: 'XKX', iso2: 'XK', name: { en: 'Kosovo', it: 'Kosovo', es: 'Kosovo', fr: 'Kosovo', pt: 'Kosovo' } },
-  { iso3: 'MAC', iso2: 'MO', name: { en: 'Macao', it: 'Macao', es: 'Macao', fr: 'Macao', pt: 'Macau' } },
+  { iso3: 'MAC', iso2: 'MO', name: { en: 'Macao', it: 'Macao', es: 'Macao', fr: 'Macao', pt: 'Macau', de: 'Macau', zh: '中国澳门' } },
   { iso3: 'MTQ', iso2: 'MQ', name: { en: 'Martinique', it: 'Martinica', es: 'Martinica', fr: 'Martinique', pt: 'Martinica' } },
   { iso3: 'MYT', iso2: 'YT', name: { en: 'Mayotte', it: 'Mayotte', es: 'Mayotte', fr: 'Mayotte', pt: 'Mayotte' } },
   { iso3: 'MSR', iso2: 'MS', name: { en: 'Montserrat', it: 'Montserrat', es: 'Montserrat', fr: 'Montserrat', pt: 'Montserrat' } },
   { iso3: 'NCL', iso2: 'NC', name: { en: 'New Caledonia', it: 'Nuova Caledonia', es: 'Nueva Caledonia', fr: 'Nouvelle-Calédonie', pt: 'Nova Caledônia' } },
   { iso3: 'NIU', iso2: 'NU', name: { en: 'Niue', it: 'Niue', es: 'Niue', fr: 'Niue', pt: 'Niue' } },
   { iso3: 'NFK', iso2: 'NF', name: { en: 'Norfolk Island', it: 'Isola Norfolk', es: 'Isla Norfolk', fr: 'Île Norfolk', pt: 'Ilha Norfolk' } },
-  { iso3: 'MNP', iso2: 'MP', name: { en: 'Northern Mariana Islands', it: 'Isole Marianne Settentrionali', es: 'Islas Marianas del Norte', fr: 'Îles Mariannes du Nord', pt: 'Ilhas Marianas do Norte' } },
+  { iso3: 'MNP', iso2: 'MP', name: { en: 'Northern Mariana Islands', it: 'Isole Marianne Settentrionali', es: 'Islas Marianas del Norte', fr: 'Îles Mariannes du Nord', pt: 'Ilhas Marianas do Norte', de: 'Nördliche Marianen' } },
   { iso3: 'PCN', iso2: 'PN', name: { en: 'Pitcairn', it: 'Pitcairn', es: 'Pitcairn', fr: 'Pitcairn', pt: 'Pitcairn' } },
   { iso3: 'PRI', iso2: 'PR', name: { en: 'Puerto Rico', it: 'Porto Rico', es: 'Puerto Rico', fr: 'Porto Rico', pt: 'Porto Rico' } },
-  { iso3: 'REU', iso2: 'RE', name: { en: 'Reunion', it: 'Riunione', es: 'Reunión', fr: 'La Réunion', pt: 'Reunião' } },
-  { iso3: 'BLM', iso2: 'BL', name: { en: 'Saint Barthelemy', it: 'Saint-Barthélemy', es: 'San Bartolomé', fr: 'Saint-Barthélemy', pt: 'São Bartolomeu' } },
+  { iso3: 'REU', iso2: 'RE', name: { en: 'Réunion', it: 'Riunione', es: 'Reunión', fr: 'La Réunion', pt: 'Reunião' } },
+  { iso3: 'BLM', iso2: 'BL', name: { en: 'Saint Barthélemy', it: 'Saint-Barthélemy', es: 'San Bartolomé', fr: 'Saint-Barthélemy', pt: 'São Bartolomeu' } },
   { iso3: 'SHN', iso2: 'SH', name: { en: 'Saint Helena', it: 'Sant\'Elena', es: 'Santa Elena', fr: 'Sainte-Hélène', pt: 'Santa Helena' } },
   { iso3: 'MAF', iso2: 'MF', name: { en: 'Saint Martin', it: 'Saint Martin', es: 'San Martín', fr: 'Saint-Martin', pt: 'São Martinho' } },
   { iso3: 'SPM', iso2: 'PM', name: { en: 'Saint Pierre and Miquelon', it: 'Saint-Pierre e Miquelon', es: 'San Pedro y Miquelón', fr: 'Saint-Pierre-et-Miquelon', pt: 'São Pedro e Miquelon' } },
   { iso3: 'SXM', iso2: 'SX', name: { en: 'Sint Maarten', it: 'Sint Maarten', es: 'Sint Maarten', fr: 'Sint Maarten', pt: 'Sint Maarten' } },
-  { iso3: 'SGS', iso2: 'GS', name: { en: 'South Georgia', it: 'Georgia del Sud', es: 'Georgia del Sur', fr: 'Géorgie du Sud', pt: 'Geórgia do Sul' } },
+  { iso3: 'SGS', iso2: 'GS', name: { en: 'South Georgia', it: 'Georgia del Sud', es: 'Georgia del Sur', fr: 'Géorgie du Sud', pt: 'Geórgia do Sul', de: 'Südgeorgien und die Südlichen Sandwichinseln' } },
   { iso3: 'SJM', iso2: 'SJ', name: { en: 'Svalbard and Jan Mayen', it: 'Svalbard e Jan Mayen', es: 'Svalbard y Jan Mayen', fr: 'Svalbard et Jan Mayen', pt: 'Svalbard e Jan Mayen' } },
   { iso3: 'TKL', iso2: 'TK', name: { en: 'Tokelau', it: 'Tokelau', es: 'Tokelau', fr: 'Tokelau', pt: 'Tokelau' } },
   { iso3: 'TCA', iso2: 'TC', name: { en: 'Turks and Caicos Islands', it: 'Isole Turks e Caicos', es: 'Islas Turcas y Caicos', fr: 'Îles Turques-et-Caïques', pt: 'Ilhas Turks e Caicos' } },
-  { iso3: 'UMI', iso2: 'UM', name: { en: 'US Minor Outlying Islands', it: 'Isole Minori degli Stati Uniti', es: 'Islas Menores de Estados Unidos', fr: 'Îles mineures éloignées des États-Unis', pt: 'Ilhas Menores Distantes dos Estados Unidos' } },
-  { iso3: 'VIR', iso2: 'VI', name: { en: 'US Virgin Islands', it: 'Isole Vergini Americane', es: 'Islas Vírgenes de EE.UU.', fr: 'Îles Vierges américaines', pt: 'Ilhas Virgens Americanas' } },
-  { iso3: 'VGB', iso2: 'VG', name: { en: 'British Virgin Islands', it: 'Isole Vergini Britanniche', es: 'Islas Vírgenes Británicas', fr: 'Îles Vierges britanniques', pt: 'Ilhas Virgens Britânicas' } },
+  { iso3: 'UMI', iso2: 'UM', name: { en: 'US Minor Outlying Islands', it: 'Isole Minori degli Stati Uniti', es: 'Islas Menores de Estados Unidos', fr: 'Îles mineures éloignées des États-Unis', pt: 'Ilhas Menores Distantes dos Estados Unidos', de: 'Amerikanische Überseeinseln' } },
+  { iso3: 'VIR', iso2: 'VI', name: { en: 'US Virgin Islands', it: 'Isole Vergini americane', es: 'Islas Vírgenes de EE. UU.', fr: 'Îles Vierges américaines', pt: 'Ilhas Virgens Americanas', de: 'Amerikanische Jungferninseln' } },
+  { iso3: 'VGB', iso2: 'VG', name: { en: 'British Virgin Islands', it: 'Isole Vergini britanniche', es: 'Islas Vírgenes Británicas', fr: 'Îles Vierges britanniques', pt: 'Ilhas Virgens Britânicas', de: 'Britische Jungferninseln' } },
   { iso3: 'WLF', iso2: 'WF', name: { en: 'Wallis and Futuna', it: 'Wallis e Futuna', es: 'Wallis y Futuna', fr: 'Wallis-et-Futuna', pt: 'Wallis e Futuna' } },
   { iso3: 'ESH', iso2: 'EH', name: { en: 'Western Sahara', it: 'Sahara Occidentale', es: 'Sahara Occidental', fr: 'Sahara occidental', pt: 'Saara Ocidental' } },
 ];
@@ -257,10 +257,79 @@ const iso3Map = new Map<string, CountryEntry>();
 const iso2Map = new Map<string, CountryEntry>();
 const nameMap = new Map<string, CountryEntry>();
 
+type NameLang = 'en' | 'it' | 'es' | 'fr' | 'pt';
+
+/**
+ * Every name the table above held before the 2026-10-15 consistency audit renamed it for display
+ * (diacritics: "Côte d'Ivoire", "Réunion", "Népal"; the full "Republic of the Congo" instead of a
+ * bare "Congo" next to the DR Congo; local spellings: "Ilhas Feroé", "Benín"). Frozen on purpose.
+ *
+ * The fetchers were built and tested against these spellings: they derive source URLs and slugs
+ * from them (France diplomatie /congo/, Ireland /advice/congo/), search source pages for the
+ * country's own name with them (French and Belgian parsers), and key name maps with them. They
+ * read names through sourceName(), never `name` directly, so a display rename cannot change what
+ * any fetcher fetches or matches. Add an entry here whenever a name above changes.
+ */
+export const LEGACY_NAMES: Readonly<Record<string, Readonly<Partial<Record<NameLang, string>>>>> = {
+  ALA: { en: 'Aland Islands', es: 'Islas Aland', pt: 'Ilhas Aland' },
+  REU: { en: 'Reunion' },
+  BLM: { en: 'Saint Barthelemy' },
+  CIV: { en: "Cote d'Ivoire", fr: "Cote d'Ivoire" },
+  STP: { en: 'Sao Tome and Principe' },
+  CUW: { en: 'Curacao' },
+  COG: { en: 'Congo', it: 'Congo', es: 'Congo', fr: 'Congo', pt: 'Congo' },
+  NPL: { fr: 'Nepal' },
+  TWN: { fr: 'Taiwan' },
+  SLV: { fr: 'El Salvador' },
+  BEN: { es: 'Benin' },
+  BRN: { es: 'Brunei' },
+  PNG: { es: 'Papua Nueva Guinea' },
+  VIR: { it: 'Isole Vergini Americane', es: 'Islas Vírgenes de EE.UU.' },
+  VGB: { it: 'Isole Vergini Britanniche' },
+  FRO: { it: 'Isole Faroe', pt: 'Ilhas Faroe' },
+  ATG: { pt: 'Antigua e Barbuda' },
+  CXR: { pt: 'Ilha Christmas' },
+  PYF: { it: 'Polinesia Francese' },
+  GUF: { it: 'Guyana Francese' },
+  ATF: { it: 'Terre Australi Francesi' },
+  IOT: { it: "Territorio Britannico dell'Oceano Indiano" },
+};
+
+/** The name a fetcher must use to build a source URL, a name map or a search string: the
+ *  pre-rename spelling where there is one (LEGACY_NAMES), else the current name. */
+export function sourceName(country: CountryEntry, lang: NameLang): string {
+  return LEGACY_NAMES[country.iso3]?.[lang] ?? country.name[lang];
+}
+
+/**
+ * Lookup key that ignores case, diacritics, the apostrophe style, a few HTML entities and repeated
+ * spaces: "Côte d’Ivoire", "Côte d&#039;Ivoire" and "cote d'ivoire" are one key. Sources write
+ * names with or without accents (UK FCDO "Côte d'Ivoire travel advice" never matched our ASCII
+ * "Cote d'Ivoire", so Côte d'Ivoire had no UK advisory at all), so both sides are folded.
+ */
+export function foldName(name: string): string {
+  return name
+    .replace(/&(#0*39|#x0*27|apos|rsquo|lsquo|#8217|#8216);/gi, "'")
+    .replace(/&amp;/gi, '&')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[\u2018\u2019`\u00b4]/g, "'")
+    .replace(/\s+/g, ' ')
+    .trim()
+    .toLowerCase();
+}
+
 for (const country of COUNTRIES) {
   iso3Map.set(country.iso3, country);
   iso2Map.set(country.iso2, country);
-  nameMap.set(country.name.en.toLowerCase(), country);
+  nameMap.set(foldName(country.name.en), country);
+}
+// Pre-rename English names stay lookup aliases: sources keep writing "Congo" for the Republic of
+// the Congo (UK FCDO), and fetcher alias tables map to "Curacao", "Cote d'Ivoire", "Congo".
+for (const [iso3, names] of Object.entries(LEGACY_NAMES)) {
+  const country = iso3Map.get(iso3);
+  if (!country) throw new Error(`LEGACY_NAMES: unknown iso3 ${iso3}`);
+  if (names.en && !nameMap.has(foldName(names.en))) nameMap.set(foldName(names.en), country);
 }
 
 export function getCountryByIso3(iso3: string): CountryEntry | undefined {
@@ -271,12 +340,15 @@ export function getCountryByIso2(iso2: string): CountryEntry | undefined {
   return iso2Map.get(iso2.toUpperCase());
 }
 
+/** Place by English name: the current display name or its pre-rename spelling (LEGACY_NAMES),
+ *  compared with foldName (case, diacritics, apostrophe style). Every string that matched before
+ *  the folding still returns the same place (src/pipeline/__tests__/country-names.test.ts). */
 export function getCountryByName(name: string): CountryEntry | undefined {
-  return nameMap.get(name.toLowerCase());
+  return nameMap.get(foldName(name));
 }
 
 export function getCountryName(iso3: string, lang: 'en' | 'it' | 'es' | 'fr' | 'pt' | 'zh' | 'de' = 'en'): string {
   const entry = iso3Map.get(iso3.toUpperCase());
-  // Pipeline data only has en/it/es/fr/pt; zh/de fall back to en safely.
-  return entry?.name[lang as 'en'] ?? entry?.name.en ?? iso3;
+  // de/zh are set only for a few places (see CountryNames); elsewhere they fall back to en.
+  return entry?.name[lang] ?? entry?.name.en ?? iso3;
 }

@@ -3,7 +3,7 @@ import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES, sourceName } from '../config/countries.js';
 import {
   normalizeChAssessment,
   normalizeSeLevel,
@@ -668,7 +668,7 @@ interface CzCountryLink {
 // "Kanada").
 const czEnFallbackMap = new Map<string, (typeof COUNTRIES)[number]>();
 for (const country of COUNTRIES) {
-  czEnFallbackMap.set(stripDiacritics(country.name.en).toLowerCase(), country);
+  czEnFallbackMap.set(stripDiacritics(sourceName(country, 'en')).toLowerCase(), country);
 }
 
 // Most Czech country names have no resemblance to English at all (Slavic
@@ -918,7 +918,7 @@ interface HuCountryLink {
 // Hungarian names close to their international form (e.g. "Kanada").
 const huEnFallbackMap = new Map<string, (typeof COUNTRIES)[number]>();
 for (const country of COUNTRIES) {
-  huEnFallbackMap.set(stripDiacritics(country.name.en).toLowerCase(), country);
+  huEnFallbackMap.set(stripDiacritics(sourceName(country, 'en')).toLowerCase(), country);
 }
 
 // Most Hungarian country names are Magyar exonyms with no resemblance to
@@ -1182,7 +1182,7 @@ function stripDiacritics(s: string): string {
 // of MNE's 200 country pages can resolve without a hand-typed name map.
 const ptNameMap = new Map<string, (typeof COUNTRIES)[number]>();
 for (const country of COUNTRIES) {
-  ptNameMap.set(stripDiacritics(country.name.pt).toLowerCase(), country);
+  ptNameMap.set(stripDiacritics(sourceName(country, 'pt')).toLowerCase(), country);
 }
 
 // MNE (European Portuguese) occasionally diverges from this codebase's more

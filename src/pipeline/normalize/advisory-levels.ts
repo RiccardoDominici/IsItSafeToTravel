@@ -7,7 +7,7 @@
  * N-level mapper for future sources.
  */
 
-import { COUNTRIES } from '../config/countries.js';
+import { COUNTRIES, sourceName } from '../config/countries.js';
 
 /** Unified advisory level: 1 = normal, 2 = increased caution, 3 = avoid travel, 4 = do not travel */
 export type UnifiedLevel = 1 | 2 | 3 | 4;
@@ -1028,7 +1028,7 @@ function namesAnotherCountry(tail: string, ownNameFolded: string): boolean {
   const named = m[1];
   if (ownNameFolded.startsWith(named) || named.startsWith(ownNameFolded)) return false; // names itself
   return COUNTRIES.some((c) => {
-    const folded = foldFrName(c.name.fr);
+    const folded = foldFrName(sourceName(c, 'fr'));
     return folded !== ownNameFolded && folded.length > 3 && (folded.startsWith(named) || named.startsWith(folded));
   });
 }
@@ -1217,7 +1217,7 @@ function frNamedTargetLevel(
 ): UnifiedLevel | null {
   if (ownNameFolded.length < 3) return null;
   const name = escapeRegexLiteral(ownNameFolded);
-  const longerNames = COUNTRIES.map((c) => foldFrName(c.name.fr)).filter(
+  const longerNames = COUNTRIES.map((c) => foldFrName(sourceName(c, 'fr'))).filter(
     (n) => n !== ownNameFolded && (n.startsWith(`${ownNameFolded} `) || n.startsWith(`${ownNameFolded}-`)),
   );
   const ownNameRe = new RegExp(`(?<![a-z])${name}(?![a-z-])`);
@@ -1465,7 +1465,7 @@ export function normalizeAtLevel(
 // substring collisions (e.g. "Inde" inside "indépendant").
 const BE_OTHER_COUNTRY_NAMES = Array.from(
   new Set(
-    COUNTRIES.flatMap((c) => [foldFr(c.name.fr), foldFr(c.name.en)]).filter((n) => n.length >= 5),
+    COUNTRIES.flatMap((c) => [foldFr(sourceName(c, 'fr')), foldFr(sourceName(c, 'en'))]).filter((n) => n.length >= 5),
   ),
 );
 

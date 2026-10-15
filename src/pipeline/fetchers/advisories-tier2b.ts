@@ -3,7 +3,7 @@ import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES, sourceName } from '../config/countries.js';
 import {
   normalizeBeLevel,
   isBeVerdictBlock,
@@ -181,8 +181,8 @@ async function fetchBeAdvisories(
   // Build French name -> CountryEntry map for matching
   const frNameMap = new Map<string, typeof COUNTRIES[number]>();
   for (const country of COUNTRIES) {
-    frNameMap.set(country.name.fr.toLowerCase(), country);
-    frNameMap.set(country.name.fr.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), country);
+    frNameMap.set(sourceName(country, 'fr').toLowerCase(), country);
+    frNameMap.set(sourceName(country, 'fr').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), country);
   }
 
   const response = await fetch('https://diplomatie.belgium.be/fr/pays', {
@@ -261,7 +261,7 @@ async function fetchBeAdvisories(
         const updBlocks = (await fetchBlocks(updHref)).filter(isBeVerdictBlock);
         const secBlocks = await fetchBlocks(secHref);
         const blocks = [...updBlocks, ...secBlocks];
-        const level = normalizeBeLevel(blocks.join('\n'), entry.country.name.fr);
+        const level = normalizeBeLevel(blocks.join('\n'), sourceName(entry.country, 'fr'));
         if (level === null) return; // no advisory evidence in the fetched articles — don't publish a made-up level
         const secUrl = absolute((secHref ?? updHref) as string);
 
@@ -369,7 +369,7 @@ async function fetchDkAdvisories(
   // 7 to 31 countries, none of them guessed.
   const countrySlugEntries = COUNTRIES.map(c => ({
     country: c,
-    slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+    slug: sourceName(c, 'en').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
   }));
 
   await fetchBatch(
@@ -493,7 +493,7 @@ async function fetchSgAdvisories(
 
   const sitemapXml = await sitemapResponse.text();
   const slugByIso3 = new Map<string, typeof COUNTRIES[number]>();
-  for (const c of COUNTRIES) slugByIso3.set(slugifyEn(c.name.en), c);
+  for (const c of COUNTRIES) slugByIso3.set(slugifyEn(sourceName(c, 'en')), c);
 
   const countryEntries: { url: string; country: typeof COUNTRIES[number] }[] = [];
   const locRegex = new RegExp(`<loc>(https://www\\.mfa\\.gov\\.sg${SG_PATH_PREFIX}([a-z0-9-]+)/)</loc>`, 'g');
@@ -536,7 +536,7 @@ async function fetchSgAdvisories(
         // verdict sentences name it; our English name is a fallback alias. normalizeSgLevel only
         // uses these to recognise a verdict that positively names the WHOLE country.
         const pageName = page$('h1').first().text().replace(/\s+/g, ' ').trim();
-        const level = normalizeSgLevel(paragraphs.join('\n'), [pageName, entry.country.name.en]);
+        const level = normalizeSgLevel(paragraphs.join('\n'), [pageName, sourceName(entry.country, 'en')]);
         if (level === null) return; // no explicit notice published for this country -- skip, don't fabricate
 
         indicators.push({
@@ -641,7 +641,7 @@ async function fetchRoAdvisories(
 
     // Try to extract country name from the text
     for (const country of COUNTRIES) {
-      const enName = country.name.en.toLowerCase();
+      const enName = sourceName(country, 'en').toLowerCase();
       if (textLower.includes(enName) && enName.length > 3) {
         const existing = indicators.find(i => i.countryIso3 === country.iso3);
         if (existing) {
@@ -861,8 +861,8 @@ async function fetchEeAdvisories(
 
     // Fallback: build slugs from English names and try a sample
     const fallbackEntries = COUNTRIES.slice(0, 50).map(c => ({
-      slug: c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
-      url: `https://reisitargalt.vm.ee/sihtkoht/${c.name.en.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}/`,
+      slug: sourceName(c, 'en').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''),
+      url: `https://reisitargalt.vm.ee/sihtkoht/${sourceName(c, 'en').toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')}/`,
       country: c,
     }));
 
@@ -1008,7 +1008,7 @@ async function fetchHrAdvisories(
 
     // Try to extract country name
     for (const country of COUNTRIES) {
-      const enName = country.name.en.toLowerCase();
+      const enName = sourceName(country, 'en').toLowerCase();
       if (textLower.includes(enName) && enName.length > 3) {
         const existing = indicators.find(i => i.countryIso3 === country.iso3);
         if (existing) {
@@ -1078,11 +1078,11 @@ async function fetchArAdvisories(
   const esNameMap = new Map<string, typeof COUNTRIES[number]>();
   for (const country of COUNTRIES) {
     if (country.name.es) {
-      esNameMap.set(country.name.es.toLowerCase(), country);
-      esNameMap.set(country.name.es.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), country);
+      esNameMap.set(sourceName(country, 'es').toLowerCase(), country);
+      esNameMap.set(sourceName(country, 'es').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, ''), country);
     }
     // Also try English names
-    esNameMap.set(country.name.en.toLowerCase(), country);
+    esNameMap.set(sourceName(country, 'en').toLowerCase(), country);
   }
 
   // Parse alert list items for country mentions (Spanish text)

@@ -3,7 +3,7 @@ import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso2, getCountryByIso3, COUNTRIES, sourceName } from '../config/countries.js';
 import {
   normalizeItLevel,
   normalizeEsLevel,
@@ -418,7 +418,7 @@ async function fetchEsAdvisories(
   // table above for the handful of countries where the site's own wording diverges from ours.
   const esNameMap = new Map<string, typeof COUNTRIES[number]>();
   for (const country of COUNTRIES) {
-    esNameMap.set(foldAccents(country.name.es), country);
+    esNameMap.set(foldAccents(sourceName(country, 'es')), country);
   }
 
   const countryLinks: { name: string; url: string }[] = [];
@@ -677,7 +677,7 @@ const TW_NAME_ALIASES: Record<string, string> = {
   'virgin_islands_(u.s.)': 'US Virgin Islands',
 };
 
-function resolveTwCountry(id: string) {
+export function resolveTwCountry(id: string) {
   const alias = TW_NAME_ALIASES[id.toLowerCase()];
   if (alias) return getCountryByName(alias);
   return getCountryByName(id.replace(/_/g, ' '));
@@ -1046,7 +1046,7 @@ async function fetchInAdvisories(
 
     // Try to extract country names
     for (const country of COUNTRIES) {
-      if (!textLower.includes(country.name.en.toLowerCase())) continue;
+      if (!textLower.includes(sourceName(country, 'en').toLowerCase())) continue;
 
       const level = normalizeInLevel(text);
       if (level === null) continue; // matched nav-menu noise, not a real advisory keyword -- don't guess
