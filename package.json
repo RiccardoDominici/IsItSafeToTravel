@@ -12,6 +12,7 @@
     "validate:seo": "npx tsx scripts/validate-seo.ts",
     "generate:og": "npx tsx scripts/generate-og-images.ts",
     "generate:coords": "npx tsx scripts/generate-country-coords.ts",
+    "generate:proximity": "npx tsx scripts/generate-country-proximity.ts",
     "generate:llms": "npx tsx scripts/generate-llms-full.ts",
     "preview": "astro preview",
     "astro": "astro",
