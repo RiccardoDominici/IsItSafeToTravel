@@ -315,7 +315,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_182.html"
     },
@@ -550,7 +550,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_046.html"
     },
@@ -981,8 +981,8 @@
   },
   "BFA": {
     "de": {
-      "level": 4,
-      "text": "Reisewarnung",
+      "level": 2,
+      "text": "Sicherheitshinweis",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
       "updatedAt": "2026-10-13T09:13:30.000Z"
@@ -1101,13 +1101,6 @@
       "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_135.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
   "KWT": {
@@ -1132,8 +1125,8 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_049.html"
     },
     "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
+      "level": 1,
+      "text": "No specific warning",
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-12T00:00:00Z"
@@ -1273,7 +1266,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_125.html"
     },
@@ -1589,7 +1582,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_255.html"
     },
@@ -1780,7 +1773,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_043.html"
     },
@@ -1853,7 +1846,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_121.html"
     }
@@ -2021,7 +2014,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_116.html"
     },
@@ -2050,7 +2043,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_110.html"
     }
@@ -2289,6 +2282,35 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_284.html"
     }
   },
+  "CZE": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:59:05.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tsjechie",
+      "updatedAt": "2026-10-12T13:19:30.247Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_163.html"
+    },
+    "sk": {
+      "level": 1,
+      "text": "No specific warning",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2026-05-26T00:00:00Z"
+    }
+  },
   "ESP": {
     "de": {
       "level": 1,
@@ -2360,35 +2382,6 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2022-10-02T00:00:00Z"
-    }
-  },
-  "CZE": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:59:05.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tsjechie",
-      "updatedAt": "2026-10-12T13:19:30.247Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_163.html"
-    },
-    "sk": {
-      "level": 1,
-      "text": "No specific warning",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2026-05-26T00:00:00Z"
     }
   },
   "BGD": {
@@ -2854,7 +2847,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_301.html"
     },
@@ -2883,7 +2876,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_107.html"
     },
@@ -2966,6 +2959,28 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2022-10-02T00:00:00Z"
+    }
+  },
+  "TTO": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:12:25.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/trinidad-en-tobago",
+      "updatedAt": "2026-09-25T14:37:59.616Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_253.html"
     }
   },
   "TCD": {
@@ -3182,7 +3197,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_112.html"
     }
@@ -3418,13 +3433,6 @@
       "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_158.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2025-06-12T00:00:00Z"
     }
   },
   "PHL": {
@@ -3685,7 +3693,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_051.html"
     },
@@ -3714,7 +3722,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_045.html"
     },
@@ -4216,8 +4224,8 @@
       "updatedAt": "2026-08-17T09:29:35.485Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "level": 1,
+      "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_035.html"
     }
@@ -4761,6 +4769,35 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "TUR": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-14T20:09:00.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/turkije",
+      "updatedAt": "2026-10-01T13:23:45.851Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_052.html"
+    },
+    "sk": {
+      "level": 2,
+      "text": "Consider necessity of travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-15T00:00:00Z"
+    }
+  },
   "ARG": {
     "de": {
       "level": 1,
@@ -4851,7 +4888,7 @@
     },
     "jp": {
       "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "text": "Evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_041.html"
     },
@@ -4861,57 +4898,6 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-11T00:00:00Z"
-    }
-  },
-  "TTO": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-15T08:12:25.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/trinidad-en-tobago",
-      "updatedAt": "2026-09-25T14:37:59.616Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_253.html"
-    }
-  },
-  "TUR": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-15T07:55:01.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/turkije",
-      "updatedAt": "2026-10-01T13:23:45.851Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Avoid non-essential travel",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_052.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-15T00:00:00Z"
     }
   },
   "DEU": {
@@ -4963,15 +4949,6 @@
       "updatedAt": "2026-08-25T10:33:34.238Z"
     }
   },
-  "AIA": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
-      "updatedAt": "2026-03-19T09:26:41.240Z"
-    }
-  },
   "CYM": {
     "nl": {
       "level": 1,
@@ -4979,6 +4956,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/kaaimaneilanden",
       "updatedAt": "2026-05-07T07:22:13.784Z"
+    }
+  },
+  "FRO": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/faeroer",
+      "updatedAt": "2026-07-02T08:58:20.599Z"
     }
   },
   "CUW": {
@@ -4990,13 +4976,13 @@
       "updatedAt": "2026-06-17T15:21:59.720Z"
     }
   },
-  "FRO": {
+  "AIA": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/faeroer",
-      "updatedAt": "2026-07-02T08:58:20.599Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
+      "updatedAt": "2026-03-19T09:26:41.240Z"
     }
   },
   "GUF": {
@@ -5017,21 +5003,6 @@
       "updatedAt": "2026-09-18T13:39:22.352Z"
     }
   },
-  "PYF": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
-      "updatedAt": "2026-06-19T15:03:40.428Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
-    }
-  },
   "GLP": {
     "nl": {
       "level": 2,
@@ -5039,24 +5010,6 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/guadeloupe",
       "updatedAt": "2026-06-19T10:13:14.486Z"
-    }
-  },
-  "MTQ": {
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
-      "updatedAt": "2026-10-08T08:41:17.304Z"
-    }
-  },
-  "MSR": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montserrat",
-      "updatedAt": "2026-03-19T08:52:08.287Z"
     }
   },
   "NCL": {
@@ -5074,13 +5027,37 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_299.html"
     }
   },
-  "PRI": {
+  "MSR": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montserrat",
+      "updatedAt": "2026-03-19T08:52:08.287Z"
+    }
+  },
+  "PYF": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
+      "updatedAt": "2026-06-19T15:03:40.428Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
+    }
+  },
+  "MTQ": {
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/puerto-rico",
-      "updatedAt": "2026-10-13T12:52:54.304Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
+      "updatedAt": "2026-10-08T08:41:17.304Z"
     }
   },
   "PCN": {
@@ -5092,15 +5069,6 @@
       "updatedAt": "2026-04-24T07:56:05.606Z"
     }
   },
-  "REU": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
-      "updatedAt": "2026-03-19T09:21:11.246Z"
-    }
-  },
   "SXM": {
     "nl": {
       "level": 1,
@@ -5108,15 +5076,6 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/sint-maarten",
       "updatedAt": "2026-08-13T14:52:15.078Z"
-    }
-  },
-  "SJM": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
-      "updatedAt": "2026-05-11T12:12:10.391Z"
     }
   },
   "TKL": {
@@ -5128,15 +5087,6 @@
       "updatedAt": "2026-06-17T11:25:43.433Z"
     }
   },
-  "VIR": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
-      "updatedAt": "2026-06-12T14:37:01.179Z"
-    }
-  },
   "TCA": {
     "nl": {
       "level": 1,
@@ -5146,13 +5096,13 @@
       "updatedAt": "2026-06-25T10:55:20.935Z"
     }
   },
-  "WLF": {
+  "REU": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/wallis-en-futuna",
-      "updatedAt": "2026-04-24T12:02:34.368Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
+      "updatedAt": "2026-03-19T09:21:11.246Z"
     }
   },
   "VGB": {
@@ -5164,12 +5114,40 @@
       "updatedAt": "2026-03-19T09:35:25.181Z"
     }
   },
-  "GUM": {
-    "jp": {
+  "WLF": {
+    "nl": {
       "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_224.html"
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/wallis-en-futuna",
+      "updatedAt": "2026-04-24T12:02:34.368Z"
+    }
+  },
+  "PRI": {
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/puerto-rico",
+      "updatedAt": "2026-10-13T12:52:54.304Z"
+    }
+  },
+  "SJM": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
+      "updatedAt": "2026-05-11T12:12:10.391Z"
+    }
+  },
+  "VIR": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
+      "updatedAt": "2026-06-12T14:37:01.179Z"
     }
   },
   "MNP": {
@@ -5178,6 +5156,14 @@
       "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_223.html"
+    }
+  },
+  "GUM": {
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_224.html"
     }
   },
   "GIB": {
