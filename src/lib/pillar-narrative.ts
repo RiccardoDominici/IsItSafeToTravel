@@ -21,11 +21,17 @@ export function fillTemplate(template: string, slots: Record<string, string>): s
   return template.replace(/\{(\w+)\}/g, (match, key: string) => slots[key] ?? match);
 }
 
-/** "a", "a and b", "a, b and c" with the locale's separators (zh: "a，b，c"). */
+/** "a", "a and b", "a, b and c" with the locale's separators (zh: "a，b，c", for clauses). */
 export function joinList(items: readonly string[], lang: Lang): string {
   const copy = countrySummaryCopy[lang];
   if (items.length <= 1) return items[0] ?? '';
   return `${items.slice(0, -1).join(copy.listSeparator)}${copy.listLastSeparator}${items[items.length - 1]}`;
+}
+
+/** Like joinList for names and short items; zh enumerates them with 、 and 和 ("美国、英国和加拿大"). */
+export function joinNames(items: readonly string[], lang: Lang): string {
+  if (lang !== 'zh' || items.length <= 1) return joinList(items, lang);
+  return `${items.slice(0, -1).join('、')}和${items[items.length - 1]}`;
 }
 
 /**
@@ -72,6 +78,14 @@ export function adviceSlots(advice: string): { advice: string; Advice: string } 
   return { advice, Advice: advice.charAt(0).toUpperCase() + advice.slice(1) };
 }
 
+/**
+ * The advisory clause a page leads with: the level-4 count when most governments say do not travel
+ * ("23 of 24 governments advise against all travel"), otherwise the level-3-or-worse count.
+ */
+export function buildStrongestAdviceClause(consensus: AdvisoryConsensus, lang: Lang): string | null {
+  return consensus.majorityAvoid ? buildAdviceClause(consensus, lang, 'avoid') : buildAdviceClause(consensus, lang);
+}
+
 /** True when the focus is conflict, no indicator of it is bad, and most governments advise reconsidering travel or worse. */
 function isAdvisoryDriven(focus: PillarFocus, consensus: AdvisoryConsensus, lang: Lang): boolean {
   return focus.focus.name === 'conflict' && describeFocusDriver(focus, lang) === null && consensus.majorityReconsiderOrWorse;
@@ -90,7 +104,9 @@ export function buildFocusSentences(focus: PillarFocus, lang: Lang, withFact: bo
   switch (focus.frame) {
     case 'mainRisk':
     case 'concern':
-      if (described) return [fillTemplate(focus.frame === 'mainRisk' ? copy.driverMainRisk : copy.driverConcern, described)];
+      // Pillar and its /10 value first, then the indicator: the reader sees the bar's number before
+      // a source value on another scale (native-editor review, 2026-10-15).
+      if (described) return [fillTemplate(focus.frame === 'mainRisk' ? copy.driverMainRisk : copy.driverConcern, { ...slots, ...described })];
       return [fillTemplate(focus.frame === 'mainRisk' ? copy.mainRiskPlain : copy.concernPlain, slots)];
     case 'weakest':
       return [described ? fillTemplate(copy.driverWeakest, { ...slots, ...described }) : fillTemplate(copy.weakestPlain, slots)];
@@ -99,17 +115,35 @@ export function buildFocusSentences(focus: PillarFocus, lang: Lang, withFact: bo
   }
 }
 
-/** Government advice, not an indicator, holds the conflict focus down: say so with the advisory count. */
-export function buildAdvisoryPressureSentence(focus: PillarFocus, lang: Lang, consensus: AdvisoryConsensus): string | null {
+/**
+ * Government advice, not an indicator, holds the conflict focus down: say so, with the advisory
+ * count, or `short` without it when an advisoryLead sentence has already given the numbers.
+ */
+export function buildAdvisoryPressureSentence(focus: PillarFocus, lang: Lang, consensus: AdvisoryConsensus, short = false): string | null {
   if (!isAdvisoryDriven(focus, consensus, lang)) return null;
+  const copy = countrySummaryCopy[lang];
+  const pillar = area(focus.focus, lang);
+  if (short) return fillTemplate(copy.advisoryPressureShort, { pillar });
   const advice = buildAdviceClause(consensus, lang);
-  return advice ? fillTemplate(countrySummaryCopy[lang].advisoryPressure, adviceSlots(advice)) : null;
+  return advice ? fillTemplate(copy.advisoryPressure, { pillar, ...adviceSlots(advice) }) : null;
 }
 
-/** "The same score (6.6/10) goes to health." when another candidate ties the focus on the displayed value. */
+/**
+ * When most governments advise reconsidering travel or worse, that is the strongest signal on the
+ * page and the summary says it first, before any pillar (Kuwait 6.9 with 17 of 21 governments at
+ * level 3-4 led with "the main concern is natural hazards").
+ */
+export function buildAdvisoryLeadSentence(consensus: AdvisoryConsensus, lang: Lang): string | null {
+  const advice = buildStrongestAdviceClause(consensus, lang);
+  return advice ? fillTemplate(countrySummaryCopy[lang].advisoryLead, adviceSlots(advice)) : null;
+}
+
+/** "The health score is the same (6.6/10)." / "… almost as low (3.2/10)." for a (near-)tie with the focus. */
 export function buildTieSentence(focus: PillarFocus, lang: Lang): string | null {
   const tie = focus.focusTie;
-  return tie ? fillTemplate(countrySummaryCopy[lang].tie, { pillar: area(tie, lang), score: value(tie, lang) }) : null;
+  if (!tie) return null;
+  const copy = countrySummaryCopy[lang];
+  return fillTemplate(focus.focusTieExact ? copy.tieExact : copy.tieNear, { pillar: area(tie, lang), score: value(tie, lang) });
 }
 
 /**
@@ -118,7 +152,9 @@ export function buildTieSentence(focus: PillarFocus, lang: Lang): string | null 
  */
 export function buildGovernanceContext(focus: PillarFocus, lang: Lang, template = countrySummaryCopy[lang].governanceContext): string | null {
   const g = focus.governanceContext;
-  return g ? fillTemplate(template, { score: value(g, lang) }) : null;
+  // Compared with the focus pillar by name and value: "lower still" after an indicator sentence
+  // had no referent (native-editor review, 2026-10-15).
+  return g ? fillTemplate(template, { score: value(g, lang), focus: area(focus.focus, lang), focusScore: value(focus.focus, lang) }) : null;
 }
 
 /** Estimated (asterisked) bars that sit below what the text says: flagged as estimates. */
@@ -127,7 +163,7 @@ export function buildEstimatesSentence(focus: PillarFocus, lang: Lang): string |
   if (list.length === 0) return null;
   const copy = countrySummaryCopy[lang];
   const items = list.map((p) => fillTemplate(copy.estimateItem, { pillar: area(p, lang), score: value(p, lang) }));
-  return fillTemplate(list.length === 1 ? copy.estimates.one : copy.estimates.other, { list: joinList(items, lang) });
+  return fillTemplate(list.length === 1 ? copy.estimates.one : copy.estimates.other, { list: joinNames(items, lang) });
 }
 
 /**

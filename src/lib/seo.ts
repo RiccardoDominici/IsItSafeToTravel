@@ -15,7 +15,7 @@ import wikidataMapJson from '../data/countries-wikidata.json';
 import { getBand } from './bands';
 import { getBandVerdictCopy, getInlineRiskLabel } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
-import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
+import { getProvenanceCounts } from './provenance-copy';
 import { isScored } from './score-status';
 import { advisoryLevels, buildAdvisorySentence, nameSlots } from './country-summary';
 import { formatTenths } from './display-number';
@@ -24,6 +24,7 @@ import { selectPillarFocus, type PillarFocus, type PillarView } from './pillar-f
 import {
   adviceSlots,
   buildAdviceClause,
+  buildStrongestAdviceClause,
   buildAdvisoryPressureSentence,
   buildBestSentence,
   buildEstimatesSentence,
@@ -33,7 +34,7 @@ import {
   describeFocusDriver,
   fillTemplate,
   hasLowDirectEstimate,
-  joinList,
+  joinNames,
 } from './pillar-narrative';
 import { countrySummaryCopy } from '../i18n/country-summary-copy';
 import { getCountryByIso2 } from '../pipeline/config/countries';
@@ -187,15 +188,27 @@ const pillarLabels: Record<Lang, Record<PillarName, string>> = {
 /**
  * Meta description of a grey place (formula v10 insufficient_data): no score, band or pillar.
  * The four-source floor is spelled out ("four"): validate-seo reads "<n> sources" as a count claim.
+ * "No safety score yet", not "no official score": the site is not an official body (review).
  */
 const greyMetaDescriptions: Record<Lang, (name: string) => string> = {
-  en: (n) => `${n}: partial data, no official safety score yet (fewer than four independent sources). See the government advisories we have and rate your trip.`,
-  it: (n) => `${n}: dati parziali, ancora nessun punteggio di sicurezza ufficiale (meno di quattro fonti indipendenti). Vedi gli avvisi disponibili e valuta il tuo viaggio.`,
-  es: (n) => `${n}: datos parciales, aún sin puntuación de seguridad oficial (menos de cuatro fuentes independientes). Consulta los avisos disponibles y valora tu viaje.`,
-  fr: (n) => `${n} : données partielles, pas encore de score de sécurité officiel (moins de quatre sources indépendantes). Consultez les avis disponibles et notez votre voyage.`,
-  pt: (n) => `${n}: dados parciais, ainda sem pontuação de segurança oficial (menos de quatro fontes independentes). Veja os alertas disponíveis e avalie sua viagem.`,
-  zh: (n) => `${n}数据不完整，暂无官方安全评分（独立来源不足四个）。查看现有的政府旅行警告，并分享您的旅行感受。`,
-  de: (n) => `${n}: unvollständige Datenlage, noch keine offizielle Sicherheitsbewertung (weniger als vier unabhängige Quellen). Reisehinweise ansehen und Reise bewerten.`,
+  en: (n) => `${n}: partial data, no safety score yet (fewer than four independent sources). See the government advisories we have and rate how safe your trip felt.`,
+  it: (n) => `${n}: dati parziali, ancora nessun punteggio di sicurezza (meno di quattro fonti indipendenti). Vedi gli avvisi disponibili e valuta quanto ti sei sentito sicuro.`,
+  es: (n) => `${n}: datos parciales, aún sin puntuación de seguridad (menos de cuatro fuentes independientes). Consulta los avisos disponibles y valora lo seguro que te sentiste.`,
+  fr: (n) => `${n} : données partielles, pas encore de score de sécurité (moins de quatre sources indépendantes). Consultez les avis disponibles et dites-nous comment s’est passé votre voyage.`,
+  pt: (n) => `${n}: dados parciais, ainda sem pontuação de segurança (menos de quatro fontes independentes). Veja os alertas disponíveis e conte como foi sua viagem.`,
+  zh: (n) => `${n}数据不完整，暂无安全评分（独立来源不足四个）。查看现有的政府旅行警告，并分享您的旅行感受。`,
+  de: (n) => `${n}: unvollständige Datenlage, noch keine Sicherheitsbewertung (weniger als vier unabhängige Quellen). Sehen Sie die Reisehinweise ein und bewerten Sie Ihre Reise.`,
+};
+
+/** The same for a grey place with no government advisory either: no "advisories we have" to point to. */
+const greyMetaDescriptionsNoAdvisories: Record<Lang, (name: string) => string> = {
+  en: (n) => `${n}: partial data, no safety score yet (fewer than four independent sources) and no government advisory on record. Check your own government's travel advice.`,
+  it: (n) => `${n}: dati parziali, ancora nessun punteggio di sicurezza (meno di quattro fonti indipendenti) e nessun avviso governativo. Controlla le indicazioni del tuo governo.`,
+  es: (n) => `${n}: datos parciales, aún sin puntuación de seguridad (menos de cuatro fuentes independientes) ni avisos gubernamentales. Consulta las recomendaciones de tu gobierno.`,
+  fr: (n) => `${n} : données partielles, pas encore de score de sécurité (moins de quatre sources indépendantes) ni d’avis gouvernemental. Consultez les conseils de votre gouvernement.`,
+  pt: (n) => `${n}: dados parciais, ainda sem pontuação de segurança (menos de quatro fontes independentes) e sem alertas governamentais. Consulte as orientações do seu governo.`,
+  zh: (n) => `${n}数据不完整，暂无安全评分（独立来源不足四个），也没有政府旅行警告。请查看您本国政府的旅行建议。`,
+  de: (n) => `${n}: unvollständige Datenlage, noch keine Sicherheitsbewertung (weniger als vier unabhängige Quellen) und keine staatlichen Reisehinweise. Prüfen Sie die Hinweise Ihrer Regierung.`,
 };
 
 /**
@@ -204,55 +217,64 @@ const greyMetaDescriptions: Record<Lang, (name: string) => string> = {
  * pillar is at 7.0+ the clause says so instead of calling a strong pillar the main risk (2026-10-15
  * audit, I30: "Hauptrisiko: Regierungsführung (8.0)").
  */
-const metaFocusClauses: Record<Lang, Record<'mainRisk' | 'concern' | 'weakest' | 'allGood' | 'allGoodMeasured', (p: string, s: string) => string>> = {
+type MetaFrame = 'mainRisk' | 'concern' | 'weakest' | 'weakestMeasured' | 'allGood' | 'allGoodMeasured';
+/** (pillar, value, estimated pillars) -> clause; the third argument is used by the *Measured frames. */
+const metaFocusClauses: Record<Lang, Record<MetaFrame, (p: string, s: string, e: string) => string>> = {
   en: {
     mainRisk: (p, s) => `Main risk: ${p} (${s}).`,
     concern: (p, s) => `Main concern: ${p} (${s}).`,
     weakest: (p, s) => `Weakest area: ${p} (${s}).`,
     allGood: (p, s) => `All five areas at 7/10 or better; lowest: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Every measured area at 7/10 or better; lowest: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Weakest measured area: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Measured areas all 7/10 or better (lowest: ${p}, ${s}); too little data on ${e}.`,
   },
   it: {
     mainRisk: (p, s) => `Rischio principale: ${p} (${s}).`,
     concern: (p, s) => `Criticità principale: ${p} (${s}).`,
     weakest: (p, s) => `Area più debole: ${p} (${s}).`,
     allGood: (p, s) => `Tutte e cinque le aree almeno a 7/10; la più bassa: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Aree misurate tutte almeno a 7/10; la più bassa: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Area misurata più debole: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Aree misurate tutte almeno a 7/10 (la più bassa: ${p}, ${s}); dati insufficienti su ${e}.`,
   },
   es: {
     mainRisk: (p, s) => `Mayor riesgo: ${p} (${s}).`,
     concern: (p, s) => `Principal preocupación: ${p} (${s}).`,
     weakest: (p, s) => `Área más débil: ${p} (${s}).`,
     allGood: (p, s) => `Las cinco áreas, con 7/10 o más; la más baja: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Áreas medidas, con 7/10 o más; la más baja: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Área medida más débil: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Áreas medidas, todas con 7/10 o más (la más baja: ${p}, ${s}); faltan datos sobre ${e}.`,
   },
   fr: {
     mainRisk: (p, s) => `Risque principal\u00a0: ${p} (${s}).`,
     concern: (p, s) => `Point de vigilance\u00a0: ${p} (${s}).`,
     weakest: (p, s) => `Domaine le plus faible\u00a0: ${p} (${s}).`,
     allGood: (p, s) => `Les cinq domaines à 7/10 ou plus\u00a0; le plus bas\u00a0: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Domaines mesurés à 7/10 ou plus\u00a0; le plus bas\u00a0: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Domaine mesuré le plus faible\u00a0: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Domaines mesurés tous à 7/10 ou plus (le plus bas\u00a0: ${p}, ${s})\u00a0; données insuffisantes\u00a0: ${e}.`,
   },
   pt: {
     mainRisk: (p, s) => `Maior risco: ${p} (${s}).`,
     concern: (p, s) => `Principal preocupação: ${p} (${s}).`,
     weakest: (p, s) => `Área mais fraca: ${p} (${s}).`,
     allGood: (p, s) => `As cinco áreas com 7/10 ou mais; a mais baixa: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Áreas medidas com 7/10 ou mais; a mais baixa: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Área medida mais fraca: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Áreas medidas, todas com 7/10 ou mais (a mais baixa: ${p}, ${s}); faltam dados sobre ${e}.`,
   },
   zh: {
     mainRisk: (p, s) => `主要风险：${p}（${s}分）。`,
     concern: (p, s) => `最需关注：${p}（${s}分）。`,
     weakest: (p, s) => `最薄弱方面：${p}（${s}分）。`,
     allGood: (p, s) => `五个方面均不低于7分，最低为${p}（${s}分）。`,
-    allGoodMeasured: (p, s) => `数据充足的方面均不低于7分，最低为${p}（${s}分）。`,
+    weakestMeasured: (p, s) => `数据充足的方面中最薄弱的是${p}（${s}分）。`,
+    allGoodMeasured: (p, s, e) => `数据充足的方面均不低于7分（最低为${p}，${s}分），${e}数据不足。`,
   },
   de: {
     mainRisk: (p, s) => `Hauptrisiko: ${p} (${s}).`,
-    concern: (p, s) => `Größte Sorge: ${p} (${s}).`,
+    concern: (p, s) => `Schwächster Bereich: ${p} (${s}).`,
     weakest: (p, s) => `Schwächster Bereich: ${p} (${s}).`,
     allGood: (p, s) => `Alle fünf Bereiche bei 7/10 oder mehr; am niedrigsten: ${p} (${s}).`,
-    allGoodMeasured: (p, s) => `Gemessene Bereiche bei 7/10 oder mehr; am niedrigsten: ${p} (${s}).`,
+    weakestMeasured: (p, s) => `Schwächster gemessener Bereich: ${p} (${s}).`,
+    allGoodMeasured: (p, s, e) => `Gemessene Bereiche alle bei 7/10 oder mehr (am niedrigsten: ${p}, ${s}); zu wenige Daten zu ${e}.`,
   },
 };
 
@@ -263,13 +285,13 @@ const metaFocusClauses: Record<Lang, Record<'mainRisk' | 'concern' | 'weakest' |
  * reads as the site-wide source-count claim.
  */
 const metaTails: Record<Lang, (advisories: number, datasets: number) => string> = {
-  en: (a, d) => tail(` Based on %s, recalculated daily.`, ' and ', a && `${a} ${a === 1 ? 'advisory' : 'advisories'}`, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
-  it: (a, d) => tail(` Basato su %s, ricalcolato ogni giorno.`, ' e ', a && `${a} ${a === 1 ? 'avviso' : 'avvisi'}`, d && `${d} dataset`),
-  es: (a, d) => tail(` Basada en %s, recalculada a diario.`, ' y ', a && `${a} ${a === 1 ? 'aviso' : 'avisos'}`, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
-  fr: (a, d) => tail(` Fondé sur %s, recalculé chaque jour.`, ' et ', a && `${a} avis`, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
-  pt: (a, d) => tail(` Com base em %s, recalculada diariamente.`, ' e ', a && `${a} ${a === 1 ? 'alerta' : 'alertas'}`, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
-  zh: (a, d) => tail(`基于%s，每日重新计算。`, '和', a && `${a}份旅行警告`, d && `${d}个数据集`),
-  de: (a, d) => tail(` Aus %s, täglich neu berechnet.`, ' und ', a && `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
+  en: (a, d) => tail(` Score based on %s, recalculated daily.`, ' and ', a && `${a} ${a === 1 ? 'advisory' : 'advisories'}`, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
+  it: (a, d) => tail(` Punteggio basato su %s, ricalcolato ogni giorno.`, ' e ', a && `${a} ${a === 1 ? 'avviso' : 'avvisi'}`, d && `${d} dataset`),
+  es: (a, d) => tail(` Puntuación basada en %s, recalculada a diario.`, ' y ', a && `${a} ${a === 1 ? 'aviso' : 'avisos'}`, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
+  fr: (a, d) => tail(` Score fondé sur %s, recalculé chaque jour.`, ' et ', a && `${a} avis`, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
+  pt: (a, d) => tail(` Pontuação baseada em %s, recalculada diariamente.`, ' e ', a && `${a} ${a === 1 ? 'alerta' : 'alertas'}`, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
+  zh: (a, d) => tail(`评分基于%s，每日重新计算。`, '和', a && `${a}份旅行警告`, d && `${d}个数据集`),
+  de: (a, d) => tail(` Täglich neu berechnet aus %s.`, ' und ', a && `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
 };
 
 /** Fills "%s" with the non-empty parts joined by `and`; empty string when there is nothing to count. */
@@ -286,7 +308,8 @@ function tail(template: string, and: string, ...parts: Array<string | 0>): strin
 export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang): string {
   // Formula v10 grey place: no score, band or pillar figure in the SERP snippet either.
   if (!isScored(country)) {
-    return greyMetaDescriptions[lang](getLocalizedCountryName(country, lang));
+    const noAdvisories = getAdvisoryConsensus(country).n === 0;
+    return (noAdvisories ? greyMetaDescriptionsNoAdvisories : greyMetaDescriptions)[lang](getLocalizedCountryName(country, lang));
   }
   const score = country.score;
 
@@ -302,11 +325,29 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   const name = getLocalizedCountryName(country, lang);
   const roundedScore = formatTenths(score, lang);
   const labels = pillarLabels[lang];
-  const pillarName = focus.focusTie
-    ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[focus.focusTie.name]}`
-    : labels[focus.focus.name];
-  const frameKey = focus.frame === 'allGood' && !focus.allFiveAtLeast7 ? 'allGoodMeasured' : focus.frame;
-  const clause = metaFocusClauses[lang][frameKey](pillarName, formatTenths(focus.focus.value, lang));
+  const value = formatTenths(focus.focus.value, lang);
+  const tie = focus.focusTie;
+  // An exact tie shares the value ("crime and health (6.6)"); a near-tie gives each its own
+  // ("natural hazards (3.1) and conflict (3.2)"), so the snippet never ranks two equal bars.
+  const pillarName = !tie
+    ? labels[focus.focus.name]
+    : focus.focusTieExact
+      ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[tie.name]}`
+      : `${labels[focus.focus.name]} (${value})${META_AND[lang]}${labels[tie.name]}`;
+  const shownValue = tie && !focus.focusTieExact ? formatTenths(tie.value, lang) : value;
+  const measured = focus.lowerEstimates.length > 0;
+  const frameKey: MetaFrame =
+    focus.frame === 'allGood' ? (focus.allFiveAtLeast7 ? 'allGood' : 'allGoodMeasured')
+    : focus.frame === 'weakest' && measured ? 'weakestMeasured'
+    : focus.frame;
+  const estimated = focus.lowerEstimates.map((p) => labels[p.name]).join(META_AND[lang]);
+  // Most governments at "reconsider travel" or worse is the strongest signal: the snippet leads
+  // with it instead of a pillar (Kuwait 6.9 read "Main concern: natural hazards (6.2)" while 17 of
+  // 21 governments advise reconsidering travel or against it).
+  const advice = buildStrongestAdviceClause(getAdvisoryConsensus(country), lang);
+  const clause = advice
+    ? lang === 'zh' ? `${advice}。` : `${adviceSlots(advice).Advice}.`
+    : metaFocusClauses[lang][frameKey](pillarName, shownValue, estimated);
 
   // Google truncates meta descriptions around 155-160 characters. The score +
   // focus clause is the part that must always survive, so it is the "base";
@@ -883,7 +924,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // no "biggest risk" answer (its pillar values are internal), A3 the advisories as usual.
   if (!scored) {
     return [
-      { question: fill(copy.q1), answer: answer([fill(copy.a1Grey)]) },
+      // No "read the advisories below" when there is none (Cocos Islands).
+      { question: fill(copy.q1), answer: answer([fill(consensus.n > 0 ? copy.a1Grey : copy.a1GreyNoAdvisories)]) },
       { question: fill(copy.q3), answer: buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, true) },
     ];
   }
@@ -897,7 +939,9 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   // or worse) opened "Yes, generally" above an advisory answer saying the opposite (I06), and the
   // danger band said "travel requires serious caution" where all 22 governments say "do not
   // travel" (I18). Advisories first, then confidence, then the band.
-  const avoidClause = band === 'danger' && consensus.majorityAvoid ? buildAdviceClause(consensus, lang, 'avoid') : null;
+  // A level-4 majority answers "No" whatever the band (Belarus 5.5 with 12 of 19 at "do not
+  // travel"), the same rule as the severe-advisory note in A3.
+  const avoidClause = consensus.majorityAvoid ? buildAdviceClause(consensus, lang, 'avoid') : null;
   const reconsiderClause = band !== 'danger' ? buildAdviceClause(consensus, lang) : null;
   const opener = avoidClause
     ? fill(copy.a1VerdictAvoid, { ...scoreSlots, ...adviceSlots(avoidClause) })
@@ -905,22 +949,25 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
       ? fill(copy.a1VerdictAdvisories, { ...scoreSlots, ...adviceSlots(reconsiderClause) })
       : fill(country.confidence < LOW_CONFIDENCE_THRESHOLD ? copy.a1VerdictLowConfidence : copy.a1Verdict[band], scoreSlots);
 
-  // A1 — verdict, how the score works, the focus pillar in one line (same words as the summary),
-  // the best area (a strength only at 7.0+), provenance (the country's own counts).
-  const provenance = buildProvenanceSentence(getProvenanceCounts(country), displayName, lang, country.iso3);
+  // "Even the best-rated area scores only 6.9/10" under a "Yes" verdict undercut it (native-editor
+  // review): the weak best area is spelled out only where the answer is not a plain yes.
+  const cautious = band === 'high_caution' || band === 'danger' || avoidClause !== null || reconsiderClause !== null;
+
+  // A1 — verdict, how the score works (one plain sentence: the method block used to be pasted on
+  // every page), the focus pillar in one line (same words as the summary), the best area. The
+  // source counts are in the summary and the meta description, not repeated a third time here.
   const a1 = answer([
     opener,
     copy.a1Formula,
     ...buildFocusSentences(focus, lang, false),
     buildTieSentence(focus, lang),
     buildEstimatesSentence(focus, lang),
-    buildBestSentence(focus, lang, true),
-    provenance,
+    buildBestSentence(focus, lang, cautious),
   ]);
 
   // Outside the danger band the pillars can look better than the government advice (ARE, QAT):
   // A2 then says so instead of implying the pillar is the whole story.
-  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger'));
+  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger', cautious));
   const a3 = buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, false);
 
   return [
@@ -937,6 +984,7 @@ function buildBiggestRiskParts(
   consensus: AdvisoryConsensus,
   fill: (tpl: string, extra?: Record<string, string>) => string,
   withAdvisoryNote: boolean,
+  includeWeakBest: boolean,
 ): Array<string | null> {
   const copy = countryFaqCopy[lang];
   const area = (p: PillarView) => countrySummaryCopy[lang].pillarArea[p.name];
@@ -958,7 +1006,7 @@ function buildBiggestRiskParts(
         focus.second ? fill(copy.a2Second, pillarSlots(focus.second)) : null,
         buildGovernanceContext(focus, lang, copy.a2GovernanceContext),
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, true),
+        buildBestSentence(focus, lang, includeWeakBest),
         // Not twice: when the advice already explains the focus pillar, it is said above.
         driver || !pressure ? advisoryNote : null,
       ];
@@ -968,7 +1016,7 @@ function buildBiggestRiskParts(
         copy.pillarMeaning.governance,
         driver,
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, true),
+        buildBestSentence(focus, lang, includeWeakBest),
         advisoryNote,
       ];
     case 'allGood':
@@ -984,8 +1032,9 @@ function buildBiggestRiskParts(
           : null,
         buildEstimatesSentence(focus, lang),
         // "Normal precautions are enough" would contradict a majority of governments advising
-        // reconsidering travel (QAT, ARE...): their advice replaces it.
-        advisoryNote ?? copy.a2Precautions,
+        // reconsidering travel (QAT, ARE...), and is unearned while a lower bar is only an
+        // estimate (Nauru: crime never measured).
+        advisoryNote ?? (focus.lowerEstimates.length > 0 ? null : copy.a2Precautions),
       ];
   }
 }
@@ -1021,12 +1070,6 @@ function issuerName(key: string, lang: Lang): string {
   return bare;
 }
 
-/** Issuer list: zh "美国、英国和加拿大", other locales via the summary's list separators. */
-function joinIssuers(names: string[], lang: Lang): string {
-  if (lang !== 'zh' || names.length <= 1) return joinList(names, lang);
-  return `${names.slice(0, -1).join('、')}和${names[names.length - 1]}`;
-}
-
 /**
  * A3 of the country FAQ: the government-advisory picture built from the real distribution (the
  * summary's own breakdown sentence, with the date), the strictest level and who issues it when it
@@ -1060,7 +1103,8 @@ function buildAdvisoryAnswer(
   const sentence = lang === 'de' ? breakdown.replace(/\.$/, '') : lang === 'zh' ? breakdown : lowercaseFirst(breakdown);
 
   let strictest: string | null = null;
-  if (max > modal) {
+  // Named only above level 2: calling "increased caution" the strictest warning read as alarm.
+  if (max >= 3 && max > modal) {
     const issuers = entries
       .filter((a) => a.level === max)
       .map((a) => a.key)
@@ -1072,10 +1116,15 @@ function buildAdvisoryAnswer(
     const k = issuers.length;
     const named = (k <= 3 ? issuers : issuers.slice(0, 2)).map((key) => issuerName(key, lang));
     const template = k === 1 ? copy.a3Strictest.one : k <= 3 ? copy.a3Strictest.few : copy.a3Strictest.many;
-    strictest = fill(template, { level: advisoryLevelWords[lang][max - 1], k: String(k), issuers: joinIssuers(named, lang) });
+    strictest = fill(template, {
+      level: advisoryLevelWords[lang][max - 1],
+      k: String(k),
+      issuers: joinNames(named, lang),
+      phrase: summaryCopy.levelPhrases[max as 3 | 4][k === 1 ? 0 : 1],
+    });
   }
-  // Only levels 1 and 2, mixed: say plainly that no government advises against travel.
-  const noneAbove2 = max <= 2 && counts[2] > 0 && counts[2] < n ? copy.a3NoneAbove2 : null;
+  // Only levels 1 and 2, mixed: nobody goes beyond increased caution.
+  const noneAbove2 = max === 2 && counts[1] > 0 ? copy.a3NoneAbove2 : null;
 
   return answer([fill(copy.a3AsOf, { sentence }), strictest, noneAbove2, cap]);
 }

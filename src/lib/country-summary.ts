@@ -40,6 +40,7 @@ import { getAdvisoryConsensus } from './advisory-consensus';
 import { selectPillarFocus } from './pillar-focus';
 import {
   fixItalianNumberArticles,
+  buildAdvisoryLeadSentence,
   buildAdvisoryPressureSentence,
   buildBestSentence,
   buildEstimatesSentence,
@@ -163,17 +164,24 @@ export function buildCountrySummary(country: ScoredCountry, ctx: SummaryContext)
   const focus = selectPillarFocus(country.pillars);
   const consensus = getAdvisoryConsensus(country);
 
+  // Most governments at "reconsider travel" or worse is the strongest signal on the page: it comes
+  // before any pillar. When every government gives the same advice, that sentence says it all and
+  // the breakdown below would only repeat it.
+  const lead = buildAdvisoryLeadSentence(consensus, lang);
+  const unanimous = new Set(consensus.levels).size === 1;
+
   return [
     opener,
+    lead,
     ...buildFocusSentences(focus, lang, true),
-    // Right after the focus sentence: "That score" must refer to the focus pillar, not to a tie.
-    buildAdvisoryPressureSentence(focus, lang, consensus),
+    // Right after the focus sentence, so it refers to the focus pillar and not to a tie.
+    buildAdvisoryPressureSentence(focus, lang, consensus, lead !== null),
     buildTieSentence(focus, lang),
     buildGovernanceContext(focus, lang),
     buildEstimatesSentence(focus, lang),
     // A strength only at 7.0+: the summary never presents the least-bad pillar as good.
     buildBestSentence(focus, lang, false),
-    advisory,
+    lead && unanimous ? null : advisory,
     provenance,
   ]
     .filter((s): s is string => Boolean(s))

@@ -64,8 +64,8 @@ function summaryRank(summary: string, lang: string): { rank: number; total: numb
     es: /puesto (\d+) de los (\d+) países/,
     fr: /(\d+)(?:e|er) sur les (\d+) pays/,
     pt: /(\d+)º lugar entre os (\d+) países/,
-    de: /Unter den (\d+) Ländern mit offizieller Bewertung steht das Land auf Rang (\d+)/,
-    zh: /在(\d+)个有官方评分的国家和地区中排名第(\d+)/,
+    de: /Unter den (\d+) (?:Ländern mit offizieller Bewertung|von uns bewerteten Ländern) steht das Land auf Rang (\d+)/,
+    zh: /在(\d+)个(?:有官方评分|已评分)的国家和地区中排名第(\d+)/,
   };
   const m = summary.match(patterns[lang]);
   if (!m) return null;
@@ -78,12 +78,12 @@ function summaryRank(summary: string, lang: string): { rank: number; total: numb
 function summaryGovernments(summary: string, lang: string): number | null {
   const patterns: Record<string, RegExp> = {
     en: /Of the (\d+) governments/,
-    it: /Dei (\d+) governi/,
+    it: /De(?:i|gli) (\d+) governi/,
     es: /De los (\d+) gobiernos/,
     fr: /Parmi les (\d+) gouvernements/,
     pt: /Dos (\d+) governos/,
     de: /(\d+) Regierungen veröffentlichen/,
-    zh: /的(\d+)个国家政府中/,
+    zh: /的(\d+)个(?:国家)?政府中/,
   };
   const m = summary.match(patterns[lang]);
   return m ? Number(m[1]) : null;

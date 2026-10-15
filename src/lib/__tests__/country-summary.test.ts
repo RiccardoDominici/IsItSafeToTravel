@@ -68,13 +68,13 @@ const ctx = (lang: Lang) => ({ lang, name: lang === 'fr' ? 'Équateur' : lang ==
 describe('country summary: scored country', () => {
   it('names the concrete driver with value, year and source (Ecuador: violent crime, not governance)', () => {
     const text = buildCountrySummary(ecuador(), ctx('en'));
-    assert.match(text, /The main risk is violent crime: 45\.7 homicides per 100,000 people \(World Bank, 2023\)\./);
+    assert.match(text, /The main risk is crime \(4\.4\/10\), above all violent crime: 45\.7 homicides per 100,000 people \(World Bank, 2023\)\./);
     assert.doesNotMatch(text, /biggest concern|strongest area/i);
   });
 
-  it('ranks among countries with an official score and uses the snapshot date', () => {
+  it('ranks among the countries we score and uses the snapshot date', () => {
     const text = buildCountrySummary(ecuador(), ctx('en'));
-    assert.match(text, /ranking 154th of the 192 countries with an official score/);
+    assert.match(text, /ranking 154th of the 192 countries we score/);
     assert.match(text, /as of October 15, 2026/);
   });
 
@@ -90,7 +90,7 @@ describe('country summary: scored country', () => {
 
   it('writes the German driver with locale numbers and a capital after the colon only for sentences', () => {
     const text = buildCountrySummary(ecuador(), ctx('de'));
-    assert.match(text, /Das größte Risiko ist die Gewaltkriminalität: 45,7 Tötungsdelikte je 100\.000 Einwohner \(Weltbank, 2023\)\./);
+    assert.match(text, /Das größte Risiko liegt im Bereich Kriminalität \(4\.4\/10\); ausschlaggebend ist vor allem die Gewaltkriminalität: 45,7 Tötungsdelikte je 100\.000 Einwohner \(Weltbank, 2023\)\./);
     assert.match(text, /22 Regierungen veröffentlichen Reisehinweise für Ecuador: 1 empfiehlt normale Vorsicht, 18 empfehlen erhöhte Vorsicht und 3 raten, die Reise zu überdenken\./);
   });
 
@@ -102,7 +102,7 @@ describe('country summary: scored country', () => {
   it('mentions the best-rated area only when it is at 7.0 or above', () => {
     const c = ecuador();
     c.pillars = c.pillars.map((p) => (p.name === 'health' ? { ...p, score: 0.89 } : p));
-    assert.match(buildCountrySummary(c, ctx('en')), /Its best-rated area is health \(8\.9\/10\)\./);
+    assert.match(buildCountrySummary(c, ctx('en')), /The best-rated area is health \(8\.9\/10\)\./);
   });
 });
 
@@ -120,7 +120,7 @@ describe('country summary: grey place', () => {
       sources: [],
     };
     const text = buildCountrySummary(grey, { lang: 'en', name: 'Aland Islands', rank: 0, total: 192, snapshotDate: '2026-10-15' });
-    assert.match(text, /There is no official safety score for the Aland Islands yet: fewer than four independent sources cover this place/);
+    assert.match(text, /There is no safety score for the Aland Islands yet: fewer than four independent sources cover this place/);
     assert.match(text, /One government publishes a travel advisory for the Aland Islands, and it advises normal precautions\./);
     assert.doesNotMatch(text, /\/10|rank|\d+\.\d/);
   });
@@ -133,7 +133,7 @@ describe('country summary: focus pillar', () => {
     assert.equal(focus.frame, 'mainRisk');
     assert.equal(focus.governanceContext?.name, 'governance');
     const text = buildCountrySummary(ecuador(), ctx('en'));
-    assert.match(text, /Governance is rated lower still \(4\.0\/10\): it reflects institutions and the rule of law rather than a direct danger to visitors\./);
+    assert.match(text, /At 4\.0\/10, governance scores even lower than crime \(4\.4\/10\), but it reflects institutions and the rule of law rather than a direct danger to visitors\./);
   });
 
   it('names governance only when every direct-risk pillar is at 7.0 or above', () => {

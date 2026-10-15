@@ -37,6 +37,12 @@ export const STRONG_PILLAR_MIN = 7.0;
 export const MAIN_RISK_MAX = 5.0;
 /** Displayed spread (/10) at or below which all five pillars are "closely matched" (prior-only profiles). */
 const FLAT_SPREAD = 0.5;
+/**
+ * A second candidate this close to the focus (displayed /10) is named with it: Iran's natural
+ * hazards 3.1 and conflict 3.2 under 23 of 24 do-not-travel advisories read as "the main risk is
+ * natural hazards" otherwise (native-editor review, 2026-10-15).
+ */
+const NEAR_TIE = 0.2;
 
 /** The pillars a traveller meets directly; governance (institutions) is context. */
 export const DIRECT_RISK_PILLARS: ReadonlySet<PillarName> = new Set<PillarName>(['conflict', 'crime', 'health', 'environment']);
@@ -67,8 +73,10 @@ export interface PillarFocus {
   pillars: PillarView[];
   /** The pillar every surface names as main risk / main concern / weakest / lowest area. */
   focus: PillarView;
-  /** Another candidate with the same displayed value as `focus`: named together, never ranked. */
+  /** Another candidate within NEAR_TIE of `focus` (displayed): named together, never ranked above it. */
   focusTie: PillarView | null;
+  /** `focusTie` has exactly the focus's displayed value (otherwise it is "almost as low"). */
+  focusTieExact: boolean;
   frame: FocusFrame;
   /** The next direct-risk pillar below 7.0 after the focus (mainRisk/concern only). */
   second: PillarView | null;
@@ -127,9 +135,12 @@ export function selectPillarFocus(pillarScores: readonly PillarScore[]): PillarF
     frame = measured[0].value < STRONG_PILLAR_MIN ? 'weakest' : 'allGood';
   }
   const focus = pool[0];
-  const focusTie = pool.find((p) => p !== focus && p.value === focus.value) ?? null;
-
   const direct = frame === 'mainRisk' || frame === 'concern';
+  // Near-ties only matter for a risk; in the weakest/allGood frames only an exact tie is named.
+  // Compared in tenths, so 3.2 - 3.1 is not 0.10000000000000009.
+  const tieTenths = direct ? Math.round(NEAR_TIE * 10) : 0;
+  const focusTie = pool.find((p) => p !== focus && Math.round((p.value - focus.value) * 10) <= tieTenths) ?? null;
+
   const second = direct ? weakDirect.find((p) => p !== focus && p !== focusTie) ?? null : null;
   const governance = measured.find((p) => p.name === 'governance');
   const governanceContext = direct && governance && governance.value < focus.value ? governance : null;
@@ -147,6 +158,7 @@ export function selectPillarFocus(pillarScores: readonly PillarScore[]): PillarF
     pillars,
     focus,
     focusTie,
+    focusTieExact: focusTie !== null && focusTie.value === focus.value,
     frame,
     second,
     governanceContext,

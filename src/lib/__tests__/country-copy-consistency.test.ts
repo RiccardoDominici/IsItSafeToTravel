@@ -142,8 +142,10 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
   it('names the weakest direct-risk bar in the description, the summary and both FAQ answers', () => {
     const c = mozambique();
     assert.equal(selectPillarFocus(c.pillars).focus.name, 'health');
-    assert.match(buildCountryMetaDescription(c, 'en'), /Main risk: health \(4\.9\)/);
-    assert.match(summary(c, 'en', 'Mozambique'), /The main risk is poor access to health care: 6\.9 out of 10 on the INFORM risk scale/);
+    assert.match(buildCountryMetaDescription(c, 'en'), /Main risk: health \(4\.9\) and natural hazards \(5\.0\)\./);
+    const text = summary(c, 'en', 'Mozambique');
+    assert.match(text, /The main risk is health \(4\.9\/10\), above all poor access to health care: 6\.9 out of 10 on the INFORM risk scale/);
+    assert.match(text, /The natural hazards score is almost as low \(5\.0\/10\)\. At 3\.4\/10, governance scores even lower than health \(4\.9\/10\)/);
     const [a1, a2] = faq(c, 'en');
     assert.match(a1.answer, /The main risk is health \(4\.9\/10\)\./);
     assert.match(a2.answer, /^The main risk for travelers to Mozambique is health, at 4\.9\/10\./);
@@ -152,8 +154,8 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
 
   it('never presents a pillar below 7.0 as a strength (I16)', () => {
     const [a1, a2] = faq(afghanistan(), 'en');
-    assert.match(a2.answer, /Even its best-rated area, crime, scores only 5\.0\/10\./);
-    assert.match(a1.answer, /Even its best-rated area, crime, scores only 5\.0\/10\./);
+    assert.match(a2.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
+    assert.match(a1.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
     assert.doesNotMatch(a1.answer + a2.answer, /strongest/);
   });
 
@@ -172,8 +174,29 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
   it('names a displayed tie as a tie, never "above all" one of them (I54)', () => {
     const c = country({ iso3: 'BWA', score: 7.5, pillars: { crime: { score: 0.664 }, health: { score: 0.656 }, conflict: { score: 0.79 } }, advisories: advisoriesOf({ 1: 13, 2: 7, 3: 1 }) });
     const text = summary(c, 'en', 'Botswana');
-    assert.match(text, /The main concern is crime \(6\.6\/10\)\. The same score \(6\.6\/10\) goes to health\./);
+    assert.match(text, /The main concern is crime \(6\.6\/10\)\. The health score is the same \(6\.6\/10\)\./);
     assert.match(buildCountryMetaDescription(c, 'en'), /Main concern: crime and health \(6\.6\)/);
+  });
+});
+
+describe('government advice leads where it is the strongest signal (review 2026-10-15)', () => {
+  it('opens the meta description and the summary with the advisory majority', () => {
+    const c = uae();
+    assert.match(buildCountryMetaDescription(c, 'en'), /^United Arab Emirates safety score: 7\.3\/10 \(Low risk\)\. 11 of 21 governments advise reconsidering travel or avoiding it altogether\./);
+    assert.match(summary(c, 'en', 'United Arab Emirates'), /countries we score\. Government advice is the strongest warning here: 11 of 21 governments advise reconsidering travel or avoiding it altogether\. The main concern is/);
+    assert.match(buildCountryMetaDescription(c, 'de'), /11 der 21 Regierungen raten, die Reise zu überdenken oder ganz darauf zu verzichten\./);
+  });
+
+  it('answers No for a level-4 majority in any band', () => {
+    const belarus = country({ iso3: 'BLR', score: 5.5, pillars: { conflict: { score: 0.56 }, governance: { score: 0.38 } }, advisories: advisoriesOf({ 4: 12, 3: 4, 2: 3 }) });
+    assert.match(faq(belarus, 'en')[0].answer, /^No — 12 of 19 governments advise against all travel/);
+  });
+
+  it('does not point to advisories that do not exist on a page without a score', () => {
+    const grey = { ...country({ iso3: 'CCK', score: 7, pillars: {}, advisories: {} }), score: null, scoreStatus: 'insufficient_data' } as unknown as ScoredCountry;
+    assert.doesNotMatch(faq(grey, 'en')[0].answer, /advisories below/);
+    assert.match(buildCountryMetaDescription(grey, 'en'), /no government advisory on record/);
+    assert.doesNotMatch(buildCountryMetaDescription(grey, 'en'), /official/);
   });
 });
 
@@ -185,8 +208,9 @@ describe('measured values versus estimates (I05 I07)', () => {
     assert.match(text, /Every area measured with enough data scores at least 7 out of 10; the lowest of them is health \(7\.6\/10\)\./);
     assert.match(text, /The values for governance \(5\.4\/10\) and crime \(5\.7\/10\) are cautious estimates/);
     const a2 = faq(c, 'en')[1].answer;
-    assert.doesNotMatch(a2, /all five/);
+    assert.doesNotMatch(a2, /all five|precautions are enough/);
     assert.match(a2, /cautious estimates/);
+    assert.match(buildCountryMetaDescription(c, 'en'), /too little data on governance and crime/);
   });
 });
 
@@ -224,7 +248,7 @@ describe('advisory answer from the real distribution (I03 I14 I15 I19 I59)', () 
     const c = country({ iso3: 'GAB', score: 6.5, pillars: {}, advisories: { us: 4, uk: 1, ca: 1, au: 1, de: 2 } });
     const en = faq(c, 'en')[2].answer;
     assert.match(en, /of the 5 governments that publish a travel advisory for Gabon, 3 advise normal precautions, 1 advises increased caution and 1 advises against all travel\./);
-    assert.match(en, /The strictest advice, “do not travel”, comes from one government: the United States\./);
+    assert.match(en, /Only the United States advises against all travel\./);
     assert.doesNotMatch(en, /reassuring|none currently raises|most governments/i);
     assert.match(faq(c, 'fr')[2].answer, /émane d’un seul gouvernement\s: les États-Unis\./);
     assert.match(faq(c, 'de')[2].answer, /spricht nur eine Regierung aus: die Vereinigten Staaten\./);
@@ -233,9 +257,9 @@ describe('advisory answer from the real distribution (I03 I14 I15 I19 I59)', () 
   it('leaves the strictest clause out when it is the most common level, and counts many issuers', () => {
     const same = faq(country({ iso3: 'PER', score: 6.9, pillars: {}, advisories: advisoriesOf({ 2: 18, 1: 3 }) }), 'en')[2].answer;
     assert.doesNotMatch(same, /strictest/);
-    assert.match(same, /No government advises reconsidering travel or avoiding it\./);
+    assert.match(same, /No government advises more than increased caution\./);
     const many = faq(country({ iso3: 'SAU', score: 6.2, pillars: {}, advisories: advisoriesOf({ 4: 5, 3: 10, 2: 6 }) }), 'en')[2].answer;
-    assert.match(many, /comes from 5 governments, including the United States and the United Kingdom\./);
+    assert.match(many, /The 5 governments that advise against all travel include the United States and the United Kingdom\./);
   });
 
   it('reads the Italian article before 8 and 11 as "degli" / "gli"', () => {
@@ -302,9 +326,10 @@ describe('grammar of names and sentences (I38 I39 I40 I41 I48 I60 I63 I65)', () 
 
 describe('meta description provenance (I13 I62)', () => {
   it('counts this country’s own advisories and datasets, never the site-wide "30+"', () => {
-    const meta = buildCountryMetaDescription(mozambique(), 'en');
+    const c = country({ iso3: 'JPN', score: 8.1, pillars: { environment: { score: 0.66 } }, advisories: advisoriesOf({ 1: 18, 2: 4 }) });
+    const meta = buildCountryMetaDescription(c, 'en');
     assert.doesNotMatch(meta, /30\+/);
-    assert.match(meta, /Based on 20 advisories and 5 datasets, recalculated daily\./);
+    assert.match(meta, /Score based on 22 advisories and 5 datasets, recalculated daily\./);
     assert.doesNotMatch(buildCountryMetaDescription(mozambique(), 'de'), /Kostenloser Wert/);
   });
 });
