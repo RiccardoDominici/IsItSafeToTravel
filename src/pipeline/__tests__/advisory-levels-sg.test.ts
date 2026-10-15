@@ -107,3 +107,34 @@ describe('normalizeSgLevel: verdicts that name the country itself (2026-10-15)',
     assert.equal(normalizeSgLevel('If you are caught in a demonstration, leave as soon as possible.', ['Kenya']), null);
   });
 });
+
+/**
+ * 2026-10-15: the Middle-East-wide paragraph MFA carries verbatim on twelve "Travel Advisory" pages
+ * (verbatim from the live Iraq and Bahrain pages, fetched 2026-10-15). "The region" is the Middle
+ * East -- the whole country, not part of it -- so the regional cap does not apply.
+ */
+describe('normalizeSgLevel: a multi-country region is not a sub-national one (2026-10-15)', () => {
+  const MIDDLE_EAST =
+    'Due to the escalating security situation in the Middle East, Singaporeans are advised to defer all travel to the region. Please refer to the Spokesperson’s Comment issued by MFA on 28 February 2026 for more information.';
+
+  it('Iraq: its only verdict, "defer all travel to the region" (the Middle East) -> 4, not 2', () => {
+    const text = [
+      MIDDLE_EAST,
+      'Singapore has no diplomatic representation in Iraq, which constrains our ability to extend consular assistance in an emergency.',
+    ].join('\n');
+    assert.equal(normalizeSgLevel(text, ['Iraq', 'Iraq']), 4);
+  });
+
+  it('Bahrain: same paragraph plus "While Singaporeans are advised to defer travel to the region, those who intend to travel to ... Bahrain" -> 4', () => {
+    const text = [
+      MIDDLE_EAST,
+      'While Singaporeans are advised to defer travel to the region, those who intend to travel to or reside in Bahrain are advised to take all necessary precautions for their personal safety, including remaining vigilant at all times, monitoring local news closely, and following the instructions of local authorities.',
+    ].join('\n');
+    assert.equal(normalizeSgLevel(text, ['Bahrain', 'Bahrain']), 4);
+  });
+
+  it('control: "the region" whose sentence names no multi-country region stays sub-national -> 2', () => {
+    const text = 'Due to clashes in the Kashmir region, Singaporeans should defer all travel to the region.';
+    assert.equal(normalizeSgLevel(text, ['India', 'India']), 2);
+  });
+});

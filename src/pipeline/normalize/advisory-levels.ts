@@ -1934,6 +1934,22 @@ const SG_VERDICTS: { re: RegExp; level: 3 | 4; kind: 'travel' | 'leave-country' 
   },
 ];
 
+/**
+ * "The region" is not always SUB-national. Since 1 March 2026 MFA has carried the same paragraph,
+ * verbatim, on twelve "Travel Advisory" pages (Bahrain, Iran, Iraq, Israel, Jordan, Kuwait, Lebanon,
+ * Palestinian Territories, Qatar, Syria, UAE, Yemen -- full 191-page sweep, 2026-10-15): "Due to
+ * the escalating security situation in the Middle East, Singaporeans are advised to defer all
+ * travel to the region." Its region is the Middle East, which contains the whole of each of those
+ * countries, and Bahrain's/Kuwait's/Jordan's/... next paragraph confirms the reading ("While
+ * Singaporeans are advised to defer travel to the region, those who intend to travel to or reside
+ * in Bahrain ..."). The regional cap exists for warnings about PART of a country (a border strip,
+ * an oblast -- DATA_REVISION 6); a warning that covers a whole multi-country region covers the
+ * whole country, so it is the national level (4). Reversal of the 2026-09-25 reading noted in
+ * normalizeSgLevel's doc comment, which capped this paragraph at 2 as if it were sub-national.
+ * Only a bare "the region" anaphor whose own sentence names a multi-country region qualifies.
+ */
+const SG_SUPRANATIONAL_REGION_RE = /\bthe middle east\b/;
+
 function escapeSgName(name: string): string {
   return name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 }
@@ -1955,6 +1971,7 @@ function sgOccurrenceIsWholeCountry(
   if (kind === 'leave-country') return true;
   const nameAlt = ['the country', ...names.map(escapeSgName)].join('|');
   if (kind === 'travel') {
+    if (/^\s*to\s+the\s+region(?![\w'’-])/.test(after) && SG_SUPRANATIONAL_REGION_RE.test(sentence)) return true;
     if (SG_REGIONAL_WORDS.some((w) => after.includes(w))) return false;
     return new RegExp(`^\\s*(?:to|in|within)\\s+(?:the\\s+)?(?:${nameAlt})(?![\\w'’-])`).test(after);
   }
@@ -2017,6 +2034,10 @@ function sgOccurrenceIsWholeCountry(
  * evacuation call, 4; only counted when the sentence names the country). `countryNames` are the
  * page's own names for the country (its <h1>, plus our English name). Without them only the
  * name-free "leave the country" exemption applies.
+ *
+ * Also 2026-10-15: the Middle-East-wide "defer all travel to the region" paragraph described above
+ * (Bahrain/Kuwait/Qatar/UAE) is no longer capped -- see SG_SUPRANATIONAL_REGION_RE for why "the
+ * region" there is the whole Middle East, not part of the country.
  */
 export function normalizeSgLevel(text: string, countryNames: string[] = []): UnifiedLevel | null {
   if (!text || !text.trim()) return null;
