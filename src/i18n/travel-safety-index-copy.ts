@@ -409,7 +409,7 @@ export const travelSafetyIndexCopy: Record<Lang, TravelSafetyIndexCopy> = {
     summary2: 'Heute ist {safest} mit {safestScore}/10 das sicherste Reiseziel im Index, während {leastSafe} mit {leastSafeScore}/10 den letzten Platz belegt.',
     mapHeading: 'Die Welt auf einen Blick',
     tableHeading: () => 'Das vollständige Ranking',
-    tableCaption: (year) => `Reisesicherheitsindex ${year}: jedes bewertete Land mit Sicherheits-Score, Kategorie, den fünf Säulen-Scores und dem 7-Tage-Trend.`,
+    tableCaption: (year) => `Reisesicherheitsindex ${year}: jedes bewertete Land mit Sicherheitswert, Kategorie, den fünf Säulenwerten und dem 7-Tage-Trend.`,
     tableIntro: 'Dieses Ranking umfasst nur Länder und Gebiete mit 4+ unabhängigen Datenquellen (heute {includedCount}); {excludedCount} Kleinstgebiete sind wegen unzureichender Datenabdeckung ausgeschlossen, statt einen unzuverlässigen Score zu erhalten.',
     thRank: 'Rang',
     thCountry: 'Land',

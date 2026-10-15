@@ -399,7 +399,7 @@ const webPageNameTemplates: Record<Lang, (name: string) => string> = {
   fr: (n) => `Score de sécurité ${n}`,
   pt: (n) => `Pontuação de segurança de ${n}`,
   zh: (n) => `${n} 安全评分`,
-  de: (n) => `Sicherheits-Score ${n}`,
+  de: (n) => `Sicherheitswert ${n}`,
 };
 
 // Place.description
@@ -443,7 +443,7 @@ const touristDescriptions: Record<Lang, (name: string, score: string, band: stri
   fr: (n, s, b) => `Informations de sécurité voyage pour ${n}. Score de sécurité : ${s}/10 (${b}). Données de IsItSafeToTravel.org, score recalculé chaque jour.`,
   pt: (n, s, b) => `Informações de segurança de viagem para ${n}. Pontuação de segurança: ${s}/10 (${b}). Dados de IsItSafeToTravel.org, pontuação recalculada diariamente.`,
   zh: (n, s, b) => `${n}旅行安全信息。安全评分：${s}/10（${b}）。数据来自 IsItSafeToTravel.org，评分每日重新计算。`,
-  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheits-Score: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, Wert täglich neu berechnet.`,
+  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheitswert: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, Wert täglich neu berechnet.`,
 };
 
 // TouristDestination.description of a grey place: no score, no band.
@@ -476,7 +476,7 @@ const datasetDescriptions: Record<Lang, (name: string) => string> = {
   fr: (n) => `Scores de sécurité pour ${n}, recalculés chaque jour à partir de sources publiques et couvrant conflit, criminalité, santé, gouvernance et risques naturels.`,
   pt: (n) => `Pontuações de segurança para ${n}, recalculadas diariamente a partir de fontes públicas, cobrindo conflito, criminalidade, saúde, governança e riscos naturais.`,
   zh: (n) => `${n}综合安全评分，基于冲突、犯罪、健康、治理和自然灾害五大类别加权计算，数据来源公开透明，评分每日重新计算，供出行前参考。`,
-  de: (n) => `Sicherheits-Scores für ${n}, täglich aus öffentlichen Quellen neu berechnet, mit den Bereichen Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren.`,
+  de: (n) => `Sicherheitswerte für ${n}, täglich aus öffentlichen Quellen neu berechnet, mit den Bereichen Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren.`,
 };
 
 // Dataset.description of a grey place: what exists, and that no score is published.
@@ -498,7 +498,7 @@ const measurementTechniqueByLang: Record<Lang, string> = {
   fr: `Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de ${SOURCE_COUNT_DISPLAY} sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM, UCDP et les indices GPI`,
   pt: `Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de ${SOURCE_COUNT_DISPLAY} fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM, UCDP e índices GPI`,
   zh: `基于来自 ${SOURCE_COUNT_DISPLAY} 个公开来源（包括政府旅行警告、世界银行、INFORM、UCDP 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值`,
-  de: `Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes`,
+  de: `Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategoriewerten aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes`,
 };
 
 // Dataset.variableMeasured entries (PropertyValue name + description)
@@ -552,7 +552,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: '自然灾害风险', description: '自然灾害暴露程度及正在发生的自然灾害' },
   ],
   de: [
-    { name: 'Sicherheits-Score', description: 'Zusammengesetzter Sicherheits-Score auf einer Skala von 1 bis 10', unitText: 'score' },
+    { name: 'Sicherheitswert', description: 'Zusammengesetzter Sicherheitswert auf einer Skala von 1 bis 10', unitText: 'score' },
     { name: 'Konfliktrisiko', description: 'Bewertung des Risikos bewaffneter Konflikte und politischer Gewalt' },
     { name: 'Kriminalitätsrisiko', description: 'Bewertung des Risikos persönlicher Kriminalität und Sicherheit' },
     { name: 'Gesundheitsrisiko', description: 'Bewertung von Gesundheitsinfrastruktur und Krankheitsrisiko' },
@@ -715,7 +715,7 @@ export function buildGlobalSafetyJsonLd(
     fr: 'Score de sécurité mondial',
     pt: 'Pontuação de segurança global',
     zh: '全球安全评分',
-    de: 'Globaler Sicherheits-Score',
+    de: 'Globaler Sicherheitswert',
   };
 
   // Page-language separator, as the banner and the page itself print it.
@@ -727,7 +727,7 @@ export function buildGlobalSafetyJsonLd(
     fr: `Score de sécurité mondial actuel : ${shown}/10. Suivez les tendances de sécurité mondiale.`,
     pt: `Pontuação de segurança global atual: ${shown}/10. Acompanhe as tendencias de segurança mundial.`,
     zh: `当前全球安全评分：${shown}/10。跟踪全球安全趋势变化。`,
-    de: `Aktueller globaler Sicherheits-Score: ${shown}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
+    de: `Aktueller globaler Sicherheitswert: ${shown}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
   };
 
   return {
@@ -816,7 +816,7 @@ const organizationDescriptions: Record<Lang, (count: number) => string> = {
   fr: (n) => `Plateforme gratuite de sécurité de voyage, avec des scores transparents et fondés sur les données pour ${n} pays dans le monde.`,
   pt: (n) => `Plataforma gratuita de segurança de viagem, com pontuações transparentes e baseadas em dados para ${n} países em todo o mundo.`,
   zh: (n) => `免费的旅行安全平台，为全球 ${n} 个国家提供透明、基于数据的安全评分。`,
-  de: (n) => `Kostenlose Reisesicherheits-Plattform mit transparenten, datenbasierten Sicherheits-Scores für ${n} Länder weltweit.`,
+  de: (n) => `Kostenlose Reisesicherheits-Plattform mit transparenten, datenbasierten Sicherheitswerten für ${n} Länder weltweit.`,
 };
 
 /**
@@ -1164,7 +1164,7 @@ const siteDatasetNames: Record<Lang, (year: number) => string> = {
   fr: (y) => `Scores de sécurité de voyage mondiaux ${y}`,
   pt: (y) => `Pontuações de segurança de viagem globais ${y}`,
   zh: (y) => `${y} 年全球旅行安全评分`,
-  de: (y) => `Globale Reisesicherheits-Scores ${y}`,
+  de: (y) => `Globale Reisesicherheitswerte ${y}`,
 };
 const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
   en: (n) => `Safety scores for ${n} countries and territories, recalculated daily from government advisories, health data, conflict indicators and natural-hazard data.`,
@@ -1173,7 +1173,7 @@ const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
   fr: (n) => `Scores de sécurité pour ${n} pays et territoires, recalculés chaque jour à partir des avis gouvernementaux, de données sanitaires, d'indicateurs de conflit et de données sur les risques naturels.`,
   pt: (n) => `Pontuações de segurança para ${n} países e territórios, recalculadas diariamente a partir de alertas governamentais, dados de saúde, indicadores de conflito e dados de riscos naturais.`,
   zh: (n) => `${n}个国家和地区的安全评分，每日根据政府旅行警告、卫生数据、冲突指标和自然灾害数据重新计算。`,
-  de: (n) => `Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus staatlichen Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Daten zu Naturgefahren.`,
+  de: (n) => `Sicherheitswerte für ${n} Länder und Gebiete, täglich neu berechnet aus staatlichen Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Daten zu Naturgefahren.`,
 };
 
 /**
@@ -1287,7 +1287,7 @@ const methodologyDatasetNames: Record<Lang, string> = {
   fr: 'Scores de sécurité mondiaux IsItSafeToTravel',
   pt: 'Pontuações de segurança globais IsItSafeToTravel',
   zh: 'IsItSafeToTravel 全球安全评分',
-  de: 'IsItSafeToTravel globale Sicherheits-Scores',
+  de: 'IsItSafeToTravel globale Sicherheitswerte',
 };
 const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
   en: (n) => `Composite safety scores for ${n} countries and territories, recalculated daily from ${SOURCE_COUNT_DISPLAY} public data sources.`,
@@ -1296,7 +1296,7 @@ const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = 
   fr: (n) => `Scores de sécurité composites pour ${n} pays et territoires, recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
   pt: (n) => `Pontuações de segurança compostas para ${n} países e territórios, recalculadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
   zh: (n) => `${n}个国家和地区的综合安全评分，每日根据${SOURCE_COUNT_DISPLAY}个公开数据来源重新计算。`,
-  de: (n) => `Zusammengesetzte Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
+  de: (n) => `Zusammengesetzte Sicherheitswerte für ${n} Länder und Gebiete, täglich neu berechnet aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
 };
 
 /**

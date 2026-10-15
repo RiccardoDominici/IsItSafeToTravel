@@ -411,7 +411,7 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     description:
       'Die echte Einschätzung von Reisenden im Vergleich zu unserer datenbasierten Sicherheitsbewertung, Land für Land, für jedes Reiseziel mit genügend Stimmen.',
     introLead:
-      'Unsere Sicherheits-Scores basieren auf staatlichen Reisehinweisen, Konflikt- und Kriminalitätsdaten sowie weiteren strukturellen Indikatoren. Wer aber wirklich vor Ort war, sieht das manchmal anders. Jede Länderseite lädt Reisende ein zu sagen, ob unsere Bewertung stimmig wirkt — diese Seite stellt ihre Antworten unseren Daten gegenüber, für jedes Land mit genügend Stimmen, um aussagekräftig zu sein.',
+      'Unsere Sicherheitswerte basieren auf staatlichen Reisehinweisen, Konflikt- und Kriminalitätsdaten sowie weiteren strukturellen Indikatoren. Wer aber wirklich vor Ort war, sieht das manchmal anders. Jede Länderseite lädt Reisende ein zu sagen, ob unsere Bewertung stimmig wirkt — diese Seite stellt ihre Antworten unseren Daten gegenüber, für jedes Land mit genügend Stimmen, um aussagekräftig zu sein.',
     headlineSafer:
       'Community-Stimmen sehen {name} {gap} Punkte über unserer Bewertung — der größte Unterschied unter den {count} {countryNoun} mit bisher ausreichend Stimmen.',
     headlineLessSafe:
