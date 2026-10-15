@@ -3,7 +3,6 @@ import { navExtraCopy } from '../i18n/nav-extra-copy';
 import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
-import { buildAffiliateUrl } from '../config/affiliate';
 
 interface Props {
   lang: Lang;
@@ -32,7 +31,6 @@ const governmentTravelersGroupLabel = ({ en: 'Governments & Travelers', it: 'Gov
 const dataGroupLabel = ({ en: 'Data', it: 'Dati', es: 'Datos', fr: 'Données', pt: 'Dados', zh: '数据', de: 'Daten' } as Record<Lang, string>)[lang];
 const projectGroupLabel = ({ en: 'Project', it: 'Progetto', es: 'Proyecto', fr: 'Projet', pt: 'Projeto', zh: '项目', de: 'Projekt' } as Record<Lang, string>)[lang];
 const currentYear = new Date().getFullYear();
-const affiliateUrl = buildAffiliateUrl();
 
 const linkClass = 'text-sm text-sand-600 dark:text-sand-300 hover:text-terracotta-500 dark:hover:text-terracotta-400 transition-colors';
 // Contrast fix (2026-09-26, contrast agent's measurement pass): sand-400/500
@@ -107,11 +105,6 @@ const linkButtonStyle = { minHeight: 'auto' };
             <button type="button" id="cookie-prefs-link" class={linkButtonClass} style={linkButtonStyle}>
               {t('cookie.prefs')}
             </button>
-          </li>
-          <li>
-            <a href={affiliateUrl} target="_blank" rel="noopener noreferrer sponsored" class={linkClass}>
-              {t('donate.travelpayouts_btn' as any)}
-            </a>
           </li>
         </ul>
       </nav>
