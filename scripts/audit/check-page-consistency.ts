@@ -10,7 +10,7 @@
  *   - the rank or the "of N countries" total in the SUMMARY differs from the data;
  *   - the SUMMARY's government count differs from the advisory cards on the page;
  *   - a comparison-table or related-card score differs from that place's own score;
- *   - a comparison row lies implausibly far away (great-circle distance);
+ *   - a comparison row states a distance the proximity data does not support;
  *   - the same place shows different numbers in different languages;
  *   - text defects: a sentence starting in lowercase, doubled words, leftover placeholders;
  *   - indicator years older than the 5-year rule allows (stale data shown as current).
@@ -22,6 +22,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import type { ScoredCountry } from '../../src/pipeline/types.js';
 import { buildRankMap } from '../../src/lib/score-status.js';
+import { proximityKm, roundDistanceKm, type ProximityMap } from '../../src/lib/comparisons.js';
 import type { PageFacts } from './extract-page-facts.js';
 
 export interface AutoFinding {
@@ -39,22 +40,13 @@ export interface AutoFinding {
 const RUN_YEAR = 2026;
 const MAX_AGE_YEARS = 5;
 /**
- * A row tagged "nearby" must lie within this distance (src/lib/comparisons.ts NEARBY_MAX_KM). Untagged
- * rows are real borders from the curated borderMap: centroid distance says nothing about them
- * (China and Afghanistan share a border, their centroids are 3,400 km apart).
+ * An across-sea row carries its coast-or-border distance ("Tunisia about 290 km away"). The stated
+ * number must match src/data/country-proximity.json as the page rounds it. Untagged rows are land
+ * neighbours from src/lib/neighbors.ts.
  */
-const NEARBY_MAX_KM = 2000;
+const DISTANCE_TAG = /\s+about ([\d,]+) km away$/;
 
 const round1 = (x: number): string => x.toFixed(1);
-
-function haversineKm(a: [number, number], b: [number, number]): number {
-  const R = 6371;
-  const toRad = (d: number) => (d * Math.PI) / 180;
-  const dLat = toRad(b[0] - a[0]);
-  const dLon = toRad(b[1] - a[1]);
-  const h = Math.sin(dLat / 2) ** 2 + Math.cos(toRad(a[0])) * Math.cos(toRad(b[0])) * Math.sin(dLon / 2) ** 2;
-  return 2 * R * Math.asin(Math.sqrt(h));
-}
 
 /** Rank and total as the SUMMARY states them, per language template (null when absent). */
 function summaryRank(summary: string, lang: string): { rank: number; total: number } | null {
@@ -139,7 +131,7 @@ function main(): void {
   const outFile = args.includes('--out') ? args[args.indexOf('--out') + 1] : path.join(dir, 'auto-findings.json');
   const facts: Record<string, Record<string, PageFacts>> = JSON.parse(fs.readFileSync(path.join(dir, 'facts.json'), 'utf-8'));
   const latest = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'data', 'scores', 'latest.json'), 'utf-8')) as { date: string; countries: ScoredCountry[] };
-  const coords: Record<string, [number, number]> = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src', 'data', 'country-coords.json'), 'utf-8'));
+  const proximity: ProximityMap = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'src', 'data', 'country-proximity.json'), 'utf-8'));
   const byIso = new Map(latest.countries.map((c) => [c.iso3, c]));
   const { ranks, total } = buildRankMap(latest.countries);
   // Localized name -> iso3, for reading comparison rows and related cards.
@@ -190,8 +182,8 @@ function main(): void {
       // Comparison rows: own-score agreement and distance.
       if (f.compare && lang === 'en') {
         for (const row of f.compare.rows) {
-          const tagged = /\s+nearby$/.test(row[0]);
-          const name = row[0].replace(/\s+nearby$/, '').trim();
+          const tag = DISTANCE_TAG.exec(row[0]);
+          const name = row[0].replace(DISTANCE_TAG, '').trim();
           const other = nameToIso.get(name.toLowerCase());
           if (!other) continue;
           const oc = byIso.get(other);
@@ -199,10 +191,11 @@ function main(): void {
           if (oc && typeof oc.score === 'number' && shown !== round1(oc.score)) {
             findings.push({ iso3, lang, category: 'contradiction', severity: 'medium', field: 'COMPARISON TABLE', quote: `${row[0]} | ${shown}`, problem: `${name} is shown at ${shown} here but its own page says ${round1(oc.score)}.`, expected: round1(oc.score), check: 'comparison-score-mismatch' });
           }
-          if (tagged && other !== iso3 && coords[iso3] && coords[other]) {
-            const km = Math.round(haversineKm(coords[iso3], coords[other]));
-            if (km > NEARBY_MAX_KM) {
-              findings.push({ iso3, lang, category: 'bad-comparison', severity: 'medium', field: 'COMPARISON TABLE', quote: row[0], problem: `${name} is tagged "nearby" but lies ${km} km away.`, expected: `A place within ${NEARBY_MAX_KM} km.`, check: 'comparison-distance' });
+          const km = tag && other !== iso3 ? proximityKm(iso3, other, proximity) : null;
+          if (tag && km !== null) {
+            const stated = Number(tag[1].replace(/,/g, ''));
+            if (stated !== roundDistanceKm(km)) {
+              findings.push({ iso3, lang, category: 'bad-comparison', severity: 'medium', field: 'COMPARISON TABLE', quote: row[0], problem: `${name} is labelled ${stated} km away, the proximity data says ${km} km.`, expected: `about ${roundDistanceKm(km)} km away`, check: 'comparison-distance' });
             }
           }
         }
