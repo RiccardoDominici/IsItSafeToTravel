@@ -26,7 +26,9 @@ function daysBetween(d1: string, d2: string): number {
 
 interface SnapshotSlim {
   date: string;
-  countries: Array<{ iso3: string; score: number }>;
+  // Formula v10: `score` is null for a place without enough data ("partial data", scoreStatus
+  // 'insufficient_data'). Moving between grey and scored is a status change, not a drift.
+  countries: Array<{ iso3: string; score: number | null }>;
 }
 
 /** Load all dated snapshot files, sorted ascending by date. */
@@ -40,9 +42,9 @@ function loadSnapshots(): SnapshotSlim[] {
     const snapshot = JSON.parse(raw);
     return {
       date: snapshot.date ?? f.replace('.json', ''),
-      countries: (snapshot.countries ?? []).map((c: { iso3: string; score: number }) => ({
+      countries: (snapshot.countries ?? []).map((c: { iso3: string; score: number | null }) => ({
         iso3: c.iso3,
-        score: c.score,
+        score: typeof c.score === 'number' ? c.score : null,
       })),
     };
   });
@@ -66,6 +68,7 @@ describe('Score drift guard: no extreme score changes between consecutive snapsh
 
     const violations: string[] = [];
     const warnings: string[] = [];
+    let statusChanges = 0;
 
     for (let i = 1; i < snapshots.length; i++) {
       const prev = snapshots[i - 1];
@@ -75,7 +78,7 @@ describe('Score drift guard: no extreme score changes between consecutive snapsh
       const warnLimit = WARN_THRESHOLD_PER_DAY * days;
 
       // Build lookup for previous snapshot
-      const prevScores = new Map<string, number>();
+      const prevScores = new Map<string, number | null>();
       for (const c of prev.countries) {
         prevScores.set(c.iso3, c.score);
       }
@@ -84,6 +87,12 @@ describe('Score drift guard: no extreme score changes between consecutive snapsh
       for (const c of curr.countries) {
         const prevScore = prevScores.get(c.iso3);
         if (prevScore === undefined) continue; // New country, no drift to check
+        // Grey <-> scored (formula v10 "partial data" rule, e.g. the 56 places that lost their
+        // prior-driven score on the v10 switch day): a status change, not a numeric drift.
+        if (prevScore === null || c.score === null) {
+          if (prevScore !== c.score) statusChanges++;
+          continue;
+        }
 
         const delta = Math.abs(c.score - prevScore);
         if (delta > failLimit) {
@@ -96,6 +105,10 @@ describe('Score drift guard: no extreme score changes between consecutive snapsh
           );
         }
       }
+    }
+
+    if (statusChanges > 0) {
+      console.log(`  ${statusChanges} grey <-> scored status change(s) skipped (not drifts)`);
     }
 
     // Log warnings (informational, not failing)
