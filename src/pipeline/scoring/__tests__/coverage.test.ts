@@ -63,7 +63,7 @@ describe('grey hero source list', () => {
     }
     assert.equal(
       greySourceItems('en', 6, ['advisories', 'gdacs'])[1],
-      'GDACS disaster alerts (only while a disaster is under way, so not counted toward the four)',
+      'GDACS disaster alerts (only while a disaster is under way, so not counted toward the four-source minimum)',
     );
   });
 });

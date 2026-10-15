@@ -177,10 +177,6 @@ const resolvedOgType = ogType || 'website';
       granted from a previous visit) + Ko-fi.
       Fires on the first user interaction OR when the main thread goes idle
       (whichever comes first), keeping both off the critical render path.
-      NOTE: the Travelpayouts sitewide script (tp-em.com) was intentionally
-      removed — it injected a dashboard-controlled floating "cheap flights"
-      promo banner we don't want. Affiliate attribution still works via the
-      ?marker= param on every link (see src/config/affiliate.ts).
     -->
     <script is:inline define:vars={{ donateButtonText: t('nav.donate') }}>
       (function () {

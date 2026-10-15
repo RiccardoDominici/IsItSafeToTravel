@@ -1,0 +1,56 @@
+---
+// One indicator table (PillarBreakdown.astro): the source's own value and unit, the source with its
+// edition and the data year per row. Used for each pillar's traveller indicators and for the
+// "Country context" section, whose rows carry an extra small line (`note`: the pillar they count in).
+import type { Lang } from '../../i18n/ui';
+import { useTranslations } from '../../i18n/utils';
+import { worldBankLagNote } from '../../lib/indicator-display';
+import type { IndicatorRow } from '../../lib/pillar-presentation';
+
+interface Props {
+  rows: IndicatorRow[];
+  lang: Lang;
+}
+
+const { rows, lang } = Astro.props;
+const t = useTranslations(lang);
+const lagNote = worldBankLagNote(lang);
+---
+
+<table class="w-full text-xs border-collapse">
+  <thead>
+    <tr class="border-b border-sand-200 dark:border-sand-700">
+      <th class="text-left py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_indicators')}</th>
+      <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_value')}</th>
+      <th class="text-right py-1.5 pr-2 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_source')}</th>
+      <th class="text-right py-1.5 font-medium text-sand-600 dark:text-sand-400">{t('country.pillar_year')}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {rows.map((row) => (
+      <tr class="border-b border-sand-100 dark:border-sand-800 align-top">
+        <td class="py-1.5 pr-2 text-sand-700 dark:text-sand-200">
+          {row.label}
+          {row.note && (
+            <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{row.note}</span>
+          )}
+          {row.worldBank && (
+            <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{lagNote}</span>
+          )}
+        </td>
+        <td class="py-1.5 pr-2 text-right text-sand-700 dark:text-sand-200">
+          {row.display ? (
+            <>
+              <span class="font-medium tabular-nums whitespace-nowrap">{row.display.value}</span>
+              <span class="block mt-0.5 text-[11px] leading-snug text-sand-600 dark:text-sand-400">{row.display.unit}</span>
+            </>
+          ) : (
+            <span class="tabular-nums">{row.ind.rawValue}</span>
+          )}
+        </td>
+        <td class="py-1.5 pr-2 text-right text-sand-600 dark:text-sand-300 whitespace-nowrap">{row.source}</td>
+        <td class="py-1.5 text-right text-sand-600 dark:text-sand-300 tabular-nums">{row.ind.year}</td>
+      </tr>
+    ))}
+  </tbody>
+</table>
