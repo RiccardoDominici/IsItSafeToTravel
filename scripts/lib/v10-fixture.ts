@@ -21,6 +21,12 @@ export const FIXTURE_INPUTS_DIR = join(FIXTURE_ROOT, 'inputs');
 /** v9.1 published scores and pillar values of the fixture date (copied from data/scores/2026-10-14.json). */
 export const V91_REFERENCE_PATH = join(FIXTURE_ROOT, `v91-scores-${FIXTURE_DATE}.json`);
 export const PARITY_CSV_PATH = join(process.cwd(), 'scripts', 'fixtures', 'formula-v10-parity.csv');
+/**
+ * The 192 places v10 scored on the fixture when the per-pillar maps were fitted. Frozen because
+ * the 2026-10-15 coverage rule (a source counts only when it supplies a scored value) later greyed
+ * nine of them; the maps stay defined over the population they were fitted on.
+ */
+export const CALIBRATION_SET_PATH = join(FIXTURE_ROOT, `calibration-set-${FIXTURE_DATE}.json`);
 export const WEIGHTS_PATH = join(process.cwd(), 'src', 'pipeline', 'config', 'weights.json');
 
 export const PILLAR_NAMES: readonly PillarName[] = ['conflict', 'crime', 'health', 'governance', 'environment'];
@@ -90,6 +96,11 @@ export function withoutPillarCalibration(weights: WeightsConfig): WeightsConfig 
   const f9 = { ...weights.formulaV9! };
   delete f9.pillarCalibration;
   return { ...weights, formulaV9: f9 };
+}
+
+/** The frozen calibration population (CALIBRATION_SET_PATH) as a set of ISO3 codes. */
+export function readCalibrationSet(path: string = CALIBRATION_SET_PATH): Set<string> {
+  return new Set((JSON.parse(readFileSync(path, 'utf-8')) as { countries: string[] }).countries);
 }
 
 export function readV91Reference(path: string = V91_REFERENCE_PATH): V91Reference {

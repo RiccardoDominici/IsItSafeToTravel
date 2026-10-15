@@ -37,6 +37,7 @@ import {
   bandOf,
   loadRawFolder,
   mean,
+  readCalibrationSet,
   readV91Reference,
   readWeights,
   sd,
@@ -74,9 +75,13 @@ function main(): void {
   });
   console.log = quiet;
 
-  const scored = unmapped.filter((c) => c.scoreStatus === 'scored' && reference.countries[c.iso3]);
+  // The fit population is frozen (calibration-set-2026-10-14.json): the 192 places v10 scored that
+  // day. Their pillar values are computed for grey places too, so the nine places the 2026-10-15
+  // coverage rule greyed still enter the reproduction exactly as they entered the fit.
+  const calibrationSet = readCalibrationSet();
+  const scored = unmapped.filter((c) => calibrationSet.has(c.iso3) && reference.countries[c.iso3]);
   console.log(`=== Formula v10 per-pillar calibration on raw date ${FIXTURE_DATE} (weights ${committed.version}, v10 configuration) ===`);
-  console.log(`Countries: ${unmapped.length} total, ${scored.length} scored by both v9.1 and v10, ${unmapped.length - scored.length} insufficient_data`);
+  console.log(`Countries: ${unmapped.length} total, ${scored.length} in the frozen calibration set (scored by both v9.1 and v10 on ${FIXTURE_DATE}), ${unmapped.filter((c) => c.scoreStatus !== 'scored').length} insufficient_data today`);
   console.log('pillar        v9.1 mean   SD     | v10 mean   SD     | mapped');
 
   const recomputed: Partial<Record<PillarName, { alpha: number; beta: number }>> = {};
