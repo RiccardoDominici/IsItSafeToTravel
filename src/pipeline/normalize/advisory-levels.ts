@@ -1775,13 +1775,37 @@ export function normalizeRoLevel(level: number): UnifiedLevel {
  * from being read as a country-specific warning. Returns null when the page
  * doesn't have this heading at all (different template, or genuinely no
  * content), so the caller can skip the country rather than guess.
+ *
+ * Repair 2026-10-15 (advisory-outlier audit): the section end only recognised
+ * headings of 2-4 ALL-CAPS words followed by an em dash or hyphen. RS's most
+ * common next heading is the SINGLE word "TRANSPORT" (130 of 183 live pages:
+ * 82 "TRANSPORT —", 42 with an EN dash "TRANSPORT –", 6 "TRANSPORT -"; plus
+ * 41 "OTHER —/–/-", "TRANSPORTATION –", "TELECOMMUNICATIONS -"), and the en
+ * dash was not recognised even after a two-word heading ("OTHER INFORMATION
+ * –", 28 pages). So the
+ * "security" section silently ran on through the whole TRANSPORT section,
+ * whose road/rail prose then read as a security verdict: Portugal's "Alfa
+ * Pendular (HIGH LEVEL of service ...)" and Sao Tome's "Driving at night is
+ * NOT RECOMMENDED" both turned calm countries into a level-3 "avoid
+ * non-essential travel" (verified live 2026-10-15). RS_NEXT_HEADING now also
+ * ends the section at a single ALL-CAPS word of 4+ letters followed by an em
+ * or en dash, or by a spaced hyphen (" - "), and accepts the en dash after
+ * multi-word headings. The 4-letter minimum and the spaced-hyphen requirement
+ * keep prose tokens out: across all 183 live pages the only other
+ * ALL-CAPS-plus-dash tokens are acronyms glued to a hyphen ("COVID-19",
+ * "HIV-", "EU-", "WI-", "UA-" from analytics script text) or 3-letter ones
+ * ("USD -"); every one of the 183 new section ends was checked to be a real
+ * heading (or the unchanged 600-character cap).
  */
+const RS_NEXT_HEADING = /[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}\s*[—–-]|\b[A-Z]{4,}(?:\s*[—–]|\s+-\s)/;
+
 export function extractRsSecuritySection(bodyText: string): string | null {
   const startIdx = bodyText.search(/SECURITY SITUATION/i);
   if (startIdx === -1) return null;
   const rest = bodyText.slice(startIdx + 'SECURITY SITUATION'.length);
-  // Next heading: a run of 2-4 ALL-CAPS words followed by a dash, e.g. "TRANSPORT —".
-  const nextHeadingIdx = rest.search(/[A-Z]{2,}(?:\s+[A-Z]{2,}){1,3}\s*[—-]/);
+  // Next heading: one ALL-CAPS word (4+ letters) or a run of 2-4 followed by a dash, e.g.
+  // "TRANSPORT —", "TRANSPORT –", "OTHER INFORMATION —" (see RS_NEXT_HEADING above).
+  const nextHeadingIdx = rest.search(RS_NEXT_HEADING);
   return nextHeadingIdx === -1 ? rest.slice(0, 600) : rest.slice(0, nextHeadingIdx);
 }
 
@@ -1840,20 +1864,155 @@ export function extractRsSecuritySection(bodyText: string): string | null {
  * other country this doc comment's own history calls out as genuine
  * (Afghanistan, Israel, Jordan, Oman, Ukraine): all name the country itself
  * (or a generic "this country") immediately after "to", none regress.
+ *
+ * Repair 2026-10-15 (advisory-outlier audit): the level-3 keywords ran as bare
+ * substrings over the whole section, so they fired on things that are not a
+ * travel recommendation at all. Found by comparing every issuer's level with
+ * the other governments' median for the same country; RS had 7 calm countries
+ * (Argentina, Botswana, Marshall Islands, Namibia, Netherlands, Portugal, Sao
+ * Tome and Principe) at 3 while 14-19 peers said 1. Verified against the live
+ * English pages AND their Serbian originals on 2026-10-15:
+ *   - "not recommended" is RS's stock wording for personal-safety TIPS: "It is
+ *     not recommended to wear valuable jewellery" (Argentina, whose page says
+ *     "the security situation in the city of Buenos Aires is not risky"),
+ *     "Individual movement in unsafe zones is not recommended" (Botswana),
+ *     "Walking at night is not recommended" (Namibia), "Movement outside of
+ *     these zones is not recommended" (Dominican Republic). 18 of the 35
+ *     level-3 countries of the 2026-10-14 run were tips like these.
+ *   - "high level" matched CALM prose: "The Marshall Islands enjoy a relatively
+ *     HIGH LEVEL of safety", "In Morocco, security is at a HIGH LEVEL",
+ *     "Security in the capital Kigali is at a HIGH LEVEL", Portugal's train
+ *     "high level of service". Of its 6 live hits the only real warning was
+ *     Afghanistan's "extremely high level of threat", already Level 4 through
+ *     "extremely high".
+ *   - 7 more were REGIONAL ("travel to the border areas towards Azerbaijan is
+ *     not advised", "travel to the northern part of the country is not
+ *     recommended", "travel is not recommended to the cities of Huaquillas and
+ *     Arenillas"), which the project's doctrine caps at 2 -- the same rule the
+ *     2026-09-26 Panama fix above applied to level 4.
+ * Level 3 now needs what RS's genuine level-3 sentences all have: the phrase
+ * within ~80 characters of a travel/visit verb whose destination is the
+ * country itself ("travelling to the Central African Republic is not
+ * recommended", "not recommended to travel in the coming period to Iraq",
+ * "travel to Oman is not recommended", "advised against traveling to this
+ * country", "We do not advise citizens ... to travel to Somalia, unless in dire
+ * need", "not recommended to travel or move around the territory of Mali").
+ * A sub-national destination (RS_SUBNATIONAL_DESTINATION) caps at 2; a phrase
+ * with no travel destination at all (a tip about jewellery, night walks,
+ * motorcycle taxis, leaving the tourist zones) is a caution, level 2 -- never
+ * a whole-country "avoid travel". "high level of risk/threat/danger/crime"
+ * (the Netherlands' national terrorism threat level, "a high level of risk of
+ * terrorist attacks was declared at the state level") is read like Germany's
+ * existing "increased level of security risk": 2. RS's own calm wording that
+ * the old keyword list missed ("relatively high level of safety ... generally
+ * safe for living and traveling", "security ... is at a high level", "Security
+ * in Sao Tome and Principe is relatively good", "generally a safe country",
+ * "one of the safer countries") is level 1 -- still checked LAST, so any
+ * caution sentence in the same section wins, and level 1 still requires an
+ * affirmative statement. Level 4 gains "recommended to leave the country"
+ * (Iran: "All those who are in Iran are recommended to leave the country as
+ * soon as possible"), which the over-long section used to reach only by
+ * accident (a journalists-only sentence from a later paragraph).
+ * Net effect on the 183 live pages (2026-10-15): 31 levels change, 27 of
+ * them 3 -> 2 (23) or 3 -> 1 (4), plus Hungary 2 -> 1; level-3 count 35 -> 6 (CAR, Iraq, Mali, Oman,
+ * Somalia, Chad -- each with a quoted whole-country sentence); coverage 105
+ * -> 104 (Cabo Verde gains a calm level 1; Egypt and Gabon, whose only level
+ * keyword was leaked TRANSPORT prose, now honestly resolve to no level).
+ * Sentences are split on terminal punctuation followed by whitespace OR
+ * directly by a capital letter: RS joins paragraphs with <br>, which cheerio's
+ * text() renders as nothing ("...in Europe.However, petty theft..."), and the
+ * old whitespace-only split glued such sentences together.
  */
 const RS_REGIONAL_TRAVEL_TARGET =
   /travel(?:l?ing)?\s+to\s+(?:the\s+)?(?:[a-z'-]+\s+){0,2}(?:province|region|state|prefecture|governorate|district|county|zone|island|peninsula|coast\w*)\b/i;
 
+/** RS's level-3 recommendation wording (see the 2026-10-15 repair note above for why these alone are not enough). */
+const RS_LEVEL3_PHRASE = /not recommended|not advise|advised against|reconsider/g;
+
+/**
+ * A travel/visit verb and the destination that follows it: "travel(ling) [<= 5 words] to|in|into|around|within
+ * <destination>" or "visit <destination>". Group 1/2 = the destination text. "travel" used as a modifier
+ * ("travel agencies are obliged to ensure ...", "travel documents") is excluded: there the "to" that follows is
+ * an infinitive, not a destination.
+ */
+const RS_TRAVEL_DESTINATION =
+  /\b(?:travel(?:l?ing|s)?(?!\s+(?:agenc|document|insurance|advi[cs]|warning|permit|ban\b|restriction))|trips?|journeys?)\b(?:\s+[^\s.;:!?]+){0,5}?\s+(?:to|in|into|around|within)\s+([^.;!?]{1,80})|\bvisit(?:s|ing)?\s+([^.;!?]{1,80})/g;
+
+/**
+ * A destination that is a part of the country, not the country: "the border areas towards Azerbaijan", "the
+ * northern part of the country", "the cities of Huaquillas", "certain areas such as the Jaffna Peninsula", "the
+ * remote parts of the interior", "the Chapare region", "the north of the country". Anchored at the start of the
+ * destination text (up to three leading words), like RS_REGIONAL_TRAVEL_TARGET, so a name mentioned later in a
+ * whole-country sentence cannot trigger it. Nouns that are also part of COUNTRY names are guarded: bare compass
+ * words ("South Sudan", "North Macedonia", "East Timor" -- only "<compass> of" counts), "states" after
+ * "united"/"federated", "coast" after "ivory", "city" after "vatican", and "island" only in the singular ("the
+ * Marshall/Solomon/Cook Islands" are countries).
+ */
+const RS_SUBNATIONAL_DESTINATION =
+  /^(?:the\s+)?(?:(?:north|south|east|west)\s+of\b|(?:[\w'’-]+\s+){0,3}?(?:provinces?|regions?|(?<!united\s)(?<!federated\s)states?|prefectures?|governorates?|districts?|count(?:y|ies)|departments?|cantons?|zones?|island|peninsulas?|(?<!ivory\s)coast\w*|border\w*|areas?|parts?|(?<!vatican\s)cit(?:y|ies)|capital|towns?|localit(?:y|ies)|municipalit(?:y|ies))\b)/;
+
+/** Max distance (characters) between a level-3 phrase and the travel verb it governs, in either order. */
+const RS_PHRASE_TO_TRAVEL_MAX_GAP = 80;
+
+/**
+ * Classify one sentence's level-3 phrase(s): 'whole' (a country-wide "travel to X is not recommended"),
+ * 'scoped' (same, but the destination is a part of the country -> capped at 2), 'tip' (no travel destination
+ * near the phrase -> a personal-safety caution, 2), or null (no level-3 phrase in the sentence). Each phrase is
+ * paired with its NEAREST travel construction only, so "travel to the north is not recommended, while travel to
+ * <the rest> ..." cannot borrow the second, unrelated destination.
+ */
+function classifyRsLevel3Sentence(sentence: string): 'whole' | 'scoped' | 'tip' | null {
+  const phrases = [...sentence.matchAll(RS_LEVEL3_PHRASE)];
+  if (phrases.length === 0) return null;
+  const travels = [...sentence.matchAll(RS_TRAVEL_DESTINATION)];
+  let sawScoped = false;
+  for (const p of phrases) {
+    const pStart = p.index as number;
+    const pEnd = pStart + p[0].length;
+    let nearest: { gap: number; destination: string } | null = null;
+    for (const t of travels) {
+      const tStart = t.index as number;
+      const destination = t[1] ?? t[2] ?? '';
+      const verbEnd = tStart + t[0].length - destination.length;
+      const gap = tStart >= pEnd ? tStart - pEnd : pStart >= verbEnd ? pStart - verbEnd : 0;
+      if (gap <= RS_PHRASE_TO_TRAVEL_MAX_GAP && (nearest === null || gap < nearest.gap)) {
+        nearest = { gap, destination: destination.trim() };
+      }
+    }
+    if (nearest === null) continue; // a tip: no travel destination near this phrase
+    if (!RS_SUBNATIONAL_DESTINATION.test(nearest.destination)) return 'whole';
+    sawScoped = true;
+  }
+  return sawScoped ? 'scoped' : 'tip';
+}
+
+/** Split on terminal punctuation followed by whitespace, or directly by a capital letter (<br>-joined paragraphs). */
+function splitRsSentences(text: string): string[] {
+  return text.split(/(?<=[.!?])\s+|(?<=[.!?])(?=[A-Z])/);
+}
+
 export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
   const lower = sectionText.toLowerCase();
-  if (lower.includes('do not travel') || lower.includes('extremely high') || lower.includes('leave immediately')) {
+  if (
+    lower.includes('do not travel') ||
+    lower.includes('extremely high') ||
+    lower.includes('leave immediately') ||
+    // Iran, live 2026-10-15: "All those who are in Iran are recommended to leave the country as soon as
+    // possible" -- the same evacuation advice as "leave immediately". (Before the 2026-10-15 section-boundary
+    // repair Iran reached 4 only by accident, through a journalists-only sentence the over-long section
+    // swallowed from a later paragraph.) Requires the advisory verb, so customs prose like "an exit visa when
+    // leaving the country" cannot match.
+    /\b(?:recommended|advised|urged) to leave the country\b/.test(lower)
+  ) {
     return 4;
   }
+  // Split BEFORE lowercasing: the glued-paragraph boundary is only visible as "lowercase.Uppercase".
+  const sentences = splitRsSentences(sectionText).map((s) => s.toLowerCase());
 
   // Sentence-scoped: either construction can name a sub-national destination
   // instead of the country (see the repair note above).
   let sawScoped4 = false;
-  for (const sentence of lower.split(/(?<=[.!?])\s+/)) {
+  for (const sentence of sentences) {
     const hit =
       /refrain from (all |any(?: type of)? )?travel/.test(sentence) || /advis\w*\s+not\s+to\s+travel/.test(sentence);
     if (!hit) continue;
@@ -1861,19 +2020,39 @@ export function normalizeRsLevel(sectionText: string): UnifiedLevel | null {
     else return 4; // genuine, unscoped -- no need to keep scanning
   }
 
+  // Level 3 only for a country-wide travel recommendation; regional ones and personal-safety tips are
+  // cautions (2) -- see the 2026-10-15 repair note above.
+  let sawLevel3Scoped = false;
+  let sawLevel3Tip = false;
+  for (const sentence of sentences) {
+    const kind = classifyRsLevel3Sentence(sentence);
+    if (kind === 'whole') return 3;
+    if (kind === 'scoped') sawLevel3Scoped = true;
+    else if (kind === 'tip') sawLevel3Tip = true;
+  }
+
   if (
-    lower.includes('not recommended') ||
-    lower.includes('not advise') ||
-    lower.includes('advised against') ||
-    lower.includes('reconsider') ||
-    lower.includes('high level')
-  ) return 3;
-  if (lower.includes('increased') || lower.includes('caution') || lower.includes('elevated')) return 2;
+    lower.includes('increased') ||
+    lower.includes('caution') ||
+    lower.includes('elevated') ||
+    /\bhigh level of (?:[a-z-]+\s+){0,2}?(?:risk|threat|danger|crime|criminality|insecurity)\b/.test(lower) ||
+    sawLevel3Scoped ||
+    sawLevel3Tip
+  ) return 2;
   if (
     /security situation.{0,30}is good/.test(lower) ||
     /high[\s-]level(?:\s+of)?\s+security|high security level/.test(lower) ||
     lower.includes('public peace and order') ||
-    lower.includes('safest countries')
+    lower.includes('safest countries') ||
+    // RS calm wording verified live 2026-10-15 (Marshall Islands, Morocco, Sao Tome and Principe, Cabo Verde,
+    // Netherlands, Hungary). A "security is good" clause only counts when the same sentence does not go on to
+    // qualify it ("security is generally good, BUT the risk of robberies, armed attacks ... should not be ruled
+    // out" -- Gabon -- is a caution, not a calm statement).
+    lower.includes('safer countries') ||
+    /\bhigh level of safety\b/.test(lower) ||
+    /\bsecurity\b[^.]{0,60}\bis at a high level\b/.test(lower) ||
+    /\bsecurity\b[^.]{0,60}\bis (?:relatively |generally |very )?good\b(?![^.]*\b(?:but|however)\b)/.test(lower) ||
+    /\b(?:is|are) generally (?:a )?safe\b/.test(lower)
   ) return 1;
   // A regionally-scoped "refrain from travel" was found but nothing else in
   // the section matched a lower tier either -- a real regional warning
