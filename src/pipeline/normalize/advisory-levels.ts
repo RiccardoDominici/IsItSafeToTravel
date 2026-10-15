@@ -2657,6 +2657,18 @@ const ES_ZONE_MARKERS =
   /determinadas? zonas?|ciertas zonas|algunas zonas|algunas regiones|zonas? fronteriza(s)?|fronter\w* con|franja fronteriza|dicho territorio|dicha zona|dicha isla|lugares remotos|viajes? de aventura|provincia de|región de|condado de|estado de|departamento de|distrito de|de noche|por la noche|nocturno|\bzonas?\b|\bregi[oó]n(es)?\b|pen[ií]nsula/;
 const ES_EXCEPTION_MARKER = /\b(salvo|excepto)\b/;
 
+/** An intensifier ("extremar/extrema/mucha precaución") that qualifies the TRIP ITSELF -- the only form Spain's
+ *  whole-country Level 3 banners take (see normalizeEsLevel's 2026-10-15 repair note): "viajar con extrema/mucha
+ *  precaución", "durante el/su viaje", "al viajar" NOT followed by a destination ("al viajar a determinadas zonas
+ *  del país" is Jamaica's zone-scoped wording), "a la hora de viajar", or Spain's "recomendación general" heading
+ *  (Angola: "RECOMENDACIÓN GENERAL: SE RECOMIENDA EXTREMAR LA PRECAUCIÓN Y EVITAR DETERMINADAS ZONAS"). */
+const ES_GENERAL_TRIP =
+  /\bviajar\s+con\s+(?:\w+\s+)?(?:extrema|mucha)\s+precauci|\b(?:durante|en)\s+(?:el|su)\s+viaje\b|\bal\s+viajar\b(?!\s+(?:a|al|por|hacia)\b)|\ba\s+la\s+hora\s+de\s+viajar\b|recomendaci[oó]n\s+general/;
+/** The coordinated "Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" / "Y EVITAR DETERMINADAS ZONAS" caveat of Spain's
+ *  banners -- a separate instruction about zones, cut off before checking whether the intensifier ITSELF is
+ *  zone-scoped (Ethiopia, Cameroon, Mexico, Lesotho, Angola... must stay Level 3). */
+const ES_COORDINATED_AVOID_CLAUSE = /\s+y\s+(?:abstenerse|evitar)\b.*$/;
+
 /**
  * Normalize Spain (Exteriores) advisory text to unified 1-4 scale.
  *
@@ -2715,6 +2727,11 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     /desaconseja\w*.{0,25}completamente/, /completamente.{0,25}desaconseja/,
     /desaconseja\w*.{0,25}totalmente/, /totalmente.{0,25}desaconseja/,
     /desaconseja\w*.{0,25}encarecidamente/, /encarecidamente.{0,25}desaconseja/,
+    // "absolutamente" added 2026-10-15 (advisory-outlier audit): Niger's banner "Dadas las circunstancias, SE
+    // DESACONSEJA ABSOLUTAMENTE VIAJAR A NÍGER" matched none of the three adverbs above, so Spain's do-not-travel
+    // for Niger was only ever read as Level 3 -- and only by accident, via an unrelated "extremar las
+    // precauciones en las viviendas particulares" home-security tip the intensity rule below now ignores.
+    /desaconseja\w*.{0,25}absolutamente/, /absolutamente.{0,25}desaconseja/,
     /\bse desaconseja (el viaje|viajar)\b/,
     /\brecomienda\s+no\s+viajar\b/,
   ];
@@ -2729,14 +2746,32 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
   // A sentence using either level-4 verb, downgraded by its own "salvo/excepto" clause, is level 3.
   const LEVEL3_EXCEPTION_VERB = /desaconseja|recomienda\s+no\s+viajar/;
   // "Extremar/mucha precaución" is Spain's own whole-country Level 3 intensifier (Ethiopia:
-  // "SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS" --
-  // deliberately NOT gated on ES_ZONE_MARKERS like the Level 4 checks above: that "zonas" clause
-  // is a SEPARATE, additional caveat, not what "mucha precaución" itself is scoped to; the banner
-  // as a whole is Spain's overall country assessment). Checked per SENTENCE (not the whole
-  // notice) only to exclude a health/hygiene use of the same words -- Togo's page reads "se
-  // recomienda EXTREMAR LA PRECAUCIÓN y adoptar medidas de HIGIENE, lavarse frecuentemente las
-  // manos..." in its own Sanidad section, about disease prevention, not a security assessment;
-  // ES_HEALTH_CONTEXT excludes just that sentence.
+  // "SE RECOMIENDA VIAJAR CON MUCHA PRECAUCIÓN Y ABSTENERSE DE HACERLO POR DETERMINADAS ZONAS").
+  // The "zonas" clause there is a SEPARATE, coordinated caveat ("Y ABSTENERSE/EVITAR ..."), not what
+  // "mucha precaución" itself is scoped to, so it is cut off (ES_COORDINATED_AVOID_CLAUSE) before the
+  // zone check -- what remains must be zone-free. Checked per SENTENCE (not the whole notice) also to
+  // exclude a health/hygiene use of the same words -- Togo's page reads "se recomienda EXTREMAR LA
+  // PRECAUCIÓN y adoptar medidas de HIGIENE, lavarse frecuentemente las manos..." in its own Sanidad
+  // section, about disease prevention, not a security assessment; ES_HEALTH_CONTEXT excludes just that
+  // sentence.
+  //
+  // Repair 2026-10-15 (advisory-outlier audit): the intensifier used to count anywhere, in any sentence,
+  // whatever it was scoped to. Two calm countries were reported as Level 3 against a peer median of 1:
+  //  - Serbia: banner "SE RECOMIENDA EXTREMAR LA PRECAUCIÓN EN ALGUNAS ZONAS. Serbia es, en términos
+  //    generales, un país seguro, pero se recomienda extremar las precauciones si se viaja a Kosovo" --
+  //    the intensifier is about some zones (Kosovo), the country itself is "un país seguro".
+  //  - Mongolia: banner "SE RECOMIENDA VIAJAR CON PRECAUCIÓN" (Level 2), plus "se recomienda extremar las
+  //    precauciones de cara a viajes y turismo de aventura fuera de centros urbanos que contemplen la
+  //    visita a zonas desérticas, esteparias..." -- adventure trips into remote zones, not the country.
+  // The full 197-country sweep (live 2026-10-15) found the same mechanism in body-text tips on pages whose
+  // banner is the plain Level 2 "VIAJAR CON PRECAUCIÓN": "extremar la precaución en todos los
+  // desplazamientos en vehículo" (El Salvador), "...para evitar picaduras de mosquito" (Panamá), "...en los
+  // desplazamientos a pie" (Tanzania), "...en el trato con la población local" (Madagascar), "...en las zonas
+  // fronterizas" (Kirguistán, Ruanda), bad roads (Georgia). An intensifier now counts toward the
+  // whole-country Level 3 only when it qualifies the TRIP ITSELF (ES_GENERAL_TRIP -- every Level 3 banner in
+  // the sweep is phrased that way: "VIAJAR CON EXTREMA/MUCHA PRECAUCIÓN", "EXTREMAR LA PRECAUCIÓN DURANTE EL
+  // VIAJE / AL VIAJAR / A LA HORA DE VIAJAR", "RECOMENDACIÓN GENERAL: ... EXTREMAR LA PRECAUCIÓN") and names
+  // no zone; any other security intensifier is still a real caution statement and counts as Level 2.
   const PRECAUCION_INTENSITY_PATTERNS = [
     /extremar\w*.{0,15}precauci[oó]n/, /precauci[oó]n\w*.{0,15}extrem/,
     /\bextrema\s+precauci[oó]n/, /\bmucha\s+precauci[oó]n/,
@@ -2778,14 +2813,17 @@ export function normalizeEsLevel(notasTextRaw: string): UnifiedLevel | null {
     if (!zoneScoped && hasException && LEVEL3_EXCEPTION_VERB.test(s)) sawLevel3 = true;
   }
 
-  const hasSecurityPrecautionIntensity = splitIntoSentences(notas).some(
+  const intensitySentences = splitIntoSentences(notas).filter(
     (s) => !ES_HEALTH_CONTEXT.test(s) && PRECAUCION_INTENSITY_PATTERNS.some((re) => re.test(s)),
+  );
+  const hasWholeCountryIntensity = intensitySentences.some(
+    (s) => ES_GENERAL_TRIP.test(s) && !ES_ZONE_MARKERS.test(s.replace(ES_COORDINATED_AVOID_CLAUSE, '')),
   );
 
   if (sawLevel4) return 4;
   if (sawLevel3) return 3;
-  if (hasSecurityPrecautionIntensity || LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
-  if (LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
+  if (hasWholeCountryIntensity || LEVEL3_PATTERNS.some((re) => re.test(notas))) return 3;
+  if (intensitySentences.length > 0 || LEVEL2_PATTERNS.some((re) => re.test(notas))) return 2;
   // A substantive notice that matched none of the above is Cuba's case (see calibration note): a real
   // advisory Spain didn't phrase with any of its fixed severity verbs, not an all-clear. Emit nothing
   // rather than guess -- the caller (fetchEsAdvisories) already skips a null and reports no ES level.
