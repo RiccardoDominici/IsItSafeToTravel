@@ -61,6 +61,22 @@ const PILLAR_DEFS: ReadonlyMap<string, PillarDef> = new Map(
 );
 
 /**
+ * True when the displayed overall score is above every displayed pillar bar (audit I47; BRA, DNK,
+ * EST, KEN and THA on 2026-10-15). Not an error: the bars show each pillar as 10·p on 0-10, while
+ * the engine combines the pillars (weighted geometric mean, the conflict/crime soft-min and the
+ * severe-advisory factor, scoring/engine.ts composeScore) and maps the result with
+ * 1 + 9·composite^0.96 onto its own 1-10 scale, which sits above 10·composite everywhere below 10;
+ * the community adjustment can add up to ±1 on top. The page then explains it in a note.
+ * Compared on the printed one-decimal values; estimated pillars print no number and are skipped.
+ */
+export function scoreAboveAllBars(score: number | null | undefined, pillars: readonly PillarScore[]): boolean {
+  if (typeof score !== 'number' || !Number.isFinite(score)) return false;
+  const bars = pillars.filter((p) => !isEstimatedPillar(p)).map((p) => Number((p.score * 10).toFixed(1)));
+  if (bars.length === 0) return false;
+  return Number(score.toFixed(1)) > Math.max(...bars);
+}
+
+/**
  * True when nothing measured stands behind the pillar's value: none of its indicators with a
  * positive evidence weight is present, and (conflict) no government advisory feeds the synthetic
  * advisory-consensus slot "A". The value is then the engine's regional prior, an estimate.

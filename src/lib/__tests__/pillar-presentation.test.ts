@@ -5,6 +5,7 @@ import {
   COUNTRY_CONTEXT_INDICATORS,
   isCountryContextIndicator,
   isEstimatedPillar,
+  scoreAboveAllBars,
   splitContextIndicators,
 } from '../pillar-presentation.js';
 import { displayedIndicators, isScoredIndicator } from '../indicator-display.js';
@@ -37,6 +38,31 @@ describe('isEstimatedPillar (audit I31)', () => {
   it('zero-precision alert feeds alone do not make the natural-hazards pillar measured', () => {
     assert.equal(isEstimatedPillar(pillar('environment', [ind('gdacs_disaster_alerts')], 1 / 3)), true);
     assert.equal(isEstimatedPillar(pillar('environment', [ind('inform_natural'), ind('gdacs_disaster_alerts')], 2 / 3)), false);
+  });
+});
+
+describe('scoreAboveAllBars (audit I47)', () => {
+  const measured = (name: string, p: number) => pillar(name, [ind(name === 'crime' ? 'wb_homicide' : 'inform_epidemic')], 1, p);
+
+  it('true only when the printed score is above the highest printed bar', () => {
+    const bars = [measured('crime', 0.84), measured('health', 0.852)]; // printed 8.4 and 8.5
+    assert.equal(scoreAboveAllBars(8.6, bars), true);
+    assert.equal(scoreAboveAllBars(8.5, bars), false, 'equal to the top bar is not above it');
+    assert.equal(scoreAboveAllBars(8.54, bars), false, 'compared on the printed decimal (8.5)');
+    assert.equal(scoreAboveAllBars(8.55, bars), true, '8.55 prints 8.6');
+    assert.equal(scoreAboveAllBars(6.1, bars), false);
+  });
+
+  it('skips estimated pillars (they print no number) and grey places (no score)', () => {
+    const bars = [measured('health', 0.7), pillar('crime', [], 0, 0.95)];
+    assert.equal(scoreAboveAllBars(7.4, bars), true, 'the 9.5 prior of an estimated pillar is not a bar');
+    assert.equal(scoreAboveAllBars(null, bars), false);
+    assert.equal(scoreAboveAllBars(undefined, bars), false);
+    assert.equal(scoreAboveAllBars(9.9, [pillar('crime', [], 0)]), false, 'no displayed bar at all');
+  });
+
+  it('the engine mapping 1 + 9·c^0.96 sits above the bar scale 10·c everywhere below 10 (why the note exists)', () => {
+    for (let c = 0; c < 1; c += 0.01) assert.ok(1 + 9 * Math.pow(c, 0.96) > 10 * c, `c = ${c}`);
   });
 });
 
@@ -76,6 +102,7 @@ describe('pillarPresentationCopy (7 locales)', () => {
       for (const [key, value] of Object.entries(c)) {
         assert.ok(value.trim().length > 0, `${lang}.${key} is empty`);
         assert.equal(value.includes('{pillar}'), key === 'contextCountsIn', `${lang}.${key}`);
+        assert.equal(value.split('{link}').length - 1, key === 'scoreAboveBarsNote' ? 1 : 0, `${lang}.${key}: {link}`);
       }
     }
   });

@@ -96,7 +96,7 @@ const formulaChange = getFormulaChange();
     <>
       <ScoreHero country={country} lang={lang} scoreDelta={scoreDelta} />
       <AnswerFirstParagraph country={country} rank={rank} totalCountries={totalCountries} lang={lang} />
-      <PillarBreakdown pillars={country.pillars} lang={lang} />
+      <PillarBreakdown pillars={country.pillars} lang={lang} score={country.score} />
       <SentimentPillar
         sentiment={sentiment}
         community={country.community ?? null}

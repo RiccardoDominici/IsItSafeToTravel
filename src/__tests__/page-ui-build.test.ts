@@ -64,6 +64,20 @@ describe('I31: estimated pillars are not shown as measured scores', () => {
   });
 });
 
+describe('I47: "not an average of the bars" note', () => {
+  it('appears exactly when the hero score is above every printed bar (every scored en page)', () => {
+    let shown = 0;
+    for (const c of scored()) {
+      const html = countryPage(c.iso3);
+      const has = html.includes('data-note="score-above-bars"');
+      const top = Math.max(...c.pillars.filter((p) => !isEstimatedPillar(p)).map((p) => Number((p.score * 10).toFixed(1))));
+      assert.equal(has, Number(c.score!.toFixed(1)) > top, `${c.iso3}: score ${c.score!.toFixed(1)}, top bar ${top}`);
+      if (has) shown++;
+    }
+    console.log(`  (note shown on ${shown} scored places)`);
+  });
+});
+
 describe('I34: state indicators sit under "Country context"', () => {
   for (const [lang, segment, summary] of [['en', 'country', 'Country context'], ['de', 'land', 'Länderkontext']] as const) {
     it(`${lang}: DEU and PRK list militarisation / V-Dem rows only inside #country-context`, () => {
