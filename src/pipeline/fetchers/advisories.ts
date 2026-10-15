@@ -6,6 +6,7 @@ import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
 import { parseUkAdvisory, type UkAdvisory } from './advisories-uk.js';
+import { CA_FETCH_HEADERS, CA_OPEN_DATA_URLS, parseCaOpenData, summarizeCaOpenData } from './advisories-ca.js';
 import {
   MAX_FALLBACK_AGE_DAYS,
   daysBetween,
@@ -34,7 +35,6 @@ const US_RSS_URL = 'https://travel.state.gov/_res/rss/TAsTWs.xml';
 const US_ADVISORIES_URL =
   'https://travel.state.gov/content/travel/en/traveladvisories/traveladvisories.html';
 const UK_FCDO_API_URL = 'https://www.gov.uk/api/content/foreign-travel-advice';
-const CA_ADVISORIES_URL = 'https://travel.gc.ca/destinations';
 const AU_ADVISORIES_URL = 'https://www.smartraveller.gov.au/api/smartraveller/destinations';
 const AU_ADVISORIES_FALLBACK_URL = 'https://www.smartraveller.gov.au/destinations';
 
@@ -89,14 +89,6 @@ const US_LEVEL_TEXT: Record<number, string> = {
   2: 'Exercise Increased Caution',
   3: 'Reconsider Travel',
   4: 'Do Not Travel',
-};
-
-/** Canada level number to descriptive text */
-const CA_LEVEL_TEXT: Record<number, string> = {
-  1: 'Exercise normal security precautions',
-  2: 'Exercise a high degree of caution',
-  3: 'Avoid non-essential travel',
-  4: 'Avoid all travel',
 };
 
 /** Australia level number to descriptive text */
@@ -660,7 +652,7 @@ async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Prom
     } catch (error) {
       if (attempt < retries) {
         const msg = error instanceof Error ? error.message : String(error);
-        console.warn(`[ADVISORIES] US: network error fetching ${url} (${msg}), retrying...`);
+        console.warn(`[ADVISORIES] network error fetching ${url} (${msg}), retrying...`);
         await new Promise((resolve) => setTimeout(resolve, 1_500));
         continue;
       }
@@ -669,7 +661,7 @@ async function fetchWithRetry(url: string, init: RequestInit, retries = 1): Prom
     if (response.ok) return response;
     if (response.status >= 500 && attempt < retries) {
       console.warn(
-        `[ADVISORIES] US: HTTP ${response.status} fetching ${url}, retrying...`,
+        `[ADVISORIES] HTTP ${response.status} fetching ${url}, retrying...`,
       );
       await new Promise((resolve) => setTimeout(resolve, 1_500));
       continue;
@@ -1093,197 +1085,60 @@ async function fetchUkAdvisories(
   return { indicators, advisoryInfo };
 }
 
-/** banner-X class -> unified 1-4 level. */
-const CA_BANNER_TO_LEVEL: Record<string, number> = {
-  'do-not-travel': 4,
-  'reconsider-travel': 3,
-  'increased-caution': 2,
-  'normal-precautions': 1,
-};
-
 /**
- * v9.1 (SHIP-SPEC 1.1e) HARDENING: collect ALL distinct banner-X classes present
- * on the page (global match), not just the first one found. The pre-v9.1 single
- * `.match()` silently trusted whichever banner happened to appear first in the
- * HTML — the root cause of the verified GUM (Guam) ca=4 transient misparse
- * (SHIP-SPEC 1.1f correction script). Returns the distinct levels found, sorted
- * ascending; callers decide how to resolve >1 distinct level.
- */
-function parseCaAdvisoryBanners(html: string): number[] {
-  const pattern = /class=['"]banner-(do-not-travel|reconsider-travel|increased-caution|normal-precautions)['"]/gi;
-  const levels = new Set<number>();
-  let m;
-  while ((m = pattern.exec(html)) !== null) {
-    const lvl = CA_BANNER_TO_LEVEL[m[1].toLowerCase()];
-    if (lvl) levels.add(lvl);
-  }
-  return [...levels].sort((a, b) => a - b);
-}
-
-/**
- * Look up iso3's ca advisory level from the most recent PRIOR date's
- * advisories-info.json (strictly before `onOrAfterDate`, YYYY-MM-DD). Used as
- * the ambiguous-banner fallback (SHIP-SPEC 1.1e): when today's page shows >1
- * distinct banner type, trust yesterday's already-validated level rather than
- * guess which of today's banners is the "real" one.
- */
-function findPreviousCaLevel(iso3: string, onOrAfterDate: string): number | null {
-  const rawBase = join(process.cwd(), 'data', 'raw');
-  if (!existsSync(rawBase)) return null;
-  const dateDirs = readdirSync(rawBase)
-    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d < onOrAfterDate)
-    .sort()
-    .reverse();
-  for (const dateDir of dateDirs) {
-    const infoPath = join(rawBase, dateDir, 'advisories-info.json');
-    const info = readJson<AdvisoryInfoMap>(infoPath);
-    const level = info?.[iso3]?.ca?.level;
-    if (typeof level === 'number') return level;
-  }
-  return null;
-}
-
-interface CaDebugEntry {
-  iso3: string;
-  allBannerMatches: number[];
-  chosenLevel: number;
-}
-
-/**
- * Fetch Canada Government travel advisories.
- * Step 1: Extract country slugs from the dropdown on travel.gc.ca/destinations
- * Step 2: Batch-fetch individual country pages to extract advisory levels
+ * Fetch Canada's advisories from Global Affairs Canada's open-data JSON index (Open
+ * Government Licence - Canada; parser and source notes in advisories-ca.ts). Tries the
+ * alphabetical index, then the chronological one, and stops at the first that parses to
+ * at least one country.
  */
 async function fetchCaAdvisories(
   rawDir: string,
   fetchedAt: string,
   currentYear: number,
 ): Promise<FetcherResult> {
-  const indicators: RawIndicator[] = [];
-  const advisoryInfo: AdvisoryInfoMap = {};
-  const debugEntries: CaDebugEntry[] = [];
-  const snapshotDate = fetchedAt.slice(0, 10); // YYYY-MM-DD
-
-  // Step 1: Get the destinations page with the dropdown
-  const response = await fetch(CA_ADVISORIES_URL, {
-    signal: AbortSignal.timeout(30_000),
-    redirect: 'follow',
-    headers: {
-      'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
-      Accept: 'text/html',
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-
-  const html = await response.text();
-  writeJson(join(rawDir, 'advisories-ca.json'), {
-    url: CA_ADVISORIES_URL,
-    fetchedAt,
-    contentLength: html.length,
-    type: 'html',
-  });
-
-  // Extract country slugs from <option value="slug">Country Name</option>
-  const optionPattern = /<option\s+value="([^"]+)">([^<]+)<\/option>/gi;
-  interface CaEntry { slug: string; name: string; iso3: string }
-  const rawEntries: CaEntry[] = [];
-
-  let match;
-  while ((match = optionPattern.exec(html)) !== null) {
-    const slug = match[1].trim();
-    const name = match[2].trim();
-    if (!slug || slug === '') continue; // skip empty "Select" option
-
-    const country = getCountryByName(name);
-    if (!country) continue;
-
-    rawEntries.push({ slug, name, iso3: country.iso3 });
-  }
-
-  // v9.1 (SHIP-SPEC 1.1e): dedupe by iso3 BEFORE fetchBatch — the dropdown can
-  // list more than one slug resolving to the same country; fetching only the
-  // first avoids wasted requests and avoids two concurrent ambiguous-banner
-  // resolutions racing on the same iso3.
-  const seenIso3 = new Set<string>();
-  const entries = rawEntries.filter((e) => {
-    if (seenIso3.has(e.iso3)) return false;
-    seenIso3.add(e.iso3);
-    return true;
-  });
-
-  console.log(
-    `[ADVISORIES] CA: Found ${rawEntries.length} dropdown entries -> ${entries.length} unique countries after dedup, fetching advisory levels...`,
-  );
-
-  // Step 2: Batch-fetch individual country pages (20 concurrent)
-  await fetchBatch(entries, async (entry) => {
+  const failures: string[] = [];
+  for (const url of CA_OPEN_DATA_URLS) {
     try {
-      const r = await fetch(`https://travel.gc.ca/destinations/${entry.slug}`, {
-        signal: AbortSignal.timeout(15_000),
-        redirect: 'follow',
-        headers: {
-          'User-Agent': 'IsItSafeToTravel/1.0 (safety research project)',
-          Accept: 'text/html',
-        },
+      const response = await fetchWithRetry(url, {
+        signal: AbortSignal.timeout(30_000),
+        headers: { Accept: 'application/json', ...CA_FETCH_HEADERS },
+      });
+      const json = (await response.json()) as unknown;
+      const parsed = parseCaOpenData(json, currentYear);
+      const generated = (json as { metadata?: { generated?: { date?: string } } })?.metadata?.generated?.date;
+
+      writeJson(join(rawDir, 'advisories-ca.json'), {
+        url,
+        fetchedAt,
+        endpoint: 'open-data-json',
+        generated,
+        countries: parsed.indicators.length,
+        unmatched: parsed.unmatched,
+        mismatches: parsed.mismatches,
+        unreadable: parsed.unreadable,
+        entries: summarizeCaOpenData(json),
       });
 
-      if (!r.ok) return;
-
-      const pageHtml = await r.text();
-      const banners = parseCaAdvisoryBanners(pageHtml);
-
-      let level: number;
-      if (banners.length === 0) {
-        level = 2; // default to caution (unchanged pre-v9.1 fallback)
-      } else if (banners.length === 1) {
-        level = banners[0];
-      } else {
-        // v9.1 (SHIP-SPEC 1.1e): AMBIGUOUS — >1 distinct banner type present.
-        // Trust the previous day's already-validated level for this country;
-        // if none exists, fall back to the MOST SEVERE banner found (never
-        // silently pick the first match, which is what produced the GUM bug).
-        const prevLevel = findPreviousCaLevel(entry.iso3, snapshotDate);
-        level = prevLevel ?? Math.max(...banners);
-        console.error(
-          `[ADVISORIES] CA: ${entry.iso3} AMBIGUOUS banners [${banners.join(', ')}] -> ` +
-            (prevLevel !== null
-              ? `using previous-day level ${level}`
-              : `no prior data, using most-severe fallback ${level}`),
-        );
+      if (parsed.unmatched.length > 0) {
+        console.log(`[ADVISORIES] CA: ${parsed.unmatched.length} entries match no country of ours (skipped): ${parsed.unmatched.join(', ')}`);
       }
-
-      debugEntries.push({ iso3: entry.iso3, allBannerMatches: banners, chosenLevel: level });
-
-      indicators.push({
-        countryIso3: entry.iso3,
-        indicatorName: 'advisory_level_ca',
-        value: level,
-        year: currentYear,
-        source: 'advisories_ca',
-      });
-
-      // Real advisory date from the Canada.ca WET template's <meta name="dcterms.modified">
-      const modified = pageHtml.match(/name="dcterms\.modified"[^>]*content="(\d{4}-\d{2}-\d{2})"/)?.[1];
-
-      if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
-      advisoryInfo[entry.iso3].ca = {
-        level,
-        text: CA_LEVEL_TEXT[level] || `Level ${level}`,
-        source: 'Government of Canada',
-        url: `https://travel.gc.ca/destinations/${entry.slug}`,
-        updatedAt: modified,
-      };
-    } catch {
-      // Individual country fetch failed — skip it
+      if (parsed.mismatches.length > 0) {
+        console.warn(`[ADVISORIES] CA: advisory-state and label disagree (advisory-state used): ${parsed.mismatches.join('; ')}`);
+      }
+      if (parsed.unreadable.length > 0) {
+        console.warn(`[ADVISORIES] CA: no readable level, skipped (never guessed): ${parsed.unreadable.join(', ')}`);
+      }
+      if (parsed.indicators.length > 0) {
+        console.log(`[ADVISORIES] CA: ${parsed.indicators.length} countries from ${url} (generated ${generated ?? 'unknown'})`);
+        return { indicators: parsed.indicators, advisoryInfo: parsed.advisoryInfo };
+      }
+      failures.push(`${url}: parsed 0 countries`);
+    } catch (error) {
+      failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`);
     }
-  }, 20);
-
-  writeJson(join(rawDir, 'advisories-ca-debug.json'), debugEntries);
-
-  return { indicators, advisoryInfo };
+    console.warn(`[ADVISORIES] CA: ${failures[failures.length - 1]}`);
+  }
+  throw new Error(`every Canada open-data endpoint failed (${failures.join('; ')})`);
 }
 
 /**
