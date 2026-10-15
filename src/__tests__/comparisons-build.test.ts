@@ -16,6 +16,7 @@ import { isEstimatedPillar } from '../lib/pillar-presentation';
 import { pillarPresentationCopy } from '../i18n/pillar-presentation-copy';
 import { greyCopy, greyHasNoData } from '../i18n/grey-copy';
 import { communityCopy } from '../i18n/community-copy';
+import { formatPillar10 } from '../lib/display-number';
 
 const DIST_CLIENT = join(import.meta.dirname, '..', '..', 'dist', 'client');
 const SEGMENT = { en: 'country', de: 'land' } as const;
@@ -60,7 +61,8 @@ describe('comparison table: estimated pillars read "No data", like the pillar ba
               assert.ok(cell.estimated && cell.text === noData, `${page.iso3} ${lang}: ${iso3}/${name} shows "${cell.text}"`);
               estimatedSeen++;
             } else {
-              assert.ok(!cell.estimated && cell.text === (pillar.score * 10).toFixed(1), `${page.iso3} ${lang}: ${iso3}/${name} shows "${cell.text}"`);
+              // The page language's number format: "7.3" in en, "7,3" in de (src/lib/display-number.ts).
+              assert.ok(!cell.estimated && cell.text === formatPillar10(pillar.score, lang), `${page.iso3} ${lang}: ${iso3}/${name} shows "${cell.text}"`);
               measuredSeen++;
             }
           }

@@ -19,7 +19,7 @@ export const getStaticPaths: GetStaticPaths = () =>
 
 export const GET: APIRoute = ({ params }) => {
   const iso3 = (params.iso3 ?? '').toUpperCase();
-  // Round to 2 decimals — the compare page displays toFixed(2), so no precision loss.
+  // Round to 2 decimals — the compare page displays 2 decimals (formatNumber), so no precision loss.
   // Format MUST stay a plain array: the deployed compare page depends on it.
   const points = (greyIso3.has(iso3) ? [] : history.get(iso3) ?? []).map((p) =>
     p.dc !== undefined

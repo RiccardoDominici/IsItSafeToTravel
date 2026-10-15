@@ -12,6 +12,7 @@ import { buildFaqPageJsonLd, WEBSITE_ID, localeMap } from '../../lib/seo';
 import { getLastmodMap } from '../../lib/lastmod';
 import { getBiggestMovers } from '../../lib/hub-data';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { formatNumber, formatSigned, formatTenths } from '../../lib/display-number';
 import { faqPillarLabels, advisoryLevelWords } from '../../lib/country-faq-copy';
 import { hubBlurbTemplates } from '../../i18n/hub-blurbs';
 import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
@@ -131,7 +132,8 @@ function buildBlurb(country: Scored<ScoredCountry>): string {
   // States scores 8/10") — same fix as getCountryFaqData in seo.ts.
   const bareName = getLocalizedCountryName(country, lang);
   const name = lang === 'en' ? getEnglishCountryPhrase(country.iso3, bareName) : bareName;
-  const score = country.score.toFixed(1);
+  // Every figure in the blurb in the page language's format ("8,5" in it/es/fr/pt/de).
+  const score = formatTenths(country.score, lang);
   let text: string;
   // countries-to-avoid already names the advisory count in its own sentence —
   // skip the generic advisory-consensus appendage below to avoid saying it twice.
@@ -155,21 +157,21 @@ function buildBlurb(country: Scored<ScoredCountry>): string {
       .replace('{name}', name)
       .replace('{score}', score)
       .replace('{strongest}', labels[strongest.name])
-      .replace('{strongestScore}', (strongest.score * 10).toFixed(1));
+      .replace('{strongestScore}', formatTenths(strongest.score * 10, lang));
   } else if (hubType === 'safest-for-families') {
     // Weighted health 35% + governance 35% + crime 20% + overall 10% (hub-data.ts) — name the two heaviest.
     text = hubBlurbTemplates['safest-for-families'][lang]
       .replace('{name}', name)
       .replace('{score}', score)
-      .replace('{healthScore}', pillarScore(country, 'health').toFixed(1))
-      .replace('{crimeScore}', pillarScore(country, 'crime').toFixed(1));
+      .replace('{healthScore}', formatTenths(pillarScore(country, 'health'), lang))
+      .replace('{crimeScore}', formatTenths(pillarScore(country, 'crime'), lang));
   } else if (hubType === 'safest-for-solo-travelers') {
     // Weighted crime 40% + governance 40% + overall 20% (hub-data.ts).
     text = hubBlurbTemplates['safest-for-solo-travelers'][lang]
       .replace('{name}', name)
       .replace('{score}', score)
-      .replace('{crimeScore}', pillarScore(country, 'crime').toFixed(1))
-      .replace('{governanceScore}', pillarScore(country, 'governance').toFixed(1));
+      .replace('{crimeScore}', formatTenths(pillarScore(country, 'crime'), lang))
+      .replace('{governanceScore}', formatTenths(pillarScore(country, 'governance'), lang));
   } else if (hubType === 'countries-to-avoid') {
     // Membership itself is advisory-driven (majority Level 4, hub-data.ts) —
     // say so. No weakest-pillar clause here any more: CountryRankRow already
@@ -190,7 +192,7 @@ function buildBlurb(country: Scored<ScoredCountry>): string {
     text = hubBlurbTemplates[hubType][lang]
       .replace('{name}', name)
       .replace('{score}', score)
-      .replace('{delta}', delta.toFixed(2));
+      .replace('{delta}', formatNumber(delta, 2, lang));
   } else {
     return '';
   }
@@ -363,7 +365,7 @@ const hubLinks = ALL_HUB_LINKS.filter((l) => l.type !== hubType);
               >
                 <span>{getLocalizedCountryName(country, lang)}</span>
                 <span class={`text-xs font-semibold ${delta > 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}`}>
-                  {delta > 0 ? '+' : ''}{delta.toFixed(2)}
+                  {formatSigned(delta, 2, lang)}
                 </span>
               </a>
             </li>

@@ -44,6 +44,7 @@ import { routes } from '../src/i18n/ui.js';
 import type { Lang } from '../src/i18n/ui.js';
 import { renderNewsEvent, flagEmoji } from '../src/lib/news.js';
 import { useTranslations } from '../src/i18n/utils.js';
+import { formatNumber, formatTenths } from '../src/lib/display-number.js';
 import type { NewsEvent as PipelineNewsEvent } from '../src/pipeline/news/types.js';
 
 const DB_NAME = 'isitsafetotravel-sentiment';
@@ -261,9 +262,10 @@ function renderBuiltIn(
     a: name,
     b: p.other ? nameOf(p.other) : '',
     other: p.other ? nameOf(p.other) : '',
-    score: p.score !== undefined ? String(p.score) : '',
-    prevScore: p.prevScore !== undefined ? String(p.prevScore) : '',
-    delta: p.delta !== undefined ? Math.abs(p.delta).toFixed(2) : '',
+    // Same number format as the site in this language ("8,5" in it/es/fr/pt/de), src/lib/display-number.ts.
+    score: p.score !== undefined ? formatTenths(p.score, lang) : '',
+    prevScore: p.prevScore !== undefined ? formatTenths(p.prevScore, lang) : '',
+    delta: p.delta !== undefined ? formatNumber(Math.abs(p.delta), 2, lang) : '',
     rank: p.rank !== undefined ? String(p.rank) : '',
     from: p.fromBand ? (BAND_LABEL[p.fromBand]?.[lang] ?? p.fromBand) : '',
     to: p.toBand ? (BAND_LABEL[p.toBand]?.[lang] ?? p.toBand) : '',
@@ -332,16 +334,16 @@ function sentimentFor(e: NewsEvent): CardSentiment {
   }
 }
 
-function scoreBigFor(e: NewsEvent): string {
+function scoreBigFor(e: NewsEvent, lang: Locale): string {
   const p = e.params ?? {};
   if (e.type === 'severe_advisory') return p.level !== undefined ? `L${p.level}` : '';
   if (e.type === 'rank_overtake' || e.type === 'top10_change') return p.rank !== undefined ? `#${p.rank}` : '';
   if (e.type === 'band_change' || e.type === 'score_jump') {
     if (p.score === undefined) return '';
     const arrow = p.direction === 'down' ? '↓' : '↑';
-    return `${arrow} ${p.score.toFixed(1)}`;
+    return `${arrow} ${formatTenths(p.score, lang)}`;
   }
-  if (e.type === 'new_country') return p.score !== undefined ? p.score.toFixed(1) : '';
+  if (e.type === 'new_country') return p.score !== undefined ? formatTenths(p.score, lang) : '';
   return '';
 }
 
@@ -362,7 +364,7 @@ function fallbackDigestHtml(
         headline: head,
         detail,
         sentiment: sentimentFor(e),
-        scoreText: scoreBigFor(e),
+        scoreText: scoreBigFor(e, lang),
       });
     })
     .join('');

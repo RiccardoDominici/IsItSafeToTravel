@@ -9,6 +9,7 @@ import { buildCitePageJsonLd } from '../lib/seo';
 import { scoredOnly } from '../lib/score-status';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
+import { formatTenths } from '../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -452,7 +453,8 @@ function interpolate(tmpl: string, vars: Record<string, string>): string {
 const firstCountry = countries[0];
 const firstIso = firstCountry?.iso3.toLowerCase() ?? '';
 const firstName = firstCountry ? getLocalizedCountryName(firstCountry, lang) : '';
-const firstScore = firstCountry ? firstCountry.score.toFixed(1) : '';
+// The citation text is in the page language, so its score uses that language's separator ("8,5/10").
+const firstScore = firstCountry ? formatTenths(firstCountry.score, lang) : '';
 const firstUrl = `https://isitsafetotravel.org/${lang}/${r.country}/${firstIso}/`;
 
 const initialVars: Record<string, string> = {
@@ -542,8 +544,8 @@ const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-te
             const iso = country.iso3.toLowerCase();
             const name = getLocalizedCountryName(country, lang);
             return (
-              <option value={iso} data-name={name} data-score={country.score.toFixed(1)} data-iso={iso} selected={idx === 0}>
-                {name} ({country.score.toFixed(1)}/10)
+              <option value={iso} data-name={name} data-score={country.score.toFixed(1)} data-score-text={formatTenths(country.score, lang)} data-iso={iso} selected={idx === 0}>
+                {name} ({formatTenths(country.score, lang)}/10)
               </option>
             );
           })}
@@ -701,7 +703,8 @@ const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-te
     const option = select.selectedOptions[0];
     const iso = isGlobal ? 'global' : select.value;
     const name = isGlobal ? '' : option?.dataset.name || '';
-    const score = isGlobal ? '' : option?.dataset.score || '';
+    // data-score keeps the machine dot; the citation prints the page-language form (data-score-text).
+    const score = isGlobal ? '' : option?.dataset.scoreText || option?.dataset.score || '';
     const docLang = document.documentElement.lang || 'en';
     const countryRoute = select.dataset.countryRoute || 'country';
     const url = isGlobal

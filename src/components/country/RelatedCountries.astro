@@ -4,6 +4,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { getRegion } from '../../lib/regions';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { formatTenths, roundForDisplay } from '../../lib/display-number';
 import { selectComparison, selectRelated } from '../../lib/comparisons';
 import countryCoords from '../../data/country-coords.json';
 import countryProximity from '../../data/country-proximity.json';
@@ -30,7 +31,7 @@ const t = titles[lang];
 
 // Get score color class based on score value
 function getScoreBadgeClasses(rawScore: number): string {
-  const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
+  const score = roundForDisplay(rawScore, 1); // band on the displayed 1-decimal value
   if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
   if (score >= 5) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
   return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
@@ -82,7 +83,7 @@ const regionUrl = regionLeaf ? `/${lang}/${regionsParent}/${regionLeaf}/` : null
                 {getLocalizedCountryName(c, lang)}
               </span>
               <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
-                {c.score.toFixed(1)}
+                {formatTenths(c.score, lang)}
               </span>
             </a>
           ))}
@@ -114,7 +115,7 @@ const regionUrl = regionLeaf ? `/${lang}/${regionsParent}/${regionLeaf}/` : null
                 {getLocalizedCountryName(c, lang)}
               </span>
               <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${getScoreBadgeClasses(c.score)}`}>
-                {c.score.toFixed(1)}
+                {formatTenths(c.score, lang)}
               </span>
             </a>
           ))}

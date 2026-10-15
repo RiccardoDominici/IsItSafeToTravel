@@ -6,6 +6,7 @@ import { scoreToColor, readableTextColor } from '../../lib/colors';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { getH1CountryPhrase } from '../../i18n/country-grammar';
 import { getBand } from '../../lib/bands';
+import { formatSigned, formatTenths } from '../../lib/display-number';
 import type { BandKey } from '../../pipeline/news/types';
 import { getBandVerdictCopy } from '../../lib/band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from '../../lib/confidence';
@@ -70,8 +71,8 @@ const badgeClass = badgeStyles[band];
 // The big number is the same one-decimal score the title, summary, FAQ and every list show (owner
 // decision 2026-10-15, audit I08). It used to be country.scoreDisplay = Math.round(score): 6.7
 // printed a big "7" under an "Exercise caution" (6-7) pill, and two countries both shown as 8.5
-// read "8" and "9" depending on the unrounded value behind them.
-const heroScore = scoreValue.toFixed(1);
+// read "8" and "9" depending on the unrounded value behind them. Page-language separator ("6,7").
+const heroScore = formatTenths(scoreValue, lang);
 
 const formattedDate = new Intl.DateTimeFormat(lang, {
   year: 'numeric',
@@ -179,7 +180,7 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
         <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-6h8l-4 6z"/></svg>
       )}
       <span>
-        {`${scoreDelta.delta > 0 ? '+' : ''}${scoreDelta.delta.toFixed(1)} ${t('country.score_delta_label')}`}
+        {`${formatSigned(scoreDelta.delta, 1, lang)} ${t('country.score_delta_label')}`}
       </span>
     </p>
   )}

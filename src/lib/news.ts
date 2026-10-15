@@ -8,6 +8,7 @@ import type { Lang } from '../i18n/ui';
 import { loadLatestScores, getLocalizedCountryName } from './scores';
 import { getCountryByIso3 } from '../pipeline/config/countries';
 import { getEnglishCountryPhrase } from '../i18n/country-grammar';
+import { formatNumber, formatTenths } from './display-number';
 
 const NEWS_DIR = join(process.cwd(), 'data', 'news');
 
@@ -155,8 +156,9 @@ export function renderNewsEvent(e: NewsEvent, lang: Lang, t: (key: any) => strin
     country,
     other,
     rank: String(P.rank ?? ''),
-    score: P.score !== undefined ? P.score.toFixed(1) : '',
-    delta: P.delta !== undefined ? Math.abs(P.delta).toFixed(2) : '',
+    // Page-language separators ("8,5", "0,32"); the event data itself stays language-neutral numbers.
+    score: P.score !== undefined ? formatTenths(P.score, lang) : '',
+    delta: P.delta !== undefined ? formatNumber(Math.abs(P.delta), 2, lang) : '',
     from: band(P.fromBand),
     to: band(P.toBand),
     issuer,

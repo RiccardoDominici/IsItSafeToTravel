@@ -18,7 +18,7 @@ import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { getProvenanceCounts } from './provenance-copy';
 import { isScored } from './score-status';
 import { advisoryLevels, buildAdvisorySentence, nameSlots } from './country-summary';
-import { formatTenths } from './display-number';
+import { formatTenths, roundForDisplay } from './display-number';
 import { advisoryEntries, getAdvisoryConsensus, type AdvisoryConsensus } from './advisory-consensus';
 import { selectPillarFocus, type PillarFocus, type PillarView } from './pillar-focus';
 import {
@@ -568,9 +568,10 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   // Formula v10 grey place: no score, band, tourist segment or score variable anywhere in the
   // graph (validate-seo asserts it); the same five node types are kept.
   const scored = isScored(country);
-  const scoreStr = scored ? country.score.toFixed(1) : '';
-  // Band on the displayed 1-decimal value so the label matches the number shown.
-  const scoreRounded = Number(scoreStr);
+  // Text for TouristDestination.description, in the page language's format like the visible page
+  // ("8,5/10"); the band is computed on the same displayed value so the label matches the number.
+  const scoreStr = scored ? formatTenths(country.score, lang) : '';
+  const scoreRounded = scored ? roundForDisplay(country.score, 1) : 0;
   const bandIdx = scoreRounded >= 7 ? 0 : scoreRounded >= 5 ? 1 : 2;
   const band = riskBands[lang][bandIdx];
   const tourType = touristTypes[lang][bandIdx];
@@ -717,14 +718,16 @@ export function buildGlobalSafetyJsonLd(
     de: 'Globaler Sicherheits-Score',
   };
 
+  // Page-language separator, as the banner and the page itself print it.
+  const shown = formatTenths(globalScore, lang);
   const descriptions: Record<Lang, string> = {
-    en: `Current global safety score: ${globalScore.toFixed(1)}/10. Track world safety trends over time.`,
-    it: `Punteggio di sicurezza globale attuale: ${globalScore.toFixed(1)}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
-    es: `Puntuación de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
-    fr: `Score de sécurité mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de sécurité mondiale.`,
-    pt: `Pontuação de segurança global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de segurança mundial.`,
-    zh: `当前全球安全评分：${globalScore.toFixed(1)}/10。跟踪全球安全趋势变化。`,
-    de: `Aktueller globaler Sicherheits-Score: ${globalScore.toFixed(1)}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
+    en: `Current global safety score: ${shown}/10. Track world safety trends over time.`,
+    it: `Punteggio di sicurezza globale attuale: ${shown}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
+    es: `Puntuación de seguridad global actual: ${shown}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
+    fr: `Score de sécurité mondial actuel : ${shown}/10. Suivez les tendances de sécurité mondiale.`,
+    pt: `Pontuação de segurança global atual: ${shown}/10. Acompanhe as tendencias de segurança mundial.`,
+    zh: `当前全球安全评分：${shown}/10。跟踪全球安全趋势变化。`,
+    de: `Aktueller globaler Sicherheits-Score: ${shown}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
   };
 
   return {

@@ -6,6 +6,7 @@ import { routes } from '../i18n/ui';
 import { getLocalizedCountryName } from '../lib/scores';
 import { getBandVerdictCopy } from '../lib/band-copy';
 import { badgeColors } from '../lib/colors';
+import { formatNumber, formatSigned, formatTenths } from '../lib/display-number';
 
 interface Props {
   row: IndexRow;
@@ -29,7 +30,7 @@ const pillarValues = PILLAR_ORDER.map((name) => {
   const pillar = country.pillars.find((p) => p.name === name);
   // Same 0-1 -> 1-10 transform used everywhere else on the site for pillar
   // display (SafetyMap.astro's tooltip, src/lib/dataset-csv.ts).
-  return pillar ? (pillar.score * 9 + 1).toFixed(1) : '–';
+  return pillar ? formatTenths(pillar.score * 9 + 1, lang) : '–';
 });
 
 function deltaClasses(d: number): string {
@@ -51,7 +52,7 @@ function deltaClasses(d: number): string {
       class="inline-flex items-center justify-center min-w-[3rem] px-2 py-0.5 rounded-full text-xs font-bold tabular-nums"
       style={`background-color:${badgeBg};color:${badgeFg}`}
     >
-      {country.score.toFixed(1)}
+      {formatTenths(country.score, lang)}
     </span>
   </td>
   <td class="py-2 pr-4 text-sand-600 dark:text-sand-300 whitespace-nowrap capitalize">{riskLabel}</td>
@@ -67,11 +68,11 @@ function deltaClasses(d: number): string {
       // Rounds to "0.00" at the 2-decimal display precision below — show it as
       // flat, not a colored +/- arrow (a delta of e.g. -0.001 would otherwise
       // render as a red "▼ -0.00", which reads as a decline that isn't there).
-      <span class="text-sand-600 dark:text-sand-400">0.00</span>
+      <span class="text-sand-600 dark:text-sand-400">{formatNumber(0, 2, lang)}</span>
     ) : (
       <span class={`inline-flex items-center gap-0.5 font-semibold ${deltaClasses(delta)}`}>
         <span aria-hidden="true">{delta > 0 ? '▲' : '▼'}</span>
-        {delta > 0 ? '+' : ''}{delta.toFixed(2)}
+        {formatSigned(delta, 2, lang)}
       </span>
     )}
   </td>

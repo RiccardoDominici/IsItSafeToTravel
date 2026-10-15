@@ -200,6 +200,8 @@ const nc = noscriptCopy[lang];
     PARTIAL_DATA_COLOR_DARK,
     ISO_NUMERIC_TO_ALPHA3,
   } from '../lib/map-utils';
+  import { formatTenths } from '../lib/display-number';
+  import type { Lang } from '../i18n/ui';
 
   interface ScoreEntry {
     iso3: string;
@@ -232,7 +234,7 @@ const nc = noscriptCopy[lang];
       import('topojson-client'),
     ])) as [typeof d3types, typeof import('topojson-client')];
 
-    const lang = container.dataset.lang || 'en';
+    const lang = (container.dataset.lang || 'en') as Lang;
     const translations: Translations = JSON.parse(
       container.dataset.translations || '{}'
     );
@@ -591,8 +593,8 @@ const nc = noscriptCopy[lang];
         ? `<div class="font-medium">${displayName}</div><div>${translations.partialData}</div>`
         : displayScore
         ? displayScore.label
-          ? `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)} (${displayScore.label})</div>`
-          : `<div class="font-medium">${displayName}</div><div>${displayScore.value.toFixed(1)}</div>`
+          ? `<div class="font-medium">${displayName}</div><div>${formatTenths(displayScore.value, lang)} (${displayScore.label})</div>`
+          : `<div class="font-medium">${displayName}</div><div>${formatTenths(displayScore.value, lang)}</div>`
         : `<div class="font-medium">${displayName}</div><div>${translations.nodata}</div>`;
 
       // Build advisory lines

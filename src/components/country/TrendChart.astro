@@ -2,6 +2,7 @@
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
+import { formatTenths } from '../../lib/display-number';
 import type { FormulaChange, HistoryPoint } from '../../lib/scores';
 import { formulaChangeInRange, formulaChangeTexts } from '../../i18n/formula-change-copy';
 
@@ -140,7 +141,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
   ) : stableScore !== null ? (
     <div class="text-center py-8">
       <div class="inline-flex items-center gap-3 px-6 py-4 rounded-xl bg-sand-100 dark:bg-sand-800 border border-sand-200 dark:border-sand-700">
-        <span class="text-3xl font-heading font-bold" style={`color: ${scoreToColor(stableScore)}`}>{stableScore.toFixed(1)}</span>
+        <span class="text-3xl font-heading font-bold" style={`color: ${scoreToColor(stableScore)}`}>{formatTenths(stableScore, lang)}</span>
         <span class="text-sand-600 dark:text-sand-400 text-sm">{t('country.trend_stable')}</span>
       </div>
     </div>
@@ -153,6 +154,8 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 
 <script>
   import { scoreToColor } from '../../lib/colors';
+  import { formatNumber } from '../../lib/display-number';
+  import type { Lang } from '../../i18n/ui';
 
   function initTrendChart(): void {
     const container = document.getElementById('trend-chart-container');
@@ -187,7 +190,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
     const svg = document.getElementById('trend-chart-svg') as unknown as SVGSVGElement;
     const tooltip = document.getElementById('trend-tooltip')!;
     const resetBtn = document.getElementById('trend-reset-btn')!;
-    const lang = container.dataset.lang || 'en';
+    const lang = (container.dataset.lang || 'en') as Lang;
 
     interface HistoryPoint { date: string; score: number; dc?: number; }
     const fullData: HistoryPoint[] = trendJson.history || [];
@@ -346,7 +349,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           const val = yMin + i * yTickStep;
           const yPos = yScale(val);
           gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-          yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+          yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${formatNumber(val, 1, lang)}</text>`;
         }
 
         // X axis ticks - smart format, remove overlapping labels (keep most recent)
@@ -610,7 +613,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         const d = new Date(point.date + 'T00:00:00Z');
         const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         const suffix = isInsufficient(point) ? ' (limited data)' : '';
-        return `${dateStr}: ${point.score.toFixed(2)}${suffix}`;
+        return `${dateStr}: ${formatNumber(point.score, 2, lang)}${suffix}`;
       }
 
       function positionTooltip(point: HistoryPoint, rect: DOMRect): void {

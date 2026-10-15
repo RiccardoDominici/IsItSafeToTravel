@@ -13,6 +13,7 @@ import Base from '../../layouts/Base.astro';
 import Breadcrumb from '../Breadcrumb.astro';
 import LevelBadge from './LevelBadge.astro';
 import { getLocalizedCountryName } from '../../lib/scores';
+import { formatNumber } from '../../lib/display-number';
 import { getLastmodMap } from '../../lib/lastmod';
 import {
   buildWebPageJsonLd,
@@ -77,10 +78,10 @@ const COMPARE_MARGIN = 0.15;
 const compareSentence = !comparison
   ? copy.issuer.compareInsufficientData.replace('{agency}', agencyName)
   : comparison.meanDeviation > COMPARE_MARGIN
-    ? copy.issuer.compareMoreCautious.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1))
+    ? copy.issuer.compareMoreCautious.replace('{agency}', agencyName).replace('{pct}', formatNumber(comparison.agreementPct, 1, lang))
     : comparison.meanDeviation < -COMPARE_MARGIN
-      ? copy.issuer.compareMoreLenient.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1))
-      : copy.issuer.compareInLine.replace('{agency}', agencyName).replace('{pct}', comparison.agreementPct.toFixed(1));
+      ? copy.issuer.compareMoreLenient.replace('{agency}', agencyName).replace('{pct}', formatNumber(comparison.agreementPct, 1, lang))
+      : copy.issuer.compareInLine.replace('{agency}', agencyName).replace('{pct}', formatNumber(comparison.agreementPct, 1, lang));
 
 const level4Group = groups.find((g) => g.level === 4);
 const jsonLd = {

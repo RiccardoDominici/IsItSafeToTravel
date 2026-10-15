@@ -90,7 +90,7 @@ describe('country summary: scored country', () => {
 
   it('writes the German driver with locale numbers and a capital after the colon only for sentences', () => {
     const text = buildCountrySummary(ecuador(), ctx('de'));
-    assert.match(text, /Das größte Risiko liegt im Bereich Kriminalität \(4\.4\/10\); ausschlaggebend ist vor allem die Gewaltkriminalität: 45,7 Tötungsdelikte je 100\.000 Einwohner \(Weltbank, 2023\)\./);
+    assert.match(text, /Das größte Risiko liegt im Bereich Kriminalität \(4,4\/10\); ausschlaggebend ist vor allem die Gewaltkriminalität: 45,7 Tötungsdelikte je 100\.000 Einwohner \(Weltbank, 2023\)\./);
     assert.match(text, /22 Regierungen veröffentlichen Reisehinweise für Ecuador: 1 empfiehlt normale Vorsicht, 18 empfehlen erhöhte Vorsicht und 3 raten, die Reise zu überdenken\./);
   });
 

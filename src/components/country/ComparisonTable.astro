@@ -9,6 +9,7 @@ import { comparisonPillarCells, comparisonRows, roundDistanceKm, selectCompariso
 import countryCoords from '../../data/country-coords.json';
 import countryProximity from '../../data/country-proximity.json';
 import { officialScore } from '../../lib/score-status';
+import { formatNumber, formatTenths, roundForDisplay } from '../../lib/display-number';
 import { communityCopy } from '../../i18n/community-copy';
 import { pillarPresentationCopy } from '../../i18n/pillar-presentation-copy';
 import { greyCopy, greyHasNoData } from '../../i18n/grey-copy';
@@ -34,7 +35,7 @@ const r = routes[lang];
 const pc = pillarPresentationCopy[lang];
 
 function getScoreColor(rawScore: number): string {
-  const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
+  const score = roundForDisplay(rawScore, 1); // band on the displayed 1-decimal value
   if (score >= 7) return 'text-emerald-700 dark:text-emerald-400';
   if (score >= 5) return 'text-amber-700 dark:text-amber-400';
   return 'text-red-700 dark:text-red-400';
@@ -45,9 +46,8 @@ const tableRows = comparisonRows(country, selection);
 const hasSeaRows = selection.others.some((row) => row.relation === 'sea');
 
 // "about 80 km away", with the number grouped the locale's way (9,300 / 9.300 / 9 300).
-const kmFormat = new Intl.NumberFormat(lang);
 const distanceLabel = (km: number): string =>
-  t('country.compare_distance').replace('{km}', kmFormat.format(roundDistanceKm(km)));
+  t('country.compare_distance').replace('{km}', formatNumber(roundDistanceKm(km), 0, lang));
 
 // Neighbours-only wording, unless across-sea rows are shown. The country phrase is
 // built per locale so the article, preposition or verb agreement is correct.
@@ -110,7 +110,7 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
                 ) : (
                   <>
                     <td class:list={['py-2 pr-3 font-bold', getScoreColor(rowScore)]}>
-                      {rowScore.toFixed(1)}
+                      {formatTenths(rowScore, lang)}
                     </td>
                     {pillarCells.map(({ name, score10 }) =>
                       score10 === null ? (
@@ -119,7 +119,7 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
                         </td>
                       ) : (
                         <td class:list={['py-2 pr-3', getScoreColor(score10)]} data-pillar={name}>
-                          {score10.toFixed(1)}
+                          {formatTenths(score10, lang)}
                         </td>
                       ),
                     )}

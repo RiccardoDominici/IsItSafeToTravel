@@ -8,6 +8,7 @@ import { routes } from '../../../i18n/ui';
 import type { Lang } from '../../../i18n/ui';
 import { buildWebPageJsonLd } from '../../../lib/seo';
 import { scoredOnly } from '../../../lib/score-status';
+import { formatTenths } from '../../../lib/display-number';
 
 const lang: Lang = 'zh';
 const t = useTranslations(lang);
@@ -49,7 +50,7 @@ const jsonLd = buildWebPageJsonLd(title, description, canonicalUrl, lang);
         >
           {countries.map(c => (
             <option value={c.iso3.toLowerCase()} data-name={getLocalizedCountryName(c, lang)} data-score={c.score.toFixed(1)}>
-              {getLocalizedCountryName(c, lang)} ({c.score.toFixed(1)}/10)
+              {getLocalizedCountryName(c, lang)} ({formatTenths(c.score, lang)}/10)
             </option>
           ))}
         </select>

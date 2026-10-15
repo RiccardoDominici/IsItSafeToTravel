@@ -8,6 +8,7 @@ import type { Lang } from '../../../i18n/ui';
 import { routes } from '../../../i18n/ui';
 import { buildWebPageJsonLd, buildFaqPageJsonLd, buildMethodologyDatasetJsonLd } from '../../../lib/seo';
 import weightsConfig from '../../../pipeline/config/weights.json';
+import { formatNumber } from '../../../lib/display-number';
 
 const lang: Lang = 'de';
 const r = routes[lang];
@@ -136,7 +137,7 @@ const advisorySources = [
             {weightsConfig.pillars.map(pillar => (
               <tr class="border-b border-sand-200 dark:border-sand-700">
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(pillarI18n[pillar.name] as any)}</td>
-                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{(pillar.weight * 100).toFixed(0)}%</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{formatNumber(pillar.weight * 100, 0, lang)}%</td>
                 <td class="py-3 text-sand-600 dark:text-sand-300">{pillar.indicators.map(ind => t(`methodology.indicator.${ind}` as any)).join(', ')}</td>
               </tr>
             ))}
