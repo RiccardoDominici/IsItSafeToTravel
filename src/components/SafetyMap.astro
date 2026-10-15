@@ -3,6 +3,8 @@ import type { Lang } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { routes } from '../i18n/ui';
 import { communityCopy } from '../i18n/community-copy';
+import { loadLatestScores } from '../lib/scores';
+import { isGrey } from '../lib/score-status';
 
 interface Props {
   lang: Lang;
@@ -10,6 +12,9 @@ interface Props {
 
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+// The legend lists the partial-data grey only when the data has grey places (formula v10). On
+// v9.1-shaped data every place is scored, so the map and its legend look exactly as before.
+const hasPartialData = loadLatestScores().some(isGrey);
 
 const translations = {
   nodata: t('map.tooltip.nodata'),
@@ -165,18 +170,22 @@ const nc = noscriptCopy[lang];
     </div>
   </div>
 
-  <!-- Legend: score scale + the "partial data" grey (formula v10: places without an official score) -->
-  <div class="absolute bottom-4 left-4 flex flex-wrap items-center gap-x-2 gap-y-1 max-w-[calc(100%-5rem)] z-10 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
+  <!-- Legend: score scale + the "partial data" grey (formula v10: places without an official score).
+       Top-right: the bottom-left corner sits under the floating Ko-fi "Support us" button, which
+       hid the scale's "less safe" end and the partial-data swatch. -->
+  <div class="absolute top-3 right-3 flex flex-wrap items-center justify-end gap-x-3 gap-y-1 max-w-[calc(100%-9rem)] z-10 bg-sand-50/90 dark:bg-sand-800/90 backdrop-blur-sm rounded-lg px-3 py-2 text-xs text-sand-600 dark:text-sand-300 border border-sand-200 dark:border-sand-700">
     <span class="inline-flex items-center gap-2">
       <span>{legendDanger}</span>
       <span class="w-20 sm:w-24 h-3 rounded" style="background: linear-gradient(to right, #9e3a2a, #d4b83c, #4a7fbf);" aria-hidden="true"></span>
       <span>{legendSafe}</span>
     </span>
-    <span class="inline-flex items-center gap-1.5">
-      {/* Same hex as PARTIAL_DATA_COLOR / PARTIAL_DATA_COLOR_DARK in map-utils.ts (the map fill). */}
-      <span class="w-3 h-3 rounded-sm border border-sand-300 dark:border-sand-500 bg-[#d6d0c7] dark:bg-[#6b645c]" aria-hidden="true"></span>
-      <span>{communityCopy[lang].partialDataTitle}</span>
-    </span>
+    {hasPartialData && (
+      <span class="inline-flex items-center gap-1.5">
+        {/* Same hex as PARTIAL_DATA_COLOR / PARTIAL_DATA_COLOR_DARK in map-utils.ts (the map fill). */}
+        <span class="w-3 h-3 rounded-sm border border-sand-300 dark:border-sand-500 bg-[#d6d0c7] dark:bg-[#6b645c]" aria-hidden="true"></span>
+        <span>{communityCopy[lang].partialDataTitle}</span>
+      </span>
+    )}
   </div>
 </div>
 

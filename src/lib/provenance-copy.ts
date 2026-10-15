@@ -32,14 +32,18 @@ export function getProvenanceCounts(country: ScoredCountry): ProvenanceCounts {
   return { advisoryCount, otherSourceCount };
 }
 
-/** Singular/plural "N other public dataset(s)" phrase, per language. */
+/**
+ * Singular/plural "N other public dataset(s)" phrase, per language. it/es/pt put the number after
+ * "other" ("altri 5 dataset", "otros 5 conjuntos", "outros 5 conjuntos"), zh says "另外5个": "5 otros
+ * conjuntos" / "5个其他" are not idiomatic.
+ */
 const otherSourceNoun: Record<Lang, { one: string; other: string }> = {
   en: { one: 'one other public dataset', other: '{n} other public datasets' },
-  it: { one: 'un altro dataset pubblico', other: '{n} altri dataset pubblici' },
-  es: { one: 'otro conjunto de datos público', other: '{n} otros conjuntos de datos públicos' },
+  it: { one: 'un altro dataset pubblico', other: 'altri {n} dataset pubblici' },
+  es: { one: 'otro conjunto de datos público', other: 'otros {n} conjuntos de datos públicos' },
   fr: { one: 'un autre jeu de données public', other: '{n} autres jeux de données publics' },
-  pt: { one: 'outro conjunto de dados público', other: '{n} outros conjuntos de dados públicos' },
-  zh: { one: '1个其他公开数据集', other: '{n}个其他公开数据集' },
+  pt: { one: 'outro conjunto de dados público', other: 'outros {n} conjuntos de dados públicos' },
+  zh: { one: '另外1个公开数据集', other: '另外{n}个公开数据集' },
   de: { one: 'einen weiteren öffentlichen Datensatz', other: '{n} weitere öffentliche Datensätze' },
 };
 

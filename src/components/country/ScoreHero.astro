@@ -102,12 +102,9 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
     </a>
   </div>
 
+  {/* No "last updated" line here: the page header already shows the snapshot date. */}
   <div class="mt-6 mx-auto max-w-xl text-left">
     <slot />
-  </div>
-
-  <div class="mt-4 text-sm text-sand-600 dark:text-sand-400">
-    <span>{t('country.last_updated').replace('{date}', formattedDate)}</span>
   </div>
 </section>
 ) : (
@@ -144,7 +141,9 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
         measured 5.13:1 before any fade) -- any alpha blend risks dropping
         below AA (2026-09 contrast fix). */}
     <span class="text-lg md:text-xl font-medium mt-1">
-      {scoreValue.toFixed(1)} {t('country.out_of')}
+      {/* One string: inside the conditional below, markup follows JSX whitespace rules and
+          `{a} {b}` would lose its space ("5.9out of 10"). */}
+      {`${scoreValue.toFixed(1)} ${t('country.out_of')}`}
     </span>
   </div>
 
@@ -171,7 +170,7 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
         <svg class="w-4 h-4" viewBox="0 0 16 16" fill="currentColor"><path d="M8 12l-4-6h8l-4 6z"/></svg>
       )}
       <span>
-        {scoreDelta.delta > 0 ? '+' : ''}{scoreDelta.delta.toFixed(1)} {t('country.score_delta_label')}
+        {`${scoreDelta.delta > 0 ? '+' : ''}${scoreDelta.delta.toFixed(1)} ${t('country.score_delta_label')}`}
       </span>
     </p>
   )}

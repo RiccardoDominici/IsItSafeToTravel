@@ -34,8 +34,13 @@ const activeAdvisories = ADVISORY_KEYS
   .filter(key => (advisories as any)[key])
   .map(key => ({ key, advisory: (advisories as any)[key]! }));
 
-const primaryAdvisories = sortByDate(activeAdvisories.filter(a => PRIMARY_KEYS.includes(a.key)));
-const additionalAdvisories = sortByDate(activeAdvisories.filter(a => !PRIMARY_KEYS.includes(a.key)));
+const primaryOnly = sortByDate(activeAdvisories.filter(a => PRIMARY_KEYS.includes(a.key)));
+const otherAdvisories = sortByDate(activeAdvisories.filter(a => !PRIMARY_KEYS.includes(a.key)));
+// When none of the four primary issuers covers a place (many formula v10 grey places: Åland has
+// only Poland's advisory), the visible grid used to be empty with a lone "Show all 1 advisories"
+// toggle. Promote up to four of the other advisories instead, so the page always shows what exists.
+const primaryAdvisories = primaryOnly.length > 0 ? primaryOnly : otherAdvisories.slice(0, 4);
+const additionalAdvisories = primaryOnly.length > 0 ? otherAdvisories : otherAdvisories.slice(4);
 const hasAny = activeAdvisories.length > 0;
 
 const showMoreText = t('country.advisory.show_more' as any).replace('{count}', String(activeAdvisories.length));
