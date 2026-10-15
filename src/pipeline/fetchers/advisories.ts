@@ -1,10 +1,20 @@
 import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../types.js';
-import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
+import { writeJson, readJson, getRawDir } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso2, COUNTRIES } from '../config/countries.js';
 import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
+import {
+  MAX_FALLBACK_AGE_DAYS,
+  daysBetween,
+  isFallbackFresh,
+  writeAdvisoryFallbackReport,
+  type AdvisoryIssuerStatus,
+} from './advisory-fallback.js';
+
+// Kept importable from here: tests and older callers read it from advisories.ts.
+export { daysBetween } from './advisory-fallback.js';
 
 /**
  * Minimum per-source country count expected from each tier-1 fetcher.
@@ -124,54 +134,29 @@ export async function fetchAdvisories(date: string): Promise<FetchResult> {
   // US: pass `errors` straight into the fetcher too, so each endpoint in its
   // internal json-api -> rss -> html chain can log its own failure reason even
   // when a later endpoint in the chain ends up succeeding (see US_ENDPOINTS).
-  const usResult = await runWithFloor('US', sourceKey.US, () =>
-    fetchUsAdvisories(rawDir, fetchedAt, currentYear, errors), errors, date);
-  allIndicators.push(...usResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, usResult.advisoryInfo);
+  const issuers: { label: string; key: AdvisorySourceKey; fetch: () => Promise<FetcherResult> }[] = [
+    { label: 'US', key: sourceKey.US, fetch: () => fetchUsAdvisories(rawDir, fetchedAt, currentYear, errors) },
+    { label: 'UK', key: sourceKey.UK, fetch: () => fetchUkAdvisories(rawDir, fetchedAt, currentYear) },
+    { label: 'CA', key: sourceKey.CA, fetch: () => fetchCaAdvisories(rawDir, fetchedAt, currentYear) },
+    { label: 'AU', key: sourceKey.AU, fetch: () => fetchAuAdvisories(rawDir, fetchedAt, currentYear) },
+  ];
+  const statuses: AdvisoryIssuerStatus[] = [];
+  for (const issuer of issuers) {
+    const { result, status } = await runWithFloor(issuer.label, issuer.key, issuer.fetch, errors, date);
+    allIndicators.push(...result.indicators);
+    mergeAdvisoryInfo(combinedAdvisoryInfo, result.advisoryInfo);
+    statuses.push(status);
+  }
 
-  const ukResult = await runWithFloor('UK', sourceKey.UK, () =>
-    fetchUkAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...ukResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, ukResult.advisoryInfo);
+  // Per-issuer fallback state (live / restored / dropped), read by the staleness monitor:
+  // a dropped issuer is a violation there and fires the ntfy alert (advisory-fallback.ts).
+  writeAdvisoryFallbackReport(rawDir, { date, maxAgeDays: MAX_FALLBACK_AGE_DAYS, issuers: statuses });
+  console.log(`[ADVISORIES] Fallback status: ${statuses.map(describeIssuerStatus).join('; ')}`);
 
-  const caResult = await runWithFloor('CA', sourceKey.CA, () =>
-    fetchCaAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...caResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, caResult.advisoryInfo);
-
-  const auResult = await runWithFloor('AU', sourceKey.AU, () =>
-    fetchAuAdvisories(rawDir, fetchedAt, currentYear), errors, date);
-  allIndicators.push(...auResult.indicators);
-  mergeAdvisoryInfo(combinedAdvisoryInfo, auResult.advisoryInfo);
-
-  // If all failed, try cached data
+  // Nothing live and no fallback young enough for any issuer. There used to be a second,
+  // whole-file fallback here (copy the newest advisories-parsed.json, whatever its age);
+  // it would bypass the age limit runWithFloor just applied per issuer, so it is gone.
   if (allIndicators.length === 0) {
-    const cached = findLatestCached('advisories-parsed.json');
-    if (cached) {
-      const cachedData = readJson<RawSourceData>(cached);
-      if (cachedData) {
-        console.warn(`[ADVISORIES] Using cached data from ${cached}`);
-        // A cache written before the I51 fix can still hold a ministry's page about its own country.
-        dropSelfAdvisoriesLogged('[ADVISORIES]', cachedData.indicators, {});
-        writeJson(join(rawDir, 'advisories-parsed.json'), cachedData);
-        // Also try to copy cached advisory info
-        const cachedInfoPath = cached.replace('advisories-parsed.json', 'advisories-info.json');
-        const cachedInfo = readJson<AdvisoryInfoMap>(cachedInfoPath);
-        if (cachedInfo) {
-          dropSelfAdvisoriesLogged('[ADVISORIES]', [], cachedInfo);
-          writeJson(join(rawDir, 'advisories-info.json'), cachedInfo);
-        }
-        const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
-        return {
-          source: 'advisories',
-          success: true,
-          countriesFound: uniqueCountries.size,
-          error: `Used cached data. Errors: ${errors.join('; ')}`,
-          fetchedAt: cachedData.fetchedAt,
-        };
-      }
-    }
-
     return {
       source: 'advisories',
       success: false,
@@ -217,24 +202,32 @@ function mergeAdvisoryInfo(target: AdvisoryInfoMap, source: AdvisoryInfoMap): vo
   }
 }
 
+type AdvisorySourceKey = 'us' | 'uk' | 'ca' | 'au';
+
 /**
- * Run a sub-fetcher with a per-source floor check.
+ * Run a sub-fetcher with a per-source floor check and an age-limited cache fallback.
  *
  * If the fetcher throws OR returns fewer than PER_SOURCE_FLOOR countries, we
  * log loudly and try to recover by loading the most-recent cached
  * `advisories-info.json` that actually contains data for this source. This way
  * a single-source HTML-structure regression (like the US one that ran silently
  * 2026-05-27 → 2026-06-02) cannot drop the column to all-null again.
+ *
+ * The fallback counts only for MAX_FALLBACK_AGE_DAYS after the reading was last
+ * fetched live (advisory-fallback.ts): an older reading is refused and the issuer
+ * is dropped for the day. Before this rule the CA column republished its
+ * 2026-10-01 levels for two weeks after travel.gc.ca changed.
+ *
+ * Exported for tests; `rawBase` points them at a throwaway archive.
  */
-type AdvisorySourceKey = 'us' | 'uk' | 'ca' | 'au';
-
-async function runWithFloor(
+export async function runWithFloor(
   label: string,
   sourceKey: AdvisorySourceKey,
   fn: () => Promise<FetcherResult>,
   errors: string[],
   todayDate: string,
-): Promise<FetcherResult> {
+  rawBase: string = join(process.cwd(), 'data', 'raw'),
+): Promise<{ result: FetcherResult; status: AdvisoryIssuerStatus }> {
   console.log(`[ADVISORIES] Fetching ${label} advisories...`);
   let result: FetcherResult = { indicators: [], advisoryInfo: {} };
   try {
@@ -245,84 +238,157 @@ async function runWithFloor(
     errors.push(`${label}: ${msg}`);
   }
 
-  const countries = new Set(result.indicators.map((i) => i.countryIso3));
-  console.log(`[ADVISORIES] ${label}: ${countries.size} countries`);
+  const liveCountries = new Set(result.indicators.map((i) => i.countryIso3)).size;
+  console.log(`[ADVISORIES] ${label}: ${liveCountries} countries`);
+  const status: AdvisoryIssuerStatus = {
+    issuer: sourceKey,
+    label,
+    state: 'live',
+    liveCountries,
+    restoredCountries: 0,
+    droppedCountries: 0,
+    lastLive: null,
+    ageDays: null,
+    maxAgeDays: MAX_FALLBACK_AGE_DAYS,
+  };
+  if (liveCountries >= PER_SOURCE_FLOOR) return { result, status };
 
-  if (countries.size < PER_SOURCE_FLOOR) {
-    console.error(
-      `[ADVISORIES] ${label} below per-source floor ` +
-        `(${countries.size} < ${PER_SOURCE_FLOOR}) — attempting per-source cache fallback`,
-    );
-    errors.push(`${label}: below floor (${countries.size} < ${PER_SOURCE_FLOOR})`);
+  console.error(
+    `[ADVISORIES] ${label} below per-source floor ` +
+      `(${liveCountries} < ${PER_SOURCE_FLOOR}) — attempting per-source cache fallback`,
+  );
+  errors.push(`${label}: below floor (${liveCountries} < ${PER_SOURCE_FLOOR})`);
 
-    const cached = findLatestCachedSourceInfo(sourceKey);
-    if (cached) {
-      console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
-      const restored = restoreFromCachedInfo(cached.data, sourceKey, cached.date);
-      // Merge: keep any indicators we did get (better than nothing), and
-      // overlay the cached ones for countries we missed.
-      const have = new Set(result.indicators.map((i) => i.countryIso3));
-      for (const ind of restored.indicators) {
-        if (!have.has(ind.countryIso3)) result.indicators.push(ind);
-      }
-      // Track the OLDEST restoredFrom date among what we just merged in, so the
-      // staleness we report reflects the true last-genuinely-live date even
-      // after this same fallback has chained forward across many days.
-      let oldestRestoredFrom: string | null = null;
-      for (const [iso3, info] of Object.entries(restored.advisoryInfo)) {
-        if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
-        // Only fill in this specific source if missing
-        if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
-          result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
-          const rf = info[sourceKey]!.restoredFrom;
-          if (rf && (!oldestRestoredFrom || rf < oldestRestoredFrom)) oldestRestoredFrom = rf;
-        }
-      }
-      const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
-      console.warn(
-        `[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`,
-      );
-      if (oldestRestoredFrom) {
-        const ageDays = daysBetween(todayDate, oldestRestoredFrom);
-        console.error(
-          `[ADVISORIES] ${label}: restored data last genuinely live on ${oldestRestoredFrom} (${ageDays}d stale)`,
-        );
-        errors.push(`${label}: restored from cache dated ${oldestRestoredFrom} (${ageDays}d stale)`);
-      }
-    } else {
-      console.error(`[ADVISORIES] ${label}: no cached info available for fallback`);
-    }
+  const cached = findLatestCachedSourceInfo(sourceKey, todayDate, rawBase);
+  if (!cached) {
+    status.state = 'dropped';
+    status.reason = 'no cached reading';
+    console.error(`[ADVISORIES] ${label}: no cached info available for fallback — ${label} dropped for ${todayDate}`);
+    errors.push(`${label}: dropped (no cached reading to fall back on)`);
+    return { result, status };
   }
 
-  return result;
+  console.warn(`[ADVISORIES] ${label}: using cached ${sourceKey} info from ${cached.path}`);
+  const fallback = selectFallback(cached.data, sourceKey, cached.date, todayDate);
+
+  // Merge: keep any indicators we did get (better than nothing), and
+  // overlay the cached ones for countries we missed.
+  const have = new Set(result.indicators.map((i) => i.countryIso3));
+  let restoredCountries = 0;
+  for (const ind of fallback.fresh.indicators) {
+    if (have.has(ind.countryIso3)) continue;
+    result.indicators.push(ind);
+    restoredCountries++;
+  }
+  for (const [iso3, info] of Object.entries(fallback.fresh.advisoryInfo)) {
+    if (!result.advisoryInfo[iso3]) result.advisoryInfo[iso3] = {};
+    // Only fill in this specific source if missing
+    if (!result.advisoryInfo[iso3][sourceKey] && info[sourceKey]) {
+      result.advisoryInfo[iso3][sourceKey] = info[sourceKey];
+    }
+  }
+  status.restoredCountries = restoredCountries;
+  status.droppedCountries = fallback.staleIso3.length;
+
+  if (fallback.staleIso3.length > 0) {
+    const ageDays = daysBetween(todayDate, fallback.newestStale!);
+    console.error(
+      `[ADVISORIES] ${label}: FALLBACK TOO OLD — ${fallback.staleIso3.length} cached countries last live on ` +
+        `${fallback.newestStale} (${ageDays}d > ${MAX_FALLBACK_AGE_DAYS}d) not restored`,
+    );
+    errors.push(
+      `${label}: ${fallback.staleIso3.length} cached readings from ${fallback.newestStale} refused ` +
+        `(${ageDays}d old, max ${MAX_FALLBACK_AGE_DAYS}d)`,
+    );
+  }
+
+  if (fallback.fresh.indicators.length === 0) {
+    status.state = 'dropped';
+    status.reason = fallback.staleIso3.length > 0 ? 'fallback too old' : 'no cached reading';
+    status.lastLive = fallback.newestStale;
+    status.ageDays = fallback.newestStale ? daysBetween(todayDate, fallback.newestStale) : null;
+    console.error(
+      `[ADVISORIES] ${label}: dropped for ${todayDate} (${status.reason}` +
+        `${status.lastLive ? `, last live ${status.lastLive}` : ''}); ${liveCountries} live countries kept`,
+    );
+    return { result, status };
+  }
+
+  // The OLDEST origin among what was merged, so the staleness reported reflects the true
+  // last-genuinely-live date even after this fallback has chained forward across days.
+  status.state = 'restored';
+  status.lastLive = fallback.oldestFresh;
+  status.ageDays = fallback.oldestFresh ? daysBetween(todayDate, fallback.oldestFresh) : null;
+  const finalCountries = new Set(result.indicators.map((i) => i.countryIso3));
+  console.warn(`[ADVISORIES] ${label}: after cache fallback ${finalCountries.size} countries`);
+  console.error(
+    `[ADVISORIES] ${label}: restored data last genuinely live on ${status.lastLive} ` +
+      `(${status.ageDays}d stale, counts until ${MAX_FALLBACK_AGE_DAYS}d)`,
+  );
+  errors.push(`${label}: restored from cache dated ${status.lastLive} (${status.ageDays}d stale)`);
+  return { result, status };
 }
 
-/** Whole-day difference (laterYmd - earlierYmd) between two YYYY-MM-DD strings,
- *  computed via Date.UTC so it never shifts with the running process's timezone. */
-export function daysBetween(laterYmd: string, earlierYmd: string): number {
-  const toUtcMs = (ymd: string): number => {
-    const [y, m, d] = ymd.split('-').map(Number);
-    return Date.UTC(y, m - 1, d);
-  };
-  return Math.round((toUtcMs(laterYmd) - toUtcMs(earlierYmd)) / 86_400_000);
+/** One "CA dropped (fallback too old, last live 2026-10-01, 14d)" fragment of the status log line. */
+function describeIssuerStatus(s: AdvisoryIssuerStatus): string {
+  if (s.state === 'live') return `${s.label} live (${s.liveCountries})`;
+  const since = s.lastLive ? `, last live ${s.lastLive}, ${s.ageDays}d` : '';
+  if (s.state === 'restored') return `${s.label} restored (${s.restoredCountries} countries${since})`;
+  return `${s.label} DROPPED (${s.reason}${since}, max ${s.maxAgeDays}d)`;
 }
 
 /**
- * Find the most recent cached `advisories-info.json` (across data/raw/YYYY-MM-DD/)
- * that actually contains non-null data for the given source key. We skip
- * cached files that already have all-null for this source — otherwise we'd
- * happily "restore" a broken cache.
+ * Split a cached info map's entries for one source into those still young enough to
+ * restore (last live at most `maxAgeDays` before `runDate`) and those refused. An
+ * entry's last live date is its propagated `restoredFrom`, else the cache's own date.
+ * Pure.
+ */
+export function selectFallback(
+  cached: AdvisoryInfoMap,
+  sourceKey: AdvisorySourceKey,
+  cacheDate: string,
+  runDate: string,
+  maxAgeDays: number = MAX_FALLBACK_AGE_DAYS,
+): { fresh: FetcherResult; staleIso3: string[]; oldestFresh: string | null; newestStale: string | null } {
+  const restored = restoreFromCachedInfo(cached, sourceKey, cacheDate, Number(runDate.slice(0, 4)));
+  const fresh: FetcherResult = { indicators: [], advisoryInfo: {} };
+  const staleIso3: string[] = [];
+  let oldestFresh: string | null = null;
+  let newestStale: string | null = null;
+
+  for (const ind of restored.indicators) {
+    const entry = restored.advisoryInfo[ind.countryIso3]?.[sourceKey];
+    const lastLive = entry?.restoredFrom ?? cacheDate;
+    if (isFallbackFresh(lastLive, runDate, maxAgeDays)) {
+      fresh.indicators.push(ind);
+      if (entry) fresh.advisoryInfo[ind.countryIso3] = { [sourceKey]: entry } as AdvisoryInfoMap[string];
+      if (!oldestFresh || lastLive < oldestFresh) oldestFresh = lastLive;
+    } else {
+      staleIso3.push(ind.countryIso3);
+      if (!newestStale || lastLive > newestStale) newestStale = lastLive;
+    }
+  }
+  return { fresh, staleIso3, oldestFresh, newestStale };
+}
+
+/**
+ * Find the most recent cached `advisories-info.json` (across data/raw/YYYY-MM-DD/,
+ * on or before the run date) that actually contains non-null data for the given
+ * source key. We skip cached files that already have all-null for this source —
+ * otherwise we'd happily "restore" a broken cache. Age is not judged here:
+ * selectFallback applies the limit per entry.
  */
 function findLatestCachedSourceInfo(
   sourceKey: AdvisorySourceKey,
+  runDate: string,
+  rawBase: string,
 ): { path: string; date: string; data: AdvisoryInfoMap } | null {
-  const rawBase = join(process.cwd(), 'data', 'raw');
   // Scan in date order ourselves — `findLatestCached` would stop at the most
   // recent file, but we want the most recent file whose data for THIS source
   // is non-empty (skipping cached snapshots that already had the regression).
   if (!existsSync(rawBase)) return null;
   const dateDirs = readdirSync(rawBase)
-    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d <= runDate)
     .sort()
     .reverse();
   for (const dateDir of dateDirs) {
@@ -351,12 +417,12 @@ function restoreFromCachedInfo(
   cached: AdvisoryInfoMap,
   sourceKey: AdvisorySourceKey,
   cacheDate: string,
+  year: number,
 ): FetcherResult {
   const indicators: RawIndicator[] = [];
   const advisoryInfo: AdvisoryInfoMap = {};
   const indicatorName = `advisory_level_${sourceKey}` as const;
   const sourceTag = `advisories_${sourceKey}`;
-  const year = new Date().getFullYear();
 
   for (const [iso3, info] of Object.entries(cached)) {
     const entry = info?.[sourceKey];
