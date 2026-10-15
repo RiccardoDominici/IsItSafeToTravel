@@ -5,7 +5,8 @@ import type { ScoreStatus } from '../types.js';
  *
  * A country with fewer than `minSources` coverage sources (after the max-age filter, counted
  * by coverage.ts coverageSourceCount exactly like the site's hasSufficientData: one entry of
- * ScoredCountry.sources per source key, the disaster-alert feeds GDACS/ReliefWeb excluded)
+ * ScoredCountry.sources per source key, the disaster-alert feeds GDACS/ReliefWeb excluded; since
+ * 2026-10-15 the list holds only sources that supply a value the score uses, I29)
  * gets no official score: scoreStatus 'insufficient_data'.
  *
  * DANGER GUARD (invariant, not a tunable): a country showing any sign of acute danger is

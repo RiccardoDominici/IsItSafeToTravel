@@ -2,7 +2,7 @@ import { normalizeIndicators } from './normalize.js';
 import { freshnessWeight } from './freshness.js';
 import { applyMaxAge, formatMaxAgeLog } from './max-age.js';
 import { decideScoreStatus } from './status.js';
-import { coverageSourceCount } from './coverage.js';
+import { ADVISORY_SOURCE, coverageSourceCount, sourcesSupplyingScoredValues } from './coverage.js';
 import { computeCommunityComponent, type CommunityEntry, type CommunityLookup } from './community.js';
 import { COUNTRIES, getCountryByIso3 } from '../config/countries.js';
 import { getRegion } from '../../lib/regions.js';
@@ -57,6 +57,16 @@ export const PILLAR_CALIBRATION_MIN = 0.001;
  * 11. bounded community adjustment, score = clamp(S_data + adj, 1, 10) (community.ts).
  * There is no global calibration of the final score.
  * Without those fields (pre-v10 or synthetic configs) the output equals v9.1 exactly.
+ *
+ * Formula v10.1 (2026-10-15 consistency audit, scripts/calibration/consistency/, issues I10, I42,
+ * I49, I66; each change gated on the audit constraints, the community votes and the 2026-03
+ * reference set by scripts/calibration/compare-formulas.ts) adds, again behind optional fields:
+ * 12. severeLevel3Weight: level 3 counts at half weight in the severe modifier (advisorySeverity);
+ * 13. naturalHazardCoping: the natural-hazards indicator is exposure x lack of coping capacity
+ *     (naturalHazardRisk), so a well-prepared exposed country is not ranked like an unprepared one;
+ * 14. ucdpTailFloor: the conflict-death curve keeps falling past D_MAX (ucdpConflictValue);
+ * and, as a value change only, muClampMax 1.0 (the prior's 0.60 ceiling removed, I42).
+ * Without those fields the output equals v10 exactly.
  *
  * All formula constants live in weightsConfig.formulaV9 (single source of truth);
  * their VALUES are frozen and must equal the prototype exactly — see
@@ -171,19 +181,36 @@ function rampFactor(nAdv: number, minNAdv: number, width: number): number {
 }
 
 /**
+ * Severity weight of one (rebased) advisory level in the severe-advisory modifier. Level 4
+ * ("do not travel") weighs 1; level 3 ("reconsider travel") weighs `level3Weight` (formula
+ * v10.1: 0.5, halfway between "exercise caution" and "do not travel"); levels 1-2 weigh 0.
+ */
+export function advisorySeverity(level: number, level3Weight: number): number {
+  if (level === 4) return 1;
+  if (level === 3) return level3Weight;
+  return 0;
+}
+
+/**
  * Advisory consensus A, severeShare/severeEff and rho_A for one country.
  * FROZEN math (SHIP-SPEC 1.1 item 1 / prototype-scorer-v91.mjs advisoryConsensus()).
  * v9.1 (D4): severeEff is additionally gated by rampFactor(nAdv, severeMinNAdv,
  * gateRampWidth) — a single spurious/thin (nAdv<=1) L4 record contributes ZERO
  * severe modifier regardless of N_SEV damping.
+ * v10.1 (I10): severeEff is driven by the tier-weighted SEVERITY share (advisorySeverity:
+ * level 3 counts at severeLevel3Weight), so a "reconsider travel" majority moves the score
+ * (UAE, Saudi Arabia, Cuba had 50-80% of governments at level 3 and barely moved in v10).
+ * `severeShare` stays the level-4-only share: the danger guard (status.ts) reads it.
  */
 function advisoryConsensus(advisoryLevels: Record<string, number>, f9: FormulaV9Config): AdvisoryConsensusResult {
   const excluded = new Set(f9.frozenExcludedSources);
   const rebase = new Set(f9.advisoryRebase);
+  const level3Weight = f9.severeLevel3Weight ?? 0;
 
   let numA = 0;
   let denA = 0;
   let numSevere = 0;
+  let numSeverity = 0;
   let nAdv = 0;
 
   for (const [code, rawLevel] of Object.entries(advisoryLevels)) {
@@ -196,11 +223,13 @@ function advisoryConsensus(advisoryLevels: Record<string, number>, f9: FormulaV9
     denA += tier;
     numA += (tier * (4 - L)) / 3;
     if (L === 4) numSevere += tier;
+    numSeverity += tier * advisorySeverity(L, level3Weight);
   }
 
   const A = denA > 0 ? numA / denA : null;
   const severeShare = denA > 0 ? numSevere / denA : 0;
-  const severeEffRaw = severeShare * (nAdv / (nAdv + f9.N_SEV));
+  const severityShare = denA > 0 ? numSeverity / denA : 0;
+  const severeEffRaw = severityShare * (nAdv / (nAdv + f9.N_SEV));
   const severeEff = severeEffRaw * rampFactor(nAdv, f9.severeMinNAdv, f9.gateRampWidth);
   const rhoA = nAdv / (nAdv + f9.rhoADenom);
 
@@ -234,6 +263,62 @@ interface SubIndicator {
 interface PillarBuildResult {
   p: number | null;
   n: number;
+}
+
+/**
+ * Formula v10.1 (I66): UCDP conflict-death value inside the conflict pillar. The same log curve
+ * as normalize.ts, 1 - log10(1+d)/log10(1+D_MAX), but it keeps falling past D_MAX (down to
+ * `floor`) instead of flattening at 0: in v10 a full-scale war (Sudan, 75,044 deaths in 2025)
+ * scored the same as one at the 24,000-death knee. Below D_MAX the value is unchanged; on
+ * 2026-10-15 only Sudan and Ukraine were past it.
+ */
+export function ucdpConflictValue(deaths: number, dMax: number, floor: number): number {
+  const v = 1 - Math.log10(1 + Math.max(0, deaths)) / Math.log10(1 + dMax);
+  return Math.max(floor, Math.min(1, v));
+}
+
+/**
+ * Formula v10.1 (I49): natural-hazard risk for a visitor, on the 0-1 safety scale. INFORM
+ * combines its dimensions geometrically (risk = hazard x vulnerability x lack of coping
+ * capacity); a visitor faces the hazard and depends on the country's capacity to cope
+ * (disaster-risk reduction, institutions, infrastructure, access to care), so the pair used is
+ * exposure x lack of coping capacity: 1 - sqrt(exposure x coping)/10, both on INFORM's 0-10
+ * scale. Exposure 8.3 with coping 0.9 (Japan) is a smaller risk than 4.9 with 3.4 (Italy).
+ */
+export function naturalHazardRisk(exposure: number, lackOfCoping: number): number {
+  return clamp(1 - Math.sqrt(Math.max(0, exposure) * Math.max(0, lackOfCoping)) / 10, 0, 1);
+}
+
+/**
+ * Formula v10.1 (I49) fail-safe: the coping column must cover at least this share of the places
+ * that have a natural-hazard exposure. Below it, those places would quietly score exposure only
+ * (naturalHazardRisk is skipped when the coping row is missing), e.g. after an INFORM fallback to
+ * a per-date cache written before the column existed. The same ~90% floor blocks publication in
+ * the pipeline's core-source quality guard (.github/workflows/data-pipeline.yml).
+ */
+export const MIN_COPING_COVERAGE_SHARE = 0.9;
+
+export interface CopingCoverage {
+  /** Places with an inform_natural row. */
+  natural: number;
+  /** Of those, places with a coping row as well. */
+  coping: number;
+  ok: boolean;
+}
+
+/** How many places with a natural-hazard exposure also carry the coping column, across all sources. */
+export function copingCoverage(data: ReadonlyMap<string, RawSourceData>, copingIndicator: string): CopingCoverage {
+  const natural = new Set<string>();
+  const coping = new Set<string>();
+  for (const source of data.values()) {
+    for (const ind of source.indicators) {
+      const iso3 = ind.countryIso3.toUpperCase();
+      if (ind.indicatorName === 'inform_natural') natural.add(iso3);
+      else if (ind.indicatorName === copingIndicator && Number.isFinite(ind.value)) coping.add(iso3);
+    }
+  }
+  const covered = [...natural].filter((iso3) => coping.has(iso3)).length;
+  return { natural: natural.size, coping: covered, ok: covered >= MIN_COPING_COVERAGE_SHARE * natural.size };
 }
 
 /** p_i = sub-weight-renormalized mean over PRESENT indicators; n_i = sum of rho over present indicators. */
@@ -399,6 +484,18 @@ export function computeCountryScoreDetailed(
   const f9 = weightsConfig.formulaV9 ?? DEFAULT_FORMULA_V9;
   const now = Date.now();
 
+  // Formula v10.1 (I49): the natural-hazards indicator scores exposure COMBINED with INFORM's
+  // lack of coping capacity (naturalHazardRisk). rawValue stays the exposure the page shows; the
+  // coping column is an engine input only (never scored or listed, like wb_population). The
+  // normalized value is replaced, so the "weakest indicator" ordering reads the risk too.
+  if (f9.naturalHazardCoping) {
+    const natural = normalizedByName.get('inform_natural');
+    const coping = rawByName.get(f9.naturalHazardCoping);
+    if (natural && coping && Number.isFinite(coping.value)) {
+      natural.normalizedValue = naturalHazardRisk(natural.rawValue, coping.value);
+    }
+  }
+
   // --- Advisory consensus (drives the synthetic "A" conflict indicator + prior nudge) ---
   const advisoryLevels = extractAdvisoryLevels(advisories);
   const { A, severeShare, severeEff, nAdv, rhoA } = advisoryConsensus(advisoryLevels, f9);
@@ -448,7 +545,13 @@ export function computeCountryScoreDetailed(
       }
 
       if (ns) {
-        subIndicators.push({ value: ns.normalizedValue, subweight, rho });
+        // v10.1 (I66): past D_MAX the conflict-death value keeps falling inside the pillar; the
+        // published normalizedValue (an ordering hint for the UI) stays clamped to [0, 1].
+        const value =
+          indName === 'ucdp_conflict_deaths' && f9.ucdpTailFloor !== undefined
+            ? ucdpConflictValue(ns.rawValue, f9.D_MAX, f9.ucdpTailFloor)
+            : ns.normalizedValue;
+        subIndicators.push({ value, subweight, rho });
         presentIndicators.push(ns);
         foundCount++;
       } else {
@@ -484,9 +587,17 @@ export function computeCountryScoreDetailed(
   void composite; // retained for potential future diagnostics; not part of ScoredCountry today
 
   // --- Formula v10: official status (grey rule + danger guard), calibration, community ---
-  // `sources` was built by computeAllScores from the max-age-filtered data; coverageSourceCount
-  // drops the disaster-alert feeds (coverage.ts), the same count the site's hasSufficientData uses.
-  const coverageSources = coverageSourceCount(sources);
+  // `sources` was built by computeAllScores from the max-age-filtered data. Only the sources that
+  // supplied a value the pillars used stay (coverage.ts sourcesSupplyingScoredValues, I29: a World
+  // Bank entry held up by the population alone is dropped), and that list is what gets published,
+  // so the floor, the rankings and the page's source list count the same sources.
+  // coverageSourceCount then drops the disaster-alert feeds, as the site's hasSufficientData does.
+  const scoredSources = new Set<string>(
+    Object.values(presentIndicatorsByPillar).flatMap((inds) => (inds ?? []).map((i) => i.source)),
+  );
+  if (A !== null) scoredSources.add(ADVISORY_SOURCE);
+  const usedSources = sourcesSupplyingScoredValues(sources, scoredSources);
+  const coverageSources = coverageSourceCount(usedSources);
   const level4Governments = Object.values(advisoryLevels).filter((level) => level === 4).length;
   const ucdpRow = rawByName.get('ucdp_conflict_deaths');
   const statusDecision = decideScoreStatus(coverageSources, f9.minSources, {
@@ -535,7 +646,7 @@ export function computeCountryScoreDetailed(
     dataCompleteness: Math.round(overallCompleteness * 1000) / 1000,
     confidence,
     lastUpdated: new Date().toISOString(),
-    sources,
+    sources: usedSources,
   };
 
   return {
@@ -573,6 +684,8 @@ export const INDICATOR_SOURCE_MAP: Record<string, string> = {
   inform_epidemic: 'inform',
   inform_health_access: 'inform',
   inform_governance: 'inform',
+  // Formula v10.1: engine input only (combined with inform_natural), never scored on its own.
+  inform_coping: 'inform',
   ucdp_conflict_deaths: 'ucdp',
   advisory_level_us: 'advisories_us',
   advisory_level_uk: 'advisories_uk',
@@ -648,8 +761,9 @@ export const SOURCE_CATALOG: Record<string, { url: string; description: string }
   },
   inform: {
     url: 'https://drmkc.jrc.ec.europa.eu/inform-index',
-    // Formula v10 reads four exact INFORM columns (SPEC §2).
-    description: 'INFORM Risk Index (European Commission JRC) -- natural hazards, epidemic risk, access to health care and governance',
+    // Formula v10 reads four exact INFORM columns (SPEC §2); v10.1 adds Lack of Coping Capacity,
+    // which weighs the natural-hazard exposure (engine.ts naturalHazardRisk).
+    description: 'INFORM Risk Index (European Commission JRC) -- natural hazards weighed by coping capacity, epidemic risk, access to health care and governance',
   },
   reliefweb: {
     url: 'https://reliefweb.int/',
@@ -810,6 +924,22 @@ export function computeAllScores(
   const maxAge = applyMaxAge(rawDataBySource, runYear, f9.maxAgeYears);
   for (const line of formatMaxAgeLog(maxAge)) console.log(`  ${line}`);
   const scoringData = maxAge.data;
+
+  // Formula v10.1 (I49): never let the natural-hazards pillar fall back to exposure only without
+  // saying so. Logged as an error; the pipeline's quality guard refuses to publish such a day.
+  if (f9.naturalHazardCoping) {
+    const coverage = copingCoverage(scoringData, f9.naturalHazardCoping);
+    if (coverage.ok) {
+      console.log(`  [INFORM] Coping capacity (${f9.naturalHazardCoping}) covers ${coverage.coping}/${coverage.natural} places with a natural-hazard exposure`);
+    } else {
+      console.error(
+        `  [INFORM] ERROR: coping capacity (${f9.naturalHazardCoping}) covers only ${coverage.coping} of the ` +
+          `${coverage.natural} places with a natural-hazard exposure (< ${MIN_COPING_COVERAGE_SHARE * 100}%): their ` +
+          'natural-hazards pillar scores exposure only. Check the INFORM parser or the cached inform-parsed.json; ' +
+          'the pipeline quality guard blocks this publication.',
+      );
+    }
+  }
 
   // Merge all indicators
   const allIndicators: RawIndicator[] = [];

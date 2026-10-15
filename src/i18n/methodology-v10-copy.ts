@@ -5,7 +5,8 @@
  *  - the rules that decide what counts (latest edition only, 5-year maximum age, per-pillar
  *    scale continuity, the grey "partial data" rule with its danger guard, the community rule,
  *    the honest update cadence),
- *  - the dated changelog entry for v10 (2026-10-15).
+ *  - the dated changelog entries: v10.1 (2026-10-16, the consistency-audit changes) above v10
+ *    (2026-10-15).
  *
  * WHY a module instead of ui.ts keys: the rules are lists of (title, text) pairs and the changelog
  * a list of items; ui.ts holds flat strings only and is a merge hot spot. Same precedent as
@@ -19,6 +20,12 @@ import type { Lang } from './ui';
 
 /** Release date of formula v10 (changelog). */
 export const FORMULA_V10_RELEASE_DATE = '2026-10-15';
+
+/**
+ * Release date of formula v10.1 (changelog): the first scheduled pipeline run after the merge of
+ * feat/formula-v10.1. Move it if the merge lands later.
+ */
+export const FORMULA_V101_RELEASE_DATE = '2026-10-16';
 
 export interface MethodologyRule {
   /** Anchor id ("grey-rule" is linked from the grey hero of every partial-data page). */
@@ -37,6 +44,9 @@ export interface MethodologyV10Copy {
   /** {date} = the localized release date. */
   changelogEntryTitle: string;
   changelogItems: string[];
+  /** The v10.1 entry, shown above the v10 one. {date} = the localized v10.1 release date. */
+  changelogV101EntryTitle: string;
+  changelogV101Items: string[];
   /** Source cells of the indicator table. {edition} is filled from the data where known. */
   sources: {
     gpi: string;
@@ -62,7 +72,7 @@ const NBSP = ' ';
 
 export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
   en: {
-    indicatorsTitle: 'Formula v10: indicators, sources and editions',
+    indicatorsTitle: 'Formula v10.1: indicators, sources and editions',
     indicatorsIntro:
       'Each pillar combines the indicators below. We always use the latest edition of each source, and every country page shows each indicator with its own value, unit and data year.',
     table: { pillar: 'Pillar', indicator: 'Indicator', source: 'Source and edition', licence: 'Licence' },
@@ -71,11 +81,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Latest edition only', text: 'When a source publishes a new edition, the previous one weighs zero: editions are never blended, and old values are never faded in.' },
       { id: 'max-age', title: 'Five-year maximum age', text: 'An indicator whose data year is more than five years before the current year counts as missing, so it can neither raise nor lower a score. Government advisories are current by definition; population figures, used only to judge how reliable a homicide rate is, are exempt.' },
       { id: 'scale-continuity', title: 'Scale continuity', text: "Changing the indicators inside a pillar changes the spread of its values, and with it the pillar's real weight. The health, governance and natural-hazards pillars are therefore mapped back onto their previous scale with a fixed linear map, computed once on 14 October 2026 and never refitted." },
-      { id: 'grey-rule', title: 'Partial data: no score below four sources', text: 'A place covered by fewer than four independent sources gets no official score. Disaster alerts (GDACS, ReliefWeb) do not count toward the four, because they cover a place only while a disaster is under way. Its page says “Partial data”, lists the sources we do have and asks travellers who have been there how safe they felt. Danger always overrides this: a place is scored when at least three governments advise against all travel, when do-not-travel advisories dominate, or when the Uppsala Conflict Data Program recorded conflict deaths there in the latest year.' },
+      { id: 'grey-rule', title: 'Partial data: no score below four sources', text: 'A place covered by fewer than four independent sources gets no official score. Disaster alerts (GDACS, ReliefWeb) do not count toward the four, because they cover a place only while a disaster is under way. Nor does a source that supplies no value used in the score, such as a World Bank entry with only a population figure. Its page says “Partial data”, lists the sources we do have and asks travellers who have been there how safe they felt. Danger always overrides this: a place is scored when at least three governments advise against all travel, when do-not-travel advisories dominate, or when the Uppsala Conflict Data Program recorded conflict deaths there in the latest year.' },
       { id: 'community-rule', title: 'Community votes', text: "Travellers' votes count once a country has at least 30 votes from at least three countries of origin in the last 180 days, and no single country of origin may carry more than half of the weight. The adjustment is the gap between the community rating and the data score, scaled down when there are few effective votes, and capped at ±1.0 points." },
       { id: 'update-cadence', title: 'How often things change', text: 'The score is recalculated every day. Government advisories and disaster alerts change daily; the international indices (Global Peace Index, INFORM, V-Dem, World Bank, UCDP) are published once or twice a year, so most pillar values stay the same between two editions.' },
     ],
     changelogTitle: 'Changelog',
+    changelogV101EntryTitle: '{date}: formula v10.1',
+    changelogV101Items: [
+      'Government advice to reconsider travel (level 3) now lowers a score too, at half the weight of advice against all travel (level 4). Before, only level 4 counted, so places where most governments advise reconsidering travel, such as the Gulf states and Cuba, kept a moderate or good score.',
+      'Natural hazards: the exposure is now combined with the country’s capacity to cope (INFORM’s lack of coping capacity), the way INFORM itself rates risk. A well-prepared country such as Japan no longer ranks below a less exposed but less prepared one.',
+      'Armed conflict: the conflict-death scale no longer stops at 24,000 deaths a year, so a full-scale war (Sudan, Ukraine) ranks below a smaller one.',
+      'Missing data: when a pillar has little or no data, its cautious estimate can now rise as far as unanimous level-1 advisories justify, instead of stopping at 6 out of 10 (Liechtenstein, for example).',
+      'A source counts toward the four-source minimum, and is listed on a page, only when it supplies a value used in the score. Nine places whose fourth source was a World Bank population figure (Brunei, Micronesia, Kiribati, the Marshall Islands, Nauru, Palau, Tonga, Tuvalu and Samoa) now show partial data.',
+      'Each change was tested alone and together against verified consistency checks, travellers’ votes and an independent expert reference set; candidates that failed, such as more weight on homicide or on the crime pillar, were not adopted.',
+    ],
     changelogEntryTitle: '{date}: formula v10',
     changelogItems: [
       'Removed indicators a traveller cannot act on: child mortality, PM2.5 air pollution, and a flood-risk column that was labelled as climate risk. The health pillar now reads INFORM’s access to health care instead of a column that actually measured conflict hazard.',
@@ -105,7 +124,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   it: {
-    indicatorsTitle: 'Formula v10: indicatori, fonti ed edizioni',
+    indicatorsTitle: 'Formula v10.1: indicatori, fonti ed edizioni',
     indicatorsIntro:
       'Ogni pilastro combina gli indicatori qui sotto. Usiamo sempre l’edizione più recente di ogni fonte, e ogni pagina paese mostra ciascun indicatore con il suo valore, la sua unità e il suo anno di riferimento.',
     table: { pillar: 'Pilastro', indicator: 'Indicatore', source: 'Fonte ed edizione', licence: 'Licenza' },
@@ -114,11 +133,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Solo l’edizione più recente', text: 'Quando una fonte pubblica una nuova edizione, quella precedente pesa zero: le edizioni non vengono mai mescolate e i valori vecchi non vengono sfumati nel tempo.' },
       { id: 'max-age', title: 'Età massima di cinque anni', text: 'Un indicatore il cui anno di riferimento è di oltre cinque anni prima dell’anno in corso conta come dato mancante: non può né alzare né abbassare un punteggio. Gli avvisi governativi sono attuali per definizione; i dati sulla popolazione, usati solo per stimare quanto sia affidabile un tasso di omicidi, sono esclusi dalla regola.' },
       { id: 'scale-continuity', title: 'Continuità di scala', text: 'Cambiare gli indicatori di un pilastro cambia la dispersione dei suoi valori, e con essa il peso reale del pilastro. Per questo i pilastri salute, governance e rischi naturali vengono riportati sulla scala precedente con una trasformazione lineare fissa, calcolata una sola volta il 14 ottobre 2026 e mai più ricalibrata.' },
-      { id: 'grey-rule', title: 'Dati parziali: niente punteggio sotto le quattro fonti', text: 'Una destinazione coperta da meno di quattro fonti indipendenti non riceve un punteggio ufficiale. Le allerte per disastri (GDACS, ReliefWeb) non contano tra le quattro, perché coprono una destinazione solo durante un disastro in corso. La sua pagina indica «Dati parziali», elenca le fonti disponibili e chiede a chi ci è stato quanto si sentiva al sicuro. Il pericolo prevale sempre: la destinazione riceve comunque un punteggio se almeno tre governi sconsigliano qualsiasi viaggio, se prevalgono gli avvisi di non partire o se l’Uppsala Conflict Data Program ha registrato morti in conflitti armati nell’ultimo anno.' },
+      { id: 'grey-rule', title: 'Dati parziali: niente punteggio sotto le quattro fonti', text: 'Una destinazione coperta da meno di quattro fonti indipendenti non riceve un punteggio ufficiale. Le allerte per disastri (GDACS, ReliefWeb) non contano tra le quattro, perché coprono una destinazione solo durante un disastro in corso. Né conta una fonte che non fornisce alcun valore usato nel punteggio, come una voce della Banca Mondiale con il solo dato sulla popolazione. La sua pagina indica «Dati parziali», elenca le fonti disponibili e chiede a chi ci è stato quanto si sentiva al sicuro. Il pericolo prevale sempre: la destinazione riceve comunque un punteggio se almeno tre governi sconsigliano qualsiasi viaggio, se prevalgono gli avvisi di non partire o se l’Uppsala Conflict Data Program ha registrato morti in conflitti armati nell’ultimo anno.' },
       { id: 'community-rule', title: 'Voti della community', text: 'I voti dei viaggiatori contano quando un paese raccoglie almeno 30 voti da almeno tre paesi di provenienza negli ultimi 180 giorni, e nessun paese di provenienza può pesare più della metà. La correzione è la differenza tra la valutazione della community e il punteggio dai dati, ridotta quando i voti effettivi sono pochi, con un limite di ±1,0 punti.' },
       { id: 'update-cadence', title: 'Ogni quanto cambiano i dati', text: 'Il punteggio viene ricalcolato ogni giorno. Gli avvisi governativi e le allerte per disastri cambiano ogni giorno; gli indici internazionali (Global Peace Index, INFORM, V-Dem, Banca Mondiale, UCDP) escono una o due volte l’anno, quindi la maggior parte dei valori dei pilastri resta uguale tra un’edizione e l’altra.' },
     ],
     changelogTitle: 'Registro delle modifiche',
+    changelogV101EntryTitle: '{date}: formula v10.1',
+    changelogV101Items: [
+      'Anche l’invito dei governi a riconsiderare il viaggio (livello 3) ora abbassa il punteggio, con metà del peso dell’invito a evitare qualsiasi viaggio (livello 4). Prima contava solo il livello 4, così destinazioni dove la maggior parte dei governi invita a riconsiderare il viaggio, come gli Stati del Golfo e Cuba, mantenevano un punteggio moderato o buono.',
+      'Rischi naturali: l’esposizione ora è combinata con la capacità del paese di farvi fronte (la mancanza di capacità di risposta di INFORM), come fa INFORM stesso per valutare il rischio. Un paese ben preparato come il Giappone non finisce più sotto uno meno esposto ma meno preparato.',
+      'Conflitti armati: la scala dei morti nei conflitti non si ferma più a 24.000 morti l’anno, quindi una guerra su vasta scala (Sudan, Ucraina) si colloca sotto una guerra più piccola.',
+      'Dati mancanti: quando un pilastro ha pochi dati o nessuno, la sua stima prudente ora può salire fin dove lo giustificano avvisi unanimi di livello 1, invece di fermarsi a 6 su 10 (per esempio il Liechtenstein).',
+      'Una fonte conta per il minimo di quattro fonti, ed è elencata nella pagina, solo se fornisce un valore usato nel punteggio. Nove destinazioni la cui quarta fonte era il dato sulla popolazione della Banca Mondiale (Brunei, Micronesia, Kiribati, Isole Marshall, Nauru, Palau, Tonga, Tuvalu e Samoa) ora mostrano dati parziali.',
+      'Ogni modifica è stata provata da sola e insieme alle altre su controlli di coerenza verificati, sui voti dei viaggiatori e su un insieme di riferimento indipendente di esperti; le proposte bocciate, come più peso agli omicidi o al pilastro criminalità, non sono state adottate.',
+    ],
     changelogEntryTitle: '{date}: formula v10',
     changelogItems: [
       'Eliminati gli indicatori su cui chi viaggia non può agire: mortalità infantile, inquinamento da PM2.5 e una colonna sul rischio di alluvioni etichettata come rischio climatico. Il pilastro salute ora usa l’accesso alle cure di INFORM al posto di una colonna che in realtà misurava il rischio di conflitto.',
@@ -148,7 +176,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   es: {
-    indicatorsTitle: 'Fórmula v10: indicadores, fuentes y ediciones',
+    indicatorsTitle: 'Fórmula v10.1: indicadores, fuentes y ediciones',
     indicatorsIntro:
       'Cada pilar combina los indicadores de abajo. Usamos siempre la edición más reciente de cada fuente, y cada página de país muestra cada indicador con su propio valor, su unidad y su año de referencia.',
     table: { pillar: 'Pilar', indicator: 'Indicador', source: 'Fuente y edición', licence: 'Licencia' },
@@ -157,11 +185,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Solo la edición más reciente', text: 'Cuando una fuente publica una edición nueva, la anterior pesa cero: nunca mezclamos ediciones ni difuminamos valores antiguos con el tiempo.' },
       { id: 'max-age', title: 'Antigüedad máxima de cinco años', text: 'Un indicador cuyo año de referencia es más de cinco años anterior al año en curso cuenta como dato ausente: no puede ni subir ni bajar una puntuación. Los avisos gubernamentales están al día por definición; las cifras de población, que solo sirven para valorar la fiabilidad de una tasa de homicidios, quedan exentas.' },
       { id: 'scale-continuity', title: 'Continuidad de escala', text: 'Cambiar los indicadores de un pilar cambia la dispersión de sus valores y, con ella, el peso real del pilar. Por eso los pilares de salud, gobernanza y riesgos naturales se devuelven a su escala anterior con una transformación lineal fija, calculada una sola vez el 14 de octubre de 2026 y nunca reajustada.' },
-      { id: 'grey-rule', title: 'Datos parciales: sin puntuación por debajo de cuatro fuentes', text: 'Un destino cubierto por menos de cuatro fuentes independientes no recibe puntuación oficial. Las alertas de desastres (GDACS, ReliefWeb) no cuentan entre las cuatro, porque solo cubren un destino mientras hay un desastre en curso. Su página indica «Datos parciales», enumera las fuentes de las que sí disponemos y pregunta a quienes han estado allí hasta qué punto se sintieron seguros. El peligro siempre prevalece: el destino recibe puntuación si al menos tres gobiernos desaconsejan todo viaje, si predominan los avisos de no viajar o si el Uppsala Conflict Data Program registró muertes por conflicto armado en el último año.' },
+      { id: 'grey-rule', title: 'Datos parciales: sin puntuación por debajo de cuatro fuentes', text: 'Un destino cubierto por menos de cuatro fuentes independientes no recibe puntuación oficial. Las alertas de desastres (GDACS, ReliefWeb) no cuentan entre las cuatro, porque solo cubren un destino mientras hay un desastre en curso. Tampoco cuenta una fuente que no aporta ningún valor usado en la puntuación, como una entrada del Banco Mundial con solo el dato de población. Su página indica «Datos parciales», enumera las fuentes de las que sí disponemos y pregunta a quienes han estado allí hasta qué punto se sintieron seguros. El peligro siempre prevalece: el destino recibe puntuación si al menos tres gobiernos desaconsejan todo viaje, si predominan los avisos de no viajar o si el Uppsala Conflict Data Program registró muertes por conflicto armado en el último año.' },
       { id: 'community-rule', title: 'Votos de la comunidad', text: 'Los votos de los viajeros cuentan cuando un país reúne al menos 30 votos de al menos tres países de origen en los últimos 180 días, y ningún país de origen puede pesar más de la mitad. El ajuste es la diferencia entre la valoración de la comunidad y la puntuación según los datos, reducida cuando hay pocos votos efectivos, con un límite de ±1,0 punto.' },
       { id: 'update-cadence', title: 'Con qué frecuencia cambian los datos', text: 'La puntuación se recalcula cada día. Los avisos gubernamentales y las alertas de desastres cambian a diario; los índices internacionales (Global Peace Index, INFORM, V-Dem, Banco Mundial, UCDP) se publican una o dos veces al año, así que la mayoría de los valores de los pilares no cambia entre dos ediciones.' },
     ],
     changelogTitle: 'Registro de cambios',
+    changelogV101EntryTitle: '{date}: fórmula v10.1',
+    changelogV101Items: [
+      'La recomendación de los gobiernos de reconsiderar el viaje (nivel 3) ahora también baja la puntuación, con la mitad del peso de la recomendación de no viajar (nivel 4). Antes solo contaba el nivel 4, de modo que destinos donde la mayoría de los gobiernos recomienda reconsiderar el viaje, como los Estados del Golfo y Cuba, mantenían una puntuación moderada o buena.',
+      'Peligros naturales: la exposición ahora se combina con la capacidad del país para hacerles frente (la falta de capacidad de respuesta de INFORM), como hace el propio INFORM para medir el riesgo. Un país bien preparado como Japón ya no queda por debajo de otro menos expuesto pero peor preparado.',
+      'Conflictos armados: la escala de muertes en conflictos ya no se detiene en 24.000 muertes al año, así que una guerra a gran escala (Sudán, Ucrania) queda por debajo de una más pequeña.',
+      'Datos que faltan: cuando un pilar tiene pocos datos o ninguno, su estimación prudente ahora puede subir hasta donde lo justifiquen avisos unánimes de nivel 1, en lugar de quedarse en 6 sobre 10 (por ejemplo, Liechtenstein).',
+      'Una fuente cuenta para el mínimo de cuatro fuentes, y aparece en la página, solo si aporta un valor usado en la puntuación. Nueve destinos cuya cuarta fuente era el dato de población del Banco Mundial (Brunéi, Micronesia, Kiribati, Islas Marshall, Nauru, Palaos, Tonga, Tuvalu y Samoa) ahora muestran datos parciales.',
+      'Cada cambio se probó por separado y en conjunto frente a comprobaciones de coherencia verificadas, los votos de los viajeros y un conjunto de referencia independiente de expertos; las propuestas que no superaron la prueba, como dar más peso a los homicidios o al pilar de criminalidad, no se adoptaron.',
+    ],
     changelogEntryTitle: '{date}: fórmula v10',
     changelogItems: [
       'Eliminados los indicadores sobre los que un viajero no puede actuar: mortalidad infantil, contaminación por PM2.5 y una columna de riesgo de inundación etiquetada como riesgo climático. El pilar de salud usa ahora el acceso a la atención sanitaria de INFORM en lugar de una columna que en realidad medía el riesgo de conflicto.',
@@ -191,7 +228,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   fr: {
-    indicatorsTitle: 'Formule v10${NBSP}: indicateurs, sources et éditions'.replace('${NBSP}', NBSP),
+    indicatorsTitle: 'Formule v10.1${NBSP}: indicateurs, sources et éditions'.replace('${NBSP}', NBSP),
     indicatorsIntro:
       'Chaque pilier combine les indicateurs ci-dessous. Nous utilisons toujours l’édition la plus récente de chaque source, et chaque page pays affiche chaque indicateur avec sa propre valeur, son unité et son année de référence.',
     table: { pillar: 'Pilier', indicator: 'Indicateur', source: 'Source et édition', licence: 'Licence' },
@@ -200,11 +237,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Seulement l’édition la plus récente', text: `Quand une source publie une nouvelle édition, la précédente pèse zéro${NBSP}: les éditions ne sont jamais mélangées et les anciennes valeurs ne sont jamais estompées progressivement.` },
       { id: 'max-age', title: 'Ancienneté maximale de cinq ans', text: `Un indicateur dont l’année de référence remonte à plus de cinq ans avant l’année en cours compte comme manquant${NBSP}: il ne peut ni relever ni abaisser un score. Les avis gouvernementaux sont à jour par définition${NBSP}; les chiffres de population, qui servent seulement à juger la fiabilité d’un taux d’homicides, sont exemptés.` },
       { id: 'scale-continuity', title: 'Continuité d’échelle', text: 'Changer les indicateurs d’un pilier change la dispersion de ses valeurs, et donc le poids réel du pilier. Les piliers santé, gouvernance et risques naturels sont donc ramenés à leur échelle précédente par une transformation linéaire fixe, calculée une seule fois le 14 octobre 2026 et jamais recalibrée.' },
-      { id: 'grey-rule', title: 'Données partielles${NBSP}: pas de score sous quatre sources'.replace('${NBSP}', NBSP), text: `Une destination couverte par moins de quatre sources indépendantes ne reçoit pas de score officiel. Les alertes de catastrophe (GDACS, ReliefWeb) ne comptent pas parmi les quatre, car elles ne couvrent une destination que pendant une catastrophe en cours. Sa page indique «${NBSP}Données partielles${NBSP}», énumère les sources dont nous disposons et demande à ceux qui y sont allés à quel point ils s’y sont sentis en sécurité. Le danger l’emporte toujours${NBSP}: la destination reçoit un score si au moins trois gouvernements déconseillent formellement tout voyage, si les avis de ne pas voyager dominent ou si l’Uppsala Conflict Data Program y a recensé des morts liées aux conflits armés lors de la dernière année.` },
+      { id: 'grey-rule', title: 'Données partielles${NBSP}: pas de score sous quatre sources'.replace('${NBSP}', NBSP), text: `Une destination couverte par moins de quatre sources indépendantes ne reçoit pas de score officiel. Les alertes de catastrophe (GDACS, ReliefWeb) ne comptent pas parmi les quatre, car elles ne couvrent une destination que pendant une catastrophe en cours. Une source qui ne fournit aucune valeur utilisée dans le score ne compte pas non plus, par exemple une entrée de la Banque mondiale limitée à la population. Sa page indique «${NBSP}Données partielles${NBSP}», énumère les sources dont nous disposons et demande à ceux qui y sont allés à quel point ils s’y sont sentis en sécurité. Le danger l’emporte toujours${NBSP}: la destination reçoit un score si au moins trois gouvernements déconseillent formellement tout voyage, si les avis de ne pas voyager dominent ou si l’Uppsala Conflict Data Program y a recensé des morts liées aux conflits armés lors de la dernière année.` },
       { id: 'community-rule', title: 'Votes de la communauté', text: `Les votes des voyageurs comptent dès qu’un pays réunit au moins 30 votes venant d’au moins trois pays d’origine sur les 180 derniers jours, et aucun pays d’origine ne peut peser plus de la moitié. L’ajustement correspond à l’écart entre la note de la communauté et le score issu des données, réduit lorsque les votes effectifs sont peu nombreux, et plafonné à ±1,0${NBSP}point.` },
       { id: 'update-cadence', title: 'À quel rythme les données changent', text: `Le score est recalculé chaque jour. Les avis gouvernementaux et les alertes aux catastrophes changent chaque jour${NBSP}; les indices internationaux (Global Peace Index, INFORM, V-Dem, Banque mondiale, UCDP) paraissent une ou deux fois par an, si bien que la plupart des valeurs des piliers restent identiques d’une édition à l’autre.` },
     ],
     changelogTitle: 'Historique des modifications',
+    changelogV101EntryTitle: `{date}${NBSP}: formule v10.1`,
+    changelogV101Items: [
+      'Le conseil des gouvernements de reconsidérer le voyage (niveau 3) fait désormais lui aussi baisser le score, avec la moitié du poids du conseil de ne pas voyager (niveau 4). Auparavant, seul le niveau 4 comptait, si bien que des destinations où la plupart des gouvernements conseillent de reconsidérer le voyage, comme les États du Golfe et Cuba, gardaient un score moyen ou bon.',
+      'Risques naturels : l’exposition est désormais combinée à la capacité du pays à y faire face (le manque de capacité d’adaptation d’INFORM), comme INFORM le fait lui-même pour évaluer le risque. Un pays bien préparé comme le Japon ne passe plus sous un pays moins exposé mais moins préparé.',
+      'Conflits armés : l’échelle des morts dans les conflits ne s’arrête plus à 24 000 morts par an, de sorte qu’une guerre de grande ampleur (Soudan, Ukraine) se classe sous une guerre plus limitée.',
+      'Données manquantes : quand un pilier a peu ou pas de données, son estimation prudente peut désormais monter aussi haut que le justifient des avis unanimes de niveau 1, au lieu de plafonner à 6 sur 10 (par exemple le Liechtenstein).',
+      'Une source ne compte pour le minimum de quatre sources, et n’est listée sur une page, que si elle fournit une valeur utilisée dans le score. Neuf destinations dont la quatrième source était le chiffre de population de la Banque mondiale (Brunei, Micronésie, Kiribati, Îles Marshall, Nauru, Palaos, Tonga, Tuvalu et Samoa) affichent désormais des données partielles.',
+      'Chaque changement a été testé seul et avec les autres sur des contrôles de cohérence vérifiés, les votes des voyageurs et un ensemble de référence indépendant établi par des experts ; les propositions qui ont échoué, comme plus de poids pour les homicides ou pour le pilier criminalité, n’ont pas été retenues.',
+    ],
     changelogEntryTitle: `{date}${NBSP}: formule v10`,
     changelogItems: [
       'Suppression des indicateurs sur lesquels un voyageur ne peut pas agir : mortalité infantile, pollution aux PM2.5 et une colonne de risque d’inondation présentée comme risque climatique. Le pilier santé utilise désormais l’accès aux soins d’INFORM au lieu d’une colonne qui mesurait en réalité le risque de conflit.'.replace(' :', `${NBSP}:`),
@@ -234,7 +280,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   pt: {
-    indicatorsTitle: 'Fórmula v10: indicadores, fontes e edições',
+    indicatorsTitle: 'Fórmula v10.1: indicadores, fontes e edições',
     indicatorsIntro:
       'Cada pilar combina os indicadores abaixo. Usamos sempre a edição mais recente de cada fonte, e cada página de país mostra cada indicador com o próprio valor, a unidade e o ano de referência.',
     table: { pillar: 'Pilar', indicator: 'Indicador', source: 'Fonte e edição', licence: 'Licença' },
@@ -243,11 +289,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Só a edição mais recente', text: 'Quando uma fonte publica uma nova edição, a anterior passa a pesar zero: as edições nunca são misturadas e os valores antigos nunca são diluídos ao longo do tempo.' },
       { id: 'max-age', title: 'Idade máxima de cinco anos', text: 'Um indicador cujo ano de referência é mais de cinco anos anterior ao ano corrente conta como dado ausente: não pode subir nem baixar uma pontuação. Os alertas governamentais são atuais por definição; os dados de população, usados apenas para avaliar a confiabilidade de uma taxa de homicídios, ficam de fora da regra.' },
       { id: 'scale-continuity', title: 'Continuidade de escala', text: 'Trocar os indicadores de um pilar muda a dispersão dos seus valores e, com ela, o peso real do pilar. Por isso os pilares de saúde, governança e riscos naturais são trazidos de volta à escala anterior com uma transformação linear fixa, calculada uma única vez em 14 de outubro de 2026 e nunca reajustada.' },
-      { id: 'grey-rule', title: 'Dados parciais: sem pontuação abaixo de quatro fontes', text: 'Um destino coberto por menos de quatro fontes independentes não recebe pontuação oficial. Os alertas de desastres (GDACS, ReliefWeb) não contam entre as quatro, porque só cobrem um destino enquanto há um desastre em curso. A página dele indica “Dados parciais”, lista as fontes que temos e pergunta a quem já esteve lá o quanto se sentiu em segurança. O perigo sempre prevalece: o destino recebe pontuação se pelo menos três governos desaconselham qualquer viagem, se predominam os alertas para não viajar ou se o Uppsala Conflict Data Program registrou mortes em conflitos armados no último ano.' },
+      { id: 'grey-rule', title: 'Dados parciais: sem pontuação abaixo de quatro fontes', text: 'Um destino coberto por menos de quatro fontes independentes não recebe pontuação oficial. Os alertas de desastres (GDACS, ReliefWeb) não contam entre as quatro, porque só cobrem um destino enquanto há um desastre em curso. Também não conta uma fonte que não fornece nenhum valor usado na pontuação, como uma entrada do Banco Mundial só com a população. A página dele indica “Dados parciais”, lista as fontes que temos e pergunta a quem já esteve lá o quanto se sentiu em segurança. O perigo sempre prevalece: o destino recebe pontuação se pelo menos três governos desaconselham qualquer viagem, se predominam os alertas para não viajar ou se o Uppsala Conflict Data Program registrou mortes em conflitos armados no último ano.' },
       { id: 'community-rule', title: 'Votos da comunidade', text: 'Os votos dos viajantes passam a contar quando um país reúne pelo menos 30 votos de pelo menos três países de origem nos últimos 180 dias, e nenhum país de origem pode pesar mais da metade. O ajuste é a diferença entre a avaliação da comunidade e a pontuação dos dados, reduzida quando há poucos votos efetivos, com limite de ±1,0 ponto.' },
       { id: 'update-cadence', title: 'Com que frequência os dados mudam', text: 'A pontuação é recalculada todos os dias. Os alertas governamentais e os alertas de desastres mudam diariamente; os índices internacionais (Global Peace Index, INFORM, V-Dem, Banco Mundial, UCDP) são publicados uma ou duas vezes por ano, então a maioria dos valores dos pilares fica igual entre uma edição e outra.' },
     ],
     changelogTitle: 'Histórico de alterações',
+    changelogV101EntryTitle: '{date}: fórmula v10.1',
+    changelogV101Items: [
+      'A recomendação dos governos de reconsiderar a viagem (nível 3) agora também reduz a pontuação, com metade do peso da recomendação de não viajar (nível 4). Antes só o nível 4 contava, por isso destinos onde a maioria dos governos recomenda reconsiderar a viagem, como os Estados do Golfo e Cuba, mantinham uma pontuação moderada ou boa.',
+      'Riscos naturais: a exposição agora é combinada com a capacidade do país de enfrentá-los (a falta de capacidade de resposta do INFORM), como o próprio INFORM faz para avaliar o risco. Um país bem preparado como o Japão não fica mais abaixo de um menos exposto, porém menos preparado.',
+      'Conflitos armados: a escala de mortes em conflitos não para mais em 24.000 mortes por ano, então uma guerra em grande escala (Sudão, Ucrânia) fica abaixo de uma guerra menor.',
+      'Dados ausentes: quando um pilar tem poucos ou nenhum dado, sua estimativa prudente agora pode subir até onde avisos unânimes de nível 1 justificam, em vez de parar em 6 de 10 (por exemplo, Liechtenstein).',
+      'Uma fonte conta para o mínimo de quatro fontes, e aparece na página, só quando fornece um valor usado na pontuação. Nove destinos cuja quarta fonte era o dado de população do Banco Mundial (Brunei, Micronésia, Kiribati, Ilhas Marshall, Nauru, Palau, Tonga, Tuvalu e Samoa) agora mostram dados parciais.',
+      'Cada mudança foi testada sozinha e em conjunto com verificações de consistência confirmadas, os votos dos viajantes e um conjunto de referência independente de especialistas; as propostas reprovadas, como dar mais peso aos homicídios ou ao pilar de criminalidade, não foram adotadas.',
+    ],
     changelogEntryTitle: '{date}: fórmula v10',
     changelogItems: [
       'Removidos os indicadores sobre os quais o viajante não pode agir: mortalidade infantil, poluição por PM2.5 e uma coluna de risco de inundação rotulada como risco climático. O pilar de saúde agora usa o acesso a cuidados de saúde do INFORM no lugar de uma coluna que na verdade media o risco de conflito.',
@@ -277,7 +332,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   zh: {
-    indicatorsTitle: '公式 v10：指标、来源与版本',
+    indicatorsTitle: '公式 v10.1：指标、来源与版本',
     indicatorsIntro: '每个支柱由下表中的指标组成。我们始终使用每个来源的最新版本；在各国家页面上，每个指标都会显示其原始数值、单位和数据年份。',
     table: { pillar: '支柱', indicator: '指标', source: '来源与版本', licence: '许可' },
     rulesTitle: '决定数据是否计入的规则',
@@ -285,11 +340,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: '只用最新版本', text: '某一来源发布新版本后，旧版本的权重即为零：我们从不混合不同版本，也不会让旧数值随时间逐步淡出。' },
       { id: 'max-age', title: '数据年龄上限为五年', text: '数据年份早于当年五年以上的指标视为缺失，既不会抬高也不会拉低评分。政府旅行警告本身即为最新信息；人口数据仅用于判断凶杀率的可靠程度，不受此规则限制。' },
       { id: 'scale-continuity', title: '量表连续性', text: '更换支柱内部的指标会改变其数值的离散程度，从而改变该支柱的实际权重。因此，健康、治理和自然灾害三个支柱会通过固定的线性映射还原到原有量表上；该映射于2026年10月14日一次性计算得出，此后不再重新拟合。' },
-      { id: 'grey-rule', title: '数据不完整：来源不足四个则不评分', text: '覆盖某地的独立来源不足四个时，我们不发布官方评分。灾害预警（GDACS、ReliefWeb）不计入这四个来源，因为它们只在灾害发生期间覆盖某地。该地页面会标注“数据不完整”，列出现有来源，并请去过当地的旅行者分享他们的安全感受。但危险信号始终优先：只要至少三个国家政府建议避免一切旅行、“切勿前往”类警告占主导，或乌普萨拉冲突数据项目（UCDP）在最近一年记录到当地有冲突死亡，该地仍会获得评分。' },
+      { id: 'grey-rule', title: '数据不完整：来源不足四个则不评分', text: '覆盖某地的独立来源不足四个时，我们不发布官方评分。灾害预警（GDACS、ReliefWeb）不计入这四个来源，因为它们只在灾害发生期间覆盖某地。未向评分提供任何数值的来源同样不计入，例如只有人口数据的世界银行条目。该地页面会标注“数据不完整”，列出现有来源，并请去过当地的旅行者分享他们的安全感受。但危险信号始终优先：只要至少三个国家政府建议避免一切旅行、“切勿前往”类警告占主导，或乌普萨拉冲突数据项目（UCDP）在最近一年记录到当地有冲突死亡，该地仍会获得评分。' },
       { id: 'community-rule', title: '社区投票', text: '一个国家在过去180天内获得来自至少三个来源国家或地区的至少30票后，旅行者的投票才会计入评分，且任何单一来源国家或地区的权重都不超过一半。调整幅度为社区评分与数据评分之差，有效票数较少时会相应缩小，上限为±1.0分。' },
       { id: 'update-cadence', title: '数据多久变化一次', text: '评分每天重新计算。政府旅行警告和灾害警报每天都可能变化；国际指数（全球和平指数、INFORM、V-Dem、世界银行、UCDP）每年发布一到两次，因此大多数支柱数值在两个版本之间保持不变。' },
     ],
     changelogTitle: '更新记录',
+    changelogV101EntryTitle: '{date}：公式 v10.1',
+    changelogV101Items: [
+      '政府“重新考虑出行”（3级）的建议现在也会降低评分，权重为“切勿前往”（4级）建议的一半。此前只有4级计入，因此多数政府建议重新考虑出行的地方（如海湾国家和古巴）仍保持中等或良好的评分。',
+      '自然灾害：暴露程度现在会与该国的应对能力（INFORM的“应对能力不足”）结合计算，这与INFORM本身评估风险的方式一致。像日本这样准备充分的国家，不再排在暴露程度较低但准备不足的国家之后。',
+      '武装冲突：冲突死亡人数的计分尺度不再止于每年24,000人，因此全面战争（苏丹、乌克兰）的排名低于规模较小的冲突。',
+      '数据缺失：当某个支柱数据很少或没有数据时，其审慎估计值现在可以升至一致的1级警告所支持的水平，而不再止于10分中的6分（例如列支敦士登）。',
+      '只有为评分提供实际数值的来源，才计入“至少四个来源”的门槛并在页面上列出。九个地方的第四个来源只是世界银行的人口数据（文莱、密克罗尼西亚、基里巴斯、马绍尔群岛、瑙鲁、帕劳、汤加、图瓦卢和萨摩亚），现在显示为数据不完整。',
+      '每项改动都单独以及组合起来，对照经过核实的一致性检查、旅行者投票和一套独立的专家参考评分进行了检验；未通过检验的方案（例如提高凶杀率或犯罪支柱的权重）没有采用。',
+    ],
     changelogEntryTitle: '{date}：公式 v10',
     changelogItems: [
       '删除了旅行者无法据以行动的指标：儿童死亡率、PM2.5空气污染，以及一个被标注为气候风险、实为洪水风险的数据列。健康支柱现在使用INFORM的“医疗服务可及性”，取代了一个实际衡量冲突风险的数据列。',
@@ -319,7 +383,7 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
     },
   },
   de: {
-    indicatorsTitle: 'Formel v10: Indikatoren, Quellen und Ausgaben',
+    indicatorsTitle: 'Formel v10.1: Indikatoren, Quellen und Ausgaben',
     indicatorsIntro:
       'Jede Säule fasst die Indikatoren unten zusammen. Wir verwenden immer die neueste Ausgabe jeder Quelle, und jede Länderseite zeigt jeden Indikator mit seinem eigenen Wert, seiner Einheit und seinem Datenjahr.',
     table: { pillar: 'Säule', indicator: 'Indikator', source: 'Quelle und Ausgabe', licence: 'Lizenz' },
@@ -328,11 +392,20 @@ export const methodologyV10Copy: Record<Lang, MethodologyV10Copy> = {
       { id: 'latest-edition', title: 'Nur die neueste Ausgabe', text: 'Sobald eine Quelle eine neue Ausgabe veröffentlicht, zählt die vorherige mit null: Ausgaben werden nie vermischt, alte Werte nie schrittweise ausgeblendet.' },
       { id: 'max-age', title: 'Höchstalter von fünf Jahren', text: 'Ein Indikator, dessen Datenjahr mehr als fünf Jahre vor dem laufenden Jahr liegt, gilt als fehlend und kann eine Bewertung weder heben noch senken. Staatliche Reisehinweise sind per Definition aktuell; Bevölkerungszahlen, die nur zur Einschätzung dienen, wie verlässlich eine Mordrate ist, sind ausgenommen.' },
       { id: 'scale-continuity', title: 'Skalenkontinuität', text: 'Wer die Indikatoren einer Säule austauscht, verändert die Streuung ihrer Werte und damit ihr tatsächliches Gewicht. Die Säulen Gesundheit, Regierungsführung und Naturgefahren werden deshalb mit einer festen linearen Abbildung auf ihre bisherige Skala zurückgeführt, die einmalig am 14. Oktober 2026 berechnet und nie neu angepasst wurde.' },
-      { id: 'grey-rule', title: 'Unvollständige Datenlage: keine Bewertung unter vier Quellen', text: 'Ein Reiseziel, das weniger als vier unabhängige Quellen abdecken, erhält keine offizielle Bewertung. Katastrophenwarnungen (GDACS, ReliefWeb) zählen nicht zu den vier, weil sie ein Reiseziel nur während einer laufenden Katastrophe abdecken. Seine Seite zeigt „Unvollständige Datenlage“, nennt die vorhandenen Quellen und fragt Reisende, die dort waren, wie sicher sie sich gefühlt haben. Gefahr hat immer Vorrang: Das Reiseziel wird bewertet, wenn mindestens drei Regierungen von allen Reisen abraten, wenn Reisewarnungen überwiegen oder wenn das Uppsala Conflict Data Program dort im letzten Jahr Tote in bewaffneten Konflikten verzeichnet hat.' },
+      { id: 'grey-rule', title: 'Unvollständige Datenlage: keine Bewertung unter vier Quellen', text: 'Ein Reiseziel, das weniger als vier unabhängige Quellen abdecken, erhält keine offizielle Bewertung. Katastrophenwarnungen (GDACS, ReliefWeb) zählen nicht zu den vier, weil sie ein Reiseziel nur während einer laufenden Katastrophe abdecken. Ebenso wenig zählt eine Quelle, die keinen in die Bewertung eingehenden Wert liefert, etwa ein Weltbank-Eintrag, der nur die Bevölkerungszahl enthält. Seine Seite zeigt „Unvollständige Datenlage“, nennt die vorhandenen Quellen und fragt Reisende, die dort waren, wie sicher sie sich gefühlt haben. Gefahr hat immer Vorrang: Das Reiseziel wird bewertet, wenn mindestens drei Regierungen von allen Reisen abraten, wenn Reisewarnungen überwiegen oder wenn das Uppsala Conflict Data Program dort im letzten Jahr Tote in bewaffneten Konflikten verzeichnet hat.' },
       { id: 'community-rule', title: 'Stimmen der Community', text: 'Die Stimmen der Reisenden zählen, sobald für ein Land in den letzten 180 Tagen mindestens 30 Stimmen aus mindestens drei Herkunftsländern vorliegen, und kein einzelnes Herkunftsland darf mehr als die Hälfte des Gewichts tragen. Die Anpassung ist der Abstand zwischen Community-Bewertung und datenbasiertem Wert, verkleinert bei wenigen effektiven Stimmen und auf ±1,0 Punkte begrenzt.' },
       { id: 'update-cadence', title: 'Wie oft sich etwas ändert', text: 'Die Bewertung wird täglich neu berechnet. Staatliche Reisehinweise und Katastrophenwarnungen ändern sich täglich; die internationalen Indizes (Global Peace Index, INFORM, V-Dem, Weltbank, UCDP) erscheinen ein- bis zweimal im Jahr, daher bleiben die meisten Säulenwerte zwischen zwei Ausgaben gleich.' },
     ],
     changelogTitle: 'Änderungsprotokoll',
+    changelogV101EntryTitle: '{date}: Formel v10.1',
+    changelogV101Items: [
+      'Auch die Empfehlung von Regierungen, eine Reise zu überdenken (Stufe 3), senkt jetzt die Bewertung, mit halbem Gewicht gegenüber der Warnung vor allen Reisen (Stufe 4). Bisher zählte nur Stufe 4, sodass Reiseziele, für die die meisten Regierungen zum Überdenken der Reise raten, etwa die Golfstaaten und Kuba, eine mittlere oder gute Bewertung behielten.',
+      'Naturgefahren: Die Gefährdung wird jetzt mit der Fähigkeit des Landes verbunden, sie zu bewältigen (INFORMs fehlende Bewältigungskapazität), so wie INFORM selbst Risiko bewertet. Ein gut vorbereitetes Land wie Japan landet nicht mehr hinter einem weniger gefährdeten, aber schlechter vorbereiteten.',
+      'Bewaffnete Konflikte: Die Skala der Konflikttoten endet nicht mehr bei 24.000 Toten im Jahr, sodass ein umfassender Krieg (Sudan, Ukraine) unter einem kleineren eingeordnet wird.',
+      'Fehlende Daten: Hat eine Säule wenige oder keine Daten, kann ihre vorsichtige Schätzung jetzt so hoch steigen, wie es einhellige Hinweise der Stufe 1 rechtfertigen, statt bei 6 von 10 zu enden (zum Beispiel Liechtenstein).',
+      'Eine Quelle zählt für das Minimum von vier Quellen und wird auf einer Seite genannt, nur wenn sie einen Wert liefert, der in die Bewertung eingeht. Neun Reiseziele, deren vierte Quelle eine Bevölkerungszahl der Weltbank war (Brunei, Mikronesien, Kiribati, die Marshallinseln, Nauru, Palau, Tonga, Tuvalu und Samoa), zeigen jetzt eine unvollständige Datenlage.',
+      'Jede Änderung wurde einzeln und zusammen mit den anderen an geprüften Konsistenzbedingungen, den Stimmen der Reisenden und einem unabhängigen Referenzdatensatz von Fachleuten getestet; Vorschläge, die durchfielen, etwa mehr Gewicht für Tötungsdelikte oder die Säule Kriminalität, wurden nicht übernommen.',
+    ],
     changelogEntryTitle: '{date}: Formel v10',
     changelogItems: [
       'Indikatoren entfernt, nach denen Reisende nicht handeln können: Kindersterblichkeit, Feinstaub (PM2.5) und eine Spalte zum Hochwasserrisiko, die als Klimarisiko beschriftet war. Die Säule Gesundheit nutzt jetzt den INFORM-Indikator Zugang zur Gesundheitsversorgung statt einer Spalte, die tatsächlich das Konfliktrisiko maß.',

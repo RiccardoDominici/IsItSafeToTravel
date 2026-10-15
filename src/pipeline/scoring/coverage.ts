@@ -38,6 +38,41 @@ export function coverageSourceCount(sources: ReadonlyArray<{ name?: string }> | 
   return sources.filter((s) => !isEventFeedSource(s.name)).length;
 }
 
+/**
+ * The source key of the government advisories. Its levels feed the advisory consensus A, a
+ * synthetic indicator that never appears among the pillars' indicators.
+ */
+export const ADVISORY_SOURCE = 'advisories';
+
+/**
+ * A source supplies a value the score uses (owner rule, 2026-10-15, audit issue I29). Same logic
+ * as the alert feeds above: a source is data FOR A PLACE only when the formula reads one of its
+ * values for that place. The World Bank feed was listed, counted toward the floor and named in
+ * the "combines N advisories and M other datasets" sentence for 96 places whose only World Bank
+ * rows were the population (an engine input that only damps the homicide weight, so it means
+ * nothing without a homicide rate) and series the formula no longer scores; for nine Pacific
+ * and Asian places (BRN, FSM, KIR, MHL, NRU, PLW, TON, TUV, WSM) that "source" was the fourth.
+ *
+ * `scoredSources`: the source keys of the indicators the pillars actually used for this place
+ * (IndicatorScore.source), plus ADVISORY_SOURCE when its advisory consensus was computed.
+ */
+export function suppliesScoredValue(name: string | undefined, scoredSources: ReadonlySet<string>): boolean {
+  return name !== undefined && scoredSources.has(name);
+}
+
+/**
+ * The place's sources that supply a value the score uses, in their original order: the list the
+ * engine publishes in ScoredCountry.sources, so the floor (coverageSourceCount), the rankings,
+ * llms.txt, the news engine, the provenance sentence and the page's source list all count the
+ * same sources.
+ */
+export function sourcesSupplyingScoredValues<T extends { name?: string }>(
+  sources: readonly T[],
+  scoredSources: ReadonlySet<string>,
+): T[] {
+  return sources.filter((s) => suppliesScoredValue(s.name, scoredSources));
+}
+
 /** True when the place has at least MIN_COVERAGE_SOURCES coverage sources. */
 export function meetsCoverageFloor(sources: ReadonlyArray<{ name?: string }> | undefined): boolean {
   return coverageSourceCount(sources) >= MIN_COVERAGE_SOURCES;

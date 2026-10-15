@@ -2,12 +2,12 @@
 // Formula v10 sections of the methodology page (SPEC §7), shared by the 7 localized methodology
 // routes: the indicator table (pillar, indicator, source with edition, licence) built from
 // weights.json, the rules that decide what counts (with stable anchors: the grey hero of every
-// partial-data page links to #grey-rule), and the dated v10 changelog entry.
+// partial-data page links to #grey-rule), and the dated changelog entries (v10.1 above v10).
 // Copy: src/i18n/methodology-v10-copy.ts. Editions: src/lib/source-editions.ts (from the data).
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { getIndicatorLabel } from '../../i18n/indicator-labels';
-import { methodologyV10Copy, FORMULA_V10_RELEASE_DATE } from '../../i18n/methodology-v10-copy';
+import { methodologyV10Copy, FORMULA_V10_RELEASE_DATE, FORMULA_V101_RELEASE_DATE } from '../../i18n/methodology-v10-copy';
 import { getSourceEditions } from '../../lib/source-editions';
 import weightsConfig from '../../pipeline/config/weights.json';
 
@@ -79,13 +79,16 @@ const rows = weightsConfig.pillars.map((pillar) => ({
 }));
 
 const DATE_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
-const releaseDate = new Date(`${FORMULA_V10_RELEASE_DATE}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-  timeZone: 'UTC',
+const localDate = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+// Newest first. `id` is the anchor of the entry's heading.
+const entries = [
+  { id: 'v10-1', date: FORMULA_V101_RELEASE_DATE, title: copy.changelogV101EntryTitle, items: copy.changelogV101Items },
+  { id: 'v10', date: FORMULA_V10_RELEASE_DATE, title: copy.changelogEntryTitle, items: copy.changelogItems },
+].map((entry) => {
+  const [before, after] = entry.title.split('{date}');
+  return { ...entry, before, after, localDate: localDate(entry.date) };
 });
-const [entryBefore, entryAfter] = copy.changelogEntryTitle.split('{date}');
 ---
 
 <section id="formula-v10" class="mb-10">
@@ -139,10 +142,14 @@ const [entryBefore, entryAfter] = copy.changelogEntryTitle.split('{date}');
 
 <section id="changelog" class="mb-10">
   <h2 class="text-xl font-heading font-semibold text-sand-800 dark:text-sand-100 mb-3">{copy.changelogTitle}</h2>
-  <h3 id="v10" class="font-semibold text-sand-800 dark:text-sand-100 mb-2">
-    {entryBefore}<time datetime={FORMULA_V10_RELEASE_DATE}>{releaseDate}</time>{entryAfter}
-  </h3>
-  <ul class="list-disc pl-5 space-y-1.5 text-sand-700 dark:text-sand-300 leading-relaxed">
-    {copy.changelogItems.map((item) => <li>{item}</li>)}
-  </ul>
+  {entries.map((entry, i) => (
+    <>
+      <h3 id={entry.id} class:list={['font-semibold text-sand-800 dark:text-sand-100 mb-2', i > 0 && 'mt-6']}>
+        {entry.before}<time datetime={entry.date}>{entry.localDate}</time>{entry.after}
+      </h3>
+      <ul class="list-disc pl-5 space-y-1.5 text-sand-700 dark:text-sand-300 leading-relaxed">
+        {entry.items.map((item) => <li>{item}</li>)}
+      </ul>
+    </>
+  ))}
 </section>

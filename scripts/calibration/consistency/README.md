@@ -56,6 +56,13 @@ Baseline on 2026-10-15 (`npx tsx scripts/calibration/evaluate-consistency.ts <sc
 |---|---|---|---|
 | v10, published 2026-10-15 | 5 / 14 | 9 | 1.90 points |
 | v9.1, last snapshot 2026-10-14 | 7 / 14 | 7 | 2.88 points |
+| v10.1 (weights 10.1.0), offline on the 2026-10-15 data | 10 / 14 | 4 | 0.75 points |
+
+The v10.1 changes were chosen with `scripts/calibration/compare-formulas.ts`, which prints this
+check for every formula variant next to the community-vote error, the extremes, the band changes
+and the 2026-03 reference set, split into the structural and situational constraints below. Still
+failing under v10.1: ARE (7.04, bound 6.9), BLR (5.40, bound 5.0), CPV (6.84, floor 7.0) and PNG
+(6.04, bound 6.0).
 
 Two caveats before using these numbers to pick a formula:
 

@@ -21,6 +21,12 @@ export const FIXTURE_INPUTS_DIR = join(FIXTURE_ROOT, 'inputs');
 /** v9.1 published scores and pillar values of the fixture date (copied from data/scores/2026-10-14.json). */
 export const V91_REFERENCE_PATH = join(FIXTURE_ROOT, `v91-scores-${FIXTURE_DATE}.json`);
 export const PARITY_CSV_PATH = join(process.cwd(), 'scripts', 'fixtures', 'formula-v10-parity.csv');
+/**
+ * The 192 places v10 scored on the fixture when the per-pillar maps were fitted. Frozen because
+ * the 2026-10-15 coverage rule (a source counts only when it supplies a scored value) later greyed
+ * nine of them; the maps stay defined over the population they were fitted on.
+ */
+export const CALIBRATION_SET_PATH = join(FIXTURE_ROOT, `calibration-set-${FIXTURE_DATE}.json`);
 export const WEIGHTS_PATH = join(process.cwd(), 'src', 'pipeline', 'config', 'weights.json');
 
 export const PILLAR_NAMES: readonly PillarName[] = ['conflict', 'crime', 'health', 'governance', 'environment'];
@@ -63,11 +69,38 @@ export function readWeights(path: string = WEIGHTS_PATH): WeightsConfig {
   return JSON.parse(readFileSync(path, 'utf-8')) as WeightsConfig;
 }
 
+/**
+ * Formula v10.1 (weights 10.1.x) options, each optional in formulaV9; absent = v10 behaviour.
+ * Listed here so the scripts can reconstruct the exact v10 configuration the frozen per-pillar
+ * maps were fitted under (v10Configuration) and switch the changes one at a time
+ * (scripts/calibration/compare-formulas.ts).
+ */
+export const V101_OPTION_KEYS = ['severeLevel3Weight', 'naturalHazardCoping', 'ucdpTailFloor'] as const;
+
+/** v10 values of the constants v10.1 changed in place (not new keys). */
+export const V10_CHANGED_CONSTANTS = { muClampMax: 0.6 } as const;
+
+/**
+ * The formula v10 configuration inside a 10.x weights file: the v10.1 options removed and the
+ * constants it changed restored. Pillar weights, indicator weights and the frozen maps are kept.
+ * Used to reproduce the v10 maps (calibrate-v10.ts) and as the comparison baseline.
+ */
+export function v10Configuration(weights: WeightsConfig): WeightsConfig {
+  const f9: Record<string, unknown> = { ...weights.formulaV9!, ...V10_CHANGED_CONSTANTS };
+  for (const key of V101_OPTION_KEYS) delete f9[key];
+  return { ...weights, formulaV9: f9 as unknown as WeightsConfig['formulaV9'] };
+}
+
 /** The weights with the frozen per-pillar maps removed: the engine then reports unmapped pillar values. */
 export function withoutPillarCalibration(weights: WeightsConfig): WeightsConfig {
   const f9 = { ...weights.formulaV9! };
   delete f9.pillarCalibration;
   return { ...weights, formulaV9: f9 };
+}
+
+/** The frozen calibration population (CALIBRATION_SET_PATH) as a set of ISO3 codes. */
+export function readCalibrationSet(path: string = CALIBRATION_SET_PATH): Set<string> {
+  return new Set((JSON.parse(readFileSync(path, 'utf-8')) as { countries: string[] }).countries);
 }
 
 export function readV91Reference(path: string = V91_REFERENCE_PATH): V91Reference {

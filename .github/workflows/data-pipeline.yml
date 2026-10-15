@@ -195,11 +195,29 @@ jobs:
           # all others normal). Floors ~90% of the coverage on that day: gpi 162, inform 191,
           # vdem 174, worldbank 215, ucdp 197. Counted from each country's `sources`, i.e. after
           # the max-age filter, so a stale edition counts as missing too.
-          for pair in gpi:145 inform:170 vdem:155 worldbank:190 ucdp:175; do
+          # worldbank 190 -> 107 with formula v10.1: a source is listed only when it supplies a
+          # scored value (scoring/coverage.ts), so the World Bank now counts the 119 places with a
+          # homicide rate from 2021 or later, not the 215 with any World Bank row.
+          for pair in gpi:145 inform:170 vdem:155 worldbank:107 ucdp:175; do
             src="${pair%%:*}"; min="${pair##*:}"
             have=$(jq "[.countries[] | select(any(.sources[]?; .name==\"${src}\"))] | length" "$SNAP")
             if [ "$have" -lt "$min" ]; then fail "${src} covers ${have} countries < ${min} (scoring source missing from the scores)"; fi
           done
+
+          # Formula v10.1: INFORM's lack-of-coping column turns natural-hazard exposure into risk.
+          # Without it (a cached inform-parsed.json from before the column, a layout change) the
+          # pillar would quietly score exposure only, so it is a core input like the sources above:
+          # at least 90% of the places with inform_natural must carry inform_coping (engine.ts
+          # MIN_COPING_COVERAGE_SHARE; the engine also logs an [INFORM] ERROR). Read from the raw
+          # file the engine scored, dated by the snapshot itself.
+          INFORM_RAW="data/raw/$(jq -r '.date' "$SNAP")/inform-parsed.json"
+          if [ -f "$INFORM_RAW" ]; then
+            nat=$(jq '[.indicators[] | select(.indicatorName=="inform_natural") | .countryIso3] | unique | length' "$INFORM_RAW")
+            cop=$(jq '([.indicators[] | select(.indicatorName=="inform_natural") | .countryIso3] | unique) as $n | [.indicators[] | select(.indicatorName=="inform_coping") | .countryIso3 | select(. as $c | $n | index($c))] | unique | length' "$INFORM_RAW")
+            if [ $((cop * 10)) -lt $((nat * 9)) ]; then fail "INFORM coping capacity covers ${cop} of ${nat} places < 90% (natural hazards would score exposure only)"; fi
+          else
+            fail "${INFORM_RAW} missing: cannot verify the INFORM coping column"
+          fi
 
           # Per-source floors: each of US/UK/CA/AU should cover ≥150 countries
           for src in us uk ca au; do

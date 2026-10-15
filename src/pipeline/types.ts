@@ -126,6 +126,25 @@ export interface FormulaV9Config {
   pillarCalibration?: Partial<Record<PillarName, CalibrationConfig>>;
   /** Formula v10 (SPEC §5): bounded community adjustment. Absent = no community component. */
   community?: CommunityConfig;
+  /**
+   * Formula v10.1 (I10): weight of a level-3 ("reconsider travel") advisory in the share that
+   * drives the severe-advisory modifier; level 4 always weighs 1, levels 1-2 weigh 0. Absent = 0
+   * (v10: level 4 only). The danger guard keeps reading the level-4-only severeShare.
+   */
+  severeLevel3Weight?: number;
+  /**
+   * Formula v10.1 (I49): name of the engine-input indicator holding INFORM's "Lack of Coping
+   * Capacity" (0-10). When set and present for a country, inform_natural's normalized value
+   * is the natural-hazard RISK 1 - sqrt(exposure x lack of coping)/10 instead of exposure
+   * alone. Absent (or no coping row) = exposure only (v10).
+   */
+  naturalHazardCoping?: string;
+  /**
+   * Formula v10.1 (I66): the UCDP log curve 1 - log10(1+d)/log10(1+D_MAX) keeps falling past
+   * D_MAX inside the conflict pillar, bounded below by this value, instead of flattening at 0.
+   * Absent = clamped at 0 (v9.1/v10). The published normalizedValue stays in [0, 1].
+   */
+  ucdpTailFloor?: number;
 }
 
 /** Formula v10 (SPEC §3) frozen per-pillar map p' = clamp(alpha + beta * p, 0.001, 1). */

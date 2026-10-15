@@ -180,8 +180,25 @@
  *     restore source must be dated strictly before the run date, and later runs of the same day
  *     rewrite that day's caches, so the 2026-10-15 caches that tomorrow's run could restore from
  *     are the fixed ones.)
+ *   8 (formula v10.1, weights 10.1.0; first scheduled run after the merge) — the 2026-10-15
+ *     consistency audit (scripts/calibration/consistency/) changed the formula again, so scores
+ *     move on the switch day for methodological reasons only:
+ *       a) level-3 "reconsider travel" advisories count at half weight in the severe modifier
+ *          (Kuwait -0.5, Saudi Arabia, Bahrain, Cuba, Jordan about -0.35; Pakistan enters the
+ *          danger band);
+ *       b) the natural-hazards indicator is exposure combined with INFORM's lack of coping capacity
+ *          (Japan +0.33, South Korea +0.24), read from a new INFORM column (inform_coping);
+ *       c) the UCDP conflict-death curve keeps falling past 24,000 deaths (Ukraine, Sudan);
+ *       d) the prior lost its 0.60 ceiling (calm European places up to +0.14);
+ *       e) a source counts, and is listed, only when it supplies a value the score uses: 96 source
+ *          lists lose a population-only World Bank entry and nine places go grey (BRN, FSM, KIR,
+ *          MHL, NRU, PLW, TON, TUV, WSM).
+ *     10 band changes on the 2026-10-15 data. Without this bump the switch run would report them,
+ *     the nine new grey places and dozens of score jumps as news. Dispatch the first production
+ *     run with skip_digest=true as for rev 7. DATA_REVISION_SINCE does not move: no advisory
+ *     cache is affected.
  */
-export const DATA_REVISION = 7;
+export const DATA_REVISION = 8;
 
 /**
  * The calendar date (YYYY-MM-DD, pipeline run date) this revision first takes

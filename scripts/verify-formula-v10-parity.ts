@@ -15,6 +15,11 @@
  * an engine change: if it is intended, re-freeze the fixture CSV with --write in the same
  * commit and explain why; never edit the CSV by hand.
  *
+ * Re-frozen for formula v10.1 (weights 10.1.0, 2026-10-15): level-3 severity, natural hazards
+ * weighed by INFORM's coping capacity (the fixture's inform-parsed.json gained that column,
+ * re-parsed from the same stored edition by build-v10-fixture.ts), the UCDP tail and the prior
+ * without its 0.60 ceiling. The 1e-6 nudge below still targets the frozen v10 health map.
+ *
  * DRIFT SENSITIVITY: after a pass, the gate re-scores with one frozen constant nudged by
  * 1e-6 (the health pillar map's alpha) and fails if that nudge goes unnoticed, so a gate
  * that has silently stopped comparing anything cannot pass.
