@@ -198,6 +198,33 @@ function matchesRestOfCountry(objectClause: string, countryName: string): boolea
   return true;
 }
 
+/**
+ * An exception carve-out inside a warning's object clause: "mit Ausnahme von/der/des ...",
+ * "ausgenommen ...", "außer ...", delimited by spaced dashes, commas or parentheses.
+ *
+ * Burkina Faso's real page (verified live 2026-10-15) reads "Vor Reisen nach Burkina Faso - mit
+ * Ausnahme von Ouagadougou und Bobo-Dioulasso - wird gewarnt": a formal travel warning for the
+ * whole country EXCEPT two named cities, i.e. the country's own catch-all is "do not travel".
+ * The "und" between the two EXCLUDED cities tripped the multiple-objects guard in
+ * normalizeDeContentText (meant for "Abchasien, Südossetien und ..." lists of COVERED regions),
+ * so the sentence fell through to the regional Level 2 while 12 of 20 peer governments say 4.
+ * Same doctrine as JP's "全土（ミスラタ市を除く）" (whole territory excluding one city) and
+ * Sudan/Niger's "zendo (excluding <city>)": a whole-country statement with named exceptions is
+ * the whole-country level; a warning that only NAMES regions still caps at 2.
+ *
+ * The dash form needs whitespace around the dash, so a hyphenated place name inside the
+ * carve-out ("Bobo-Dioulasso") is never mistaken for its closing delimiter.
+ */
+const DE_EXCEPTION_CLAUSE_RES = [
+  /\s[-–—]\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b.*?\s[-–—](?=\s)/gi,
+  /,\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b[^,]*,/gi,
+  /\(\s*(?:mit\s+Ausnahme|ausgenommen|außer)\b[^)]*\)/gi,
+];
+
+function stripDeExceptionClauses(objectClause: string): string {
+  return DE_EXCEPTION_CLAUSE_RES.reduce((acc, re) => acc.replace(re, ' '), objectClause);
+}
+
 export function normalizeDeContentText(contentHtml: string, countryName: string): UnifiedLevel {
   if (!contentHtml) return 1;
   // Headings never end in a period, so a bare tag strip merges them into the
@@ -230,13 +257,16 @@ export function normalizeDeContentText(contentHtml: string, countryName: string)
 
     const wordIdx = sentence.toLowerCase().indexOf('wird');
     const objectClause = wordIdx >= 0 ? sentence.slice(0, wordIdx) : sentence;
+    // The regional-word and conjunction guards below judge what the warning COVERS, so they
+    // must not see the places it carves OUT (see stripDeExceptionClauses).
+    const coveredClause = stripDeExceptionClauses(objectClause);
 
     const isRestOfCountry = matchesRestOfCountry(objectClause, countryName);
     const isBareCountry =
       !isRestOfCountry &&
-      namesCountry(objectClause, countryName) &&
-      !DE_REGIONAL_WORDS.test(objectClause) &&
-      !/\bund\b|\bsowie\b|,/i.test(objectClause);
+      namesCountry(coveredClause, countryName) &&
+      !DE_REGIONAL_WORDS.test(coveredClause) &&
+      !/\bund\b|\bsowie\b|,/i.test(coveredClause);
 
     const level: UnifiedLevel =
       isRestOfCountry || isBareCountry ? (verb === 'gewarnt' ? 4 : 3) : 2;
