@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
+import { parseUkAdvisory, type UkAdvisory } from './advisories-uk.js';
 import {
   MAX_FALLBACK_AGE_DAYS,
   daysBetween,
@@ -948,22 +949,6 @@ async function fetchUsAdvisories(
   return { indicators: [], advisoryInfo: {} };
 }
 
-/** UK FCDO alert_status values mapped to 1-4 advisory levels */
-const UK_ALERT_LEVEL: Record<string, number> = {
-  avoid_all_travel_to_whole_country: 4,
-  avoid_all_but_essential_travel_to_whole_country: 3,
-  avoid_all_travel_to_parts: 3,
-  avoid_all_but_essential_travel_to_parts: 2,
-};
-
-/** UK level number to descriptive text */
-const UK_LEVEL_TEXT: Record<number, string> = {
-  1: 'No specific advisory — see latest advice',
-  2: 'Exercise caution in some areas — see latest advice',
-  3: 'Advise against all but essential travel',
-  4: 'Advise against all travel',
-};
-
 /** Fetch a batch of URLs concurrently */
 async function fetchBatch<T>(
   items: T[],
@@ -1020,6 +1005,8 @@ async function fetchUkAdvisories(
   // Build list of countries to fetch
   interface UkCountryEntry {
     countryName: string;
+    /** Names the FCDO text can use for the country: its own title name and ours. */
+    countryNames: string[];
     slug: string;
     iso3: string;
     updatedAt?: string;
@@ -1043,6 +1030,7 @@ async function fetchUkAdvisories(
 
     countriesToFetch.push({
       countryName,
+      countryNames: [countryName, country.name.en],
       slug,
       iso3: country.iso3,
       updatedAt,
@@ -1052,8 +1040,7 @@ async function fetchUkAdvisories(
 
   // Step 2: Batch-fetch individual country pages for alert_status (20 concurrent)
   await fetchBatch(countriesToFetch, async (entry) => {
-    let level: number;
-    let alertText = '';
+    let advisory: UkAdvisory;
 
     try {
       const r = await fetch(entry.apiUrl, {
@@ -1071,25 +1058,12 @@ async function fetchUkAdvisories(
       // travel" signal, not a guess.
       if (!r.ok) return;
 
+      // Level from alert_status, raised when the warnings text names the whole country;
+      // the label always describes that level, never the page description (I45/I46,
+      // advisories-uk.ts). An empty alert_status is FCDO's own "no advice against
+      // travel", level 1, not a parse failure.
       const data = await r.json() as Record<string, unknown>;
-      const details = data.details as Record<string, unknown> | undefined;
-      const alertStatus = (details?.alert_status || []) as string[];
-
-      // Use the most severe alert status. An empty array here is a real,
-      // successfully-fetched FCDO signal (no advisory against travel), not a
-      // parse failure — level 1 is correct, not a default-on-failure guess.
-      let maxLevel = 1;
-      for (const status of alertStatus) {
-        const statusLevel = UK_ALERT_LEVEL[status] ?? 1;
-        if (statusLevel > maxLevel) maxLevel = statusLevel;
-      }
-      level = maxLevel;
-
-      // Use the description from the individual page if available
-      const desc = String(data.description || '').trim();
-      if (desc && !desc.startsWith('FCDO travel advice')) {
-        alertText = desc;
-      }
+      advisory = parseUkAdvisory(data, entry.countryNames);
     } catch {
       // Network-level failure (timeout, DNS, connection reset) — skip this
       // country rather than guess level 1 (audit 2026-09-25: this used to
@@ -1101,15 +1075,15 @@ async function fetchUkAdvisories(
     indicators.push({
       countryIso3: entry.iso3,
       indicatorName: 'advisory_level_uk',
-      value: level,
+      value: advisory.level,
       year: currentYear,
       source: 'advisories_uk',
     });
 
     if (!advisoryInfo[entry.iso3]) advisoryInfo[entry.iso3] = {};
     advisoryInfo[entry.iso3].uk = {
-      level,
-      text: alertText || UK_LEVEL_TEXT[level] || `Level ${level}`,
+      level: advisory.level,
+      text: advisory.text,
       source: 'UK FCDO',
       url: `https://www.gov.uk/foreign-travel-advice/${entry.slug}`,
       updatedAt: entry.updatedAt,
