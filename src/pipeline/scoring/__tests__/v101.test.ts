@@ -2,7 +2,8 @@
  * Formula v10.1 engine tests (2026-10-15 consistency audit, weights.json `_comment_v101`):
  *  - I10: a level-3 advisory counts at half weight in the severe-advisory modifier, while the
  *    danger guard still reads level 4 only;
- *  - I49: the natural-hazards indicator is exposure combined with INFORM's lack of coping capacity;
+ *  - I49: the natural-hazards indicator is exposure combined with INFORM's lack of coping capacity,
+ *    and a day whose coping column is missing or thin is logged as an error (never silent);
  *  - I66: the UCDP conflict-death curve keeps falling past D_MAX inside the conflict pillar;
  *  - I42: the prior has no 0.60 ceiling any more;
  *  - the v10 configuration (scripts/lib/v10-fixture.ts) that the frozen pillar maps are
@@ -15,7 +16,14 @@ import { strict as assert } from 'node:assert';
 import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { advisorySeverity, computeAllScores, naturalHazardRisk, ucdpConflictValue } from '../engine.js';
+import {
+  MIN_COPING_COVERAGE_SHARE,
+  advisorySeverity,
+  computeAllScores,
+  copingCoverage,
+  naturalHazardRisk,
+  ucdpConflictValue,
+} from '../engine.js';
 import { normalizeIndicators } from '../normalize.js';
 import { V101_OPTION_KEYS, V10_CHANGED_CONSTANTS, v10Configuration } from '../../../../scripts/lib/v10-fixture.js';
 import type { AdvisoryInfo, RawIndicator, RawSourceData, ScoredCountry, WeightsConfig } from '../../types.js';
@@ -183,6 +191,61 @@ describe('Formula v10.1 (I49): natural hazards weighed by coping capacity', () =
     const v101 = scoreOne('JPN', wellCovered('JPN', [row('JPN', 'inform_natural', 8.3, 2026, 'inform')]), advisories([1, 1, 1]), WEIGHTS);
     const natural = pillar(v101, 'environment').indicators.find((i) => i.name === 'inform_natural')!;
     assert.ok(Math.abs(natural.normalizedValue - (1 - 8.3 / 10)) < 1e-12);
+  });
+});
+
+describe('Formula v10.1 (I49): a missing coping column is an error, never a silent fallback', () => {
+  const informSource = (natural: string[], coping: string[]): Map<string, RawSourceData> =>
+    new Map([[
+      'inform',
+      {
+        source: 'inform',
+        fetchedAt: `${RUN_DATE}T06:00:00.000Z`,
+        indicators: [
+          ...natural.map((iso3) => row(iso3, 'inform_natural', 4, 2026, 'inform')),
+          ...coping.map((iso3) => row(iso3, 'inform_coping', 3, 2026, 'inform')),
+        ],
+      },
+    ]]);
+  const TEN = ['DEU', 'FRA', 'ITA', 'ESP', 'PRT', 'AUT', 'BEL', 'NLD', 'POL', 'CZE'];
+
+  it('counts the exposure places that also carry the coping column, against a 90% floor', () => {
+    assert.equal(MIN_COPING_COVERAGE_SHARE, 0.9);
+    assert.deepEqual(copingCoverage(informSource(TEN, TEN), 'inform_coping'), { natural: 10, coping: 10, ok: true });
+    assert.deepEqual(copingCoverage(informSource(TEN, TEN.slice(0, 9)), 'inform_coping'), { natural: 10, coping: 9, ok: true });
+    assert.deepEqual(copingCoverage(informSource(TEN, TEN.slice(0, 8)), 'inform_coping'), { natural: 10, coping: 8, ok: false });
+    assert.deepEqual(copingCoverage(informSource(TEN, []), 'inform_coping'), { natural: 10, coping: 0, ok: false });
+    assert.equal(copingCoverage(informSource(TEN, ['USA', 'CAN']), 'inform_coping').coping, 0, 'coping rows for places without exposure do not count');
+  });
+
+  /** computeAllScores' console.error lines for one run. */
+  function errorsOf(data: Map<string, RawSourceData>, weights: WeightsConfig): string[] {
+    const dir = mkdtempSync(join(tmpdir(), 'v101-coping-guard-'));
+    const errors: string[] = [];
+    const log = console.log;
+    const error = console.error;
+    console.log = () => {};
+    console.error = (...args: unknown[]) => { errors.push(args.join(' ')); };
+    try {
+      writeFileSync(join(dir, 'advisories-info.json'), '{}');
+      computeAllScores(data, weights, RUN_DATE, { rawDir: dir, community: null });
+    } finally {
+      console.log = log;
+      console.error = error;
+      rmSync(dir, { recursive: true, force: true });
+    }
+    return errors;
+  }
+
+  it('logs an error when a day has exposure rows but no coping column (e.g. a pre-v10.1 cache)', () => {
+    const errors = errorsOf(informSource(TEN, []), WEIGHTS);
+    assert.equal(errors.length, 1);
+    assert.match(errors[0], /\[INFORM\] ERROR: coping capacity \(inform_coping\) covers only 0 of the 10 places/);
+  });
+
+  it('stays quiet when the column is there, and when the formula does not use it (v10 configuration)', () => {
+    assert.deepEqual(errorsOf(informSource(TEN, TEN), WEIGHTS), []);
+    assert.deepEqual(errorsOf(informSource(TEN, []), without('naturalHazardCoping')), []);
   });
 });
 

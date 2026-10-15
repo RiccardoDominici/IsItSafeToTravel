@@ -289,6 +289,38 @@ export function naturalHazardRisk(exposure: number, lackOfCoping: number): numbe
   return clamp(1 - Math.sqrt(Math.max(0, exposure) * Math.max(0, lackOfCoping)) / 10, 0, 1);
 }
 
+/**
+ * Formula v10.1 (I49) fail-safe: the coping column must cover at least this share of the places
+ * that have a natural-hazard exposure. Below it, those places would quietly score exposure only
+ * (naturalHazardRisk is skipped when the coping row is missing), e.g. after an INFORM fallback to
+ * a per-date cache written before the column existed. The same ~90% floor blocks publication in
+ * the pipeline's core-source quality guard (.github/workflows/data-pipeline.yml).
+ */
+export const MIN_COPING_COVERAGE_SHARE = 0.9;
+
+export interface CopingCoverage {
+  /** Places with an inform_natural row. */
+  natural: number;
+  /** Of those, places with a coping row as well. */
+  coping: number;
+  ok: boolean;
+}
+
+/** How many places with a natural-hazard exposure also carry the coping column, across all sources. */
+export function copingCoverage(data: ReadonlyMap<string, RawSourceData>, copingIndicator: string): CopingCoverage {
+  const natural = new Set<string>();
+  const coping = new Set<string>();
+  for (const source of data.values()) {
+    for (const ind of source.indicators) {
+      const iso3 = ind.countryIso3.toUpperCase();
+      if (ind.indicatorName === 'inform_natural') natural.add(iso3);
+      else if (ind.indicatorName === copingIndicator && Number.isFinite(ind.value)) coping.add(iso3);
+    }
+  }
+  const covered = [...natural].filter((iso3) => coping.has(iso3)).length;
+  return { natural: natural.size, coping: covered, ok: covered >= MIN_COPING_COVERAGE_SHARE * natural.size };
+}
+
 /** p_i = sub-weight-renormalized mean over PRESENT indicators; n_i = sum of rho over present indicators. */
 function buildPillar(subIndicators: SubIndicator[]): PillarBuildResult {
   const present = subIndicators.filter((s) => s.value !== null && s.value !== undefined && !Number.isNaN(s.value));
@@ -892,6 +924,22 @@ export function computeAllScores(
   const maxAge = applyMaxAge(rawDataBySource, runYear, f9.maxAgeYears);
   for (const line of formatMaxAgeLog(maxAge)) console.log(`  ${line}`);
   const scoringData = maxAge.data;
+
+  // Formula v10.1 (I49): never let the natural-hazards pillar fall back to exposure only without
+  // saying so. Logged as an error; the pipeline's quality guard refuses to publish such a day.
+  if (f9.naturalHazardCoping) {
+    const coverage = copingCoverage(scoringData, f9.naturalHazardCoping);
+    if (coverage.ok) {
+      console.log(`  [INFORM] Coping capacity (${f9.naturalHazardCoping}) covers ${coverage.coping}/${coverage.natural} places with a natural-hazard exposure`);
+    } else {
+      console.error(
+        `  [INFORM] ERROR: coping capacity (${f9.naturalHazardCoping}) covers only ${coverage.coping} of the ` +
+          `${coverage.natural} places with a natural-hazard exposure (< ${MIN_COPING_COVERAGE_SHARE * 100}%): their ` +
+          'natural-hazards pillar scores exposure only. Check the INFORM parser or the cached inform-parsed.json; ' +
+          'the pipeline quality guard blocks this publication.',
+      );
+    }
+  }
 
   // Merge all indicators
   const allIndicators: RawIndicator[] = [];
