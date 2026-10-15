@@ -8,7 +8,8 @@ import { describe, it } from 'node:test';
 import assert from 'node:assert/strict';
 import type { IndicatorScore, PillarScore, ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
-import { buildCountrySummary, buildAdvisorySentence, selectDriverPillar } from '../country-summary';
+import { buildCountrySummary, buildAdvisorySentence } from '../country-summary';
+import { selectPillarFocus } from '../pillar-focus';
 import {
   displayedIndicators,
   formatIndicatorValue,
@@ -125,21 +126,30 @@ describe('country summary: grey place', () => {
   });
 });
 
-describe('country summary: driver pillar', () => {
-  it('prefers the direct-risk pillar that drags the score most over governance', () => {
-    assert.equal(selectDriverPillar(ecuador().pillars).pillar.name, 'crime');
+describe('country summary: focus pillar', () => {
+  it('names the lowest direct-risk pillar and explains the lower governance bar (Ecuador)', () => {
+    const focus = selectPillarFocus(ecuador().pillars);
+    assert.equal(focus.focus.name, 'crime');
+    assert.equal(focus.frame, 'mainRisk');
+    assert.equal(focus.governanceContext?.name, 'governance');
+    const text = buildCountrySummary(ecuador(), ctx('en'));
+    assert.match(text, /Governance is rated lower still \(4\.0\/10\): it reflects institutions and the rule of law rather than a direct danger to visitors\./);
   });
 
   it('names governance only when every direct-risk pillar is at 7.0 or above', () => {
     const pillars = ecuador().pillars.map((p) => ({ ...p, score: p.name === 'governance' ? 0.55 : 0.8 }));
-    const pick = selectDriverPillar(pillars);
-    assert.equal(pick.pillar.name, 'governance');
-    assert.equal(pick.frame, 'weakest');
+    const focus = selectPillarFocus(pillars);
+    assert.equal(focus.focus.name, 'governance');
+    assert.equal(focus.frame, 'weakest');
   });
 
-  it('reports allGood when every pillar is at 7.0 or above', () => {
-    const pillars = ecuador().pillars.map((p) => ({ ...p, score: 0.8 }));
-    assert.equal(selectDriverPillar(pillars).frame, 'allGood');
+  it('reports allGood when every pillar is at 7.0 or above, on the page scale, with no INFORM number', () => {
+    const c = ecuador();
+    c.pillars = c.pillars.map((p) => ({ ...p, score: p.name === 'environment' ? 0.78 : 0.86 }));
+    assert.equal(selectPillarFocus(c.pillars).frame, 'allGood');
+    const text = buildCountrySummary(c, ctx('en'));
+    assert.match(text, /All five areas score at least 7 out of 10; the lowest is natural hazards \(7\.8\/10\)\./);
+    assert.doesNotMatch(text, /INFORM/);
   });
 });
 

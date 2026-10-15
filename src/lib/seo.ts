@@ -4,8 +4,7 @@ import { routes } from '../i18n/ui';
 import { getLocalizedCountryName, loadGlobalHistory, loadLatestSnapshot } from './scores';
 import { getLastmodMap } from './lastmod';
 import { getRegion } from './regions';
-import { countryFaqCopy, faqPillarLabels, indicatorLabels, advisoryLevelWords, listConnector } from './country-faq-copy';
-import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
+import { countryFaqCopy, advisoryLevelWords } from './country-faq-copy';
 import { COUNTRY_COUNT, SOURCE_COUNT_DISPLAY } from './site-stats';
 import { CONTACT_EMAIL } from './contact';
 import wikidataMapJson from '../data/countries-wikidata.json';
@@ -14,22 +13,43 @@ import wikidataMapJson from '../data/countries-wikidata.json';
 // pillar and provenance clause from the same shared helpers AnswerFirstParagraph
 // uses, instead of each keeping its own copy — see the docstring in each module.
 import { getBand } from './bands';
-import { getBandVerdictCopy } from './band-copy';
+import { getBandVerdictCopy, getInlineRiskLabel } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
-import { selectPillarExtremes } from './pillar-extremes';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
 import { isScored } from './score-status';
-import { isScoredIndicator } from './indicator-display';
-import { selectDriverPillar } from './country-summary';
+import { advisoryLevels, buildAdvisorySentence, nameSlots } from './country-summary';
+import { formatTenths } from './display-number';
+import { advisoryEntries, getAdvisoryConsensus, type AdvisoryConsensus } from './advisory-consensus';
+import { selectPillarFocus, type PillarFocus, type PillarView } from './pillar-focus';
+import {
+  adviceSlots,
+  buildAdviceClause,
+  buildAdvisoryPressureSentence,
+  buildBestSentence,
+  buildEstimatesSentence,
+  buildFocusSentences,
+  buildGovernanceContext,
+  buildTieSentence,
+  describeFocusDriver,
+  fillTemplate,
+  hasLowDirectEstimate,
+  joinList,
+} from './pillar-narrative';
+import { countrySummaryCopy } from '../i18n/country-summary-copy';
+import { getCountryByIso2 } from '../pipeline/config/countries';
 import {
   getEnglishCountryPhrase,
   getItalianLocative,
+  getPortugueseDe,
   getPortuguesePhrase,
   getPortugueseWithArticle,
   getGermanDirectional,
+  getGermanFuerPhrase,
+  getGermanNominative,
   isGermanPlural,
   getFrenchPreposition,
 } from '../i18n/country-grammar';
+import { getFrenchDefinite, getGermanUeberPhrase } from '../i18n/country-name-forms';
 
 // ISO3 → Wikidata QID + English Wikipedia article (fallback), plus per-language
 // Wikipedia articles where they exist, for Place.sameAs entity grounding (helps
@@ -165,60 +185,6 @@ const pillarLabels: Record<Lang, Record<PillarName, string>> = {
 };
 
 /**
- * Pick the pillar set eligible to be named as weakest/strongest.
- * Mirrors the engine's own composite-score gate (engine.ts lines 153-157):
- * keep only pillars whose dataCompleteness clears MIN_PILLAR_COVERAGE, but if
- * none clear it fall back to all pillars. This stops sparse micro-territories
- * (e.g. Monaco, whose crime/governance/environment pillars have zero data) from
- * naming a zero-data pillar as their weakest or strongest area.
- */
-export function selectEligiblePillars(pillars: PillarScore[]): PillarScore[] {
-  const eligible = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
-  return eligible.length > 0 ? eligible : pillars;
-}
-
-/**
- * Name the 1-2 lowest-scoring indicators driving a weak pillar, for Q2.
- * All advisory_level_* indicators collapse to the single 'advisory_group'
- * label (counted once, represented by their lowest normalizedValue). Entries
- * are sorted ascending by normalizedValue (lower = bigger drag) and the lowest
- * distinct labels are returned. Returns [] when the pillar yields no usable
- * labels, so the caller can omit the driver clause entirely.
- */
-function selectPillarDriverLabels(pillar: PillarScore, lang: Lang): string[] {
-  const labelMap = indicatorLabels[lang];
-  const entries: { key: string; nv: number }[] = [];
-  let advisoryMin: number | null = null;
-  for (const ind of pillar.indicators) {
-    // A pre-v10 snapshot still lists retired indicators (child mortality, PM2.5, two mislabelled
-    // INFORM columns): never name them as what drives a pillar today.
-    if (!ind.name.startsWith('advisory_level_') && !isScoredIndicator(ind.name)) continue;
-    if (ind.name.startsWith('advisory_level_')) {
-      advisoryMin = advisoryMin === null ? ind.normalizedValue : Math.min(advisoryMin, ind.normalizedValue);
-    } else if (labelMap[ind.name]) {
-      entries.push({ key: ind.name, nv: ind.normalizedValue });
-    }
-  }
-  if (advisoryMin !== null) entries.push({ key: 'advisory_group', nv: advisoryMin });
-  entries.sort((a, b) => a.nv - b.nv);
-  const labels: string[] = [];
-  for (const e of entries) {
-    const lbl = labelMap[e.key];
-    if (lbl && !labels.includes(lbl)) labels.push(lbl);
-    if (labels.length === 2) break;
-  }
-  return labels;
-}
-
-// Priority order for naming governments in Q3 (major advisory issuers first),
-// used to pick a stable 1-2 names among those at the highest present level.
-const ADVISORY_GOV_PRIORITY = [
-  'us', 'uk', 'ca', 'au', 'de', 'fr', 'nl', 'nz', 'jp', 'at', 'ch', 'be', 'ie',
-  'es', 'it', 'dk', 'se', 'no', 'fi', 'pl', 'cz', 'hu', 'pt', 'ro', 'sg', 'hk',
-  'ee', 'hr', 'rs', 'sk', 'cn', 'in', 'br', 'ar', 'ph',
-];
-
-/**
  * Meta description of a grey place (formula v10 insufficient_data): no score, band or pillar.
  * The four-source floor is spelled out ("four"): validate-seo reads "<n> sources" as a count claim.
  */
@@ -233,9 +199,89 @@ const greyMetaDescriptions: Record<Lang, (name: string) => string> = {
 };
 
 /**
+ * The pillar clause of the meta description, by focus frame (src/lib/pillar-focus.ts, the same pillar
+ * the summary and the FAQ name). "Main risk" only below 5.0, "main concern" up to 6.9; when every
+ * pillar is at 7.0+ the clause says so instead of calling a strong pillar the main risk (2026-10-15
+ * audit, I30: "Hauptrisiko: Regierungsführung (8.0)").
+ */
+const metaFocusClauses: Record<Lang, Record<'mainRisk' | 'concern' | 'weakest' | 'allGood' | 'allGoodMeasured', (p: string, s: string) => string>> = {
+  en: {
+    mainRisk: (p, s) => `Main risk: ${p} (${s}).`,
+    concern: (p, s) => `Main concern: ${p} (${s}).`,
+    weakest: (p, s) => `Weakest area: ${p} (${s}).`,
+    allGood: (p, s) => `All five areas at 7/10 or better; lowest: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Every measured area at 7/10 or better; lowest: ${p} (${s}).`,
+  },
+  it: {
+    mainRisk: (p, s) => `Rischio principale: ${p} (${s}).`,
+    concern: (p, s) => `Criticità principale: ${p} (${s}).`,
+    weakest: (p, s) => `Area più debole: ${p} (${s}).`,
+    allGood: (p, s) => `Tutte e cinque le aree almeno a 7/10; la più bassa: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Aree misurate tutte almeno a 7/10; la più bassa: ${p} (${s}).`,
+  },
+  es: {
+    mainRisk: (p, s) => `Mayor riesgo: ${p} (${s}).`,
+    concern: (p, s) => `Principal preocupación: ${p} (${s}).`,
+    weakest: (p, s) => `Área más débil: ${p} (${s}).`,
+    allGood: (p, s) => `Las cinco áreas, con 7/10 o más; la más baja: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Áreas medidas, con 7/10 o más; la más baja: ${p} (${s}).`,
+  },
+  fr: {
+    mainRisk: (p, s) => `Risque principal\u00a0: ${p} (${s}).`,
+    concern: (p, s) => `Point de vigilance\u00a0: ${p} (${s}).`,
+    weakest: (p, s) => `Domaine le plus faible\u00a0: ${p} (${s}).`,
+    allGood: (p, s) => `Les cinq domaines à 7/10 ou plus\u00a0; le plus bas\u00a0: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Domaines mesurés à 7/10 ou plus\u00a0; le plus bas\u00a0: ${p} (${s}).`,
+  },
+  pt: {
+    mainRisk: (p, s) => `Maior risco: ${p} (${s}).`,
+    concern: (p, s) => `Principal preocupação: ${p} (${s}).`,
+    weakest: (p, s) => `Área mais fraca: ${p} (${s}).`,
+    allGood: (p, s) => `As cinco áreas com 7/10 ou mais; a mais baixa: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Áreas medidas com 7/10 ou mais; a mais baixa: ${p} (${s}).`,
+  },
+  zh: {
+    mainRisk: (p, s) => `主要风险：${p}（${s}分）。`,
+    concern: (p, s) => `最需关注：${p}（${s}分）。`,
+    weakest: (p, s) => `最薄弱方面：${p}（${s}分）。`,
+    allGood: (p, s) => `五个方面均不低于7分，最低为${p}（${s}分）。`,
+    allGoodMeasured: (p, s) => `数据充足的方面均不低于7分，最低为${p}（${s}分）。`,
+  },
+  de: {
+    mainRisk: (p, s) => `Hauptrisiko: ${p} (${s}).`,
+    concern: (p, s) => `Größte Sorge: ${p} (${s}).`,
+    weakest: (p, s) => `Schwächster Bereich: ${p} (${s}).`,
+    allGood: (p, s) => `Alle fünf Bereiche bei 7/10 oder mehr; am niedrigsten: ${p} (${s}).`,
+    allGoodMeasured: (p, s) => `Gemessene Bereiche bei 7/10 oder mehr; am niedrigsten: ${p} (${s}).`,
+  },
+};
+
+/**
+ * The provenance tail of the meta description with THIS country's own counts (2026-10-15 audit,
+ * I13: every page promised "30+ public sources" while its own summary counted, say, 20 advisories
+ * and 5 datasets). Phrased as "advisories" and "datasets", never "<n> sources", which validate-seo
+ * reads as the site-wide source-count claim.
+ */
+const metaTails: Record<Lang, (advisories: number, datasets: number) => string> = {
+  en: (a, d) => tail(` Based on %s, recalculated daily.`, ' and ', a && `${a} ${a === 1 ? 'advisory' : 'advisories'}`, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
+  it: (a, d) => tail(` Basato su %s, ricalcolato ogni giorno.`, ' e ', a && `${a} ${a === 1 ? 'avviso' : 'avvisi'}`, d && `${d} dataset`),
+  es: (a, d) => tail(` Basada en %s, recalculada a diario.`, ' y ', a && `${a} ${a === 1 ? 'aviso' : 'avisos'}`, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
+  fr: (a, d) => tail(` Fondé sur %s, recalculé chaque jour.`, ' et ', a && `${a} avis`, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
+  pt: (a, d) => tail(` Com base em %s, recalculada diariamente.`, ' e ', a && `${a} ${a === 1 ? 'alerta' : 'alertas'}`, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
+  zh: (a, d) => tail(`基于%s，每日重新计算。`, '和', a && `${a}份旅行警告`, d && `${d}个数据集`),
+  de: (a, d) => tail(` Aus %s, täglich neu berechnet.`, ' und ', a && `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
+};
+
+/** Fills "%s" with the non-empty parts joined by `and`; empty string when there is nothing to count. */
+function tail(template: string, and: string, ...parts: Array<string | 0>): string {
+  const present = parts.filter((p): p is string => Boolean(p));
+  return present.length === 0 ? '' : template.replace('%s', present.join(and));
+}
+
+/**
  * Generate a unique meta description for a country page based on score data.
  * Each country gets a differentiated description using its score, risk level,
- * and weakest pillar, kept within Google's ~155-character display budget.
+ * and focus pillar, kept within Google's ~155-character display budget.
  */
 export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang): string {
   // Formula v10 grey place: no score, band or pillar figure in the SERP snippet either.
@@ -250,35 +296,26 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   // (2026-09-25 audit, I4).
   const { riskLabel: riskLevel } = getBandVerdictCopy(score, lang);
 
-  // Strongest/weakest via the shared sort-based picker (pillar-extremes.ts):
-  // a plain max/min loop names the SAME pillar as both "top concern" and
-  // "strongest area" when every pillar is tied (2026-09-25 audit, I13, the
-  // same root cause as content.md's C2 in AnswerFirstParagraph). Only
-  // pillars with sufficient data coverage are eligible, so a zero-data
-  // pillar (e.g. Monaco's crime/governance/environment) is never named.
-  // The pillar named is the same one the page's summary and FAQ name (selectDriverPillar in
-  // country-summary.ts), so the snippet never contradicts the page.
-  const { isNearTie } = selectPillarExtremes(country.pillars);
-  const weakest = selectDriverPillar(country.pillars).pillar;
-
-  const weakestScore = (weakest.score * 10).toFixed(1);
-  const weakestLabel = pillarLabels[lang][weakest.name];
+  // The pillar named is the one the summary and the FAQ name (selectPillarFocus), with the same
+  // frame, so the snippet never calls a pillar the "main risk" that the page calls a strength.
+  const focus = selectPillarFocus(country.pillars);
   const name = getLocalizedCountryName(country, lang);
-
-  const roundedScore = score.toFixed(1);
+  const roundedScore = formatTenths(score, lang);
+  const labels = pillarLabels[lang];
+  const pillarName = focus.focusTie
+    ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[focus.focusTie.name]}`
+    : labels[focus.focus.name];
+  const frameKey = focus.frame === 'allGood' && !focus.allFiveAtLeast7 ? 'allGoodMeasured' : focus.frame;
+  const clause = metaFocusClauses[lang][frameKey](pillarName, formatTenths(focus.focus.value, lang));
 
   // Google truncates meta descriptions around 155-160 characters. The score +
-  // top-risk clause is the part that must always survive, so it is the "base";
-  // the freshness/CTA sentence is appended only when it still fits. Long
-  // country names ("Territorio Britannico dell'Oceano Indiano") are the only
-  // cases that lose it — 4-19 territories per language, everything else keeps
-  // the full sentence. Measured against the live snapshot: worst case 145-155
-  // characters in every locale.
+  // focus clause is the part that must always survive, so it is the "base";
+  // the provenance/CTA sentence is appended only when it still fits.
   const DESCRIPTION_MAX = 155;
-  const bases: Record<Lang, string> = isNearTie
+  const bases: Record<Lang, string> = focus.isFlat
     ? {
-        // Near-tie (all pillars within 0.05, e.g. zero-data territories): no
-        // "top concern" clause naming an arbitrary pillar (2026-09-25 audit, I13).
+        // Near-tie (all pillars within half a point, e.g. prior-only territories): no clause
+        // naming an arbitrary pillar (2026-09-25 audit, I13).
         en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). All five safety pillars are closely matched.`,
         it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). I cinque pilastri di sicurezza sono molto simili tra loro.`,
         es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Los cinco pilares de seguridad están muy igualados.`,
@@ -288,39 +325,24 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
         de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Die fünf Sicherheitssäulen liegen sehr nah beieinander.`,
       }
     : {
-        en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). Top concern: ${weakestLabel} (${weakestScore}).`,
-        it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). Rischio principale: ${weakestLabel} (${weakestScore}).`,
-        es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). Mayor riesgo: ${weakestLabel} (${weakestScore}).`,
-        fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). Risque principal : ${weakestLabel} (${weakestScore}).`,
-        pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). Maior risco: ${weakestLabel} (${weakestScore}).`,
-        zh: `${name}当前安全评分为${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和自然灾害五大安全类别。最需关注：${weakestLabel}（${weakestScore}分）。`,
-        de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). Hauptrisiko: ${weakestLabel} (${weakestScore}).`,
+        en: `${name} safety score: ${roundedScore}/10 (${riskLevel}). ${clause}`,
+        it: `${name}: sicurezza ${roundedScore}/10 (${riskLevel}). ${clause}`,
+        es: `${name}: seguridad ${roundedScore}/10 (${riskLevel}). ${clause}`,
+        fr: `${name} : sécurité ${roundedScore}/10 (${riskLevel}). ${clause}`,
+        pt: `${name}: segurança ${roundedScore}/10 (${riskLevel}). ${clause}`,
+        zh: `${name}当前安全评分为${roundedScore}/10（${riskLevel}），综合评估冲突、犯罪、健康、治理和自然灾害五大安全类别。${clause}`,
+        de: `${name}: Sicherheit ${roundedScore}/10 (${riskLevel}). ${clause}`,
       };
-  // Computed, not hardcoded: this "tails" block used to declare its own
-  // `const sourceCount = 40` right above, a second hardcoded "40+" the 2026-09
-  // count-claim sweep initially missed because the literal string "40+" never
-  // appeared in source (it was assembled from a bare `40` plus a template
-  // literal's own "+") — every grep for the string "40+" walked right past it.
-  // Meta descriptions are what Google shows in search results, so this was
-  // live on all 1,918 country pages. Caught while building the validate-seo.ts
-  // computed-count guard below, which is exactly the kind of drift it exists
-  // to catch.
   // Honest cadence (formula v10, SPEC §7): the SCORE is recalculated daily; most of the data
   // behind it is not ("updated daily" claimed the opposite).
-  const tails: Record<Lang, string> = {
-    en: ` Free score from ${SOURCE_COUNT_DISPLAY} public sources, recalculated daily.`,
-    it: ` Punteggio gratuito da ${SOURCE_COUNT_DISPLAY} fonti pubbliche, ricalcolato ogni giorno.`,
-    es: ` Puntuación gratuita de ${SOURCE_COUNT_DISPLAY} fuentes públicas, recalculada a diario.`,
-    fr: ` Score gratuit issu de ${SOURCE_COUNT_DISPLAY} sources publiques, recalculé chaque jour.`,
-    pt: ` Pontuação gratuita de ${SOURCE_COUNT_DISPLAY} fontes públicas, recalculada diariamente.`,
-    zh: `评分基于${SOURCE_COUNT_DISPLAY}个公开来源，每日重新计算，免费查询。`,
-    de: ` Kostenloser Wert aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, täglich neu berechnet.`,
-  };
-
+  const { advisoryCount, otherSourceCount } = getProvenanceCounts(country);
   const base = bases[lang];
-  const withTail = base + tails[lang];
+  const withTail = base + metaTails[lang](advisoryCount, otherSourceCount);
   return withTail.length <= DESCRIPTION_MAX ? withTail : base;
 }
+
+/** "crime and health" in the meta description's tie case. */
+const META_AND: Record<Lang, string> = { en: ' and ', it: ' e ', es: ' y ', fr: ' et ', pt: ' e ', zh: '和', de: ' und ' };
 
 /**
  * Build JSON-LD structured data for a country detail page.
@@ -792,156 +814,114 @@ export function buildFaqPageJsonLd(questions: { question: string; answer: string
   };
 }
 
+/** Capitalise the first letter of each answer part (en pillar names are lowercase labels: I41). */
+function capitalizeFirst(text: string): string {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}
+
+function lowercaseFirst(text: string): string {
+  return text.charAt(0).toLowerCase() + text.slice(1);
+}
+
 /**
  * Get raw FAQ question/answer pairs for a country page.
  * Used by both the JSON-LD builder and the visible FaqSection component.
  * Questions are stable (they match long-standing search queries); answers are
- * assembled from banded templates in src/lib/country-faq-copy.ts filled with
- * per-country data, so every page gets a self-contained, citable answer
- * instead of boilerplate that defers to other sections.
+ * assembled from templates in src/lib/country-faq-copy.ts filled with per-country
+ * data, so every page gets a self-contained, citable answer.
+ *
+ * Every pillar the answers name comes from selectPillarFocus (the summary and the meta
+ * description use the same selection) and every advisory claim from getAdvisoryConsensus, so the
+ * FAQ cannot contradict the rest of the page (2026-10-15 consistency audit).
  */
 export function getCountryFaqData(country: ScoredCountry, lang: Lang): { question: string; answer: string }[] {
   const copy = countryFaqCopy[lang];
   const name = getLocalizedCountryName(country, lang);
-  // English needs "the" for the ~15 plural/union country names (the United
-  // States, the Philippines...) in EVERY subject-position sentence in this
-  // file's "en" entry (q1/q2, a1Verdict, a2, a3Intro...), not just after a
-  // preposition — unlike it/pt/de, a bare "United States is one of the
-  // safest destinations" is not valid English at all. displayName is what
-  // actually goes in the {name} slot; the bare `name` is still what the
-  // other locales' preposition/article wrappers below take as input.
+  // English needs "the" for the plural/union names (the United States, the Philippines...) in
+  // every slot; the other locales get their article or preposition from the dedicated slots below.
   const displayName = lang === 'en' ? getEnglishCountryPhrase(country.iso3, name) : name;
   const now = new Date();
   const year = now.getFullYear().toString();
   const monthYear = now.toLocaleDateString(localeMap[lang], { month: 'long', year: 'numeric' });
   const scored = isScored(country);
-  // Grey place (formula v10): no score, band or pillar figure; the slots below are never read.
-  const score = scored ? country.score : 0;
-
-  // Single source of truth for band + risk label (band-copy.ts / bands.ts) —
-  // must agree with ScoreHero's pill and the answer-first paragraph for this
-  // exact score, or the FAQ contradicts the rest of the same page (2026-09-25
-  // audit, I4: this used to be its own 3-tier {low,moderate,high} split at the
-  // same 7/5 numeric boundaries as ScoreHero's 5-tier one, so e.g. Jersey at
-  // 5.6 read "Only for experienced travelers" in the hero and "moderately
-  // safe... most trips are trouble-free" in the FAQ, one scroll down).
-  const band = getBand(score);
-  const { riskLabel: riskLevel } = getBandVerdictCopy(score, lang);
-  // Thin/zero-evidence countries (audit C7) get a distinct opener instead of
-  // the banded a1Verdict — never a confident "Yes, generally safe" built on a
-  // pure regional prior.
-  const isLowConfidence = country.confidence < LOW_CONFIDENCE_THRESHOLD;
-
-  // Sort ELIGIBLE pillars weakest-first so answers name the score's actual
-  // drivers and never a zero-data pillar (Monaco fix). When only one pillar is
-  // eligible, `second` falls back to the weakest so slots never render "undefined".
-  const sorted = [...selectEligiblePillars(country.pillars)].sort((a, b) => a.score - b.score);
-  const weakest = sorted[0];
-  const second = sorted[1] ?? weakest;
-  const strongest = sorted[sorted.length - 1];
-  const weakest10 = weakest.score * 10;
-  const labels = faqPillarLabels[lang];
-
-  // Q2 ("biggest risk") talks about the same pillar as the page summary: the direct-risk pillar
-  // that pulls the score down the most (selectDriverPillar, country-summary.ts), which is not
-  // always the lowest pillar (Ecuador: crime 4.4, not governance 4.0). Its band picks the A2
-  // variant; the "other area to watch" is the lowest remaining pillar.
-  const driverPick = selectDriverPillar(country.pillars);
-  const riskPillar = driverPick.pillar;
-  const risk10 = riskPillar.score * 10;
-  const riskOther = sorted.find((p) => p.name !== riskPillar.name) ?? riskPillar;
-  const weakestBand: 'critical' | 'mid' | 'strong' =
-    driverPick.frame === 'allGood' ? 'strong' : risk10 < 4 ? 'critical' : risk10 < 7 ? 'mid' : 'strong';
-  let driverClause = '';
-  if (weakestBand !== 'strong') {
-    const driverLabels = selectPillarDriverLabels(riskPillar, lang);
-    if (driverLabels.length === 1) {
-      driverClause = copy.a2DriverClause.one.replace('{labels}', driverLabels[0]);
-    } else if (driverLabels.length >= 2) {
-      driverClause = copy.a2DriverClause.two.replace('{labels}', driverLabels.slice(0, 2).join(listConnector[lang]));
-    }
-  }
-
-  // German verb-agreement slots (a1Verdict, a1Drivers.allStrong): predicate
-  // adjectives don't inflect for number in German, but the finite verb still
-  // must agree with a plural subject — see isGermanPlural's docstring.
+  const consensus = getAdvisoryConsensus(country);
+  // German finite verbs agree with plural names ("die Niederlande zählen").
   const dePlural = isGermanPlural(country.iso3, name);
 
+  // Locale-specific country phrases (country-grammar.ts): each locale's templates only use the
+  // slots they need, so computing all of them is harmless.
   const slots: Record<string, string> = {
     name: displayName,
     year,
     monthYear,
-    score: score.toFixed(1),
-    riskLevel,
-    weakest: labels[weakest.name],
-    weakestScore: weakest10.toFixed(1),
-    second: labels[second.name],
-    secondScore: (second.score * 10).toFixed(1),
-    strongest: labels[strongest.name],
-    strongestScore: (strongest.score * 10).toFixed(1),
-    meaning: copy.pillarMeaning[weakest.name],
-    drivers: driverClause,
-    // Locale-specific phrases for the templates that put the country name
-    // after a preposition or need an article — computed from the bare `name`
-    // (not `displayName`, which only applies to English). Harmless to compute
-    // for every language: each locale's templates only ever reference the
-    // slot(s) it actually needs (see country-grammar.ts).
     nameIn: getItalianLocative(country.iso3, name),
     namePara: getPortuguesePhrase(country.iso3, name, 'para'),
     nameA: getPortuguesePhrase(country.iso3, name, 'a'),
     nameArt: getPortugueseWithArticle(country.iso3, name),
+    nameDe: getPortugueseDe(country.iso3, name),
     nameDir: getGermanDirectional(country.iso3, name),
+    nameNom: getGermanNominative(country.iso3, name),
+    nameFuer: getGermanFuerPhrase(country.iso3, name),
+    nameUeber: getGermanUeberPhrase(country.iso3, name),
     namePrep: getFrenchPreposition(country.iso3, name),
     deZaehlt: dePlural ? 'zählen' : 'zählt',
     deGilt: dePlural ? 'gelten' : 'gilt',
-    deIstSind: dePlural ? 'sind' : 'ist',
-    deBirgt: dePlural ? 'bergen' : 'birgt',
-    deSchneidet: dePlural ? 'schneiden' : 'schneidet',
   };
-  const fill = (tpl: string) => tpl.replace(/\{(\w+)\}/g, (m, key) => slots[key] ?? m);
+  const fill = (tpl: string, extra: Record<string, string> = {}) => fillTemplate(tpl, { ...slots, ...extra });
   const joiner = lang === 'zh' ? '' : ' ';
-  // Collapse any double ASCII spaces left when the {drivers} clause is empty.
-  const tidy = (s: string) => s.replace(/ {2,}/g, ' ').trim();
+  // One answer from its parts: drop empty parts, capitalise each part's first letter (never in
+  // zh), single spaces only.
+  const answer = (parts: Array<string | null | undefined>): string =>
+    parts
+      .filter((p): p is string => Boolean(p && p.trim()))
+      .map((p) => (lang === 'zh' ? p : capitalizeFirst(p.trim())))
+      .join(joiner)
+      .replace(/ {2,}/g, ' ')
+      .trim();
 
   // Grey place (formula v10 insufficient_data): A1 says why there is no score (no figure at all),
   // no "biggest risk" answer (its pillar values are internal), A3 the advisories as usual.
   if (!scored) {
-    const a1Grey = tidy(fill(copy.a1Grey));
-    const a3Grey = buildAdvisoryAnswer(country, lang, copy, slots, fill, tidy, joiner, true);
     return [
-      { question: fill(copy.q1), answer: a1Grey },
-      { question: fill(copy.q3), answer: a3Grey },
+      { question: fill(copy.q1), answer: answer([fill(copy.a1Grey)]) },
+      { question: fill(copy.q3), answer: buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, true) },
     ];
   }
 
-  // A1 — verdict, how the score works, why this country's number (drag pillars
-  // + what the weakest one means), provenance. Provenance is the country's own
-  // advisory/source counts (provenance-copy.ts), never a fixed "40+" claim —
-  // shared with AnswerFirstParagraph so the two surfaces never disagree
-  // (2026-09-25 audit, I1/I12).
-  const drivers = weakest10 >= 7 ? copy.a1Drivers.allStrong : copy.a1Drivers.normal;
-  const verdictOpener = isLowConfidence ? copy.a1VerdictLowConfidence : copy.a1Verdict[band];
+  const score = country.score;
+  const scoreSlots = { score: formatTenths(score, lang), riskLevel: getInlineRiskLabel(score, lang) };
+  const band = getBand(score);
+  const focus = selectPillarFocus(country.pillars);
+
+  // A1 opener. The band alone used to decide it, so ARE (7.3, 11 of 21 governments at "reconsider"
+  // or worse) opened "Yes, generally" above an advisory answer saying the opposite (I06), and the
+  // danger band said "travel requires serious caution" where all 22 governments say "do not
+  // travel" (I18). Advisories first, then confidence, then the band.
+  const avoidClause = band === 'danger' && consensus.majorityAvoid ? buildAdviceClause(consensus, lang, 'avoid') : null;
+  const reconsiderClause = band !== 'danger' ? buildAdviceClause(consensus, lang) : null;
+  const opener = avoidClause
+    ? fill(copy.a1VerdictAvoid, { ...scoreSlots, ...adviceSlots(avoidClause) })
+    : reconsiderClause
+      ? fill(copy.a1VerdictAdvisories, { ...scoreSlots, ...adviceSlots(reconsiderClause) })
+      : fill(country.confidence < LOW_CONFIDENCE_THRESHOLD ? copy.a1VerdictLowConfidence : copy.a1Verdict[band], scoreSlots);
+
+  // A1 — verdict, how the score works, the focus pillar in one line (same words as the summary),
+  // the best area (a strength only at 7.0+), provenance (the country's own counts).
   const provenance = buildProvenanceSentence(getProvenanceCounts(country), displayName, lang, country.iso3);
-  const a1 = tidy([verdictOpener, copy.a1Formula, drivers, provenance].map(fill).join(joiner));
+  const a1 = answer([
+    opener,
+    copy.a1Formula,
+    ...buildFocusSentences(focus, lang, false),
+    buildTieSentence(focus, lang),
+    buildEstimatesSentence(focus, lang),
+    buildBestSentence(focus, lang, true),
+    provenance,
+  ]);
 
-  // A2 — severity-banded "biggest risk" answer about the driver pillar: "biggest risk" phrasing
-  // only when the pillar is genuinely weak, so top scorers don't read as alarmist. critical/mid
-  // carry the pillar meaning + the indicator-driven {drivers} clause. The 'strong' variant keeps
-  // the lowest/highest pillars ("even its weakest area ..."), which is then the same pillar.
-  const a2Slots: Record<string, string> =
-    weakestBand === 'strong'
-      ? slots
-      : {
-          ...slots,
-          weakest: labels[riskPillar.name],
-          weakestScore: risk10.toFixed(1),
-          second: labels[riskOther.name],
-          secondScore: (riskOther.score * 10).toFixed(1),
-          meaning: copy.pillarMeaning[riskPillar.name],
-        };
-  const a2 = tidy(copy.a2[weakestBand].replace(/\{(\w+)\}/g, (m, key) => a2Slots[key] ?? m));
-
-  const a3 = buildAdvisoryAnswer(country, lang, copy, slots, fill, tidy, joiner, false);
+  // Outside the danger band the pillars can look better than the government advice (ARE, QAT):
+  // A2 then says so instead of implying the pillar is the whole story.
+  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger'));
+  const a3 = buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, false);
 
   return [
     { question: fill(copy.q1), answer: a1 },
@@ -950,79 +930,154 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   ];
 }
 
+/** A2 ("biggest risk") parts, by focus frame. */
+function buildBiggestRiskParts(
+  focus: PillarFocus,
+  lang: Lang,
+  consensus: AdvisoryConsensus,
+  fill: (tpl: string, extra?: Record<string, string>) => string,
+  withAdvisoryNote: boolean,
+): Array<string | null> {
+  const copy = countryFaqCopy[lang];
+  const area = (p: PillarView) => countrySummaryCopy[lang].pillarArea[p.name];
+  const pillarSlots = (p: PillarView) => ({ pillar: area(p), pillarScore: formatTenths(p.value, lang) });
+  const described = describeFocusDriver(focus, lang);
+  const driver = described ? fill(copy.a2Driver, described) : null;
+  const advice = withAdvisoryNote ? buildAdviceClause(consensus, lang) : null;
+  const advisoryNote = advice ? fill(copy.a2AdvisoryNote, adviceSlots(advice)) : null;
+  const pressure = buildAdvisoryPressureSentence(focus, lang, consensus);
+
+  switch (focus.frame) {
+    case 'mainRisk':
+    case 'concern':
+      return [
+        fill(copy.a2[focus.frame], pillarSlots(focus.focus)),
+        copy.pillarMeaning[focus.focus.name],
+        driver ?? pressure,
+        buildTieSentence(focus, lang),
+        focus.second ? fill(copy.a2Second, pillarSlots(focus.second)) : null,
+        buildGovernanceContext(focus, lang, copy.a2GovernanceContext),
+        buildEstimatesSentence(focus, lang),
+        buildBestSentence(focus, lang, true),
+        // Not twice: when the advice already explains the focus pillar, it is said above.
+        driver || !pressure ? advisoryNote : null,
+      ];
+    case 'weakest':
+      return [
+        fill(hasLowDirectEstimate(focus) ? copy.a2.weakestMeasured : copy.a2.weakest, pillarSlots(focus.focus)),
+        copy.pillarMeaning.governance,
+        driver,
+        buildEstimatesSentence(focus, lang),
+        buildBestSentence(focus, lang, true),
+        advisoryNote,
+      ];
+    case 'allGood':
+      return [
+        fill(focus.allFiveAtLeast7 ? copy.a2.allGood : copy.a2.allGoodMeasured),
+        focus.best
+          ? fill(copy.a2Range, {
+              low: area(focus.focus),
+              lowScore: formatTenths(focus.focus.value, lang),
+              high: area(focus.best),
+              highScore: formatTenths(focus.best.value, lang),
+            })
+          : null,
+        buildEstimatesSentence(focus, lang),
+        // "Normal precautions are enough" would contradict a majority of governments advising
+        // reconsidering travel (QAT, ARE...): their advice replaces it.
+        advisoryNote ?? copy.a2Precautions,
+      ];
+  }
+}
+
+// Priority order for naming governments in Q3 (major advisory issuers first), used to pick a
+// stable order among those at the strictest level present.
+const ADVISORY_GOV_PRIORITY = [
+  'us', 'uk', 'ca', 'au', 'de', 'fr', 'nl', 'nz', 'jp', 'at', 'ch', 'be', 'ie',
+  'es', 'it', 'dk', 'se', 'no', 'fi', 'pl', 'cz', 'hu', 'pt', 'ro', 'sg', 'hk',
+  'ee', 'hr', 'rs', 'sk', 'cn', 'in', 'br', 'ar', 'ph', 'tw', 'kr',
+];
+
+/** Shorter issuer names where the site's own country name is an official long form. */
+const ISSUER_NAME_OVERRIDES: Partial<Record<Lang, Record<string, string>>> = {
+  zh: { hk: '香港' },
+  de: { hk: 'Hongkong' },
+};
+
 /**
- * A3 of the country FAQ: the government-advisory summary built from country.advisories (count,
- * consensus band, named governments, majority-Level-4 note) or a zero-advisory sentence. `grey`
- * (formula v10 insufficient_data): no "pillar scores above" to point to and no severe-advisory
- * score note, since there is no score.
+ * An advisory issuer's name as it stands in the A3 sentence: the site's own country name, with the
+ * article en/fr/de need after "from"/"dont"/"darunter" ("the United States", "les États-Unis",
+ * "die Vereinigten Staaten"); it/es/pt/zh name issuers bare, in lists, as their press does (I19).
+ */
+function issuerName(key: string, lang: Lang): string {
+  const override = ISSUER_NAME_OVERRIDES[lang]?.[key];
+  if (override) return override;
+  const iso3 = getCountryByIso2(key === 'uk' ? 'GB' : key.toUpperCase())?.iso3;
+  if (!iso3) return key.toUpperCase();
+  const bare = getLocalizedCountryName({ iso3, name: {} }, lang);
+  if (lang === 'en') return getEnglishCountryPhrase(iso3, bare);
+  if (lang === 'fr') return getFrenchDefinite(iso3, bare);
+  if (lang === 'de') return getGermanNominative(iso3, bare);
+  return bare;
+}
+
+/** Issuer list: zh "美国、英国和加拿大", other locales via the summary's list separators. */
+function joinIssuers(names: string[], lang: Lang): string {
+  if (lang !== 'zh' || names.length <= 1) return joinList(names, lang);
+  return `${names.slice(0, -1).join('、')}和${names[names.length - 1]}`;
+}
+
+/**
+ * A3 of the country FAQ: the government-advisory picture built from the real distribution (the
+ * summary's own breakdown sentence, with the date), the strictest level and who issues it when it
+ * is stricter than the most common one, and the severe-advisory note when most governments advise
+ * against all travel. Never "most governments" for one advisory, never "none above a low level"
+ * next to level 3 or 4, and no verdict ("reassuring") at all (2026-10-15 audit, I03 I14 I15).
+ * `grey` (formula v10 insufficient_data): no "pillar scores above" to point to and no score note.
  */
 function buildAdvisoryAnswer(
   country: ScoredCountry,
   lang: Lang,
-  copy: (typeof countryFaqCopy)[Lang],
-  slots: Record<string, string>,
-  fill: (tpl: string) => string,
-  tidy: (s: string) => string,
-  joiner: string,
+  bareName: string,
+  consensus: AdvisoryConsensus,
+  fill: (tpl: string, extra?: Record<string, string>) => string,
+  answer: (parts: Array<string | null | undefined>) => string,
   grey: boolean,
 ): string {
-  const advisories = country.advisories ?? {};
-  const presentAdvisories = (Object.entries(advisories) as [string, { level: number | string; source?: string }][])
-    .map(([key, info]) => ({ key, level: Number(info?.level) }))
-    .filter((a) => Number.isFinite(a.level) && a.level >= 1 && a.level <= 4);
+  const copy = countryFaqCopy[lang];
+  const summaryCopy = countrySummaryCopy[lang];
+  const entries = advisoryEntries(country);
+  const { n, counts, modal, max } = consensus;
+  if (n === 0) return answer([fill(grey ? copy.a3NoneGrey : copy.a3None)]);
 
-  let a3: string;
-  if (presentAdvisories.length === 0) {
-    a3 = tidy(fill(grey ? copy.a3NoneGrey : copy.a3None));
-  } else {
-    const n = presentAdvisories.length;
-    // Consensus (modal) level; ties resolve to the higher (more cautious) level.
-    const counts = [0, 0, 0, 0, 0];
-    for (const a of presentAdvisories) counts[a.level]++;
-    let modal = 1;
-    for (let l = 1; l <= 4; l++) if (counts[l] >= counts[modal]) modal = l;
-    const band: 'normal' | 'caution' | 'reconsider' | 'avoid' =
-      modal === 1 ? 'normal' : modal === 2 ? 'caution' : modal === 3 ? 'reconsider' : 'avoid';
+  const cap = !grey && consensus.majorityAvoid ? copy.a3Cap : null;
+  if (n === 1) {
+    const level = entries[0].level as 1 | 2 | 3 | 4;
+    return answer([fill(copy.a3One, { issuer: issuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);
+  }
 
-    // Name the 1-2 governments issuing the strongest (highest-level) warning.
-    const maxLevel = Math.max(...presentAdvisories.map((a) => a.level));
-    const topKeys = presentAdvisories
-      .filter((a) => a.level === maxLevel)
+  const breakdown = buildAdvisorySentence(advisoryLevels(country), lang, nameSlots(lang, country.iso3, bareName));
+  const sentence = lang === 'de' ? breakdown.replace(/\.$/, '') : lang === 'zh' ? breakdown : lowercaseFirst(breakdown);
+
+  let strictest: string | null = null;
+  if (max > modal) {
+    const issuers = entries
+      .filter((a) => a.level === max)
       .map((a) => a.key)
       .sort((x, y) => {
         const ix = ADVISORY_GOV_PRIORITY.indexOf(x);
         const iy = ADVISORY_GOV_PRIORITY.indexOf(y);
         return (ix === -1 ? 999 : ix) - (iy === -1 ? 999 : iy);
-      })
-      .slice(0, 2);
-    const region = new Intl.DisplayNames([localeMap[lang]], { type: 'region' });
-    const govNames = topKeys.map((key) => {
-      const code = key === 'uk' ? 'GB' : key.toUpperCase();
-      let display: string | undefined;
-      try {
-        display = region.of(code);
-      } catch {
-        display = undefined;
-      }
-      if (!display || display === code) {
-        display = (advisories as Record<string, { source?: string }>)[key]?.source ?? code;
-      }
-      return display;
-    });
-    slots.governments = govNames.length <= 1 ? govNames[0] ?? '' : govNames.join(listConnector[lang]);
-    slots.govLevel = advisoryLevelWords[lang][maxLevel - 1];
-    slots.advisoryCount = n === 1 ? copy.advisoryCountNoun.one : copy.advisoryCountNoun.other.replace('{n}', String(n));
-
-    const a3Parts = [copy.a3Intro, copy.a3Consensus[band]];
-    // v9: no hard cap. This UI heuristic (strict MAJORITY of Level-4 advisories)
-    // is a display-only simplification of the engine's actual severeEff
-    // (importance-weighted severeShare, count-damped by N_SEV in engine.ts) —
-    // when it fires, copy.a3Cap explains the severe-advisory DOWN-WEIGHTING
-    // that nudges the score toward a low value, not a cap to a fixed number.
-    if (!grey && counts[4] >= Math.ceil(n / 2 + 0.1)) a3Parts.push(copy.a3Cap);
-    a3 = tidy(a3Parts.map(fill).join(joiner));
+      });
+    const k = issuers.length;
+    const named = (k <= 3 ? issuers : issuers.slice(0, 2)).map((key) => issuerName(key, lang));
+    const template = k === 1 ? copy.a3Strictest.one : k <= 3 ? copy.a3Strictest.few : copy.a3Strictest.many;
+    strictest = fill(template, { level: advisoryLevelWords[lang][max - 1], k: String(k), issuers: joinIssuers(named, lang) });
   }
-  return a3;
+  // Only levels 1 and 2, mixed: say plainly that no government advises against travel.
+  const noneAbove2 = max <= 2 && counts[2] > 0 && counts[2] < n ? copy.a3NoneAbove2 : null;
+
+  return answer([fill(copy.a3AsOf, { sentence }), strictest, noneAbove2, cap]);
 }
 
 /**
