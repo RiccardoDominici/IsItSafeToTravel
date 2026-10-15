@@ -156,6 +156,18 @@ jobs:
           FAILURES=""
           WARNINGS=""
 
+          # Base advisories the fetcher DROPPED under the 7-day fallback rule (fetchers/
+          # advisory-fallback.ts, owner decision 2026-10-15): the issuer is meant to be absent
+          # today, so its JPN and coverage checks below warn instead of blocking the publish.
+          # The staleness monitor has already pushed the ntfy alert for it.
+          RUN_DATE="${{ github.event.inputs.date }}"; RUN_DATE="${RUN_DATE:-$(date -u +%Y-%m-%d)}"
+          FALLBACK_FILE="data/raw/${RUN_DATE}/advisories-fallback.json"
+          DROPPED=""
+          if [ -f "$FALLBACK_FILE" ]; then
+            DROPPED=$(jq -r '[.issuers[] | select(.state=="dropped") | .issuer] | join(" ")' "$FALLBACK_FILE")
+          fi
+          is_dropped() { case " $DROPPED " in *" $1 "*) return 0;; esac; return 1; }
+
           # Country count
           N=$(jq '.countries | length' "$SNAP")
           if [ "$N" -lt 200 ]; then fail "country count $N < 200"; fi
@@ -163,7 +175,10 @@ jobs:
           # JPN must have US/UK/CA/AU advisories (US silently broke 2026-05-27)
           for src in us uk ca au; do
             present=$(jq ".countries[] | select(.iso3==\"JPN\") | .advisories.${src} != null" "$SNAP")
-            if [ "$present" != "true" ]; then fail "JPN.advisories.${src} is null (fetcher regression)"; fi
+            if [ "$present" != "true" ]; then
+              if is_dropped "$src"; then warn "JPN.advisories.${src} is null: ${src^^} dropped by the 7-day fallback rule (see $FALLBACK_FILE)";
+              else fail "JPN.advisories.${src} is null (fetcher regression)"; fi
+            fi
           done
 
           # JPN must NOT be flagged Level 4 by NL (Fukushima sub-region promotion regression)
@@ -189,7 +204,10 @@ jobs:
           # Per-source floors: each of US/UK/CA/AU should cover ≥150 countries
           for src in us uk ca au; do
             count=$(jq "[.countries[] | select(.advisories.${src} != null)] | length" "$SNAP")
-            if [ "$count" -lt 150 ]; then fail "${src^^} advisory count $count < 150 (likely fetcher regression)"; fi
+            if [ "$count" -lt 150 ]; then
+              if is_dropped "$src"; then warn "${src^^} advisory count $count < 150: dropped by the 7-day fallback rule (see $FALLBACK_FILE)";
+              else fail "${src^^} advisory count $count < 150 (likely fetcher regression)"; fi
+            fi
           done
 
           # No tier source aggregates should leak into the sources list

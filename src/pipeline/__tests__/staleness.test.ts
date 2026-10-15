@@ -21,6 +21,7 @@ import {
 } from '../staleness.js';
 import { ntfyTopicFromEnv, pushNtfy } from '../utils/ntfy.js';
 import { WB_INDICATOR_NAMES } from '../fetchers/worldbank.js';
+import { writeAdvisoryFallbackReport } from '../fetchers/advisory-fallback.js';
 import type { RawIndicator, RawSourceData } from '../types.js';
 import type { StoredInformEdition } from '../fetchers/inform-edition.js';
 
@@ -433,5 +434,108 @@ describe('World Bank scope', () => {
     assert.equal(checks.some((c) => c.key === 'worldbank:wb_air_pollution'), false);
     assert.ok(checks.every((c) => c.ok));
     assert.equal(evaluateStaleness(obs).find((c) => c.key === 'worldbank:wb_air_pollution')?.ok, false, 'default still checks every fetched series');
+  });
+});
+
+/* -------------------------------------------------------------------------- */
+/* Base advisories: the 7-day fallback rule (fetchers/advisory-fallback.ts).   */
+/* -------------------------------------------------------------------------- */
+
+describe('advisory fallback checks', () => {
+  const issuer = (label: string, state: 'live' | 'restored' | 'dropped', lastLive: string | null, ageDays: number | null) => ({
+    issuer: label.toLowerCase(),
+    label,
+    state,
+    liveCountries: state === 'live' ? 200 : 0,
+    restoredCountries: state === 'restored' ? 200 : 0,
+    droppedCountries: state === 'dropped' ? 210 : 0,
+    lastLive,
+    ageDays,
+    maxAgeDays: 7,
+    ...(state === 'dropped' ? { reason: lastLive ? 'fallback too old' : 'no cached reading' } : {}),
+  });
+  const fallback = (...issuers: ReturnType<typeof issuer>[]) => ({ date: '2026-10-15', maxAgeDays: 7, issuers });
+  const report = (advisoryFallback: ReturnType<typeof fallback> | null) =>
+    buildStalenessReport({
+      date: '2026-10-15',
+      generatedAt: '2026-10-15T06:05:00.000Z',
+      observations: currentObservations(),
+      informEdition: null,
+      runStartedAt: '2026-10-15T06:00:00.000Z',
+      advisoryFallback,
+    });
+
+  it('a dropped issuer is a violation that pushes; live and restored issuers are not', () => {
+    const r = report(fallback(issuer('US', 'live', null, null), issuer('AU', 'restored', '2026-10-12', 3), issuer('CA', 'dropped', '2026-10-01', 14)));
+    assert.deepEqual(r.violations, ['CA travel advisories: dropped on 2026-10-15, last live 2026-10-01 (14 days old, max 7)']);
+    assert.deepEqual(newViolationKeys(r, []), ['advisory:ca']);
+    const [message] = buildNtfyMessages(r, []);
+    assert.equal(message.priority, 'high');
+    assert.match(message.body, /CA travel advisories: dropped/);
+  });
+
+  it('logs every issuer, with the VIOLATION prefix the workflow greps for on the dropped one', () => {
+    const lines = formatStalenessLines(
+      report(fallback(issuer('US', 'live', null, null), issuer('AU', 'restored', '2026-10-12', 3), issuer('CA', 'dropped', null, null))),
+    );
+    assert.ok(lines.includes('[STALENESS] ok US travel advisories: fetched live'));
+    assert.ok(lines.includes('[STALENESS] ok AU travel advisories: cache fallback, last live 2026-10-12 (3d old, max 7d)'));
+    assert.ok(lines.includes('[STALENESS] VIOLATION CA travel advisories: dropped, no reading within 7d'));
+  });
+
+  it('no fallback file means no advisory checks, as before the rule', () => {
+    const r = report(null);
+    assert.deepEqual(r.advisoryChecks, []);
+    assert.deepEqual(r.violations, []);
+  });
+
+  it('pushes once while the issuer stays dropped, and again after it recovered and broke again', () => {
+    const day1 = report(fallback(issuer('CA', 'dropped', '2026-10-01', 14)));
+    day1.notifiedViolationKeys = ['advisory:ca'];
+    const day2 = report(fallback(issuer('CA', 'dropped', '2026-10-01', 15)));
+    assert.deepEqual(buildNtfyMessages(day2, carriedNotifiedKeys(day2, day1)), []);
+    const recovered = report(fallback(issuer('CA', 'live', null, null)));
+    assert.deepEqual(carriedNotifiedKeys(recovered, day1), []);
+  });
+
+  it('runStalenessMonitor reads advisories-fallback.json from the run folder and pushes', async () => {
+    const dir = mkdtempSync(join(tmpdir(), 'staleness-advisory-test-'));
+    const previousCwd = process.cwd();
+    process.chdir(dir);
+    try {
+      writeAdvisoryFallbackReport(join(dir, 'data', 'raw', '2026-10-15'), fallback(issuer('CA', 'dropped', '2026-10-01', 14)));
+      const rawDataMap = new Map<string, RawSourceData>(
+        (['inform', 'gpi', 'vdem', 'ucdp'] as const).map((source) => [
+          source,
+          { source, fetchedAt: '2026-10-15T06:00:00.000Z', indicators: [{ countryIso3: 'DEU', indicatorName: `${source}_x`, value: 1, year: 2026, source }] },
+        ]),
+      );
+      rawDataMap.set('worldbank', {
+        source: 'worldbank',
+        fetchedAt: '2026-10-15T06:00:00.000Z',
+        indicators: WB_INDICATOR_NAMES.map((name) => ({ countryIso3: 'DEU', indicatorName: name, value: 1, year: 2024, source: 'worldbank' })),
+      });
+      const bodies: string[] = [];
+      const spy = (async (_url: string, init?: RequestInit) => {
+        bodies.push(String(init?.body ?? ''));
+        return new Response('', { status: 200 });
+      }) as unknown as typeof fetch;
+
+      const result = await runStalenessMonitor({
+        date: '2026-10-15',
+        rawDataMap,
+        runStartedAt: new Date().toISOString(),
+        env: { NTFY_TOPIC: 'riccardo-claude' },
+        fetchImpl: spy,
+      });
+      assert.deepEqual(result.violations, ['CA travel advisories: dropped on 2026-10-15, last live 2026-10-01 (14 days old, max 7)']);
+      assert.equal(bodies.length, 1);
+      assert.match(bodies[0], /CA travel advisories/);
+      const written = JSON.parse(readFileSync(join(dir, 'data', 'raw', '2026-10-15', 'staleness.json'), 'utf-8'));
+      assert.deepEqual(written.notifiedViolationKeys, ['advisory:ca']);
+    } finally {
+      process.chdir(previousCwd);
+      rmSync(dir, { recursive: true, force: true });
+    }
   });
 });
