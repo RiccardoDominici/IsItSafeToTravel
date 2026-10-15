@@ -4,6 +4,67 @@
     {
       "type": "Feature",
       "bbox": [
+        -108.5,
+        19.2,
+        -108.5,
+        19.2
+      ],
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -108.5,
+          19.2
+        ]
+      },
+      "properties": {
+        "eventtype": "TC",
+        "eventid": 1001335,
+        "episodeid": 32,
+        "eventname": "SIMON-26",
+        "glide": "",
+        "name": "Tropical Cyclone SIMON-26",
+        "description": "Tropical Cyclone SIMON-26",
+        "htmldescription": "Orange Tropical Cyclone SIMON-26 in Mexico, México from: 07 Oct 2026  to: 15 Oct 2026 .",
+        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png",
+        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
+        "url": {
+          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001335&episodeid=32",
+          "report": "https://www.gdacs.org/report.aspx?eventid=1001335&episodeid=32&eventtype=TC",
+          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001335"
+        },
+        "alertlevel": "Orange",
+        "alertscore": 2,
+        "episodealertlevel": "Green",
+        "episodealertscore": 1,
+        "istemporary": "false",
+        "iscurrent": "true",
+        "country": "Mexico, México",
+        "fromdate": "2026-10-07T15:00:00",
+        "todate": "2026-10-15T09:00:00",
+        "datemodified": "2026-10-15T09:04:20",
+        "iso3": "MEX",
+        "source": "NOAA",
+        "sourceid": "",
+        "polygonlabel": "Centroid",
+        "Class": "Point_Centroid",
+        "countryonland": "",
+        "affectedcountries": [
+          {
+            "iso2": "MX",
+            "iso3": "MEX",
+            "countryname": "Mexico"
+          }
+        ],
+        "severitydata": {
+          "severity": 249.9984,
+          "severitytext": "Tropical Storm (maximum wind speed of 250 km/h)",
+          "severityunit": "km/h"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "bbox": [
         158.4,
         10.9,
         158.4,
@@ -65,67 +126,6 @@
     {
       "type": "Feature",
       "bbox": [
-        -108.6,
-        19.1,
-        -108.6,
-        19.1
-      ],
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -108.6,
-          19.1
-        ]
-      },
-      "properties": {
-        "eventtype": "TC",
-        "eventid": 1001335,
-        "episodeid": 31,
-        "eventname": "SIMON-26",
-        "glide": "",
-        "name": "Tropical Cyclone SIMON-26",
-        "description": "Tropical Cyclone SIMON-26",
-        "htmldescription": "Orange Tropical Cyclone SIMON-26 in Mexico from: 07 Oct 2026  to: 15 Oct 2026 .",
-        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Green/TC.png",
-        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "url": {
-          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001335&episodeid=31",
-          "report": "https://www.gdacs.org/report.aspx?eventid=1001335&episodeid=31&eventtype=TC",
-          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001335"
-        },
-        "alertlevel": "Orange",
-        "alertscore": 2,
-        "episodealertlevel": "Green",
-        "episodealertscore": 1,
-        "istemporary": "false",
-        "iscurrent": "true",
-        "country": "Mexico",
-        "fromdate": "2026-10-07T15:00:00",
-        "todate": "2026-10-15T03:00:00",
-        "datemodified": "2026-10-15T02:46:17",
-        "iso3": "MEX",
-        "source": "NOAA",
-        "sourceid": "",
-        "polygonlabel": "Centroid",
-        "Class": "Point_Centroid",
-        "countryonland": "",
-        "affectedcountries": [
-          {
-            "iso2": "MX",
-            "iso3": "MEX",
-            "countryname": "Mexico"
-          }
-        ],
-        "severitydata": {
-          "severity": 249.9984,
-          "severitytext": "Tropical Storm (maximum wind speed of 250 km/h)",
-          "severityunit": "km/h"
-        }
-      }
-    },
-    {
-      "type": "Feature",
-      "bbox": [
         -84,
         37.5,
         -84,
@@ -163,8 +163,8 @@
         "country": "United States",
         "fromdate": "2026-10-06T21:00:00",
         "todate": "2026-10-11T15:00:00",
-        "datemodified": "2026-10-15T08:37:56",
-        "iso3": "",
+        "datemodified": "2026-10-15T09:07:21",
+        "iso3": "USA",
         "source": "NOAA",
         "sourceid": "",
         "polygonlabel": "Centroid",
@@ -284,7 +284,7 @@
         "country": "Panama",
         "fromdate": "2026-10-09T17:56:06",
         "todate": "2026-10-09T17:56:06",
-        "datemodified": "2026-10-15T08:35:44",
+        "datemodified": "2026-10-15T08:39:43",
         "iso3": "PAN",
         "source": "NEIC",
         "sourceid": "",

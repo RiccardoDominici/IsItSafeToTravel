@@ -1,6 +1,6 @@
 {
   "date": "2026-10-15",
-  "generatedAt": "2026-10-15T08:52:57.253Z",
+  "generatedAt": "2026-10-15T09:43:25.369Z",
   "runYear": 2026,
   "informEdition": {
     "file": "INFORM_Risk_Mid_2026_v073.xlsx",
@@ -23,10 +23,10 @@
     {
       "key": "gpi",
       "label": "Global Peace Index",
-      "newestYear": 2026,
+      "newestYear": 2012,
       "maxLagYears": 1,
       "minYear": 2025,
-      "ok": true
+      "ok": false
     },
     {
       "key": "vdem",
@@ -61,6 +61,10 @@
       "ok": true
     }
   ],
-  "violations": [],
-  "notifiedViolationKeys": []
+  "violations": [
+    "Global Peace Index: newest 2012, needs at least 2025 (max lag 1 year)"
+  ],
+  "notifiedViolationKeys": [
+    "gpi"
+  ]
 }
