@@ -54,7 +54,7 @@ const CONFIRM_BODY = rec(
   'Confirma que deseas recibir las actualizaciones diarias sobre seguridad de viaje de IsItSafeToTravel. Si no has sido tú, simplemente ignora este correo.',
   "Merci de confirmer que vous souhaitez recevoir les mises à jour quotidiennes sur la sécurité des voyages d'IsItSafeToTravel. Si ce n'était pas vous, ignorez simplement cet e-mail.",
   'Confirme que deseja receber as atualizações diárias sobre segurança de viagem do IsItSafeToTravel. Se não foi você, basta ignorar este e-mail.',
-  '请确认您希望收到 IsItSafeToTravel 的每日旅行安全更新。如果这不是您本人的操作,请忽略此邮件。',
+  '请确认您希望收到 IsItSafeToTravel 的每日旅行安全更新。如果这不是您本人的操作，请忽略此邮件。',
   'Bitte bestätige, dass du tägliche Reisesicherheits-Updates von IsItSafeToTravel erhalten möchtest. Falls du das nicht warst, ignoriere einfach diese E-Mail.',
 );
 
@@ -70,7 +70,7 @@ const CONFIRM_FOOTER = rec(
   'Recibes este mensaje porque alguien introdujo esta dirección en isitsafetotravel.org. No se envía ningún correo hasta que confirmes. — Enviado por el operador de isitsafetotravel.org · Contacto: riccardo.dominici19999@gmail.com · Esto no es marketing.',
   "Vous recevez cet e-mail car quelqu'un a saisi cette adresse sur isitsafetotravel.org. Aucun e-mail n'est envoyé tant que vous n'avez pas confirmé. — Envoyé par l'opérateur d'isitsafetotravel.org · Contact : riccardo.dominici19999@gmail.com · Ceci n'est pas un e-mail marketing.",
   'Recebe esta mensagem porque este endereço foi inserido em isitsafetotravel.org. Nenhum e-mail é enviado antes da confirmação. — Enviado pelo operador do isitsafetotravel.org · Contacto: riccardo.dominici19999@gmail.com · Isto não é marketing.',
-  '您收到此邮件是因为有人在 isitsafetotravel.org 上输入了此邮箱地址。在您确认之前不会发送任何邮件。— 发件人:isitsafetotravel.org 运营者 · 联系方式:riccardo.dominici19999@gmail.com · 这不是营销邮件。',
+  '您收到此邮件是因为有人在 isitsafetotravel.org 上输入了此邮箱地址。在您确认之前不会发送任何邮件。发件人：isitsafetotravel.org 运营者 · 联系方式：riccardo.dominici19999@gmail.com · 这不是营销邮件。',
   'Du erhältst diese E-Mail, weil jemand diese Adresse auf isitsafetotravel.org eingegeben hat. Es werden keine E-Mails gesendet, bevor du bestätigst. — Gesendet vom Betreiber von isitsafetotravel.org · Kontakt: riccardo.dominici19999@gmail.com · Dies ist keine Werbung.',
 );
 
@@ -222,7 +222,7 @@ const ALREADY_CONFIRMED_TEXT = rec(
   'Ya estás suscrito. Recibirás actualizaciones sobre seguridad de viaje cuando algo relevante cambie.',
   'Vous êtes déjà abonné. Vous recevrez des mises à jour sur la sécurité des voyages en cas de changement notable.',
   'Já está inscrito. Vai receber atualizações sobre segurança de viagem sempre que algo relevante mudar.',
-  '您已订阅。当有重要变化时,我们会向您发送旅行安全更新。',
+  '您已订阅。当有重要变化时，我们会向您发送旅行安全更新。',
   'Du bist bereits abonniert. Du erhältst Reisesicherheits-Updates, sobald sich etwas Wesentliches ändert.',
 );
 
@@ -232,7 +232,7 @@ const CONFIRM_SUCCESS_TEXT = rec(
   'Suscripción confirmada. Recibirás actualizaciones sobre seguridad de viaje cuando algo relevante cambie.',
   'Abonnement confirmé. Vous recevrez des mises à jour sur la sécurité des voyages en cas de changement notable.',
   'Inscrição confirmada. Vai receber atualizações sobre segurança de viagem sempre que algo relevante mudar.',
-  '订阅已确认。当有重要变化时,我们会向您发送旅行安全更新。',
+  '订阅已确认。当有重要变化时，我们会向您发送旅行安全更新。',
   'Abonnement bestätigt. Du erhältst Reisesicherheits-Updates, sobald sich etwas Wesentliches ändert.',
 );
 
@@ -262,13 +262,13 @@ const UNSUB_CONFIRM_TEXT = rec(
   '¿Quieres dejar de recibir las actualizaciones diarias sobre seguridad de viaje en esta dirección?',
   'Voulez-vous ne plus recevoir les mises à jour quotidiennes sur la sécurité des voyages à cette adresse ?',
   'Quer deixar de receber as atualizações diárias sobre segurança de viagem neste endereço?',
-  '您想停止在此邮箱接收每日旅行安全更新吗?',
+  '您想停止在此邮箱接收每日旅行安全更新吗？',
   'Möchtest du keine täglichen Reisesicherheits-Updates mehr an diese Adresse erhalten?',
 );
 
 const UNSUB_CONFIRM_BUTTON = rec(
   'Yes, unsubscribe me', 'Sì, annulla la mia iscrizione', 'Sí, darme de baja', 'Oui, me désabonner',
-  'Sim, cancelar a inscrição', '是的,取消订阅', 'Ja, abmelden',
+  'Sim, cancelar a inscrição', '是的，取消订阅', 'Ja, abmelden',
 );
 
 const UNSUB_ERROR_TEXT = rec(
@@ -329,7 +329,7 @@ const ERROR_RATE = rec(
   'Demasiados intentos: inténtalo de nuevo más tarde.',
   'Trop de tentatives — veuillez réessayer plus tard.',
   'Demasiadas tentativas — tente novamente mais tarde.',
-  '尝试次数过多,请稍后再试。',
+  '尝试次数过多，请稍后再试。',
   'Zu viele Versuche — bitte versuche es später erneut.',
 );
 
@@ -339,7 +339,7 @@ const ERROR_UNAVAILABLE = rec(
   'Las suscripciones no están disponibles temporalmente. Inténtalo de nuevo pronto.',
   'Les abonnements sont temporairement indisponibles. Veuillez réessayer bientôt.',
   'As inscrições estão temporariamente indisponíveis. Tente novamente em breve.',
-  '订阅功能暂时不可用,请稍后再试。',
+  '订阅功能暂时不可用，请稍后再试。',
   'Abonnements sind vorübergehend nicht verfügbar. Bitte versuche es bald erneut.',
 );
 
@@ -349,7 +349,7 @@ const ERROR_GENERIC = rec(
   'Algo salió mal. Inténtalo de nuevo.',
   "Une erreur s'est produite. Veuillez réessayer.",
   'Algo correu mal. Tente novamente.',
-  '出现问题,请重试。',
+  '出现问题，请重试。',
   'Etwas ist schiefgelaufen. Bitte versuche es erneut.',
 );
 
@@ -404,7 +404,7 @@ const DIGEST_FOOTER = rec(
   'Recibes este correo porque confirmaste una suscripción en isitsafetotravel.org. Enviado por el operador de isitsafetotravel.org (Italia) · riccardo.dominici19999@gmail.com · Nunca compartimos tu dirección.',
   'Vous recevez cet e-mail car vous avez confirmé un abonnement sur isitsafetotravel.org. Envoyé par l\'opérateur d\'isitsafetotravel.org (Italie) · riccardo.dominici19999@gmail.com · Nous ne partageons jamais votre adresse.',
   'Recebe este e-mail porque confirmou uma inscrição em isitsafetotravel.org. Enviado pelo operador do isitsafetotravel.org (Itália) · riccardo.dominici19999@gmail.com · Nunca partilhamos o seu endereço.',
-  '您收到此邮件是因为您在 isitsafetotravel.org 确认了订阅。发件人:isitsafetotravel.org 运营者(意大利)· riccardo.dominici19999@gmail.com · 我们绝不会分享您的邮箱地址。',
+  '您收到此邮件是因为您在 isitsafetotravel.org 确认了订阅。发件人：isitsafetotravel.org 运营者（意大利） · riccardo.dominici19999@gmail.com · 我们绝不会分享您的邮箱地址。',
   'Du erhältst diese E-Mail, weil du ein Abonnement auf isitsafetotravel.org bestätigt hast. Gesendet vom Betreiber von isitsafetotravel.org (Italien) · riccardo.dominici19999@gmail.com · Wir geben deine Adresse niemals weiter.',
 );
 

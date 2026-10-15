@@ -137,7 +137,7 @@ const ISSUER_LABEL: Record<string, Record<Locale, string>> = {
   us: { en: 'U.S. State Department', it: 'Dipartimento di Stato USA', es: 'Departamento de Estado de EE. UU.', fr: "Département d'État américain", pt: 'Departamento de Estado dos EUA', zh: '美国国务院', de: 'US-Außenministerium' },
   uk: { en: 'UK FCDO', it: 'FCDO britannico', es: 'FCDO del Reino Unido', fr: 'FCDO britannique', pt: 'FCDO do Reino Unido', zh: '英国外交部', de: 'Britisches FCDO' },
   ca: { en: 'Government of Canada', it: 'Governo del Canada', es: 'Gobierno de Canadá', fr: 'Gouvernement du Canada', pt: 'Governo do Canadá', zh: '加拿大政府', de: 'Regierung von Kanada' },
-  au: { en: 'Australia (DFAT)', it: 'Australia (DFAT)', es: 'Australia (DFAT)', fr: 'Australie (DFAT)', pt: 'Austrália (DFAT)', zh: '澳大利亚(DFAT)', de: 'Australien (DFAT)' },
+  au: { en: 'Australia (DFAT)', it: 'Australia (DFAT)', es: 'Australia (DFAT)', fr: 'Australie (DFAT)', pt: 'Austrália (DFAT)', zh: '澳大利亚（DFAT）', de: 'Australien (DFAT)' },
 };
 
 const LEVEL_LABEL: Record<string, Record<Locale, string>> = {
@@ -152,7 +152,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: '{a} supera a {b} entre los países más seguros del mundo', detail: '{a} sube al puesto #{rank} en la clasificación mundial de seguridad, superando a {b}.' },
     fr: { head: '{a} dépasse {b} parmi les pays les plus sûrs au monde', detail: '{a} grimpe au #{rank} du classement mondial de sécurité, dépassant {b}.' },
     pt: { head: '{a} ultrapassa {b} entre os países mais seguros do mundo', detail: '{a} sobe para #{rank} na classificação global de segurança, ultrapassando {b}.' },
-    zh: { head: '{a} 在全球最安全国家排名中超越 {b}', detail: '{a} 升至全球安全排名第 {rank} 位,超过 {b}。' },
+    zh: { head: '{a}在全球最安全国家排名中超越{b}', detail: '{a}升至全球安全排名第 {rank} 位，超过{b}。' },
     de: { head: '{a} überholt {b} unter den sichersten Ländern der Welt', detail: '{a} steigt auf Platz #{rank} im globalen Sicherheitsranking auf und überholt {b}.' },
   },
   score_jump_up: {
@@ -161,7 +161,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: 'El puntaje de seguridad de {country} sube a {score}', detail: '{country} ganó {delta} puntos en el último día, ahora {score}/10.' },
     fr: { head: 'Le score de sécurité de {country} grimpe à {score}', detail: '{country} a gagné {delta} points au cours de la dernière journée, désormais {score}/10.' },
     pt: { head: 'A pontuação de segurança de {country} sobe para {score}', detail: '{country} ganhou {delta} pontos no último dia, agora {score}/10.' },
-    zh: { head: '{country} 的安全评分升至 {score}', detail: '{country} 在过去一天内提升了 {delta} 分,现为 {score}/10。' },
+    zh: { head: '{country}的安全评分升至 {score}', detail: '{country}在过去一天内提升了 {delta} 分，现为 {score}/10。' },
     de: { head: 'Der Sicherheitswert von {country} steigt auf {score}', detail: '{country} hat im letzten Tag {delta} Punkte gewonnen, jetzt {score}/10.' },
   },
   score_jump_down: {
@@ -170,7 +170,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: 'El puntaje de seguridad de {country} baja a {score}', detail: '{country} perdió {delta} puntos en el último día, ahora {score}/10.' },
     fr: { head: 'Le score de sécurité de {country} chute à {score}', detail: '{country} a perdu {delta} points au cours de la dernière journée, désormais {score}/10.' },
     pt: { head: 'A pontuação de segurança de {country} cai para {score}', detail: '{country} perdeu {delta} pontos no último dia, agora {score}/10.' },
-    zh: { head: '{country} 的安全评分降至 {score}', detail: '{country} 在过去一天内下降了 {delta} 分,现为 {score}/10。' },
+    zh: { head: '{country}的安全评分降至 {score}', detail: '{country}在过去一天内下降了 {delta} 分，现为 {score}/10。' },
     de: { head: 'Der Sicherheitswert von {country} sinkt auf {score}', detail: '{country} hat im letzten Tag {delta} Punkte verloren, jetzt {score}/10.' },
   },
   band_change_up: {
@@ -179,7 +179,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: "{country} mejora de '{from}' a '{to}'", detail: 'La calificación de seguridad de {country} mejoró a {to} ({score}/10), desde {from}.' },
     fr: { head: "{country} passe de '{from}' à '{to}'", detail: "La note de sécurité de {country} s'est améliorée à {to} ({score}/10), contre {from} auparavant." },
     pt: { head: "{country} melhora de '{from}' para '{to}'", detail: 'A classificação de segurança de {country} melhorou para {to} ({score}/10), a partir de {from}.' },
-    zh: { head: '{country} 从「{from}」升级为「{to}」', detail: '{country} 的安全评级提升至 {to}({score}/10),此前为 {from}。' },
+    zh: { head: '{country}从「{from}」升级为「{to}」', detail: '{country}的安全评级提升至{to}（{score}/10），此前为{from}。' },
     de: { head: "{country} von '{from}' zu '{to}' hochgestuft", detail: 'Die Sicherheitsbewertung von {country} verbesserte sich auf {to} ({score}/10), zuvor {from}.' },
   },
   band_change_down: {
@@ -188,7 +188,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: "{country} empeora de '{from}' a '{to}'", detail: 'La calificación de seguridad de {country} bajó a {to} ({score}/10), desde {from}.' },
     fr: { head: "{country} rétrograde de '{from}' à '{to}'", detail: "La note de sécurité de {country} est tombée à {to} ({score}/10), contre {from} auparavant." },
     pt: { head: "{country} piora de '{from}' para '{to}'", detail: 'A classificação de segurança de {country} caiu para {to} ({score}/10), a partir de {from}.' },
-    zh: { head: '{country} 从「{from}」降级为「{to}」', detail: '{country} 的安全评级降至 {to}({score}/10),此前为 {from}。' },
+    zh: { head: '{country}从「{from}」降级为「{to}」', detail: '{country}的安全评级降至{to}（{score}/10），此前为{from}。' },
     de: { head: "{country} von '{from}' zu '{to}' herabgestuft", detail: 'Die Sicherheitsbewertung von {country} fiel auf {to} ({score}/10), zuvor {from}.' },
   },
   top10_enter: {
@@ -197,7 +197,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: '{country} entra en los 10 países más seguros del mundo', detail: '{country} sube al puesto #{rank} a nivel mundial, uniéndose a los 10 destinos más seguros.' },
     fr: { head: '{country} entre dans le top 10 des pays les plus sûrs au monde', detail: '{country} grimpe au #{rank} mondial, rejoignant le top 10 des destinations les plus sûres.' },
     pt: { head: '{country} entra nos 10 países mais seguros do mundo', detail: '{country} sobe para #{rank} globalmente, juntando-se aos 10 destinos mais seguros.' },
-    zh: { head: '{country} 进入全球最安全的10个国家', detail: '{country} 升至全球第 {rank} 位,跻身最安全的10个目的地之列。' },
+    zh: { head: '{country}进入全球最安全的10个国家', detail: '{country}升至全球第 {rank} 位，跻身最安全的10个目的地之列。' },
     de: { head: '{country} steigt in die 10 sichersten Länder der Welt auf', detail: '{country} steigt weltweit auf Platz #{rank} und gehört nun zu den 10 sichersten Reisezielen.' },
   },
   top10_exit: {
@@ -206,7 +206,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: '{country} sale de los 10 países más seguros del mundo', detail: '{country} baja al puesto #{rank}, dejando los 10 destinos más seguros.' },
     fr: { head: '{country} sort du top 10 des pays les plus sûrs au monde', detail: '{country} recule au #{rank}, quittant le top 10 des destinations les plus sûres.' },
     pt: { head: '{country} sai dos 10 países mais seguros do mundo', detail: '{country} cai para #{rank}, deixando os 10 destinos mais seguros.' },
-    zh: { head: '{country} 跌出全球最安全的10个国家', detail: '{country} 降至第 {rank} 位,退出最安全的10个目的地之列。' },
+    zh: { head: '{country}跌出全球最安全的10个国家', detail: '{country}降至第 {rank} 位，退出最安全的10个目的地之列。' },
     de: { head: '{country} fällt aus den 10 sichersten Ländern der Welt', detail: '{country} fällt auf Platz #{rank} und verlässt die 10 sichersten Reiseziele.' },
   },
   severe_advisory: {
@@ -215,7 +215,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: "{issuer} emite una advertencia de '{levelLabel}' para {country}", detail: '{issuer} elevó su advertencia para {country} al nivel {level} — {levelLabel}.' },
     fr: { head: "{issuer} émet un avis '{levelLabel}' pour {country}", detail: '{issuer} a relevé son avis pour {country} au niveau {level} — {levelLabel}.' },
     pt: { head: "{issuer} emite um alerta de '{levelLabel}' para {country}", detail: '{issuer} elevou o seu alerta para {country} para o nível {level} — {levelLabel}.' },
-    zh: { head: '{issuer} 对 {country} 发布「{levelLabel}」警告', detail: '{issuer} 将对 {country} 的警告提升至 {level} 级 — {levelLabel}。' },
+    zh: { head: '{issuer}对{country}发布「{levelLabel}」警告', detail: '{issuer}将对{country}的警告提升至第 {level} 级——{levelLabel}。' },
     de: { head: "{issuer} gibt eine Warnung '{levelLabel}' für {country} heraus", detail: '{issuer} hat die Reisewarnung für {country} auf Stufe {level} angehoben — {levelLabel}.' },
   },
   new_country: {
@@ -224,7 +224,7 @@ const TEMPLATES: Record<string, Record<Locale, { head: string; detail: string }>
     es: { head: '{country} se une a IsItSafeToTravel', detail: `{country} ahora tiene un puntaje de seguridad diario, monitoreado por ${SOURCE_COUNT_DISPLAY} fuentes globales.` },
     fr: { head: '{country} rejoint IsItSafeToTravel', detail: `{country} dispose désormais d'un score de sécurité quotidien, suivi par ${SOURCE_COUNT_DISPLAY} sources mondiales.` },
     pt: { head: '{country} adicionado ao IsItSafeToTravel', detail: `{country} agora tem uma pontuação de segurança diária, monitorizada por ${SOURCE_COUNT_DISPLAY} fontes globais.` },
-    zh: { head: '{country} 已加入 IsItSafeToTravel', detail: `{country} 现已拥有每日安全评分，由${SOURCE_COUNT_DISPLAY} 个全球数据源持续追踪。` },
+    zh: { head: '{country}已加入 IsItSafeToTravel', detail: `{country}现已拥有每日安全评分，由 ${SOURCE_COUNT_DISPLAY} 个全球数据源持续追踪。` },
     de: { head: '{country} zu IsItSafeToTravel hinzugefügt', detail: `{country} hat jetzt einen täglichen Sicherheitswert, verfolgt über ${SOURCE_COUNT_DISPLAY} globale Quellen.` },
   },
 };
