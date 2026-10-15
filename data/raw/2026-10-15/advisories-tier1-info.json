@@ -1492,6 +1492,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_281.html"
     }
   },
+  "COK": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:19:03.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/cookeilanden",
+      "updatedAt": "2026-04-24T15:00:42.271Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_300.html"
+    }
+  },
   "GRD": {
     "de": {
       "level": 1,
@@ -1541,28 +1563,6 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_096.html"
-    }
-  },
-  "COK": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:19:03.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/cookeilanden",
-      "updatedAt": "2026-04-24T15:00:42.271Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_300.html"
     }
   },
   "HTI": {
@@ -3448,7 +3448,7 @@
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/filipijnen",
-      "updatedAt": "2026-09-09T08:53:43.729Z"
+      "updatedAt": "2026-10-15T08:38:12.413Z"
     },
     "jp": {
       "level": 2,
@@ -4940,15 +4940,6 @@
       "updatedAt": "2026-04-22T14:31:52.582Z"
     }
   },
-  "AIA": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
-      "updatedAt": "2026-03-19T09:26:41.240Z"
-    }
-  },
   "ATA": {
     "nl": {
       "level": 2,
@@ -4976,19 +4967,22 @@
       "updatedAt": "2026-07-02T08:58:20.599Z"
     }
   },
-  "PYF": {
+  "CUW": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
-      "updatedAt": "2026-06-19T15:03:40.428Z"
-    },
-    "jp": {
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/curacao",
+      "updatedAt": "2026-06-17T15:21:59.720Z"
+    }
+  },
+  "AIA": {
+    "nl": {
       "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/anguilla",
+      "updatedAt": "2026-03-19T09:26:41.240Z"
     }
   },
   "GUF": {
@@ -5000,24 +4994,6 @@
       "updatedAt": "2026-06-01T14:56:20.981Z"
     }
   },
-  "CUW": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/curacao",
-      "updatedAt": "2026-06-17T15:21:59.720Z"
-    }
-  },
-  "MTQ": {
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
-      "updatedAt": "2026-10-08T08:41:17.304Z"
-    }
-  },
   "GRL": {
     "nl": {
       "level": 1,
@@ -5027,13 +5003,13 @@
       "updatedAt": "2026-09-18T13:39:22.352Z"
     }
   },
-  "MSR": {
+  "GLP": {
     "nl": {
-      "level": 1,
-      "text": "Veilig",
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montserrat",
-      "updatedAt": "2026-03-19T08:52:08.287Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guadeloupe",
+      "updatedAt": "2026-06-19T10:13:14.486Z"
     }
   },
   "NCL": {
@@ -5051,13 +5027,37 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_299.html"
     }
   },
-  "GLP": {
+  "MSR": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montserrat",
+      "updatedAt": "2026-03-19T08:52:08.287Z"
+    }
+  },
+  "PYF": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
+      "updatedAt": "2026-06-19T15:03:40.428Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
+    }
+  },
+  "MTQ": {
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guadeloupe",
-      "updatedAt": "2026-06-19T10:13:14.486Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/martinique",
+      "updatedAt": "2026-10-08T08:41:17.304Z"
     }
   },
   "PCN": {
@@ -5069,22 +5069,22 @@
       "updatedAt": "2026-04-24T07:56:05.606Z"
     }
   },
-  "PRI": {
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/puerto-rico",
-      "updatedAt": "2026-10-13T12:52:54.304Z"
-    }
-  },
-  "SJM": {
+  "SXM": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
-      "updatedAt": "2026-05-11T12:12:10.391Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sint-maarten",
+      "updatedAt": "2026-08-13T14:52:15.078Z"
+    }
+  },
+  "TKL": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tokelau-eilanden",
+      "updatedAt": "2026-06-17T11:25:43.433Z"
     }
   },
   "TCA": {
@@ -5094,15 +5094,6 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/turks-en-caicoseilanden",
       "updatedAt": "2026-06-25T10:55:20.935Z"
-    }
-  },
-  "VIR": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
-      "updatedAt": "2026-06-12T14:37:01.179Z"
     }
   },
   "REU": {
@@ -5132,30 +5123,31 @@
       "updatedAt": "2026-04-24T12:02:34.368Z"
     }
   },
-  "SXM": {
+  "PRI": {
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/puerto-rico",
+      "updatedAt": "2026-10-13T12:52:54.304Z"
+    }
+  },
+  "SJM": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sint-maarten",
-      "updatedAt": "2026-08-13T14:52:15.078Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
+      "updatedAt": "2026-05-11T12:12:10.391Z"
     }
   },
-  "TKL": {
+  "VIR": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/tokelau-eilanden",
-      "updatedAt": "2026-06-17T11:25:43.433Z"
-    }
-  },
-  "GUM": {
-    "jp": {
-      "level": 1,
-      "text": "Exercise caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_224.html"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaanse-maagdeneilanden",
+      "updatedAt": "2026-06-12T14:37:01.179Z"
     }
   },
   "MNP": {
@@ -5164,6 +5156,14 @@
       "text": "Exercise caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_223.html"
+    }
+  },
+  "GUM": {
+    "jp": {
+      "level": 1,
+      "text": "Exercise caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_224.html"
     }
   },
   "GIB": {

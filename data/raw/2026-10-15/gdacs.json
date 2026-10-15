@@ -4,6 +4,67 @@
     {
       "type": "Feature",
       "bbox": [
+        158.4,
+        10.9,
+        158.4,
+        10.9
+      ],
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          158.4,
+          10.9
+        ]
+      },
+      "properties": {
+        "eventtype": "TC",
+        "eventid": 1001338,
+        "episodeid": 4,
+        "eventname": "CHAMPI-26",
+        "glide": "",
+        "name": "Tropical Cyclone CHAMPI-26",
+        "description": "Tropical Cyclone CHAMPI-26",
+        "htmldescription": "Orange Tropical Cyclone CHAMPI-26 in Guam, Northern Mariana Islands from: 14 Oct 2026  to: 15 Oct 2026 .",
+        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
+        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
+        "url": {
+          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001338&episodeid=4",
+          "report": "https://www.gdacs.org/report.aspx?eventid=1001338&episodeid=4&eventtype=TC",
+          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001338"
+        },
+        "alertlevel": "Orange",
+        "alertscore": 2,
+        "episodealertlevel": "Orange",
+        "episodealertscore": 2,
+        "istemporary": "false",
+        "iscurrent": "true",
+        "country": "Guam, Northern Mariana Islands",
+        "fromdate": "2026-10-14T12:00:00",
+        "todate": "2026-10-15T06:00:00",
+        "datemodified": "2026-10-15T08:15:32",
+        "iso3": "GUM",
+        "source": "JTWC",
+        "sourceid": "",
+        "polygonlabel": "Centroid",
+        "Class": "Point_Centroid",
+        "countryonland": "",
+        "affectedcountries": [
+          {
+            "iso2": "GU",
+            "iso3": "GUM",
+            "countryname": "Guam"
+          }
+        ],
+        "severitydata": {
+          "severity": 231.48,
+          "severitytext": "Tropical Depression (maximum wind speed of 231 km/h)",
+          "severityunit": "km/h"
+        }
+      }
+    },
+    {
+      "type": "Feature",
+      "bbox": [
         -108.6,
         19.1,
         -108.6,
@@ -65,67 +126,6 @@
     {
       "type": "Feature",
       "bbox": [
-        159.4,
-        10.7,
-        159.4,
-        10.7
-      ],
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          159.4,
-          10.7
-        ]
-      },
-      "properties": {
-        "eventtype": "TC",
-        "eventid": 1001338,
-        "episodeid": 3,
-        "eventname": "TWENTYNINE-26",
-        "glide": "",
-        "name": "Tropical Cyclone TWENTYNINE-26",
-        "description": "Tropical Cyclone TWENTYNINE-26",
-        "htmldescription": "Orange Tropical Cyclone TWENTYNINE-26 in Guam from: 14 Oct 2026  to: 15 Oct 2026 .",
-        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "url": {
-          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001338&episodeid=3",
-          "report": "https://www.gdacs.org/report.aspx?eventid=1001338&episodeid=3&eventtype=TC",
-          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001338"
-        },
-        "alertlevel": "Orange",
-        "alertscore": 2,
-        "episodealertlevel": "Orange",
-        "episodealertscore": 2,
-        "istemporary": "false",
-        "iscurrent": "true",
-        "country": "Guam",
-        "fromdate": "2026-10-14T12:00:00",
-        "todate": "2026-10-15T00:00:00",
-        "datemodified": "2026-10-15T02:49:22",
-        "iso3": "GUM",
-        "source": "JTWC",
-        "sourceid": "",
-        "polygonlabel": "Centroid",
-        "Class": "Point_Centroid",
-        "countryonland": "",
-        "affectedcountries": [
-          {
-            "iso2": "GU",
-            "iso3": "GUM",
-            "countryname": "Guam"
-          }
-        ],
-        "severitydata": {
-          "severity": 231.48,
-          "severitytext": "Tropical Depression (maximum wind speed of 231 km/h)",
-          "severityunit": "km/h"
-        }
-      }
-    },
-    {
-      "type": "Feature",
-      "bbox": [
         -84,
         37.5,
         -84,
@@ -163,7 +163,7 @@
         "country": "United States",
         "fromdate": "2026-10-06T21:00:00",
         "todate": "2026-10-11T15:00:00",
-        "datemodified": "2026-10-15T08:02:25",
+        "datemodified": "2026-10-15T08:37:56",
         "iso3": "",
         "source": "NOAA",
         "sourceid": "",
@@ -264,7 +264,7 @@
         "eventid": 1570339,
         "episodeid": 1738684,
         "eventname": "",
-        "glide": "EQ-2026-000188-PAN",
+        "glide": "",
         "name": "Earthquake in Panama",
         "description": "Earthquake in Panama",
         "htmldescription": "Orange M 7.7 Earthquake in Panama at: 09 Oct 2026 17:56:06.",
@@ -284,7 +284,7 @@
         "country": "Panama",
         "fromdate": "2026-10-09T17:56:06",
         "todate": "2026-10-09T17:56:06",
-        "datemodified": "2026-10-12T20:01:14",
+        "datemodified": "2026-10-15T08:35:44",
         "iso3": "PAN",
         "source": "NEIC",
         "sourceid": "",
