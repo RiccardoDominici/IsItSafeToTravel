@@ -1,8 +1,8 @@
 import type { FetchResult, RawSourceData, RawIndicator } from '../types.js';
-import { writeJson, readJson, getRawDir, findLatestCached, ensureDir } from '../utils/fs.js';
+import { writeJson, readJson, getRawDir, ensureDir } from '../utils/fs.js';
 import { getCountryByName, getCountryByIso3 } from '../config/countries.js';
 import { join } from 'node:path';
-import { writeFileSync } from 'node:fs';
+import { existsSync, readdirSync, writeFileSync } from 'node:fs';
 import * as XLSX from 'xlsx';
 
 const GPI_EXCEL_URL =
@@ -14,6 +14,13 @@ const GPI_EXCEL_URL =
 // The xlsx above is kept as a documented fallback (D3 fallback chain).
 const GPI_MANIFEST_URL = 'https://gpi.economicsandpeace.org/data/gpi/manifest.json';
 const GPI_JSON_YEAR_URL = (year: number) => `https://gpi.economicsandpeace.org/data/gpi/${year}.json`;
+
+/** Project bot identity (same string as the INFORM and advisory fetchers); robots.txt allows it. */
+const GPI_HEADERS = { 'User-Agent': 'Mozilla/5.0 (compatible; IsItSafeToTravelBot/1.0; +https://isitsafetotravel.org)' };
+/** Pause before the single retry of the current edition's file. */
+const EDITION_RETRY_DELAY_MS = 3_000;
+/** How many recent data/raw/<date>/ folders the cache fallback inspects. */
+const CACHE_SCAN_DAYS = 60;
 
 /**
  * Common country name aliases that differ between GPI and ISO standard names.
@@ -132,40 +139,125 @@ export function gpiEntriesToIndicators(entries: readonly GpiJsonEntry[], year: n
  * A year whose fetch fails is skipped (not fatal) — the manifest lists 19 years
  * as of 2026; losing one still leaves the vintage-selection logic usable.
  */
-export async function parseGpiJsonAllYears(): Promise<Map<number, RawIndicator[]>> {
-  const manifestRes = await fetch(GPI_MANIFEST_URL, { signal: AbortSignal.timeout(30_000) });
+export interface GpiJsonFetch {
+  /** The newest year the manifest lists: the current edition, the only one the score may use. */
+  edition: number;
+  /** Every year that loaded (for backfill vintage selection); may lack `edition`. */
+  byYear: Map<number, RawIndicator[]>;
+}
+
+/** One year's JSON as indicators, or null (HTTP error, network error, unexpected shape). */
+async function fetchGpiYear(year: number): Promise<RawIndicator[] | null> {
+  try {
+    const res = await fetch(GPI_JSON_YEAR_URL(year), { headers: GPI_HEADERS, signal: AbortSignal.timeout(30_000) });
+    if (!res.ok) {
+      console.warn(`[GPI] JSON ${year}.json: HTTP ${res.status} — skipping this year`);
+      return null;
+    }
+    const entries = (await res.json()) as GpiJsonEntry[];
+    if (!Array.isArray(entries)) return null;
+    const indicators = gpiEntriesToIndicators(entries, year);
+    return indicators.length > 0 ? indicators : null;
+  } catch (yearError) {
+    const msg = yearError instanceof Error ? yearError.message : String(yearError);
+    console.warn(`[GPI] JSON ${year}.json: fetch failed (${msg}) — skipping this year`);
+    return null;
+  }
+}
+
+export async function parseGpiJsonAllYears(): Promise<GpiJsonFetch> {
+  const manifestRes = await fetch(GPI_MANIFEST_URL, { headers: GPI_HEADERS, signal: AbortSignal.timeout(30_000) });
   if (!manifestRes.ok) {
     throw new Error(`manifest.json: HTTP ${manifestRes.status}`);
   }
   const manifest = (await manifestRes.json()) as { years?: number[] };
-  const years = Array.isArray(manifest.years) ? manifest.years : [];
+  const years = Array.isArray(manifest.years) ? manifest.years.filter((y) => Number.isFinite(y)) : [];
   if (years.length === 0) {
     throw new Error('manifest.json: no years array');
   }
+  const edition = Math.max(...years);
 
   const byYear = new Map<number, RawIndicator[]>();
-
   await Promise.all(
     years.map(async (year) => {
-      try {
-        const res = await fetch(GPI_JSON_YEAR_URL(year), { signal: AbortSignal.timeout(30_000) });
-        if (!res.ok) {
-          console.warn(`[GPI] JSON ${year}.json: HTTP ${res.status} — skipping this year`);
-          return;
-        }
-        const entries = (await res.json()) as GpiJsonEntry[];
-        if (!Array.isArray(entries)) return;
-
-        const indicators = gpiEntriesToIndicators(entries, year);
-        if (indicators.length > 0) byYear.set(year, indicators);
-      } catch (yearError) {
-        const msg = yearError instanceof Error ? yearError.message : String(yearError);
-        console.warn(`[GPI] JSON ${year}.json: fetch failed (${msg}) — skipping this year`);
-      }
+      const indicators = await fetchGpiYear(year);
+      if (indicators) byYear.set(year, indicators);
     }),
   );
 
-  return byYear;
+  // The current edition is the one that matters: retry it once (2026-10-15, run 38711757500:
+  // every year but 2012 failed with "fetch failed" on a single network blip).
+  if (!byYear.has(edition)) {
+    await new Promise((resolve) => setTimeout(resolve, EDITION_RETRY_DELAY_MS));
+    const retried = await fetchGpiYear(edition);
+    if (retried) {
+      console.warn(`[GPI] JSON ${edition}.json: loaded on retry`);
+      byYear.set(edition, retried);
+    }
+  }
+
+  return { edition, byYear };
+}
+
+/**
+ * The indicators of the CURRENT edition, or null when that edition did not load.
+ *
+ * Never falls back to the newest year that happened to load: on 2026-10-15 only 2012.json came
+ * through, the old code published it as "the GPI", and the five-year rule then dropped every row,
+ * so all scores went out without the Global Peace Index. An older year is a superseded edition,
+ * which weighs nothing (formula v10, SPEC §1.1); the caller falls back to the cached copy of the
+ * current edition instead.
+ */
+export function selectCurrentGpiEdition(byYear: ReadonlyMap<number, RawIndicator[]>, edition: number): RawIndicator[] | null {
+  const indicators = byYear.get(edition);
+  return indicators && indicators.length > 0 ? indicators : null;
+}
+
+/** Edition of a parsed GPI file: the newest data year among its indicators (0 when empty). */
+export function gpiEditionOf(indicators: readonly RawIndicator[]): number {
+  let edition = 0;
+  for (const i of indicators) if (i.year > edition) edition = i.year;
+  return edition;
+}
+
+export interface CachedGpi {
+  date: string;
+  data: RawSourceData;
+}
+
+/**
+ * Best cached gpi-parsed.json: the newest EDITION first, then the most recent date. Choosing by
+ * date alone would pick up a bad day's file (the 2026-10-15 run wrote a 2012 "edition").
+ */
+export function pickBestCachedGpi(candidates: readonly CachedGpi[]): CachedGpi | null {
+  let best: CachedGpi | null = null;
+  let bestEdition = 0;
+  for (const c of candidates) {
+    const edition = gpiEditionOf(c.data.indicators ?? []);
+    if (edition === 0) continue;
+    if (!best || edition > bestEdition || (edition === bestEdition && c.date > best.date)) {
+      best = c;
+      bestEdition = edition;
+    }
+  }
+  return best;
+}
+
+/** Read the gpi-parsed.json files of the most recent CACHE_SCAN_DAYS data/raw/<date>/ folders up to `untilDate` (inclusive). */
+function readCachedGpiCandidates(untilDate: string): CachedGpi[] {
+  const rawBase = join(process.cwd(), 'data', 'raw');
+  if (!existsSync(rawBase)) return [];
+  const dates = readdirSync(rawBase)
+    .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d) && d <= untilDate)
+    .sort()
+    .reverse()
+    .slice(0, CACHE_SCAN_DAYS);
+  const out: CachedGpi[] = [];
+  for (const date of dates) {
+    const data = readJson<RawSourceData>(join(rawBase, date, 'gpi-parsed.json'));
+    if (data && Array.isArray(data.indicators) && data.indicators.length > 0) out.push({ date, data });
+  }
+  return out;
 }
 
 /** Serialize a Map<year, RawIndicator[]> to a plain JSON-friendly object for disk persistence. */
@@ -194,6 +286,7 @@ export function deserializeGpiByYear(obj: Record<string, RawIndicator[]>): Map<n
 async function fetchGpiXlsxFallback(rawDir: string, fetchedAt: string): Promise<FetchResult> {
   console.log('[GPI] Fetching Global Peace Index data (xlsx fallback)...');
   const response = await fetch(GPI_EXCEL_URL, {
+    headers: GPI_HEADERS,
     signal: AbortSignal.timeout(60_000),
   });
 
@@ -234,28 +327,34 @@ export async function fetchGpi(date: string): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
   const errors: string[] = [];
+  // Set once the manifest has been read: the edition the score must use.
+  let expectedEdition: number | null = null;
 
   // Primary (v9.1, D3): IEP GPI JSON manifest — current edition, all published
   // years, so retroactive revisions to earlier years are picked up too.
   try {
     console.log('[GPI] Fetching Global Peace Index data (JSON manifest, primary)...');
-    const byYear = await parseGpiJsonAllYears();
-    if (byYear.size === 0) throw new Error('no years parsed from JSON manifest');
+    const { edition, byYear } = await parseGpiJsonAllYears();
+    expectedEdition = edition;
+    const indicators = selectCurrentGpiEdition(byYear, edition);
+    if (!indicators) {
+      throw new Error(
+        `current edition ${edition}.json did not load` +
+          (byYear.size > 0 ? ` (${byYear.size} older year(s) did, never used as current)` : ''),
+      );
+    }
 
     // Persist the FULL all-years table for backfill vintage-selection (mirrors
-    // gpi.xlsx's role for the xlsx path — see backfill.ts injectGpiForDate).
+    // gpi.xlsx's role for the xlsx path — see backfill.ts injectGpiForDate). Only
+    // when the current edition loaded, so a partial table never replaces a full one.
     writeJson(join(rawDir, 'gpi-json-all-years.json'), serializeGpiByYear(byYear));
-
-    const latestYear = Math.max(...byYear.keys());
-    const indicators = byYear.get(latestYear) ?? [];
-    if (indicators.length === 0) throw new Error(`no indicators for latest year ${latestYear}`);
 
     const sourceData: RawSourceData = { source: 'gpi', fetchedAt, indicators };
     writeJson(join(rawDir, 'gpi-parsed.json'), sourceData);
 
     const uniqueCountries = new Set(indicators.map((i) => i.countryIso3));
     console.log(
-      `[GPI] JSON: ${uniqueCountries.size} countries for ${latestYear} (${byYear.size} years persisted for backfill)`,
+      `[GPI] JSON: ${uniqueCountries.size} countries for ${edition} (${byYear.size} years persisted for backfill)`,
     );
 
     return {
@@ -266,35 +365,41 @@ export async function fetchGpi(date: string): Promise<FetchResult> {
     };
   } catch (jsonError) {
     const msg = jsonError instanceof Error ? jsonError.message : String(jsonError);
-    console.warn(`[GPI] JSON fetch failed: ${msg} — falling back to xlsx`);
+    console.warn(`[GPI] JSON fetch failed: ${msg} — falling back to the cached edition`);
     errors.push(`JSON: ${msg}`);
   }
 
-  // Fallback 1 (D3 fallback chain): existing 2023 xlsx.
+  // Fallback 1: the cached copy of the newest edition we hold (a previous day's
+  // gpi-parsed.json, chosen by edition first, then date). The current edition fetched
+  // yesterday is the same data; a superseded one is only accepted with a loud warning.
+  const cached = pickBestCachedGpi(readCachedGpiCandidates(date));
+  if (cached) {
+    const cachedEdition = gpiEditionOf(cached.data.indicators);
+    const superseded = expectedEdition !== null && cachedEdition < expectedEdition;
+    const note = superseded
+      ? `cached GPI ${cachedEdition} from ${cached.date} is superseded by ${expectedEdition}, which did not load`
+      : `using cached GPI ${cachedEdition} from ${cached.date}`;
+    if (superseded) console.error(`[GPI] ${note}`);
+    else console.warn(`[GPI] ${note}`);
+    writeJson(join(rawDir, 'gpi-parsed.json'), cached.data);
+    const uniqueCountries = new Set(cached.data.indicators.map((i) => i.countryIso3));
+    return {
+      source: 'gpi',
+      success: true,
+      countriesFound: uniqueCountries.size,
+      error: `${note}. Errors: ${errors.join('; ')}`,
+      fetchedAt: cached.data.fetchedAt,
+    };
+  }
+
+  // Fallback 2 (D3 fallback chain, last resort when nothing is cached): the frozen
+  // 2023 xlsx. A superseded edition, so only on a fresh checkout with no data/raw.
   try {
     return await fetchGpiXlsxFallback(rawDir, fetchedAt);
   } catch (xlsxError) {
     const msg = xlsxError instanceof Error ? xlsxError.message : String(xlsxError);
     console.warn(`[GPI] xlsx fallback failed: ${msg}`);
     errors.push(`xlsx: ${msg}`);
-  }
-
-  // Fallback 2: last cached gpi-parsed.json (either source).
-  const cached = findLatestCached('gpi-parsed.json');
-  if (cached) {
-    const cachedData = readJson<RawSourceData>(cached);
-    if (cachedData) {
-      console.warn(`[GPI] Using cached data from ${cached}`);
-      writeJson(join(rawDir, 'gpi-parsed.json'), cachedData);
-      const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
-      return {
-        source: 'gpi',
-        success: true,
-        countriesFound: uniqueCountries.size,
-        error: `Used cached data. Errors: ${errors.join('; ')}`,
-        fetchedAt: cachedData.fetchedAt,
-      };
-    }
   }
 
   return {
