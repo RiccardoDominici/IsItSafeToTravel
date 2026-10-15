@@ -3,8 +3,6 @@ import { strict as assert } from 'node:assert';
 import {
   communityCopy,
   fillCommunityTemplate,
-  formatProseDecimal,
-  formatSignedPoints,
   insufficientProgressText,
   placeFor,
   voteQuestion,
@@ -201,21 +199,5 @@ describe('SEO gate compatibility', () => {
       const filled = fillCommunityTemplate(value, ALL_TOKENS);
       assert.ok(!/\d\s*个来源/.test(filled), `zh.${key}: "${filled}"`);
     }
-  });
-});
-
-describe('number formatting', () => {
-  it('prose decimals follow the locale separator', () => {
-    assert.equal(formatProseDecimal('en', 1), '1.0');
-    assert.equal(formatProseDecimal('zh', 1), '1.0');
-    for (const lang of ['it', 'es', 'fr', 'pt', 'de'] as const) assert.equal(formatProseDecimal(lang, 1), '1,0');
-  });
-
-  it('signed points use U+2212 and never show a signed zero', () => {
-    assert.equal(formatSignedPoints(0.34), '+0.3');
-    assert.equal(formatSignedPoints(-0.36), '−0.4');
-    assert.equal(formatSignedPoints(1), '+1.0');
-    assert.equal(formatSignedPoints(0.04), '0.0');
-    assert.equal(formatSignedPoints(-0.04), '0.0');
   });
 });

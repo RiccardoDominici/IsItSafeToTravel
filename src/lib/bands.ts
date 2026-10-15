@@ -5,12 +5,17 @@
 // different label set: excellent/good/caution/risky/danger) — only the numeric thresholds
 // are shared. See PLAN-news.md "bands.ts" section.
 import type { BandKey } from '../pipeline/news/types';
+import { roundForDisplay } from './display-number';
 
 export const BAND_ORDER: BandKey[] = ['danger', 'high_caution', 'moderate', 'good', 'excellent'];
 
-/** Band on the displayed 1-decimal score, matching CLAUDE.md's frozen thresholds. */
+/**
+ * Band on the displayed 1-decimal score, matching CLAUDE.md's frozen thresholds. Rounded by
+ * roundForDisplay, the rule every page prints the score with (display-number.ts), so the band
+ * label can never disagree with the figure next to it.
+ */
 export function getBand(score: number): BandKey {
-  const s = Number(score.toFixed(1));
+  const s = roundForDisplay(score, 1);
   if (s >= 8) return 'excellent';
   if (s >= 7) return 'good';
   if (s >= 6) return 'moderate';

@@ -18,9 +18,9 @@
  * offers an equally natural invariable form (it "al sicuro", fr/pt "en/em sécurité/segurança",
  * de predicate "sicher"); es keeps the standard generic masculine ("seguro").
  *
- * Tokens are filled by fillCommunityTemplate. Scores shown in the block use the page's own number
- * format (toFixed(1), as ScoreHero does); the cap inside running prose uses the locale's decimal
- * separator (formatProseDecimal), as the methodology prose does.
+ * Tokens are filled by fillCommunityTemplate. Every number in the block (scores, the signed
+ * adjustment, the cap inside running prose) goes through the site's one formatter,
+ * src/lib/display-number.ts, so it carries the page language's decimal separator like the hero.
  */
 import type { Lang } from './ui';
 import {
@@ -364,21 +364,4 @@ export function insufficientProgressText(
     origins: Math.min(origins, minOrigins),
     minOrigins,
   });
-}
-
-/** A decimal inside running prose, with the locale's separator ("1.0" en/zh, "1,0" elsewhere). */
-export function formatProseDecimal(lang: Lang, value: number, digits = 1): string {
-  const locale = lang === 'zh' ? 'zh-CN' : lang;
-  return new Intl.NumberFormat(locale, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
-}
-
-/**
- * Signed score points for the block, in the page's number format (toFixed(1), like ScoreHero):
- * "+0.3", "−0.4" with U+2212 (never a bare hyphen, as on /community-vs-data/), "0.0" when it
- * rounds to zero (a signed zero reads as a rendering bug).
- */
-export function formatSignedPoints(value: number): string {
-  const rounded = Math.round(value * 10) / 10;
-  if (rounded === 0) return '0.0';
-  return `${rounded < 0 ? '−' : '+'}${Math.abs(rounded).toFixed(1)}`;
 }

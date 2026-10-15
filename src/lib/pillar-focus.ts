@@ -30,6 +30,7 @@ import type { PillarName, PillarScore } from '../pipeline/types';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../pipeline/scoring/engine';
 import weightsConfig from '../pipeline/config/weights.json';
 import { pillarEvidenceCoverage } from './indicator-display';
+import { roundForDisplay } from './display-number';
 
 /** A pillar at or above this displayed value (/10) is good in absolute terms: a "strength". */
 export const STRONG_PILLAR_MIN = 7.0;
@@ -96,9 +97,9 @@ export interface PillarFocus {
   isFlat: boolean;
 }
 
-/** Displayed /10 value of a 0-1 pillar ("4.4"), as the bars print it. */
+/** Displayed /10 value of a 0-1 pillar (4.4), as the bars print it (same rounding: display-number.ts). */
 export function displayValue(score01: number): number {
-  return Number((score01 * 10).toFixed(1));
+  return roundForDisplay(score01 * 10, 1);
 }
 
 function toView(p: PillarScore): PillarView {

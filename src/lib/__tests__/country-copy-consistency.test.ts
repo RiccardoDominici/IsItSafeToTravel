@@ -12,7 +12,8 @@ import { buildCountryFaqJsonLd, buildCountryMetaDescription, getCountryFaqData }
 import { buildCountrySummary } from '../country-summary';
 import { getAdvisoryConsensus } from '../advisory-consensus';
 import { selectPillarFocus } from '../pillar-focus';
-import { describeDriver, formatSourceNumber, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { describeDriver, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { formatNumber } from '../display-number';
 
 const ind = (name: string, rawValue: number, normalizedValue: number, source: string, year: number): IndicatorScore => ({
   name,
@@ -167,7 +168,7 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
       advisories: advisoriesOf({ 1: 16 }),
     });
     const meta = buildCountryMetaDescription(c, 'de');
-    assert.match(meta, /Alle fünf Bereiche bei 7\/10 oder mehr; am niedrigsten: Regierungsführung \(8\.0\)/);
+    assert.match(meta, /Alle fünf Bereiche bei 7\/10 oder mehr; am niedrigsten: Regierungsführung \(8,0\)/);
     assert.doesNotMatch(meta, /Hauptrisiko/);
   });
 
@@ -365,8 +366,8 @@ describe('indicator facts (I04 I17 I53 I61 I64)', () => {
   });
 
   it('groups Italian four-digit counts like the larger ones', () => {
-    assert.equal(formatSourceNumber(2428, 0, 'it'), '2.428');
-    assert.equal(formatSourceNumber(2428, 0, 'es'), '2428');
+    assert.equal(formatNumber(2428, 0, 'it'), '2.428');
+    assert.equal(formatNumber(2428, 0, 'es'), '2428');
   });
 
   it('uses one Chinese term for level 4 in the summary and the FAQ', () => {
