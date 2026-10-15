@@ -94,3 +94,14 @@ const BAND_VERDICT_COPY: Record<Lang, Record<BandKey, BandVerdictCopy>> = {
 export function getBandVerdictCopy(score: number, lang: Lang): BandVerdictCopy {
   return BAND_VERDICT_COPY[lang][getBand(score)];
 }
+
+/**
+ * The risk label as it reads INSIDE a sentence. en labels are title-cased for the hero pill and the
+ * meta description's parenthesis ("High caution"); mid-sentence they are lowercase, the same in the
+ * summary ("rated as high caution") and the FAQ ("classified as high caution"), which used to
+ * disagree on one page (2026-10-15 audit, I68). The other locales already write them lowercase.
+ */
+export function getInlineRiskLabel(score: number, lang: Lang): string {
+  const label = getBandVerdictCopy(score, lang).riskLabel;
+  return lang === 'en' ? label.charAt(0).toLowerCase() + label.slice(1) : label;
+}

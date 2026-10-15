@@ -109,13 +109,23 @@ export function displayedIndicators(pillar: PillarScore): IndicatorScore[] {
     .sort((a, b) => (INDICATOR_ORDER.get(a.name) ?? 99) - (INDICATOR_ORDER.get(b.name) ?? 99));
 }
 
+/**
+ * Locales whose CLDR default leaves four-digit numbers ungrouped ("2428") although the same page
+ * groups larger ones ("100.000"): Italian copy groups every number from 1,000 (2026-10-15 audit,
+ * I53: "2428 persone" next to "100.000 abitanti"). Spanish keeps the RAE rule (no separator for
+ * four digits), which its default already follows.
+ */
+const ALWAYS_GROUP: ReadonlySet<Lang> = new Set<Lang>(['it']);
+
 /** A number in the locale's own format with fixed decimals ("45.7", "45,7", "2,54"); minus as U+2212. */
 export function formatSourceNumber(value: number, decimals: number, lang: Lang): string {
-  const formatted = new Intl.NumberFormat(NUMBER_LOCALE[lang], {
+  const options: Intl.NumberFormatOptions = {
     minimumFractionDigits: decimals,
     maximumFractionDigits: decimals,
-  }).format(value);
-  return formatted.replace(/^-/, '−');
+  };
+  // 'always' (ES2023) is not in every TypeScript lib's option type; Node 18+ supports it.
+  if (ALWAYS_GROUP.has(lang)) (options as { useGrouping?: unknown }).useGrouping = 'always';
+  return new Intl.NumberFormat(NUMBER_LOCALE[lang], options).format(value).replace(/^-/, '−');
 }
 
 function pick(template: FactTemplate | string | readonly [string, string], count: number): string {
@@ -170,7 +180,7 @@ export function isWorldBankIndicator(ind: IndicatorScore): boolean {
   return ind.source === 'worldbank';
 }
 
-/** The World Bank publication-lag note, per locale. */
+/** The World Bank publication-lag note, per locale (the row's own year column gives the data year). */
 export function worldBankLagNote(lang: Lang): string {
   return indicatorCopy[lang].worldBankLagNote;
 }
@@ -180,6 +190,7 @@ export function worldBankLagNote(lang: Lang): string {
  * indicators the pillar actually has (ties: weights.json order). GPI militarisation is passed
  * over when the pillar has another indicator: it is a property of the state (arms, military
  * spending), not something a traveller meets. Null when the pillar has no scored indicator.
+ * The result can be a GOOD value (Qatar's GPI 1.68): to quote it as a risk use selectBadDriver.
  */
 export function selectPillarDriver(pillar: PillarScore): IndicatorScore | null {
   const candidates = displayedIndicators(pillar).filter((ind) => isDescribed(ind.name));
@@ -190,6 +201,24 @@ export function selectPillarDriver(pillar: PillarScore): IndicatorScore | null {
     if (best === null || ind.normalizedValue < best.normalizedValue) best = ind;
   }
   return best;
+}
+
+/**
+ * Normalised values (0 = worst, 1 = best) below this sit in the bad half of their source's scale:
+ * GPI above 2.5 on its 1-5 scale, an INFORM risk above 5 out of 10, V-Dem rule of law below 0.5.
+ */
+export const BAD_DRIVER_MAX = 0.5;
+
+/**
+ * The pillar's driver only when its own value is bad (2026-10-15 audit, I04): the summary used to
+ * print "The main concern is a climate of violence and insecurity" over Qatar's GPI 1.68 (one of
+ * the most peaceful values on the site) because the conflict pillar was low for another reason
+ * (government advisories, which are not an indicator row). Null when no displayed indicator is in
+ * the bad half: the caller then names the pillar or the real cause instead of a good number.
+ */
+export function selectBadDriver(pillar: PillarScore): IndicatorScore | null {
+  const driver = selectPillarDriver(pillar);
+  return driver && driver.normalizedValue < BAD_DRIVER_MAX ? driver : null;
 }
 
 /** Topic ("violent crime") and fact ("45.7 homicides per 100,000 people (World Bank, 2023)") of a driver. */
