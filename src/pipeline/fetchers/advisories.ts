@@ -5,7 +5,7 @@ import { join } from 'node:path';
 import { existsSync, readdirSync } from 'node:fs';
 import * as cheerio from 'cheerio';
 import { dropSelfAdvisoriesLogged } from './advisory-self.js';
-import { parseUkAdvisory, type UkAdvisory } from './advisories-uk.js';
+import { parseUkAdvisory, ukTitleNames, type UkAdvisory } from './advisories-uk.js';
 import { CA_FETCH_HEADERS, CA_OPEN_DATA_URLS, parseCaOpenData, summarizeCaOpenData } from './advisories-ca.js';
 import {
   MAX_FALLBACK_AGE_DAYS,
@@ -997,8 +997,6 @@ async function fetchUkAdvisories(
   // Build list of countries to fetch
   interface UkCountryEntry {
     countryName: string;
-    /** Names the FCDO text can use for the country: its own title name and ours. */
-    countryNames: string[];
     slug: string;
     iso3: string;
     updatedAt?: string;
@@ -1022,7 +1020,6 @@ async function fetchUkAdvisories(
 
     countriesToFetch.push({
       countryName,
-      countryNames: [countryName, country.name.en],
       slug,
       iso3: country.iso3,
       updatedAt,
@@ -1055,7 +1052,7 @@ async function fetchUkAdvisories(
       // advisories-uk.ts). An empty alert_status is FCDO's own "no advice against
       // travel", level 1, not a parse failure.
       const data = await r.json() as Record<string, unknown>;
-      advisory = parseUkAdvisory(data, entry.countryNames);
+      advisory = parseUkAdvisory(data, ukTitleNames(entry.countryName));
     } catch {
       // Network-level failure (timeout, DNS, connection reset) — skip this
       // country rather than guess level 1 (audit 2026-09-25: this used to
@@ -1112,27 +1109,29 @@ async function fetchCaAdvisories(
         fetchedAt,
         endpoint: 'open-data-json',
         generated,
+        accepted: parsed.problems.length === 0,
+        problems: parsed.problems,
         countries: parsed.indicators.length,
         unmatched: parsed.unmatched,
         mismatches: parsed.mismatches,
-        unreadable: parsed.unreadable,
         entries: summarizeCaOpenData(json),
       });
 
+      if (parsed.problems.length > 0) {
+        // Never publish a partly read or reshaped feed: reject it whole, loudly. runWithFloor
+        // then applies the 7-day fallback rule (restore a recent reading or drop CA).
+        console.error(`[ADVISORIES] CA: PAYLOAD REJECTED from ${url}: ${parsed.problems.join('; ')}`);
+        failures.push(`${url}: payload rejected (${parsed.problems.join('; ')})`);
+        continue;
+      }
       if (parsed.unmatched.length > 0) {
-        console.log(`[ADVISORIES] CA: ${parsed.unmatched.length} entries match no country of ours (skipped): ${parsed.unmatched.join(', ')}`);
+        console.log(`[ADVISORIES] CA: ${parsed.unmatched.length} records match no country of ours (skipped): ${parsed.unmatched.join(', ')}`);
       }
       if (parsed.mismatches.length > 0) {
         console.warn(`[ADVISORIES] CA: advisory-state and label disagree (advisory-state used): ${parsed.mismatches.join('; ')}`);
       }
-      if (parsed.unreadable.length > 0) {
-        console.warn(`[ADVISORIES] CA: no readable level, skipped (never guessed): ${parsed.unreadable.join(', ')}`);
-      }
-      if (parsed.indicators.length > 0) {
-        console.log(`[ADVISORIES] CA: ${parsed.indicators.length} countries from ${url} (generated ${generated ?? 'unknown'})`);
-        return { indicators: parsed.indicators, advisoryInfo: parsed.advisoryInfo };
-      }
-      failures.push(`${url}: parsed 0 countries`);
+      console.log(`[ADVISORIES] CA: ${parsed.indicators.length} countries from ${url} (generated ${generated ?? 'unknown'})`);
+      return { indicators: parsed.indicators, advisoryInfo: parsed.advisoryInfo };
     } catch (error) {
       failures.push(`${url}: ${error instanceof Error ? error.message : String(error)}`);
     }
