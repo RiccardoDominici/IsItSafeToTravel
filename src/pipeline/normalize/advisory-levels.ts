@@ -2488,6 +2488,20 @@ const IT_TRAVEL_OBJECT = /\bviagg\w*|\brecars\w*|\brecarvisi\b|\bsoggiorn\w*|\bp
  */
 const IT_ACTIVITY_SCOPE_MARKERS = /\bnotturn\w*|\bdi notte\b|\bore serali\b|\bdopo il tramonto\b|\bvia terra\b/;
 
+/**
+ * "evitare le aree/zone ..." -- Farnesina's plainest avoid-this-AREA wording. The Level 2 rule documented on
+ * normalizeItLevel ("named danger zone with an avoid-verb ... sconsiglia/evitare/non recarsi/interdetto") never
+ * actually matched it: LEVEL2_PATTERNS only knows "evitare (i) viaggi" and "evitare di recarsi". Repair 2026-10-15
+ * (advisory-outlier audit): Jordan's dossier says "si raccomanda di EVITARE LE AREE immediatamente prossime al
+ * CONFINE occidentale, a quello settentrionale con la Siria [...] e con l'Iraq" -- a genuine named-zone warning
+ * that left Jordan on the Level 1 fallback. Only counted together with a sub-national marker (isSubNational), because
+ * the same verb+noun also introduces generic tips with no named place ("evitare le zone isolate", "evitare le aree
+ * interessate dalle manifestazioni" -- Bulgaria, Serbia, New Zealand), which must stay Level 1. Measured on all 223
+ * live dossiers: Jordan, Guatemala (Mexico border, named departments) and Suriname (Brokopondo district) move 1 -> 2,
+ * nothing else changes.
+ */
+const IT_AVOID_AREA = /\bevitar\w*\s+(?:le\s+|la\s+|tutte\s+le\s+)?(?:aree|area|zone|zona)\b/;
+
 function hasMovementCaution(sentence: string): boolean {
   return IT_MOVEMENT_CAUTION_WORDS.test(sentence) && /\bspostament\w*/.test(sentence);
 }
@@ -2604,7 +2618,7 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
       sawLevel3 = true;
       continue;
     }
-    if (LEVEL2_PATTERNS.test(s) || hasMovementCaution(s)) sawLevel2 = true;
+    if (LEVEL2_PATTERNS.test(s) || hasMovementCaution(s) || (IT_AVOID_AREA.test(s) && isSubNational(s))) sawLevel2 = true;
   }
 
   if (sawLevel4) return 4;

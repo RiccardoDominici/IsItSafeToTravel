@@ -246,4 +246,18 @@ describe('normalizeItLevel (IT/Viaggiare Sicuri) -- activity tips are not travel
     const general = 'Sono sconsigliati viaggi in Ciad, se non per motivi di effettiva necessità. La situazione di sicurezza resta precaria.';
     assert.equal(normalizeItLevel(general, ''), 3);
   });
+
+  it('Jordan: "evitare le aree immediatamente prossime al confine" (named border zones) is a regional warning -> 2, not the Level 1 fallback', () => {
+    const general =
+      "La Giordania costituisce un elemento di stabilità all’interno di una regione particolarmente instabile. Vive peraltro ripercussioni dei conflitti e delle tensioni che attraversano la regione e non è esente da minacce, incluso il rischio di attentati terroristici. In ogni caso, le forze di sicurezza controllano in modo capillare il territorio.";
+    const area =
+      "Non si registrano al momento particolari criticità nella capitale Amman, e nelle più rilevanti destinazioni turistiche. Vi sono alcune aree di cautela, peraltro non di interesse turistico. In particolare, si raccomanda di evitare le aree immediatamente prossime al confine occidentale, a quello settentrionale con la Siria (potenzialmente alla portata di armi impiegate oltre confine) e con l’ Iraq .";
+    assert.equal(normalizeItLevel(general, area), 2);
+  });
+
+  it('Bulgaria (regression guard): "evitare le aree interessate dalle manifestazioni" names no place -> stays 1', () => {
+    const general =
+      "Episodi di microcriminalità (scippi, furti di denaro e documenti) continuano a registrarsi nei confronti degli stranieri, soprattutto turisti, in particolare nella capitale Sofia e nelle zone costiere, durante il periodo estivo.Si raccomanda di evitare le aree interessate dalle manifestazioni, di tenersi informati attraverso i media sugli sviluppi della situazione e di seguire scrupolosamente le indicazioni delle Autorità locali.";
+    assert.equal(normalizeItLevel(general, ''), 1);
+  });
 });
