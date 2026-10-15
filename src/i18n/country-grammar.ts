@@ -121,7 +121,9 @@ const OVERRIDES: Record<string, CountryGrammar> = {
   // noun ("Repubblica"/"República"/"Republik") governs gender, so these read
   // feminine in it/pt/de regardless of X — same pattern throughout this group.
   COD: { enArticle: true, it: { article: 'la', prep: 'in' }, pt: { article: 'a' }, fr: { form: 'en' } }, // de: "Kongo-Kinshasa" officially drops the article (verified) — default applies
-  COG: { pt: { article: 'o' }, fr: { form: 'au' } }, // "Kongo-Brazzaville" in de, same no-article convention as COD
+  // Republic of the Congo: named in full since the 2026-10-15 audit (a bare "Congo" title sat next
+  // to the DR Congo page, 2 points apart); de keeps the unambiguous "Kongo-Brazzaville", no article.
+  COG: { enArticle: true, it: { article: 'la', prep: 'in' }, pt: { article: 'a' }, fr: { form: 'en' } },
   CAF: { it: { article: 'la', prep: 'in' }, pt: { article: 'a' }, de: { gender: 'f' }, fr: { form: 'en' } }, // Zentralafrikanische Republik / a Republica Centro-Africana
   DOM: { enArticle: true, it: { article: 'la', prep: 'in' }, pt: { article: 'a' }, de: { gender: 'f' }, fr: { form: 'en' } },
   CZE: { enArticle: true, it: { article: 'la', prep: 'in' }, pt: { article: 'a' } }, // "Czech Republic" (site's en name) keeps "the"; de bare "Tschechien" (no article)

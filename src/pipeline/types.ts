@@ -221,7 +221,7 @@ export interface CommunityComponent {
 
 export interface ScoredCountry {
   iso3: string;
-  name: { en: string; it: string; es: string; fr: string; pt: string };
+  name: CountryNames;
   /**
    * Official score 1-10 (full precision) = clamp(dataScore + community.adjustment, 1, 10).
    * null when scoreStatus is 'insufficient_data' (formula v10). Snapshots written
@@ -299,10 +299,28 @@ export interface SourceMeta {
 }
 
 // --- Country mapping ---
+/**
+ * A place's display names. en/it/es/fr/pt are always set; de/zh are set only where the built-in
+ * Intl.DisplayNames name is wrong for a travel site or must not drift with the ICU version
+ * (e.g. de "Hongkong", not "Sonderverwaltungsregion Hongkong"); otherwise getLocalizedCountryName
+ * (src/lib/scores.ts) falls back to Intl.DisplayNames for de/zh.
+ */
+// A type literal, not an interface: it must stay assignable to Record<string, string>
+// (getLocalizedCountryName's parameter), which an interface is not.
+export type CountryNames = {
+  en: string;
+  it: string;
+  es: string;
+  fr: string;
+  pt: string;
+  de?: string;
+  zh?: string;
+};
+
 export interface CountryEntry {
   iso3: string;
   iso2: string;
-  name: { en: string; it: string; es: string; fr: string; pt: string };
+  name: CountryNames;
 }
 
 // --- Daily snapshot ---

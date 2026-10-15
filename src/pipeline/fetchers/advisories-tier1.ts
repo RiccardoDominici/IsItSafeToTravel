@@ -2,7 +2,7 @@ import type { FetchResult, RawSourceData, RawIndicator, AdvisoryInfo } from '../
 import type { AdvisoryInfoMap } from './advisories.js';
 import { enforcePerSourceFloors } from './source-floor.js';
 import { writeJson, readJson, getRawDir, findLatestCached } from '../utils/fs.js';
-import { getCountryByName, getCountryByIso3, COUNTRIES } from '../config/countries.js';
+import { getCountryByName, getCountryByIso3, COUNTRIES, sourceName } from '../config/countries.js';
 import type { UnifiedLevel } from '../normalize/advisory-levels.js';
 import {
   normalizeDeLevel,
@@ -262,7 +262,7 @@ async function fetchDeAdvisories(
     entries.push({
       id,
       iso3: country.iso3,
-      countryName: String(entry.countryName || country.name.en),
+      countryName: String(entry.countryName || sourceName(country, 'en')),
       boolLevel: normalizeDeLevel({
         warning: Boolean(entry.warning),
         partialWarning: Boolean(entry.partialWarning),
@@ -426,7 +426,7 @@ async function fetchNlAdvisories(
         const canonicalMatch = xml.match(/<canonical>([^<]+)<\/canonical>/i);
         const canonicalUrl = canonicalMatch
           ? canonicalMatch[1].trim()
-          : `https://www.nederlandwereldwijd.nl/reisadvies/${country.name.en.toLowerCase().replace(/\s+/g, '-')}`;
+          : `https://www.nederlandwereldwijd.nl/reisadvies/${sourceName(country, 'en').toLowerCase().replace(/\s+/g, '-')}`;
 
         if (!advisoryInfo[country.iso3]) advisoryInfo[country.iso3] = {};
         advisoryInfo[country.iso3].nl = {

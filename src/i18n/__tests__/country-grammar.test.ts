@@ -278,7 +278,7 @@ describe('pt articles: masculine countries, feminine compounds, island names', (
 
   it('island groups follow "Ilhas"/"Ilha", never the last word', () => {
     assert.equal(para('SLB'), 'para as Ilhas Salomão');
-    assert.equal(para('ALA'), 'para as Ilhas Aland');
+    assert.equal(para('ALA'), 'para as Ilhas Åland');
     assert.equal(para('IMN'), 'para a Ilha de Man');
   });
 
@@ -299,7 +299,7 @@ describe('en article: island groups and descriptive names take "the"', () => {
   const enName = (iso3: string) => COUNTRIES.find((c) => c.iso3 === iso3)!.name.en;
   it('plural island groups and descriptive names', () => {
     assert.equal(getEnglishCountryPhrase('CYM', enName('CYM')), 'the Cayman Islands');
-    assert.equal(getEnglishCountryPhrase('ALA', enName('ALA')), 'the Aland Islands');
+    assert.equal(getEnglishCountryPhrase('ALA', enName('ALA')), 'the Åland Islands');
     assert.equal(getEnglishCountryPhrase('CAF', enName('CAF')), 'the Central African Republic');
     assert.equal(getEnglishCountryPhrase('IMN', enName('IMN')), 'the Isle of Man');
   });
