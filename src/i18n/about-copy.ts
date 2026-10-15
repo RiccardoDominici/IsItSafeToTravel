@@ -24,6 +24,10 @@
  * decision) — on this page only, alongside GitHub Issues and the feedback
  * form, not promoted as the primary contact channel.
  *
+ * Since 2026-10-15 (owner decision, after an external critique that the About
+ * page did not say who runs the site) the "Who runs this site" section opens
+ * the page, right after the <h1>, and speaks in the first person singular.
+ *
  * Paragraphs that embed exactly one link use a single `{link}` token the page
  * splits on — same convention on every field, so every about/index.astro is
  * a thin, identical template over this data.
@@ -92,7 +96,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Corrections',
     correctionsText: 'Spotted a wrong number, a stale advisory, or a bug? Report it through the feedback form or as a GitHub issue. Data corrections land with the next daily update; anything that needs a code or methodology fix is scheduled and noted in the changelog once it ships.',
     whoRunsItTitle: 'Who Runs This Site',
-    whoRunsItText: 'IsItSafeToTravel is an independent project built and maintained by {link}, a developer and data analyst. There is no company or editorial team behind it — one person is responsible for the pipeline, the scoring methodology and this website.',
+    whoRunsItText: "I'm {link}, a developer and data analyst. I built and maintain IsItSafeToTravel as an independent project: there is no company or editorial team behind it, and I am the one person responsible for the pipeline, the scoring methodology and this website.",
     authorName: 'Riccardo Dominici',
     contactTitle: 'Contact',
     contactText: 'For questions, feedback, or data inquiries, reach out via {link}.',
@@ -119,7 +123,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Correzioni',
     correctionsText: "Hai notato un numero sbagliato, un avviso non aggiornato o un bug? Segnalalo tramite il modulo di feedback o come issue su GitHub. Le correzioni ai dati arrivano con il successivo aggiornamento giornaliero; ciò che richiede una modifica al codice o alla metodologia viene pianificato e annotato nel changelog una volta rilasciato.",
     whoRunsItTitle: 'Chi gestisce questo sito',
-    whoRunsItText: "IsItSafeToTravel è un progetto indipendente creato e mantenuto da {link}, sviluppatore e analista di dati. Non c'è alcuna azienda o redazione dietro il progetto: una sola persona è responsabile della pipeline, della metodologia di scoring e di questo sito.",
+    whoRunsItText: "Sono {link}, sviluppatore e analista di dati. Ho creato e mantengo IsItSafeToTravel come progetto indipendente: dietro non c'è alcuna azienda né redazione, e sono l'unica persona responsabile della pipeline, della metodologia di scoring e di questo sito.",
     authorName: 'Riccardo Dominici',
     contactTitle: 'Contatti',
     contactText: 'Per domande, feedback o richieste sui dati, contattaci tramite {link}.',
@@ -146,7 +150,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Correcciones',
     correctionsText: '¿Has detectado un número incorrecto, un aviso desactualizado o un error? Repórtalo a través del formulario de comentarios o como issue en GitHub. Las correcciones de datos se aplican en la siguiente actualización diaria; lo que requiere un cambio de código o de metodología se planifica y se anota en el registro de cambios una vez publicado.',
     whoRunsItTitle: 'Quién gestiona este sitio',
-    whoRunsItText: 'IsItSafeToTravel es un proyecto independiente creado y mantenido por {link}, desarrollador y analista de datos. No hay ninguna empresa ni equipo editorial detrás: una sola persona es responsable del proceso de datos, de la metodología de puntuación y de este sitio.',
+    whoRunsItText: 'Soy {link}, desarrollador y analista de datos. Creé y mantengo IsItSafeToTravel como proyecto independiente: no hay ninguna empresa ni equipo editorial detrás, y soy la única persona responsable del proceso de datos, de la metodología de puntuación y de este sitio.',
     authorName: 'Riccardo Dominici',
     contactTitle: 'Contacto',
     contactText: 'Para preguntas, comentarios o consultas sobre datos, contáctanos a través de {link}.',
@@ -173,7 +177,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Corrections',
     correctionsText: "Vous avez repéré un chiffre erroné, un avis obsolète ou un bug ? Signalez-le via le formulaire de commentaires ou en ouvrant une issue sur GitHub. Les corrections de données sont intégrées à la mise à jour quotidienne suivante ; ce qui nécessite une modification du code ou de la méthodologie est planifié et noté dans le journal des modifications une fois publié.",
     whoRunsItTitle: 'Qui gère ce site',
-    whoRunsItText: "IsItSafeToTravel est un projet indépendant créé et maintenu par {link}, développeur et analyste de données. Il n'y a ni entreprise ni équipe éditoriale derrière ce projet : une seule personne est responsable du pipeline, de la méthodologie de calcul et de ce site.",
+    whoRunsItText: "Je suis {link}, développeur et analyste de données. J'ai créé et je maintiens IsItSafeToTravel en tant que projet indépendant : il n'y a ni entreprise ni équipe éditoriale derrière, et je suis la seule personne responsable du pipeline, de la méthodologie de calcul et de ce site.",
     authorName: 'Riccardo Dominici',
     contactTitle: 'Contact',
     contactText: 'Pour toute question, commentaire ou demande de données, contactez-nous via {link}.',
@@ -200,7 +204,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Correções',
     correctionsText: 'Encontrou um número errado, um aviso desatualizado ou um bug? Reporte pelo formulário de feedback ou como uma issue no GitHub. Correções de dados entram na próxima atualização diária; o que exige uma mudança de código ou de metodologia é planejado e registrado no changelog assim que é publicado.',
     whoRunsItTitle: 'Quem mantém este site',
-    whoRunsItText: 'IsItSafeToTravel é um projeto independente criado e mantido por {link}, desenvolvedor e analista de dados. Não há empresa nem equipe editorial por trás do projeto: uma única pessoa é responsável pelo pipeline, pela metodologia de pontuação e por este site.',
+    whoRunsItText: 'Sou {link}, desenvolvedor e analista de dados. Criei e mantenho o IsItSafeToTravel como projeto independente: não há empresa nem equipe editorial por trás, e sou a única pessoa responsável pelo pipeline, pela metodologia de pontuação e por este site.',
     authorName: 'Riccardo Dominici',
     contactTitle: 'Contato',
     contactText: 'Para perguntas, feedback ou consultas sobre dados, entre em contato através de {link}.',
@@ -227,7 +231,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: '更正',
     correctionsText: '发现了错误的数字、过时的警告或程序漏洞？请通过反馈表单或在 GitHub 上提交 issue 告知我们。数据类更正会随下一次每日更新生效；需要修改代码或方法论的问题会被排期处理，并在发布后记录在更新日志中。',
     whoRunsItTitle: '本网站由谁运营',
-    whoRunsItText: 'IsItSafeToTravel 是一个独立项目，由{link}——一名开发者兼数据分析师——创建并维护。项目背后没有公司或编辑团队：数据流程、评分方法论和本网站均由一个人负责。',
+    whoRunsItText: '我是{link}，一名开发者兼数据分析师。IsItSafeToTravel 是我创建并维护的独立项目：背后没有公司或编辑团队，数据流程、评分方法论和本网站均由我一人负责。',
     authorName: 'Riccardo Dominici',
     contactTitle: '联系',
     contactText: '如有问题、反馈或数据咨询，请通过 {link} 联系。',
@@ -254,7 +258,7 @@ export const aboutCopy: Record<Lang, AboutCopy> = {
     correctionsTitle: 'Korrekturen',
     correctionsText: 'Einen falschen Wert, einen veralteten Hinweis oder einen Fehler entdeckt? Melden Sie ihn über das Feedback-Formular oder als GitHub-Issue. Datenkorrekturen fließen in die nächste tägliche Aktualisierung ein; Änderungen am Code oder an der Methodik werden eingeplant und nach der Veröffentlichung im Änderungsprotokoll vermerkt.',
     whoRunsItTitle: 'Wer diese Website betreibt',
-    whoRunsItText: 'IsItSafeToTravel ist ein unabhängiges Projekt, erstellt und gepflegt von {link}, einem Entwickler und Datenanalysten. Es steht kein Unternehmen und keine Redaktion dahinter — eine einzelne Person ist für die Pipeline, die Bewertungsmethodik und diese Website verantwortlich.',
+    whoRunsItText: 'Ich bin {link}, Entwickler und Datenanalyst. Ich habe IsItSafeToTravel als unabhängiges Projekt aufgebaut und pflege es: Dahinter stehen weder ein Unternehmen noch eine Redaktion, und ich bin die einzige Person, die für die Pipeline, die Bewertungsmethodik und diese Website verantwortlich ist.',
     authorName: 'Riccardo Dominici',
     contactTitle: 'Kontakt',
     contactText: 'Bei Fragen, Feedback oder Datenanfragen wenden Sie sich über {link} an uns.',
