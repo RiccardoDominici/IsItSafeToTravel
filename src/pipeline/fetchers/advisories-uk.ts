@@ -60,6 +60,17 @@ export function ukWarningsText(doc: Record<string, unknown>): string {
     .join('\n');
 }
 
+/**
+ * The names FCDO's own text can use for a country, taken from FCDO's page title only
+ * ("Korea, DPR (North Korea)" -> "Korea, DPR" and "North Korea"). Never from our country
+ * list's display names, which change independently of what FCDO writes.
+ */
+export function ukTitleNames(fcdoTitleName: string): string[] {
+  const names = [fcdoTitleName.replace(/\s*\([^)]*\)\s*/g, ' ').trim()];
+  for (const m of fcdoTitleName.matchAll(/\(([^)]+)\)/g)) names.push(m[1].trim());
+  return names.filter(Boolean);
+}
+
 /** Lowercase, straight apostrophes, single spaces, no leading "the ". */
 function normalizeName(name: string): string {
   return name
@@ -116,7 +127,7 @@ export function ukWholeCountryVerdict(text: string, countryNames: readonly strin
 
 /**
  * Level and label for one FCDO country document. `countryNames` are the names the page can
- * use for the country (FCDO's own title name and ours). An empty alert_status is FCDO's
+ * use for the country (ukTitleNames of FCDO's own title). An empty alert_status is FCDO's
  * own "no advice against travel", level 1, not a parse failure.
  */
 export function parseUkAdvisory(doc: Record<string, unknown>, countryNames: readonly string[]): UkAdvisory {

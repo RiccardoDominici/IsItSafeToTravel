@@ -3,7 +3,7 @@ import { strict as assert } from 'node:assert';
 import { readFileSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { isWholeCountryObject, parseUkAdvisory, ukWarningsText } from '../fetchers/advisories-uk.js';
+import { isWholeCountryObject, parseUkAdvisory, ukTitleNames, ukWarningsText } from '../fetchers/advisories-uk.js';
 
 /**
  * UK FCDO level + label (consistency issues I45 and I46, 2026-10-15). The fixture holds the
@@ -14,11 +14,11 @@ const fixtures = JSON.parse(
   readFileSync(join(dirname(fileURLToPath(import.meta.url)), 'fixtures', 'uk-fcdo-warnings.json'), 'utf-8'),
 ) as Record<string, Record<string, unknown> & { title: string }>;
 
-function parse(slug: string, extraName?: string) {
+/** Same inputs as fetchUkAdvisories: FCDO's own title name, never our display names. */
+function parse(slug: string) {
   const doc = fixtures[slug];
   assert.ok(doc, `fixture ${slug}`);
-  const name = doc.title.replace(/\s*travel advice\s*$/i, '');
-  return parseUkAdvisory(doc, extraName ? [name, extraName] : [name]);
+  return parseUkAdvisory(doc, ukTitleNames(doc.title.replace(/\s*travel advice\s*$/i, '')));
 }
 
 describe('parseUkAdvisory: whole-country verdicts on "parts" pages (I46)', () => {
@@ -113,5 +113,13 @@ describe('isWholeCountryObject', () => {
     assert.equal(isWholeCountryObject('the Central African Republic', ['Central African Republic']), true);
     assert.equal(isWholeCountryObject('Gambia', ['The Gambia']), true);
     assert.equal(isWholeCountryObject('North Korea', ['Korea, DPR (North Korea)', 'North Korea']), true);
+  });
+});
+
+describe('ukTitleNames', () => {
+  it('takes the names from FCDO\'s own title, splitting off a parenthetical alias', () => {
+    assert.deepEqual(ukTitleNames('Sudan'), ['Sudan']);
+    assert.deepEqual(ukTitleNames('Korea, DPR (North Korea)'), ['Korea, DPR', 'North Korea']);
+    assert.deepEqual(ukTitleNames('Central African Republic'), ['Central African Republic']);
   });
 });
