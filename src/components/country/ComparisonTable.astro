@@ -11,12 +11,14 @@ import countryProximity from '../../data/country-proximity.json';
 import { officialScore } from '../../lib/score-status';
 import { communityCopy } from '../../i18n/community-copy';
 import { pillarPresentationCopy } from '../../i18n/pillar-presentation-copy';
+import { greyCopy, greyHasNoData } from '../../i18n/grey-copy';
 
 // One comparison section for the country page, rows nearest first (never by score):
 // every land neighbour, the sovereign state of a territory, and, when those give fewer
 // than 3 rows, the nearest scored places across the sea within 1,000 km. Across-sea rows
 // carry their shortest coast-or-border distance ("about 80 km away"). Places without an
-// official score stay in the table with "Partial data". A pillar with nothing measured behind it
+// official score stay in the table with "Partial data" ("No data yet" when they have no advisory
+// and no source, as in the hero). A pillar with nothing measured behind it
 // (isEstimatedPillar, the regional prior) reads "No data", as in the pillar bars. Selection rules
 // live in src/lib/comparisons.ts; distances come from src/data/country-proximity.json.
 
@@ -97,7 +99,10 @@ const pillarKeys = ['conflict', 'crime', 'health', 'governance', 'environment'] 
                 </td>
                 {rowScore === null ? (
                   <>
-                    <td class="py-2 pr-3 text-xs font-medium text-sand-600 dark:text-sand-400 whitespace-nowrap">{communityCopy[lang].partialDataTitle}</td>
+                    {/* Same wording as the hero: "No data yet" when there is no advisory and no source at all (audit I27). */}
+                    <td class="py-2 pr-3 text-xs font-medium text-sand-600 dark:text-sand-400 whitespace-nowrap" data-grey-label={greyHasNoData(c) ? 'no-data' : 'partial'}>
+                      {greyHasNoData(c) ? greyCopy[lang].noDataTitle : communityCopy[lang].partialDataTitle}
+                    </td>
                     {pillarKeys.map(() => (
                       <td class="py-2 pr-3 text-sand-500 dark:text-sand-500" aria-hidden="true">–</td>
                     ))}

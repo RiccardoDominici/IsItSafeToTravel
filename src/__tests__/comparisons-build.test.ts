@@ -14,6 +14,8 @@ import { join } from 'node:path';
 import type { ScoredCountry } from '../pipeline/types';
 import { isEstimatedPillar } from '../lib/pillar-presentation';
 import { pillarPresentationCopy } from '../i18n/pillar-presentation-copy';
+import { greyCopy, greyHasNoData } from '../i18n/grey-copy';
+import { communityCopy } from '../i18n/community-copy';
 
 const DIST_CLIENT = join(import.meta.dirname, '..', '..', 'dist', 'client');
 const SEGMENT = { en: 'country', de: 'land' } as const;
@@ -67,6 +69,33 @@ describe('comparison table: estimated pillars read "No data", like the pillar ba
       assert.ok(measuredSeen > 1000, `only ${measuredSeen} measured cells checked`);
       const anyEstimated = countries.some((c) => c.scoreStatus !== 'insufficient_data' && c.pillars.some(isEstimatedPillar));
       if (anyEstimated) assert.ok(estimatedSeen > 0, 'estimated pillars exist in the data but no table showed one');
+    });
+  }
+});
+
+describe('comparison table: a place without a score is labelled like its hero', () => {
+  for (const lang of ['en', 'de'] as const) {
+    it(`${lang}: "No data yet" with no advisory and no source, "Partial data" otherwise`, () => {
+      const byIso = new Map(countries.map((c) => [c.iso3, c]));
+      const seen = { 'no-data': 0, partial: 0 };
+      for (const page of countries) {
+        const html = readFileSync(join(DIST_CLIENT, lang, SEGMENT[lang], page.iso3.toLowerCase(), 'index.html'), 'utf-8');
+        for (const tr of html.match(/<tr[^>]*>[\s\S]*?<\/tr>/g) ?? []) {
+          const label = tr.match(/<td[^>]*data-grey-label="(no-data|partial)"[^>]*>([\s\S]*?)<\/td>/);
+          if (!label) continue;
+          const iso3 = tr.match(new RegExp(`href="/${lang}/${SEGMENT[lang]}/([a-z]{3})/"`))?.[1]?.toUpperCase();
+          const place = iso3 ? byIso.get(iso3) : undefined;
+          assert.ok(place, `${page.iso3}: grey row without a known place`);
+          const noData = greyHasNoData(place);
+          const text = label[2].replace(/<[^>]+>/g, '').trim();
+          assert.equal(label[1], noData ? 'no-data' : 'partial', `${page.iso3} ${lang}: ${iso3}`);
+          assert.equal(text, noData ? greyCopy[lang].noDataTitle : communityCopy[lang].partialDataTitle, `${page.iso3} ${lang}: ${iso3}`);
+          seen[label[1] as 'no-data' | 'partial']++;
+        }
+      }
+      assert.ok(seen.partial > 0, 'no "Partial data" row seen');
+      const anyNoData = countries.some((c) => c.scoreStatus === 'insufficient_data' && greyHasNoData(c));
+      if (anyNoData) assert.ok(seen['no-data'] > 0, 'places with no data exist but no table showed one');
     });
   }
 });
