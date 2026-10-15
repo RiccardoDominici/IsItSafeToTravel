@@ -2370,8 +2370,14 @@ const IT_SUBNATIONAL_MARKERS = [
  * a GENUINE country-wide ban, verified 2026-09-26) and "stato" (the past participle of "essere"
  * makes a bare stem match almost every sentence in the corpus; the existing "nello stato di"
  * phrase already covers the federated-country case, e.g. Nigeria/Mexico/India/USA states).
+ * `\bquartier[ei]\b` (city neighbourhoods) added 2026-10-15 (advisory-outlier audit): a warning
+ * about some DISTRICTS of a city is as sub-national as one about a province -- Nicaragua's "e'
+ * sconsigliabile recarsi in alcuni QUARTIERI periferici delle principali citta'" and Tunisia's
+ * "nelle zone periferiche e nei QUARTIERI degradati dei principali centri urbani" were both
+ * promoting their whole country to Level 3. Noun forms only ("quartiere/i"), so the unrelated
+ * "quartier generale" (headquarters) is not matched.
  */
-const IT_REGIONAL_STEM_MARKERS = /\bregion[ei]\b|\bprovinc\w*|\bdistrett\w*|\bconfin\w*|\bfrontier\w*|\bexclav\w*|\benclav\w*|\bseparatist\w*/i;
+const IT_REGIONAL_STEM_MARKERS = /\bregion[ei]\b|\bprovinc\w*|\bdistrett\w*|\bconfin\w*|\bfrontier\w*|\bexclav\w*|\benclav\w*|\bseparatist\w*|\bquartier[ei]\b/i;
 
 /**
  * Does `sentence` contain "a qualsiasi titolo" ("for whatever reason") used as Farnesina's
@@ -2449,6 +2455,38 @@ function stripParentheticals(sentence: string): string {
  */
 const IT_MOVEMENT_CAUTION_WORDS =
   /massima (prudenza|cautela|attenzione|vigilanza)|particolare (attenzione|prudenza|cautela)|(elevata|alta) (attenzione|prudenza|cautela)|alto livello di attenzione/;
+
+/**
+ * What a Level-3 "sconsigli*" (advise against) sentence must be ABOUT: travel to, or a stay in, the country.
+ * Repair 2026-10-15 (advisory-outlier audit): LEVEL3_PATTERNS used to carry a bare `sconsigli` alternative, so ANY
+ * unscoped "sconsiglia..." in `Indicazioni-generali` promoted the whole country to Level 3 ("reconsider travel"),
+ * whatever was being advised against. Farnesina uses the same verb for everyday activity tips, and the full
+ * 223-dossier sweep (live 2026-10-15) found them promoting calm countries:
+ *  - Kazakhstan: "La situazione di sicurezza in Kazakhastan e' generalmente stabile. [...] E' SCONSIGLIATO
+ *    FOTOGRAFARE edifici ed infrastrutture pubbliche" (photographing public buildings) -> was 3, peers' median 1.
+ *  - Namibia: "Nella città di Windhoek, si SCONSIGLIA DI PERNOTTARE nei quartieri meridionali ed occidentali"
+ *    (staying overnight in two districts of the capital) -> was 3, peers' median 1.
+ *  - Cuba (changing money in the street), Egypt (unlicensed excursion operators, illegal taxis, insurance without
+ *    excess), Eritrea (entering territorial waters by boat), Madagascar (walking home alone) -- same mechanism.
+ * Every genuine whole-country Level 3/4 "sconsigli*" sentence in that sweep names travel itself ("sono sconsigliati
+ * i viaggi nel Paese" Iraq, "sconsigliare qualsiasi viaggio in Iran", "si sconsigliano viaggi non necessari nel
+ * Paese" Guinea-Bissau/Papua New Guinea, "i viaggi non essenziali in Corea del Nord sono sconsigliati", Libya,
+ * Chad, Myanmar, Nigeria...) or a stay in the country ("sia i viaggi, sia la permanenza nel Paese", Somalia).
+ * A "sconsigli*" sentence without such an object still counts toward Level 2 via LEVEL2_PATTERNS, exactly as before.
+ */
+const IT_TRAVEL_OBJECT = /\bviagg\w*|\brecars\w*|\brecarvisi\b|\bsoggiorn\w*|\bpermanenz\w*/;
+
+/**
+ * Time-of-day and route qualifiers that scope a sentence to an ACTIVITY, not to the country as a whole -- the IT
+ * counterpart of ES_ZONE_MARKERS' "de noche|por la noche|nocturno". A sentence carrying one never reaches the
+ * whole-country Level 3/4 checks (it falls through to Level 2). Repair 2026-10-15, found by the same sweep:
+ *  - Nepal: "si raccomanda di EVITARE I VIAGGI NELLE ORE NOTTURNE" (avoid travelling at night) matched LEVEL3's
+ *    "evitare i viaggi" -> was 3.
+ *  - Benin: "Eventuali VIAGGI VIA TERRA, tra Nigeria e Benin, restano comunque sconsigliati per le pessime
+ *    condizioni del manto stradale" (the overland Lagos-Cotonou route, because of the road surface) -> was 3.
+ *  - Ethiopia: "si sconsigliano in tutto il Paese trasferimenti in auto durante le ore NOTTURNE".
+ */
+const IT_ACTIVITY_SCOPE_MARKERS = /\bnotturn\w*|\bdi notte\b|\bore serali\b|\bdopo il tramonto\b|\bvia terra\b/;
 
 function hasMovementCaution(sentence: string): boolean {
   return IT_MOVEMENT_CAUTION_WORDS.test(sentence) && /\bspostament\w*/.test(sentence);
@@ -2529,8 +2567,12 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
     /viagg\w*\s+(a\s+|in\s+)+tutto\s+il\s+(paese|territorio)/,
     /preclusa la possibilit[aà] di recarsi/,
   ];
+  // Bare "sconsigli*" is deliberately NOT in this list (repair 2026-10-15): it only counts toward Level 3 when TRAVEL
+  // itself is what is advised against -- see IT_TRAVEL_OBJECT's doc comment for the live false-3s it produced.
   const LEVEL3_PATTERNS =
-    /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi|sconsigli/;
+    /non essenzial|non indispensabil|quelli indispensabili|evitare\s+(i\s+)?viaggi|posticipare.*viagg|rinviare.*viagg|rimandare.*viagg|limitare i viaggi/;
+  const isLevel3Sentence = (sentence: string) =>
+    LEVEL3_PATTERNS.test(sentence) || (/sconsigli/.test(sentence) && IT_TRAVEL_OBJECT.test(sentence));
   const LEVEL2_PATTERNS = /sconsigli|evitare\s+(i\s+)?viaggi|evitare di recarsi|non recarsi|interdett/;
 
   const isSubNational = (sentence: string) =>
@@ -2550,13 +2592,15 @@ export function normalizeItLevel(generalTextRaw: string, areaTextRaw: string): U
     // cleaned sentence, so a foreign country's ban tucked into a "(...)" aside can never be
     // misread as this country's own.
     const s = stripParentheticals(rawSentence);
-    const subNational = isSubNational(s);
+    // A sentence scoped to a sub-national place OR to a time of day / route (IT_ACTIVITY_SCOPE_MARKERS) can never
+    // carry a whole-country Level 3/4 -- it falls through to the Level 2 check below, like a regional warning.
+    const scoped = isSubNational(s) || IT_ACTIVITY_SCOPE_MARKERS.test(s);
 
-    if (!subNational && (hasBanningQualsiasiTitolo(s) || LEVEL4_PATTERNS.some((re) => re.test(s)))) {
+    if (!scoped && (hasBanningQualsiasiTitolo(s) || LEVEL4_PATTERNS.some((re) => re.test(s)))) {
       sawLevel4 = true;
       continue;
     }
-    if (section === 'general' && !subNational && LEVEL3_PATTERNS.test(s)) {
+    if (section === 'general' && !scoped && isLevel3Sentence(s)) {
       sawLevel3 = true;
       continue;
     }

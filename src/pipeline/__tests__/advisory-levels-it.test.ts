@@ -197,3 +197,53 @@ describe('normalizeItLevel (IT/Viaggiare Sicuri) -- regional-promotion repair', 
     assert.equal(normalizeItLevel(general, ''), 1);
   });
 });
+
+/**
+ * Regression coverage for the 2026-10-15 advisory-outlier audit. Kazakhstan and Namibia were reported as Level 3
+ * ("reconsider travel") while every other government's median was Level 1: LEVEL3_PATTERNS carried a bare
+ * `sconsigli` alternative, so any unscoped "si sconsiglia..." in `Indicazioni-generali` -- whatever it advised
+ * against -- promoted the whole country. A Level-3 "sconsigli*" sentence must now be about TRAVEL itself
+ * (IT_TRAVEL_OBJECT), and time-of-day / overland-route qualifiers scope a sentence like a region does
+ * (IT_ACTIVITY_SCOPE_MARKERS). Fixtures are VERBATIM excerpts (trimmed) of the live
+ * `/schede_paese/{ISO3}.json` dossiers fetched 2026-10-15.
+ */
+describe('normalizeItLevel (IT/Viaggiare Sicuri) -- activity tips are not travel advice (2026-10-15 outlier audit)', () => {
+  it('Kazakhstan: "E\' sconsigliato fotografare edifici" is a photography tip, not travel advice -> 2 (named-zone tips), not 3', () => {
+    const general =
+      "La situazione di sicurezza in Kazakhastan e' generalmente stabile. A seguito dei disordini sociali scoppiati all'inizio di gennaio 2022, le Autorita' hanno ristabilito il pieno controllo su tutto il territorio nazionale e l'ordine pubblico e' stato ripristinato. E' sconsigliato fotografare edifici ed infrastrutture pubbliche, in particolare quelli di rilevanza strategica o governativa, per evitare possibili incomprensioni o problemi con le Autorita'.";
+    const area =
+      "Situazione analoga si segnala nell’area dell’ex Poligono nucleare di Semipalatinsk (città di Semey) e benché i livelli radioattivi urbani risultino nella norma, è consigliato evitare tale zona, interessata da test nucleari sovietici tra il 1949 e il1989. Considerata l’ampiezza del territorio kazako e la bassa densità abitativa, è sconsigliato viaggiare da soli in aree remote, specie in inverno.";
+    assert.equal(normalizeItLevel(general, area), 2);
+  });
+
+  it('Namibia: "si sconsiglia di pernottare nei quartieri meridionali" of Windhoek is a city-district tip -> 2, not 3', () => {
+    const general =
+      'Sebbene il tasso di criminalità in Namibia non sia particolarmente elevato, sono aumentati negli ultimi tempi episodi di delinquenza comune soprattutto ai danni dei turisti (in particolare furti e scippi, in alcuni casi a mano armata). Ai connazionali che intendano visitare il Paese si consiglia, pertanto, di prestare attenzione durante il soggiorno e di evitare di circolare a piedi durante le ore notturne. Nella città di Windhoek, si sconsiglia di pernottare nei quartieri meridionali ed occidentali.';
+    const area =
+      'Al momento, non vi sono aree specifiche che richiedano una vigilanza rafforzata. Si raccomanda comunque di consultare periodicamente questa Scheda, per eventuali aggiornamenti.';
+    assert.equal(normalizeItLevel(general, area), 2);
+  });
+
+  it('Nepal: "evitare i viaggi nelle ore notturne" (avoid travelling at night) is time-of-day scoped -> 2, not 3', () => {
+    const general =
+      "Durante i bandh, si raccomanda, la massima cautela, limitando gli spostamenti a quelli essenziali. In generale, si raccomanda di evitare dimostrazioni e proteste di piazza. In generale, si raccomanda di evitare i viaggi nelle ore notturne, di tenersi sempre informati e di osservare scrupolosamente le istruzioni da parte delle Autorità locali.";
+    assert.equal(normalizeItLevel(general, ''), 2);
+  });
+
+  it('Benin: "viaggi via terra, tra Nigeria e Benin, restano comunque sconsigliati" (one overland route, road surface) -> 2, not 3', () => {
+    const general =
+      'La criminalità comune rappresenta il principale fattore di rischio nel Paese. Eventuali viaggi via terra, tra Nigeria e Benin, restano comunque sconsigliati per le pessime condizioni del manto stradale. É pertanto opportuno adottare le precauzioni indicate nella sezione “Avvertenze”.';
+    assert.equal(normalizeItLevel(general, ''), 2);
+  });
+
+  it('Guinea-Bissau (regression guard): "Si sconsigliano viaggi non necessari nel Paese" names travel itself -> still 3', () => {
+    const general =
+      "Si sconsigliano viaggi non necessari nel Paese. Vista la situazione di instabilità politica, si invitano i connazionali a prestare particolare cautela, ad evitare i luoghi di assembramento e gli spostamenti in orari notturni.";
+    assert.equal(normalizeItLevel(general, ''), 3);
+  });
+
+  it('Chad (regression guard): "sono sconsigliati viaggi in Ciad, se non per motivi di effettiva necessità" -> still 3', () => {
+    const general = 'Sono sconsigliati viaggi in Ciad, se non per motivi di effettiva necessità. La situazione di sicurezza resta precaria.';
+    assert.equal(normalizeItLevel(general, ''), 3);
+  });
+});
