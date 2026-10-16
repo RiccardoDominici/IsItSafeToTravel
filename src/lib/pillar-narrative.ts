@@ -157,13 +157,25 @@ export function buildGovernanceContext(focus: PillarFocus, lang: Lang, template 
   return g ? fillTemplate(template, { score: value(g, lang), focus: area(focus.focus, lang), focusScore: value(focus.focus, lang) }) : null;
 }
 
-/** Estimated (asterisked) bars that sit below what the text says: flagged as estimates. */
+/**
+ * Estimated (asterisked) bars that sit below what the text says, flagged as estimates with their
+ * value; then the bars that read "No data", named without one ("There is no data on crime yet":
+ * a number there would contradict the bar, task 7).
+ */
 export function buildEstimatesSentence(focus: PillarFocus, lang: Lang): string | null {
-  const list = focus.lowerEstimates;
-  if (list.length === 0) return null;
   const copy = countrySummaryCopy[lang];
-  const items = list.map((p) => fillTemplate(copy.estimateItem, { pillar: area(p, lang), score: value(p, lang) }));
-  return fillTemplate(list.length === 1 ? copy.estimates.one : copy.estimates.other, { list: joinNames(items, lang) });
+  const sentences: string[] = [];
+  const list = focus.lowerEstimates;
+  if (list.length > 0) {
+    const items = list.map((p) => fillTemplate(copy.estimateItem, { pillar: area(p, lang), score: value(p, lang) }));
+    sentences.push(fillTemplate(list.length === 1 ? copy.estimates.one : copy.estimates.other, { list: joinNames(items, lang) }));
+  }
+  const none = focus.noData;
+  if (none.length > 0) {
+    const names = joinNames(none.map((p) => area(p, lang)), lang);
+    sentences.push(fillTemplate(none.length === 1 ? copy.noDataPillars.one : copy.noDataPillars.other, { list: names }));
+  }
+  return sentences.length > 0 ? sentences.join(lang === 'zh' ? '' : ' ') : null;
 }
 
 /**
@@ -180,7 +192,10 @@ export function buildBestSentence(focus: PillarFocus, lang: Lang, includeWeak: b
   return includeWeak ? fillTemplate(tie ? copy.weakBestTie : copy.weakBest, slots) : null;
 }
 
-/** True when a DIRECT-risk pillar is displayed below 7.0 only as an estimate (weakest frame wording). */
+/**
+ * True when a DIRECT-risk pillar is displayed below 7.0 only as an estimate, or reads "No data"
+ * (weakest frame wording: "among the areas measured with enough data").
+ */
 export function hasLowDirectEstimate(focus: PillarFocus): boolean {
-  return focus.lowerEstimates.some((p) => DIRECT_RISK_PILLARS.has(p.name));
+  return [...focus.lowerEstimates, ...focus.noData].some((p) => DIRECT_RISK_PILLARS.has(p.name));
 }

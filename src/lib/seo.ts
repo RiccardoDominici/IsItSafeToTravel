@@ -354,12 +354,14 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
       ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[tie.name]}`
       : `${labels[focus.focus.name]} (${value})${META_AND[lang]}${labels[tie.name]}`;
   const shownValue = tie && !focus.focusTieExact ? formatTenths(tie.value, lang) : value;
-  const measured = focus.lowerEstimates.length > 0;
+  // Estimates and "No data" bars both make the claim about the MEASURED areas only.
+  const unmeasured = [...focus.lowerEstimates, ...focus.noData];
+  const measured = unmeasured.length > 0;
   const frameKey: MetaFrame =
     focus.frame === 'allGood' ? (focus.allFiveAtLeast7 ? 'allGood' : 'allGoodMeasured')
     : focus.frame === 'weakest' && measured ? 'weakestMeasured'
     : focus.frame;
-  const estimated = focus.lowerEstimates.map((p) => labels[p.name]).join(META_AND[lang]);
+  const estimated = unmeasured.map((p) => labels[p.name]).join(META_AND[lang]);
   // Most governments at "reconsider travel" or worse is the strongest signal: the snippet leads
   // with it instead of a pillar (Kuwait 6.9 read "Main concern: natural hazards (6.2)" while 17 of
   // 21 governments advise reconsidering travel or against it).
@@ -1061,7 +1063,7 @@ function buildBiggestRiskParts(
         // "Normal precautions are enough" would contradict a majority of governments advising
         // reconsidering travel (QAT, ARE...), and is unearned while a lower bar is only an
         // estimate (Nauru: crime never measured).
-        advisoryNote ?? (focus.lowerEstimates.length > 0 ? null : copy.a2Precautions),
+        advisoryNote ?? (focus.lowerEstimates.length > 0 || focus.noData.length > 0 ? null : copy.a2Precautions),
       ];
   }
 }

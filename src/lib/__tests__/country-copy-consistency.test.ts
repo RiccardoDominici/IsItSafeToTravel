@@ -207,10 +207,11 @@ describe('measured values versus estimates (I05 I07)', () => {
     const text = summary(c, 'en', 'Nauru');
     assert.doesNotMatch(text, /All five areas/);
     assert.match(text, /Every area measured with enough data scores at least 7 out of 10; the lowest of them is health \(7\.6\/10\)\./);
-    assert.match(text, /The values for governance \(5\.4\/10\) and crime \(5\.7\/10\) are cautious estimates/);
+    // Governance prints its value with the asterisk; crime's bar reads "No data", so no number (task 7).
+    assert.match(text, /The value for governance \(5\.4\/10\) is a cautious estimate: there is too little data to measure it\. There is no data on crime yet\./);
     const a2 = faq(c, 'en')[1].answer;
     assert.doesNotMatch(a2, /all five|precautions are enough/);
-    assert.match(a2, /cautious estimates/);
+    assert.match(a2, /cautious estimate/);
     assert.match(buildCountryMetaDescription(c, 'en'), /too little data on governance and crime/);
   });
 });
@@ -460,5 +461,66 @@ describe('advisory issuers and Spanish place names carry their articles (task 6,
     assert.match(summary(nld, 'es', 'Países Bajos'), /^Países Bajos tiene una puntuación/);
     assert.match(summary(nld, 'es', 'Países Bajos'), /para quien viaja a los Países Bajos/);
     assert.doesNotMatch(faq(nld, 'es').map((qa) => qa.answer).join(' '), /los Países Bajos (es|obtiene|tiene)\b/);
+  });
+});
+
+describe('a pillar whose bar reads "No data" has no number in the text (task 7, 2026-10-15)', () => {
+  // Nauru's shape: crime has nothing measured (isEstimatedPillar), governance is a low-coverage
+  // estimate that still prints its value with the asterisk.
+  const nauru = () =>
+    country({
+      iso3: 'NRU',
+      score: 7.4,
+      pillars: {
+        conflict: { score: 0.89 },
+        crime: { score: 0.57, indicators: [], dataCompleteness: 0 },
+        health: { score: 0.76 },
+        governance: { score: 0.54, indicators: [ind('inform_governance', 5, 0.5, 'inform', 2026)], dataCompleteness: 0.25 },
+        environment: { score: 0.81 },
+      },
+      advisories: advisoriesOf({ 1: 14, 2: 3 }),
+    });
+  // Taiwan's shape: health and natural hazards have no INFORM data at all.
+  const taiwan = () =>
+    country({
+      iso3: 'TWN',
+      score: 7.9,
+      pillars: {
+        conflict: { score: 0.85 },
+        crime: { score: 0.75 },
+        health: { score: 0.67, indicators: [], dataCompleteness: 0 },
+        governance: { score: 0.8 },
+        environment: { score: 0.62, indicators: [], dataCompleteness: 0 },
+      },
+      advisories: advisoriesOf({ 1: 17 }),
+    });
+  const texts = (c: ScoredCountry, lang: Lang, name: string) =>
+    [summary(c, lang, name), buildCountryMetaDescription(c, lang), ...faq(c, lang).map((qa) => qa.answer)].join(' ');
+
+  it('never quotes the prior of a "No data" pillar, in any language', () => {
+    for (const lang of LANGS) {
+      for (const [c, name, empty] of [[nauru(), 'Nauru', ['5.7', '5,7']], [taiwan(), 'Taiwan', ['6.7', '6,7', '6.2', '6,2']]] as const) {
+        const all = texts(c, lang, name);
+        for (const v of empty) assert.ok(!all.includes(`${v}/10`) && !all.includes(`(${v})`), `${c.iso3} ${lang}: quotes ${v}\n${all}`);
+      }
+    }
+  });
+
+  it('says there is no data instead, and keeps the value of an asterisked estimate', () => {
+    const en = summary(nauru(), 'en', 'Nauru');
+    assert.match(en, /The value for governance \(5\.4\/10\) is a cautious estimate: there is too little data to measure it\. There is no data on crime yet\./);
+    assert.match(summary(taiwan(), 'en', 'Taiwan'), /There is no data on (natural hazards and health|health and natural hazards) yet\./);
+    assert.match(summary(nauru(), 'de', 'Nauru'), /Für den Bereich Kriminalität liegen noch keine Daten vor\./);
+    assert.match(summary(nauru(), 'it', 'Nauru'), /Per l'area della criminalità non ci sono ancora dati\./);
+    assert.match(summary(nauru(), 'zh', '瑙鲁'), /犯罪方面暂无数据。/);
+  });
+
+  it('a "No data" pillar is never the focus, the best area or part of "all five at 7+"', () => {
+    const focus = selectPillarFocus(taiwan().pillars);
+    assert.notEqual(focus.focus.name, 'health');
+    assert.notEqual(focus.focus.name, 'environment');
+    assert.equal(focus.allFiveAtLeast7, false);
+    assert.deepEqual(focus.noData.map((p) => p.name).sort(), ['environment', 'health']);
+    assert.doesNotMatch(buildCountryMetaDescription(taiwan(), 'en'), /All five areas/);
   });
 });

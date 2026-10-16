@@ -25,6 +25,7 @@
  */
 import type { PillarScore } from '../pipeline/types';
 import { MIN_PILLAR_COVERAGE } from '../pipeline/scoring/engine';
+import { isEstimatedPillar } from './pillar-presentation';
 
 /**
  * Max-minus-min spread (0-1 scale) at or below which pillars are treated as
@@ -45,7 +46,9 @@ export interface PillarExtremes {
 }
 
 export function selectPillarExtremes(pillars: PillarScore[]): PillarExtremes {
-  const eligible = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE);
+  // A pillar whose bar reads "No data" (isEstimatedPillar) is never quoted with a value on the
+  // hubs either, even when alert feeds give it nominal coverage (task 7, 2026-10-15).
+  const eligible = pillars.filter((p) => p.dataCompleteness >= MIN_PILLAR_COVERAGE && !isEstimatedPillar(p));
   const pool = eligible.length > 0 ? eligible : pillars;
   const sorted = [...pool].sort((a, b) => a.score - b.score);
   const weakest = sorted[0];

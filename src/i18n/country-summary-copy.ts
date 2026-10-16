@@ -72,6 +72,11 @@ export interface CountrySummaryCopy {
   governanceContext: string;
   /** Estimated (asterisked) pillars below what the text claims: {list} of `estimateItem`. */
   estimates: { one: string; other: string };
+  /**
+   * Pillars whose bar reads "No data" (isEstimatedPillar): named without a value, {list} of
+   * `pillarArea` forms. Never a number: the engine value behind them is the regional prior.
+   */
+  noDataPillars: { one: string; other: string };
   estimateItem: string;
   /** Best pillar at 7.0/10 or above: {pillar} {score}. */
   strongArea: string;
@@ -125,6 +130,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
       one: 'The value for {list} is a cautious estimate: there is too little data to measure it.',
       other: 'The values for {list} are cautious estimates: there is too little data to measure them.',
     },
+    noDataPillars: {
+      one: 'There is no data on {list} yet.',
+      other: 'There is no data on {list} yet.',
+    },
     estimateItem: '{pillar} ({score}/10)',
     strongArea: 'The best-rated area is {pillar} ({score}/10).',
     strongAreaTie: 'The best-rated areas are {pillar} and {pillar2} (both {score}/10).',
@@ -171,6 +180,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     estimates: {
       one: 'Il valore {list} è solo una stima prudente: i dati disponibili sono troppo pochi per misurarlo.',
       other: 'I valori {list} sono solo stime prudenti: i dati disponibili sono troppo pochi per misurarli.',
+    },
+    noDataPillars: {
+      one: "Per l'area {list} non ci sono ancora dati.",
+      other: 'Per le aree {list} non ci sono ancora dati.',
     },
     estimateItem: '{pillar} ({score}/10)',
     strongArea: "L'area con il punteggio migliore è quella {pillar} ({score}/10).",
@@ -225,6 +238,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
       one: 'El valor del área {list} es solo una estimación prudente: no hay datos suficientes para medirlo.',
       other: 'Los valores de las áreas {list} son solo estimaciones prudentes: no hay datos suficientes para medirlos.',
     },
+    noDataPillars: {
+      one: 'Todavía no hay datos sobre el área de {list}.',
+      other: 'Todavía no hay datos sobre las áreas de {list}.',
+    },
     estimateItem: 'de {pillar} ({score}/10)',
     strongArea: 'El área mejor valorada es la de {pillar} ({score}/10).',
     strongAreaTie: 'Las áreas mejor valoradas son la de {pillar} y la de {pillar2} (ambas con {score}/10).',
@@ -269,6 +286,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     estimates: {
       one: `La valeur {list} n’est qu’une estimation prudente${NBSP}: les données sont trop rares pour la mesurer.`,
       other: `Les valeurs {list} ne sont que des estimations prudentes${NBSP}: les données sont trop rares pour les mesurer.`,
+    },
+    noDataPillars: {
+      one: 'Il n’y a pas encore de données pour le domaine {list}.',
+      other: 'Il n’y a pas encore de données pour les domaines {list}.',
     },
     estimateItem: '{pillar} ({score}/10)',
     strongArea: 'Le domaine le mieux noté est celui {pillar} ({score}/10).',
@@ -322,6 +343,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     estimates: {
       one: 'O valor da área {list} é só uma estimativa prudente: há poucos dados para medi-lo.',
       other: 'Os valores das áreas {list} são só estimativas prudentes: há poucos dados para medi-los.',
+    },
+    noDataPillars: {
+      one: 'Ainda não há dados para a área {list}.',
+      other: 'Ainda não há dados para as áreas {list}.',
     },
     estimateItem: '{pillar} ({score}/10)',
     strongArea: 'A área mais bem avaliada é a {pillar} ({score}/10).',
@@ -377,6 +402,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
       one: '{list}的数值因数据不足，只是保守估计。',
       other: '{list}的数值因数据不足，只是保守估计。',
     },
+    noDataPillars: {
+      one: '{list}方面暂无数据。',
+      other: '{list}方面暂无数据。',
+    },
     estimateItem: '{pillar}（{score}/10）',
     strongArea: '得分最高的是{pillar}方面（{score}/10）。',
     strongAreaTie: '得分最高的是{pillar}和{pillar2}方面（均为{score}/10）。',
@@ -425,6 +454,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     estimates: {
       one: 'Der Wert für {list} ist nur eine vorsichtige Schätzung: Für eine Messung gibt es zu wenige Daten.',
       other: 'Die Werte für {list} sind nur vorsichtige Schätzungen: Für eine Messung gibt es zu wenige Daten.',
+    },
+    noDataPillars: {
+      one: 'Für den Bereich {list} liegen noch keine Daten vor.',
+      other: 'Für die Bereiche {list} liegen noch keine Daten vor.',
     },
     estimateItem: '{pillar} ({score}/10)',
     strongArea: 'Am besten bewertet ist der Bereich {pillar} ({score}/10).',
