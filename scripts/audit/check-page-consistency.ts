@@ -103,8 +103,9 @@ function textDefects(f: PageFacts): AutoFinding[] {
       // ". conflict (6.9/10) is ..." — a sentence that starts in lowercase.
       const m = text.match(/[.!?]\s+([a-zà-öø-ÿ][\p{L}-]*)/u);
       const at = m ? text.indexOf(m[0]) : -1;
-      // An abbreviation's own period is not a sentence end: "EE.UU. ahora", "U.S. officials", "z.B. die".
-      const abbreviation = at > 0 && /(?:\b\p{Lu}{1,3}\.\p{Lu}{1,3}|\b(?:e\.g|i\.e|etc|vs|z\.B|bzw|ca|p\.ex|Nr|n|nº|St|Dr))$/u.test(text.slice(Math.max(0, at - 12), at));
+      // An abbreviation's own period is not a sentence end: "EE.UU. ahora", "EE. UU. ahora" (the
+      // RAE spacing), "U.S. officials", "z.B. die".
+      const abbreviation = at > 0 && /(?:\b\p{Lu}{1,3}\.\s?\p{Lu}{1,3}|\b(?:e\.g|i\.e|etc|vs|z\.B|bzw|ca|p\.ex|Nr|n|nº|St|Dr))$/u.test(text.slice(Math.max(0, at - 12), at));
       if (m && !abbreviation) {
         out.push({
           iso3: f.iso3, lang: f.lang, category: 'broken-text', severity: field.startsWith('FAQ') ? 'medium' : 'high', field,
