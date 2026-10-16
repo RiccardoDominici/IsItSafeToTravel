@@ -206,9 +206,10 @@
  *          ministry's page about its own country is no longer an advisory (Austria, Argentina).
  *     10 band changes on the 2026-10-15 data. Without this bump the switch run would report them,
  *     the nine new grey places and dozens of score jumps as news. Dispatch the first production
- *     run with skip_digest=true as for rev 7. DATA_REVISION_SINCE does not move: the switch run
- *     is dispatched on 2026-10-15 itself and rewrites that day's advisory caches with the new
- *     parsers, and every older cache is already excluded by rev 7's cutoff.
+ *     run with skip_digest=true as for rev 7. DATA_REVISION_SINCE moves to 2026-10-16, the day of
+ *     the switch run: the advisory caches of 2026-10-15 and of the 2026-10-16 06:00 run were
+ *     written by the old CA/UK/JP parsers and the old name matching, so they must never be
+ *     restored; the switch run rewrites the 2026-10-16 caches with the new parsers.
  */
 export const DATA_REVISION = 8;
 
@@ -232,5 +233,6 @@ export const DATA_REVISION = 8;
  * outright: from DATA_REVISION_SINCE's first run onward, a fixed parser's
  * deliberate omissions stay omitted immediately.
  * Moved from 2026-09-26 to 2026-10-15 with rev 7 (f), the advisory-outlier audit.
+ * Moved to 2026-10-16 with rev 8 (f-h), the advisory and name-matching fixes.
  */
-export const DATA_REVISION_SINCE = '2026-10-15';
+export const DATA_REVISION_SINCE = '2026-10-16';
