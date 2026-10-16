@@ -14,6 +14,7 @@ import { getAdvisoryConsensus } from '../advisory-consensus';
 import { selectPillarFocus } from '../pillar-focus';
 import { describeDriver, selectBadDriver, worldBankLagNote } from '../indicator-display';
 import { formatNumber } from '../display-number';
+import { buildBestSentence } from '../pillar-narrative';
 
 const ind = (name: string, rawValue: number, normalizedValue: number, source: string, year: number): IndicatorScore => ({
   name,
@@ -155,9 +156,28 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
 
   it('never presents a pillar below 7.0 as a strength (I16)', () => {
     const [a1, a2] = faq(afghanistan(), 'en');
-    assert.match(a2.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
     assert.match(a1.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
     assert.doesNotMatch(a1.answer + a2.answer, /strongest/);
+  });
+
+  it('says the best-rated area once per page, in A1 only (task 8: ECU repeated it in Q1 and Q2)', () => {
+    let checked = 0;
+    for (const lang of LANGS) {
+      for (const c of [afghanistan(), mozambique(), uae()]) {
+        const best = buildBestSentence(selectPillarFocus(c.pillars), lang, true);
+        if (!best) continue;
+        const [a1, a2] = faq(c, lang);
+        assert.ok(!a2.answer.includes(best.replace(/^./, '')), `${c.iso3} ${lang}: A2 repeats "${best}"`);
+        if (a1.answer.includes(best.replace(/^./, ''))) checked++;
+      }
+    }
+    assert.ok(checked > 0, 'no best-area sentence found in any A1');
+  });
+
+  it('opens the provenance sentence with the score as subject, never "It" (task 8)', () => {
+    const text = summary(uae(), 'en', 'United Arab Emirates');
+    assert.match(text, /The score combines \d+ (of the \d+ )?government travel advisories/);
+    assert.doesNotMatch(text, /\bIt combines\b/);
   });
 
   it('calls no pillar the main risk when all five are at 7.0+ (I30)', () => {

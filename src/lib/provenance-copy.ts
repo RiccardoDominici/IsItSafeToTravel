@@ -77,9 +77,13 @@ const zeroDataSentence: Record<Lang, (name: string) => string> = {
   de: (n) => `${n} liegen noch keine direkten Daten vor: Der Wert ist eine vorsichtige Schätzung auf Basis der Region.`,
 };
 
-/** "It combines {clause} and is recalculated daily" template, {clause} pre-filled. */
+/**
+ * "The score combines {clause} and is recalculated daily", {clause} pre-filled. Every language names
+ * the score as the subject: after the advisory breakdown, en "It combines 24 government travel
+ * advisories" read as if "it" were the advisory count (2026-10-15 review, task 8).
+ */
 const combinesSentence: Record<Lang, (clause: string) => string> = {
-  en: (c) => `It combines ${c} and is recalculated daily.`,
+  en: (c) => `The score combines ${c} and is recalculated daily.`,
   it: (c) => `Il punteggio combina ${c} ed è ricalcolato ogni giorno.`,
   es: (c) => `La puntuación combina ${c} y se recalcula a diario.`,
   fr: (c) => `Le score combine ${c} et est recalculé chaque jour.`,

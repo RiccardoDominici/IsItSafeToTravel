@@ -996,7 +996,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
 
   // Outside the danger band the pillars can look better than the government advice (ARE, QAT):
   // A2 then says so instead of implying the pillar is the whole story.
-  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger', cautious));
+  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger'));
   const a3 = buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, false);
 
   return [
@@ -1006,14 +1006,17 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   ];
 }
 
-/** A2 ("biggest risk") parts, by focus frame. */
+/**
+ * A2 ("biggest risk") parts, by focus frame. No best-area sentence: A1 already says it, and the
+ * same "Even the best-rated area, conflict, scores only 6.9/10" twice on one page read as filler
+ * (2026-10-15 review, task 8).
+ */
 function buildBiggestRiskParts(
   focus: PillarFocus,
   lang: Lang,
   consensus: AdvisoryConsensus,
   fill: (tpl: string, extra?: Record<string, string>) => string,
   withAdvisoryNote: boolean,
-  includeWeakBest: boolean,
 ): Array<string | null> {
   const copy = countryFaqCopy[lang];
   const area = (p: PillarView) => countrySummaryCopy[lang].pillarArea[p.name];
@@ -1035,7 +1038,6 @@ function buildBiggestRiskParts(
         focus.second ? fill(copy.a2Second, pillarSlots(focus.second)) : null,
         buildGovernanceContext(focus, lang, copy.a2GovernanceContext),
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, includeWeakBest),
         // Not twice: when the advice already explains the focus pillar, it is said above.
         driver || !pressure ? advisoryNote : null,
       ];
@@ -1045,7 +1047,6 @@ function buildBiggestRiskParts(
         copy.pillarMeaning.governance,
         driver,
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, includeWeakBest),
         advisoryNote,
       ];
     case 'allGood':
