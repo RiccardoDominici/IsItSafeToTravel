@@ -23,6 +23,7 @@ import { fileURLToPath } from 'node:url';
 import type { ScoredCountry } from '../../src/pipeline/types.js';
 import { buildRankMap } from '../../src/lib/score-status.js';
 import { proximityKm, roundDistanceKm, type ProximityMap } from '../../src/lib/comparisons.js';
+import { roundForDisplay } from '../../src/lib/display-number.js';
 import type { PageFacts } from './extract-page-facts.js';
 
 export interface AutoFinding {
@@ -46,7 +47,8 @@ const MAX_AGE_YEARS = 5;
  */
 const DISTANCE_TAG = /\s+about ([\d,]+) km away$/;
 
-const round1 = (x: number): string => x.toFixed(1);
+/** The score as the pages print it (display-number.ts rounding), dot-separated for comparison. */
+const round1 = (x: number): string => roundForDisplay(x, 1).toFixed(1);
 
 /** Rank and total as the SUMMARY states them, per language template (null when absent). */
 function summaryRank(summary: string, lang: string): { rank: number; total: number } | null {
@@ -81,7 +83,13 @@ function summaryGovernments(summary: string, lang: string): number | null {
   return m ? Number(m[1]) : null;
 }
 
-const firstScore = (text: string): string | null => text.match(/(\d{1,2}\.\d)\s*(?:\/\s*10|out of 10|von 10|su 10|sobre 10|sur 10|de 10|分)/)?.[1] ?? null;
+/**
+ * The first score-shaped figure in a text, normalised to the dot ("8,5/10" -> "8.5"): it, es, fr,
+ * pt and de print the decimal comma since 2026-10-15, and a dot-only pattern would silently stop
+ * checking those five languages.
+ */
+const firstScore = (text: string): string | null =>
+  text.match(/(\d{1,2}[.,]\d)\s*(?:\/\s*10|out of 10|von 10|su 10|sobre 10|sur 10|de 10|分)/)?.[1]?.replace(',', '.') ?? null;
 
 function textDefects(f: PageFacts): AutoFinding[] {
   const out: AutoFinding[] = [];
@@ -187,7 +195,7 @@ function main(): void {
           const other = nameToIso.get(name.toLowerCase());
           if (!other) continue;
           const oc = byIso.get(other);
-          const shown = row[1];
+          const shown = row[1].replace(',', '.');
           if (oc && typeof oc.score === 'number' && shown !== round1(oc.score)) {
             findings.push({ iso3, lang, category: 'contradiction', severity: 'medium', field: 'COMPARISON TABLE', quote: `${row[0]} | ${shown}`, problem: `${name} is shown at ${shown} here but its own page says ${round1(oc.score)}.`, expected: round1(oc.score), check: 'comparison-score-mismatch' });
           }
