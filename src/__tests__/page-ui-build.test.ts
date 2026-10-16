@@ -111,6 +111,16 @@ describe('I27: grey places with nothing to list', () => {
     console.log(`  (${none.length} no-data grey places checked)`);
   });
 
+  it('the map tooltip gets the same set: data-no-data-isos lists exactly those places, in every language', () => {
+    const expected = grey().filter(greyHasNoData).map((c) => c.iso3).sort().join(',');
+    for (const lang of ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de']) {
+      const html = readFileSync(join(DIST_CLIENT, lang, 'index.html'), 'utf-8');
+      const listed = html.match(/data-no-data-isos="([^"]*)"/)?.[1];
+      assert.ok(listed !== undefined, `${lang}: homepage map has no data-no-data-isos`);
+      assert.equal(listed.split(',').filter(Boolean).sort().join(','), expected, `${lang}: map no-data set`);
+    }
+  });
+
   it('grey places with something to list keep the list, advisories counted as one source', () => {
     const some = grey().filter((c) => !greyHasNoData(c) && Object.keys(c.advisories ?? {}).length > 1);
     for (const c of some.slice(0, 10)) {

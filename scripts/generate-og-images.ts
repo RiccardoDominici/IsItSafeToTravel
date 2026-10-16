@@ -5,7 +5,12 @@
  *
  * Formula v10: a country without an official score (score null, scoreStatus
  * 'insufficient_data') gets a grey "Partial data" badge instead of a number,
- * never a made-up score (SPEC §7).
+ * never a made-up score (SPEC §7). A place with no advisory and no source at
+ * all (NFK, CCK, CXR, UMI) says "No data yet" instead, the label its hero,
+ * title, comparison rows and map tooltip use (greyHasNoData, audit I27).
+ *
+ * Images are not per language (English name, one PNG per country), so the
+ * score keeps the dot: src/lib/display-number.ts formats it as 'en'.
  *
  * Usage: npx tsx scripts/generate-og-images.ts
  * Env overrides (testing): OG_SCORES_PATH (input snapshot), OG_OUTPUT_DIR (output folder).
@@ -14,8 +19,11 @@
 import { Resvg } from '@resvg/resvg-js';
 import fs from 'node:fs';
 import path from 'node:path';
+import { greyCopy, greyHasNoData, type GreyPlaceData } from '../src/i18n/grey-copy';
+import { communityCopy } from '../src/i18n/community-copy';
+import { formatTenths, roundForDisplay } from '../src/lib/display-number';
 
-interface CountryData {
+interface CountryData extends GreyPlaceData {
   iso3: string;
   name: Record<string, string>;
   /** null for a formula v10 grey country (no official score). */
@@ -49,14 +57,19 @@ function escapeXml(str: string): string {
     .replace(/'/g, '&apos;');
 }
 
-function buildCountrySvg(name: string, score: number | null): string {
+/** The label under the em dash of a grey country, in English like the rest of the image. */
+function greyLabel(place: GreyPlaceData): string {
+  return greyHasNoData(place) ? greyCopy.en.noDataTitle : communityCopy.en.partialDataTitle;
+}
+
+function buildCountrySvg(name: string, score: number | null, greyText: string): string {
   const partial = score === null;
-  // Grey country: an em dash where the number would be, "Partial data" where "/10" would be.
-  const displayScore = partial ? '\u2014' : score.toFixed(1);
+  // Grey country: an em dash where the number would be, "Partial data" / "No data yet" where "/10" would be.
+  const displayScore = partial ? '\u2014' : formatTenths(score, 'en');
   // Colour on the printed one-decimal value, as the embed badge does: a raw 4.97 prints "5.0" and
   // must not take the below-5 red (audit I08: no shown number on the other side of a band edge).
-  const color = partial ? PARTIAL_DATA_COLOR : scoreColor(Number(displayScore));
-  const scaleLabel = partial ? 'Partial data' : '/10';
+  const color = partial ? PARTIAL_DATA_COLOR : scoreColor(roundForDisplay(score, 1));
+  const scaleLabel = partial ? greyText : '/10';
   const escapedName = escapeXml(name);
   // Adjust font size for long country names
   const nameFontSize = name.length > 28 ? 44 : name.length > 20 ? 52 : 64;
@@ -145,7 +158,7 @@ function main(): void {
   let count = 0;
   for (const country of countries) {
     const name = country.name.en; // Use English name for OG images (universal)
-    const svg = buildCountrySvg(name, typeof country.score === 'number' ? country.score : null);
+    const svg = buildCountrySvg(name, typeof country.score === 'number' ? country.score : null, greyLabel(country));
     const png = renderPng(svg);
     const filename = `country-${country.iso3.toLowerCase()}.png`;
     fs.writeFileSync(path.join(OUTPUT_DIR, filename), png);

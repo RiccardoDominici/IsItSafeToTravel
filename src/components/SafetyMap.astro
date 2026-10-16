@@ -5,6 +5,7 @@ import { routes } from '../i18n/ui';
 import { communityCopy } from '../i18n/community-copy';
 import { loadLatestScores } from '../lib/scores';
 import { isGrey } from '../lib/score-status';
+import { greyCopy, greyHasNoData } from '../i18n/grey-copy';
 
 interface Props {
   lang: Lang;
@@ -14,12 +15,18 @@ const { lang } = Astro.props;
 const t = useTranslations(lang);
 // The legend lists the partial-data grey only when the data has grey places (formula v10). On
 // v9.1-shaped data every place is scored, so the map and its legend look exactly as before.
-const hasPartialData = loadLatestScores().some(isGrey);
+const latestScores = loadLatestScores();
+const hasPartialData = latestScores.some(isGrey);
+// Grey places with no advisory and no source at all (NFK, CCK, CXR, UMI): their tooltip says
+// "No data yet", like their hero, title and comparison rows (greyHasNoData, audit I27), not
+// "Partial data" over nothing. Computed here so the public map-data.json keeps its shape.
+const noDataIsos = latestScores.filter((c) => isGrey(c) && greyHasNoData(c)).map((c) => c.iso3);
 
 const translations = {
   nodata: t('map.tooltip.nodata'),
   // Formula v10 grey places: shown on the map, never with a number.
   partialData: communityCopy[lang].partialDataTitle,
+  noDataYet: greyCopy[lang].noDataTitle,
   zoomIn: t('map.zoom.in'),
   zoomOut: t('map.zoom.out'),
   ctrlZoom: t('map.ctrl_zoom'),
@@ -76,6 +83,7 @@ const nc = noscriptCopy[lang];
   data-translations={JSON.stringify(translations)}
   data-source-labels={JSON.stringify(sourceLabels)}
   data-country-route={countryRoute}
+  data-no-data-isos={noDataIsos.join(',')}
 >
   <!-- SVG injected by D3 -->
 
@@ -213,6 +221,7 @@ const nc = noscriptCopy[lang];
   interface Translations {
     nodata: string;
     partialData: string;
+    noDataYet: string;
     zoomIn: string;
     zoomOut: string;
     ctrlZoom: string;
@@ -382,6 +391,8 @@ const nc = noscriptCopy[lang];
     // clickable, never coloured on the score scale.
     const scoreMap = new Map<string, number>();
     const greySet = new Set<string>();
+    // Grey places with nothing at all to list (server-side greyHasNoData): "No data yet" in the tooltip.
+    const noDataSet = new Set<string>((container.dataset.noDataIsos || '').split(',').filter(Boolean));
     const nameMap = new Map<string, string>();
     for (const s of scores) {
       if (typeof s.score === 'number' && Number.isFinite(s.score)) scoreMap.set(s.iso3, s.score);
@@ -590,7 +601,7 @@ const nc = noscriptCopy[lang];
 
       const displayName = name || iso3;
       const scoreHtml = greySet.has(iso3)
-        ? `<div class="font-medium">${displayName}</div><div>${translations.partialData}</div>`
+        ? `<div class="font-medium">${displayName}</div><div>${noDataSet.has(iso3) ? translations.noDataYet : translations.partialData}</div>`
         : displayScore
         ? displayScore.label
           ? `<div class="font-medium">${displayName}</div><div>${formatTenths(displayScore.value, lang)} (${displayScore.label})</div>`
