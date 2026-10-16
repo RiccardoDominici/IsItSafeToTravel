@@ -160,3 +160,30 @@ describe('affiliate removal', () => {
     assert.deepEqual(offenders.slice(0, 5), [], `${offenders.length} pages still carry affiliate traces`);
   });
 });
+
+describe('task 10: "Where does the data come from?" shows source names, not ids', () => {
+  const SEGMENTS: Record<string, string> = { en: 'country', it: 'paese', es: 'pais', fr: 'pays', pt: 'pais', zh: 'country', de: 'land' };
+  const RAW_IDS = new Set(['advisories', 'worldbank', 'vdem', 'gpi', 'inform', 'reliefweb', 'gdacs', 'ucdp']);
+  it('no source link text is an internal id and no description carries " -- ", in every language', () => {
+    let links = 0;
+    for (const [lang, segment] of Object.entries(SEGMENTS)) {
+      for (const iso3 of ['DEU', 'ECU', 'CHN', 'NFK', 'TWN', 'NRU']) {
+        let html: string;
+        try {
+          html = countryPage(iso3, lang, segment);
+        } catch {
+          continue; // a place may not exist in a given snapshot
+        }
+        const start = html.indexOf('id="sources"');
+        if (start < 0) continue;
+        const section = html.slice(start, html.indexOf('</section>', start));
+        for (const m of section.matchAll(/<li[^>]*data-source="([a-z]+)"[^>]*>[\s\S]*?<(?:a|span)[^>]*>\s*([^<]+?)\s*<\/(?:a|span)>/g)) {
+          assert.ok(!RAW_IDS.has(m[2]), `${lang}/${iso3}: source ${m[1]} shows "${m[2]}"`);
+          links++;
+        }
+        assert.ok(!section.includes(' -- '), `${lang}/${iso3}: " -- " in the sources section`);
+      }
+    }
+    assert.ok(links > 20, `only ${links} source names checked`);
+  });
+});

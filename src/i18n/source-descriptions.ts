@@ -36,8 +36,9 @@ type CatalogDescriptions = Record<CatalogSourceKey, string>;
 
 /**
  * Localized replacements for SOURCE_CATALOG[key].description. English is never listed
- * here — getLocalizedSourceDescription() returns the stored (English) value unchanged
- * for lang 'en', so src/pipeline/scoring/engine.ts stays the single owner of that text.
+ * here — getLocalizedSourceDescription() returns the stored (English) value for lang 'en'
+ * (only its " -- " separator is replaced), so src/pipeline/scoring/engine.ts stays the
+ * single owner of that text.
  *
  * Proper names, dataset titles, DOIs and licence codes are kept exact (matching how
  * the rest of the site already treats them — see e.g. the identical, untranslated
@@ -104,19 +105,64 @@ const CATALOG_DESCRIPTIONS: Record<Exclude<Lang, 'en'>, CatalogDescriptions> = {
 };
 
 /**
+ * The separator between a source's name and what it provides, per language convention: the
+ * catalog (and the stored English text in data/scores/*.json) uses an ASCII " -- ", which no
+ * language writes (2026-10-15 review, task 10). en/it/es/pt take the spaced em dash the site
+ * already uses in their copy, French a colon after a no-break space, German a colon, Chinese "——".
+ */
+const NAME_SEPARATOR: Record<Lang, string> = {
+  en: ' — ',
+  it: ' — ',
+  es: ' — ',
+  fr: '\u00a0: ',
+  pt: ' — ',
+  zh: '——',
+  de: ': ',
+};
+
+/** " -- " (and the zh "——" written with spaces) replaced by the language's own separator. */
+export function punctuateSourceDescription(lang: Lang, text: string): string {
+  return text.replace(/\s*(?:--|——)\s*/g, NAME_SEPARATOR[lang]);
+}
+
+/**
  * Localize one SOURCE_CATALOG-derived description. Returns `storedDescription`
- * (the English text already baked into data/scores/*.json) unchanged for lang 'en',
- * and as a safety net for any source key this table doesn't (yet) cover — e.g. a new
- * pipeline source added before its translation lands here. Nothing ever disappears.
+ * (the English text already baked into data/scores/*.json) for lang 'en', and as a
+ * safety net for any source key this table doesn't (yet) cover — e.g. a new pipeline
+ * source added before its translation lands here. Nothing ever disappears. Either way
+ * the separator follows the language (punctuateSourceDescription).
  */
 export function getLocalizedSourceDescription(
   lang: Lang,
   sourceKey: string,
   storedDescription: string,
 ): string {
-  if (lang === 'en') return storedDescription;
-  const table = CATALOG_DESCRIPTIONS[lang];
-  return table?.[sourceKey as CatalogSourceKey] ?? storedDescription;
+  const text = lang === 'en' ? storedDescription : CATALOG_DESCRIPTIONS[lang]?.[sourceKey as CatalogSourceKey] ?? storedDescription;
+  return punctuateSourceDescription(lang, text);
+}
+
+/** Every key a country's `sources` list can carry (SourceMeta.name). */
+export type SourceKey = CatalogSourceKey | 'advisories';
+
+/**
+ * Human name of each source for the country page's "Where does the data come from?" list, whose
+ * links used to show the internal id ("advisories", "gdacs", "gpi"). Names the site already uses
+ * elsewhere: the indicator tables' World Bank (indicator-copy.ts), "Global Peace Index", "INFORM
+ * Risk Index", and the advisory section's own wording for government advice.
+ */
+export const SOURCE_DISPLAY_NAMES: Record<Lang, Record<SourceKey, string>> = {
+  en: { advisories: 'Government travel advisories', worldbank: 'World Bank', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  it: { advisories: 'Avvisi di viaggio dei governi', worldbank: 'Banca Mondiale', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  es: { advisories: 'Avisos de viaje de los gobiernos', worldbank: 'Banco Mundial', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  fr: { advisories: 'Conseils aux voyageurs des gouvernements', worldbank: 'Banque mondiale', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  pt: { advisories: 'Alertas de viagem dos governos', worldbank: 'Banco Mundial', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  zh: { advisories: '各国政府旅行警告', worldbank: '世界银行', vdem: 'V-Dem', gpi: '全球和平指数', inform: 'INFORM 风险指数', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+  de: { advisories: 'Reisehinweise der Regierungen', worldbank: 'Weltbank', vdem: 'V-Dem', gpi: 'Global Peace Index', inform: 'INFORM Risk Index', reliefweb: 'ReliefWeb', gdacs: 'GDACS', ucdp: 'UCDP' },
+};
+
+/** The source's human name in the page language; an unknown key (a new pipeline source) shows as is. */
+export function getSourceDisplayName(lang: Lang, sourceKey: string): string {
+  return SOURCE_DISPLAY_NAMES[lang][sourceKey as SourceKey] ?? sourceKey;
 }
 
 /** Short "what this measures" labels for the /sources/ methodology tables (baselineSources/

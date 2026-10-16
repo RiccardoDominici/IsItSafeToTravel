@@ -174,3 +174,38 @@ describe('getLocalizedSourceMeasures', () => {
     assert.doesNotMatch(getLocalizedSourceMeasures('de', 'worldbank', 'stored'), /Kindersterblichkeit|PM2/);
   });
 });
+
+describe('source names and separators in "Where does the data come from?" (task 10, 2026-10-15)', () => {
+  const KEYS = ['advisories', 'worldbank', 'vdem', 'gpi', 'inform', 'reliefweb', 'gdacs', 'ucdp'] as const;
+  const STORED_EN: Record<string, string> = {
+    worldbank: 'World Bank Development Indicators -- intentional homicide rate (with population)',
+    gdacs: 'Global Disaster Alerting Coordination System -- natural disaster alerts',
+  };
+
+  it('never shows an internal source id as the name', async () => {
+    const { getSourceDisplayName } = await import('../source-descriptions.js');
+    for (const lang of publishedLanguages as readonly Lang[]) {
+      for (const key of KEYS) {
+        const name = getSourceDisplayName(lang, key);
+        assert.notEqual(name, key, `${lang}/${key}`);
+        assert.ok(name.length > 1 && !/^[a-z]+$/.test(name), `${lang}/${key}: "${name}"`);
+      }
+    }
+    assert.equal(getSourceDisplayName('en', 'advisories'), 'Government travel advisories');
+    assert.equal(getSourceDisplayName('de', 'worldbank'), 'Weltbank');
+    assert.equal(getSourceDisplayName('en', 'newsource'), 'newsource');
+  });
+
+  it('replaces the ASCII " -- " with each language\'s separator, stored English text included', () => {
+    for (const lang of publishedLanguages as readonly Lang[]) {
+      for (const key of KEYS.filter((k) => k !== 'advisories')) {
+        const text = getLocalizedSourceDescription(lang, key, STORED_EN[key] ?? 'Name -- what it provides');
+        assert.ok(!text.includes('--'), `${lang}/${key}: ${text}`);
+      }
+    }
+    assert.equal(getLocalizedSourceDescription('en', 'gdacs', STORED_EN.gdacs), 'Global Disaster Alerting Coordination System — natural disaster alerts');
+    assert.match(getLocalizedSourceDescription('de', 'worldbank', STORED_EN.worldbank), /^Weltbank-Entwicklungsindikatoren: Rate/);
+    assert.match(getLocalizedSourceDescription('fr', 'gdacs', STORED_EN.gdacs), / : alertes de catastrophes naturelles$/);
+    assert.match(getLocalizedSourceDescription('zh', 'vdem', 'x'), /v16 \(CC-BY-SA 4\.0\)——法治/);
+  });
+});
