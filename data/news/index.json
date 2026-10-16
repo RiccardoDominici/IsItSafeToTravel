@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-15T11:20:15.979Z",
-  "lastProcessedDate": "2026-10-15",
+  "generatedAt": "2026-10-16T11:02:59.339Z",
+  "lastProcessedDate": "2026-10-16",
   "cooldowns": {
     "jump:KWT": "2026-10-01",
     "jump:BHR": "2026-10-01",
@@ -72,9 +72,21 @@
     "advisory:MAC:us:3": "2026-09-25",
     "advisory:BGD:us:3": "2026-09-30",
     "jump:SAU": "2026-10-11",
-    "jump:FSM": "2026-10-13"
+    "jump:FSM": "2026-10-13",
+    "advisory:SAU:au:4": "2026-10-16"
   },
   "recentEvents": [
+    {
+      "id": "2026-10-16:severe_advisory:SAU:au",
+      "date": "2026-10-16",
+      "type": "severe_advisory",
+      "params": {
+        "country": "SAU",
+        "issuer": "au",
+        "level": 4
+      },
+      "priority": 100
+    },
     {
       "id": "2026-10-13:score_jump:FSM",
       "date": "2026-10-13",

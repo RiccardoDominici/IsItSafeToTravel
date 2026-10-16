@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-16",
+  "generatedAt": "2026-10-16T11:02:57.521Z",
+  "runYear": 2026,
+  "informEdition": {
+    "file": "INFORM_Risk_Mid_2026_v073.xlsx",
+    "version": "v073",
+    "url": "https://drmkc.jrc.ec.europa.eu/inform-index/Portals/0/InfoRM/2026/INFORM_Risk_Mid_2026_v073.xlsx",
+    "sheetName": "INFORM Risk 2026 (a-z)",
+    "editionYear": 2026,
+    "firstSeen": "2026-10-14T17:50:39.065Z"
+  },
+  "newInformEdition": false,
+  "checks": [
+    {
+      "key": "inform",
+      "label": "INFORM Risk edition",
+      "newestYear": 2026,
+      "maxLagYears": 1,
+      "minYear": 2025,
+      "ok": true
+    },
+    {
+      "key": "gpi",
+      "label": "Global Peace Index",
+      "newestYear": 2026,
+      "maxLagYears": 1,
+      "minYear": 2025,
+      "ok": true
+    },
+    {
+      "key": "vdem",
+      "label": "V-Dem governance",
+      "newestYear": 2025,
+      "maxLagYears": 2,
+      "minYear": 2024,
+      "ok": true
+    },
+    {
+      "key": "ucdp",
+      "label": "UCDP conflict deaths",
+      "newestYear": 2025,
+      "maxLagYears": 2,
+      "minYear": 2024,
+      "ok": true
+    },
+    {
+      "key": "worldbank:wb_homicide",
+      "label": "World Bank wb_homicide",
+      "newestYear": 2023,
+      "maxLagYears": 3,
+      "minYear": 2023,
+      "ok": true
+    },
+    {
+      "key": "worldbank:wb_population",
+      "label": "World Bank wb_population",
+      "newestYear": 2025,
+      "maxLagYears": 3,
+      "minYear": 2023,
+      "ok": true
+    }
+  ],
+  "violations": [],
+  "notifiedViolationKeys": []
+}
