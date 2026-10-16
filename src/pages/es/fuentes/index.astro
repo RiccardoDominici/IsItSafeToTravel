@@ -9,6 +9,7 @@ import { ADVISORY_STATUS } from '../../../lib/site-stats';
 import { getLocalizedSourceMeasures, ADVISORY_ISO3, sourceEditionLine } from '../../../i18n/source-descriptions';
 import { getSourceEditions } from '../../../lib/source-editions';
 import { getLocalizedCountryName } from '../../../lib/scores';
+import { formatNumber } from '../../../lib/display-number';
 
 const lang: Lang = 'es';
 const t = useTranslations(lang);
@@ -18,43 +19,43 @@ const webPageJsonLd = buildWebPageJsonLd(t('sources.title'), t('sources.descript
 
 // All government advisory sources with metadata; live per-source status (item count) computed from ADVISORY_STATUS below
 const advisorySources = [
-  { key: 'us', country: 'United States', tier: 'base', weight: '2.6%', format: 'JSON API' },
-  { key: 'uk', country: 'United Kingdom', tier: 'base', weight: '2.5%', format: 'JSON API' },
-  { key: 'ca', country: 'Canada', tier: 'base', weight: '2.5%', format: 'JSON API' },
-  { key: 'au', country: 'Australia', tier: 'base', weight: '2.5%', format: 'JSON API' },
-  { key: 'de', country: 'Germany', tier: 'tier1', weight: '1.8%', format: 'REST API' },
-  { key: 'nl', country: 'Netherlands', tier: 'tier1', weight: '1.8%', format: 'JSON API' },
-  { key: 'jp', country: 'Japan', tier: 'tier1', weight: '1.8%', format: 'XML API' },
-  { key: 'sk', country: 'Slovakia', tier: 'tier1', weight: '1.8%', format: 'Open Data' },
-  { key: 'fr', country: 'France', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'nz', country: 'New Zealand', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'ie', country: 'Ireland', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'fi', country: 'Finland', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'hk', country: 'Hong Kong', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'br', country: 'Brazil', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'at', country: 'Austria', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'ph', country: 'Philippines', tier: 'tier2a', weight: '1.0%', format: 'HTML' },
-  { key: 'be', country: 'Belgium', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'dk', country: 'Denmark', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'sg', country: 'Singapore', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'ro', country: 'Romania', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'rs', country: 'Serbia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'ee', country: 'Estonia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'hr', country: 'Croatia', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'ar', country: 'Argentina', tier: 'tier2b', weight: '0.7%', format: 'HTML' },
-  { key: 'it', country: 'Italy', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'es', country: 'Spain', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'kr', country: 'South Korea', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'tw', country: 'Taiwan', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'cn', country: 'China', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'in', country: 'India', tier: 'tier3a', weight: '0.5%', format: 'HTML (Complex)' },
-  { key: 'ch', country: 'Switzerland', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'se', country: 'Sweden', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'no', country: 'Norway', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'pl', country: 'Poland', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'cz', country: 'Czech Republic', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'hu', country: 'Hungary', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
-  { key: 'pt', country: 'Portugal', tier: 'tier3b', weight: '0.3%', format: 'HTML (Complex)' },
+  { key: 'us', country: 'United States', tier: 'base', weight: 2.6, format: 'JSON API' },
+  { key: 'uk', country: 'United Kingdom', tier: 'base', weight: 2.5, format: 'JSON API' },
+  { key: 'ca', country: 'Canada', tier: 'base', weight: 2.5, format: 'JSON API' },
+  { key: 'au', country: 'Australia', tier: 'base', weight: 2.5, format: 'JSON API' },
+  { key: 'de', country: 'Germany', tier: 'tier1', weight: 1.8, format: 'REST API' },
+  { key: 'nl', country: 'Netherlands', tier: 'tier1', weight: 1.8, format: 'JSON API' },
+  { key: 'jp', country: 'Japan', tier: 'tier1', weight: 1.8, format: 'XML API' },
+  { key: 'sk', country: 'Slovakia', tier: 'tier1', weight: 1.8, format: 'Open Data' },
+  { key: 'fr', country: 'France', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'nz', country: 'New Zealand', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'ie', country: 'Ireland', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'fi', country: 'Finland', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'hk', country: 'Hong Kong', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'br', country: 'Brazil', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'at', country: 'Austria', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'ph', country: 'Philippines', tier: 'tier2a', weight: 1.0, format: 'HTML' },
+  { key: 'be', country: 'Belgium', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'dk', country: 'Denmark', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'sg', country: 'Singapore', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'ro', country: 'Romania', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'rs', country: 'Serbia', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'ee', country: 'Estonia', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'hr', country: 'Croatia', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'ar', country: 'Argentina', tier: 'tier2b', weight: 0.7, format: 'HTML' },
+  { key: 'it', country: 'Italy', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'es', country: 'Spain', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'kr', country: 'South Korea', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'tw', country: 'Taiwan', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'cn', country: 'China', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'in', country: 'India', tier: 'tier3a', weight: 0.5, format: 'HTML (Complex)' },
+  { key: 'ch', country: 'Switzerland', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'se', country: 'Sweden', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'no', country: 'Norway', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'pl', country: 'Poland', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'cz', country: 'Czech Republic', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'hu', country: 'Hungary', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
+  { key: 'pt', country: 'Portugal', tier: 'tier3b', weight: 0.3, format: 'HTML (Complex)' },
 ];
 
 // Formula v10 baseline sources. The edition line under each name comes from the data
@@ -168,7 +169,7 @@ const signalSources = [
                 <td class="py-3 pr-4 font-medium text-sand-800 dark:text-sand-100">{t(`country.advisory.${src.key}` as any)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{getLocalizedCountryName({ iso3: ADVISORY_ISO3[src.key as keyof typeof ADVISORY_ISO3], name: { en: src.country } }, lang)}</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{t(`sources.tier.${src.tier}` as any)}</td>
-                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.weight}</td>
+                <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{formatNumber(src.weight, 1, lang)}%</td>
                 <td class="py-3 pr-4 text-sand-600 dark:text-sand-300">{src.format}</td>
                 <td class="py-3 min-h-[24px]">
                   {activeCount > 0

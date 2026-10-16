@@ -544,7 +544,7 @@ const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-te
             const iso = country.iso3.toLowerCase();
             const name = getLocalizedCountryName(country, lang);
             return (
-              <option value={iso} data-name={name} data-score={country.score.toFixed(1)} data-score-text={formatTenths(country.score, lang)} data-iso={iso} selected={idx === 0}>
+              <option value={iso} data-name={name} data-score={country.score.toFixed(1)} data-iso={iso} selected={idx === 0}>
                 {name} ({formatTenths(country.score, lang)}/10)
               </option>
             );
@@ -680,6 +680,9 @@ const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-te
 <script type="application/json" id="cite-tmpl" set:html={JSON.stringify(tmplIsland)} />
 
 <script>
+  import { formatTenths } from '../lib/display-number';
+  import type { Lang } from '../i18n/ui';
+
   const tmplEl = document.getElementById('cite-tmpl');
   const tmpl: Record<string, string> = tmplEl ? JSON.parse(tmplEl.textContent || '{}') : {};
 
@@ -703,9 +706,10 @@ const ctaLinkClass = 'inline-flex items-center gap-1 text-sm font-medium text-te
     const option = select.selectedOptions[0];
     const iso = isGlobal ? 'global' : select.value;
     const name = isGlobal ? '' : option?.dataset.name || '';
-    // data-score keeps the machine dot; the citation prints the page-language form (data-score-text).
-    const score = isGlobal ? '' : option?.dataset.scoreText || option?.dataset.score || '';
     const docLang = document.documentElement.lang || 'en';
+    // data-score keeps the machine dot; the citation text prints it in the page language ("8,5").
+    const raw = isGlobal ? NaN : Number(option?.dataset.score);
+    const score = Number.isFinite(raw) ? formatTenths(raw, docLang as Lang) : '';
     const countryRoute = select.dataset.countryRoute || 'country';
     const url = isGlobal
       ? 'https://isitsafetotravel.org/'

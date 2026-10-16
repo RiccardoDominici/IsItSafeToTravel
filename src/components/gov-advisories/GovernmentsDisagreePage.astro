@@ -157,7 +157,7 @@ const mostContestedExtremes = mostContested ? getLevelExtremes(mostContested) : 
                     {getLocalizedCountryName(row.country, lang)}
                   </a>
                   <span class="text-xs text-sand-600 dark:text-sand-400 whitespace-nowrap">
-                    {copy.labelSpread} {row.spread} · {copy.labelMedian} {row.median}
+                    {copy.labelSpread} {row.spread} · {copy.labelMedian} {formatNumber(row.median, Number.isInteger(row.median) ? 0 : 1, lang)}
                   </span>
                 </div>
                 <LevelDistributionBars counts={counts} total={row.n} shortLabels={copy.levelShortLabels} groupLabel={groupLabel} />

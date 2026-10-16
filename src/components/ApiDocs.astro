@@ -8,6 +8,7 @@ import { buildDatasetJsonLd, WEBSITE_ID, SITE_DATASET_ID } from '../lib/seo';
 import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from '../lib/site-stats';
 import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
+import { formatNumber } from '../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -336,7 +337,8 @@ const canonicalUrl = `https://isitsafetotravel.org/${lang}/${r['api']}/`;
 const localeMap: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
 
 const endpoints = [
-  { path: '/scores.json', href: '/scores.json', desc: c.epScores, size: '~1.4 MB' },
+  // Sizes in the page language's number format ("~1,4 MB" in it/es/fr/pt/de).
+  { path: '/scores.json', href: '/scores.json', desc: c.epScores, size: `~${formatNumber(1.4, 1, lang)} MB` },
   { path: '/map-data.json', href: '/map-data.json', desc: c.epMapData, size: '~130 KB' },
   { path: '/history/{iso3}.json', href: '/history/ita.json', desc: c.epHistory, size: '~5 KB' },
   { path: '/trend/{iso3}.json', href: '/trend/ita.json', desc: c.epTrend, size: '~20 KB' },
