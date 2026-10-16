@@ -18,7 +18,7 @@ import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { getProvenanceCounts } from './provenance-copy';
 import { isScored } from './score-status';
 import { advisoryLevels, buildAdvisorySentence, nameSlots } from './country-summary';
-import { formatTenths } from './display-number';
+import { formatTenths, roundForDisplay } from './display-number';
 import { advisoryEntries, getAdvisoryConsensus, type AdvisoryConsensus } from './advisory-consensus';
 import { selectPillarFocus, type PillarFocus, type PillarView } from './pillar-focus';
 import {
@@ -49,6 +49,13 @@ import {
   getGermanNominative,
   isGermanPlural,
   getFrenchPreposition,
+  getFrenchDe,
+  getItalianArticulated,
+  getItalianWithArticle,
+  getSpanishA,
+  getSpanishDe,
+  getSpanishSubject,
+  getSpanishWithArticle,
 } from '../i18n/country-grammar';
 import { getFrenchDefinite, getGermanUeberPhrase } from '../i18n/country-name-forms';
 
@@ -282,16 +289,28 @@ const metaFocusClauses: Record<Lang, Record<MetaFrame, (p: string, s: string, e:
  * The provenance tail of the meta description with THIS country's own counts (2026-10-15 audit,
  * I13: every page promised "30+ public sources" while its own summary counted, say, 20 advisories
  * and 5 datasets). Phrased as "advisories" and "datasets", never "<n> sources", which validate-seo
- * reads as the site-wide source-count claim.
+ * reads as the site-wide source-count claim. The advisory number is the one the score uses, with
+ * the published total when the formula leaves issuers out ("14 of 20 advisories"), the same two
+ * numbers as the summary's provenance sentence (provenance-copy.ts).
  */
-const metaTails: Record<Lang, (advisories: number, datasets: number) => string> = {
-  en: (a, d) => tail(` Score based on %s, recalculated daily.`, ' and ', a && `${a} ${a === 1 ? 'advisory' : 'advisories'}`, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
-  it: (a, d) => tail(` Punteggio basato su %s, ricalcolato ogni giorno.`, ' e ', a && `${a} ${a === 1 ? 'avviso' : 'avvisi'}`, d && `${d} dataset`),
-  es: (a, d) => tail(` Puntuación basada en %s, recalculada a diario.`, ' y ', a && `${a} ${a === 1 ? 'aviso' : 'avisos'}`, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
-  fr: (a, d) => tail(` Score fondé sur %s, recalculé chaque jour.`, ' et ', a && `${a} avis`, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
-  pt: (a, d) => tail(` Pontuação baseada em %s, recalculada diariamente.`, ' e ', a && `${a} ${a === 1 ? 'alerta' : 'alertas'}`, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
-  zh: (a, d) => tail(`评分基于%s，每日重新计算。`, '和', a && `${a}份旅行警告`, d && `${d}个数据集`),
-  de: (a, d) => tail(` Täglich neu berechnet aus %s.`, ' und ', a && `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
+const metaAdvisories: Record<Lang, (a: number, total: number) => string> = {
+  en: (a, t) => (a < t ? `${a} of ${t} advisories` : `${a} ${a === 1 ? 'advisory' : 'advisories'}`),
+  it: (a, t) => (a < t ? `${a} avvisi su ${t}` : `${a} ${a === 1 ? 'avviso' : 'avvisi'}`),
+  es: (a, t) => (a < t ? `${a} de ${t} avisos` : `${a} ${a === 1 ? 'aviso' : 'avisos'}`),
+  fr: (a, t) => (a < t ? `${a} avis sur ${t}` : `${a} avis`),
+  pt: (a, t) => (a < t ? `${a} de ${t} alertas` : `${a} ${a === 1 ? 'alerta' : 'alertas'}`),
+  zh: (a, t) => (a < t ? `${t}份旅行警告中的${a}份` : `${a}份旅行警告`),
+  de: (a, t) => (a < t ? `${a} von ${t} Reisehinweisen` : `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`),
+};
+
+const metaTails: Record<Lang, (advisories: string | 0, datasets: number) => string> = {
+  en: (a, d) => tail(` Score based on %s, recalculated daily.`, ' and ', a, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
+  it: (a, d) => tail(` Punteggio basato su %s, ricalcolato ogni giorno.`, ' e ', a, d && `${d} dataset`),
+  es: (a, d) => tail(` Puntuación basada en %s, recalculada a diario.`, ' y ', a, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
+  fr: (a, d) => tail(` Score fondé sur %s, recalculé chaque jour.`, ' et ', a, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
+  pt: (a, d) => tail(` Pontuação baseada em %s, recalculada diariamente.`, ' e ', a, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
+  zh: (a, d) => tail(`评分基于%s，每日重新计算。`, '和', a, d && `${d}个数据集`),
+  de: (a, d) => tail(` Täglich neu berechnet aus %s.`, ' und ', a, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
 };
 
 /** Fills "%s" with the non-empty parts joined by `and`; empty string when there is nothing to count. */
@@ -335,12 +354,14 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
       ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[tie.name]}`
       : `${labels[focus.focus.name]} (${value})${META_AND[lang]}${labels[tie.name]}`;
   const shownValue = tie && !focus.focusTieExact ? formatTenths(tie.value, lang) : value;
-  const measured = focus.lowerEstimates.length > 0;
+  // Estimates and "No data" bars both make the claim about the MEASURED areas only.
+  const unmeasured = [...focus.lowerEstimates, ...focus.noData];
+  const measured = unmeasured.length > 0;
   const frameKey: MetaFrame =
     focus.frame === 'allGood' ? (focus.allFiveAtLeast7 ? 'allGood' : 'allGoodMeasured')
     : focus.frame === 'weakest' && measured ? 'weakestMeasured'
     : focus.frame;
-  const estimated = focus.lowerEstimates.map((p) => labels[p.name]).join(META_AND[lang]);
+  const estimated = unmeasured.map((p) => labels[p.name]).join(META_AND[lang]);
   // Most governments at "reconsider travel" or worse is the strongest signal: the snippet leads
   // with it instead of a pillar (Kuwait 6.9 read "Main concern: natural hazards (6.2)" while 17 of
   // 21 governments advise reconsidering travel or against it).
@@ -376,9 +397,10 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
       };
   // Honest cadence (formula v10, SPEC §7): the SCORE is recalculated daily; most of the data
   // behind it is not ("updated daily" claimed the opposite).
-  const { advisoryCount, otherSourceCount } = getProvenanceCounts(country);
+  const { advisoryCount, publishedAdvisoryCount, otherSourceCount } = getProvenanceCounts(country);
   const base = bases[lang];
-  const withTail = base + metaTails[lang](advisoryCount, otherSourceCount);
+  const advisories = advisoryCount > 0 ? metaAdvisories[lang](advisoryCount, publishedAdvisoryCount) : 0;
+  const withTail = base + metaTails[lang](advisories, otherSourceCount);
   return withTail.length <= DESCRIPTION_MAX ? withTail : base;
 }
 
@@ -399,7 +421,7 @@ const webPageNameTemplates: Record<Lang, (name: string) => string> = {
   fr: (n) => `Score de sécurité ${n}`,
   pt: (n) => `Pontuação de segurança de ${n}`,
   zh: (n) => `${n} 安全评分`,
-  de: (n) => `Sicherheits-Score ${n}`,
+  de: (n) => `Sicherheitswert ${n}`,
 };
 
 // Place.description
@@ -443,7 +465,7 @@ const touristDescriptions: Record<Lang, (name: string, score: string, band: stri
   fr: (n, s, b) => `Informations de sécurité voyage pour ${n}. Score de sécurité : ${s}/10 (${b}). Données de IsItSafeToTravel.org, score recalculé chaque jour.`,
   pt: (n, s, b) => `Informações de segurança de viagem para ${n}. Pontuação de segurança: ${s}/10 (${b}). Dados de IsItSafeToTravel.org, pontuação recalculada diariamente.`,
   zh: (n, s, b) => `${n}旅行安全信息。安全评分：${s}/10（${b}）。数据来自 IsItSafeToTravel.org，评分每日重新计算。`,
-  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheits-Score: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, Wert täglich neu berechnet.`,
+  de: (n, s, b) => `Reise-Sicherheitsinformationen für ${n}. Sicherheitswert: ${s}/10 (${b}). Daten von IsItSafeToTravel.org, Wert täglich neu berechnet.`,
 };
 
 // TouristDestination.description of a grey place: no score, no band.
@@ -476,7 +498,7 @@ const datasetDescriptions: Record<Lang, (name: string) => string> = {
   fr: (n) => `Scores de sécurité pour ${n}, recalculés chaque jour à partir de sources publiques et couvrant conflit, criminalité, santé, gouvernance et risques naturels.`,
   pt: (n) => `Pontuações de segurança para ${n}, recalculadas diariamente a partir de fontes públicas, cobrindo conflito, criminalidade, saúde, governança e riscos naturais.`,
   zh: (n) => `${n}综合安全评分，基于冲突、犯罪、健康、治理和自然灾害五大类别加权计算，数据来源公开透明，评分每日重新计算，供出行前参考。`,
-  de: (n) => `Sicherheits-Scores für ${n}, täglich aus öffentlichen Quellen neu berechnet, mit den Bereichen Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren.`,
+  de: (n) => `Sicherheitswerte für ${n}, täglich aus öffentlichen Quellen neu berechnet, mit den Bereichen Konflikt, Kriminalität, Gesundheit, Regierungsführung und Naturgefahren.`,
 };
 
 // Dataset.description of a grey place: what exists, and that no score is published.
@@ -498,7 +520,7 @@ const measurementTechniqueByLang: Record<Lang, string> = {
   fr: `Moyenne géométrique pondérée corrigée pour l'incertitude (Bayesian shrinkage) de 5 scores de catégorie provenant de ${SOURCE_COUNT_DISPLAY} sources publiques, dont les avis gouvernementaux, la Banque mondiale, INFORM, UCDP et les indices GPI`,
   pt: `Média geométrica ponderada com correção de incerteza (Bayesian shrinkage) de 5 pontuações de categoria provenientes de ${SOURCE_COUNT_DISPLAY} fontes públicas, incluindo avisos governamentais, Banco Mundial, INFORM, UCDP e índices GPI`,
   zh: `基于来自 ${SOURCE_COUNT_DISPLAY} 个公开来源（包括政府旅行警告、世界银行、INFORM、UCDP 和 GPI 指数）的 5 个类别评分的、经不确定性加权（贝叶斯收缩）的加权几何平均值`,
-  de: `Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategorie-Scores aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes`,
+  de: `Unsicherheitsgewichtetes (Bayesian Shrinkage) gewichtetes geometrisches Mittel aus 5 Kategoriewerten aus ${SOURCE_COUNT_DISPLAY} öffentlichen Quellen, darunter Regierungs-Reisehinweise, Weltbank, INFORM, UCDP und GPI-Indizes`,
 };
 
 // Dataset.variableMeasured entries (PropertyValue name + description)
@@ -552,7 +574,7 @@ const datasetVariablesByLang: Record<Lang, { name: string; description: string; 
     { name: '自然灾害风险', description: '自然灾害暴露程度及正在发生的自然灾害' },
   ],
   de: [
-    { name: 'Sicherheits-Score', description: 'Zusammengesetzter Sicherheits-Score auf einer Skala von 1 bis 10', unitText: 'score' },
+    { name: 'Sicherheitswert', description: 'Zusammengesetzter Sicherheitswert auf einer Skala von 1 bis 10', unitText: 'score' },
     { name: 'Konfliktrisiko', description: 'Bewertung des Risikos bewaffneter Konflikte und politischer Gewalt' },
     { name: 'Kriminalitätsrisiko', description: 'Bewertung des Risikos persönlicher Kriminalität und Sicherheit' },
     { name: 'Gesundheitsrisiko', description: 'Bewertung von Gesundheitsinfrastruktur und Krankheitsrisiko' },
@@ -568,9 +590,10 @@ export function buildCountryJsonLd(country: ScoredCountry, lang: Lang, canonical
   // Formula v10 grey place: no score, band, tourist segment or score variable anywhere in the
   // graph (validate-seo asserts it); the same five node types are kept.
   const scored = isScored(country);
-  const scoreStr = scored ? country.score.toFixed(1) : '';
-  // Band on the displayed 1-decimal value so the label matches the number shown.
-  const scoreRounded = Number(scoreStr);
+  // Text for TouristDestination.description, in the page language's format like the visible page
+  // ("8,5/10"); the band is computed on the same displayed value so the label matches the number.
+  const scoreStr = scored ? formatTenths(country.score, lang) : '';
+  const scoreRounded = scored ? roundForDisplay(country.score, 1) : 0;
   const bandIdx = scoreRounded >= 7 ? 0 : scoreRounded >= 5 ? 1 : 2;
   const band = riskBands[lang][bandIdx];
   const tourType = touristTypes[lang][bandIdx];
@@ -714,17 +737,19 @@ export function buildGlobalSafetyJsonLd(
     fr: 'Score de sécurité mondial',
     pt: 'Pontuação de segurança global',
     zh: '全球安全评分',
-    de: 'Globaler Sicherheits-Score',
+    de: 'Globaler Sicherheitswert',
   };
 
+  // Page-language separator, as the banner and the page itself print it.
+  const shown = formatTenths(globalScore, lang);
   const descriptions: Record<Lang, string> = {
-    en: `Current global safety score: ${globalScore.toFixed(1)}/10. Track world safety trends over time.`,
-    it: `Punteggio di sicurezza globale attuale: ${globalScore.toFixed(1)}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
-    es: `Puntuación de seguridad global actual: ${globalScore.toFixed(1)}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
-    fr: `Score de sécurité mondial actuel : ${globalScore.toFixed(1)}/10. Suivez les tendances de sécurité mondiale.`,
-    pt: `Pontuação de segurança global atual: ${globalScore.toFixed(1)}/10. Acompanhe as tendencias de segurança mundial.`,
-    zh: `当前全球安全评分：${globalScore.toFixed(1)}/10。跟踪全球安全趋势变化。`,
-    de: `Aktueller globaler Sicherheits-Score: ${globalScore.toFixed(1)}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
+    en: `Current global safety score: ${shown}/10. Track world safety trends over time.`,
+    it: `Punteggio di sicurezza globale attuale: ${shown}/10. Segui le tendenze di sicurezza mondiale nel tempo.`,
+    es: `Puntuación de seguridad global actual: ${shown}/10. Sigue las tendencias de seguridad mundial a lo largo del tiempo.`,
+    fr: `Score de sécurité mondial actuel : ${shown}/10. Suivez les tendances de sécurité mondiale.`,
+    pt: `Pontuação de segurança global atual: ${shown}/10. Acompanhe as tendencias de segurança mundial.`,
+    zh: `当前全球安全评分：${shown}/10。跟踪全球安全趋势变化。`,
+    de: `Aktueller globaler Sicherheitswert: ${shown}/10. Verfolgen Sie weltweite Sicherheitstrends.`,
   };
 
   return {
@@ -813,7 +838,7 @@ const organizationDescriptions: Record<Lang, (count: number) => string> = {
   fr: (n) => `Plateforme gratuite de sécurité de voyage, avec des scores transparents et fondés sur les données pour ${n} pays dans le monde.`,
   pt: (n) => `Plataforma gratuita de segurança de viagem, com pontuações transparentes e baseadas em dados para ${n} países em todo o mundo.`,
   zh: (n) => `免费的旅行安全平台，为全球 ${n} 个国家提供透明、基于数据的安全评分。`,
-  de: (n) => `Kostenlose Reisesicherheits-Plattform mit transparenten, datenbasierten Sicherheits-Scores für ${n} Länder weltweit.`,
+  de: (n) => `Kostenlose Reisesicherheits-Plattform mit transparenten, datenbasierten Sicherheitswerten für ${n} Länder weltweit.`,
 };
 
 /**
@@ -905,6 +930,10 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     nameFuer: getGermanFuerPhrase(country.iso3, name),
     nameUeber: getGermanUeberPhrase(country.iso3, name),
     namePrep: getFrenchPreposition(country.iso3, name),
+    // Spanish writes the article of "el Reino Unido", "los Países Bajos", "las Islas Caimán".
+    nameEsArt: getSpanishWithArticle(country.iso3, name),
+    nameEsSubj: getSpanishSubject(country.iso3, name),
+    nameEsA: getSpanishA(country.iso3, name),
     deZaehlt: dePlural ? 'zählen' : 'zählt',
     deGilt: dePlural ? 'gelten' : 'gilt',
   };
@@ -967,7 +996,7 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
 
   // Outside the danger band the pillars can look better than the government advice (ARE, QAT):
   // A2 then says so instead of implying the pillar is the whole story.
-  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger', cautious));
+  const a2 = answer(buildBiggestRiskParts(focus, lang, consensus, fill, band !== 'danger'));
   const a3 = buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, false);
 
   return [
@@ -977,14 +1006,17 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   ];
 }
 
-/** A2 ("biggest risk") parts, by focus frame. */
+/**
+ * A2 ("biggest risk") parts, by focus frame. No best-area sentence: A1 already says it, and the
+ * same "Even the best-rated area, conflict, scores only 6.9/10" twice on one page read as filler
+ * (2026-10-15 review, task 8).
+ */
 function buildBiggestRiskParts(
   focus: PillarFocus,
   lang: Lang,
   consensus: AdvisoryConsensus,
   fill: (tpl: string, extra?: Record<string, string>) => string,
   withAdvisoryNote: boolean,
-  includeWeakBest: boolean,
 ): Array<string | null> {
   const copy = countryFaqCopy[lang];
   const area = (p: PillarView) => countrySummaryCopy[lang].pillarArea[p.name];
@@ -1006,7 +1038,6 @@ function buildBiggestRiskParts(
         focus.second ? fill(copy.a2Second, pillarSlots(focus.second)) : null,
         buildGovernanceContext(focus, lang, copy.a2GovernanceContext),
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, includeWeakBest),
         // Not twice: when the advice already explains the focus pillar, it is said above.
         driver || !pressure ? advisoryNote : null,
       ];
@@ -1016,7 +1047,6 @@ function buildBiggestRiskParts(
         copy.pillarMeaning.governance,
         driver,
         buildEstimatesSentence(focus, lang),
-        buildBestSentence(focus, lang, includeWeakBest),
         advisoryNote,
       ];
     case 'allGood':
@@ -1034,7 +1064,7 @@ function buildBiggestRiskParts(
         // "Normal precautions are enough" would contradict a majority of governments advising
         // reconsidering travel (QAT, ARE...), and is unearned while a lower bar is only an
         // estimate (Nauru: crime never measured).
-        advisoryNote ?? (focus.lowerEstimates.length > 0 ? null : copy.a2Precautions),
+        advisoryNote ?? (focus.lowerEstimates.length > 0 || focus.noData.length > 0 ? null : copy.a2Precautions),
       ];
   }
 }
@@ -1053,21 +1083,56 @@ const ISSUER_NAME_OVERRIDES: Partial<Record<Lang, Record<string, string>>> = {
   de: { hk: 'Hongkong' },
 };
 
+/** ISO3 and bare localized name of an advisory issuer ("us" -> USA, "Stati Uniti"), or null. */
+function issuerPlace(key: string, lang: Lang): { iso3: string; bare: string } | null {
+  const iso3 = getCountryByIso2(key === 'uk' ? 'GB' : key.toUpperCase())?.iso3;
+  if (!iso3) return null;
+  return { iso3, bare: getLocalizedCountryName({ iso3, name: {} }, lang) };
+}
+
 /**
- * An advisory issuer's name as it stands in the A3 sentence: the site's own country name, with the
- * article en/fr/de need after "from"/"dont"/"darunter" ("the United States", "les États-Unis",
- * "die Vereinigten Staaten"); it/es/pt/zh name issuers bare, in lists, as their press does (I19).
+ * An advisory issuer's name as it stands in the A3 sentence: the site's own country name with the
+ * article its language puts before a country in running prose, through the shared grammar helpers
+ * (country-grammar.ts): "the United States", "gli Stati Uniti", "el Reino Unido", "os Estados
+ * Unidos", "les États-Unis", "die Vereinigten Staaten"; places used without one stay bare
+ * ("Taiwan", "Singapore", "Polen"). zh needs no article. (I19, and the 2026-10-15 follow-up: it/es/pt
+ * printed "tra cui Stati Uniti e Regno Unito".)
  */
 function issuerName(key: string, lang: Lang): string {
   const override = ISSUER_NAME_OVERRIDES[lang]?.[key];
   if (override) return override;
-  const iso3 = getCountryByIso2(key === 'uk' ? 'GB' : key.toUpperCase())?.iso3;
-  if (!iso3) return key.toUpperCase();
-  const bare = getLocalizedCountryName({ iso3, name: {} }, lang);
-  if (lang === 'en') return getEnglishCountryPhrase(iso3, bare);
-  if (lang === 'fr') return getFrenchDefinite(iso3, bare);
-  if (lang === 'de') return getGermanNominative(iso3, bare);
-  return bare;
+  const place = issuerPlace(key, lang);
+  if (!place) return key.toUpperCase();
+  const { iso3, bare } = place;
+  switch (lang) {
+    case 'en': return getEnglishCountryPhrase(iso3, bare);
+    case 'it': return getItalianWithArticle(iso3, bare);
+    case 'es': return getSpanishWithArticle(iso3, bare);
+    case 'pt': return getPortugueseWithArticle(iso3, bare);
+    case 'fr': return getFrenchDefinite(iso3, bare);
+    case 'de': return getGermanNominative(iso3, bare);
+    default: return bare;
+  }
+}
+
+/**
+ * The only issuer of a place, as "that of X" where the language needs it: the a3One sentence goes
+ * on with a singular verb about "one government" ("..., che raccomanda"), which "gli Stati Uniti"
+ * or "les États-Unis" would not agree with. it "quello degli Stati Uniti", es "el del Reino
+ * Unido", pt "o dos Estados Unidos", fr "celui des États-Unis"; en/de/zh read well with the name
+ * itself ("the United States, which advises", "Polen; sie empfiehlt", "只有波兰政府").
+ */
+function soleIssuerName(key: string, lang: Lang): string {
+  const place = ISSUER_NAME_OVERRIDES[lang]?.[key] ? null : issuerPlace(key, lang);
+  if (!place) return issuerName(key, lang);
+  const { iso3, bare } = place;
+  switch (lang) {
+    case 'it': return `quello ${getItalianArticulated(iso3, bare, 'di')}`;
+    case 'es': return `el ${getSpanishDe(iso3, bare)}`;
+    case 'pt': return `o ${getPortugueseDe(iso3, bare)}`;
+    case 'fr': return `celui ${getFrenchDe(iso3, bare)}`;
+    default: return issuerName(key, lang);
+  }
 }
 
 /**
@@ -1096,7 +1161,7 @@ function buildAdvisoryAnswer(
   const cap = !grey && consensus.majorityAvoid ? copy.a3Cap : null;
   if (n === 1) {
     const level = entries[0].level as 1 | 2 | 3 | 4;
-    return answer([fill(copy.a3One, { issuer: issuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);
+    return answer([fill(copy.a3One, { issuer: soleIssuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);
   }
 
   const breakdown = buildAdvisorySentence(advisoryLevels(country), lang, nameSlots(lang, country.iso3, bareName));
@@ -1161,7 +1226,7 @@ const siteDatasetNames: Record<Lang, (year: number) => string> = {
   fr: (y) => `Scores de sécurité de voyage mondiaux ${y}`,
   pt: (y) => `Pontuações de segurança de viagem globais ${y}`,
   zh: (y) => `${y} 年全球旅行安全评分`,
-  de: (y) => `Globale Reisesicherheits-Scores ${y}`,
+  de: (y) => `Globale Reisesicherheitswerte ${y}`,
 };
 const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
   en: (n) => `Safety scores for ${n} countries and territories, recalculated daily from government advisories, health data, conflict indicators and natural-hazard data.`,
@@ -1170,7 +1235,7 @@ const siteDatasetDescriptions: Record<Lang, (count: number) => string> = {
   fr: (n) => `Scores de sécurité pour ${n} pays et territoires, recalculés chaque jour à partir des avis gouvernementaux, de données sanitaires, d'indicateurs de conflit et de données sur les risques naturels.`,
   pt: (n) => `Pontuações de segurança para ${n} países e territórios, recalculadas diariamente a partir de alertas governamentais, dados de saúde, indicadores de conflito e dados de riscos naturais.`,
   zh: (n) => `${n}个国家和地区的安全评分，每日根据政府旅行警告、卫生数据、冲突指标和自然灾害数据重新计算。`,
-  de: (n) => `Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus staatlichen Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Daten zu Naturgefahren.`,
+  de: (n) => `Sicherheitswerte für ${n} Länder und Gebiete, täglich neu berechnet aus staatlichen Reisehinweisen, Gesundheitsdaten, Konfliktindikatoren und Daten zu Naturgefahren.`,
 };
 
 /**
@@ -1284,7 +1349,7 @@ const methodologyDatasetNames: Record<Lang, string> = {
   fr: 'Scores de sécurité mondiaux IsItSafeToTravel',
   pt: 'Pontuações de segurança globais IsItSafeToTravel',
   zh: 'IsItSafeToTravel 全球安全评分',
-  de: 'IsItSafeToTravel globale Sicherheits-Scores',
+  de: 'IsItSafeToTravel globale Sicherheitswerte',
 };
 const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = {
   en: (n) => `Composite safety scores for ${n} countries and territories, recalculated daily from ${SOURCE_COUNT_DISPLAY} public data sources.`,
@@ -1293,7 +1358,7 @@ const methodologyDatasetDescriptions: Record<Lang, (count: number) => string> = 
   fr: (n) => `Scores de sécurité composites pour ${n} pays et territoires, recalculés chaque jour à partir de ${SOURCE_COUNT_DISPLAY} sources publiques.`,
   pt: (n) => `Pontuações de segurança compostas para ${n} países e territórios, recalculadas diariamente a partir de ${SOURCE_COUNT_DISPLAY} fontes públicas.`,
   zh: (n) => `${n}个国家和地区的综合安全评分，每日根据${SOURCE_COUNT_DISPLAY}个公开数据来源重新计算。`,
-  de: (n) => `Zusammengesetzte Sicherheits-Scores für ${n} Länder und Gebiete, täglich neu berechnet aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
+  de: (n) => `Zusammengesetzte Sicherheitswerte für ${n} Länder und Gebiete, täglich neu berechnet aus ${SOURCE_COUNT_DISPLAY} öffentlichen Datenquellen.`,
 };
 
 /**

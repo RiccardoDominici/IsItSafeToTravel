@@ -67,7 +67,7 @@ describe('de titles: article, verb number and weak adjective endings (I11, I62)'
   ];
   for (const [iso3, question, dir] of golden) {
     it(`${iso3}: "${question}" / "${dir} zu reisen"`, () => {
-      assert.equal(title('de', iso3), `${question} Sicherheitswert 6.0/10 (2026)`);
+      assert.equal(title('de', iso3), `${question} Sicherheitswert 6,0/10 (2026)`);
       assert.equal(h1('de', iso3), `Ist es aktuell sicher, ${dir} zu reisen?`);
     });
   }
@@ -118,7 +118,7 @@ describe('fr titles: au / en / aux / à (I12, I24, I28)', () => {
   ];
   for (const [iso3, phrase] of golden) {
     it(`${iso3}: "${phrase}"`, () => {
-      assert.equal(title('fr', iso3), `${phrase} : est-ce sûr ? 6.0/10 (2026)`);
+      assert.equal(title('fr', iso3), `${phrase} : est-ce sûr ? 6,0/10 (2026)`);
     });
   }
 });
@@ -145,7 +145,7 @@ describe('it titles: in / a / su with the article (I52)', () => {
   ];
   for (const [iso3, phrase] of golden) {
     it(`${iso3}: "viaggiare ${phrase}"`, () => {
-      assert.equal(title('it', iso3), `È sicuro viaggiare ${phrase}? 6.0/10 (2026)`);
+      assert.equal(title('it', iso3), `È sicuro viaggiare ${phrase}? 6,0/10 (2026)`);
       assert.equal(h1('it', iso3), `È sicuro viaggiare ${phrase} adesso?`);
     });
   }
@@ -199,7 +199,7 @@ describe('es titles and H1: the article where Spanish always writes one', () => 
   ];
   for (const [iso3, phrase] of golden) {
     it(`${iso3}: "viajar ${phrase}"`, () => {
-      assert.equal(title('es', iso3), `¿Es seguro viajar ${phrase}? 6.0/10 (2026)`);
+      assert.equal(title('es', iso3), `¿Es seguro viajar ${phrase}? 6,0/10 (2026)`);
       assert.equal(h1('es', iso3), `¿Es seguro viajar ${phrase} ahora mismo?`);
     });
   }
@@ -222,10 +222,10 @@ describe('comparison heading: the verb agrees with the name', () => {
 
 describe('pt and zh titles', () => {
   it('pt: Republic of the Congo, Faroe, Åland and Bahamas', () => {
-    assert.equal(title('pt', 'COG'), 'É seguro viajar para a República do Congo? 6.0/10 (2026)');
-    assert.equal(title('pt', 'FRO'), 'É seguro viajar para as Ilhas Feroé? 6.0/10 (2026)');
-    assert.equal(title('pt', 'ALA'), 'É seguro viajar para as Ilhas Åland? 6.0/10 (2026)');
-    assert.equal(title('pt', 'BHS'), 'É seguro viajar para as Bahamas? 6.0/10 (2026)');
+    assert.equal(title('pt', 'COG'), 'É seguro viajar para a República do Congo? 6,0/10 (2026)');
+    assert.equal(title('pt', 'FRO'), 'É seguro viajar para as Ilhas Feroé? 6,0/10 (2026)');
+    assert.equal(title('pt', 'ALA'), 'É seguro viajar para as Ilhas Åland? 6,0/10 (2026)');
+    assert.equal(title('pt', 'BHS'), 'É seguro viajar para as Bahamas? 6,0/10 (2026)');
   });
   it('zh: no space around the name, short names for Hong Kong and Macao', () => {
     assert.equal(title('zh', 'DEU'), '德国安全吗？安全评分6.0/10（2026）');

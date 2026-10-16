@@ -11,6 +11,7 @@
  */
 import type { Lang } from './ui';
 import { greyCopy } from './grey-copy';
+import { formatTenths } from '../lib/display-number';
 import {
   getEnglishCountryPhrase,
   getEnglishCopula,
@@ -34,7 +35,8 @@ export function getCountryPageTitle(
   score: number | null,
   greySuffix: string = greyCopy[lang].titleSuffix,
 ): string {
-  const tail = score === null ? null : score.toFixed(1);
+  // The page language's decimal separator ("8,5/10" in it/es/fr/pt/de), as the hero and the summary.
+  const tail = score === null ? null : formatTenths(score, lang);
   const grey = greySuffix;
   switch (lang) {
     case 'en': {

@@ -440,3 +440,15 @@ describe('pt / es / en: the remaining helpers', () => {
     assert.equal(isEnglishPlural('PHL'), false);
   });
 });
+
+describe('getFrenchDefinite follows getFrenchWithArticle (task 6)', () => {
+  it('uses the shared article table, with the typographic apostrophe', async () => {
+    const { getFrenchDefinite } = await import('../country-name-forms');
+    assert.equal(getFrenchDefinite('USA', 'États-Unis'), 'les États-Unis');
+    assert.equal(getFrenchDefinite('AUS', 'Australie'), 'l’Australie');
+    assert.equal(getFrenchDefinite('ISR', 'Israël'), 'Israël');
+    assert.equal(getFrenchDefinite('OMN', 'Oman'), 'Oman');
+    assert.equal(getFrenchDefinite('TWN', 'Taïwan'), 'Taïwan');
+    assert.equal(getFrenchDefinite('BRB', 'Barbade'), 'la Barbade');
+  });
+});

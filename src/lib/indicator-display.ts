@@ -1,7 +1,8 @@
 /**
  * Real-value display of scored indicators (formula v10, SPEC §7 "Indicator table" and "Top
  * summary"): which indicators to show, how to print each raw value on its source's own scale,
- * which source edition it comes from, and the plain-words driver of a weak pillar.
+ * which source edition it comes from, and the plain-words driver of a weak pillar. Numbers are
+ * printed by the site's one formatter (src/lib/display-number.ts, the page language's separators).
  *
  * Shared by PillarBreakdown.astro (indicator tables), the top summary
  * (src/lib/country-summary.ts) and the FAQ driver clause (src/lib/seo.ts), so the three never
@@ -13,6 +14,7 @@ import weightsConfig from '../pipeline/config/weights.json';
 import type { IndicatorScore, PillarScore, WeightsConfig } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { indicatorCopy, type DescribedIndicator, type FactTemplate, type IndicatorScale } from '../i18n/indicator-copy';
+import { formatNumber } from './display-number';
 
 /** Indicators the current formula scores (weights.json, the engine's own list), minus the synthetic advisory consensus "A". */
 const SCORED_INDICATORS: ReadonlySet<string> = new Set(
@@ -86,8 +88,6 @@ export function countryEvidenceCoverage(pillars: readonly PillarScore[]): number
 /** Indicators a reader would not act on as "the main risk" when the pillar offers another driver. */
 const NOT_A_TRAVEL_DRIVER: ReadonlySet<string> = new Set(['gpi_militarisation']);
 
-const NUMBER_LOCALE: Record<Lang, string> = { en: 'en-US', it: 'it-IT', es: 'es-ES', fr: 'fr-FR', pt: 'pt-BR', zh: 'zh-CN', de: 'de-DE' };
-
 function isDescribed(name: string): name is DescribedIndicator {
   return Object.prototype.hasOwnProperty.call(META, name);
 }
@@ -109,25 +109,6 @@ export function displayedIndicators(pillar: PillarScore): IndicatorScore[] {
     .sort((a, b) => (INDICATOR_ORDER.get(a.name) ?? 99) - (INDICATOR_ORDER.get(b.name) ?? 99));
 }
 
-/**
- * Locales whose CLDR default leaves four-digit numbers ungrouped ("2428") although the same page
- * groups larger ones ("100.000"): Italian copy groups every number from 1,000 (2026-10-15 audit,
- * I53: "2428 persone" next to "100.000 abitanti"). Spanish keeps the RAE rule (no separator for
- * four digits), which its default already follows.
- */
-const ALWAYS_GROUP: ReadonlySet<Lang> = new Set<Lang>(['it']);
-
-/** A number in the locale's own format with fixed decimals ("45.7", "45,7", "2,54"); minus as U+2212. */
-export function formatSourceNumber(value: number, decimals: number, lang: Lang): string {
-  const options: Intl.NumberFormatOptions = {
-    minimumFractionDigits: decimals,
-    maximumFractionDigits: decimals,
-  };
-  // 'always' (ES2023) is not in every TypeScript lib's option type; Node 18+ supports it.
-  if (ALWAYS_GROUP.has(lang)) (options as { useGrouping?: unknown }).useGrouping = 'always';
-  return new Intl.NumberFormat(NUMBER_LOCALE[lang], options).format(value).replace(/^-/, '−');
-}
-
 function pick(template: FactTemplate | string | readonly [string, string], count: number): string {
   if (typeof template === 'string') return template;
   return Math.abs(count) === 1 ? template[0] : template[1];
@@ -144,7 +125,7 @@ export interface IndicatorValueDisplay {
 export function formatIndicatorValue(ind: IndicatorScore, lang: Lang): IndicatorValueDisplay | null {
   if (!isDescribed(ind.name) || !Number.isFinite(ind.rawValue)) return null;
   const meta = META[ind.name];
-  const number = formatSourceNumber(ind.rawValue, meta.decimals, lang);
+  const number = formatNumber(ind.rawValue, meta.decimals, lang);
   const unit = pick(indicatorCopy[lang].units[meta.scale], ind.rawValue);
   return { value: meta.scale === 'inform' ? `${number} / 10` : number, unit };
 }
@@ -226,7 +207,7 @@ export function describeDriver(ind: IndicatorScore, lang: Lang): { topic: string
   if (!isDescribed(ind.name)) return null;
   const copy = indicatorCopy[lang];
   const meta = META[ind.name];
-  const value = formatSourceNumber(ind.rawValue, meta.decimals, lang);
+  const value = formatNumber(ind.rawValue, meta.decimals, lang);
   const fact = pick(copy.facts[ind.name], ind.rawValue).replace('{v}', value).replace('{y}', String(ind.year));
   return { topic: copy.topics[ind.name], fact };
 }

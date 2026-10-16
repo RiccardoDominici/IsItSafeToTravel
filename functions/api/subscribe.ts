@@ -15,7 +15,9 @@ const MAX_BODY_BYTES = 2048;
 const SIGNUP_CAP_PER_DAY = 5; // per salted IP hash
 // GDPR consent-copy version (LEGAL-PRIVACY-ASSESSMENT.md §4 MUST #3). Bump whenever the consent
 // microcopy or the privacy-policy newsletter section text changes.
-const CONSENT_VERSION = 'v1-2026-07-11';
+// v2-2026-10-16: the German consent microcopy and privacy-policy newsletter section address the
+// reader as "Sie" instead of "du" (same content; other languages unchanged).
+const CONSENT_VERSION = 'v2-2026-10-16';
 const FALLBACK_SALT = 'isitsafetotravel-vote-fallback-salt-v1'; // same as vote.ts
 
 const corsHeaders = {

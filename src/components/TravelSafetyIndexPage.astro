@@ -9,6 +9,7 @@ import IndexTableRow from './IndexTableRow.astro';
 import { getTravelSafetyIndexData } from '../lib/travel-safety-index-data';
 import { travelSafetyIndexCopy } from '../i18n/travel-safety-index-copy';
 import { getLocalizedCountryName } from '../lib/scores';
+import { formatTenths } from '../lib/display-number';
 import { getEnglishCountryPhrase } from '../i18n/country-grammar';
 import { SOURCE_COUNT_DISPLAY } from '../lib/site-stats';
 import { buildTravelSafetyIndexJsonLd } from '../lib/seo';
@@ -51,9 +52,9 @@ const vars: Record<string, string> = {
   sourceCount: SOURCE_COUNT_DISPLAY,
   date: dateFormatted,
   safest: subjectName(data.safest),
-  safestScore: data.safest.score.toFixed(1),
+  safestScore: formatTenths(data.safest.score, lang),
   leastSafe: subjectName(data.leastSafe),
-  leastSafeScore: data.leastSafe.score.toFixed(1),
+  leastSafeScore: formatTenths(data.leastSafe.score, lang),
 };
 
 /** Same {token} interpolation as seo.ts's getCountryFaqData. */

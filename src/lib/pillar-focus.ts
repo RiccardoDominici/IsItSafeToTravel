@@ -23,6 +23,12 @@
  *    leaving a lower bar unexplained.
  *  - A pillar is a strength only at 7.0 or above (`bestIsStrength`); below that the best area is
  *    reported as "even the best-rated area ... only".
+ *  - A pillar with nothing measured behind it (isEstimatedPillar: the bar and the comparison table
+ *    read "No data") has no number anywhere in the text either (2026-10-15 review, task 7: Nauru's
+ *    summary quoted "crime (5.7/10)" under a crime bar reading "No data"). It is never the focus,
+ *    the best area or part of an "all five" claim, and the text says "there is no data on crime
+ *    yet" (`noData`). A low-coverage pillar that still prints a value (the asterisk) keeps its
+ *    number, as a cautious estimate (`lowerEstimates`).
  *
  * Pure: no I/O, unit-tested in src/lib/__tests__/pillar-focus.test.ts.
  */
@@ -30,6 +36,8 @@ import type { PillarName, PillarScore } from '../pipeline/types';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../pipeline/scoring/engine';
 import weightsConfig from '../pipeline/config/weights.json';
 import { pillarEvidenceCoverage } from './indicator-display';
+import { isEstimatedPillar } from './pillar-presentation';
+import { roundForDisplay } from './display-number';
 
 /** A pillar at or above this displayed value (/10) is good in absolute terms: a "strength". */
 export const STRONG_PILLAR_MIN = 7.0;
@@ -57,8 +65,10 @@ export interface PillarView {
   score: number;
   /** Displayed value on the /10 scale, one decimal (what the bar prints). */
   value: number;
-  /** Shown with the low-coverage asterisk: a cautious estimate, not a measurement. */
+  /** Shown with the low-coverage asterisk, or with "No data": a cautious estimate, not a measurement. */
   estimate: boolean;
+  /** Nothing measured behind it (isEstimatedPillar): the bar reads "No data", the text quotes no value. */
+  noData: boolean;
   /** w * -ln(p): how much the pillar pulls the geometric mean down (tie-break only). */
   drag: number;
   /** The engine pillar it was built from (indicators, coverage). */
@@ -88,25 +98,29 @@ export interface PillarFocus {
   bestTie: PillarView | null;
   /** `best` is at 7.0 or above (a real strength). */
   bestIsStrength: boolean;
-  /** Estimated pillars displayed below what the text claims (below the focus, or below 7.0 in the weakest/allGood frames). */
+  /** Estimated pillars that print a value below what the text claims (below the focus, or below 7.0 in the weakest/allGood frames). */
   lowerEstimates: PillarView[];
-  /** Every displayed bar, estimates included, is at 7.0 or above. */
+  /** Pillars whose bar reads "No data" (isEstimatedPillar), whatever their engine value: named without a number. */
+  noData: PillarView[];
+  /** Every bar prints a value (none reads "No data") and all are at 7.0 or above. */
   allFiveAtLeast7: boolean;
   /** All bars within FLAT_SPREAD of each other: no meaningful weakest/strongest. */
   isFlat: boolean;
 }
 
-/** Displayed /10 value of a 0-1 pillar ("4.4"), as the bars print it. */
+/** Displayed /10 value of a 0-1 pillar (4.4), as the bars print it (same rounding: display-number.ts). */
 export function displayValue(score01: number): number {
-  return Number((score01 * 10).toFixed(1));
+  return roundForDisplay(score01 * 10, 1);
 }
 
 function toView(p: PillarScore): PillarView {
+  const noData = isEstimatedPillar(p);
   return {
     name: p.name,
     score: p.score,
     value: displayValue(p.score),
-    estimate: pillarEvidenceCoverage(p) < LOW_COVERAGE_FLAG_THRESHOLD,
+    estimate: noData || pillarEvidenceCoverage(p) < LOW_COVERAGE_FLAG_THRESHOLD,
+    noData,
     drag: (PILLAR_WEIGHT.get(p.name) ?? 0) * -Math.log(Math.max(0.02, p.score)),
     source: p,
   };
@@ -121,8 +135,11 @@ function byValueThenDrag(a: PillarView, b: PillarView): number {
 export function selectPillarFocus(pillarScores: readonly PillarScore[]): PillarFocus {
   const pillars = pillarScores.map(toView).sort(byValueThenDrag);
   const measuredOnly = pillars.filter((p) => !p.estimate);
-  // A country whose every pillar is an estimate: describe the estimates rather than nothing.
-  const measured = measuredOnly.length > 0 ? measuredOnly : pillars;
+  const withValue = pillars.filter((p) => !p.noData);
+  const noData = pillars.filter((p) => p.noData);
+  // A country whose every pillar is an estimate: describe the ones that print a value rather than
+  // nothing (never a "No data" pillar, whose engine value is the regional prior).
+  const measured = measuredOnly.length > 0 ? measuredOnly : withValue.length > 0 ? withValue : pillars;
   const weakDirect = measured.filter((p) => DIRECT_RISK_PILLARS.has(p.name) && p.value < STRONG_PILLAR_MIN);
 
   let pool: PillarView[];
@@ -147,12 +164,13 @@ export function selectPillarFocus(pillarScores: readonly PillarScore[]): PillarF
 
   const highestFirst = [...measured].sort((a, b) => b.value - a.value || a.drag - b.drag);
   const top = highestFirst[0];
-  const isFlat = pillars[pillars.length - 1].value - pillars[0].value <= FLAT_SPREAD;
+  // "All five closely matched" only when all five print a value.
+  const isFlat = noData.length === 0 && pillars[pillars.length - 1].value - pillars[0].value <= FLAT_SPREAD;
   const best = top && top.value > focus.value && !isFlat ? top : null;
   const bestTie = best ? highestFirst.find((p) => p !== best && p.value === best.value) ?? null : null;
 
   const estimateCeiling = direct ? focus.value : STRONG_PILLAR_MIN;
-  const lowerEstimates = measuredOnly.length > 0 ? pillars.filter((p) => p.estimate && p.value < estimateCeiling) : [];
+  const lowerEstimates = measuredOnly.length > 0 ? pillars.filter((p) => p.estimate && !p.noData && p.value < estimateCeiling) : [];
 
   return {
     pillars,
@@ -166,7 +184,8 @@ export function selectPillarFocus(pillarScores: readonly PillarScore[]): PillarF
     bestTie,
     bestIsStrength: best !== null && best.value >= STRONG_PILLAR_MIN,
     lowerEstimates,
-    allFiveAtLeast7: pillars.every((p) => p.value >= STRONG_PILLAR_MIN),
+    noData,
+    allFiveAtLeast7: noData.length === 0 && pillars.every((p) => p.value >= STRONG_PILLAR_MIN),
     isFlat,
   };
 }

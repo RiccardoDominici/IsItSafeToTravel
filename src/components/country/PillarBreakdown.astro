@@ -22,6 +22,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { pillarToColor } from '../../lib/colors';
+import { formatPillar10, roundForDisplay } from '../../lib/display-number';
 import { LOW_COVERAGE_FLAG_THRESHOLD } from '../../pipeline/scoring/engine';
 import { getIndicatorLabel } from '../../i18n/indicator-labels';
 import {
@@ -85,8 +86,9 @@ const toRow = (ind: PillarScore['indicators'][number], note?: string): Indicator
 // One view per pillar, in weights.json order (the snapshot's order).
 const views = pillars.map((pillar) => {
   const label = t(pillarKeys[pillar.name] as any);
-  const displayScore = (pillar.score * 10).toFixed(1);
-  const s = Number(displayScore); // band on the displayed 1-decimal value
+  // Page-language separator ("7,3/10" in it/es/fr/pt/de); the band reads the same rounded value.
+  const displayScore = formatPillar10(pillar.score, lang);
+  const s = roundForDisplay(pillar.score * 10, 1); // band on the displayed 1-decimal value
   const estimated = isEstimatedPillar(pillar);
   const coverage = pillarEvidenceCoverage(pillar);
   const { traveller, context } = splitContextIndicators(displayedIndicators(pillar));

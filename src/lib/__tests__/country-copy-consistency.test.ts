@@ -12,7 +12,9 @@ import { buildCountryFaqJsonLd, buildCountryMetaDescription, getCountryFaqData }
 import { buildCountrySummary } from '../country-summary';
 import { getAdvisoryConsensus } from '../advisory-consensus';
 import { selectPillarFocus } from '../pillar-focus';
-import { describeDriver, formatSourceNumber, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { describeDriver, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { formatNumber } from '../display-number';
+import { buildBestSentence } from '../pillar-narrative';
 
 const ind = (name: string, rawValue: number, normalizedValue: number, source: string, year: number): IndicatorScore => ({
   name,
@@ -154,9 +156,28 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
 
   it('never presents a pillar below 7.0 as a strength (I16)', () => {
     const [a1, a2] = faq(afghanistan(), 'en');
-    assert.match(a2.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
     assert.match(a1.answer, /Even the best-rated area, crime, scores only 5\.0\/10\./);
     assert.doesNotMatch(a1.answer + a2.answer, /strongest/);
+  });
+
+  it('says the best-rated area once per page, in A1 only (task 8: ECU repeated it in Q1 and Q2)', () => {
+    let checked = 0;
+    for (const lang of LANGS) {
+      for (const c of [afghanistan(), mozambique(), uae()]) {
+        const best = buildBestSentence(selectPillarFocus(c.pillars), lang, true);
+        if (!best) continue;
+        const [a1, a2] = faq(c, lang);
+        assert.ok(!a2.answer.includes(best.replace(/^./, '')), `${c.iso3} ${lang}: A2 repeats "${best}"`);
+        if (a1.answer.includes(best.replace(/^./, ''))) checked++;
+      }
+    }
+    assert.ok(checked > 0, 'no best-area sentence found in any A1');
+  });
+
+  it('opens the provenance sentence with the score as subject, never "It" (task 8)', () => {
+    const text = summary(uae(), 'en', 'United Arab Emirates');
+    assert.match(text, /The score combines \d+ (of the \d+ )?government travel advisories/);
+    assert.doesNotMatch(text, /\bIt combines\b/);
   });
 
   it('calls no pillar the main risk when all five are at 7.0+ (I30)', () => {
@@ -167,7 +188,7 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
       advisories: advisoriesOf({ 1: 16 }),
     });
     const meta = buildCountryMetaDescription(c, 'de');
-    assert.match(meta, /Alle fünf Bereiche bei 7\/10 oder mehr; am niedrigsten: Regierungsführung \(8\.0\)/);
+    assert.match(meta, /Alle fünf Bereiche bei 7\/10 oder mehr; am niedrigsten: Regierungsführung \(8,0\)/);
     assert.doesNotMatch(meta, /Hauptrisiko/);
   });
 
@@ -206,10 +227,11 @@ describe('measured values versus estimates (I05 I07)', () => {
     const text = summary(c, 'en', 'Nauru');
     assert.doesNotMatch(text, /All five areas/);
     assert.match(text, /Every area measured with enough data scores at least 7 out of 10; the lowest of them is health \(7\.6\/10\)\./);
-    assert.match(text, /The values for governance \(5\.4\/10\) and crime \(5\.7\/10\) are cautious estimates/);
+    // Governance prints its value with the asterisk; crime's bar reads "No data", so no number (task 7).
+    assert.match(text, /The value for governance \(5\.4\/10\) is a cautious estimate: there is too little data to measure it\. There is no data on crime yet\./);
     const a2 = faq(c, 'en')[1].answer;
     assert.doesNotMatch(a2, /all five|precautions are enough/);
-    assert.match(a2, /cautious estimates/);
+    assert.match(a2, /cautious estimate/);
     assert.match(buildCountryMetaDescription(c, 'en'), /too little data on governance and crime/);
   });
 });
@@ -329,7 +351,8 @@ describe('meta description provenance (I13 I62)', () => {
     const c = country({ iso3: 'JPN', score: 8.1, pillars: { environment: { score: 0.66 } }, advisories: advisoriesOf({ 1: 18, 2: 4 }) });
     const meta = buildCountryMetaDescription(c, 'en');
     assert.doesNotMatch(meta, /30\+/);
-    assert.match(meta, /Score based on 22 advisories and 5 datasets, recalculated daily\./);
+    // 22 governments publish advice; jp, ch, be, ie, es and sk are frozen-excluded issuers (task 5).
+    assert.match(meta, /Score based on 16 of 22 advisories and 5 datasets, recalculated daily\./);
     assert.doesNotMatch(buildCountryMetaDescription(mozambique(), 'de'), /Kostenloser Wert/);
   });
 });
@@ -365,13 +388,159 @@ describe('indicator facts (I04 I17 I53 I61 I64)', () => {
   });
 
   it('groups Italian four-digit counts like the larger ones', () => {
-    assert.equal(formatSourceNumber(2428, 0, 'it'), '2.428');
-    assert.equal(formatSourceNumber(2428, 0, 'es'), '2428');
+    assert.equal(formatNumber(2428, 0, 'it'), '2.428');
+    assert.equal(formatNumber(2428, 0, 'es'), '2428');
   });
 
   it('uses one Chinese term for level 4 in the summary and the FAQ', () => {
     const zhSummary = summary(afghanistan(), 'zh', '阿富汗');
     assert.match(zhSummary, /建议切勿前往/);
     assert.doesNotMatch(zhSummary + faq(afghanistan(), 'zh').map((qa) => qa.answer).join(''), /避免一切旅行|风险等级为/);
+  });
+});
+
+describe('the advisory count in the provenance sentence is the one the score uses (task 5, 2026-10-15)', () => {
+  // Micronesia's shape: 13 governments publish advice, 3 of them (jp, ie, es) are frozen-excluded
+  // issuers (weights.json frozenExcludedSources), so 10 enter the score.
+  const fsm = () =>
+    country({
+      iso3: 'FSM',
+      score: 7.4,
+      pillars: { environment: { score: 0.62 } },
+      advisories: { us: 1, uk: 1, ca: 1, au: 1, de: 1, fr: 1, nl: 1, nz: 1, at: 1, it: 1, jp: 1, ie: 1, es: 1 },
+    });
+
+  it('summary says both numbers, in every language', () => {
+    const expected: Record<Lang, RegExp> = {
+      en: /combines 10 of the 13 government travel advisories and 5 other public datasets/,
+      it: /combina 10 dei 13 avvisi di viaggio governativi e altri 5 dataset pubblici/,
+      es: /combina 10 de los 13 avisos de viaje gubernamentales y otros 5 conjuntos de datos públicos/,
+      fr: /combine 10 des 13 avis aux voyageurs officiels et 5 autres jeux de données publics/,
+      pt: /combina 10 dos 13 avisos de viagem governamentais e outros 5 conjuntos de dados públicos/,
+      zh: /综合了13条政府旅行警告中的10条和另外5个公开数据集/,
+      de: /kombiniert 10 der 13 staatlichen Reisehinweise und 5 weitere öffentliche Datensätze/,
+    };
+    for (const [lang, re] of Object.entries(expected) as Array<[Lang, RegExp]>) assert.match(summary(fsm(), lang, 'Micronesia'), re, lang);
+  });
+
+  it('meta description gives the same two numbers when its tail fits', () => {
+    const meta = buildCountryMetaDescription(fsm(), 'en');
+    assert.match(meta, /Score based on 10 of 13 advisories and 5 datasets, recalculated daily\./);
+    for (const lang of ['it', 'es', 'fr', 'pt', 'zh', 'de'] as const) {
+      const m = buildCountryMetaDescription(fsm(), lang);
+      // The tail is dropped only when the description would pass 155 characters.
+      if (/\b10\b|10份/.test(m.replace(/^[^.。]*[.。]/, ''))) assert.match(m, /13/, `${lang}: ${m}`);
+    }
+  });
+
+  it('keeps the plain count when every published advisory is used', () => {
+    const c = country({ iso3: 'XXX', score: 7.4, pillars: {}, advisories: { us: 1, uk: 2, ca: 1 } });
+    assert.match(summary(c, 'en', 'Xland'), /combines 3 government travel advisories and 5 other public datasets/);
+    assert.match(buildCountryMetaDescription(c, 'en'), /Score based on 3 advisories and 5 datasets/);
+  });
+
+  it('never counts an excluded issuer', () => {
+    const c = country({ iso3: 'XXX', score: 7.4, pillars: {}, advisories: { jp: 1, ie: 1, es: 1, us: 1 } });
+    assert.match(summary(c, 'en', 'Xland'), /combines 1 of the 4 government travel advisories/);
+  });
+});
+
+describe('advisory issuers and Spanish place names carry their articles (task 6, 2026-10-15)', () => {
+  // Two governments at "reconsider travel" above an "increased caution" majority: the strictest
+  // issuers are named.
+  const twoStrict = () =>
+    country({ iso3: 'ARM', score: 6.4, pillars: {}, advisories: { us: 3, uk: 3, ca: 2, au: 2, de: 2, fr: 2, nl: 2, at: 1 } });
+
+  it('names the strictest issuers with the article of running prose in it, es, pt, fr, de', () => {
+    const a3 = (lang: Lang) => faq(twoStrict(), lang)[2].answer;
+    assert.match(a3('it'), /viene da 2 governi: gli Stati Uniti e il Regno Unito\./);
+    assert.match(a3('es'), /procede de 2 gobiernos: Estados Unidos y el Reino Unido\./);
+    assert.match(a3('pt'), /vem de 2 governos: os Estados Unidos e o Reino Unido\./);
+    assert.match(a3('fr'), /émane de 2 gouvernements : les États-Unis et le Royaume-Uni\./);
+    assert.match(a3('de'), /sprechen 2 Regierungen aus: die Vereinigten Staaten und das Vereinigte Königreich\./);
+  });
+
+  it('a single issuer agrees with "one government" whatever its number', () => {
+    const one = country({ iso3: 'ALA', score: 7.5, pillars: {}, advisories: { us: 1 } });
+    const a3 = (lang: Lang) => faq(one, lang)[2].answer;
+    assert.match(a3('it'), /: quello degli Stati Uniti, che raccomanda/);
+    assert.match(a3('es'), /: el de Estados Unidos, que recomienda/);
+    assert.match(a3('pt'), /: o dos Estados Unidos, que recomenda/);
+    assert.match(a3('fr'), / : celui des États-Unis, qui recommande/);
+    const uk = country({ iso3: 'IOT', score: 7.5, pillars: {}, advisories: { uk: 1 } });
+    assert.match(faq(uk, 'es')[2].answer, /: el del Reino Unido, que recomienda/);
+    assert.match(faq(uk, 'it')[2].answer, /: quello del Regno Unito, che raccomanda/);
+  });
+
+  it('Spanish keeps the article after a preposition and a singular verb in subject position', () => {
+    const gbr = country({ iso3: 'GBR', score: 8.4, pillars: {}, advisories: { us: 1, ca: 2 } });
+    assert.match(summary(gbr, 'es', 'Reino Unido'), /^El Reino Unido tiene una puntuación/);
+    assert.match(summary(gbr, 'es', 'Reino Unido'), /para quien viaja al Reino Unido/);
+    assert.match(getCountryFaqData(gbr, 'es')[0].question, /^¿Es seguro viajar al Reino Unido en \d{4}\?$/);
+    const nld = country({ iso3: 'NLD', score: 8.4, pillars: {}, advisories: { us: 1, ca: 2 } });
+    assert.match(summary(nld, 'es', 'Países Bajos'), /^Países Bajos tiene una puntuación/);
+    assert.match(summary(nld, 'es', 'Países Bajos'), /para quien viaja a los Países Bajos/);
+    assert.doesNotMatch(faq(nld, 'es').map((qa) => qa.answer).join(' '), /los Países Bajos (es|obtiene|tiene)\b/);
+  });
+});
+
+describe('a pillar whose bar reads "No data" has no number in the text (task 7, 2026-10-15)', () => {
+  // Nauru's shape: crime has nothing measured (isEstimatedPillar), governance is a low-coverage
+  // estimate that still prints its value with the asterisk.
+  const nauru = () =>
+    country({
+      iso3: 'NRU',
+      score: 7.4,
+      pillars: {
+        conflict: { score: 0.89 },
+        crime: { score: 0.57, indicators: [], dataCompleteness: 0 },
+        health: { score: 0.76 },
+        governance: { score: 0.54, indicators: [ind('inform_governance', 5, 0.5, 'inform', 2026)], dataCompleteness: 0.25 },
+        environment: { score: 0.81 },
+      },
+      advisories: advisoriesOf({ 1: 14, 2: 3 }),
+    });
+  // Taiwan's shape: health and natural hazards have no INFORM data at all.
+  const taiwan = () =>
+    country({
+      iso3: 'TWN',
+      score: 7.9,
+      pillars: {
+        conflict: { score: 0.85 },
+        crime: { score: 0.75 },
+        health: { score: 0.67, indicators: [], dataCompleteness: 0 },
+        governance: { score: 0.8 },
+        environment: { score: 0.62, indicators: [], dataCompleteness: 0 },
+      },
+      advisories: advisoriesOf({ 1: 17 }),
+    });
+  const texts = (c: ScoredCountry, lang: Lang, name: string) =>
+    [summary(c, lang, name), buildCountryMetaDescription(c, lang), ...faq(c, lang).map((qa) => qa.answer)].join(' ');
+
+  it('never quotes the prior of a "No data" pillar, in any language', () => {
+    for (const lang of LANGS) {
+      for (const [c, name, empty] of [[nauru(), 'Nauru', ['5.7', '5,7']], [taiwan(), 'Taiwan', ['6.7', '6,7', '6.2', '6,2']]] as const) {
+        const all = texts(c, lang, name);
+        for (const v of empty) assert.ok(!all.includes(`${v}/10`) && !all.includes(`(${v})`), `${c.iso3} ${lang}: quotes ${v}\n${all}`);
+      }
+    }
+  });
+
+  it('says there is no data instead, and keeps the value of an asterisked estimate', () => {
+    const en = summary(nauru(), 'en', 'Nauru');
+    assert.match(en, /The value for governance \(5\.4\/10\) is a cautious estimate: there is too little data to measure it\. There is no data on crime yet\./);
+    assert.match(summary(taiwan(), 'en', 'Taiwan'), /There is no data on (natural hazards and health|health and natural hazards) yet\./);
+    assert.match(summary(nauru(), 'de', 'Nauru'), /Für den Bereich Kriminalität liegen noch keine Daten vor\./);
+    assert.match(summary(nauru(), 'it', 'Nauru'), /Per l'area della criminalità non ci sono ancora dati\./);
+    assert.match(summary(nauru(), 'zh', '瑙鲁'), /犯罪方面暂无数据。/);
+  });
+
+  it('a "No data" pillar is never the focus, the best area or part of "all five at 7+"', () => {
+    const focus = selectPillarFocus(taiwan().pillars);
+    assert.notEqual(focus.focus.name, 'health');
+    assert.notEqual(focus.focus.name, 'environment');
+    assert.equal(focus.allFiveAtLeast7, false);
+    assert.deepEqual(focus.noData.map((p) => p.name).sort(), ['environment', 'health']);
+    assert.doesNotMatch(buildCountryMetaDescription(taiwan(), 'en'), /All five areas/);
   });
 });

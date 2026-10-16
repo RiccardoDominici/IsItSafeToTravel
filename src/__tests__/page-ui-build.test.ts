@@ -111,6 +111,16 @@ describe('I27: grey places with nothing to list', () => {
     console.log(`  (${none.length} no-data grey places checked)`);
   });
 
+  it('the map tooltip gets the same set: data-no-data-isos lists exactly those places, in every language', () => {
+    const expected = grey().filter(greyHasNoData).map((c) => c.iso3).sort().join(',');
+    for (const lang of ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de']) {
+      const html = readFileSync(join(DIST_CLIENT, lang, 'index.html'), 'utf-8');
+      const listed = html.match(/data-no-data-isos="([^"]*)"/)?.[1];
+      assert.ok(listed !== undefined, `${lang}: homepage map has no data-no-data-isos`);
+      assert.equal(listed.split(',').filter(Boolean).sort().join(','), expected, `${lang}: map no-data set`);
+    }
+  });
+
   it('grey places with something to list keep the list, advisories counted as one source', () => {
     const some = grey().filter((c) => !greyHasNoData(c) && Object.keys(c.advisories ?? {}).length > 1);
     for (const c of some.slice(0, 10)) {
@@ -148,5 +158,32 @@ describe('affiliate removal', () => {
     };
     walk(DIST_CLIENT);
     assert.deepEqual(offenders.slice(0, 5), [], `${offenders.length} pages still carry affiliate traces`);
+  });
+});
+
+describe('task 10: "Where does the data come from?" shows source names, not ids', () => {
+  const SEGMENTS: Record<string, string> = { en: 'country', it: 'paese', es: 'pais', fr: 'pays', pt: 'pais', zh: 'country', de: 'land' };
+  const RAW_IDS = new Set(['advisories', 'worldbank', 'vdem', 'gpi', 'inform', 'reliefweb', 'gdacs', 'ucdp']);
+  it('no source link text is an internal id and no description carries " -- ", in every language', () => {
+    let links = 0;
+    for (const [lang, segment] of Object.entries(SEGMENTS)) {
+      for (const iso3 of ['DEU', 'ECU', 'CHN', 'NFK', 'TWN', 'NRU']) {
+        let html: string;
+        try {
+          html = countryPage(iso3, lang, segment);
+        } catch {
+          continue; // a place may not exist in a given snapshot
+        }
+        const start = html.indexOf('id="sources"');
+        if (start < 0) continue;
+        const section = html.slice(start, html.indexOf('</section>', start));
+        for (const m of section.matchAll(/<li[^>]*data-source="([a-z]+)"[^>]*>[\s\S]*?<(?:a|span)[^>]*>\s*([^<]+?)\s*<\/(?:a|span)>/g)) {
+          assert.ok(!RAW_IDS.has(m[2]), `${lang}/${iso3}: source ${m[1]} shows "${m[2]}"`);
+          links++;
+        }
+        assert.ok(!section.includes(' -- '), `${lang}/${iso3}: " -- " in the sources section`);
+      }
+    }
+    assert.ok(links > 20, `only ${links} source names checked`);
   });
 });

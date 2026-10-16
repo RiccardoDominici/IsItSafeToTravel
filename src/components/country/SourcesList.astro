@@ -2,7 +2,7 @@
 import type { SourceMeta, PillarScore, ScoredCountry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations, type TranslationKey } from '../../i18n/utils';
-import { getLocalizedSourceDescription, buildLocalizedAdvisoryDescription } from '../../i18n/source-descriptions';
+import { getLocalizedSourceDescription, buildLocalizedAdvisoryDescription, getSourceDisplayName } from '../../i18n/source-descriptions';
 import { isScoredIndicator } from '../../lib/indicator-display';
 
 interface Props {
@@ -119,8 +119,11 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
           ? buildLocalizedAdvisoryDescription(lang, advisories) ?? source.description
           : getLocalizedSourceDescription(lang, source.name, source.description);
 
+        // The link shows the source's name in the page language, never its internal id ("gdacs").
+        const displayName = getSourceDisplayName(lang, source.name);
+
         return (
-          <li class="pt-3 first:pt-0">
+          <li class="pt-3 first:pt-0" data-source={source.name}>
             <div class="flex items-center gap-2 flex-wrap">
               {source.url ? (
                 // inline-flex + min-h-6: as plain inline text this link's tap
@@ -131,10 +134,10 @@ const freshnessKeys: Record<FreshnessLevel, TranslationKey> = {
                   rel="noopener noreferrer"
                   class="inline-flex items-center min-h-6 text-terracotta-500 hover:text-terracotta-600 dark:text-terracotta-400 underline font-medium"
                 >
-                  {source.name}
+                  {displayName}
                 </a>
               ) : (
-                <span class="font-medium text-sand-800 dark:text-sand-100">{source.name}</span>
+                <span class="font-medium text-sand-800 dark:text-sand-100">{displayName}</span>
               )}
               <span
                 class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${freshnessStyles[freshness]}`}

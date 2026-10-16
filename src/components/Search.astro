@@ -6,6 +6,7 @@ import { COUNTRIES } from '../pipeline/config/countries';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
 import { scoreToColor } from '../lib/colors';
 import { isScored } from '../lib/score-status';
+import { formatTenths } from '../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -24,8 +25,9 @@ const searchData = COUNTRIES.map(c => {
     name: getLocalizedCountryName(c, lang),
     // Grey places (formula v10, no official score) stay searchable, without a score chip.
     // One decimal, as on the country page: the integer scoreDisplay could sit in another band
-    // than the page's own number (6.7 shown as "7/10"; audit I08).
-    score: scored && isScored(scored) ? scored.score.toFixed(1) : null,
+    // than the page's own number (6.7 shown as "7/10"; audit I08). Display text only, in the page
+    // language's format ("6,7").
+    score: scored && isScored(scored) ? formatTenths(scored.score, lang) : null,
     color: scored && isScored(scored) ? scoreToColor(scored.score) : null,
   };
 });
@@ -81,7 +83,7 @@ const searchData = COUNTRIES.map(c => {
   interface SearchItem {
     iso3: string;
     name: string;
-    /** One-decimal score as displayed ("6.7"); null for a grey place. */
+    /** One-decimal score as displayed ("6.7", "6,7"); null for a grey place. */
     score: string | null;
     color: string | null;
   }

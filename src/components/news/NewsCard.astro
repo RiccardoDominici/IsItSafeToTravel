@@ -6,6 +6,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations, type TranslationKey } from '../../i18n/utils';
 import { renderNewsEvent, flagEmoji } from '../../lib/news';
+import { formatTenths } from '../../lib/display-number';
 
 interface Props {
   event: NewsEvent;
@@ -137,9 +138,9 @@ function scoreBigFor(e: NewsEvent): string {
   if (e.type === 'band_change' || e.type === 'score_jump') {
     if (P.score === undefined) return '';
     const arrow = P.direction === 'down' ? '↓' : '↑';
-    return `${arrow} ${P.score.toFixed(1)}`;
+    return `${arrow} ${formatTenths(P.score, lang)}`;
   }
-  if (e.type === 'new_country') return P.score !== undefined ? P.score.toFixed(1) : '';
+  if (e.type === 'new_country') return P.score !== undefined ? formatTenths(P.score, lang) : '';
   return '';
 }
 const scoreBig = scoreBigFor(event);

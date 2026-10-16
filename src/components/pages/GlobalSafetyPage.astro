@@ -13,6 +13,7 @@ import { loadLatestSnapshot, loadGlobalHistory, getFormulaChange } from '../../l
 import { formulaChangeInRange, formulaChangeTexts } from '../../i18n/formula-change-copy';
 import { buildGlobalSafetyJsonLd } from '../../lib/seo';
 import { scoreToColor, readableTextColor } from '../../lib/colors';
+import { formatTenths } from '../../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -57,7 +58,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
         style={`background-color: ${bgColor}; color: ${fgColor};`}
       >
         <span class="text-6xl md:text-8xl font-heading font-bold leading-none">
-          {globalScore.toFixed(1)}
+          {formatTenths(globalScore, lang)}
         </span>
         <span class="text-lg md:text-xl font-medium mt-1 opacity-90">
           {t('global.out_of')}
@@ -120,6 +121,8 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
   <script>
     import { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } from 'd3';
     import { scoreToColor } from '../../lib/colors';
+    import { formatNumber } from '../../lib/display-number';
+    import type { Lang } from '../../i18n/ui';
 
     function smartDateFormat(dates: Date[]): (d: Date) => string {
       const first = dates[0], last = dates[dates.length - 1];
@@ -137,7 +140,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
       const svg = document.getElementById('global-chart-svg') as unknown as SVGSVGElement;
       const tooltip = document.getElementById('global-tooltip')!;
       const resetBtn = document.getElementById('global-reset-btn')!;
-      const lang = container.dataset.lang || 'en';
+      const lang = (container.dataset.lang || 'en') as Lang;
 
       interface HistoryPoint { date: string; score: number; }
       const fullData: HistoryPoint[] = JSON.parse(container.dataset.history || '[]');
@@ -238,7 +241,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
             const val = yMin + i * yTickStep;
             const yPos = yScale(val);
             gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-            yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+            yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${formatNumber(val, 1, lang)}</text>`;
           }
 
           const tickCount = Math.min(6, dates.length);
@@ -441,7 +444,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
         function formatPoint(point: HistoryPoint): string {
           const d = new Date(point.date + 'T00:00:00Z');
           const dateStr = d.toLocaleDateString(localeMap[lang] || 'en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-          return `${dateStr}: ${point.score.toFixed(2)}`;
+          return `${dateStr}: ${formatNumber(point.score, 2, lang)}`;
         }
 
         function positionTooltip(point: HistoryPoint, rect: DOMRect): void {

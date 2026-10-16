@@ -16,6 +16,7 @@ import { scoredOnly } from '../../lib/score-status';
 import { useTranslations } from '../../i18n/utils';
 import { routes } from '../../i18n/ui';
 import type { Lang } from '../../i18n/ui';
+import { formatPillar10, formatTenths } from '../../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -34,8 +35,9 @@ const countryData = scores.map(country => ({
   iso3: country.iso3,
   name: getLocalizedCountryName(country, lang),
   score: country.score,
-  // One decimal, the number the country page shows; never the integer scoreDisplay (audit I08).
-  scoreDisplay: country.score.toFixed(1),
+  // One decimal, the number the country page shows (page-language separator); never the integer
+  // scoreDisplay (audit I08).
+  scoreDisplay: formatTenths(country.score, lang),
   pillars: country.pillars.map(p => ({ name: p.name, score: p.score })),
   color: scoreToColor(country.score),
 }));
@@ -189,7 +191,7 @@ const ec = emptyStateCopy[lang];
                         const p = c.pillars.find((pp) => pp.name === pillar.name);
                         return (
                           <td class="text-center py-2 px-3 tabular-nums text-sand-700 dark:text-sand-300">
-                            {p ? (p.score * 10).toFixed(1) : '—'}
+                            {p ? formatPillar10(p.score, lang) : '—'}
                           </td>
                         );
                       })}
@@ -221,6 +223,8 @@ const ec = emptyStateCopy[lang];
   import Fuse from 'fuse.js';
   import { scaleLinear, scaleTime, line as d3Line, timeFormat, utcFormat, brushX, select, easeCubicOut } from 'd3';
   import { readableTextColor } from '../../lib/colors';
+  import { formatNumber, formatPillar10 } from '../../lib/display-number';
+  import type { Lang } from '../../i18n/ui';
 
   function smartDateFormat(dates: Date[]): (d: Date) => string {
     const first = dates[0], last = dates[dates.length - 1];
@@ -266,7 +270,7 @@ const ec = emptyStateCopy[lang];
     }));
   }
   const t = JSON.parse(app.dataset.t!);
-  const lang = app.dataset.lang!;
+  const lang = app.dataset.lang! as Lang;
 
   const fuse = new Fuse(allCountries, {
     keys: ['name'],
@@ -520,7 +524,7 @@ const ec = emptyStateCopy[lang];
       selectedCountries.forEach((country, i) => {
         const pillar = country.pillars.find(p => p.name === pillarName);
         const score = pillar ? pillar.score : 0;
-        const displayScore = (score * 10).toFixed(1);
+        const displayScore = formatPillar10(score, lang);
 
         const row = document.createElement('div');
         row.className = 'flex items-center gap-2';
@@ -710,7 +714,7 @@ const ec = emptyStateCopy[lang];
         const val = yDomainMin + i * yTickStep;
         const yPos = y(val);
         gridLines += `<line x1="0" y1="${yPos}" x2="${innerWidth}" y2="${yPos}" stroke="currentColor" stroke-width="0.5" stroke-dasharray="4 4" opacity="0.3" />`;
-        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${val.toFixed(1)}</text>`;
+        yLabels += `<text x="-10" y="${yPos}" text-anchor="end" dominant-baseline="middle" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="12">${formatNumber(val, 1, lang)}</text>`;
       }
 
       // X axis ticks - smart format, remove overlapping labels (keep most recent)
@@ -857,7 +861,7 @@ const ec = emptyStateCopy[lang];
           localeMap[lang] || 'en-US',
           { month: 'short', day: 'numeric', year: 'numeric' }
         );
-        const scoresStr = entry.scores.map(s => `${s.name} ${s.score.toFixed(2)}`).join(', ');
+        const scoresStr = entry.scores.map(s => `${s.name} ${formatNumber(s.score, 2, lang)}`).join(', ');
         tooltip.textContent = `${dateStr}: ${scoresStr}`;
         tooltip.classList.remove('hidden');
 

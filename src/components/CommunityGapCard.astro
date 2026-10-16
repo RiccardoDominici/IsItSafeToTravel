@@ -19,7 +19,9 @@
  * The track itself (ScoreBarTrack.astro) is identical either way -- see that
  * file for why it's a plain CSS width, not an SVG.
  */
+import type { Lang } from '../i18n/ui';
 import { scoreToColor } from '../lib/colors';
+import { formatTenths } from '../lib/display-number';
 import ScoreBarTrack from './ScoreBarTrack.astro';
 
 interface Props {
@@ -36,6 +38,8 @@ interface Props {
   driverText: string; // already-resolved sentence naming the weakest pillar
   ourScoreLabel: string;
   communityScoreLabel: string;
+  /** Page language: the two scores use its decimal separator ("6,7/10"). */
+  lang: Lang;
 }
 
 const {
@@ -51,6 +55,7 @@ const {
   driverText,
   ourScoreLabel,
   communityScoreLabel,
+  lang,
 } = Astro.props;
 
 const chipClasses =
@@ -62,8 +67,10 @@ const chipClasses =
 
 const officialColor = scoreToColor(official);
 const communityColor = scoreToColor(community);
-const officialLabel = `${ourScoreLabel}: ${official.toFixed(1)}/10`;
-const communityLabel = `${communityScoreLabel}: ${community.toFixed(1)}/10`;
+const officialText = formatTenths(official, lang);
+const communityText = formatTenths(community, lang);
+const officialLabel = `${ourScoreLabel}: ${officialText}/10`;
+const communityLabel = `${communityScoreLabel}: ${communityText}/10`;
 ---
 
 <li class="list-none">
@@ -91,14 +98,14 @@ const communityLabel = `${communityScoreLabel}: ${community.toFixed(1)}/10`;
       <div>
         <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
           <span>{ourScoreLabel}</span>
-          <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{official.toFixed(1)}/10</span>
+          <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{officialText}/10</span>
         </div>
         <ScoreBarTrack score={official} color={officialColor} label={officialLabel} />
       </div>
       <div>
         <div class="flex items-baseline justify-between text-xs text-sand-600 dark:text-sand-400 mb-1">
           <span>{communityScoreLabel}</span>
-          <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{community.toFixed(1)}/10</span>
+          <span class="font-medium tabular-nums text-sand-700 dark:text-sand-300">{communityText}/10</span>
         </div>
         <ScoreBarTrack score={community} color={communityColor} label={communityLabel} />
       </div>
@@ -113,12 +120,12 @@ const communityLabel = `${communityScoreLabel}: ${community.toFixed(1)}/10`;
       <div class="grid grid-cols-[8rem_1fr_3.5rem] items-center gap-3">
         <span class="text-xs text-sand-600 dark:text-sand-400 text-left">{ourScoreLabel}</span>
         <ScoreBarTrack score={official} color={officialColor} label={officialLabel} />
-        <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{official.toFixed(1)}/10</span>
+        <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{officialText}/10</span>
       </div>
       <div class="grid grid-cols-[8rem_1fr_3.5rem] items-center gap-3">
         <span class="text-xs text-sand-600 dark:text-sand-400 text-left">{communityScoreLabel}</span>
         <ScoreBarTrack score={community} color={communityColor} label={communityLabel} />
-        <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{community.toFixed(1)}/10</span>
+        <span class="text-xs font-medium tabular-nums text-sand-700 dark:text-sand-300 text-right">{communityText}/10</span>
       </div>
     </div>
 

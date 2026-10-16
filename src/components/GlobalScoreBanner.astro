@@ -4,6 +4,7 @@ import { routes } from '../i18n/ui';
 import { useTranslations } from '../i18n/utils';
 import { loadLatestSnapshot } from '../lib/scores';
 import { badgeColors } from '../lib/colors';
+import { formatTenths } from '../lib/display-number';
 
 interface Props {
   lang: Lang;
@@ -33,7 +34,7 @@ const href = `/${lang}/${routes[lang]['global-safety']}/`;
       class="inline-flex items-center justify-center w-10 h-10 rounded-full font-heading font-bold text-lg"
       style={`background-color: ${bgColor}; color: ${fgColor};`}
     >
-      {globalScore.toFixed(1)}
+      {formatTenths(globalScore, lang)}
     </span>
     <span class="text-sm font-medium text-sand-700 dark:text-sand-300">
       {t('global.score_label')}

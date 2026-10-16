@@ -18,6 +18,7 @@
 import weightsConfig from '../pipeline/config/weights.json';
 import type { IndicatorScore, PillarScore, WeightsConfig } from '../pipeline/types';
 import type { IndicatorValueDisplay } from './indicator-display';
+import { roundForDisplay } from './display-number';
 
 /** One row of an indicator table (IndicatorTable.astro), already in display form. */
 export interface IndicatorRow {
@@ -71,9 +72,9 @@ const PILLAR_DEFS: ReadonlyMap<string, PillarDef> = new Map(
  */
 export function scoreAboveAllBars(score: number | null | undefined, pillars: readonly PillarScore[]): boolean {
   if (typeof score !== 'number' || !Number.isFinite(score)) return false;
-  const bars = pillars.filter((p) => !isEstimatedPillar(p)).map((p) => Number((p.score * 10).toFixed(1)));
+  const bars = pillars.filter((p) => !isEstimatedPillar(p)).map((p) => roundForDisplay(p.score * 10, 1));
   if (bars.length === 0) return false;
-  return Number(score.toFixed(1)) > Math.max(...bars);
+  return roundForDisplay(score, 1) > Math.max(...bars);
 }
 
 /**

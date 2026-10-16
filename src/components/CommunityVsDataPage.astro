@@ -19,6 +19,7 @@ import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 import CommunityGapCard from './CommunityGapCard.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
+import { formatNumber, formatSigned, formatTenths } from '../lib/display-number';
 import { loadAllSentiment, MIN_ORIGIN_FLOOR, MIN_VOTE_FLOOR, pickVoteNextSuggestions } from '../lib/sentiment';
 import { selectPillarExtremes } from '../lib/pillar-extremes';
 import { faqPillarLabels } from '../lib/country-faq-copy';
@@ -41,10 +42,8 @@ const countryByIso3 = new Map(countries.map((co) => [co.iso3, co]));
 // Only countries whose community reading is active (>= 30 votes from >= 3 origins, SPEC §5) rank here.
 const sentimentEntries = loadAllSentiment().filter((s) => s.status === 'active');
 
-/** Signed delta, U+2212 minus (never a bare hyphen), as shown on the community block. */
-function formatSigned(n: number): string {
-  return `${n < 0 ? '−' : '+'}${Math.abs(n).toFixed(1)}`;
-}
+/** Signed gap in the page language's format, U+2212 minus (never a bare hyphen), as on the community block. */
+const signedGap = (n: number): string => formatSigned(n, 1, lang);
 
 /**
  * Below this, a gap rounds to display "0.0" -- same guard and same value as
@@ -90,7 +89,7 @@ const ranked: RankedEntry[] = sentimentEntries
       ? c.driverNeutral
       : c.driverTemplate
           .replace('{pillar}', faqPillarLabels[lang][weakest.name])
-          .replace('{score}', (weakest.score * 10).toFixed(1))
+          .replace('{score}', formatTenths(weakest.score * 10, lang))
           .replace('{note}', c.pillarNote[weakest.name]);
 
     return {
@@ -144,7 +143,7 @@ const headlineText =
   headlineEntry && Math.abs(headlineEntry.gap) >= GAP_NEGLIGIBLE_THRESHOLD
     ? (headlineEntry.gap >= 0 ? c.headlineSafer : c.headlineLessSafe)
         .replace('{name}', headlineEntry.name)
-        .replace('{gap}', Math.abs(headlineEntry.gap).toFixed(1))
+        .replace('{gap}', formatTenths(Math.abs(headlineEntry.gap), lang))
         .replace('{count}', String(ranked.length))
         .replace('{countryNoun}', countryNounForCount)
     : null;
@@ -219,7 +218,7 @@ const methodologyParts = c.methodologyText.split('{link}');
           <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statCountriesLabel}</p>
         </div>
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
-          <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{totalVotes}</p>
+          <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{formatNumber(totalVotes, 0, lang)}</p>
           <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statVotesLabel}</p>
         </div>
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
@@ -227,7 +226,7 @@ const methodologyParts = c.methodologyText.split('{link}');
             <p class="text-base sm:text-lg font-heading font-bold text-sand-800 dark:text-sand-100 truncate">
               {headlineEntry.name}{' '}
               <span class={headlineEntry.gap >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-red-700 dark:text-red-400'}>
-                {formatSigned(headlineEntry.gap)}
+                {signedGap(headlineEntry.gap)}
               </span>
             </p>
           )}
@@ -248,8 +247,8 @@ const methodologyParts = c.methodologyText.split('{link}');
             const gapDirection = isNegligible ? 'neutral' : isSafer ? 'safer' : 'less_safe';
             const gapText = isNegligible
               ? c.gapChipNeutral
-              : (isSafer ? c.gapChipSafer : c.gapChipLessSafe).replace('{gap}', formatSigned(entry.gap));
-            const votesText = c.votesLabel.replace('{count}', String(entry.votes));
+              : (isSafer ? c.gapChipSafer : c.gapChipLessSafe).replace('{gap}', signedGap(entry.gap));
+            const votesText = c.votesLabel.replace('{count}', formatNumber(entry.votes, 0, lang));
             return (
               <CommunityGapCard
                 rank={i + 1}
@@ -264,6 +263,7 @@ const methodologyParts = c.methodologyText.split('{link}');
                 driverText={entry.driverText}
                 ourScoreLabel={c.ourScoreLabel}
                 communityScoreLabel={c.communityScoreLabel}
+                lang={lang}
               />
             );
           })}

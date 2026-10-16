@@ -3,6 +3,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { loadLatestScores } from '../../lib/scores';
+import { formatTenths, roundForDisplay } from '../../lib/display-number';
 import { getCountriesByRegion } from '../../lib/hub-data';
 import type { Region } from '../../lib/regions';
 import Base from '../../layouts/Base.astro';
@@ -29,7 +30,7 @@ const REGIONS = [
 ] as const;
 
 function badgeClasses(rawScore: number): string {
-  const score = Number(rawScore.toFixed(1)); // band on the displayed 1-decimal value
+  const score = roundForDisplay(rawScore, 1); // band on the displayed 1-decimal value
   if (score >= 7) return 'bg-sky-100 text-sky-800 dark:bg-sky-900/30 dark:text-sky-300';
   if (score >= 5) return 'bg-amber-100 text-amber-800 dark:bg-amber-900/30 dark:text-amber-300';
   return 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300';
@@ -82,7 +83,7 @@ const copy: Record<Lang, { title: string; description: string; intro: string }> 
   de: {
     title: 'Reisesicherheit nach Region (2026)',
     description: 'Durchstöbern Sie alle 248 Länder, geordnet in sechs Weltregionen und jeweils nach täglich neu berechneter Sicherheitsbewertung sortiert. Kostenlos verfügbar.',
-    intro: 'Entdecken Sie Sicherheits-Scores nach Weltregion. Jede Region ordnet alle ihre Länder nach zusammengesetztem Sicherheits-Score, täglich neu berechnet.',
+    intro: 'Entdecken Sie Sicherheitswerte nach Weltregion. Jede Region ordnet alle ihre Länder nach zusammengesetztem Sicherheitswert, täglich neu berechnet.',
   },
 };
 const { title, description, intro } = copy[lang];
@@ -141,7 +142,7 @@ const jsonLd = {
             <span class="flex items-center gap-2 shrink-0">
               <span class="text-xs text-sand-600 dark:text-sand-400 tabular-nums">{c.count}</span>
               <span class={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold whitespace-nowrap ${badgeClasses(c.avg)}`}>
-                {c.avg.toFixed(1)}
+                {formatTenths(c.avg, lang)}
               </span>
             </span>
           </a>
