@@ -16,20 +16,29 @@ import type { ScoredCountry } from '../pipeline/types';
 import type { Lang } from '../i18n/ui';
 import { countryFaqCopy } from './country-faq-copy';
 import { getItalianGeneric, getPortugueseWithArticle, getGermanFuerPhrase } from '../i18n/country-grammar';
+import { advisoryCountsForScore } from './advisory-consensus';
+import { fixItalianNumberArticles } from './pillar-narrative';
 
 export interface ProvenanceCounts {
+  /** Government advisories that enter the score (frozen-excluded issuers are not counted). */
   advisoryCount: number;
+  /** Government advisories published for the place, used in the score or not. */
+  publishedAdvisoryCount: number;
   otherSourceCount: number;
 }
 
-/** Pure counts derived from a country's own data — no copy, no i18n. */
+/**
+ * Pure counts derived from a country's own data — no copy, no i18n. The advisory count is the
+ * number the score actually uses (advisoryCountsForScore): Micronesia has 13 advisories on record
+ * and 10 in the score, and "combines 13 government advisories" was not true.
+ */
 export function getProvenanceCounts(country: ScoredCountry): ProvenanceCounts {
-  const advisoryCount = Object.keys(country.advisories ?? {}).length;
+  const { inScore: advisoryCount, published: publishedAdvisoryCount } = advisoryCountsForScore(country);
   // 'advisories' is one of the named entries in SourceMeta[] (see SOURCE_CATALOG
   // in engine.ts) — excluded here so it is never counted twice, once as N
   // government advisories and again as one of the "other" data feeds.
   const otherSourceCount = (country.sources ?? []).filter((s) => s.name !== 'advisories').length;
-  return { advisoryCount, otherSourceCount };
+  return { advisoryCount, publishedAdvisoryCount, otherSourceCount };
 }
 
 /**
@@ -90,6 +99,11 @@ const andConnector: Record<Lang, string> = {
   de: ' und ',
 };
 
+/** "dei 8" -> "degli 8" in Italian; other languages unchanged. */
+function italianArticles(lang: Lang, text: string): string {
+  return lang === 'it' ? fixItalianNumberArticles(text) : text;
+}
+
 /**
  * Build the localized provenance sentence for one country. Four structural
  * cases: no data at all, advisories only, other feeds only (not observed live
@@ -112,8 +126,21 @@ export function buildProvenanceSentence(counts: ProvenanceCounts, countryName: s
     return zeroDataSentence[lang](zeroDataName);
   }
 
+  // "14 of the 20 government travel advisories" when the formula leaves some issuers out, so the
+  // number matches the breakdown sentence ("Of the 20 governments ...") and stays true.
+  const { publishedAdvisoryCount } = counts;
   const advisoryNoun = countryFaqCopy[lang].advisoryCountNoun;
-  const advClause = advisoryCount === 1 ? advisoryNoun.one : advisoryNoun.other.replace('{n}', String(advisoryCount));
+  const advClause =
+    publishedAdvisoryCount > advisoryCount
+      ? italianArticles(
+          lang,
+          countryFaqCopy[lang].advisoryCountNounPartial
+            .replace('{n}', String(advisoryCount))
+            .replace('{total}', String(publishedAdvisoryCount)),
+        )
+      : advisoryCount === 1
+        ? advisoryNoun.one
+        : advisoryNoun.other.replace('{n}', String(advisoryCount));
 
   const sourceNoun = otherSourceNoun[lang];
   const otherClause = otherSourceCount === 1 ? sourceNoun.one : sourceNoun.other.replace('{n}', String(otherSourceCount));

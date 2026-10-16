@@ -330,7 +330,8 @@ describe('meta description provenance (I13 I62)', () => {
     const c = country({ iso3: 'JPN', score: 8.1, pillars: { environment: { score: 0.66 } }, advisories: advisoriesOf({ 1: 18, 2: 4 }) });
     const meta = buildCountryMetaDescription(c, 'en');
     assert.doesNotMatch(meta, /30\+/);
-    assert.match(meta, /Score based on 22 advisories and 5 datasets, recalculated daily\./);
+    // 22 governments publish advice; jp, ch, be, ie, es and sk are frozen-excluded issuers (task 5).
+    assert.match(meta, /Score based on 16 of 22 advisories and 5 datasets, recalculated daily\./);
     assert.doesNotMatch(buildCountryMetaDescription(mozambique(), 'de'), /Kostenloser Wert/);
   });
 });
@@ -374,5 +375,51 @@ describe('indicator facts (I04 I17 I53 I61 I64)', () => {
     const zhSummary = summary(afghanistan(), 'zh', '阿富汗');
     assert.match(zhSummary, /建议切勿前往/);
     assert.doesNotMatch(zhSummary + faq(afghanistan(), 'zh').map((qa) => qa.answer).join(''), /避免一切旅行|风险等级为/);
+  });
+});
+
+describe('the advisory count in the provenance sentence is the one the score uses (task 5, 2026-10-15)', () => {
+  // Micronesia's shape: 13 governments publish advice, 3 of them (jp, ie, es) are frozen-excluded
+  // issuers (weights.json frozenExcludedSources), so 10 enter the score.
+  const fsm = () =>
+    country({
+      iso3: 'FSM',
+      score: 7.4,
+      pillars: { environment: { score: 0.62 } },
+      advisories: { us: 1, uk: 1, ca: 1, au: 1, de: 1, fr: 1, nl: 1, nz: 1, at: 1, it: 1, jp: 1, ie: 1, es: 1 },
+    });
+
+  it('summary says both numbers, in every language', () => {
+    const expected: Record<Lang, RegExp> = {
+      en: /combines 10 of the 13 government travel advisories and 5 other public datasets/,
+      it: /combina 10 dei 13 avvisi di viaggio governativi e altri 5 dataset pubblici/,
+      es: /combina 10 de los 13 avisos de viaje gubernamentales y otros 5 conjuntos de datos públicos/,
+      fr: /combine 10 des 13 avis aux voyageurs officiels et 5 autres jeux de données publics/,
+      pt: /combina 10 dos 13 avisos de viagem governamentais e outros 5 conjuntos de dados públicos/,
+      zh: /综合了13条政府旅行警告中的10条和另外5个公开数据集/,
+      de: /kombiniert 10 der 13 staatlichen Reisehinweise und 5 weitere öffentliche Datensätze/,
+    };
+    for (const [lang, re] of Object.entries(expected) as Array<[Lang, RegExp]>) assert.match(summary(fsm(), lang, 'Micronesia'), re, lang);
+  });
+
+  it('meta description gives the same two numbers when its tail fits', () => {
+    const meta = buildCountryMetaDescription(fsm(), 'en');
+    assert.match(meta, /Score based on 10 of 13 advisories and 5 datasets, recalculated daily\./);
+    for (const lang of ['it', 'es', 'fr', 'pt', 'zh', 'de'] as const) {
+      const m = buildCountryMetaDescription(fsm(), lang);
+      // The tail is dropped only when the description would pass 155 characters.
+      if (/\b10\b|10份/.test(m.replace(/^[^.。]*[.。]/, ''))) assert.match(m, /13/, `${lang}: ${m}`);
+    }
+  });
+
+  it('keeps the plain count when every published advisory is used', () => {
+    const c = country({ iso3: 'XXX', score: 7.4, pillars: {}, advisories: { us: 1, uk: 2, ca: 1 } });
+    assert.match(summary(c, 'en', 'Xland'), /combines 3 government travel advisories and 5 other public datasets/);
+    assert.match(buildCountryMetaDescription(c, 'en'), /Score based on 3 advisories and 5 datasets/);
+  });
+
+  it('never counts an excluded issuer', () => {
+    const c = country({ iso3: 'XXX', score: 7.4, pillars: {}, advisories: { jp: 1, ie: 1, es: 1, us: 1 } });
+    assert.match(summary(c, 'en', 'Xland'), /combines 1 of the 4 government travel advisories/);
   });
 });

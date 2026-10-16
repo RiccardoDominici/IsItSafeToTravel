@@ -85,6 +85,11 @@ export interface CountryFaqCopy {
   /** Singular/plural advisory-count noun phrase; {n} is the count (provenance-copy.ts). */
   advisoryCountNoun: { one: string; other: string };
   /**
+   * The same phrase when only some of the published advisories enter the score: {n} used out of
+   * {total} published (weights.json frozenExcludedSources lists the issuers the formula leaves out).
+   */
+  advisoryCountNounPartial: string;
+  /**
    * Formula v10 grey place (insufficient_data): A1 without any score, band or pillar figure. Spells
    * the four-source floor out ("four", not "4": validate-seo reads "<n> sources" as a site-wide
    * count). Only en/zh carry {name}; the other locales say "this destination" (article-free).
@@ -182,6 +187,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'one government travel advisory',
       other: '{n} government travel advisories',
     },
+    advisoryCountNounPartial: '{n} of the {total} government travel advisories',
     a1Grey: 'We cannot give {name} a safety score yet: we publish one only when at least four independent sources cover a place, and fewer do here. Read the government advisories below and check your own government’s travel advice before you go.',
     a1GreyNoAdvisories: 'We cannot give {name} a safety score yet: we publish one only when at least four independent sources cover a place, and fewer do here. No government advisory is on record either, so check your own government’s travel advice before you go.',
     a3NoneGrey: 'As of {monthYear}, no government in our dataset publishes a travel advisory for {name}. Check your own government’s latest guidance before you travel.',
@@ -239,6 +245,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'un avviso di viaggio governativo',
       other: '{n} avvisi di viaggio governativi',
     },
+    advisoryCountNounPartial: '{n} dei {total} avvisi di viaggio governativi',
     a1Grey: 'Per questa destinazione non possiamo ancora dare un punteggio di sicurezza: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo, e qui sono meno. Leggi gli avvisi governativi qui sotto e controlla le indicazioni del tuo governo prima di partire.',
     a1GreyNoAdvisories: 'Per questa destinazione non possiamo ancora dare un punteggio di sicurezza: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo, e qui sono meno. Non abbiamo nemmeno avvisi governativi: controlla le indicazioni del tuo governo prima di partire.',
     a3NoneGrey: 'A {monthYear}, nessun governo nei nostri dati pubblica avvisi per chi viaggia {nameIn}. Verifica le indicazioni più recenti del tuo governo prima di partire.',
@@ -293,6 +300,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'un aviso de viaje gubernamental',
       other: '{n} avisos de viaje gubernamentales',
     },
+    advisoryCountNounPartial: '{n} de los {total} avisos de viaje gubernamentales',
     a1Grey: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Lee los avisos gubernamentales más abajo y consulta las recomendaciones de tu gobierno antes de viajar.',
     a1GreyNoAdvisories: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Tampoco hay avisos gubernamentales: consulta las recomendaciones de tu gobierno antes de viajar.',
     a3NoneGrey: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja a {name}. Consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
@@ -349,6 +357,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'un avis aux voyageurs officiel',
       other: '{n} avis aux voyageurs officiels',
     },
+    advisoryCountNounPartial: '{n} des {total} avis aux voyageurs officiels',
     a1Grey: `Nous ne pouvons pas encore attribuer de score de sécurité à cette destination${NB}: nous n’en publions un que si au moins quatre sources indépendantes couvrent un lieu, et elles sont moins nombreuses ici. Consultez les avis gouvernementaux ci-dessous et les conseils de votre propre gouvernement avant de partir.`,
     a1GreyNoAdvisories: `Nous ne pouvons pas encore attribuer de score de sécurité à cette destination${NB}: nous n’en publions un que si au moins quatre sources indépendantes couvrent un lieu, et elles sont moins nombreuses ici. Aucun avis gouvernemental n’est disponible non plus${NB}: consultez les conseils de votre propre gouvernement avant de partir.`,
     a3NoneGrey: 'En {monthYear}, aucun gouvernement de nos données ne publie de conseils aux voyageurs se rendant {namePrep}. Vérifiez les dernières recommandations de votre propre gouvernement avant de partir.',
@@ -406,6 +415,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'um aviso de viagem governamental',
       other: '{n} avisos de viagem governamentais',
     },
+    advisoryCountNounPartial: '{n} dos {total} avisos de viagem governamentais',
     a1Grey: 'Ainda não podemos dar uma pontuação de segurança para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar, e aqui são menos. Leia os alertas governamentais abaixo e consulte as orientações do seu governo antes de viajar.',
     a1GreyNoAdvisories: 'Ainda não podemos dar uma pontuação de segurança para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar, e aqui são menos. Também não há alertas governamentais: consulte as orientações do seu governo antes de viajar.',
     a3NoneGrey: 'Em {monthYear}, nenhum governo em nossos dados publica alertas para quem viaja {nameA}. Verifique as orientações mais recentes do seu próprio governo antes de viajar.',
@@ -461,6 +471,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: '1条政府旅行警告',
       other: '{n}条政府旅行警告',
     },
+    advisoryCountNounPartial: '{total}条政府旅行警告中的{n}条',
     a1Grey: '我们目前还无法为{name}给出安全评分：只有当至少四个独立来源覆盖某地时，我们才会发布评分，而这里的来源不足四个。请阅读下方的政府旅行警告，并在出行前查看本国政府的旅行建议。',
     a1GreyNoAdvisories: '我们目前还无法为{name}给出安全评分：只有当至少四个独立来源覆盖某地时，我们才会发布评分，而这里的来源不足四个。目前也没有任何政府旅行警告，请在出行前查看您本国政府的旅行建议。',
     a3NoneGrey: '截至{monthYear}，我们的数据中没有任何政府为{name}发布旅行警告。请在出行前查阅您所在国家政府的最新指引。',
@@ -522,6 +533,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       one: 'einen staatlichen Reisehinweis',
       other: '{n} staatliche Reisehinweise',
     },
+    advisoryCountNounPartial: '{n} der {total} staatlichen Reisehinweise',
     a1Grey: 'Für dieses Reiseziel können wir noch keine Sicherheitsbewertung angeben: Eine Bewertung veröffentlichen wir erst, wenn mindestens vier unabhängige Quellen einen Ort abdecken, und hier sind es weniger. Lesen Sie die staatlichen Reisehinweise weiter unten und prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.',
     a1GreyNoAdvisories: 'Für dieses Reiseziel können wir noch keine Sicherheitsbewertung angeben: Eine Bewertung veröffentlichen wir erst, wenn mindestens vier unabhängige Quellen einen Ort abdecken, und hier sind es weniger. Auch staatliche Reisehinweise liegen nicht vor; prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.',
     a3NoneGrey: 'Stand {monthYear} veröffentlicht keine Regierung in unseren Daten Reisehinweise {nameFuer}. Prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung.',

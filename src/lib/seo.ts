@@ -282,16 +282,28 @@ const metaFocusClauses: Record<Lang, Record<MetaFrame, (p: string, s: string, e:
  * The provenance tail of the meta description with THIS country's own counts (2026-10-15 audit,
  * I13: every page promised "30+ public sources" while its own summary counted, say, 20 advisories
  * and 5 datasets). Phrased as "advisories" and "datasets", never "<n> sources", which validate-seo
- * reads as the site-wide source-count claim.
+ * reads as the site-wide source-count claim. The advisory number is the one the score uses, with
+ * the published total when the formula leaves issuers out ("14 of 20 advisories"), the same two
+ * numbers as the summary's provenance sentence (provenance-copy.ts).
  */
-const metaTails: Record<Lang, (advisories: number, datasets: number) => string> = {
-  en: (a, d) => tail(` Score based on %s, recalculated daily.`, ' and ', a && `${a} ${a === 1 ? 'advisory' : 'advisories'}`, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
-  it: (a, d) => tail(` Punteggio basato su %s, ricalcolato ogni giorno.`, ' e ', a && `${a} ${a === 1 ? 'avviso' : 'avvisi'}`, d && `${d} dataset`),
-  es: (a, d) => tail(` Puntuación basada en %s, recalculada a diario.`, ' y ', a && `${a} ${a === 1 ? 'aviso' : 'avisos'}`, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
-  fr: (a, d) => tail(` Score fondé sur %s, recalculé chaque jour.`, ' et ', a && `${a} avis`, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
-  pt: (a, d) => tail(` Pontuação baseada em %s, recalculada diariamente.`, ' e ', a && `${a} ${a === 1 ? 'alerta' : 'alertas'}`, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
-  zh: (a, d) => tail(`评分基于%s，每日重新计算。`, '和', a && `${a}份旅行警告`, d && `${d}个数据集`),
-  de: (a, d) => tail(` Täglich neu berechnet aus %s.`, ' und ', a && `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
+const metaAdvisories: Record<Lang, (a: number, total: number) => string> = {
+  en: (a, t) => (a < t ? `${a} of ${t} advisories` : `${a} ${a === 1 ? 'advisory' : 'advisories'}`),
+  it: (a, t) => (a < t ? `${a} avvisi su ${t}` : `${a} ${a === 1 ? 'avviso' : 'avvisi'}`),
+  es: (a, t) => (a < t ? `${a} de ${t} avisos` : `${a} ${a === 1 ? 'aviso' : 'avisos'}`),
+  fr: (a, t) => (a < t ? `${a} avis sur ${t}` : `${a} avis`),
+  pt: (a, t) => (a < t ? `${a} de ${t} alertas` : `${a} ${a === 1 ? 'alerta' : 'alertas'}`),
+  zh: (a, t) => (a < t ? `${t}份旅行警告中的${a}份` : `${a}份旅行警告`),
+  de: (a, t) => (a < t ? `${a} von ${t} Reisehinweisen` : `${a} ${a === 1 ? 'Reisehinweis' : 'Reisehinweisen'}`),
+};
+
+const metaTails: Record<Lang, (advisories: string | 0, datasets: number) => string> = {
+  en: (a, d) => tail(` Score based on %s, recalculated daily.`, ' and ', a, d && `${d} ${d === 1 ? 'dataset' : 'datasets'}`),
+  it: (a, d) => tail(` Punteggio basato su %s, ricalcolato ogni giorno.`, ' e ', a, d && `${d} dataset`),
+  es: (a, d) => tail(` Puntuación basada en %s, recalculada a diario.`, ' y ', a, d && `${d} ${d === 1 ? 'conjunto de datos' : 'conjuntos de datos'}`),
+  fr: (a, d) => tail(` Score fondé sur %s, recalculé chaque jour.`, ' et ', a, d && `${d} ${d === 1 ? 'jeu de données' : 'jeux de données'}`),
+  pt: (a, d) => tail(` Pontuação baseada em %s, recalculada diariamente.`, ' e ', a, d && `${d} ${d === 1 ? 'conjunto de dados' : 'conjuntos de dados'}`),
+  zh: (a, d) => tail(`评分基于%s，每日重新计算。`, '和', a, d && `${d}个数据集`),
+  de: (a, d) => tail(` Täglich neu berechnet aus %s.`, ' und ', a, d && `${d} ${d === 1 ? 'Datensatz' : 'Datensätzen'}`),
 };
 
 /** Fills "%s" with the non-empty parts joined by `and`; empty string when there is nothing to count. */
@@ -376,9 +388,10 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
       };
   // Honest cadence (formula v10, SPEC §7): the SCORE is recalculated daily; most of the data
   // behind it is not ("updated daily" claimed the opposite).
-  const { advisoryCount, otherSourceCount } = getProvenanceCounts(country);
+  const { advisoryCount, publishedAdvisoryCount, otherSourceCount } = getProvenanceCounts(country);
   const base = bases[lang];
-  const withTail = base + metaTails[lang](advisoryCount, otherSourceCount);
+  const advisories = advisoryCount > 0 ? metaAdvisories[lang](advisoryCount, publishedAdvisoryCount) : 0;
+  const withTail = base + metaTails[lang](advisories, otherSourceCount);
   return withTail.length <= DESCRIPTION_MAX ? withTail : base;
 }
 

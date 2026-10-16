@@ -11,6 +11,16 @@
  * Pure: no I/O.
  */
 import type { ScoredCountry } from '../pipeline/types';
+import weightsConfig from '../pipeline/config/weights.json';
+
+/**
+ * Issuers whose advisories enter the score, as the engine decides (scoring/engine.ts
+ * advisoryConsensus): a frozen tier in weights.json and not in frozenExcludedSources (broken
+ * parser or zero variance: jp, be, ie, ch, hk, sk, es, ar, cn today).
+ */
+const FORMULA = (weightsConfig as { formulaV9?: { frozenExcludedSources?: string[]; advisoryTiers?: Record<string, number> } }).formulaV9;
+const EXCLUDED_ISSUERS: ReadonlySet<string> = new Set(FORMULA?.frozenExcludedSources ?? []);
+const SCORED_ISSUERS: ReadonlySet<string> = new Set(Object.keys(FORMULA?.advisoryTiers ?? {}));
 
 /** Advisory levels 1..4 present on a place, with the shares the copy needs. */
 export interface AdvisoryConsensus {
@@ -58,4 +68,19 @@ export function getAdvisoryConsensus(country: Pick<ScoredCountry, 'advisories'>)
     majorityReconsiderOrWorse: n > 0 && reconsiderOrWorse * 2 > n,
     majorityAvoid: n > 0 && counts[4] * 2 > n,
   };
+}
+
+/** True when this issuer's advisory enters the score (engine rule: frozen tier, not excluded). */
+export function isScoredIssuer(key: string): boolean {
+  return SCORED_ISSUERS.has(key) && !EXCLUDED_ISSUERS.has(key);
+}
+
+/**
+ * Advisories published for a place vs. advisories that enter its score (2026-10-15 audit, task 5):
+ * the provenance sentence said "combines 13 government advisories" for Micronesia while the
+ * formula uses 10 of them. Meta, summary and FAQ take both numbers from here.
+ */
+export function advisoryCountsForScore(country: Pick<ScoredCountry, 'advisories'>): { published: number; inScore: number } {
+  const entries = advisoryEntries(country);
+  return { published: entries.length, inScore: entries.filter((a) => isScoredIssuer(a.key)).length };
 }
