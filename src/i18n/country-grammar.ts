@@ -457,6 +457,23 @@ export function getSpanishWithArticle(iso3: string, bareName: string): string {
   return article ? `${article} ${bareName}` : bareName;
 }
 
+/** The name as the subject of a singular verb: "el Reino Unido es", "la República Checa tiene",
+ *  but "Países Bajos es", "Islas Caimán tiene" — with its plural article the name would need a
+ *  plural verb ("los Países Bajos son"), and the copy's templates conjugate in the singular, as
+ *  Spanish press does for a country named without its article. */
+export function getSpanishSubject(iso3: string, bareName: string): string {
+  const article = getEsArticle(iso3, bareName);
+  return article === 'el' || article === 'la' ? `${article} ${bareName}` : bareName;
+}
+
+/** "de Japón" | "del Reino Unido" | "de los Países Bajos" | "de las Islas
+ *  Caimán" — "de" contracted with "el" ("el gobierno del Reino Unido"). */
+export function getSpanishDe(iso3: string, bareName: string): string {
+  const article = getEsArticle(iso3, bareName);
+  if (article === 'el') return `del ${bareName}`;
+  return article ? `de ${article} ${bareName}` : `de ${bareName}`;
+}
+
 /** "a Japón" | "al Reino Unido" | "a la República Dominicana" | "a las Islas
  *  Caimán" — "a" contracted with "el". Used after "viajar" in the title/H1. */
 export function getSpanishA(iso3: string, bareName: string): string {

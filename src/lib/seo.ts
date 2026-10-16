@@ -49,6 +49,13 @@ import {
   getGermanNominative,
   isGermanPlural,
   getFrenchPreposition,
+  getFrenchDe,
+  getItalianArticulated,
+  getItalianWithArticle,
+  getSpanishA,
+  getSpanishDe,
+  getSpanishSubject,
+  getSpanishWithArticle,
 } from '../i18n/country-grammar';
 import { getFrenchDefinite, getGermanUeberPhrase } from '../i18n/country-name-forms';
 
@@ -921,6 +928,10 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
     nameFuer: getGermanFuerPhrase(country.iso3, name),
     nameUeber: getGermanUeberPhrase(country.iso3, name),
     namePrep: getFrenchPreposition(country.iso3, name),
+    // Spanish writes the article of "el Reino Unido", "los Países Bajos", "las Islas Caimán".
+    nameEsArt: getSpanishWithArticle(country.iso3, name),
+    nameEsSubj: getSpanishSubject(country.iso3, name),
+    nameEsA: getSpanishA(country.iso3, name),
     deZaehlt: dePlural ? 'zählen' : 'zählt',
     deGilt: dePlural ? 'gelten' : 'gilt',
   };
@@ -1069,21 +1080,56 @@ const ISSUER_NAME_OVERRIDES: Partial<Record<Lang, Record<string, string>>> = {
   de: { hk: 'Hongkong' },
 };
 
+/** ISO3 and bare localized name of an advisory issuer ("us" -> USA, "Stati Uniti"), or null. */
+function issuerPlace(key: string, lang: Lang): { iso3: string; bare: string } | null {
+  const iso3 = getCountryByIso2(key === 'uk' ? 'GB' : key.toUpperCase())?.iso3;
+  if (!iso3) return null;
+  return { iso3, bare: getLocalizedCountryName({ iso3, name: {} }, lang) };
+}
+
 /**
- * An advisory issuer's name as it stands in the A3 sentence: the site's own country name, with the
- * article en/fr/de need after "from"/"dont"/"darunter" ("the United States", "les États-Unis",
- * "die Vereinigten Staaten"); it/es/pt/zh name issuers bare, in lists, as their press does (I19).
+ * An advisory issuer's name as it stands in the A3 sentence: the site's own country name with the
+ * article its language puts before a country in running prose, through the shared grammar helpers
+ * (country-grammar.ts): "the United States", "gli Stati Uniti", "el Reino Unido", "os Estados
+ * Unidos", "les États-Unis", "die Vereinigten Staaten"; places used without one stay bare
+ * ("Taiwan", "Singapore", "Polen"). zh needs no article. (I19, and the 2026-10-15 follow-up: it/es/pt
+ * printed "tra cui Stati Uniti e Regno Unito".)
  */
 function issuerName(key: string, lang: Lang): string {
   const override = ISSUER_NAME_OVERRIDES[lang]?.[key];
   if (override) return override;
-  const iso3 = getCountryByIso2(key === 'uk' ? 'GB' : key.toUpperCase())?.iso3;
-  if (!iso3) return key.toUpperCase();
-  const bare = getLocalizedCountryName({ iso3, name: {} }, lang);
-  if (lang === 'en') return getEnglishCountryPhrase(iso3, bare);
-  if (lang === 'fr') return getFrenchDefinite(iso3, bare);
-  if (lang === 'de') return getGermanNominative(iso3, bare);
-  return bare;
+  const place = issuerPlace(key, lang);
+  if (!place) return key.toUpperCase();
+  const { iso3, bare } = place;
+  switch (lang) {
+    case 'en': return getEnglishCountryPhrase(iso3, bare);
+    case 'it': return getItalianWithArticle(iso3, bare);
+    case 'es': return getSpanishWithArticle(iso3, bare);
+    case 'pt': return getPortugueseWithArticle(iso3, bare);
+    case 'fr': return getFrenchDefinite(iso3, bare);
+    case 'de': return getGermanNominative(iso3, bare);
+    default: return bare;
+  }
+}
+
+/**
+ * The only issuer of a place, as "that of X" where the language needs it: the a3One sentence goes
+ * on with a singular verb about "one government" ("..., che raccomanda"), which "gli Stati Uniti"
+ * or "les États-Unis" would not agree with. it "quello degli Stati Uniti", es "el del Reino
+ * Unido", pt "o dos Estados Unidos", fr "celui des États-Unis"; en/de/zh read well with the name
+ * itself ("the United States, which advises", "Polen; sie empfiehlt", "只有波兰政府").
+ */
+function soleIssuerName(key: string, lang: Lang): string {
+  const place = ISSUER_NAME_OVERRIDES[lang]?.[key] ? null : issuerPlace(key, lang);
+  if (!place) return issuerName(key, lang);
+  const { iso3, bare } = place;
+  switch (lang) {
+    case 'it': return `quello ${getItalianArticulated(iso3, bare, 'di')}`;
+    case 'es': return `el ${getSpanishDe(iso3, bare)}`;
+    case 'pt': return `o ${getPortugueseDe(iso3, bare)}`;
+    case 'fr': return `celui ${getFrenchDe(iso3, bare)}`;
+    default: return issuerName(key, lang);
+  }
 }
 
 /**
@@ -1112,7 +1158,7 @@ function buildAdvisoryAnswer(
   const cap = !grey && consensus.majorityAvoid ? copy.a3Cap : null;
   if (n === 1) {
     const level = entries[0].level as 1 | 2 | 3 | 4;
-    return answer([fill(copy.a3One, { issuer: issuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);
+    return answer([fill(copy.a3One, { issuer: soleIssuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);
   }
 
   const breakdown = buildAdvisorySentence(advisoryLevels(country), lang, nameSlots(lang, country.iso3, bareName));

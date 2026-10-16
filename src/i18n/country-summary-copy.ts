@@ -203,9 +203,9 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
   },
   es: {
     scored:
-      '{name} tiene una puntuación de seguridad de {score}/10 a fecha de {date}, clasificada como {riskLevel}: puesto {rank} de los {total} países evaluados.',
+      '{NameEsSubj} tiene una puntuación de seguridad de {score}/10 a fecha de {date}, clasificada como {riskLevel}: puesto {rank} de los {total} países evaluados.',
     scoredLowConfidence:
-      '{name} tiene una puntuación de seguridad provisional de {score}/10 a fecha de {date}, clasificada de forma preliminar como {riskLevel}: los datos disponibles son limitados, así que tómala como una estimación prudente y no como un veredicto definitivo. Ocupa el puesto {rank} de los {total} países evaluados.',
+      '{NameEsSubj} tiene una puntuación de seguridad provisional de {score}/10 a fecha de {date}, clasificada de forma preliminar como {riskLevel}: los datos disponibles son limitados, así que tómala como una estimación prudente y no como un veredicto definitivo. Ocupa el puesto {rank} de los {total} países evaluados.',
     driverMainRisk: 'El principal riesgo está en el área de {pillar} ({score}/10), sobre todo por {topic}: {fact}.',
     driverConcern: 'La principal preocupación está en el área de {pillar} ({score}/10), sobre todo por {topic}: {fact}.',
     driverWeakest: 'El punto más débil es la gobernanza ({score}/10); pesa sobre todo {topic}: {fact}.',
@@ -233,10 +233,10 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     pillarArea: { conflict: 'conflictos', crime: 'criminalidad', health: 'salud', governance: 'gobernanza', environment: 'riesgos naturales' },
     adviceSubject: { one: 'el único gobierno que publica un aviso', all: 'los {n} gobiernos', some: '{k} de los {n} gobiernos' },
     adviceMixed: 'aconsejan reconsiderar el viaje o lo desaconsejan por completo',
-    advisoryNone: 'Ningún gobierno de nuestros datos publica avisos para quien viaja a {name}.',
-    advisoryOne: 'Solo un gobierno publica avisos para quien viaja a {name}, y {phrase}.',
-    advisoryAll: 'Los {n} gobiernos que publican avisos para quien viaja a {name} {phrase}.',
-    advisoryMany: 'De los {n} gobiernos que publican avisos para quien viaja a {name}, {breakdown}.',
+    advisoryNone: 'Ningún gobierno de nuestros datos publica avisos para quien viaja {nameEsA}.',
+    advisoryOne: 'Solo un gobierno publica avisos para quien viaja {nameEsA}, y {phrase}.',
+    advisoryAll: 'Los {n} gobiernos que publican avisos para quien viaja {nameEsA} {phrase}.',
+    advisoryMany: 'De los {n} gobiernos que publican avisos para quien viaja {nameEsA}, {breakdown}.',
     levelPhrases: {
       1: ['recomienda las precauciones habituales', 'recomiendan las precauciones habituales'],
       2: ['recomienda extremar la precaución', 'recomiendan extremar la precaución'],

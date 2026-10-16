@@ -17,14 +17,18 @@
  *  - country names never stand bare after a preposition or as a subject where the language needs an
  *    article: it uses the locative ({nameIn}), fr the au/en/aux phrase ({namePrep}), pt the
  *    contracted forms ({nameDe} {nameA} {nameArt}), de the nominative/directional/für/über forms
- *    (I38 I39 I40 I48); en avoids possessives on plural names ("the Philippines's", I65).
+ *    (I38 I39 I40 I48), es "a"/article/subject forms ({nameEsA} "al Reino Unido", {nameEsArt}
+ *    "los Países Bajos", {nameEsSubj} "el Reino Unido" / "Países Bajos" before a singular verb);
+ *    en avoids possessives on plural names ("the Philippines's", I65).
  *
  * Placeholders: {name} (en: with "the" where needed; other locales: bare) and the locale phrases
  * above; {year} {monthYear} {score} {riskLevel} (overall score, inline band label); {advice} /
  * {Advice} (advisory-majority clause, lowercase / capitalised); {pillar} {pillarScore} (a pillar in
  * the summary copy's `pillarArea` form, with its /10 value); {low} {lowScore} {high} {highScore}
  * (range); {topic} {fact} (indicator driver, src/i18n/indicator-copy.ts); {sentence} (the summary's
- * advisory breakdown); {issuer} {issuers} {k} {level} {phrase} (advisory answer).
+ * advisory breakdown); {issuer} {issuers} {k} {level} {phrase} (advisory answer; a lone {issuer}
+ * is "quello degli Stati Uniti" / "el del Reino Unido" / "o dos Estados Unidos" / "celui des
+ * États-Unis" in it/es/pt/fr, so the verb after it agrees with "one government").
  */
 import type { Lang } from '../i18n/ui';
 import type { PillarName } from '../pipeline/types';
@@ -251,27 +255,27 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     a3NoneGrey: 'A {monthYear}, nessun governo nei nostri dati pubblica avvisi per chi viaggia {nameIn}. Verifica le indicazioni più recenti del tuo governo prima di partire.',
   },
   es: {
-    q1: '¿Es seguro viajar a {name} en {year}?',
-    q2: '¿Cuál es el mayor riesgo al viajar a {name}?',
-    q3: '¿Qué dicen los avisos de viaje gubernamentales sobre {name}?',
+    q1: '¿Es seguro viajar {nameEsA} en {year}?',
+    q2: '¿Cuál es el mayor riesgo al viajar {nameEsA}?',
+    q3: '¿Qué dicen los avisos de viaje gubernamentales sobre {nameEsArt}?',
     a1Verdict: {
-      excellent: 'Sí — {name} es uno de los destinos más seguros de nuestro índice: a fecha de {monthYear} obtiene {score}/10, clasificado como {riskLevel}.',
-      good: 'Sí, en general — {name} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
-      moderate: 'Sí, con cierta precaución — {name} es un destino razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
-      high_caution: 'Solo para viajeros expertos — {name} presenta un riesgo considerable: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
-      danger: 'No — {name} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones.',
+      excellent: 'Sí — {nameEsSubj} es uno de los destinos más seguros de nuestro índice: a fecha de {monthYear} obtiene {score}/10, clasificado como {riskLevel}.',
+      good: 'Sí, en general — {nameEsSubj} se considera un destino seguro: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
+      moderate: 'Sí, con cierta precaución — {nameEsSubj} es un destino razonablemente seguro para la mayoría de los viajeros: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
+      high_caution: 'Solo para viajeros expertos — {nameEsSubj} presenta un riesgo considerable: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}.',
+      danger: 'No — {nameEsSubj} es actualmente un destino de alto riesgo: a fecha de {monthYear} obtiene {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}, y viajar allí exige extremar las precauciones.',
     },
-    a1VerdictLowConfidence: 'Los datos disponibles para {name} son escasos, así que considera esta puntuación con cautela: a fecha de {monthYear} se sitúa en {score}/10, clasificada de forma provisional como {riskLevel}, basada sobre todo en patrones regionales y no en datos específicos del país.',
-    a1VerdictAdvisories: 'A fecha de {monthYear}, {name} obtiene {score}/10, clasificado como {riskLevel}, pero {advice}: lee sus avisos más abajo antes de decidir.',
-    a1VerdictAvoid: 'No — {advice}, y a fecha de {monthYear} {name} obtiene solo {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}. Desaconsejamos viajar allí.',
+    a1VerdictLowConfidence: 'Los datos disponibles para {nameEsArt} son escasos, así que considera esta puntuación con cautela: a fecha de {monthYear} se sitúa en {score}/10, clasificada de forma provisional como {riskLevel}, basada sobre todo en patrones regionales y no en datos específicos del país.',
+    a1VerdictAdvisories: 'A fecha de {monthYear}, {nameEsSubj} obtiene {score}/10, clasificado como {riskLevel}, pero {advice}: lee sus avisos más abajo antes de decidir.',
+    a1VerdictAvoid: 'No — {advice}, y a fecha de {monthYear} {nameEsSubj} obtiene solo {score}/10 en nuestro índice de seguridad, clasificado como {riskLevel}. Desaconsejamos viajar allí.',
     a1Formula: 'La puntuación combina cinco áreas (conflictos 30%, criminalidad 25%, salud 20%, gobernanza 15%, riesgos naturales 10%) con los avisos de viaje de los gobiernos: un área débil la baja más de lo que una fuerte la sube y, cuando faltan datos, usamos una estimación regional prudente. Los detalles están en nuestra página de metodología.',
     a2: {
-      mainRisk: 'Para quien viaja a {name}, el principal riesgo está en el área de {pillar}, con {pillarScore}/10.',
-      concern: 'Para quien viaja a {name}, la principal preocupación está en el área de {pillar}, con {pillarScore}/10.',
-      weakest: 'Para quien viaja a {name} no destaca ningún riesgo directo: conflictos, criminalidad, salud y riesgos naturales obtienen al menos 7/10, y el área más débil es la gobernanza, con {pillarScore}/10.',
-      weakestMeasured: 'Entre las áreas medidas con datos suficientes, ninguna indica un riesgo directo para quien viaja a {name}: la más débil es la gobernanza, con {pillarScore}/10.',
-      allGood: 'Ningún área indica un riesgo significativo para quien viaja a {name}: las cinco obtienen al menos 7/10.',
-      allGoodMeasured: 'Ningún área medida con datos suficientes indica un riesgo significativo para quien viaja a {name}: todas obtienen al menos 7/10.',
+      mainRisk: 'Para quien viaja {nameEsA}, el principal riesgo está en el área de {pillar}, con {pillarScore}/10.',
+      concern: 'Para quien viaja {nameEsA}, la principal preocupación está en el área de {pillar}, con {pillarScore}/10.',
+      weakest: 'Para quien viaja {nameEsA} no destaca ningún riesgo directo: conflictos, criminalidad, salud y riesgos naturales obtienen al menos 7/10, y el área más débil es la gobernanza, con {pillarScore}/10.',
+      weakestMeasured: 'Entre las áreas medidas con datos suficientes, ninguna indica un riesgo directo para quien viaja {nameEsA}: la más débil es la gobernanza, con {pillarScore}/10.',
+      allGood: 'Ningún área indica un riesgo significativo para quien viaja {nameEsA}: las cinco obtienen al menos 7/10.',
+      allGoodMeasured: 'Ningún área medida con datos suficientes indica un riesgo significativo para quien viaja {nameEsA}: todas obtienen al menos 7/10.',
     },
     a2Range: 'Van desde la de {low} ({lowScore}/10) hasta la de {high} ({highScore}/10).',
     a2Driver: 'El factor principal es {topic}: {fact}.',
@@ -287,7 +291,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
       environment: 'Esta área registra la exposición a riesgos naturales como tormentas, inundaciones y terremotos, así como el grado de preparación del país para responder a ellos.',
     },
     a3AsOf: 'A fecha de {monthYear}, {sentence}',
-    a3One: 'A fecha de {monthYear}, solo un gobierno de nuestros datos publica avisos para quien viaja a {name}: {issuer}, que {phrase}.',
+    a3One: 'A fecha de {monthYear}, solo un gobierno de nuestros datos publica avisos para quien viaja {nameEsA}: {issuer}, que {phrase}.',
     a3Strictest: {
       one: 'La advertencia más severa, «{level}», procede de un solo gobierno: {issuers}.',
       few: 'La advertencia más severa, «{level}», procede de {k} gobiernos: {issuers}.',
@@ -295,7 +299,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Ningún gobierno va más allá de recomendar extremar la precaución.',
     a3Cap: 'Estas advertencias pesan mucho en nuestro índice: como la mayoría de los gobiernos desaconseja todo viaje, la puntuación queda muy por debajo de lo que darían las cinco áreas por sí solas.',
-    a3None: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja a {name}. Basa tu decisión en las puntuaciones de los pilares de arriba y consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
+    a3None: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja {nameEsA}. Basa tu decisión en las puntuaciones de los pilares de arriba y consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
     advisoryCountNoun: {
       one: 'un aviso de viaje gubernamental',
       other: '{n} avisos de viaje gubernamentales',
@@ -303,7 +307,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     advisoryCountNounPartial: '{n} de los {total} avisos de viaje gubernamentales',
     a1Grey: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Lee los avisos gubernamentales más abajo y consulta las recomendaciones de tu gobierno antes de viajar.',
     a1GreyNoAdvisories: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Tampoco hay avisos gubernamentales: consulta las recomendaciones de tu gobierno antes de viajar.',
-    a3NoneGrey: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja a {name}. Consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
+    a3NoneGrey: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja {nameEsA}. Consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
   },
   fr: {
     // {namePrep} is the full au/en/aux/à phrase (getFrenchPreposition): the answers never put the

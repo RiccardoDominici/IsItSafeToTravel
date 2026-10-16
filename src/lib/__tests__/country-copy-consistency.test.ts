@@ -423,3 +423,42 @@ describe('the advisory count in the provenance sentence is the one the score use
     assert.match(summary(c, 'en', 'Xland'), /combines 1 of the 4 government travel advisories/);
   });
 });
+
+describe('advisory issuers and Spanish place names carry their articles (task 6, 2026-10-15)', () => {
+  // Two governments at "reconsider travel" above an "increased caution" majority: the strictest
+  // issuers are named.
+  const twoStrict = () =>
+    country({ iso3: 'ARM', score: 6.4, pillars: {}, advisories: { us: 3, uk: 3, ca: 2, au: 2, de: 2, fr: 2, nl: 2, at: 1 } });
+
+  it('names the strictest issuers with the article of running prose in it, es, pt, fr, de', () => {
+    const a3 = (lang: Lang) => faq(twoStrict(), lang)[2].answer;
+    assert.match(a3('it'), /viene da 2 governi: gli Stati Uniti e il Regno Unito\./);
+    assert.match(a3('es'), /procede de 2 gobiernos: Estados Unidos y el Reino Unido\./);
+    assert.match(a3('pt'), /vem de 2 governos: os Estados Unidos e o Reino Unido\./);
+    assert.match(a3('fr'), /émane de 2 gouvernements : les États-Unis et le Royaume-Uni\./);
+    assert.match(a3('de'), /sprechen 2 Regierungen aus: die Vereinigten Staaten und das Vereinigte Königreich\./);
+  });
+
+  it('a single issuer agrees with "one government" whatever its number', () => {
+    const one = country({ iso3: 'ALA', score: 7.5, pillars: {}, advisories: { us: 1 } });
+    const a3 = (lang: Lang) => faq(one, lang)[2].answer;
+    assert.match(a3('it'), /: quello degli Stati Uniti, che raccomanda/);
+    assert.match(a3('es'), /: el de Estados Unidos, que recomienda/);
+    assert.match(a3('pt'), /: o dos Estados Unidos, que recomenda/);
+    assert.match(a3('fr'), / : celui des États-Unis, qui recommande/);
+    const uk = country({ iso3: 'IOT', score: 7.5, pillars: {}, advisories: { uk: 1 } });
+    assert.match(faq(uk, 'es')[2].answer, /: el del Reino Unido, que recomienda/);
+    assert.match(faq(uk, 'it')[2].answer, /: quello del Regno Unito, che raccomanda/);
+  });
+
+  it('Spanish keeps the article after a preposition and a singular verb in subject position', () => {
+    const gbr = country({ iso3: 'GBR', score: 8.4, pillars: {}, advisories: { us: 1, ca: 2 } });
+    assert.match(summary(gbr, 'es', 'Reino Unido'), /^El Reino Unido tiene una puntuación/);
+    assert.match(summary(gbr, 'es', 'Reino Unido'), /para quien viaja al Reino Unido/);
+    assert.match(getCountryFaqData(gbr, 'es')[0].question, /^¿Es seguro viajar al Reino Unido en \d{4}\?$/);
+    const nld = country({ iso3: 'NLD', score: 8.4, pillars: {}, advisories: { us: 1, ca: 2 } });
+    assert.match(summary(nld, 'es', 'Países Bajos'), /^Países Bajos tiene una puntuación/);
+    assert.match(summary(nld, 'es', 'Países Bajos'), /para quien viaja a los Países Bajos/);
+    assert.doesNotMatch(faq(nld, 'es').map((qa) => qa.answer).join(' '), /los Países Bajos (es|obtiene|tiene)\b/);
+  });
+});

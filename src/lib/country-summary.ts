@@ -30,6 +30,8 @@ import {
   getItalianLocative,
   getPortugueseDe,
   getPortuguesePhrase,
+  getSpanishA,
+  getSpanishSubject,
 } from '../i18n/country-grammar';
 import { getInlineRiskLabel } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
@@ -95,6 +97,11 @@ export function nameSlots(lang: Lang, iso3: string, name: string): Record<string
     nameA: getPortuguesePhrase(iso3, name, 'a'),
     nameDe: getPortugueseDe(iso3, name),
     nameFuer: getGermanFuerPhrase(iso3, name),
+    // Spanish keeps the article of "el Reino Unido", "las Islas Caimán": "viaja al Reino Unido",
+    // and capitalised where the name opens the summary ("El Reino Unido tiene ...", but "Países
+    // Bajos tiene": getSpanishSubject keeps a singular verb correct).
+    nameEsA: getSpanishA(iso3, name),
+    NameEsSubj: capitalizeFirst(getSpanishSubject(iso3, name)),
   };
 }
 
