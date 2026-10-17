@@ -173,11 +173,14 @@ const JP_MIN_MAPPED = 180;
  */
 const JP_DISCOVERY_ANCHORS: Record<string, number> = {
   UKR: 4, IRQ: 4, IRN: 4,
-  FRA: 1, USA: 1, SGP: 1, AUS: 1, CAN: 1, GBR: 1, VAT: 1, CHN: 1,
+  FRA: 1, USA: 1, SGP: 1, AUS: 1, CAN: 1, GBR: 1, VAT: 1,
+  // MEX/ECU stay 2: only named cities/provinces are higher, capped at 2 (regional-cap doctrine).
   MEX: 2, ECU: 2,
-  BHR: 2, XKX: 2,
-  // MOFA 3 "do not travel" on the catch-all covering Moscow/Minsk: unified 4 since the
-  // 2026-10-15 one-step shift (was 3).
+  // Catch-all levels moved by the 2026-10-15 one-step shift (first live run 2026-10-17):
+  // MOFA 1 on China's catch-all is unified 2 (was 1), MOFA 2 on Bahrain's and Kosovo's is
+  // unified 3 (was 2), MOFA 3 "do not travel" on the catch-all covering Moscow/Minsk is 4 (was 3).
+  CHN: 2,
+  BHR: 3, XKX: 3,
   RUS: 4, BLR: 4,
 };
 
