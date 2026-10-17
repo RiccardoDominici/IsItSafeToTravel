@@ -82,8 +82,14 @@ export interface CountryFaqCopy {
   a3Strictest: { one: string; few: string; many: string };
   /** Mix of level 1 and 2 only: nobody goes beyond increased caution. */
   a3NoneAbove2: string;
-  /** Scored place where a strict majority advises against all travel. */
+  /** Scored place where a strict majority (not all) of two or more governments advises against all travel. */
   a3Cap: string;
+  /**
+   * Scored place where EVERY government (two or more) advises against all travel: "a majority" read
+   * wrong right after "all 21 governments advise against all travel" (Afghanistan, Yemen; 2026-10-17
+   * re-check, I14). A single advisory gets no such sentence: one government barely moves the score.
+   */
+  a3CapAll: string;
   /** No advisory on record (scored place). */
   a3None: string;
   /** Singular/plural advisory-count noun phrase; {n} is the count (provenance-copy.ts). */
@@ -186,6 +192,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'No government advises more than increased caution.',
     a3Cap: 'These warnings weigh heavily in our index: because a majority of governments advise against all travel, the score sits well below what the five areas alone would give.',
+    a3CapAll: 'These warnings weigh heavily in our index: because every one of these governments advises against all travel, the score sits well below what the five areas alone would give.',
     a3None: 'As of {monthYear}, no government in our dataset publishes a travel advisory for {name}. Base your decision on the pillar scores above and check your own government’s latest guidance before you travel.',
     advisoryCountNoun: {
       one: 'one government travel advisory',
@@ -244,6 +251,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Nessun governo va oltre l\'invito a una maggiore prudenza.',
     a3Cap: 'Questi avvisi pesano molto sul nostro indice: poiché la maggioranza dei governi sconsiglia qualsiasi viaggio, il punteggio è ben al di sotto di quanto darebbero le sole cinque aree.',
+    a3CapAll: 'Questi avvisi pesano molto sul nostro indice: poiché tutti questi governi sconsigliano qualsiasi viaggio, il punteggio è ben al di sotto di quanto darebbero le sole cinque aree.',
     a3None: 'A {monthYear}, nessun governo nei nostri dati pubblica avvisi per chi viaggia {nameIn}. Basa la tua decisione sui punteggi dei pilastri qui sopra e verifica le indicazioni più recenti del tuo governo prima di partire.',
     advisoryCountNoun: {
       one: 'un avviso di viaggio governativo',
@@ -299,6 +307,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Ningún gobierno va más allá de recomendar extremar la precaución.',
     a3Cap: 'Estas advertencias pesan mucho en nuestro índice: como la mayoría de los gobiernos desaconseja todo viaje, la puntuación queda muy por debajo de lo que darían las cinco áreas por sí solas.',
+    a3CapAll: 'Estas advertencias pesan mucho en nuestro índice: como todos estos gobiernos desaconsejan todo viaje, la puntuación queda muy por debajo de lo que darían las cinco áreas por sí solas.',
     a3None: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja {nameEsA}. Basa tu decisión en las puntuaciones de los pilares de arriba y consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
     advisoryCountNoun: {
       one: 'un aviso de viaje gubernamental',
@@ -356,6 +365,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Aucun gouvernement ne va au-delà d’une vigilance renforcée.',
     a3Cap: `Ces avertissements pèsent lourd dans notre indice${NB}: comme la majorité des gouvernements déconseillent tout voyage, le score est nettement inférieur à ce que donneraient les cinq domaines seuls.`,
+    a3CapAll: `Ces avertissements pèsent lourd dans notre indice${NB}: comme tous ces gouvernements déconseillent tout voyage, le score est nettement inférieur à ce que donneraient les cinq domaines seuls.`,
     a3None: 'En {monthYear}, aucun gouvernement de nos données ne publie de conseils aux voyageurs se rendant {namePrep}. Fondez votre décision sur les scores des piliers ci-dessus et vérifiez les dernières recommandations de votre propre gouvernement avant de partir.',
     advisoryCountNoun: {
       one: 'un avis aux voyageurs officiel',
@@ -414,6 +424,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Nenhum governo vai além de recomendar cautela redobrada.',
     a3Cap: 'Esses alertas pesam muito no nosso índice: como a maioria dos governos desaconselha qualquer viagem, a pontuação fica bem abaixo do que as cinco áreas dariam por si sós.',
+    a3CapAll: 'Esses alertas pesam muito no nosso índice: como todos esses governos desaconselham qualquer viagem, a pontuação fica bem abaixo do que as cinco áreas dariam por si sós.',
     a3None: 'Em {monthYear}, nenhum governo em nossos dados publica alertas para quem viaja {nameA}. Baseie sua decisão nas pontuações dos pilares acima e verifique as orientações mais recentes do seu próprio governo antes de viajar.',
     advisoryCountNoun: {
       one: 'um aviso de viagem governamental',
@@ -470,6 +481,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: '没有任何政府的建议超过“提高警惕”。',
     a3Cap: '这些警告在我们的指数中权重很高：由于多数政府建议切勿前往，总分明显低于仅按五个方面计算的分数。',
+    a3CapAll: '这些警告在我们的指数中权重很高：由于上述政府均建议切勿前往，总分明显低于仅按五个方面计算的分数。',
     a3None: '截至{monthYear}，我们的数据中没有任何政府为{name}发布旅行警告。请参考上方各方面的得分，并在出行前查阅您所在国家政府的最新指引。',
     advisoryCountNoun: {
       one: '1条政府旅行警告',
@@ -532,6 +544,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     a3NoneAbove2: 'Keine Regierung geht über erhöhte Vorsicht hinaus.',
     a3Cap: 'Diese Warnungen fallen in unserem Index stark ins Gewicht: Weil die Mehrheit der Regierungen von allen Reisen abrät, liegt der Wert deutlich unter dem, was die fünf Bereiche allein ergäben.',
+    a3CapAll: 'Diese Warnungen fallen in unserem Index stark ins Gewicht: Weil alle diese Regierungen von allen Reisen abraten, liegt der Wert deutlich unter dem, was die fünf Bereiche allein ergäben.',
     a3None: 'Stand {monthYear} veröffentlicht keine Regierung in unseren Daten Reisehinweise {nameFuer}. Stützen Sie Ihre Entscheidung auf die Säulenwerte oben und prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung.',
     advisoryCountNoun: {
       one: 'einen staatlichen Reisehinweis',

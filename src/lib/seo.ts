@@ -354,7 +354,7 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
     ? labels[focus.focus.name]
     : focus.focusTieExact
       ? `${labels[focus.focus.name]}${META_AND[lang]}${labels[tie.name]}`
-      : `${labels[focus.focus.name]} (${value})${META_AND[lang]}${labels[tie.name]}`;
+      : `${labels[focus.focus.name]}${META_VALUE[lang](value)}${META_AND[lang]}${labels[tie.name]}`;
   const shownValue = tie && !focus.focusTieExact ? formatTenths(tie.value, lang) : value;
   // Estimates and "No data" bars both make the claim about the MEASURED areas only.
   const unmeasured = [...focus.lowerEstimates, ...focus.noData];
@@ -408,6 +408,21 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
 
 /** "crime and health" in the meta description's tie case. */
 const META_AND: Record<Lang, string> = { en: ' and ', it: ' e ', es: ' y ', fr: ' et ', pt: ' e ', zh: '和', de: ' und ' };
+
+/**
+ * The first value of a near-tie, written like the frame writes the second: zh frames use
+ * full-width brackets and 分 ("自然灾害（6.4分）和健康（6.6分）"); the ASCII " (6.4)" mixed both
+ * styles in one sentence on 21 pages (2026-10-17 re-check).
+ */
+const META_VALUE: Record<Lang, (v: string) => string> = {
+  en: (v) => ` (${v})`,
+  it: (v) => ` (${v})`,
+  es: (v) => ` (${v})`,
+  fr: (v) => ` (${v})`,
+  pt: (v) => ` (${v})`,
+  zh: (v) => `（${v}分）`,
+  de: (v) => ` (${v})`,
+};
 
 /**
  * Build JSON-LD structured data for a country detail page.
@@ -1160,7 +1175,8 @@ function buildAdvisoryAnswer(
   const { n, counts, modal, max } = consensus;
   if (n === 0) return answer([fill(grey ? copy.a3NoneGrey : copy.a3None)]);
 
-  const cap = !grey && consensus.majorityAvoid ? copy.a3Cap : null;
+  // Two or more governments only (a single advisory barely moves the score), and "all" when they agree.
+  const cap = !grey && consensus.majorityAvoid && n >= 2 ? (counts[4] === n ? copy.a3CapAll : copy.a3Cap) : null;
   if (n === 1) {
     const level = entries[0].level as 1 | 2 | 3 | 4;
     return answer([fill(copy.a3One, { issuer: soleIssuerName(entries[0].key, lang), phrase: summaryCopy.levelPhrases[level][0] }), cap]);

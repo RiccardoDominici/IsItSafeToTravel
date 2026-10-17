@@ -41,6 +41,10 @@ export type IndicatorScale =
   | 'deaths' // count of conflict deaths in the data year
   | 'gpi' // Global Peace Index score, 1-5, lower is better
   | 'inform' // INFORM risk score, 0-10, higher is worse
+  // INFORM natural-hazard exposure, which formula v10.1 scores together with INFORM's lack of coping
+  // capacity (an engine input, not a listed row): the note says so, or Mexico's bar (5.6) looked
+  // unrelated to its listed exposure (6.5/10) (2026-10-17 re-check).
+  | 'informNatural'
   | 'vdemUp' // V-Dem index 0-1, higher is better
   | 'vdemDown' // V-Dem index 0-1, lower is better
   | 'vdemLatent' // V-Dem measurement-model score, about -4..+4, higher is better
@@ -84,6 +88,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['conflict death', 'conflict deaths'],
       gpi: 'GPI scale 1–5, lower is better',
       inform: 'INFORM risk, higher is worse',
+      informNatural: 'INFORM risk, higher is worse; scored together with how well the country copes',
       vdemUp: 'scale 0–1, higher is better',
       vdemDown: 'scale 0–1, lower is better',
       vdemLatent: 'scale about −4 to +4, higher is better',
@@ -131,6 +136,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['vittima di conflitti armati', 'vittime di conflitti armati'],
       gpi: 'scala GPI da 1 a 5, più basso è meglio',
       inform: 'rischio INFORM, più alto è peggio',
+      informNatural: 'rischio INFORM, più alto è peggio; valutato insieme alla capacità del paese di farvi fronte',
       vdemUp: 'scala da 0 a 1, più alto è meglio',
       vdemDown: 'scala da 0 a 1, più basso è meglio',
       vdemLatent: 'scala da circa −4 a +4, più alto è meglio',
@@ -151,7 +157,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       vdem_gov_effectiveness: 'una pubblica amministrazione poco imparziale',
       inform_natural: "l'esposizione a terremoti, alluvioni e tempeste",
       reliefweb_active_disasters: "l'impatto dei disastri naturali in corso",
-      gdacs_disaster_alerts: 'i disastri naturali recenti',
+      gdacs_disaster_alerts: "l'impatto dei disastri naturali recenti",
     },
     facts: {
       wb_homicide: '{v} omicidi ogni 100.000 abitanti (Banca Mondiale, {y})',
@@ -178,6 +184,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['muerte en conflictos armados', 'muertes en conflictos armados'],
       gpi: 'escala GPI de 1 a 5, cuanto más bajo, mejor',
       inform: 'riesgo INFORM, cuanto más alto, peor',
+      informNatural: 'riesgo INFORM, cuanto más alto, peor; se puntúa junto con la capacidad del país para hacerles frente',
       vdemUp: 'escala de 0 a 1, cuanto más alto, mejor',
       vdemDown: 'escala de 0 a 1, cuanto más bajo, mejor',
       vdemLatent: 'escala de −4 a +4 aprox., cuanto más alto, mejor',
@@ -198,7 +205,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       vdem_gov_effectiveness: 'una administración pública poco imparcial',
       inform_natural: 'la exposición a terremotos, inundaciones y tormentas',
       reliefweb_active_disasters: 'el impacto de desastres naturales en curso',
-      gdacs_disaster_alerts: 'los desastres naturales recientes',
+      gdacs_disaster_alerts: 'el impacto de desastres naturales recientes',
     },
     facts: {
       wb_homicide: '{v} homicidios por cada 100.000 habitantes (Banco Mundial, {y})',
@@ -225,6 +232,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['mort liée aux conflits armés', 'morts liées aux conflits armés'],
       gpi: 'échelle GPI de 1 à 5, plus bas = mieux',
       inform: 'risque INFORM, plus haut = pire',
+      informNatural: 'risque INFORM, plus haut = pire\u202f; noté avec la capacité du pays à y faire face',
       vdemUp: 'échelle de 0 à 1, plus haut = mieux',
       vdemDown: 'échelle de 0 à 1, plus bas = mieux',
       vdemLatent: 'échelle d’environ −4 à +4, plus haut = mieux',
@@ -245,7 +253,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       vdem_gov_effectiveness: 'une administration publique peu impartiale',
       inform_natural: 'l’exposition aux séismes, inondations et tempêtes',
       reliefweb_active_disasters: 'l’impact des catastrophes naturelles en cours',
-      gdacs_disaster_alerts: 'les catastrophes naturelles récentes',
+      gdacs_disaster_alerts: 'l’impact des catastrophes naturelles récentes',
     },
     facts: {
       wb_homicide: '{v} homicides pour 100 000 habitants (Banque mondiale, {y})',
@@ -272,6 +280,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['morte em conflitos armados', 'mortes em conflitos armados'],
       gpi: 'escala GPI de 1 a 5, quanto menor, melhor',
       inform: 'risco INFORM, quanto maior, pior',
+      informNatural: 'risco INFORM, quanto maior, pior; pontuado junto com a capacidade do país de enfrentá-los',
       vdemUp: 'escala de 0 a 1, quanto maior, melhor',
       vdemDown: 'escala de 0 a 1, quanto menor, melhor',
       vdemLatent: 'escala de cerca de −4 a +4, quanto maior, melhor',
@@ -292,7 +301,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       vdem_gov_effectiveness: 'uma administração pública pouco imparcial',
       inform_natural: 'a exposição a terremotos, enchentes e tempestades',
       reliefweb_active_disasters: 'o impacto de desastres naturais em andamento',
-      gdacs_disaster_alerts: 'os desastres naturais recentes',
+      gdacs_disaster_alerts: 'o impacto de desastres naturais recentes',
     },
     facts: {
       wb_homicide: '{v} homicídios por 100 mil habitantes (Banco Mundial, {y})',
@@ -319,6 +328,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: '冲突死亡人数',
       gpi: 'GPI 1–5分制，越低越好',
       inform: 'INFORM 风险，越高越差',
+      informNatural: 'INFORM 风险，越高越差；评分时结合该国的应对能力',
       vdemUp: '0–1分制，越高越好',
       vdemDown: '0–1分制，越低越好',
       vdemLatent: '约−4至+4分，越高越好',
@@ -366,6 +376,7 @@ export const indicatorCopy: Record<Lang, IndicatorCopy> = {
       deaths: ['Konflikttoter', 'Konflikttote'],
       gpi: 'GPI-Skala 1–5, niedriger ist besser',
       inform: 'INFORM-Risiko, höher ist schlechter',
+      informNatural: 'INFORM-Risiko, höher ist schlechter; bewertet zusammen mit der Bewältigungskapazität des Landes',
       vdemUp: 'Skala 0–1, höher ist besser',
       vdemDown: 'Skala 0–1, niedriger ist besser',
       vdemLatent: 'Skala etwa −4 bis +4, höher ist besser',

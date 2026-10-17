@@ -12,7 +12,10 @@ import { buildCountryFaqJsonLd, buildCountryMetaDescription, getCountryFaqData }
 import { buildCountrySummary } from '../country-summary';
 import { getAdvisoryConsensus } from '../advisory-consensus';
 import { selectPillarFocus } from '../pillar-focus';
-import { describeDriver, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { describeDriver, formatIndicatorValue, selectBadDriver, worldBankLagNote } from '../indicator-display';
+import { getHeroVerdict } from '../band-copy';
+import { indicatorCopy } from '../../i18n/indicator-copy';
+import { greySourceItems } from '../../i18n/grey-copy';
 import { formatNumber } from '../display-number';
 import { buildBestSentence } from '../pillar-narrative';
 
@@ -555,5 +558,80 @@ describe('a pillar whose bar reads "No data" has no number in the text (task 7, 
     assert.equal(focus.allFiveAtLeast7, false);
     assert.deepEqual(focus.noData.map((p) => p.name).sort(), ['environment', 'health']);
     assert.doesNotMatch(buildCountryMetaDescription(taiwan(), 'en'), /All five areas/);
+  });
+});
+
+describe('2026-10-17 re-check of the consistency audit', () => {
+  it('never quotes a "Country context" indicator as the driver (V-Dem corruption, Bulgaria)', () => {
+    const governance = {
+      score: 0.51,
+      indicators: [
+        ind('vdem_rule_of_law', 0.56, 0.56, 'vdem', 2025),
+        ind('inform_governance', 5.5, 0.45, 'inform', 2026),
+        ind('vdem_corruption_control', 0.64, 0.36, 'vdem', 2025),
+      ],
+    };
+    const c = country({
+      iso3: 'BGR',
+      score: 8.1,
+      pillars: { governance, conflict: { score: 0.87 }, crime: { score: 0.82 }, health: { score: 0.86 }, environment: { score: 0.75 } },
+      advisories: advisoriesOf({ 1: 18, 2: 2 }),
+    });
+    assert.equal(selectBadDriver(c.pillars.find((p) => p.name === 'governance')!)?.name, 'inform_governance');
+    for (const lang of LANGS) assert.doesNotMatch(summary(c, lang, 'Bulgaria'), /V-Dem.*(corru|腐败|Korruption)/i, lang);
+  });
+
+  it('says "all of these governments", not "a majority", when every one advises against all travel', () => {
+    const all = (c: ScoredCountry, lang: Lang) => faq(c, lang).map((qa) => qa.answer).join(' ');
+    assert.match(all(afghanistan(), 'en'), /because every one of these governments advises against all travel/);
+    assert.match(all(afghanistan(), 'es'), /como todos estos gobiernos desaconsejan todo viaje/);
+    assert.doesNotMatch(all(afghanistan(), 'es'), /la mayoría de los gobiernos desaconseja/);
+    assert.match(all(afghanistan(), 'zh'), /由于上述政府均建议切勿前往/);
+    const split = country({ iso3: 'BLR', score: 5.4, pillars: {}, advisories: advisoriesOf({ 4: 13, 3: 3, 2: 2 }) });
+    assert.match(all(split, 'en'), /because a majority of governments advise against all travel/);
+  });
+
+  it('gives a single advisory no "weighs heavily" sentence: one government barely moves the score', () => {
+    const one = country({ iso3: 'XXX', score: 5.2, pillars: {}, advisories: { us: 4 } });
+    assert.doesNotMatch(faq(one, 'en').map((qa) => qa.answer).join(' '), /weigh heavily/);
+  });
+
+  it('puts "Not recommended" on the hero wherever the FAQ answers "No" (Belarus 5.4)', () => {
+    const belarus = { advisories: country({ iso3: 'BLR', score: 5.4, pillars: {}, advisories: advisoriesOf({ 4: 13, 3: 3, 2: 2 }) }).advisories };
+    assert.deepEqual(getHeroVerdict(5.4, belarus, 'en'), { band: 'danger', badge: 'Not recommended' });
+    assert.deepEqual(getHeroVerdict(5.4, belarus, 'de'), { band: 'danger', badge: 'Nicht empfohlen' });
+    const reconsider = { advisories: advisoriesOf({ 3: 10, 2: 8 }) } as Pick<ScoredCountry, 'advisories'>;
+    assert.equal(getHeroVerdict(5.4, reconsider, 'en').band, 'high_caution');
+  });
+
+  it('writes both values of a zh near-tie the same way', () => {
+    const c = country({
+      iso3: 'MAR',
+      score: 7.1,
+      pillars: { environment: { score: 0.64 }, health: { score: 0.66 }, conflict: { score: 0.8 }, crime: { score: 0.78 }, governance: { score: 0.75 } },
+      advisories: advisoriesOf({ 1: 14, 2: 5 }),
+    });
+    const meta = buildCountryMetaDescription(c, 'zh');
+    assert.match(meta, /自然灾害（6\.4分）和健康（6\.6分）/);
+    assert.doesNotMatch(meta, / \(6\.4\)/);
+  });
+
+  it('keeps every driver topic singular, so "{topic}" never needs a plural verb (pt "é os desastres")', () => {
+    const plural: Partial<Record<Lang, RegExp>> = { it: /^(i|gli|le) /, es: /^(los|las) /, fr: /^les /, pt: /^(os|as) / };
+    for (const [lang, re] of Object.entries(plural) as Array<[Lang, RegExp]>) {
+      for (const [name, topic] of Object.entries(indicatorCopy[lang].topics)) assert.doesNotMatch(topic, re, `${lang} ${name}: ${topic}`);
+    }
+  });
+
+  it('says on the natural-hazard row that coping capacity is part of the score (Mexico 5.6 vs exposure 6.5)', () => {
+    const row = formatIndicatorValue(ind('inform_natural', 6.5, 0.52, 'inform', 2026), 'en');
+    assert.equal(row?.value, '6.5 / 10');
+    assert.match(row?.unit ?? '', /how well the country copes/);
+    assert.equal(formatIndicatorValue(ind('inform_epidemic', 3, 0.7, 'inform', 2026), 'en')?.unit, 'INFORM risk, higher is worse');
+  });
+
+  it('names the World Bank value a grey page has, not just the bank', () => {
+    assert.deepEqual(greySourceItems('en', 17, ['advisories', 'worldbank']).slice(1), ['World Bank homicide rate']);
+    assert.deepEqual(greySourceItems('de', 0, ['worldbank']), ['Mordrate der Weltbank']);
   });
 });

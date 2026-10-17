@@ -143,6 +143,14 @@ Result on 2026-10-17:
     40-finding sample (one adversarial reviewer).
   - The review found one more defect, fixed the same day: the German meta description said
     "Schwächster Bereich" for a focus that excludes governance (I02).
+  - The reviewers also reported defects outside the 563 findings, all fixed the same day:
+    - "a majority of governments" where all of them advise against all travel (Afghanistan, Yemen);
+    - a Portuguese agreement error ("O fator principal é os desastres");
+    - V-Dem corruption quoted as a summary driver after it moved to "Country context" (Bulgaria, Serbia, North Macedonia);
+    - Belarus' hero reading "Only for experienced travelers" above a FAQ "No";
+    - mixed number formats in 21 Chinese descriptions;
+    - the natural-hazard row not saying that coping capacity is part of the v10.1 score;
+    - a bare "World Bank" on grey pages.
 - **Issues:** 59 fixed, 2 by design (I36 health calibration, I43 faithful source values), 1 unverified (I50), 6 partial:
   - **I10:** BLR 5.39, PNG 6.06 and ARE 7.18 still above their bounds.
   - **I42:** Cabo Verde 6.89, below its 7.0 floor.

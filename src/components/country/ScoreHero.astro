@@ -5,10 +5,9 @@ import { useTranslations } from '../../i18n/utils';
 import { scoreToColor, readableTextColor } from '../../lib/colors';
 import { getLocalizedCountryName } from '../../lib/scores';
 import { getH1CountryPhrase } from '../../i18n/country-grammar';
-import { getBand } from '../../lib/bands';
 import { formatSigned, formatTenths } from '../../lib/display-number';
 import type { BandKey } from '../../pipeline/news/types';
-import { getBandVerdictCopy } from '../../lib/band-copy';
+import { getHeroVerdict } from '../../lib/band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from '../../lib/confidence';
 import { isScored } from '../../lib/score-status';
 import { countryEvidenceCoverage } from '../../lib/indicator-display';
@@ -61,12 +60,12 @@ const badgeStyles: Record<BandKey, string> = {
   danger: 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300',
 };
 
-// getBand() rounds to the same 1-decimal value the hero displays internally,
-// so the verdict never disagrees with the shown number at band boundaries
-// (e.g. 5.9975 -> "6.0").
-const band = getBand(scoreValue);
-const verdictText = getBandVerdictCopy(scoreValue, lang).badge;
-const badgeClass = badgeStyles[band];
+// The band comes from the same 1-decimal value the hero displays, so the verdict never disagrees
+// with the shown number at band boundaries (5.9975 -> "6.0"). The pill follows the advice rule the
+// FAQ uses: a level-4 majority reads "Not recommended" in any band (getHeroVerdict).
+const verdict = getHeroVerdict(scoreValue, country, lang);
+const verdictText = verdict.badge;
+const badgeClass = badgeStyles[verdict.band];
 
 // The big number is the same one-decimal score the title, summary, FAQ and every list show (owner
 // decision 2026-10-15, audit I08). It used to be country.scoreDisplay = Math.round(score): 6.7

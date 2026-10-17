@@ -27,7 +27,9 @@ import type { Lang } from '../i18n/ui';
 // kept read-mostly for this fix round) — import the type straight from its
 // source instead of adding an export there.
 import type { BandKey } from '../pipeline/news/types';
+import type { ScoredCountry } from '../pipeline/types';
 import { getBand } from './bands';
+import { getAdvisoryConsensus } from './advisory-consensus';
 
 export interface BandVerdictCopy {
   /** ScoreHero pill text (short, 2-5 words). */
@@ -93,6 +95,22 @@ const BAND_VERDICT_COPY: Record<Lang, Record<BandKey, BandVerdictCopy>> = {
 /** The single lookup every country-page surface should use for band copy. */
 export function getBandVerdictCopy(score: number, lang: Lang): BandVerdictCopy {
   return BAND_VERDICT_COPY[lang][getBand(score)];
+}
+
+/**
+ * The hero pill: the band's verdict, except the danger band's "Not recommended" (words and colour)
+ * whenever a strict majority of governments advises against all travel. The FAQ answers "No ... We
+ * advise against travel there" by the same rule (seo.ts, A1 opener), so Belarus (5.4, 13 of 18 at
+ * "do not travel") read "Only for experienced travelers" right above it (2026-10-17 re-check).
+ * The score, its colour and the risk label keep the band: only the advice changes.
+ */
+export function getHeroVerdict(
+  score: number,
+  country: Pick<ScoredCountry, 'advisories'>,
+  lang: Lang,
+): { band: BandKey; badge: string } {
+  const band: BandKey = getAdvisoryConsensus(country).majorityAvoid ? 'danger' : getBand(score);
+  return { band, badge: BAND_VERDICT_COPY[lang][band].badge };
 }
 
 /**

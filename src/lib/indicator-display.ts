@@ -15,6 +15,7 @@ import type { IndicatorScore, PillarScore, WeightsConfig } from '../pipeline/typ
 import type { Lang } from '../i18n/ui';
 import { indicatorCopy, type DescribedIndicator, type FactTemplate, type IndicatorScale } from '../i18n/indicator-copy';
 import { formatNumber } from './display-number';
+import { COUNTRY_CONTEXT_INDICATORS } from './pillar-presentation';
 
 /** Indicators the current formula scores (weights.json, the engine's own list), minus the synthetic advisory consensus "A". */
 const SCORED_INDICATORS: ReadonlySet<string> = new Set(
@@ -41,7 +42,7 @@ const META: Record<DescribedIndicator, IndicatorMeta> = {
   inform_health_access: { scale: 'inform', decimals: 1 },
   inform_epidemic: { scale: 'inform', decimals: 1 },
   inform_governance: { scale: 'inform', decimals: 1 },
-  inform_natural: { scale: 'inform', decimals: 1 },
+  inform_natural: { scale: 'informNatural', decimals: 1 },
   vdem_rule_of_law: { scale: 'vdemUp', decimals: 2 },
   vdem_corruption_control: { scale: 'vdemDown', decimals: 2 },
   vdem_gov_effectiveness: { scale: 'vdemLatent', decimals: 2 },
@@ -85,8 +86,6 @@ export function countryEvidenceCoverage(pillars: readonly PillarScore[]): number
   return pillars.reduce((sum, p) => sum + pillarEvidenceCoverage(p), 0) / pillars.length;
 }
 
-/** Indicators a reader would not act on as "the main risk" when the pillar offers another driver. */
-const NOT_A_TRAVEL_DRIVER: ReadonlySet<string> = new Set(['gpi_militarisation']);
 
 function isDescribed(name: string): name is DescribedIndicator {
   return Object.prototype.hasOwnProperty.call(META, name);
@@ -127,7 +126,7 @@ export function formatIndicatorValue(ind: IndicatorScore, lang: Lang): Indicator
   const meta = META[ind.name];
   const number = formatNumber(ind.rawValue, meta.decimals, lang);
   const unit = pick(indicatorCopy[lang].units[meta.scale], ind.rawValue);
-  return { value: meta.scale === 'inform' ? `${number} / 10` : number, unit };
+  return { value: meta.scale === 'inform' || meta.scale === 'informNatural' ? `${number} / 10` : number, unit };
 }
 
 /**
@@ -168,14 +167,17 @@ export function worldBankLagNote(lang: Lang): string {
 
 /**
  * The indicator that pulls a pillar down the most: the lowest normalised value among the scored
- * indicators the pillar actually has (ties: weights.json order). GPI militarisation is passed
- * over when the pillar has another indicator: it is a property of the state (arms, military
- * spending), not something a traveller meets. Null when the pillar has no scored indicator.
+ * indicators the pillar actually has (ties: weights.json order). The "Country context" indicators
+ * (GPI militarisation, V-Dem corruption and public administration: COUNTRY_CONTEXT_INDICATORS)
+ * are passed over when the pillar has another indicator: they are properties of the state, not
+ * something a traveller meets, and the page shows them only in a collapsed section, so a summary
+ * quoting them ("driven mainly by corruption: V-Dem rates...", Bulgaria 2026-10-17) pointed at a
+ * number the reader cannot see. Null when the pillar has no scored indicator.
  * The result can be a GOOD value (Qatar's GPI 1.68): to quote it as a risk use selectBadDriver.
  */
 export function selectPillarDriver(pillar: PillarScore): IndicatorScore | null {
   const candidates = displayedIndicators(pillar).filter((ind) => isDescribed(ind.name));
-  const preferred = candidates.filter((ind) => !NOT_A_TRAVEL_DRIVER.has(ind.name));
+  const preferred = candidates.filter((ind) => !COUNTRY_CONTEXT_INDICATORS.has(ind.name));
   const pool = preferred.length > 0 ? preferred : candidates;
   let best: IndicatorScore | null = null;
   for (const ind of pool) {
