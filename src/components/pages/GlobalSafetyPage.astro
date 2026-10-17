@@ -9,8 +9,8 @@ import Breadcrumb from '../../components/Breadcrumb.astro';
 import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
-import { loadLatestSnapshot, loadGlobalHistory, getFormulaChange } from '../../lib/scores';
-import { formulaChangeInRange, formulaChangeTexts } from '../../i18n/formula-change-copy';
+import { loadLatestSnapshot, loadGlobalHistory, getFormulaChanges } from '../../lib/scores';
+import { formulaChangeMarkers, formulaChangeNote, formulaChangesInRange } from '../../i18n/formula-change-copy';
 import { buildGlobalSafetyJsonLd } from '../../lib/seo';
 import { scoreToColor, readableTextColor } from '../../lib/colors';
 import { formatTenths } from '../../lib/display-number';
@@ -35,11 +35,12 @@ const dateModified = new Date().toISOString().split('T')[0];
 const jsonLd = buildGlobalSafetyJsonLd(globalScore, canonicalUrl, lang, dateModified);
 
 const showChart = globalHistory.length >= 2;
-// Formula v10: the global mean jumps on the switch day (new formula, and places with partial data
-// leave the mean), so the chart marks the date and says why.
-const formulaChange = getFormulaChange();
-const { marker: formulaMarker, note: formulaNote } = formulaChangeTexts(lang, formulaChange);
-const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p) => p.date));
+// Formula v10 and later: the global mean jumps on each switch day (new formula, and places with
+// partial data leave the mean), so the chart marks every switch date and says why.
+const formulaChanges = getFormulaChanges();
+const formulaMarkers = formulaChangeMarkers(lang, formulaChanges);
+const formulaNote = formulaChangeNote(lang, formulaChangesInRange(formulaChanges, globalHistory.map((p) => p.date)));
+const showFormulaNote = formulaNote !== '';
 ---
 
 <Base lang={lang} title={t('global.page_title')} description={t('global.page_description')} jsonLd={jsonLd} ogImage="/og/default.png">
@@ -77,7 +78,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
 
       {showChart ? (
         <div>
-          <div id="global-chart-container" class="relative" data-history={JSON.stringify(globalHistory)} data-lang={lang} data-formula-date={formulaChange?.date ?? ''} data-formula-label={formulaMarker}>
+          <div id="global-chart-container" class="relative" data-history={JSON.stringify(globalHistory)} data-lang={lang} data-formula-markers={JSON.stringify(formulaMarkers)}>
             <svg id="global-chart-svg" viewBox="0 0 800 240" class="w-full text-sand-700 dark:text-sand-300" role="img" aria-label={t('global.trend_title')}></svg>
             <div id="global-tooltip" class="absolute hidden pointer-events-none bg-sand-100 dark:bg-sand-800 border border-terracotta-300 dark:border-terracotta-600 rounded px-2 py-1 text-sm shadow-md z-10 whitespace-nowrap"></div>
           </div>
@@ -122,6 +123,7 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
     import { scaleLinear, scaleTime, line, area, utcFormat, brushX, select, easeCubicOut } from 'd3';
     import { scoreToColor } from '../../lib/colors';
     import { formatNumber } from '../../lib/display-number';
+    import { formulaMarkersSvg, parseFormulaMarkers } from '../../lib/formula-markers';
     import type { Lang } from '../../i18n/ui';
 
     function smartDateFormat(dates: Date[]): (d: Date) => string {
@@ -264,18 +266,11 @@ const showFormulaNote = formulaChangeInRange(formulaChange, globalHistory.map((p
             xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${t.label}</text>`;
           }
 
-          // Formula switch marker (dashed vertical line + label) when the date is in the plotted range.
-          let formulaMarkerSvg = '';
-          const formulaDate = container!.dataset.formulaDate;
-          if (formulaDate) {
-            const fd = new Date(formulaDate + 'T00:00:00Z');
-            if (fd > dates[0] && fd <= dates[dates.length - 1]) {
-              const fx = xScale(fd);
-              const nearRight = fx > innerWidth - 90;
-              formulaMarkerSvg = `<line x1="${fx}" x2="${fx}" y1="0" y2="${innerHeight}" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />`
-                + `<text x="${nearRight ? fx - 4 : fx + 4}" y="11" text-anchor="${nearRight ? 'end' : 'start'}" font-size="11" class="fill-sand-600 dark:fill-sand-400">${container!.dataset.formulaLabel || ''}</text>`;
-            }
-          }
+          // Formula change markers (dashed vertical line + label) for the changes in the plotted range.
+          const formulaMarkerSvg = formulaMarkersSvg(
+            parseFormulaMarkers(container!.dataset.formulaMarkers),
+            dates[0], dates[dates.length - 1], xScale, innerWidth, innerHeight,
+          );
 
           svg.innerHTML = `
             <defs>

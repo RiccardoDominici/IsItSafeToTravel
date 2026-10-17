@@ -32,8 +32,37 @@ interface HistoryIndex {
 export interface FormulaChange {
   /** First snapshot date computed with the new formula (YYYY-MM-DD). */
   date: string;
-  /** Formula major version from that snapshot's weightsVersion, e.g. "10". */
+  /** Formula version from that snapshot's weightsVersion: the major, plus the minor when non-zero ("10", "10.1"). */
   version: string;
+}
+
+/**
+ * Formula label of a snapshot's weightsVersion: "10.0.0" -> "10", "10.1.0" -> "10.1". null before
+ * v10: the v9.x snapshots predate the switch markers (SPEC §6) and are never marked.
+ */
+export function formulaLabel(weightsVersion: string | undefined): string | null {
+  const m = /^(\d+)\.(\d+)/.exec(weightsVersion ?? '');
+  if (!m || Number(m[1]) < 10) return null;
+  return m[2] === '0' ? m[1] : `${m[1]}.${m[2]}`;
+}
+
+/**
+ * Every formula change in a date-ordered list of snapshot headers: the first v10+ snapshot, then
+ * each snapshot whose formula label differs from the previous one (v10 on 2026-10-15, v10.1 on
+ * 2026-10-17). A patch-level weightsVersion bump is not a formula change. Pure, for the tests.
+ */
+export function formulaChangesFromHeaders(
+  headers: ReadonlyArray<{ date: string; weightsVersion?: string }>,
+): FormulaChange[] {
+  const changes: FormulaChange[] = [];
+  let previous: string | null = null;
+  for (const h of headers) {
+    if (h.weightsVersion === undefined) continue; // unreadable header: keep the previous formula
+    const label = formulaLabel(h.weightsVersion);
+    if (label !== null && label !== previous) changes.push({ date: h.date, version: label });
+    previous = label;
+  }
+  return changes;
 }
 
 let historyIndexCache: HistoryIndex | null | undefined;
@@ -52,23 +81,24 @@ function readHistoryIndex(): HistoryIndex | null {
   return historyIndexCache;
 }
 
-let formulaChangeCache: FormulaChange | null | undefined;
+let formulaChangesCache: FormulaChange[] | undefined;
 
 /**
- * The first daily snapshot computed with formula v10 or later, read from the snapshot headers in
- * data/scores (each file starts with `{"date":…,"weightsVersion":"10.0.0",…}`, so only the first
- * bytes of each file are read, never the ~0.9 MB body). null while every snapshot is pre-v10,
- * e.g. right after the v10 code ships and before the first v10 pipeline run.
+ * Every formula change from v10 on, oldest first, read from the snapshot headers in data/scores
+ * (each file starts with `{"date":…,"weightsVersion":"10.1.0",…}`, so only the first bytes of each
+ * file are read, never the ~0.9 MB body). Empty while every snapshot is pre-v10.
  *
- * Data-driven rather than a hard-coded date: the switch happens on whichever day the first v10
- * pipeline run lands, and past snapshots stay v9.1 (SPEC §6).
+ * Data-driven rather than hard-coded dates: a switch happens on whichever day the first pipeline
+ * run with the new weights lands, and past snapshots keep the formula they were computed with
+ * (SPEC §6). The charts mark every change; the 7-day deltas start again after the latest one.
  */
-export function getFormulaChange(): FormulaChange | null {
-  if (formulaChangeCache !== undefined) return formulaChangeCache;
-  formulaChangeCache = null;
-  if (!fs.existsSync(DATA_DIR)) return formulaChangeCache;
+export function getFormulaChanges(): FormulaChange[] {
+  if (formulaChangesCache !== undefined) return formulaChangesCache;
+  formulaChangesCache = [];
+  if (!fs.existsSync(DATA_DIR)) return formulaChangesCache;
   const files = fs.readdirSync(DATA_DIR).filter((f) => /^\d{4}-\d{2}-\d{2}\.json$/.test(f)).sort();
   const buf = Buffer.alloc(512);
+  const headers: Array<{ date: string; weightsVersion?: string }> = [];
   for (const file of files) {
     let head = '';
     const fd = fs.openSync(path.join(DATA_DIR, file), 'r');
@@ -78,13 +108,20 @@ export function getFormulaChange(): FormulaChange | null {
     } finally {
       fs.closeSync(fd);
     }
-    const major = /"weightsVersion"\s*:\s*"(\d+)\./.exec(head)?.[1];
-    if (major && Number(major) >= 10) {
-      formulaChangeCache = { date: file.slice(0, 10), version: major };
-      break;
-    }
+    headers.push({ date: file.slice(0, 10), weightsVersion: /"weightsVersion"\s*:\s*"([^"]+)"/.exec(head)?.[1] });
   }
-  return formulaChangeCache;
+  formulaChangesCache = formulaChangesFromHeaders(headers);
+  return formulaChangesCache;
+}
+
+/**
+ * The latest formula change, or null before v10. The 7-day deltas never reach back across it:
+ * v10.1 (2026-10-17) moved Japan +0.3 and Cuba -0.35 overnight with nothing happening on the
+ * ground, and the v10-only check of the first version showed that as a 7-day trend.
+ */
+export function getFormulaChange(): FormulaChange | null {
+  const changes = getFormulaChanges();
+  return changes.length > 0 ? changes[changes.length - 1] : null;
 }
 
 /**

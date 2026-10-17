@@ -4,7 +4,7 @@ import { useTranslations } from '../../i18n/utils';
 import { scoreToColor } from '../../lib/colors';
 import { formatTenths } from '../../lib/display-number';
 import type { FormulaChange, HistoryPoint } from '../../lib/scores';
-import { formulaChangeInRange, formulaChangeTexts } from '../../i18n/formula-change-copy';
+import { formulaChangeMarkers, formulaChangeNote, formulaChangesInRange } from '../../i18n/formula-change-copy';
 
 interface Props {
   data: HistoryPoint[];
@@ -12,20 +12,21 @@ interface Props {
   lang: Lang;
   iso3: string;
   /**
-   * First snapshot computed with formula v10+ (getFormulaChange), or null. Past snapshots stay on
-   * the formula they were computed with (SPEC §6), so the chart marks the switch date with a dashed
-   * line and says that earlier points used the previous formula: a jump on that day is the
-   * method changing, not the country.
+   * Every formula change from v10 on (getFormulaChanges). Past snapshots stay on the formula they
+   * were computed with (SPEC §6), so the chart marks each switch date with a dashed line and says
+   * that earlier points used the previous formula: a jump on that day is the method changing, not
+   * the country.
    */
-  formulaChange?: FormulaChange | null;
+  formulaChanges?: FormulaChange[];
 }
 
-const { data, pillarData, lang, iso3, formulaChange = null } = Astro.props;
+const { data, pillarData, lang, iso3, formulaChanges = [] } = Astro.props;
 const t = useTranslations(lang);
 
 // Formula switch marker and caption (shared with the global chart, src/i18n/formula-change-copy.ts).
-const { marker: formulaMarker, note: formulaNote } = formulaChangeTexts(lang, formulaChange);
-const showFormulaNote = formulaChangeInRange(formulaChange, data.map((d) => d.date));
+const formulaMarkers = formulaChangeMarkers(lang, formulaChanges);
+const formulaNote = formulaChangeNote(lang, formulaChangesInRange(formulaChanges, data.map((d) => d.date)));
+const showFormulaNote = formulaNote !== '';
 
 // Small, page-local labels for the chart chrome (loading state, time-range
 // buttons, reset) -- these were hardcoded English strings, invisible to a
@@ -109,8 +110,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
         class="relative"
         data-iso3={iso3.toLowerCase()}
         data-lang={lang}
-        data-formula-date={formulaChange?.date ?? ''}
-        data-formula-label={formulaMarker}
+        data-formula-markers={JSON.stringify(formulaMarkers)}
       >
         <div id="trend-chart-placeholder" class="flex items-center justify-center w-full bg-sand-50 dark:bg-sand-900 rounded" style="aspect-ratio: 800/240;">
           <span class="text-sm text-sand-600 dark:text-sand-400 animate-pulse">{cl.loading}</span>
@@ -155,6 +155,7 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
 <script>
   import { scoreToColor } from '../../lib/colors';
   import { formatNumber } from '../../lib/display-number';
+  import { formulaMarkersSvg, parseFormulaMarkers } from '../../lib/formula-markers';
   import type { Lang } from '../../i18n/ui';
 
   function initTrendChart(): void {
@@ -374,18 +375,11 @@ const showChartSection = showChart || (hasPillarData && data.length >= 2);
           xLabels += `<text x="${t.x}" y="${innerHeight + 25}" text-anchor="${anchor}" class="text-xs fill-sand-600 dark:fill-sand-400" font-size="11">${t.label}</text>`;
         }
 
-        // Formula switch marker (dashed vertical line + label) when the date is in the plotted range.
-        let formulaMarkerSvg = '';
-        const formulaDate = container!.dataset.formulaDate;
-        if (formulaDate) {
-          const fd = new Date(formulaDate + 'T00:00:00Z');
-          if (fd > dates[0] && fd <= dates[dates.length - 1]) {
-            const fx = xScale(fd);
-            const nearRight = fx > innerWidth - 90;
-            formulaMarkerSvg = `<line x1="${fx}" x2="${fx}" y1="0" y2="${innerHeight}" stroke="currentColor" stroke-width="1" stroke-dasharray="3 3" opacity="0.55" />`
-              + `<text x="${nearRight ? fx - 4 : fx + 4}" y="11" text-anchor="${nearRight ? 'end' : 'start'}" font-size="11" class="fill-sand-600 dark:fill-sand-400">${container!.dataset.formulaLabel || ''}</text>`;
-          }
-        }
+        // Formula change markers (dashed vertical line + label) for the changes in the plotted range.
+        const formulaMarkerSvg = formulaMarkersSvg(
+          parseFormulaMarkers(container!.dataset.formulaMarkers),
+          dates[0], dates[dates.length - 1], xScale, innerWidth, innerHeight,
+        );
 
         svg.innerHTML = `
           <defs>

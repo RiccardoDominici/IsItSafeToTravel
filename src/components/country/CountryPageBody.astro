@@ -14,7 +14,7 @@ import type { Lang } from '../../i18n/ui';
 import { routes } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import type { CountryPageProps } from '../../lib/country-page';
-import { getLocalizedCountryName, getFormulaChange } from '../../lib/scores';
+import { getLocalizedCountryName, getFormulaChanges } from '../../lib/scores';
 import { getLastmodMap } from '../../lib/lastmod';
 import { isScored, officialScore } from '../../lib/score-status';
 import Breadcrumb from '../Breadcrumb.astro';
@@ -65,7 +65,7 @@ const advisorySources = Object.keys(country.advisories || {}).map((key) => ({
   key,
   name: t(`country.advisory.${key}` as any),
 }));
-const formulaChange = getFormulaChange();
+const formulaChanges = getFormulaChanges();
 ---
 
 <div class="max-w-4xl mx-auto px-4 py-8 space-y-8">
@@ -125,6 +125,6 @@ const formulaChange = getFormulaChange();
   <ComparisonTable country={country} allCountries={allCountries} lang={lang} />
   <RelatedCountries country={country} allCountries={allCountries} lang={lang} />
   <AuthorityLinks country={country} lang={lang} canonicalUrl={canonicalUrl} />
-  {scored && <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} formulaChange={formulaChange} />}
+  {scored && <TrendChart data={trend} pillarData={pillarTrend} lang={lang} iso3={country.iso3} formulaChanges={formulaChanges} />}
   <SourcesList sources={country.sources} pillars={scored ? country.pillars : []} lang={lang} advisories={country.advisories} />
 </div>
