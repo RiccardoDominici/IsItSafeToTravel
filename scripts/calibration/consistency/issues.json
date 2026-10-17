@@ -65,7 +65,15 @@
    ],
    "rootCause": "Q2's variant is chosen from the driver pillar alone (critical below 4.0, 'mid' from 4.0 to 7.0), and the 'mid' template asserts that no single factor is critical, while the summary calls the same pillar 'the main risk' (below 5.0) or 'the main concern'. The check ignores governance and advisories, so TCD (governance 1.6, 8 governments at do-not-travel), PRK and KNA (64 homicides per 100,000) also say nothing is critical; 147 places get this answer.",
    "proposedFix": "Drop the absolute claim: open the mid variant with 'The area that needs the most attention is ...', and use the critical variant whenever any displayed pillar is below 4.0 or most governments advise against travel.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 20
+    }
+   }
   },
   {
    "id": "I02",
@@ -143,7 +151,15 @@
    ],
    "rootCause": "selectDriverPillar (used by the DESCRIPTION, the SUMMARY and FAQ Q2) leaves governance out unless every other pillar is 7+, and ranks the rest by weighted drag w*(-ln p), so conflict's 30% weight makes it the 'main concern' even when it is the highest bar (MOZ 5.5, THA 6.3) and a 1.5-2.7 governance pillar is never named (VEN, NIC, GIN). FAQ Q1 instead says the score is pulled down 'above all' by the lowest eligible pillar, so one page names two different main risks.",
    "proposedFix": "Use one selection for DESCRIPTION, SUMMARY, Q1 and Q2 that matches the bars: name the lowest displayed pillar (governance included, or say explicitly that governance is context), using drag only to break near-ties. Q1's 'above all' must name the same pillar as the other three.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 37
+    }
+   }
   },
   {
    "id": "I03",
@@ -210,7 +226,15 @@
    ],
    "rootCause": "buildAdvisoryAnswer chooses the 'normal' consensus sentence from the modal level alone (a 10-of-20 plurality counts), and that sentence hard-codes 'none currently raises it above a low-level advisory' without checking the maximum level. 89 places with level-2+ advisories get it, 7 of them with level 3-4 advisories (GAB, SUR, SYC, STP, SLB, BWA...), so the FAQ contradicts the SUMMARY counts on the same page.",
    "proposedFix": "Build the clause from the data: say 'most' only for a real majority, replace 'none above a low level' with the actual spread ('10 of 20 advise normal precautions, 7 increased caution, 2 reconsider, 1 against all travel'), and drop 'reassuring' whenever any government is at level 3 or 4.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 24
+    }
+   }
   },
   {
    "id": "I04",
@@ -287,7 +311,15 @@
    ],
    "rootCause": "buildDriverSentence names the lowest displayed indicator of the driver pillar (selectPillarDriver), but the pillar is often low because of something not displayed: the advisory consensus 'A', which is excluded from the pool, or the shrinkage prior. That indicator is then printed under a value-blind label from indicator-copy.ts ('a climate of violence and insecurity', 'poor public safety', 'weak governance', 'weak public administration'), so QAT's GPI 1.68 (normalised 0.77), LTU's V-Dem +0.98, CZE's 8.0 governance and LIE's 5.1 homicide rate (normalised 0.91, about two killings) become the 'main concern'; 43 scored places quote a driver normalised at 0.6 or better.",
    "proposedFix": "Headline an indicator as the main concern only when its own normalised value is in the bad half; otherwise name the real cause ('most governments advise reconsidering travel', 'limited data: cautious estimate') or use a neutral frame. Make the labels value-aware and never pair 'weakest area' with the adjective 'weak'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 36
+    }
+   }
   },
   {
    "id": "I05",
@@ -367,7 +399,15 @@
    ],
    "rootCause": "selectDriverPillar and selectEligiblePillars drop pillars below MIN_PILLAR_COVERAGE (0.30) before ranking, but PillarBreakdown still draws them with their (prior) value. The 'allGood' summary frame and the FAQ 'all five pillars score well / range from X to Y' templates therefore describe only the covered pillars while saying 'all five' (NRU, PLW, TUV, TWN, BRN, MHL), and Q1/Q2 skip a lower asterisked bar (MDV crime 5.1, STP crime 4.9, TON, PSE governance 3.2).",
    "proposedFix": "Make text and bars use the same pillar set: either stop drawing zero/low-coverage pillars as scores (see the low-coverage display issue) or keep them in the ranking. Never say 'all five' unless all five displayed bars are 7.0+, and say 'among the pillars with enough data' when some are left out.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 39
+    }
+   }
   },
   {
    "id": "I06",
@@ -421,7 +461,16 @@
    ],
    "rootCause": "a1Verdict is picked from the score band alone (getBand(score)). For the 10 scored places at 5.0+ whose modal advisory level is 3 or 4 (ARE, QAT, KWT, JOR, ISR, SAU, CUB, BLR...), Q1 opens 'Yes, generally / Yes, with some caution' while Q3 on the same page says 'The prevailing guidance is to reconsider travel'.",
    "proposedFix": "Cap the verdict by the advisory consensus: when most governments advise reconsidering or against travel, never open with 'Yes'; use a hedged opener that cites the advisories. This holds whatever is decided on the advisory weight in the formula.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "by-design": 1,
+     "fixed": 14
+    }
+   }
   },
   {
    "id": "I07",
@@ -473,7 +522,15 @@
    ],
    "rootCause": "driverWeakest and driverAllGood say 'the weakest / lowest-rated area' (pillar scale, 10 = safest) and then insert the raw INFORM fact on INFORM's own scale (10 = worst), so on 28 very safe places a low-risk value such as 'exposure to natural hazards: 2.3 out of 10' reads as the weakest score, right after 'All five areas score at least 7 out of 10'.",
    "proposedFix": "In the 'weakest' and 'allGood' frames quote the pillar value on the page's own scale ('natural hazards, 7.8/10'), or state the INFORM value as a risk level ('low exposure: 2.3 on INFORM's 0-10 risk scale'); never put an inverted-scale number right after 'lowest-rated'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 15
+    }
+   }
   },
   {
    "id": "I08",
@@ -517,7 +574,15 @@
    ],
    "rootCause": "ScoreHero prints country.scoreDisplay = Math.round(score) in the large type above '{score.toFixed(1)} out of 10'. Rounding the unrounded score makes 8.46 an '8' and 8.53 a '9' while both display 8.5, and 6.5-6.99 shows '7' beside a 6-7 band label.",
    "proposedFix": "Make the one-decimal score the big number (or drop the integer); if an integer stays, derive it from the displayed decimal and never let it cross a band edge.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 9
+    }
+   }
   },
   {
    "id": "I09",
@@ -550,7 +615,15 @@
    ],
    "rootCause": "getNeighbors sorts the real borders by score, highest first, and slices to six, so on the 19 places with more than six data-sufficient neighbours the lowest scorers drop out: COD loses CAF 3.7 and SSD 3.4, CHN loses AFG, MMR, RUS, PRK and PAK, BRA loses BOL, COL and VEN.",
    "proposedFix": "Show all land neighbours, or when a cap is needed keep the riskiest ones (sort ascending, or always include neighbours below the subject's score); sort by score only for display.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I10",
@@ -598,7 +671,16 @@
    ],
    "rootCause": "Advisories enter only as the 'A' indicator inside the conflict pillar (28% of 30%), a prior nudge, and a severe modifier (S_MAX 0.32) that counts level-4 advisories only and is damped by nAdv/(nAdv+6). Level-3 majorities barely move the score: ARE 7.27 with 52% at level 3+, QAT 7.44, KWT 6.94 (81%), SAU 6.24, CUB 6.18 (15 of 19 at level 3-4), BLR 5.54 (12 of 19 at level 4); a UCDP year with zero deaths also gives conflict full marks (LBY conflict 5.4 with 17 of 21 at level 4).",
    "proposedFix": "Give level-3 shares a modifier too (or let A act on the composite, not only inside conflict) and loosen the count damping; check the change against the constraints in constraints.json (ARE < 7.0, CUB <= 6.0, BLR <= 5.5).",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "open": 3,
+     "fixed": 11
+    }
+   }
   },
   {
    "id": "I11",
@@ -637,7 +719,15 @@
    ],
    "rootCause": "getDeForm knows only the OVERRIDES table and four suffix rules (-ei, Republik, Königreich, -inseln), so Antarktis, Norfolkinsel, Bouvetinsel, Weihnachtsinsel, Salomonen, Färöer, Nördliche Marianen, Palästinensische Autonomiegebiete and Sonderverwaltungsregion Hongkong/Macau get no article and the singular 'Ist' (16 de titles), and plural adjective names lack the weak ending ('die Amerikanische Überseeinseln').",
    "proposedFix": "Add overrides for these names (gender, plural flag and weakForm) and rules for '-insel' (feminine) and adjective + plural-noun names.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I12",
@@ -675,7 +765,15 @@
    ],
    "rootCause": "inferFrForm guesses gender from the final letter (feminine only for -e/-es), so feminine names whose head noun is feminine but which do not end in -e (Guinée-Bissau, Corée du Nord/Sud, Géorgie du Sud, Cité du Vatican, Macédoine du Nord, Trinité-et-Tobago) get 'au', plural Fidji gets 'au' instead of 'aux', and Wallis-et-Futuna gets 'au' instead of 'à'.",
    "proposedFix": "Add fr overrides for these names (en Guinée-Bissau, en Corée du Nord, aux Fidji, à Wallis-et-Futuna, à Saint-Marin, à Curaçao, à Taïwan) and take the gender from the first noun of compound names.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I13",
@@ -726,7 +824,15 @@
    ],
    "rootCause": "The description tail uses the site-wide SOURCE_COUNT_DISPLAY ('30+') on every scored page, but the summary on the same page counts that country's own advisories plus datasets (GIN 20 + 5 = 25, FSM 13 + 3 = 16), so almost every scored page contradicts itself.",
    "proposedFix": "Use the country's own count from getProvenanceCounts ('Free score from 25 public sources'), or reword the tail as site-wide ('one of 30+ sources tracked site-wide').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 14
+    }
+   }
   },
   {
    "id": "I14",
@@ -790,7 +896,15 @@
    ],
    "rootCause": "The a3Consensus sentences use fixed quantifiers ('most governments ... none ...', 'Most governments now advise against all travel') with no variant for one advisory or for an all-the-same set, and grey places reuse the scored sentence (buildAdvisoryAnswer with grey = true only skips the severe note). So IMN, JEY, ALA and BVT say 'most governments' about one government, AFG says 'most' where its SUMMARY says 'all 22', and no-score pages open with 'The overall picture is reassuring'.",
    "proposedFix": "Add count-aware variants: 'The only government with an advisory (Poland) advises normal precautions' for one advisory, 'All 22 governments ...' when unanimous, and a neutral sentence without a verdict on grey pages.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 25
+    }
+   }
   },
   {
    "id": "I15",
@@ -847,7 +961,15 @@
    ],
    "rootCause": "The caution and reconsider templates always add 'the strongest warning - {govLevel} - comes from {governments}', where govLevel is the maximum level and governments are the first two issuers at that level (slice(0, 2)). When the maximum equals the prevailing level the clause just repeats it (PER, PAN, IDN, HKG), and when 5 or 9 governments share it only two are named, without 'among others' (SAU, TCD, OMN, BDI).",
    "proposedFix": "Leave the clause out when the maximum level equals the prevailing one; otherwise say how many governments are at that level and name two 'among others' when there are more.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 18
+    }
+   }
   },
   {
    "id": "I16",
@@ -900,7 +1022,15 @@
    ],
    "rootCause": "a1Drivers.normal and the a2 critical/mid templates always name the highest eligible pillar as the 'strongest pillar/area' ('By contrast, ... is X's strongest area'), unlike the summary, which names a strength only at 7.0+ (STRONG_PILLAR_MIN); on high-risk pages this presents 4.1-6.1 values as strengths (SOM, HTI, CAF, COD, AFG).",
    "proposedFix": "Apply the summary's rule in the FAQ: name the best pillar as a strength only at 7.0 or above; otherwise write 'even the best-rated area, health, is only 4.1/10'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 14
+    }
+   }
   },
   {
    "id": "I17",
@@ -951,7 +1081,15 @@
    ],
    "rootCause": "The gpi_safety_security and gpi_overall fact templates end with '... to 5 (GPI {y})' in en/it/es/fr/pt/de, so the source tag is glued to the end of the scale and the upper end is never described (zh puts it after a semicolon and is fine).",
    "proposedFix": "Describe both ends and move the source out of the range: '... on a scale from 1 (most peaceful) to 5 (least peaceful); source: GPI 2026'. In pt also replace the calque 'avalia ... em'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 11
+    }
+   }
   },
   {
    "id": "I18",
@@ -1002,7 +1140,15 @@
    ],
    "rootCause": "a1Verdict.danger closes with 'and travel requires serious caution' (and its translations) for every place under 5.0, including those where most or all governments advise against all travel (AFG, HTI, MLI, IRN, SYR, YEM, TCD), which softens the 'No' and contradicts the advisory answer below it.",
    "proposedFix": "Split the danger verdict: where most governments advise against all travel, say so and advise against travel; keep 'requires serious caution' only for danger-band places without a level-4 majority.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 11
+    }
+   }
   },
   {
    "id": "I19",
@@ -1049,7 +1195,15 @@
    ],
    "rootCause": "buildAdvisoryAnswer takes issuer names from Intl.DisplayNames (bare 'United States', 'Stati Uniti', 'États-Unis', 'Estados Unidos', 'Vereinigte Staaten') and pastes them into 'comes from {governments}', 'arriva da', 'émane de', 'vem de' and 'stammt von' with no article, contraction or case.",
    "proposedFix": "Pass issuer names through the country-grammar helpers (en 'the United States', it 'dagli Stati Uniti', fr 'des États-Unis', pt 'dos Estados Unidos', de 'von den Vereinigten Staaten'), or rephrase as a list ('issued by: United States, Canada').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 8
+    }
+   }
   },
   {
    "id": "I20",
@@ -1093,7 +1247,15 @@
    ],
    "rootCause": "aggregate.ts counts every vote but only known origins (a vote whose country_iso is missing or unknown is left out of knownOrigins), and the progress line prints both numbers as they are, so JEY, GGY, NLD and TUN show one vote from zero countries.",
    "proposedFix": "Say it explicitly ('1 vote, country of origin unknown'), or show unknown-origin votes as their own bucket in the progress line.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 8
+    }
+   }
   },
   {
    "id": "I21",
@@ -1136,7 +1298,15 @@
    ],
    "rootCause": "greySourceItems lists the advisory count ('Travel advisories from 10 governments') and the feeds, while the 'why' text says fewer than four independent sources cover the place; the copy never says that all advisories together count as one source and alert feeds not at all, and in pt and zh 'não conta entre as quatro' / '这四个来源' has no clear antecedent.",
    "proposedFix": "Say it explicitly: 'Government advisories (10 governments, counted as one source)', and word the alert-feed note as 'not counted toward the four-source minimum'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6
+    }
+   }
   },
   {
    "id": "I22",
@@ -1178,7 +1348,15 @@
    ],
    "rootCause": "a2DriverClause and indicatorLabels are literal per-language renderings: es calques 'signal' as 'señal', fr puts the label 'morts liées aux conflits' bare after 'sont' (reads 'are dead'), pt lists 'governança (INFORM)' as a signal of the governança pillar, and the zh 'one' variant says '造成这一低分' even for pillars at 6.2-6.6.",
    "proposedFix": "Rephrase per language with 'indicadores / indicateurs / 指标', add articles ('sont les morts liées aux conflits'), label INFORM governance as an index ('índice de governança do INFORM'), and drop '低分' for pillars at 6 or above.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I23",
@@ -1219,7 +1397,15 @@
    ],
    "rootCause": "band-copy.ts gives the high_caution band the hero badge 'Only for experienced travelers', the FAQ verdict for the same band (a1Verdict.high_caution) answers 'Yes, but only with real caution ... Many trips go fine', and the summary uses the label 'high caution': three verdicts of different strength on the 18 places between 5.0 and 6.0 (GIN, KHM, MOZ, MRT, NIC, UGA...).",
    "proposedFix": "Use one verdict ladder: either soften the badge to the band label ('High caution') or make the FAQ opener match the badge, with the same wording in hero, summary and FAQ.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I24",
@@ -1266,7 +1452,15 @@
    ],
    "rootCause": "The localized names in src/pipeline/config/countries.ts use ASCII or English forms: en 'Reunion', 'Sao Tome and Principe', 'Saint Barthelemy', 'Cote d'Ivoire'; es 'Papua Nueva Guinea', 'Benin', 'Brunei'; fr 'Cote d'Ivoire', 'Nepal'; pt 'Ilhas Faroe'.",
    "proposedFix": "Correct these entries (Réunion, São Tomé and Príncipe, Saint Barthélemy, Côte d'Ivoire, Papúa Nueva Guinea, Benín, Brunéi, Népal, Ilhas Feroé) and check that URL slugs stay unchanged.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I25",
@@ -1305,7 +1499,15 @@
    ],
    "rootCause": "a1Drivers.normal always names the two lowest eligible pillars as what pulls the score down, whatever their values, so 8.0-8.2 pillars on very safe pages 'weigh on the score' (JPN governance 8.0, CAN 8.1, DEU crime 8.2); the zh template renders it as '拉低总分的主要是{second}，尤其是{weakest}', which makes the second-lowest pillar the main drag on every page.",
    "proposedFix": "Call a pillar a drag only when it is below the overall score (or below 7.0), and fix the zh order to '拉低总分的主要是{weakest}，其次是{second}'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I26",
@@ -1344,7 +1546,15 @@
    ],
    "rootCause": "indicatorLabels map gpi_safety_security to 'sicurezza sociale', 'seguridad social' and 'segurança social', which mean welfare and pensions, so the FAQ says the main signal behind a low crime pillar is 'social security'.",
    "proposedFix": "Use 'sicurezza e protezione della società', 'seguridad ciudadana' and 'segurança pública', in line with the summary topics in indicator-copy.ts.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I27",
@@ -1383,7 +1593,15 @@
    ],
    "rootCause": "ScoreHero always prints the haveHeading ('What we do have', 'Lo que sí tenemos') and, when the list is empty, the 'nothing' sentence under it, while the title suffix still says 'Partial data'; NFK, CCK, CXR and UMI therefore promise data and then say there is none.",
    "proposedFix": "For places with no source at all, drop the heading and use a 'No data yet' title suffix instead of 'Partial data'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I28",
@@ -1416,7 +1634,15 @@
    ],
    "rootCause": "COG's name is 'Congo' in en/it/es/fr/pt while COD is 'Democratic Republic of the Congo', so titles read 'Is Congo Safe?' and 'Voyager au Congo'.",
    "proposedFix": "Use 'Republic of the Congo' (it 'Repubblica del Congo', es 'República del Congo', fr 'République du Congo', pt 'República do Congo'), or 'Congo-Brazzaville' in titles.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I29",
@@ -1460,7 +1686,15 @@
    ],
    "rootCause": "buildSourcesForCountry lists a source whenever any raw indicator exists for the country, including wb_population (an engine input only) and retired World Bank series, so 'worldbank' appears for places with no homicide row. getProvenanceCounts and the four-source coverage floor both count it: 77 scored places claim one more dataset than their indicator table shows, and FSM gets an official score with three real feeds. The sentence also leaves out the community adjustment when one applies (CHN +0.4).",
    "proposedFix": "List a source only when it contributes a scored indicator (ignore wb_population and retired series), recompute the four-source floor on that basis, and mention a non-zero community adjustment in the provenance sentence.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 10
+    }
+   }
   },
   {
    "id": "I30",
@@ -1493,7 +1727,15 @@
    ],
    "rootCause": "buildCountryMetaDescription always prints 'Top concern / Hauptrisiko / Risque principal: <driver pillar> (<value>)' from selectDriverPillar and ignores its frame, so on 'allGood' places (CZE governance 8.0, IRL natural hazards 7.8, SGP health 7.9) the snippet calls a strong pillar the main risk while the FAQ says no pillar signals a significant risk.",
    "proposedFix": "When the driver frame is 'allGood' (every pillar at 7.0+), use a neutral clause ('All five pillars at 7/10 or better; lowest: natural hazards 7.8') instead of 'Top concern'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I31",
@@ -1535,7 +1777,15 @@
    ],
    "rootCause": "PillarBreakdown prints (pillar.score * 10).toFixed(1) for every pillar, even one with no indicator (dataCompleteness 0), with only a generic asterisk note saying its contribution is 'reduced or excluded'. The number is then the shrinkage prior (about 5.7 crime for WSM, TON, VUT, PLW, FSM, NRU, KIR and MHL; 4.9 for STP and CPV; TWN health 6.7) and is copied into neighbours' comparison tables.",
    "proposedFix": "Render zero-indicator pillars as 'No data' (no number, no bar) in the bars and comparison tables, and make the note say what really happens (a cautious estimate used in the score, and with what weight).",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 9
+    }
+   }
   },
   {
    "id": "I32",
@@ -1571,7 +1821,15 @@
    ],
    "rootCause": "The allStrong and strong templates hard-code 'rientra nella fascia di rischio basso' / 'se sitúa en la franja de riesgo bajo' for the weakest pillar whatever its value, while an 8.0 overall score is labelled 'rischio molto basso' / 'riesgo muy bajo'; the pillar rows use a separate 'Low' label, so the two vocabularies clash for the same number.",
    "proposedFix": "Take the band word from the value (or reuse the pillar-row label) instead of hard-coding 'low-risk band', and align the pillar and overall band vocabularies.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 4
+    }
+   }
   },
   {
    "id": "I33",
@@ -1612,7 +1870,15 @@
    ],
    "rootCause": "regionMap has six continent-scale buckets (europe, asia, africa, americas, oceania, middle_east) and selectRelated fills 'In the same region' with the three candidates closest in total score, so Afghanistan gets Myanmar and North Korea, Laos gets Tajikistan and Turkmenistan, and Algeria gets Zambia.",
    "proposedFix": "Use UN M49 sub-regions (or a hand-made travel-region map) and pick by geographic proximity within the sub-region; order by score only for display.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 10
+    }
+   }
   },
   {
    "id": "I34",
@@ -1652,7 +1918,16 @@
    ],
    "rootCause": "weights.json scores gpi_militarisation inside the conflict pillar (11.25%) and three V-Dem state-capacity measures in governance, and displayedIndicators lists every scored indicator in the traveller table. The code already treats militarisation as 'not a travel driver' for the summary (NOT_A_TRAVEL_DRIVER) but still scores and shows it; Sudan's conflict pillar even gets 0.68 from militarisation during a civil war.",
    "proposedFix": "Drop GPI militarisation from the conflict pillar (re-weight GPI overall, UCDP and advisories), and move the V-Dem rows behind a 'country context' disclosure or replace them with traveller-facing measures.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7,
+     "by-design": 1
+    }
+   }
   },
   {
    "id": "I35",
@@ -1699,7 +1974,15 @@
    ],
    "rootCause": "When fewer than three real neighbours qualify, selectComparison fills up to four rows with the nearest countries by great-circle distance between single centroids (country-coords.json) within NEARBY_MAX_KM = 2,000 km and tags them all 'nearby'. Inland centroids of large countries push close coasts out (Libya for Malta, Mozambique for Mayotte, Iran for Kuwait, Indonesia for Christmas Island, Colombia for Aruba), while places 800-2,000 km away get in: 91 of 110 filled tables have a filler more than 500 km away.",
    "proposedFix": "Measure distance to the nearest coast or border point (or several points per country), use a tighter radius, and label fillers by distance ('about 800 km away') instead of a blanket 'nearby'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 15
+    }
+   }
   },
   {
    "id": "I36",
@@ -1731,7 +2014,15 @@
    ],
    "rootCause": "After shrinkage toward the prior, the v10 pillarCalibration maps health as p' = 0.162 + 0.914*p, which adds about 1.4 points at the low end: LBR's two fully covered health inputs normalise to 0.25 and 0.25, yet its bar is 4.6/10, and CIV, CAF and COD sit about 2 points above their inputs.",
    "proposedFix": "Refit the health calibration without the intercept (or drop it), and check that a fully covered pillar never sits more than a few tenths above the mean of its own inputs.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "by-design",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "by-design": 2
+    }
+   }
   },
   {
    "id": "I37",
@@ -1774,7 +2065,16 @@
    ],
    "rootCause": "borderMap in neighbors.ts has no entry for 48 places (JEY, GGY, IMN, NFK, SJM, ESH, GUF...), so their table is filled by distance alone and drops the sovereign state or a real land neighbour (Jersey without the UK, Svalbard without Norway, Western Sahara without Algeria, French Guiana without Brazil); 40 pairs are listed on one side only (KOR omits CHN while JPN lists it, FJI omits NZL), and TLS has only IDN.",
    "proposedFix": "Add entries for every territory (sovereign state plus real land and maritime neighbours, as ALA already has), add key maritime links (KOR-CHN, TLS-AUS), and make the map symmetric with a unit test.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 9,
+     "by-design": 1
+    }
+   }
   },
   {
    "id": "I38",
@@ -1812,7 +2112,15 @@
    ],
    "rootCause": "The it FAQ templates put the bare {name} after 'di', 'su' and 'per' and in subject position ('{name} è ...'); the article-aware helper (getItalianLocative) is used only for the q1/q2 locative, and a3Consensus.normal fixes the masculine pronoun 'lo' for every country.",
    "proposedFix": "Add an Italian article helper (del/della/degli, sul/sulla/sugli, subject 'il Nepal', plural verb for le Bahamas and gli Emirati) and use it in every {name} slot; make the pronoun follow the gender.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6
+    }
+   }
   },
   {
    "id": "I39",
@@ -1851,7 +2159,15 @@
    ],
    "rootCause": "The fr FAQ templates insert the bare {name} after 'de'/'pour' and in subject position; only q1/q2 and the summary use getFrenchPreposition, and there is no helper for the definite article (le Japon, l'Afghanistan, les Maldives).",
    "proposedFix": "Add a French article helper (du/de la/de l'/des; le/la/l'/les with a plural verb) and use it in every fr FAQ slot.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I40",
@@ -1885,7 +2201,15 @@
    ],
    "rootCause": "The pt FAQ templates use the bare {name} after 'de' and as subject (a1Verdict, a1Drivers, a2, a3Cap), although getPortugueseDe and getPortugueseWithArticle exist and are already used in q1/q2 and a3Consensus.",
    "proposedFix": "Use nameDe ('do Nepal', 'do Sudão') and nameArt ('A Argentina é') in every pt FAQ slot.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 4
+    }
+   }
   },
   {
    "id": "I41",
@@ -1918,7 +2242,15 @@
    ],
    "rootCause": "The en a1Drivers.normal template starts with the {strongest} slot, filled with a lowercase pillar label, and getCountryFaqData joins it after a1Formula without capitalising, unlike buildCountrySummary, which capitalises every en sentence.",
    "proposedFix": "Capitalise the first letter of each joined FAQ sentence in en (as country-summary.ts does), or start the template with fixed words ('The strongest pillar is ...').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 4
+    }
+   }
   },
   {
    "id": "I42",
@@ -1953,7 +2285,16 @@
    ],
    "rootCause": "Each pillar is shrunk as p = (n*p + K*mu)/(n + K) toward mu = muBase 0.45 + region offset (+ advisory nudge). With no indicator the pillar is mu itself (CPV crime 0.49 with only level-1/2 advisories; TWN health 0.67 because INFORM does not cover Taiwan), and for small populations the homicide precision is scaled by pop/(pop + P_HALF), so Liechtenstein's good 0.91 homicide value ends as a 0.66 crime pillar and LIE ranks below Italy.",
    "proposedFix": "Let a uniform level-1 advisory picture lift the prior for missing pillars more strongly (CPV, LIE, TWN are almost all level 1), and keep prior-only pillars from driving rankings and orderings.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "open": 1,
+     "fixed": 2
+    }
+   }
   },
   {
    "id": "I43",
@@ -1999,7 +2340,16 @@
    ],
    "rootCause": "The verifier confirmed that each value is what the source publishes (PRK INFORM health access 0.5, VEN homicide 12.6 for 2022, GTM 23.4, GMB and HND V-Dem close to Greece and Jordan, VUT natural exposure 5.1, PSE health access 3.7), so these are questions about source quality, not parser bugs; they could not be settled without outside data.",
    "proposedFix": "Review these seven values against other sources (UNODC, InSight Crime, WorldRiskIndex) and decide whether to override, down-weight or footnote them.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "by-design",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6,
+     "by-design": 8
+    }
+   }
   },
   {
    "id": "I44",
@@ -2036,7 +2386,16 @@
    ],
    "rootCause": "Crime is 25% of a weighted geometric mean, with homicide only a third of that pillar, while governance, health and natural hazards together weigh 45%. Jamaica (49.4 homicides per 100,000, crime 5.0, US level 3) ties the Dominican Republic (10.9, crime 6.6) at 6.8, South Africa (43.7, crime 4.5) ties Indonesia (0.3, crime 7.6) at 6.3, and Trinidad and Tobago (40.4) ties Vietnam at 6.9, because the low-homicide side has weaker governance, hazard or health pillars.",
    "proposedFix": "Give direct violence more weight for travellers (crime and the acute soft-min term) relative to governance, health and hazards, or add a homicide penalty above a threshold (e.g. 20 per 100,000); test against the JAM<DOM, ZAF<IDN and TTO<VNM constraints.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "partial": 2,
+     "fixed": 1
+    }
+   }
   },
   {
    "id": "I45",
@@ -2071,7 +2430,15 @@
    ],
    "rootCause": "The UK fetcher uses the content API's page description as the advisory text whenever it does not start with 'FCDO travel advice'; descriptions like 'Latest FCDO travel advice for Costa Rica. Includes safety and security...' or a Laos flood update pass that test and are shown as the level label.",
    "proposedFix": "Always derive the label from the alert_status level (UK_LEVEL_TEXT), and keep the description, if at all, as a separate 'latest update' note.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 4
+    }
+   }
   },
   {
    "id": "I46",
@@ -2107,7 +2474,16 @@
    ],
    "rootCause": "UK_ALERT_LEVEL maps 'avoid_all_travel_to_parts' to level 3 with the text 'Advise against all but essential travel', although for Sudan and Somalia the FCDO advises against all travel to nearly the whole country. The French Iraq entry ('Vigilance renforcée', level 2) and the Hungarian Malawi entry (level 4) are unverified outliers against every other issuer.",
    "proposedFix": "Give 'avoid all travel to parts' its own label ('against all travel to parts of the country') and treat near-whole-country cases as level 4; re-check the French (IRQ) and Hungarian (MWI) parses against the live pages.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3,
+     "open": 1
+    }
+   }
   },
   {
    "id": "I47",
@@ -2136,7 +2512,15 @@
    ],
    "rootCause": "The headline score is 1 + 9*composite^0.96 while the bars show 10*p, so they use different scales and the score is lifted relative to the bars (BRA 6.6 vs a best pillar of 6.5; EST 8.7 vs 8.3-8.6), with nothing on the page to explain it.",
    "proposedFix": "Show pillars on the same 1-10 transform as the score (1 + 9*p^0.96), or add a one-line note that the overall score uses a calibrated 1-10 scale.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 1
+    }
+   }
   },
   {
    "id": "I48",
@@ -2170,7 +2554,15 @@
    ],
    "rootCause": "The de FAQ templates put the bare {name} in subject and dative positions; only q1/q2 use getGermanDirectional and the plural verb slots, so names that need an article or a dative form (der Iran, die Philippinen, den Vereinigten Arabischen Emiraten) come out ungrammatical.",
    "proposedFix": "Use getGermanNominative for subjects and add a dative helper ('von den ...', 'vom ...') for every de FAQ slot.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I49",
@@ -2200,7 +2592,15 @@
    ],
    "rootCause": "The natural-hazards pillar is INFORM exposure plus live GDACS/ReliefWeb alert counts with no preparedness term, and the v10 calibration stretches it (p' = -0.114 + 1.311*p); Japan's pillar falls to 0.44 (exposure 8.3/10 plus two transient GDACS alerts), which outweighs its better conflict, crime and governance and puts JPN 8.14 below ITA 8.22.",
    "proposedFix": "Combine exposure with coping capacity (INFORM 'lack of coping capacity') in the hazard pillar, cap the effect of transient alerts, and revisit the 1.31 stretch.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 2
+    }
+   }
   },
   {
    "id": "I50",
@@ -2234,7 +2634,15 @@
    ],
    "rootCause": "The fetcher sums OWID's per-country totals of interstate, intrastate and one-sided violence; the raw data really holds ARG 45 deaths in 2025 and RUS 4,420, but whether those are events on the country's territory or deaths attributed to it as a party could not be settled.",
    "proposedFix": "Check the OWID/UCDP country attribution (location vs. side) and, if needed, use event-level GED filtered by location; re-run ARG and RUS.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "unverified",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "unverified": 4
+    }
+   }
   },
   {
    "id": "I51",
@@ -2264,7 +2672,15 @@
    ],
    "rootCause": "The BMEIA (Austria) and Argentine fetchers turn every country entry on the ministry's page into an advisory, including the ministry's own country, and nothing downstream drops issuer = destination, so AUT lists 'Austrian Federal Ministry: Level 1' and ARG 'Argentina Ministry of Foreign Affairs: Level 2', both counted in the consensus.",
    "proposedFix": "Drop advisory_level_<issuer> for the issuer's own ISO3 when advisories are merged (one rule for all issuers), with a unit test.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 1
+    }
+   }
   },
   {
    "id": "I52",
@@ -2293,7 +2709,15 @@
    ],
    "rootCause": "getItForm has no rule for names that start with 'Isola', so getItalianLocative falls back to bare 'in' and produces 'in Isola Bouvet' instead of 'sull'Isola Bouvet' or 'nell'Isola di Natale'.",
    "proposedFix": "Add the feminine 'Isola ...' rule (sull'/nell') or explicit overrides for BVT, CXR and similar names.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 1
+    }
+   }
   },
   {
    "id": "I53",
@@ -2328,7 +2752,15 @@
    ],
    "rootCause": "The it low-coverage note says 'score' instead of 'punteggio'; country.compare_title says 'paesi confinanti' (land borders) although the border map includes maritime neighbours (NZL lists Australia and Fiji); Intl it-IT leaves four-digit counts ungrouped ('2428 persone') while '100.000' is grouped on the same page.",
    "proposedFix": "Use 'punteggio' and 'paesi vicini', and format counts with grouping always on.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I54",
@@ -2370,7 +2802,15 @@
    ],
    "rootCause": "Pillars are sorted on unrounded scores, and only a near-tie of the whole spread (<= 0.05, NEAR_TIE_SPREAD) is detected, so two pillars that both display 6.6 or 8.3 are still presented as 'above all' or 'best-rated' (BWA, CPV, GRC, HRV, FIN, DNK).",
    "proposedFix": "Compare the displayed one-decimal values; when the top or bottom two tie, name both ('health and crime, both 6.6/10').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6
+    }
+   }
   },
   {
    "id": "I55",
@@ -2412,7 +2852,15 @@
    ],
    "rootCause": "SentimentPillar renders the heading t('country.pillar.sentiment') ('Community Sentiment') and right after it the badge t('sentiment.badge') ('Community'), so every page in every language reads 'Sentiment della community Community', 'Sentimiento de la comunidad Comunidad' and so on.",
    "proposedFix": "Drop the badge or give it a different word (e.g. 'Travellers' votes'), or hide it from the text and screen readers.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 7
+    }
+   }
   },
   {
    "id": "I56",
@@ -2449,7 +2897,15 @@
    ],
    "rootCause": "The es and fr a1Formula strings embed the untranslated '(Bayesian shrinkage)', and the de string renders 'instead of guessing' as 'statt geschätzt zu werden' ('instead of being estimated'), on every scored page.",
    "proposedFix": "Translate or drop the parenthesis ('contracción bayesiana', 'rétrécissement bayésien') and change the de phrase to 'statt zu raten'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I57",
@@ -2487,7 +2943,15 @@
    ],
    "rootCause": "a3Cap was translated word for word from 'pulled sharply toward the low end, on top of whatever its other pillars show' ('se empuja marcadamente hacia el extremo bajo', 'puxada para o lado mais baixo', '这还是在其他支柱已有表现的基础之上'), which reads as machine translation on every page where most governments advise against all travel.",
    "proposedFix": "Rewrite it natively, e.g. es 'lo que baja mucho su puntuación global, más allá de lo que indican los demás pilares', zh '因此总分被大幅拉低，降幅超出其他支柱本身的影响'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6
+    }
+   }
   },
   {
    "id": "I58",
@@ -2519,7 +2983,15 @@
    ],
    "rootCause": "a1Verdict.moderate ends with a fixed 'Stay alert to the specific risks below' (fr 'Restez attentif aux risques spécifiques détaillés plus bas', zh '请留意下方列出的具体风险'), which names no risk and is followed by formula boilerplate rather than a list.",
    "proposedFix": "Replace it with the page's actual top risk ('watch for street crime in cities: crime 6.3/10') or drop it.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 2
+    }
+   }
   },
   {
    "id": "I59",
@@ -2555,7 +3027,15 @@
    ],
    "rootCause": "The zh a3None and a3NoneGrey strings say '你所在国家' while the rest of the site uses 您, and every language's a3None adds an unsupported generalisation ('typically the case for very small or remote territories').",
    "proposedFix": "Use 您 and drop the generalisation (keep only 'no government in our dataset publishes an advisory for X').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 4
+    }
+   }
   },
   {
    "id": "I60",
@@ -2593,7 +3073,15 @@
    ],
    "rootCause": "The zh low-coverage note uses ASCII ',' and '.', FAQ q3 puts spaces around {name} ('对 几内亚 有何评价') and two verdicts write '得分为 {score}', and the summary template '风险等级为{riskLevel}' doubles 风险 with the band label '风险极低' (or inserts the band name '高度谨慎').",
    "proposedFix": "Use full-width punctuation, remove the spaces, and change the template to '风险等级：{riskLevel}' or use band labels without '风险'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 6
+    }
+   }
   },
   {
    "id": "I61",
@@ -2627,7 +3115,16 @@
    ],
    "rootCause": "The World Bank row note says the series lags 1-2 years, but 35 scored places carry values from 2022 or earlier (AFG, BEL, GBR, SWZ and RUS from 2021; SLV from 2022, since fallen to about 2.4), and the max-age rule only drops values older than five years, so a four- or five-year-old rate counts at full weight and can be the summary's main concern (SYC).",
    "proposedFix": "Show the real age in the note ('2021, five years old') and down-weight homicide values by data age (e.g. halve precision after two years) instead of the all-or-nothing five-year cut.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 2,
+     "open": 2
+    }
+   }
   },
   {
    "id": "I62",
@@ -2663,7 +3160,15 @@
    ],
    "rootCause": "The de title template hard-codes 'Score {score}/10', the description tail says 'Kostenloser Wert' (unidiomatic), and the high-caution verdict inserts the band label 'hohe Vorsicht geboten' into 'ist als {riskLevel} eingestuft', which needs a noun.",
    "proposedFix": "Use 'Sicherheitswert {score}/10', 'Kostenlose Bewertung aus ...', and a noun-form band label in the verdict.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I63",
@@ -2696,7 +3201,15 @@
    ],
    "rootCause": "The es a1Drivers and a2 templates insert {weakest}/{strongest}/{second} bare where Spanish needs an article ('El pilar más fuerte de Grecia es el conflicto', 'También merece atención la criminalidad').",
    "proposedFix": "Add the article to the es pillar labels used in prose ('el conflicto', 'la criminalidad', 'la salud', 'la gobernanza', 'los riesgos naturales').",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I64",
@@ -2733,7 +3246,15 @@
    ],
    "rootCause": "zh level and indicator names live in separate tables translated independently: level 4 is '建议避免一切旅行' in country-summary-copy.ts but '切勿前往' in advisoryLevelWords, and the summary topics (流行病传播, 就医不便, 故意杀人案) differ from the FAQ labels (流行病与疾病风险, 医疗服务可及性, 谋杀率).",
    "proposedFix": "Define one zh term per level and per indicator and use it in both tables (ideally from one shared source).",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 5
+    }
+   }
   },
   {
    "id": "I65",
@@ -2766,7 +3287,15 @@
    ],
    "rootCause": "The en title 'Is {name} Safe?', the FAQ 'has {advisoryCount}' and \"{name}'s strongest pillar\" do not handle plural names; getEnglishCountryPhrase adds 'the' but there is no plural flag for the verb or the possessive.",
    "proposedFix": "Add an en plural flag in country-grammar.ts and use 'Are ... safe?', 'have' and \"the Philippines'\" for plural names.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   },
   {
    "id": "I66",
@@ -2800,7 +3329,16 @@
    ],
    "rootCause": "UCDP deaths are log-normalised against D_MAX = 24,000, so 75,044 deaths score the same 0 as 24,000, and the conflict pillar also averages in GPI militarisation (0.68 for Sudan). Sudan's conflict 2.1 against South Sudan's 3.2 is then offset by South Sudan's worse crime and governance, and both land at 3.4 (BFA 4.1 vs TCD 4.3 despite 4,333 vs 41 deaths).",
    "proposedFix": "Let conflict dominate at the bottom of the scale (stronger soft-min on conflict, or an extra penalty beyond D_MAX), drop militarisation from the pillar, and test the SDN<SSD and BFA<TCD constraints.",
-   "formulaRelevant": true
+   "formulaRelevant": true,
+   "status": "partial",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 2,
+     "partial": 1
+    }
+   }
   },
   {
    "id": "I67",
@@ -2828,7 +3366,15 @@
    ],
    "rootCause": "The pt high-caution verdict renders 'Yes, but only with real caution' literally, on the 15 pt pages in the 5-6 band.",
    "proposedFix": "Use 'Sim, mas com muita cautela'.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 1
+    }
+   }
   },
   {
    "id": "I68",
@@ -2859,7 +3405,16 @@
    ],
    "rootCause": "en copy mixes US 'organized'/'travelers' with UK 'neighbouring'/'militarisation', and the summary lowercases the band label ('rated as high caution') while the FAQ keeps it capitalised ('classified as High caution').",
    "proposedFix": "Pick one spelling standard for en and one case rule for band labels in the summary and the FAQ.",
-   "formulaRelevant": false
+   "formulaRelevant": false,
+   "status": "fixed",
+   "recheck": {
+    "date": "2026-10-17",
+    "siteCommit": "fb13ff40",
+    "counts": {
+     "fixed": 3
+    }
+   }
   }
- ]
+ ],
+ "recheckedOn": "2026-10-17"
 }

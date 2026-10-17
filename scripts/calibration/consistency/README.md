@@ -23,7 +23,7 @@ countries"), plus score bounds and orderings that contradict well-known reality.
 | `findings.json` | Confirmed (and a few "uncertain") findings, most severe first; a template problem appears once per review batch with `iso3: "ALL"`. |
 | `findings-rejected.json` | Reviewer findings the verifier rejected, kept to measure reviewer precision. |
 | `constraints.json` | Formula constraints derived from confirmed findings, each pointing at its finding(s). |
-| `issues.json` | The findings grouped by root cause (one fix in one place), most severe first: `title`, `severity`, `fixArea`, `languages`, `findings`, `uncertainFindings`, `pages` (rough count, see `pagesNote`), `examples`, `source` (path:line at `siteCommit`), `rootCause`, `proposedFix`, `formulaRelevant`. |
+| `issues.json` | The findings grouped by root cause (one fix in one place), most severe first: `title`, `severity`, `fixArea`, `languages`, `findings`, `uncertainFindings`, `pages` (rough count, see `pagesNote`), `examples`, `source` (path:line at `siteCommit`), `rootCause`, `proposedFix`, `formulaRelevant`; after a re-check also `status` and `recheck` (see "Re-check"). |
 | `corrections.json` | Owner corrections the assembler applies after the verifier, for verdicts that were wrong for a reason the verifier could not see. Each must match a finding, or assembly fails. |
 
 ### Finding fields
@@ -35,7 +35,7 @@ countries"), plus score bounds and orderings that contradict well-known reality.
 (`high` = misleading for a safety decision or nonsense at the top of the page), `field` (where on the
 page), `quote` (exact), `problem`, `expected`, `formulaRelevant`, `fixArea`, `verdict` (`confirmed` /
 `uncertain`), `verification` (who checked and what they found), `instances` (for script template
-problems), `status` (`open` / `fixed`), `foundOn`, `dataDate`, `siteCommit`. `problem` and
+problems), `status` (see "Re-check"), `recheck`, `foundOn`, `dataDate`, `siteCommit`. `problem` and
 `expected` are the reviewer's words; where the verifier corrected them (it often narrows an
 overstated claim), its note in `verification` is the authoritative reading.
 
@@ -57,6 +57,7 @@ Baseline on 2026-10-15 (`npx tsx scripts/calibration/evaluate-consistency.ts <sc
 | v10, published 2026-10-15 | 5 / 14 | 9 | 1.90 points |
 | v9.1, last snapshot 2026-10-14 | 7 / 14 | 7 | 2.88 points |
 | v10.1 (weights 10.1.0), offline on the 2026-10-15 data | 10 / 14 | 4 | 0.75 points |
+| v10.1, published 2026-10-17 (first run of the release) | 10 / 14 | 4 | 0.84 points |
 
 The v10.1 changes were chosen with `scripts/calibration/compare-formulas.ts`, which prints this
 check for every formula variant next to the community-vote error, the extremes, the band changes
@@ -110,3 +111,43 @@ To repeat the audit after a release: run steps 1-5 on the new build into a scrat
 The assembler always builds a fresh database with fresh ids, so merge the new run into these files
 rather than overwriting them: mark findings that no longer reproduce as `fixed` instead of deleting
 them, and keep existing ids, so constraints and issues keep pointing at the right findings.
+
+## Re-check (2026-10-17, formula v10.1, data 2026-10-17, site fb13ff40)
+
+`npx tsx scripts/audit/recheck-findings.ts --old <2026-10-15 facts dir> --new <new facts dir>
+--date <date> --commit <sha> [--verdicts a.json,b.json] [--scores <scores.json>]` merges a re-check
+into `findings.json` and `issues.json` in place, keeping every id. Each finding gets a `status` and
+a `recheck` object (`date`, `siteCommit`, `method`, `evidence`). The first input that applies sets
+the status:
+
+1. A **review verdict**, for what the checks below cannot settle. Run the reviewers with the old
+   and new page texts side by side, judging the problem, not the literal quote.
+2. The finding's **formula constraint** on the new scores (pass: fixed, fail: open). A score quote
+   disappears as soon as the number moves, so the quote alone would call "UAE 7.3 is too high"
+   fixed at 7.2.
+3. A **mechanical quote search** on the new build. A quote gone even with numbers masked counts as
+   fixed: an adversarial review of 40 such findings on 2026-10-17 confirmed all 40.
+
+Statuses:
+
+- Findings: `fixed`, `partial` (better, not done), `open`, `by-design` (matches an owner decision),
+  `unverified` (nothing settled it).
+- Issues: rolled up from their findings. Open if any finding is open or partial (partial when part
+  of it is fixed). Fixed or by-design when nothing is left, whichever covers more findings.
+
+Result on 2026-10-17:
+
+- **Findings:** 542 fixed, 9 by design, 3 partial, 7 open, 2 unverified.
+  - 436 settled by the quote search alone, 2 by their constraint.
+  - 125 settled by review: the 85 the checks could not settle (four Opus reviewers) and the
+    40-finding sample (one adversarial reviewer).
+  - The review found one more defect, fixed the same day: the German meta description said
+    "Schwächster Bereich" for a focus that excludes governance (I02).
+- **Issues:** 59 fixed, 2 by design (I36 health calibration, I43 faithful source values), 1 unverified (I50), 6 partial:
+  - **I10:** BLR 5.39, PNG 6.06 and ARE 7.18 still above their bounds.
+  - **I42:** Cabo Verde 6.89, below its 7.0 floor.
+  - **I44:** Jamaica/Dominican Republic and South Africa/Indonesia are in the right order, but only 0.1 apart.
+  - **I46:** France rates Iraq level 2. The French page has no whole-country sentence, and Baghdad is orange, so the parser falls to its named-zone cap.
+  - **I61:** World Bank homicide figures from 2021-2022 still weigh like current ones.
+  - **I66:** Chad/Burkina Faso in the right order, 0.12 apart.
+- **I50**, UCDP deaths attributed to gangs or one-sided violence: cannot be settled from the page.
