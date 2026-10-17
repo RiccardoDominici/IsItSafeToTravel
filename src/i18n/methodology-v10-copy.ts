@@ -5,7 +5,7 @@
  *  - the rules that decide what counts (latest edition only, 5-year maximum age, per-pillar
  *    scale continuity, the grey "partial data" rule with its danger guard, the community rule,
  *    the honest update cadence),
- *  - the dated changelog entries: v10.1 (2026-10-16, the consistency-audit changes) above v10
+ *  - the dated changelog entries: v10.1 (2026-10-17, the consistency-audit changes) above v10
  *    (2026-10-15).
  *
  * WHY a module instead of ui.ts keys: the rules are lists of (title, text) pairs and the changelog
@@ -25,7 +25,7 @@ export const FORMULA_V10_RELEASE_DATE = '2026-10-15';
  * Release date of formula v10.1 (changelog): the first scheduled pipeline run after the merge of
  * feat/formula-v10.1. Move it if the merge lands later.
  */
-export const FORMULA_V101_RELEASE_DATE = '2026-10-16';
+export const FORMULA_V101_RELEASE_DATE = '2026-10-17';
 
 export interface MethodologyRule {
   /** Anchor id ("grey-rule" is linked from the grey hero of every partial-data page). */
