@@ -21,7 +21,7 @@
         "eventid": 1001338,
         "episodeid": 12,
         "eventname": "CHAMPI-26",
-        "glide": "",
+        "glide": "TC-2026-000192-GUM",
         "name": "Tropical Cyclone CHAMPI-26",
         "description": "Tropical Cyclone CHAMPI-26",
         "htmldescription": "Red Tropical Cyclone CHAMPI-26 in Guam, Northern Mariana Islands from: 14 Oct 2026  to: 17 Oct 2026 .",
@@ -41,7 +41,7 @@
         "country": "Guam, Northern Mariana Islands",
         "fromdate": "2026-10-14T12:00:00",
         "todate": "2026-10-17T06:00:00",
-        "datemodified": "2026-10-17T07:39:05",
+        "datemodified": "2026-10-17T08:02:57",
         "iso3": "GUM",
         "source": "JTWC",
         "sourceid": "",
@@ -120,61 +120,6 @@
     {
       "type": "Feature",
       "bbox": [
-        -163.4,
-        -12.7,
-        -163.4,
-        -12.7
-      ],
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          -163.4,
-          -12.7
-        ]
-      },
-      "properties": {
-        "eventtype": "TC",
-        "eventid": 1001339,
-        "episodeid": 2,
-        "eventname": "ONE-26",
-        "glide": "",
-        "name": "Tropical Cyclone ONE-26",
-        "description": "Tropical Cyclone ONE-26",
-        "htmldescription": "Orange Tropical Cyclone ONE-26 in Cook Islands from: 16 Oct 2026  to: 16 Oct 2026 .",
-        "icon": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "iconoverall": "https://www.gdacs.org/images/gdacs_icons/maps/Orange/TC.png",
-        "url": {
-          "geometry": "https://www.gdacs.org/gdacsapi/api/polygons/getgeometry?eventtype=TC&eventid=1001339&episodeid=2",
-          "report": "https://www.gdacs.org/report.aspx?eventid=1001339&episodeid=2&eventtype=TC",
-          "details": "https://www.gdacs.org/gdacsapi/api/events/geteventdata?eventtype=TC&eventid=1001339"
-        },
-        "alertlevel": "Orange",
-        "alertscore": 2,
-        "episodealertlevel": "Orange",
-        "episodealertscore": 2,
-        "istemporary": "false",
-        "iscurrent": "true",
-        "country": "Cook Islands",
-        "fromdate": "2026-10-16T06:00:00",
-        "todate": "2026-10-16T18:00:00",
-        "datemodified": "2026-10-17T05:52:48",
-        "iso3": "COK",
-        "source": "JTWC",
-        "sourceid": "",
-        "polygonlabel": "Centroid",
-        "Class": "Point_Centroid",
-        "countryonland": "",
-        "affectedcountries": [],
-        "severitydata": {
-          "severity": 120.3696,
-          "severitytext": "Tropical Storm (maximum wind speed of 120 km/h)",
-          "severityunit": "km/h"
-        }
-      }
-    },
-    {
-      "type": "Feature",
-      "bbox": [
         -84,
         37.5,
         -84,
@@ -212,7 +157,7 @@
         "country": "United States",
         "fromdate": "2026-10-06T21:00:00",
         "todate": "2026-10-11T15:00:00",
-        "datemodified": "2026-10-17T07:42:14",
+        "datemodified": "2026-10-17T10:11:22",
         "iso3": "USA",
         "source": "NOAA",
         "sourceid": "",

@@ -28,35 +28,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "SWE": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:58:10.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/zweden",
-      "updatedAt": "2026-10-02T15:39:00.606Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_160.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2023-12-04T00:00:00Z"
-    }
-  },
   "BRB": {
     "de": {
       "level": 1,
@@ -84,6 +55,35 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-11T00:00:00Z"
+    }
+  },
+  "SWE": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:58:10.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/zweden",
+      "updatedAt": "2026-10-02T15:39:00.606Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_160.html"
+    },
+    "sk": {
+      "level": 2,
+      "text": "Consider necessity of travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2023-12-04T00:00:00Z"
     }
   },
   "DNK": {
@@ -159,28 +159,6 @@
       "updatedAt": "2024-01-11T00:00:00Z"
     }
   },
-  "EST": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:50:28.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/estland",
-      "updatedAt": "2026-09-17T07:50:33.638Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_155.html"
-    }
-  },
   "AND": {
     "de": {
       "level": 1,
@@ -201,6 +179,28 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_297.html"
+    }
+  },
+  "EST": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:50:28.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/estland",
+      "updatedAt": "2026-09-17T07:50:33.638Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_155.html"
     }
   },
   "FIN": {
@@ -225,28 +225,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_169.html"
     }
   },
-  "ZMB": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:03:27.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/zambia",
-      "updatedAt": "2026-05-29T07:49:44.816Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_104.html"
-    }
-  },
   "IRL": {
     "de": {
       "level": 1,
@@ -267,6 +245,28 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_151.html"
+    }
+  },
+  "ZMB": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:03:27.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/zambia",
+      "updatedAt": "2026-05-29T07:49:44.816Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_104.html"
     }
   },
   "SEN": {
@@ -736,28 +736,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_036.html"
     }
   },
-  "PRY": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:01:09.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/paraguay",
-      "updatedAt": "2026-06-17T11:34:30.726Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_258.html"
-    }
-  },
   "NIU": {
     "de": {
       "level": 1,
@@ -778,6 +756,28 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_777.html"
+    }
+  },
+  "PRY": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:01:09.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/paraguay",
+      "updatedAt": "2026-06-17T11:34:30.726Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_258.html"
     }
   },
   "PLW": {
@@ -802,28 +802,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_272.html"
     }
   },
-  "FJI": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:33:18.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/fiji",
-      "updatedAt": "2026-09-28T08:59:01.281Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_076.html"
-    }
-  },
   "SLV": {
     "de": {
       "level": 1,
@@ -844,6 +822,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_244.html"
+    }
+  },
+  "FJI": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:33:18.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/fiji",
+      "updatedAt": "2026-09-28T08:59:01.281Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_076.html"
     }
   },
   "GAB": {
@@ -941,6 +941,28 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
+  "GHA": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:35:22.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/ghana",
+      "updatedAt": "2026-10-13T13:54:07.282Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_096.html"
+    }
+  },
   "HTI": {
     "de": {
       "level": 4,
@@ -970,28 +992,6 @@
       "updatedAt": "2025-08-13T00:00:00Z"
     }
   },
-  "GHA": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:35:22.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/ghana",
-      "updatedAt": "2026-10-13T13:54:07.282Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_096.html"
-    }
-  },
   "GMB": {
     "de": {
       "level": 1,
@@ -1014,28 +1014,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_277.html"
     }
   },
-  "GUY": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:36:37.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guyana",
-      "updatedAt": "2026-10-16T09:57:25.309Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_294.html"
-    }
-  },
   "GNB": {
     "de": {
       "level": 1,
@@ -1056,6 +1034,28 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_140.html"
+    }
+  },
+  "GUY": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:36:37.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guyana",
+      "updatedAt": "2026-10-16T09:57:25.309Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_294.html"
     }
   },
   "PSE": {
@@ -1161,28 +1161,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "MNG": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:53:40.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mongolie",
-      "updatedAt": "2026-08-28T10:21:37.194Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_019.html"
-    }
-  },
   "MRT": {
     "de": {
       "level": 2,
@@ -1205,6 +1183,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_278.html"
     }
   },
+  "MNG": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:53:40.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mongolie",
+      "updatedAt": "2026-08-28T10:21:37.194Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_019.html"
+    }
+  },
   "MLI": {
     "de": {
       "level": 4,
@@ -1225,28 +1225,6 @@
       "text": "Do not travel / evacuate (advisory)",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_121.html"
-    }
-  },
-  "MHL": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:52:28.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/marshalleilanden",
-      "updatedAt": "2026-07-22T08:18:40.948Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_269.html"
     }
   },
   "MDA": {
@@ -1278,6 +1256,28 @@
       "updatedAt": "2026-03-27T00:00:00Z"
     }
   },
+  "MHL": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:52:28.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/marshalleilanden",
+      "updatedAt": "2026-07-22T08:18:40.948Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_269.html"
+    }
+  },
   "FSM": {
     "de": {
       "level": 1,
@@ -1298,28 +1298,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_270.html"
-    }
-  },
-  "NGA": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:57:40.000Z"
-    },
-    "nl": {
-      "level": 3,
-      "text": "Alleen noodzakelijke reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/nigeria",
-      "updatedAt": "2026-10-13T13:55:34.302Z"
-    },
-    "jp": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_115.html"
     }
   },
   "MMR": {
@@ -1351,6 +1329,28 @@
       "updatedAt": "2025-06-08T00:00:00Z"
     }
   },
+  "NGA": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:57:40.000Z"
+    },
+    "nl": {
+      "level": 3,
+      "text": "Alleen noodzakelijke reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/nigeria",
+      "updatedAt": "2026-10-13T13:55:34.302Z"
+    },
+    "jp": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_115.html"
+    }
+  },
   "MOZ": {
     "de": {
       "level": 2,
@@ -1371,28 +1371,6 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_123.html"
-    }
-  },
-  "SOM": {
-    "de": {
-      "level": 4,
-      "text": "Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:05:51.000Z"
-    },
-    "nl": {
-      "level": 3,
-      "text": "Alleen noodzakelijke reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/somalie",
-      "updatedAt": "2026-08-04T08:38:16.756Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_110.html"
     }
   },
   "NER": {
@@ -1424,6 +1402,28 @@
       "updatedAt": "2024-05-20T00:00:00Z"
     }
   },
+  "SOM": {
+    "de": {
+      "level": 4,
+      "text": "Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:05:51.000Z"
+    },
+    "nl": {
+      "level": 3,
+      "text": "Alleen noodzakelijke reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/somalie",
+      "updatedAt": "2026-08-04T08:38:16.756Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_110.html"
+    }
+  },
   "ZWE": {
     "de": {
       "level": 1,
@@ -1444,6 +1444,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_106.html"
+    }
+  },
+  "SLE": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:05:07.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sierra-leone",
+      "updatedAt": "2026-10-16T12:26:28.623Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_105.html"
     }
   },
   "KNA": {
@@ -1475,28 +1497,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "SLE": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:05:07.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sierra-leone",
-      "updatedAt": "2026-10-16T12:26:28.623Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_105.html"
-    }
-  },
   "LTU": {
     "de": {
       "level": 1,
@@ -1517,28 +1517,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_192.html"
-    }
-  },
-  "NLD": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:55:07.000Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_157.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
   "LVA": {
@@ -1570,6 +1548,28 @@
       "updatedAt": "2025-06-12T00:00:00Z"
     }
   },
+  "NLD": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:55:07.000Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_157.html"
+    },
+    "sk": {
+      "level": 2,
+      "text": "Consider necessity of travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-12T00:00:00Z"
+    }
+  },
   "MLT": {
     "de": {
       "level": 1,
@@ -1590,21 +1590,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_195.html"
-    }
-  },
-  "VAT": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:51:35.000Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_167.html"
     }
   },
   "LUX": {
@@ -1636,6 +1621,21 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
+  "VAT": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:51:35.000Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_167.html"
+    }
+  },
   "MCO": {
     "de": {
       "level": 1,
@@ -1656,28 +1656,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_284.html"
-    }
-  },
-  "HUN": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:59:16.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/hongarije",
-      "updatedAt": "2026-08-31T13:12:35.569Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_168.html"
     }
   },
   "CZE": {
@@ -1709,6 +1687,28 @@
       "updatedAt": "2026-05-26T00:00:00Z"
     }
   },
+  "HUN": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:59:16.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/hongarije",
+      "updatedAt": "2026-08-31T13:12:35.569Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_168.html"
+    }
+  },
   "BLR": {
     "de": {
       "level": 4,
@@ -1738,35 +1738,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "BGD": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:10:28.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/bangladesh",
-      "updatedAt": "2026-09-09T11:23:50.161Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_012.html"
-    },
-    "sk": {
-      "level": 1,
-      "text": "No specific warning",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-11T00:00:00Z"
-    }
-  },
   "BEN": {
     "de": {
       "level": 2,
@@ -1794,6 +1765,35 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-05-20T00:00:00Z"
+    }
+  },
+  "BGD": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:10:28.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/bangladesh",
+      "updatedAt": "2026-09-09T11:23:50.161Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_012.html"
+    },
+    "sk": {
+      "level": 1,
+      "text": "No specific warning",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-11T00:00:00Z"
     }
   },
   "BTN": {
@@ -1965,28 +1965,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_177.html"
     }
   },
-  "SVK": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:58:28.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/slowakije",
-      "updatedAt": "2026-09-04T08:36:13.434Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_184.html"
-    }
-  },
   "SMR": {
     "de": {
       "level": 1,
@@ -2009,26 +1987,26 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_285.html"
     }
   },
-  "AGO": {
+  "SVK": {
     "de": {
       "level": 1,
       "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:08:15.000Z"
+      "updatedAt": "2026-10-13T08:58:28.000Z"
     },
     "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
+      "level": 1,
+      "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/angola",
-      "updatedAt": "2026-10-13T13:58:55.340Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/slowakije",
+      "updatedAt": "2026-09-04T08:36:13.434Z"
     },
     "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
+      "level": 1,
+      "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_092.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_184.html"
     }
   },
   "GNQ": {
@@ -2053,6 +2031,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_276.html"
     }
   },
+  "AGO": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:08:15.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/angola",
+      "updatedAt": "2026-10-13T13:58:55.340Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_092.html"
+    }
+  },
   "ARM": {
     "de": {
       "level": 2,
@@ -2073,35 +2073,6 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_199.html"
-    }
-  },
-  "DJI": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:17:37.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/djibouti",
-      "updatedAt": "2026-06-25T12:04:02.252Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_141.html"
-    },
-    "sk": {
-      "level": 3,
-      "text": "Avoid travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2026-01-20T00:00:00Z"
     }
   },
   "CIV": {
@@ -2162,33 +2133,33 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "SDN": {
+  "DJI": {
     "de": {
-      "level": 4,
-      "text": "Reisewarnung",
+      "level": 1,
+      "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:08:08.000Z"
+      "updatedAt": "2026-10-13T09:17:37.000Z"
     },
     "nl": {
-      "level": 4,
-      "text": "Niet reizen",
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sudan",
-      "updatedAt": "2026-09-22T08:06:26.995Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/djibouti",
+      "updatedAt": "2026-06-25T12:04:02.252Z"
     },
     "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
+      "level": 2,
+      "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_107.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_141.html"
     },
     "sk": {
-      "level": 4,
-      "text": "Do not travel",
+      "level": 3,
+      "text": "Avoid travel",
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-15T00:00:00Z"
+      "updatedAt": "2026-01-20T00:00:00Z"
     }
   },
   "SSD": {
@@ -2220,6 +2191,35 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
+  "SDN": {
+    "de": {
+      "level": 4,
+      "text": "Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:08:08.000Z"
+    },
+    "nl": {
+      "level": 4,
+      "text": "Niet reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sudan",
+      "updatedAt": "2026-09-22T08:06:26.995Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_107.html"
+    },
+    "sk": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-15T00:00:00Z"
+    }
+  },
   "TJK": {
     "de": {
       "level": 2,
@@ -2240,6 +2240,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_201.html"
+    }
+  },
+  "SUR": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:09:15.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/suriname",
+      "updatedAt": "2026-10-16T13:15:36.175Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_250.html"
     }
   },
   "LCA": {
@@ -2271,28 +2293,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "SUR": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:09:15.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/suriname",
-      "updatedAt": "2026-10-16T13:15:36.175Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_250.html"
-    }
-  },
   "TCD": {
     "de": {
       "level": 3,
@@ -2322,28 +2322,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "TLS": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:11:24.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/oost-timor",
-      "updatedAt": "2026-06-25T10:45:27.103Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_295.html"
-    }
-  },
   "TGO": {
     "de": {
       "level": 2,
@@ -2364,6 +2342,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_114.html"
+    }
+  },
+  "TLS": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:11:24.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/oost-timor",
+      "updatedAt": "2026-06-25T10:45:27.103Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_295.html"
     }
   },
   "TON": {
@@ -2395,28 +2395,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "URY": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:16:59.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/uruguay",
-      "updatedAt": "2026-09-15T13:09:13.498Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_242.html"
-    }
-  },
   "TKM": {
     "de": {
       "level": 1,
@@ -2437,6 +2415,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_202.html"
+    }
+  },
+  "URY": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:16:59.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/uruguay",
+      "updatedAt": "2026-09-15T13:09:13.498Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_242.html"
     }
   },
   "TUV": {
@@ -2468,28 +2468,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "CAF": {
-    "de": {
-      "level": 4,
-      "text": "Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:18:48.000Z"
-    },
-    "nl": {
-      "level": 4,
-      "text": "Niet reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/centraal-afrikaanse-republiek",
-      "updatedAt": "2026-09-22T15:09:39.794Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_112.html"
-    }
-  },
   "VEN": {
     "de": {
       "level": 3,
@@ -2512,6 +2490,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_260.html"
     }
   },
+  "CAF": {
+    "de": {
+      "level": 4,
+      "text": "Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:18:48.000Z"
+    },
+    "nl": {
+      "level": 4,
+      "text": "Niet reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/centraal-afrikaanse-republiek",
+      "updatedAt": "2026-09-22T15:09:39.794Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_112.html"
+    }
+  },
   "GIN": {
     "de": {
       "level": 2,
@@ -2532,6 +2532,28 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_099.html"
+    }
+  },
+  "PRK": {
+    "de": {
+      "level": 3,
+      "text": "Von Reisen wird abgeraten",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:18:20.000Z"
+    },
+    "nl": {
+      "level": 4,
+      "text": "Niet reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/noord-korea",
+      "updatedAt": "2026-08-17T09:29:35.485Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_035.html"
     }
   },
   "SRB": {
@@ -2563,28 +2585,6 @@
       "updatedAt": "2026-02-06T00:00:00Z"
     }
   },
-  "PRK": {
-    "de": {
-      "level": 3,
-      "text": "Von Reisen wird abgeraten",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:18:20.000Z"
-    },
-    "nl": {
-      "level": 4,
-      "text": "Niet reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/noord-korea",
-      "updatedAt": "2026-08-17T09:29:35.485Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_035.html"
-    }
-  },
   "NRU": {
     "de": {
       "level": 1,
@@ -2605,28 +2605,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_271.html"
-    }
-  },
-  "LIE": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-14T12:12:45.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/liechtenstein",
-      "updatedAt": "2026-09-18T14:10:31.527Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_283.html"
     }
   },
   "ISL": {
@@ -2651,6 +2629,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_282.html"
     }
   },
+  "LIE": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-14T12:12:45.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/liechtenstein",
+      "updatedAt": "2026-09-18T14:10:31.527Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_283.html"
+    }
+  },
   "VUT": {
     "de": {
       "level": 1,
@@ -2671,28 +2671,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_078.html"
-    }
-  },
-  "PNG": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-14T13:18:39.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/papoea-nieuw-guinea",
-      "updatedAt": "2026-09-08T09:48:27.922Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_075.html"
     }
   },
   "SLB": {
@@ -2724,6 +2702,28 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
+  "PNG": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-14T13:18:39.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/papoea-nieuw-guinea",
+      "updatedAt": "2026-09-08T09:48:27.922Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_075.html"
+    }
+  },
   "MKD": {
     "de": {
       "level": 1,
@@ -2738,28 +2738,6 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/noord-macedonie",
       "updatedAt": "2026-05-29T14:56:17.532Z"
-    }
-  },
-  "TTO": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-15T08:12:25.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/trinidad-en-tobago",
-      "updatedAt": "2026-09-25T14:37:59.616Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_253.html"
     }
   },
   "CYP": {
@@ -2791,6 +2769,28 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "TTO": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-15T08:12:25.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/trinidad-en-tobago",
+      "updatedAt": "2026-09-25T14:37:59.616Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_253.html"
+    }
+  },
   "AUS": {
     "de": {
       "level": 1,
@@ -2811,28 +2811,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_071.html"
-    }
-  },
-  "CRI": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:18:51.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/costa-rica",
-      "updatedAt": "2026-06-25T10:55:31.875Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_247.html"
     }
   },
   "OMN": {
@@ -2893,26 +2871,26 @@
       "updatedAt": "2026-08-03T00:00:00Z"
     }
   },
-  "MNE": {
+  "CRI": {
     "de": {
       "level": 1,
       "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:53:59.000Z"
+      "updatedAt": "2026-10-13T09:18:51.000Z"
     },
     "nl": {
-      "level": 1,
-      "text": "Veilig",
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montenegro",
-      "updatedAt": "2026-07-20T11:32:16.605Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/costa-rica",
+      "updatedAt": "2026-06-25T10:55:31.875Z"
     },
     "jp": {
-      "level": 1,
-      "text": "No danger information issued",
+      "level": 2,
+      "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_179.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_247.html"
     }
   },
   "JAM": {
@@ -2937,6 +2915,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_249.html"
     }
   },
+  "MNE": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:53:59.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/montenegro",
+      "updatedAt": "2026-07-20T11:32:16.605Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_179.html"
+    }
+  },
   "GTM": {
     "de": {
       "level": 1,
@@ -2957,28 +2957,6 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_246.html"
-    }
-  },
-  "MUS": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-15T13:48:56.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mauritius",
-      "updatedAt": "2026-10-06T13:40:48.743Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_279.html"
     }
   },
   "KEN": {
@@ -3010,6 +2988,28 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "MUS": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-15T13:48:56.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mauritius",
+      "updatedAt": "2026-10-06T13:40:48.743Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_279.html"
+    }
+  },
   "KGZ": {
     "de": {
       "level": 1,
@@ -3030,28 +3030,6 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_265.html"
-    }
-  },
-  "NAM": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:56:27.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/namibie",
-      "updatedAt": "2026-10-01T15:30:54.796Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_143.html"
     }
   },
   "UKR": {
@@ -3112,26 +3090,26 @@
       "updatedAt": "2024-06-27T00:00:00Z"
     }
   },
-  "LKA": {
+  "NAM": {
     "de": {
       "level": 1,
       "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:07:26.000Z"
+      "updatedAt": "2026-10-13T09:56:27.000Z"
     },
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sri-lanka",
-      "updatedAt": "2026-09-14T14:51:33.682Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/namibie",
+      "updatedAt": "2026-10-01T15:30:54.796Z"
     },
     "jp": {
       "level": 2,
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_006.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_143.html"
     }
   },
   "NZL": {
@@ -3156,6 +3134,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_074.html"
     }
   },
+  "LKA": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:07:26.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/sri-lanka",
+      "updatedAt": "2026-09-14T14:51:33.682Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_006.html"
+    }
+  },
   "PRT": {
     "de": {
       "level": 1,
@@ -3176,28 +3176,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_174.html"
-    }
-  },
-  "UGA": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:16:35.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/uganda",
-      "updatedAt": "2026-10-15T15:05:36.416Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_093.html"
     }
   },
   "IRN": {
@@ -3229,6 +3207,28 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "UGA": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:16:35.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/uganda",
+      "updatedAt": "2026-10-15T15:05:36.416Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_093.html"
+    }
+  },
   "VNM": {
     "de": {
       "level": 2,
@@ -3256,35 +3256,6 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2025-06-26T00:00:00Z"
-    }
-  },
-  "ISR": {
-    "de": {
-      "level": 3,
-      "text": "Von Reisen wird abgeraten",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:39:31.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/israel",
-      "updatedAt": "2026-09-24T13:48:13.403Z"
-    },
-    "jp": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_044.html"
-    },
-    "sk": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
   "CHN": {
@@ -3316,6 +3287,35 @@
       "updatedAt": "2026-01-19T00:00:00Z"
     }
   },
+  "ISR": {
+    "de": {
+      "level": 3,
+      "text": "Von Reisen wird abgeraten",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:39:31.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/israel",
+      "updatedAt": "2026-09-24T13:48:13.403Z"
+    },
+    "jp": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_044.html"
+    },
+    "sk": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-12T00:00:00Z"
+    }
+  },
   "IND": {
     "de": {
       "level": 2,
@@ -3343,29 +3343,6 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-12T00:00:00Z"
-    }
-  },
-  "JPN": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:41:06.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/japan",
-      "updatedAt": "2026-08-26T15:00:59.129Z"
-    },
-    "sk": {
-      "level": 1,
-      "text": "No specific warning",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2026-04-10T00:00:00Z"
     }
   },
   "PAK": {
@@ -3397,6 +3374,29 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "JPN": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:41:06.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/japan",
+      "updatedAt": "2026-08-26T15:00:59.129Z"
+    },
+    "sk": {
+      "level": 1,
+      "text": "No specific warning",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2026-04-10T00:00:00Z"
+    }
+  },
   "ZAF": {
     "de": {
       "level": 1,
@@ -3417,35 +3417,6 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_122.html"
-    }
-  },
-  "AFG": {
-    "de": {
-      "level": 4,
-      "text": "Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:07:42.000Z"
-    },
-    "nl": {
-      "level": 4,
-      "text": "Niet reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/afghanistan",
-      "updatedAt": "2026-04-20T13:58:10.646Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_041.html"
-    },
-    "sk": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-11T00:00:00Z"
     }
   },
   "GRC": {
@@ -3477,6 +3448,35 @@
       "updatedAt": "2025-06-12T00:00:00Z"
     }
   },
+  "AFG": {
+    "de": {
+      "level": 4,
+      "text": "Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:07:42.000Z"
+    },
+    "nl": {
+      "level": 4,
+      "text": "Niet reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/afghanistan",
+      "updatedAt": "2026-04-20T13:58:10.646Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_041.html"
+    },
+    "sk": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-11T00:00:00Z"
+    }
+  },
   "FRA": {
     "de": {
       "level": 1,
@@ -3506,28 +3506,6 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
-  "BRA": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-14T12:26:58.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/brazilie",
-      "updatedAt": "2026-09-18T12:41:41.414Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_259.html"
-    }
-  },
   "ARG": {
     "de": {
       "level": 1,
@@ -3548,6 +3526,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_241.html"
+    }
+  },
+  "BRA": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-14T12:26:58.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/brazilie",
+      "updatedAt": "2026-09-18T12:41:41.414Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_259.html"
     }
   },
   "POL": {
@@ -3579,28 +3579,6 @@
       "updatedAt": "2025-06-16T00:00:00Z"
     }
   },
-  "CAN": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:42:22.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/canada",
-      "updatedAt": "2026-10-06T13:20:47.369Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_222.html"
-    }
-  },
   "KAZ": {
     "de": {
       "level": 1,
@@ -3623,6 +3601,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_187.html"
     }
   },
+  "CAN": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:42:22.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/canada",
+      "updatedAt": "2026-10-06T13:20:47.369Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_222.html"
+    }
+  },
   "CHE": {
     "de": {
       "level": 1,
@@ -3643,6 +3643,28 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_159.html"
+    }
+  },
+  "HKG": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:38:16.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/hongkong",
+      "updatedAt": "2026-09-15T09:54:37.898Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_016.html"
     }
   },
   "JOR": {
@@ -3674,28 +3696,6 @@
       "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
-  "HKG": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:38:16.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/hongkong",
-      "updatedAt": "2026-09-15T09:54:37.898Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_016.html"
-    }
-  },
   "THA": {
     "de": {
       "level": 2,
@@ -3716,28 +3716,6 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_007.html"
-    }
-  },
-  "ESP": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T08:58:54.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spanje",
-      "updatedAt": "2026-10-05T14:58:37.504Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_161.html"
     }
   },
   "LAO": {
@@ -3769,6 +3747,28 @@
       "updatedAt": "2025-07-17T00:00:00Z"
     }
   },
+  "ESP": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T08:58:54.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spanje",
+      "updatedAt": "2026-10-05T14:58:37.504Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_161.html"
+    }
+  },
   "NPL": {
     "de": {
       "level": 1,
@@ -3791,28 +3791,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_010.html"
     }
   },
-  "COL": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:44:57.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/colombia",
-      "updatedAt": "2026-09-25T19:55:54.294Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_248.html"
-    }
-  },
   "AZE": {
     "de": {
       "level": 2,
@@ -3833,6 +3811,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_152.html"
+    }
+  },
+  "COL": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:44:57.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/colombia",
+      "updatedAt": "2026-09-25T19:55:54.294Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_248.html"
     }
   },
   "SYR": {
@@ -3864,28 +3864,6 @@
       "updatedAt": "2026-01-12T00:00:00Z"
     }
   },
-  "MAR": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:52:18.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/marokko",
-      "updatedAt": "2026-10-06T13:38:27.240Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_124.html"
-    }
-  },
   "NOR": {
     "de": {
       "level": 1,
@@ -3908,6 +3886,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_166.html"
     }
   },
+  "MAR": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:52:18.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/marokko",
+      "updatedAt": "2026-10-06T13:38:27.240Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_124.html"
+    }
+  },
   "SAU": {
     "de": {
       "level": 4,
@@ -3928,35 +3928,6 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_050.html"
-    }
-  },
-  "MEX": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-16T12:10:11.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mexico",
-      "updatedAt": "2026-10-16T12:00:56.340Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_264.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
   "QAT": {
@@ -3988,6 +3959,35 @@
       "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
+  "MEX": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-16T12:10:11.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/mexico",
+      "updatedAt": "2026-10-16T12:00:56.340Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_264.html"
+    },
+    "sk": {
+      "level": 2,
+      "text": "Consider necessity of travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-12T00:00:00Z"
+    }
+  },
   "TWN": {
     "de": {
       "level": 1,
@@ -4008,35 +4008,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_008.html"
-    }
-  },
-  "PHL": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:01:36.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/filipijnen",
-      "updatedAt": "2026-10-15T08:38:12.413Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_013.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2026-07-17T00:00:00Z"
     }
   },
   "TUN": {
@@ -4068,6 +4039,35 @@
       "updatedAt": "2024-01-15T00:00:00Z"
     }
   },
+  "PHL": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:01:36.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/filipijnen",
+      "updatedAt": "2026-10-15T08:38:12.413Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_013.html"
+    },
+    "sk": {
+      "level": 2,
+      "text": "Consider necessity of travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2026-07-17T00:00:00Z"
+    }
+  },
   "CHL": {
     "de": {
       "level": 1,
@@ -4088,28 +4088,6 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_251.html"
-    }
-  },
-  "MDG": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-16T11:08:21.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/madagaskar",
-      "updatedAt": "2026-07-24T08:45:26.026Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_119.html"
     }
   },
   "BOL": {
@@ -4134,6 +4112,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_262.html"
     }
   },
+  "MDG": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-16T11:08:21.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/madagaskar",
+      "updatedAt": "2026-07-24T08:45:26.026Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_119.html"
+    }
+  },
   "SYC": {
     "de": {
       "level": 1,
@@ -4154,28 +4154,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_108.html"
-    }
-  },
-  "PER": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:01:23.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/peru",
-      "updatedAt": "2026-09-18T12:47:11.857Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_261.html"
     }
   },
   "GEO": {
@@ -4200,6 +4178,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_200.html"
     }
   },
+  "PER": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:01:23.000Z"
+    },
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/peru",
+      "updatedAt": "2026-09-18T12:47:11.857Z"
+    },
+    "jp": {
+      "level": 2,
+      "text": "Exercise sufficient caution",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_261.html"
+    }
+  },
   "KOR": {
     "de": {
       "level": 1,
@@ -4220,35 +4220,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_003.html"
-    }
-  },
-  "IRQ": {
-    "de": {
-      "level": 4,
-      "text": "Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:38:59.000Z"
-    },
-    "nl": {
-      "level": 3,
-      "text": "Alleen noodzakelijke reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/irak",
-      "updatedAt": "2026-07-24T10:01:29.258Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_045.html"
-    },
-    "sk": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
   "ITA": {
@@ -4280,6 +4251,35 @@
       "updatedAt": "2024-01-15T00:00:00Z"
     }
   },
+  "IRQ": {
+    "de": {
+      "level": 4,
+      "text": "Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:38:59.000Z"
+    },
+    "nl": {
+      "level": 3,
+      "text": "Alleen noodzakelijke reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/irak",
+      "updatedAt": "2026-07-24T10:01:29.258Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_045.html"
+    },
+    "sk": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2022-10-02T00:00:00Z"
+    }
+  },
   "KHM": {
     "de": {
       "level": 2,
@@ -4300,6 +4300,28 @@
       "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_004.html"
+    }
+  },
+  "USA": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:17:13.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/verenigde-staten-van-amerika",
+      "updatedAt": "2026-07-08T13:10:17.348Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_221.html"
     }
   },
   "IDN": {
@@ -4331,28 +4353,6 @@
       "updatedAt": "2025-04-02T00:00:00Z"
     }
   },
-  "USA": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:17:13.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/verenigde-staten-van-amerika",
-      "updatedAt": "2026-07-08T13:10:17.348Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_221.html"
-    }
-  },
   "ARE": {
     "de": {
       "level": 3,
@@ -4373,28 +4373,6 @@
       "text": "Avoid non-essential travel",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_042.html"
-    }
-  },
-  "SGP": {
-    "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T10:05:40.000Z"
-    },
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/singapore",
-      "updatedAt": "2026-10-08T12:48:24.198Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_005.html"
     }
   },
   "ALB": {
@@ -4426,6 +4404,28 @@
       "updatedAt": "2025-07-05T00:00:00Z"
     }
   },
+  "SGP": {
+    "de": {
+      "level": 1,
+      "text": "Keine Reisewarnung",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T10:05:40.000Z"
+    },
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/singapore",
+      "updatedAt": "2026-10-08T12:48:24.198Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_005.html"
+    }
+  },
   "PAN": {
     "de": {
       "level": 2,
@@ -4453,35 +4453,6 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-12T00:00:00Z"
-    }
-  },
-  "ETH": {
-    "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:07:32.000Z"
-    },
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/ethiopie",
-      "updatedAt": "2026-10-13T13:50:54.434Z"
-    },
-    "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_095.html"
-    },
-    "sk": {
-      "level": 2,
-      "text": "Consider necessity of travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
   "TZA": {
@@ -4535,33 +4506,33 @@
       "updatedAt": "2024-01-15T00:00:00Z"
     }
   },
-  "CPV": {
+  "ETH": {
     "de": {
-      "level": 1,
-      "text": "Keine Reisewarnung",
+      "level": 2,
+      "text": "Sicherheitshinweis",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:19:48.000Z"
+      "updatedAt": "2026-10-13T09:07:32.000Z"
     },
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/kaapverdie",
-      "updatedAt": "2026-07-06T11:23:34.384Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/ethiopie",
+      "updatedAt": "2026-10-13T13:50:54.434Z"
     },
     "jp": {
-      "level": 1,
-      "text": "No danger information issued",
+      "level": 2,
+      "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_275.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_095.html"
     },
     "sk": {
-      "level": 1,
-      "text": "No specific warning",
+      "level": 2,
+      "text": "Consider necessity of travel",
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2025-07-01T00:00:00Z"
+      "updatedAt": "2022-10-02T00:00:00Z"
     }
   },
   "BHR": {
@@ -4615,26 +4586,33 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_252.html"
     }
   },
-  "BWA": {
+  "CPV": {
     "de": {
       "level": 1,
       "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:12:09.000Z"
+      "updatedAt": "2026-10-13T09:19:48.000Z"
     },
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/botswana",
-      "updatedAt": "2026-07-01T12:01:11.917Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/kaapverdie",
+      "updatedAt": "2026-07-06T11:23:34.384Z"
     },
     "jp": {
       "level": 1,
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_296.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_275.html"
+    },
+    "sk": {
+      "level": 1,
+      "text": "No specific warning",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2025-07-01T00:00:00Z"
     }
   },
   "NIC": {
@@ -4681,33 +4659,26 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_091.html"
     }
   },
-  "EGY": {
+  "BWA": {
     "de": {
-      "level": 2,
-      "text": "Sicherheitshinweis",
+      "level": 1,
+      "text": "Keine Reisewarnung",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:07:07.000Z"
+      "updatedAt": "2026-10-13T09:12:09.000Z"
     },
     "nl": {
       "level": 2,
       "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/egypte",
-      "updatedAt": "2026-06-25T12:04:36.079Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/botswana",
+      "updatedAt": "2026-07-01T12:01:11.917Z"
     },
     "jp": {
-      "level": 2,
-      "text": "Exercise sufficient caution",
+      "level": 1,
+      "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_094.html"
-    },
-    "sk": {
-      "level": 3,
-      "text": "Avoid travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2024-01-12T00:00:00Z"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_296.html"
     }
   },
   "MDV": {
@@ -4761,26 +4732,33 @@
       "updatedAt": "2025-04-02T00:00:00Z"
     }
   },
-  "ERI": {
+  "EGY": {
     "de": {
       "level": 2,
       "text": "Sicherheitshinweis",
       "source": "German Federal Foreign Office",
       "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-16T12:52:51.000Z"
+      "updatedAt": "2026-10-13T09:07:07.000Z"
     },
     "nl": {
-      "level": 3,
-      "text": "Alleen noodzakelijke reizen",
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/eritrea",
-      "updatedAt": "2026-10-13T12:39:34.106Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/egypte",
+      "updatedAt": "2026-06-25T12:04:36.079Z"
     },
     "jp": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
+      "level": 2,
+      "text": "Exercise sufficient caution",
       "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_139.html"
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_094.html"
+    },
+    "sk": {
+      "level": 3,
+      "text": "Avoid travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2024-01-12T00:00:00Z"
     }
   },
   "COD": {
@@ -4805,6 +4783,28 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_103.html"
     }
   },
+  "ERI": {
+    "de": {
+      "level": 2,
+      "text": "Sicherheitshinweis",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-16T12:52:51.000Z"
+    },
+    "nl": {
+      "level": 3,
+      "text": "Alleen noodzakelijke reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/eritrea",
+      "updatedAt": "2026-10-13T12:39:34.106Z"
+    },
+    "jp": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_139.html"
+    }
+  },
   "GBR": {
     "de": {
       "level": 1,
@@ -4825,35 +4825,6 @@
       "text": "No danger information issued",
       "source": "Japan Ministry of Foreign Affairs",
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_154.html"
-    }
-  },
-  "LBN": {
-    "de": {
-      "level": 3,
-      "text": "Von Reisen wird abgeraten",
-      "source": "German Federal Foreign Office",
-      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
-      "updatedAt": "2026-10-13T09:48:05.000Z"
-    },
-    "nl": {
-      "level": 4,
-      "text": "Niet reizen",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/libanon",
-      "updatedAt": "2026-10-06T13:35:52.512Z"
-    },
-    "jp": {
-      "level": 4,
-      "text": "Do not travel / evacuate (advisory)",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_055.html"
-    },
-    "sk": {
-      "level": 3,
-      "text": "Avoid travel",
-      "source": "Slovak Ministry of Foreign Affairs",
-      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
-      "updatedAt": "2026-02-26T00:00:00Z"
     }
   },
   "TUR": {
@@ -4883,6 +4854,35 @@
       "source": "Slovak Ministry of Foreign Affairs",
       "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
       "updatedAt": "2024-01-15T00:00:00Z"
+    }
+  },
+  "LBN": {
+    "de": {
+      "level": 3,
+      "text": "Von Reisen wird abgeraten",
+      "source": "German Federal Foreign Office",
+      "url": "https://www.auswaertiges-amt.de/de/ReiseUndSicherheit/reise-und-sicherheitshinweise",
+      "updatedAt": "2026-10-13T09:48:05.000Z"
+    },
+    "nl": {
+      "level": 4,
+      "text": "Niet reizen",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/libanon",
+      "updatedAt": "2026-10-06T13:35:52.512Z"
+    },
+    "jp": {
+      "level": 4,
+      "text": "Do not travel / evacuate (advisory)",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_055.html"
+    },
+    "sk": {
+      "level": 3,
+      "text": "Avoid travel",
+      "source": "Slovak Ministry of Foreign Affairs",
+      "url": "https://www.mzv.sk/cestovanie/cestovne-odporucania",
+      "updatedAt": "2026-02-26T00:00:00Z"
     }
   },
   "RUS": {
@@ -4945,15 +4945,6 @@
       "updatedAt": "2026-10-07T06:57:56.847Z"
     }
   },
-  "ASM": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaans-samoa",
-      "updatedAt": "2026-04-22T14:31:52.582Z"
-    }
-  },
   "AIA": {
     "nl": {
       "level": 1,
@@ -4999,19 +4990,13 @@
       "updatedAt": "2026-07-02T08:58:20.599Z"
     }
   },
-  "PYF": {
+  "ASM": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
-      "updatedAt": "2026-06-19T15:03:40.428Z"
-    },
-    "jp": {
-      "level": 1,
-      "text": "No danger information issued",
-      "source": "Japan Ministry of Foreign Affairs",
-      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/amerikaans-samoa",
+      "updatedAt": "2026-04-22T14:31:52.582Z"
     }
   },
   "GUF": {
@@ -5032,15 +5017,6 @@
       "updatedAt": "2026-09-18T13:39:22.352Z"
     }
   },
-  "GLP": {
-    "nl": {
-      "level": 2,
-      "text": "Let op, veiligheidsrisicos",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guadeloupe",
-      "updatedAt": "2026-06-19T10:13:14.486Z"
-    }
-  },
   "MTQ": {
     "nl": {
       "level": 2,
@@ -5050,6 +5026,21 @@
       "updatedAt": "2026-10-08T08:41:17.304Z"
     }
   },
+  "PYF": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/frans-polynesie",
+      "updatedAt": "2026-06-19T15:03:40.428Z"
+    },
+    "jp": {
+      "level": 1,
+      "text": "No danger information issued",
+      "source": "Japan Ministry of Foreign Affairs",
+      "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_079.html"
+    }
+  },
   "MSR": {
     "nl": {
       "level": 1,
@@ -5057,6 +5048,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/montserrat",
       "updatedAt": "2026-03-19T08:52:08.287Z"
+    }
+  },
+  "GLP": {
+    "nl": {
+      "level": 2,
+      "text": "Let op, veiligheidsrisicos",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/guadeloupe",
+      "updatedAt": "2026-06-19T10:13:14.486Z"
     }
   },
   "NCL": {
@@ -5074,24 +5074,6 @@
       "url": "https://www.anzen.mofa.go.jp/info/pcinfectionspothazardinfo_299.html"
     }
   },
-  "PCN": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/pitcairneilanden",
-      "updatedAt": "2026-04-24T07:56:05.606Z"
-    }
-  },
-  "REU": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
-      "updatedAt": "2026-03-19T09:21:11.246Z"
-    }
-  },
   "PRI": {
     "nl": {
       "level": 2,
@@ -5101,6 +5083,15 @@
       "updatedAt": "2026-10-13T12:52:54.304Z"
     }
   },
+  "PCN": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/pitcairneilanden",
+      "updatedAt": "2026-04-24T07:56:05.606Z"
+    }
+  },
   "SXM": {
     "nl": {
       "level": 1,
@@ -5108,6 +5099,15 @@
       "source": "Netherlands Ministry of Foreign Affairs",
       "url": "https://www.nederlandwereldwijd.nl/reisadvies/sint-maarten",
       "updatedAt": "2026-08-13T14:52:15.078Z"
+    }
+  },
+  "SJM": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
+      "updatedAt": "2026-05-11T12:12:10.391Z"
     }
   },
   "TKL": {
@@ -5128,24 +5128,6 @@
       "updatedAt": "2026-06-25T10:55:20.935Z"
     }
   },
-  "WLF": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/wallis-en-futuna",
-      "updatedAt": "2026-04-24T12:02:34.368Z"
-    }
-  },
-  "VGB": {
-    "nl": {
-      "level": 1,
-      "text": "Veilig",
-      "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/britse-maagdeneilanden",
-      "updatedAt": "2026-03-19T09:35:25.181Z"
-    }
-  },
   "VIR": {
     "nl": {
       "level": 1,
@@ -5155,13 +5137,31 @@
       "updatedAt": "2026-06-12T14:37:01.179Z"
     }
   },
-  "SJM": {
+  "WLF": {
     "nl": {
       "level": 1,
       "text": "Veilig",
       "source": "Netherlands Ministry of Foreign Affairs",
-      "url": "https://www.nederlandwereldwijd.nl/reisadvies/spitsbergen",
-      "updatedAt": "2026-05-11T12:12:10.391Z"
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/wallis-en-futuna",
+      "updatedAt": "2026-04-24T12:02:34.368Z"
+    }
+  },
+  "REU": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/reunion",
+      "updatedAt": "2026-03-19T09:21:11.246Z"
+    }
+  },
+  "VGB": {
+    "nl": {
+      "level": 1,
+      "text": "Veilig",
+      "source": "Netherlands Ministry of Foreign Affairs",
+      "url": "https://www.nederlandwereldwijd.nl/reisadvies/britse-maagdeneilanden",
+      "updatedAt": "2026-03-19T09:35:25.181Z"
     }
   },
   "MNP": {
