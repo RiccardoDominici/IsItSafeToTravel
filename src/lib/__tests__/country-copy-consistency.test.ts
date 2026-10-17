@@ -192,6 +192,19 @@ describe('one focus pillar on every surface (I01 I02 I16 I25 I30)', () => {
     assert.doesNotMatch(meta, /Hauptrisiko/);
   });
 
+  it('never calls a direct-risk focus the weakest area when governance is lower (I02, de)', () => {
+    // Kazakhstan 2026-10-17: governance 3.9, natural hazards 6.6 -> the focus is natural hazards.
+    const c = country({
+      iso3: 'KAZ',
+      score: 7.3,
+      pillars: { governance: { score: 0.39 }, environment: { score: 0.66 }, crime: { score: 0.75 }, health: { score: 0.78 }, conflict: { score: 0.82 } },
+      advisories: advisoriesOf({ 1: 12, 2: 7 }),
+    });
+    const meta = buildCountryMetaDescription(c, 'de');
+    assert.match(meta, /Hauptaugenmerk: Naturgefahren \(6,6\)\./);
+    assert.doesNotMatch(meta, /Schwächster Bereich/);
+  });
+
   it('names a displayed tie as a tie, never "above all" one of them (I54)', () => {
     const c = country({ iso3: 'BWA', score: 7.5, pillars: { crime: { score: 0.664 }, health: { score: 0.656 }, conflict: { score: 0.79 } }, advisories: advisoriesOf({ 1: 13, 2: 7, 3: 1 }) });
     const text = summary(c, 'en', 'Botswana');

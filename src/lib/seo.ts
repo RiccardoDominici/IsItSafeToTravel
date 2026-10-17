@@ -277,7 +277,9 @@ const metaFocusClauses: Record<Lang, Record<MetaFrame, (p: string, s: string, e:
   },
   de: {
     mainRisk: (p, s) => `Hauptrisiko: ${p} (${s}).`,
-    concern: (p, s) => `Schwächster Bereich: ${p} (${s}).`,
+    // Not "Schwächster Bereich": the concern frame never names governance, so on Kazakhstan
+    // (governance 3,9) "Schwächster Bereich: Naturgefahren (6,6)" was false (2026-10-17 re-check, I02).
+    concern: (p, s) => `Hauptaugenmerk: ${p} (${s}).`,
     weakest: (p, s) => `Schwächster Bereich: ${p} (${s}).`,
     allGood: (p, s) => `Alle fünf Bereiche bei 7/10 oder mehr; am niedrigsten: ${p} (${s}).`,
     weakestMeasured: (p, s) => `Schwächster gemessener Bereich: ${p} (${s}).`,
