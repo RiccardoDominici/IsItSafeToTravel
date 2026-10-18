@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-17T10:30:13.004Z",
-  "lastProcessedDate": "2026-10-17",
+  "generatedAt": "2026-10-18T10:54:51.835Z",
+  "lastProcessedDate": "2026-10-18",
   "cooldowns": {
     "jump:KWT": "2026-10-01",
     "jump:BHR": "2026-10-01",
@@ -68,9 +68,21 @@
     "advisory:BGD:us:3": "2026-09-30",
     "jump:SAU": "2026-10-11",
     "jump:FSM": "2026-10-13",
-    "advisory:SAU:au:4": "2026-10-16"
+    "advisory:SAU:au:4": "2026-10-16",
+    "advisory:GUM:ca:3": "2026-10-18"
   },
   "recentEvents": [
+    {
+      "id": "2026-10-18:severe_advisory:GUM:ca",
+      "date": "2026-10-18",
+      "type": "severe_advisory",
+      "params": {
+        "country": "GUM",
+        "issuer": "ca",
+        "level": 3
+      },
+      "priority": 100
+    },
     {
       "id": "2026-10-16:severe_advisory:SAU:au",
       "date": "2026-10-16",
