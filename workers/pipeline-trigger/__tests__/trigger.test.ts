@@ -4,7 +4,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { MAX_DAILY_ATTEMPTS, decide, isDailyRun, windowStart, type WorkflowRun } from '../src/decide';
 import { PROBE_REF, tokenExpiry } from '../src/github';
-import { DAILY_CRONS, runDailySlot, runSelfCheck, runSlot, type Env } from '../src/trigger';
+import { DAILY_CRON, runDailySlot, runSelfCheck, runSlot, type Env } from '../src/trigger';
 
 const ENV: Env = {
   GITHUB_TOKEN: 'test-token',
@@ -14,6 +14,8 @@ const ENV: Env = {
   NTFY_TOPIC: 'test-topic',
 };
 const NOW = new Date('2026-10-20T06:05:00Z');
+/** A retry slot of the same day. */
+const LATER = new Date('2026-10-20T07:05:00Z');
 
 function run(over: Partial<WorkflowRun> = {}): WorkflowRun {
   return {
@@ -123,7 +125,7 @@ describe('pipeline trigger: decide()', () => {
 describe('pipeline trigger: daily slot', () => {
   it('dispatches a plain run on master with the token, and stays quiet', async () => {
     const f = fakeFetch({ runs: [] });
-    const result = await runDailySlot(ENV, NOW, DAILY_CRONS[0], f.impl);
+    const result = await runDailySlot(ENV, NOW, f.impl);
     assert.equal(result.outcome, 'dispatched');
     const [list] = f.calls;
     assert.match(list.url, /\/repos\/owner\/repo\/actions\/workflows\/data-pipeline\.yml\/runs\?per_page=100&created=%3E%3D2026-10-20T05%3A55%3A00Z$/);
@@ -138,7 +140,7 @@ describe('pipeline trigger: daily slot', () => {
 
   it('does nothing when today already succeeded', async () => {
     const f = fakeFetch({ runs: [run()] });
-    const result = await runDailySlot(ENV, NOW, DAILY_CRONS[1], f.impl);
+    const result = await runDailySlot(ENV, LATER, f.impl);
     assert.equal(result.outcome, 'skipped');
     assert.equal(f.dispatches().length, 0);
     assert.equal(f.ntfy().length, 0);
@@ -146,7 +148,7 @@ describe('pipeline trigger: daily slot', () => {
 
   it('re-dispatches after a failure and tells the phone', async () => {
     const f = fakeFetch({ runs: [run({ conclusion: 'failure' })] });
-    const result = await runDailySlot(ENV, NOW, DAILY_CRONS[1], f.impl);
+    const result = await runDailySlot(ENV, LATER, f.impl);
     assert.equal(result.outcome, 'dispatched');
     assert.equal(f.dispatches().length, 1);
     assert.equal(f.ntfy().length, 1);
@@ -155,7 +157,7 @@ describe('pipeline trigger: daily slot', () => {
 
   it('alerts when GitHub refuses the dispatch', async () => {
     const f = fakeFetch({ runs: [], dispatch: () => ({ status: 403, body: '{"message":"Resource not accessible by personal access token"}' }) });
-    const result = await runDailySlot(ENV, NOW, DAILY_CRONS[0], f.impl);
+    const result = await runDailySlot(ENV, NOW, f.impl);
     assert.equal(result.outcome, 'error');
     const msg = (f.ntfy()[0].body as { message: string }).message;
     assert.match(msg, /HTTP 403/);
@@ -164,7 +166,7 @@ describe('pipeline trigger: daily slot', () => {
 
   it('alerts when the token is rejected while listing runs', async () => {
     const f = fakeFetch({ listStatus: 401 });
-    const result = await runDailySlot(ENV, NOW, DAILY_CRONS[0], f.impl);
+    const result = await runDailySlot(ENV, NOW, f.impl);
     assert.equal(result.outcome, 'error');
     assert.equal(f.dispatches().length, 0);
     assert.equal(f.ntfy().length, 1);
@@ -172,7 +174,7 @@ describe('pipeline trigger: daily slot', () => {
 
   it('alerts when the secret is missing, without calling GitHub', async () => {
     const f = fakeFetch({});
-    const result = await runDailySlot({ ...ENV, GITHUB_TOKEN: undefined }, NOW, DAILY_CRONS[0], f.impl);
+    const result = await runDailySlot({ ...ENV, GITHUB_TOKEN: undefined }, NOW, f.impl);
     assert.equal(result.outcome, 'error');
     assert.equal(f.calls.filter((c) => c.url.includes('api.github.com')).length, 0);
     assert.equal(f.ntfy().length, 1);
@@ -181,11 +183,11 @@ describe('pipeline trigger: daily slot', () => {
   it('warns about an expiring token in the first slot only', async () => {
     const listHeaders = { 'github-authentication-token-expiration': '2026-10-25 06:00:00 UTC' };
     const first = fakeFetch({ runs: [run()], listHeaders });
-    await runDailySlot(ENV, NOW, DAILY_CRONS[0], first.impl);
+    await runDailySlot(ENV, NOW, first.impl);
     assert.equal(first.ntfy().length, 1);
     assert.match((first.ntfy()[0].body as { message: string }).message, /expires in 4 day/);
     const later = fakeFetch({ runs: [run()], listHeaders });
-    await runDailySlot(ENV, NOW, DAILY_CRONS[1], later.impl);
+    await runDailySlot(ENV, LATER, later.impl);
     assert.equal(later.ntfy().length, 0);
   });
 });
@@ -217,24 +219,20 @@ describe('pipeline trigger: self-check', () => {
 describe('pipeline trigger: cron routing and config', () => {
   it('routes daily crons to the daily job and anything else to the self-check', async () => {
     const daily = fakeFetch({ runs: [] });
-    await runSlot(ENV, DAILY_CRONS[0], NOW.getTime(), daily.impl);
+    await runSlot(ENV, DAILY_CRON, NOW.getTime(), daily.impl);
     assert.deepEqual(daily.dispatches()[0].body, { ref: 'master' });
 
-    const weekly = fakeFetch({ runs: [], dispatch: (ref) => ({ status: 422, body: `No ref found for: ${ref}` }) });
-    const result = await runSlot(ENV, '20 12 * * 1', NOW.getTime(), weekly.impl);
+    const oneOff = fakeFetch({ runs: [], dispatch: (ref) => ({ status: 422, body: `No ref found for: ${ref}` }) });
+    const result = await runSlot(ENV, '47 13 19 10 *', NOW.getTime(), oneOff.impl);
     assert.equal(result.kind, 'self-check');
-    assert.deepEqual(weekly.dispatches()[0].body, { ref: PROBE_REF });
+    assert.deepEqual(oneOff.dispatches()[0].body, { ref: PROBE_REF });
   });
 
-  it('declares every daily slot, plus the weekly self-check, in wrangler.toml', () => {
+  it('declares exactly the daily cron in wrangler.toml (Free plan: 5 crons per account)', () => {
     const toml = readFileSync(fileURLToPath(new URL('../wrangler.toml', import.meta.url)), 'utf8');
     const line = toml.match(/^crons\s*=\s*\[(.*)\]/m)?.[1] ?? '';
     const crons = [...line.matchAll(/"([^"]+)"/g)].map((m) => m[1]);
-    for (const c of DAILY_CRONS) assert.ok(crons.includes(c), `wrangler.toml is missing daily cron "${c}"`);
-    assert.deepEqual(
-      crons.filter((c) => !(DAILY_CRONS as readonly string[]).includes(c)),
-      ['20 12 * * 1'],
-    );
+    assert.deepEqual(crons, [DAILY_CRON]);
   });
 
   it('reads the token expiry header GitHub sends', () => {

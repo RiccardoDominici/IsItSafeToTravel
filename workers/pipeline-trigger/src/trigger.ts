@@ -1,10 +1,11 @@
 /**
- * What each cron slot does. Two jobs:
+ * What each cron firing does. Two jobs:
  * - daily slots: start today's data-pipeline run if it has not run or has
  *   failed (see decide.ts), and retry in the later slots;
- * - self-check (any other cron, weekly in production): prove that the token
- *   still reads runs and may dispatch, without starting a run, so a broken
- *   token shows up as a phone alert days before a missed morning.
+ * - self-check (any other cron, used on demand after setup or a token change):
+ *   prove that the token still reads runs and may dispatch, without starting
+ *   a run. Day to day the morning dispatch itself proves the token works, and
+ *   the expiry warning below covers tokens that expire.
  *
  * Why this exists: GitHub's own `schedule` trigger fired the 06:00 UTC run
  * 4–8 hours late through Sept–Oct 2026 (10:13–14:34 UTC in October) and is
@@ -25,13 +26,19 @@ export interface Env {
 }
 
 /**
- * Cron expressions (UTC) of the daily slots. They must match `[triggers]` in
- * wrangler.toml (a unit test checks this). Any other cron runs the self-check.
+ * Cron expression (UTC) of the daily slots, ONE trigger firing three times:
  * - 06:05: the run itself (the old GitHub schedule was 06:00);
- * - 06:40: retry if it failed (a run takes ~16 minutes, at most 45);
+ * - 07:05: retry if it failed (a run takes ~16 minutes, at most 45);
  * - 08:05: last retry, still hours ahead of GitHub's late fallback.
+ * One expression, not three, because the Workers Free plan allows 5 cron
+ * triggers per ACCOUNT and another project already uses 3 of them.
+ * Must match `[triggers]` in wrangler.toml (a unit test checks this).
+ * Any other cron runs the self-check.
  */
-export const DAILY_CRONS = ['5 6 * * *', '40 6 * * *', '5 8 * * *'] as const;
+export const DAILY_CRON = '5 6-8 * * *';
+
+/** UTC hour of the first daily slot: the only one that sends the expiry reminder. */
+const FIRST_SLOT_HOUR_UTC = 6;
 
 /** Warn this many days before the token expires (only if it has an expiry). */
 export const EXPIRY_WARNING_DAYS = 14;
@@ -96,16 +103,16 @@ function missingToken(env: Env, kind: SlotResult['kind'], fetchImpl: FetchLike):
 }
 
 /** One daily slot: look at today's runs, then dispatch, wait or give up. */
-export async function runDailySlot(env: Env, now: Date, cron: string, fetchImpl: FetchLike = fetch): Promise<SlotResult> {
+export async function runDailySlot(env: Env, now: Date, fetchImpl: FetchLike = fetch): Promise<SlotResult> {
   const cfg = config(env);
   if (!cfg) return missingToken(env, 'daily', fetchImpl);
   try {
     const { runs, expiresAt } = await listRunsSince(cfg, windowStart(now), fetchImpl);
     // Expiry reminder once a day, in the first slot only.
-    if (cron === DAILY_CRONS[0]) await warnIfExpiring(env, expiresAt, now, fetchImpl);
+    if (now.getUTCHours() === FIRST_SLOT_HOUR_UTC) await warnIfExpiring(env, expiresAt, now, fetchImpl);
 
     const decision = decide(runs);
-    console.log(`[pipeline-trigger] ${cron}: ${runs.length} run(s) since ${windowStart(now)} → ${decision.action} (${decision.reason})`);
+    console.log(`[pipeline-trigger] ${now.toISOString()}: ${runs.length} run(s) since ${windowStart(now)} → ${decision.action} (${decision.reason})`);
 
     if (decision.action === 'skip') return { kind: 'daily', outcome: 'skipped', detail: decision.reason };
 
@@ -165,7 +172,7 @@ export async function runSelfCheck(env: Env, now: Date, fetchImpl: FetchLike = f
 /** Route a cron firing to its job. */
 export function runSlot(env: Env, cron: string, scheduledTime: number, fetchImpl: FetchLike = fetch): Promise<SlotResult> {
   const now = new Date(scheduledTime);
-  return (DAILY_CRONS as readonly string[]).includes(cron)
-    ? runDailySlot(env, now, cron, fetchImpl)
+  return cron === DAILY_CRON
+    ? runDailySlot(env, now, fetchImpl)
     : runSelfCheck(env, now, fetchImpl);
 }

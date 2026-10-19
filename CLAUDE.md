@@ -34,7 +34,7 @@ AI answer engines.
   **Before pushing, `git pull --rebase --autostash`** — the bot commits often and will reject a
   stale push.
 - The daily run is **started at 06:05 UTC by a Cloudflare Worker** (`workers/pipeline-trigger`,
-  `workflow_dispatch`, retries at 06:40 and 08:05), because GitHub's own cron fired 4–8 h late in
+  `workflow_dispatch`, one cron `5 6-8 * * *` = retries at 07:05 and 08:05), because GitHub's own cron fired 4–8 h late in
   Sept–Oct 2026. GitHub's cron (06:17) stays as a fallback; its `guard` job skips it once today's
   run succeeded. Manual corrective runs: `gh workflow run data-pipeline.yml -f skip_digest=true`
   (titled "(no digest)", never counted as the day's run). The Worker deploys separately:
