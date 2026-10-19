@@ -159,3 +159,59 @@ Result on 2026-10-17:
   - **I61:** World Bank homicide figures from 2021-2022 still weigh like current ones.
   - **I66:** Chad/Burkina Faso in the right order, 0.12 apart.
 - **I50**, UCDP deaths attributed to gangs or one-sided violence: cannot be settled from the page.
+
+## Coverage floor study (2026-10-19, data 2026-10-18)
+
+Owner question: would raising or lowering the coverage floor (`minSources`, 4 of the 6 coverage
+sources) improve the verified checks, since places with some data but not much have less reliable
+scores? `npx tsx scripts/calibration/coverage-floor-study.ts [--date D] [--json out.json]` answers
+it in two parts. The same numbers came out on the 2026-10-17 data.
+
+**A. The floor itself does not improve any verified check.** A place's score never depends on the
+floor (zero drift across floors 1-6), so the floor only decides which places are shown.
+
+| Floor | Scored | Constraints pass/fail/n.a., shortfall | Vote MAE (n) | Reference MAE / rho |
+|---|---|---|---|---|
+| 3 | 193 | 10/4/0, 0.81 | 0.423 (104) | 1.002 / 0.981 |
+| **4** (now) | 183 | 10/4/0, 0.81 | 0.424 (103) | 1.002 / 0.981 |
+| 5 | 167 | 8/3/3, 0.70 | 0.425 (99) | 1.002 / 0.981 |
+| 6 | 129 | 6/2/6, 0.66 | 0.418 (86) | 1.010 / 0.980 |
+
+- The lower shortfall at 5 and 6 comes only from hiding places: Cabo Verde (failing) goes grey
+  at 5, together with Liechtenstein and Taiwan (passing). Papua New Guinea goes grey at 6.
+- Belarus and the United Arab Emirates fail at every floor. They have 5 and 6 sources; Belarus
+  also stays scored at 6 through the danger guard.
+- The votes and the 2026-03 reference set cannot judge the data-poor places: the 26 places
+  between floors 3 and 5 have 9 votes in all, and none is in the reference set.
+- On the 129 places scored at every floor, all metrics are identical by construction.
+
+**B. The error depends on which sources are missing, not on how many.** For each source
+combination that a real data-poor place lacks, the test deletes those sources from the 98 places
+that have all six, scores them again and compares with their full-data score. Untouched places
+moved by 0.0000, so the test is clean.
+
+| Sources left | Missing | Real places | Mean gap | Gap ≥ 0.5 | Bias |
+|---|---|---|---|---|---|
+| 5 | World Bank | 62 | 0.15 | 0% | −0.12 |
+| 5 | GPI | 6 | 0.15 | 5% | +0.05 |
+| 4 | GPI + V-Dem (Caribbean, Liechtenstein) | 9 | 0.22 | 7% | −0.01 |
+| 4 | INFORM + World Bank (Taiwan) | 1 | 0.35 | 15% | −0.32 |
+| 4 | **GPI + World Bank** (COM, CPV, MDV, SLB, STP, VUT) | 6 | **0.51** | **49%** | **−0.50** |
+| 3 | GPI + V-Dem + World Bank (grey Pacific places) | 9 | 0.56 | 51% | −0.54 |
+| 1 | everything but the advisories | 33 | 0.97 | 77% | −0.96 |
+
+- Without GPI and World Bank a place has no crime data at all: its crime pillar is the
+  conservative prior (Cabo Verde: no crime indicator, completeness 0). The test shows that this
+  prior reads about half a point too low.
+- Corrected with the same-region bias, the six would read:
+  - Comoros 6.08 → 6.51
+  - Cabo Verde 6.89 → 7.32 (above its 7.0 floor, so C005 would pass)
+  - Maldives 7.06 → 7.66
+  - Solomon Islands 6.71 → 7.25
+  - São Tomé and Príncipe 6.76 → 7.18
+  - Vanuatu 7.18 → 7.72
+- These six are as unreliable as the 3-source places the floor already greys. The count rule
+  cannot tell them apart from the Caribbean pattern (also 4 sources, error 0.22).
+- Caveat: the test measures the error on data-rich places with sources removed. For small
+  islands it is an estimate, not a measurement; their own votes (1 each for CPV and VUT) cannot
+  confirm it.
