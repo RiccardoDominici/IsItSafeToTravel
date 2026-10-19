@@ -30,9 +30,15 @@ AI answer engines.
 
 - Push to `master` → `deploy.yml` runs `npm run build` + `wrangler pages deploy`. Committing
   to master ships to production (per project convention — commit+push after changes).
-- `data-pipeline.yml` runs daily at **06:00 UTC**, commits `data: update safety scores …`,
-  and triggers deploy. **Before pushing, `git pull --rebase --autostash`** — the bot commits
-  often and will reject a stale push.
+- `data-pipeline.yml` runs daily, commits `data: update safety scores …`, and triggers deploy.
+  **Before pushing, `git pull --rebase --autostash`** — the bot commits often and will reject a
+  stale push.
+- The daily run is **started at 06:05 UTC by a Cloudflare Worker** (`workers/pipeline-trigger`,
+  `workflow_dispatch`, retries at 06:40 and 08:05), because GitHub's own cron fired 4–8 h late in
+  Sept–Oct 2026. GitHub's cron (06:17) stays as a fallback; its `guard` job skips it once today's
+  run succeeded. Manual corrective runs: `gh workflow run data-pipeline.yml -f skip_digest=true`
+  (titled "(no digest)", never counted as the day's run). The Worker deploys separately:
+  `npx wrangler deploy --config workers/pipeline-trigger/wrangler.toml` (see its README).
 
 ## i18n & hreflang (single source of truth)
 

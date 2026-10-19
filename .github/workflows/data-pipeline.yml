@@ -1,9 +1,18 @@
 name: Daily Data Pipeline
+# Marks the two kinds of manual run that must not count as the day's run (the guard job below
+# and isDailyRun in workers/pipeline-trigger/src/decide.ts read these markers): a backfill for
+# another date, and a corrective run that does not email the newsletter.
+run-name: >-
+  Daily Data Pipeline${{ inputs.date && format(' for {0}', inputs.date) || '' }}${{ inputs.skip_digest && ' (no digest)' || '' }}
 
 on:
   schedule:
-    # Run daily at 06:00 UTC
-    - cron: '0 6 * * *'
+    # FALLBACK ONLY. The daily run is started at 06:05 UTC by the Cloudflare Worker in
+    # workers/pipeline-trigger (it calls workflow_dispatch), because this cron fired 4–8 hours
+    # late through Sept–Oct 2026 (October: 10:13–14:34 UTC for a 06:00 slot). When it does
+    # fire, the guard job skips it if today's run already succeeded. Off the top of the hour,
+    # as GitHub advises for scheduled workflows.
+    - cron: '17 6 * * *'
   workflow_dispatch:
     # Allow manual triggering from GitHub UI
     inputs:
@@ -24,8 +33,55 @@ permissions:
   contents: write
   actions: write
 
+# One pipeline at a time: a run that arrives while another is going waits for it instead of
+# racing it to the data commit, and its guard then sees how the first one ended.
+concurrency:
+  group: data-pipeline
+  cancel-in-progress: false
+
 jobs:
+  guard:
+    # GitHub's scheduled run is only a fallback (see on.schedule): skip it when today's daily
+    # run already succeeded. Same rule as the Worker (workers/pipeline-trigger/src/decide.ts):
+    # a successful run since 05:55 UTC that is not a backfill or a no-digest corrective run.
+    # Manual dispatches always run. Fails open: if the runs cannot be listed, run the pipeline;
+    # a duplicate run is harmless (the digest is idempotent via digest_log), a missed day is not.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      run: ${{ steps.check.outputs.run }}
+    steps:
+      - name: Is today's daily run already done?
+        id: check
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT: ${{ github.event_name }}
+          REPO: ${{ github.repository }}
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          if [ "$EVENT" != "schedule" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          SINCE="$(date -u +%Y-%m-%d)T05:55:00Z"
+          if ! RUNS=$(gh api "repos/${REPO}/actions/workflows/data-pipeline.yml/runs?status=success&per_page=100&created=%3E%3D${SINCE}"); then
+            echo "::warning::could not list today's runs; running the pipeline anyway"
+            echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          DONE=$(echo "$RUNS" | jq -r --argjson self "$RUN_ID" '[.workflow_runs[] | select(.id != $self) | select(.display_title | test(" for [0-9]{4}-[0-9]{2}-[0-9]{2}|\\(no digest\\)") | not)] | .[0] // empty | "\(.id) (\(.event), \(.created_at))"')
+          if [ -n "$DONE" ]; then
+            echo "Today's daily run already succeeded: run $DONE. Skipping this late scheduled run."
+            echo "Skipped: today's daily run already succeeded (run $DONE)." >> "$GITHUB_STEP_SUMMARY"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "No successful daily run since $SINCE: running the pipeline."
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
   pipeline:
+    needs: guard
+    # Runs unless the guard positively said "already done": a guard that crashed leaves the
+    # output empty, and then the pipeline runs (fail open).
+    if: ${{ !cancelled() && needs.guard.outputs.run != 'false' }}
     runs-on: ubuntu-latest
     # 45, not 30: on 2026-10-15 the Spanish ministry's site alone took 14 minutes (usually ~3)
     # and the job finished at 27 of 30 minutes; a timeout skips the data commit, deploy and digest.

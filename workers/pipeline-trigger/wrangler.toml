@@ -1,0 +1,26 @@
+# Starts the daily data pipeline (.github/workflows/data-pipeline.yml) on time.
+# GitHub's own cron fired it 4–8 hours late through Sept–Oct 2026; this Worker
+# calls workflow_dispatch instead. See README.md for setup and the token.
+#
+# Deploy (manual, not part of the site deploy):
+#   npx wrangler deploy --config workers/pipeline-trigger/wrangler.toml
+name = "isitsafetotravel-pipeline-trigger"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+# Cron-only Worker: no public URL.
+workers_dev = false
+
+[triggers]
+# UTC. The first three are the daily slots (DAILY_CRONS in src/trigger.ts,
+# kept in sync by a unit test); the Monday one is the weekly token self-check.
+crons = ["5 6 * * *", "40 6 * * *", "5 8 * * *", "20 12 * * 1"]
+
+[vars]
+GITHUB_REPO = "RiccardoDominici/IsItSafeToTravel"
+WORKFLOW_FILE = "data-pipeline.yml"
+GITHUB_REF = "master"
+NTFY_TOPIC = "riccardo-claude"
+# GITHUB_TOKEN is a secret: npx wrangler secret put GITHUB_TOKEN --config workers/pipeline-trigger/wrangler.toml
+
+[observability]
+enabled = true
