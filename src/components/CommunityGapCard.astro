@@ -2,8 +2,9 @@
 /**
  * One row of the /community-vs-data/ ranking: an ISO badge, the country name
  * (linked), our score vs. the community score as two bars on the same 1-10
- * axis, a signed gap chip, the vote count, and one data-derived sentence
- * naming the pillar behind our score.
+ * axis, a signed gap chip, and one data-derived sentence naming the pillar
+ * behind our score. No vote count (owner's rule, 2026-10-19: a page never says
+ * how many votes a country has; being listed here already means "enough").
  *
  * Two layouts, swapped by breakpoint (design polish passes, 2026-09-26):
  *  - <sm: stacked (label+number on their own line, full-width bar below).
@@ -34,7 +35,6 @@ interface Props {
   gapText: string; // already-resolved chip text, e.g. "+0.7 safer, per travelers"
   /** 'neutral' when |gap| rounds to 0.0 — see CommunityVsDataPage.astro's GAP_NEGLIGIBLE_THRESHOLD. */
   gapDirection: 'safer' | 'less_safe' | 'neutral';
-  votesText: string; // already-resolved, e.g. "55 votes"
   driverText: string; // already-resolved sentence naming the weakest pillar
   ourScoreLabel: string;
   communityScoreLabel: string;
@@ -51,7 +51,6 @@ const {
   community,
   gapText,
   gapDirection,
-  votesText,
   driverText,
   ourScoreLabel,
   communityScoreLabel,
@@ -113,7 +112,7 @@ const communityLabel = `${communityScoreLabel}: ${communityText}/10`;
 
     {/* >=sm: one row per metric -- label | track | value, so the track actually
         uses the card's width instead of sharing a line with the label. Label
-        is left-aligned so it lines up with the vote count/driver text below
+        is left-aligned so it lines up with the driver text below
         (a right-aligned label in this same 8rem column used to float away
         from the card's left edge). */}
     <div class="hidden sm:block space-y-2 pl-9">
@@ -130,7 +129,6 @@ const communityLabel = `${communityScoreLabel}: ${communityText}/10`;
     </div>
 
     <div class="pl-9 space-y-1">
-      <p class="text-xs text-sand-600 dark:text-sand-400">{votesText}</p>
       <p class="text-xs text-sand-600 dark:text-sand-400 leading-relaxed">{driverText}</p>
     </div>
   </div>

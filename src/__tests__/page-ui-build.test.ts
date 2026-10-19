@@ -7,6 +7,8 @@
  *  - I27: a grey place with no advisory and no source says "No data yet", with no empty list;
  *  - I55: the community block heading is not followed by a second "Community" label;
  *  - 2026-10-19: a place grey for its missing crime data says so, never "fewer than four sources";
+ *  - 2026-10-19: no page says how many community votes a country has; a country page shows either
+ *    the community rating or "not enough votes yet";
  *  - affiliate removal: no Travelpayouts / Aviasales trace anywhere in the built pages.
  */
 import { describe, it, before } from 'node:test';
@@ -17,7 +19,10 @@ import type { ScoredCountry } from '../pipeline/types';
 import { isEstimatedPillar } from '../lib/pillar-presentation';
 import { greyCopy, greyHasNoData } from '../i18n/grey-copy';
 import { coverageShortfall } from '../pipeline/scoring/coverage';
-import { routes, type Lang } from '../i18n/ui';
+import { routes, publishedLanguages, type Lang } from '../i18n/ui';
+import { communityCopy } from '../i18n/community-copy';
+import { findVoteCountPhrases } from '../lib/vote-count-guard';
+import { SENTIMENT_MIN_VOTES as MIN_VOTE_FLOOR } from '../pipeline/sentiment/constants';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const DIST_CLIENT = join(ROOT, 'dist', 'client');
@@ -210,5 +215,117 @@ describe('task 10: "Where does the data come from?" shows source names, not ids'
       }
     }
     assert.ok(links > 20, `only ${links} source names checked`);
+  });
+});
+
+// ---------------------------------------------------------------------------------------------
+// 2026-10-19, owner's rule: never show how many community votes a country has. A country page
+// says either the community rating (status active) or "not enough votes yet", nothing else.
+// ---------------------------------------------------------------------------------------------
+
+/** Decode the few entities Astro leaves in text and attributes. */
+const decodeEntities = (s: string): string =>
+  s
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&#39;|&#x27;/g, "'")
+    .replace(/&quot;/g, '"')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, '&');
+
+/**
+ * What a reader, a crawler or an AI answer engine can read on a page: the visible text, the
+ * attribute values that carry words (meta/og descriptions, aria-labels, alt, title) and the
+ * JSON-LD bodies. Other scripts and styles are code, not copy, so they are dropped.
+ */
+function readableText(html: string): string {
+  const jsonLd = [...html.matchAll(/<script type="application\/ld\+json"[^>]*>([\s\S]*?)<\/script>/g)].map((m) => m[1]);
+  const noCode = html.replace(/<script[\s\S]*?<\/script>/gi, ' ').replace(/<style[\s\S]*?<\/style>/gi, ' ');
+  const attrs = [...noCode.matchAll(/\s(?:content|aria-label|alt|title|placeholder)="([^"]*)"/g)].map((m) => m[1]);
+  const text = noCode.replace(/<[^>]+>/g, ' ');
+  return decodeEntities([text, ...attrs, ...jsonLd].join(' ')).replace(/\s+/g, ' ');
+}
+
+/** The community block's visible text, without the general rule paragraph (threshold, not count). */
+function communityBlockText(html: string): string | null {
+  const idAt = html.indexOf('id="community-sentiment"');
+  if (idAt < 0) return null;
+  // From the opening <section, so its attributes are stripped with the tag, not read as text.
+  const start = html.lastIndexOf('<section', idAt);
+  const block = html.slice(start, html.indexOf('</section>', idAt));
+  const withoutRules = block.replace(/<p data-community-rules[\s\S]*?<\/p>/, ' ');
+  return readableText(withoutRules.replace(/<script[\s\S]*?<\/script>/gi, ' '));
+}
+
+describe('2026-10-19: no vote counts on any page', () => {
+  it('no built HTML page, in any language, carries a vote-count phrase', () => {
+    const offenders: string[] = [];
+    let pages = 0;
+    const walk = (dir: string): void => {
+      for (const entry of readdirSync(dir)) {
+        const full = join(dir, entry);
+        if (statSync(full).isDirectory()) walk(full);
+        else if (entry.endsWith('.html')) {
+          pages++;
+          // The activation threshold (30 votes) is a rule, not a count: allowed.
+          const hits = findVoteCountPhrases(readableText(readFileSync(full, 'utf-8')), [MIN_VOTE_FLOOR]);
+          if (hits.length) offenders.push(`${full.slice(DIST_CLIENT.length)}: ${hits.map((h) => `"${h.text}"`).join(', ')}`);
+        }
+      }
+    };
+    walk(DIST_CLIENT);
+    assert.ok(pages > 1500, `only ${pages} pages walked`);
+    assert.deepEqual(offenders.slice(0, 10), [], `${offenders.length} pages show a vote count`);
+    console.log(`  (${pages} pages scanned)`);
+  });
+
+  it('every country page in 7 languages: the community block is either the rating or "not enough votes yet"', () => {
+    let active = 0;
+    let insufficient = 0;
+    for (const lang of publishedLanguages) {
+      const segment = routes[lang].country;
+      // Same whitespace folding as readableText (fr has a no-break space before the colon).
+      const notEnough = communityCopy[lang].insufficient.replace(/\s+/g, ' ');
+      for (const c of countries) {
+        const html = countryPage(c.iso3, lang, segment);
+        const block = communityBlockText(html);
+        assert.ok(block !== null, `${lang}/${c.iso3}: community block missing`);
+        const status = html.match(/data-community-status="(\w+)"/)?.[1];
+        const comm = c.community;
+        // The engine's component decides, exactly as SentimentPillar does.
+        const shouldBeActive = comm?.status === 'active' && typeof comm.perceived === 'number' && Number.isFinite(comm.perceived);
+        if (comm) assert.equal(status, shouldBeActive ? 'active' : 'insufficient', `${lang}/${c.iso3}: status`);
+        if (status === 'active') {
+          active++;
+          assert.ok(!block.includes(notEnough), `${lang}/${c.iso3}: active but says "not enough"`);
+          assert.match(block, /\d[.,]\d\/10/, `${lang}/${c.iso3}: active but no community rating`);
+          // Neither this country's vote count nor its count of origins appears as a number.
+          for (const n of [comm?.votes, comm?.origins].filter((x): x is number => typeof x === 'number')) {
+            assert.ok(!new RegExp(`(?<![\\d.,])${n}(?![\\d.,])`).test(block), `${lang}/${c.iso3}: block shows ${n}`);
+          }
+        } else {
+          insufficient++;
+          assert.ok(block.includes(notEnough), `${lang}/${c.iso3}: no "not enough votes yet" line`);
+          // Nothing but words: no count, no progress, no rating below the threshold.
+          assert.ok(!/\d/.test(block), `${lang}/${c.iso3}: a number in the insufficient block: "${block.match(/.{0,40}\d.{0,40}/)?.[0]}"`);
+        }
+      }
+    }
+    assert.ok(active > 0 && insufficient > 0, `active ${active}, insufficient ${insufficient}: both states expected`);
+    console.log(`  (${active} active and ${insufficient} not-yet-active community blocks checked)`);
+  });
+
+  it('community-vs-data: no per-country vote count and no "Total votes" tile, in 7 languages', () => {
+    for (const lang of publishedLanguages) {
+      const html = readFileSync(join(DIST_CLIENT, lang, routes[lang]['community-vs-data'], 'index.html'), 'utf-8');
+      assert.deepEqual(findVoteCountPhrases(readableText(html), [MIN_VOTE_FLOOR]), [], lang);
+      // Each ranked row: the gap card's footer carries the driver sentence only.
+      for (const c of countries.filter((x) => x.community?.status === 'active' && typeof x.score === 'number')) {
+        const row = html.match(new RegExp(`<li[^>]*>(?:(?!</li>)[\\s\\S])*?>${c.iso3}<(?:(?!</li>)[\\s\\S])*</li>`))?.[0];
+        if (!row) continue;
+        const votes = c.community!.votes;
+        assert.ok(!new RegExp(`(?<![\\d.,])${votes}(?![\\d.,])`).test(readableText(row)), `${lang}/${c.iso3}: row shows ${votes}`);
+      }
+    }
   });
 });

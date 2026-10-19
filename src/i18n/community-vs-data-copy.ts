@@ -22,9 +22,11 @@
  * String.replace — same convention as about-copy.ts / AnswerFirstParagraph.astro.
  * countryNoun.one/other lets callers pick the grammatically correct number for
  * "{count} countries" in the few languages that inflect it (see pickCountryNoun
- * below); votesLabel has no singular form because only active entries are ranked
- * (MIN_VOTE_FLOOR = 30 votes from MIN_ORIGIN_FLOOR = 3 countries of origin, formula
- * v10), so a displayed entry never has fewer than 30 votes — see src/lib/sentiment.ts.
+ * below). {count} is always a number of COUNTRIES, never of votes: since 2026-10-19
+ * the page shows no vote count at all, per country or in total (owner's rule: say
+ * only "not enough votes yet" or the community rating). The {floor}/{origins}
+ * tokens are the activation threshold (MIN_VOTE_FLOOR / MIN_ORIGIN_FLOOR, see
+ * src/lib/sentiment.ts), the same for every country.
  */
 import type { Lang } from './ui';
 import type { PillarName } from '../pipeline/types';
@@ -46,7 +48,6 @@ export interface CommunityVsDataCopy {
 
   /** Stat strip under the intro (design polish pass, 2026-09-26) -- shown only when countries are ranked. */
   statCountriesLabel: string;
-  statVotesLabel: string;
   statGapLabel: string;
 
   rankingTitle: string;
@@ -64,8 +65,6 @@ export interface CommunityVsDataCopy {
    * V4: a rounded "+0.0"/"−0.0" reads as a rendering bug, not information).
    */
   gapChipNeutral: string;
-  /** {count} — always plural-safe, see file header. */
-  votesLabel: string;
 
   /** {pillar} {score} {note} — one sentence naming the weakest pillar behind OUR score (not the gap). */
   driverTemplate: string;
@@ -125,7 +124,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Travelers rate {name} {gap} points less safe than our data — the widest gap among the {count} {countryNoun} with enough votes so far.',
     dataAsOf: 'Data as of {date}.',
     statCountriesLabel: 'Countries ranked',
-    statVotesLabel: 'Total votes',
     statGapLabel: 'Widest gap',
     rankingTitle: 'Countries Ranked by Gap',
     ourScoreLabel: 'Data',
@@ -133,7 +131,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} safer, per travelers',
     gapChipLessSafe: '{gap} less safe, per travelers',
     gapChipNeutral: 'Matches our score',
-    votesLabel: '{count} votes',
     driverTemplate: 'Our score is held down most by {pillar} ({score}/10) — {note}.',
     driverNeutral: "This country's five safety pillars are closely matched, with none standing out as the main driver.",
     pillarNote: {
@@ -178,7 +175,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'I voti della community collocano {name} {gap} punti sotto il nostro punteggio — il distacco più ampio tra i {count} {countryNoun} con voti sufficienti finora.',
     dataAsOf: 'Dati aggiornati al {date}.',
     statCountriesLabel: 'Paesi in classifica',
-    statVotesLabel: 'Voti totali',
     statGapLabel: 'Divario più ampio',
     rankingTitle: 'Paesi in classifica per divario',
     ourScoreLabel: 'Dati',
@@ -186,7 +182,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} sopra il punteggio',
     gapChipLessSafe: '{gap} sotto il punteggio',
     gapChipNeutral: 'In linea con i nostri dati',
-    votesLabel: '{count} voti',
     driverTemplate: 'Il nostro punteggio è frenato soprattutto da {pillar} ({score}/10) — {note}.',
     driverNeutral: 'I cinque pilastri di sicurezza di questo paese sono molto simili tra loro, senza che nessuno emerga come fattore principale.',
     pillarNote: {
@@ -227,7 +222,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Los votos de la comunidad sitúan a {name} {gap} puntos por debajo de nuestra puntuación — la mayor diferencia entre los {count} {countryNoun} con votos suficientes hasta ahora.',
     dataAsOf: 'Datos actualizados a fecha de {date}.',
     statCountriesLabel: 'Países clasificados',
-    statVotesLabel: 'Votos totales',
     statGapLabel: 'Mayor diferencia',
     rankingTitle: 'Países clasificados por diferencia',
     ourScoreLabel: 'Datos',
@@ -235,7 +229,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} por encima',
     gapChipLessSafe: '{gap} por debajo',
     gapChipNeutral: 'Coincide con nuestros datos',
-    votesLabel: '{count} votos',
     driverTemplate: 'Nuestra puntuación se ve más lastrada por {pillar} ({score}/10) — {note}.',
     driverNeutral: 'Los cinco pilares de seguridad de este país están muy igualados, sin que ninguno destaque como factor principal.',
     pillarNote: {
@@ -276,7 +269,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Les votes de la communauté placent {name} {gap} points en dessous de notre score — le plus grand écart parmi les {count} {countryNoun} ayant assez de votes à ce jour.',
     dataAsOf: 'Données à jour au {date}.',
     statCountriesLabel: 'Pays classés',
-    statVotesLabel: 'Votes au total',
     statGapLabel: 'Plus grand écart',
     rankingTitle: 'Pays classés par écart',
     ourScoreLabel: 'Données',
@@ -284,7 +276,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} au-dessus',
     gapChipLessSafe: '{gap} en dessous',
     gapChipNeutral: 'Conforme à nos données',
-    votesLabel: '{count} votes',
     driverTemplate: 'Notre score est surtout tiré vers le bas par {pillar} ({score}/10) — {note}.',
     driverNeutral: "Les cinq piliers de sécurité de ce pays sont très proches les uns des autres, sans qu'aucun ne se distingue comme facteur principal.",
     pillarNote: {
@@ -325,7 +316,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Os votos da comunidade colocam {name} {gap} pontos abaixo da nossa pontuação — a maior diferença entre os {count} {countryNoun} com votos suficientes até agora.',
     dataAsOf: 'Dados atualizados em {date}.',
     statCountriesLabel: 'Países classificados',
-    statVotesLabel: 'Votos totais',
     statGapLabel: 'Maior diferença',
     rankingTitle: 'Países classificados por diferença',
     ourScoreLabel: 'Dados',
@@ -333,7 +323,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} acima',
     gapChipLessSafe: '{gap} abaixo',
     gapChipNeutral: 'Alinhado com os nossos dados',
-    votesLabel: '{count} votos',
     driverTemplate: 'Nossa pontuação é mais puxada para baixo por {pillar} ({score}/10) — {note}.',
     driverNeutral: 'Os cinco pilares de segurança deste país estão muito equilibrados entre si, sem que nenhum se destaque como fator principal.',
     pillarNote: {
@@ -371,7 +360,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     headlineLessSafe: '旅行者投票认为{name}比我们的评分低 {gap} 分——这是目前有足够投票的 {count} {countryNoun}中差距最大的一个。',
     dataAsOf: '数据截至 {date}。',
     statCountriesLabel: '已排名国家',
-    statVotesLabel: '总票数',
     statGapLabel: '最大差距',
     rankingTitle: '按差距排名的国家',
     ourScoreLabel: '数据',
@@ -379,7 +367,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} 更安全',
     gapChipLessSafe: '{gap} 较不安全',
     gapChipNeutral: '与我们的评分基本一致',
-    votesLabel: '{count} 票',
     driverTemplate: '拉低我们评分最多的是{pillar}（{score}/10 分）——{note}。',
     driverNeutral: '这个国家的五大安全支柱得分非常接近，没有哪一项明显是主要因素。',
     pillarNote: {
@@ -418,7 +405,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
       'Community-Stimmen sehen {name} {gap} Punkte unter unserer Bewertung — der größte Unterschied unter den {count} {countryNoun} mit bisher ausreichend Stimmen.',
     dataAsOf: 'Stand der Daten: {date}.',
     statCountriesLabel: 'Eingestufte Länder',
-    statVotesLabel: 'Stimmen insgesamt',
     statGapLabel: 'Größte Abweichung',
     rankingTitle: 'Länder nach Abweichung sortiert',
     ourScoreLabel: 'Daten',
@@ -426,7 +412,6 @@ export const communityVsDataCopy: Record<Lang, CommunityVsDataCopy> = {
     gapChipSafer: '{gap} höher',
     gapChipLessSafe: '{gap} niedriger',
     gapChipNeutral: 'Entspricht unserer Bewertung',
-    votesLabel: '{count} Stimmen',
     driverTemplate: 'Am stärksten belastet wird unsere Bewertung von {pillar} ({score}/10) — {note}.',
     driverNeutral: 'Die fünf Sicherheitssäulen dieses Landes liegen sehr nah beieinander, keine sticht als Hauptfaktor hervor.',
     pillarNote: {

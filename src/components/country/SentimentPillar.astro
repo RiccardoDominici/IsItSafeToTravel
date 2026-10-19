@@ -2,11 +2,15 @@
 // Community block on the country page (formula v10, SPEC §5/§7). Wraps the vote widget (<slot/>).
 //
 //  - active (>= MIN_VOTE_FLOOR votes from >= MIN_ORIGIN_FLOOR known countries of origin): the
-//    community rating P, how many votes and origins it rests on and, once the score engine
-//    provides them, the data score, the community adjustment and the final score.
-//  - insufficient (or no votes): a grey progress line "N/30 votes, M/3 countries of origin" with a
-//    call to vote (votes with no known country of origin say so). No number is shown before
-//    activation.
+//    community rating P and, once the score engine provides them, the data score, the community
+//    adjustment and the final score.
+//  - insufficient (or no votes): one grey line, "Not enough votes yet", with a call to vote. No
+//    number is shown before activation.
+//  Never a vote count, in either state (owner's rule, 2026-10-19): no "based on N votes", no
+//  "N/30 votes" progress, no count of countries of origin. The reader sees either the community
+//  rating or "not enough votes yet". The general rule under the block ("once a country has 30
+//  votes from at least 3 countries of origin...") stays: it is the threshold, the same for every
+//  country, not this country's count. src/__tests__/page-ui-build.test.ts checks the built pages.
 //  - grey country (no official score): P, when active, is shown on its own and labelled as the
 //    travelers' rating; it never stands in for the official score (SPEC §5).
 //
@@ -14,11 +18,7 @@
 import type { CommunityComponent, SentimentEntry } from '../../pipeline/types';
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
-import {
-  communityCopy,
-  fillCommunityTemplate,
-  insufficientProgressText,
-} from '../../i18n/community-copy';
+import { communityCopy, fillCommunityTemplate } from '../../i18n/community-copy';
 import { formatSigned, formatTenths, roundForDisplay } from '../../lib/display-number';
 import { pillarToColor } from '../../lib/colors';
 import { MIN_ORIGIN_FLOOR, MIN_VOTE_FLOOR } from '../../lib/sentiment';
@@ -30,7 +30,7 @@ interface Props {
   sentiment: SentimentEntry | null;
   /**
    * Formula v10: the community component the score engine applied (ScoredCountry.community). When
-   * present it decides what is shown (status, votes, origins, perceived), so the block always
+   * present it decides what is shown (status and perceived), so the block always
    * agrees with the adjustment actually applied to the score, even if the engine rejected an entry
    * the sentiment file called active. Absent on pre-v10 snapshots.
    */
@@ -56,11 +56,12 @@ const isGrey = isGreyScore(official);
 const isFiniteNumber = (x: unknown): x is number => typeof x === 'number' && Number.isFinite(x);
 
 // One view of the community, from the engine component when the snapshot has it (v10), else from
-// the sentiment file entry.
-const view: { status: 'active' | 'insufficient'; votes: number; origins: number; perceived: number | null } | null = community
-  ? { status: community.status, votes: community.votes, origins: community.origins, perceived: community.perceived }
+// the sentiment file entry. Only the status and the rating: the vote and origin counts are never
+// read here, so they cannot reach the page by accident.
+const view: { status: 'active' | 'insufficient'; perceived: number | null } | null = community
+  ? { status: community.status, perceived: community.perceived }
   : sentiment
-    ? { status: sentiment.status, votes: sentiment.votes, origins: sentiment.origins, perceived: sentiment.perceived }
+    ? { status: sentiment.status, perceived: sentiment.perceived }
     : null;
 const isActive = view !== null && view.status === 'active' && isFiniteNumber(view.perceived);
 
@@ -71,9 +72,6 @@ const perceived = isActive ? view!.perceived : null;
 const displayScore = perceived !== null ? formatTenths(perceived, lang) : null;
 const barWidth = perceived !== null ? Math.max((perceived / 10) * 180, 2) : 0;
 const color = perceived !== null ? pillarToColor(perceived / 10) : '';
-const votesText = isActive
-  ? fillCommunityTemplate(copy.votesFromOrigins, { votes: view!.votes, origins: view!.origins })
-  : '';
 
 // Score breakdown (scored countries only): shown once the engine passes the adjustment.
 const showAdjustment = isActive && !isGrey && isFiniteNumber(scoreAdjustment);
@@ -84,9 +82,9 @@ const round1 = (x: number): number => roundForDisplay(x, 1);
 const showRoundingNote =
   showDataScore && isFiniteNumber(official) && Math.abs(round1(dataScore!) + round1(scoreAdjustment!) - round1(official)) > 0.05;
 
-// Insufficient: progress towards both activation floors (0/30, 0/3 when nobody has voted yet),
-// clamped at each floor; votes whose country of origin is unknown get a line that says so.
-const insufficientText = insufficientProgressText(lang, view?.votes ?? 0, view?.origins ?? 0, MIN_VOTE_FLOOR, MIN_ORIGIN_FLOOR);
+// Insufficient (or nobody has voted yet): the same fixed line for every country, so it says
+// nothing about how many votes there are, zero or twenty-nine.
+const insufficientText = copy.insufficient;
 
 const rulesText = isGrey
   ? copy.rulesGrey
@@ -122,9 +120,6 @@ const rulesText = isGrey
           {displayScore}/10
         </span>
       </div>
-      <div class="flex flex-wrap items-center gap-x-3 gap-y-1 pl-[calc(7rem+0.75rem)]">
-        <span class="text-xs text-sand-600 dark:text-sand-400">{votesText}</span>
-      </div>
       {isGrey && (
         <p class="text-xs font-medium text-sand-700 dark:text-sand-300 pt-1">{copy.notOfficialNote}</p>
       )}
@@ -153,12 +148,17 @@ const rulesText = isGrey
       )}
     </div>
   ) : (
-    <p class="rounded-lg border border-dashed border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-900/40 px-3 py-2.5 text-sm text-sand-600 dark:text-sand-400 tabular-nums">
+    <p
+      data-community-insufficient
+      class="rounded-lg border border-dashed border-sand-300 dark:border-sand-600 bg-sand-100 dark:bg-sand-900/40 px-3 py-2.5 text-sm text-sand-600 dark:text-sand-400"
+    >
       {insufficientText}
     </p>
   )}
 
-  <p class="text-xs text-sand-600 dark:text-sand-400 mt-3">
+  {/* data-community-rules: the build test exempts this paragraph from the vote-count check, as
+      its numbers are the activation threshold and the cap, never this country's count. */}
+  <p data-community-rules class="text-xs text-sand-600 dark:text-sand-400 mt-3">
     {rulesText}
   </p>
 

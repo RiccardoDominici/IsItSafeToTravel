@@ -3,7 +3,6 @@ import { strict as assert } from 'node:assert';
 import {
   communityCopy,
   fillCommunityTemplate,
-  insufficientProgressText,
   placeFor,
   voteQuestion,
   type CommunityCopy,
@@ -12,8 +11,11 @@ import { publishedLanguages, type Lang } from '../ui.js';
 
 const LANGS = publishedLanguages as readonly Lang[];
 
-/** Every value the components substitute, so a filled string must contain no {token}. */
-const ALL_TOKENS = { place: 'X', votes: 12, minVotes: 30, origins: 2, minOrigins: 3, cap: '1.0' };
+/**
+ * Every value the components substitute, so a filled string must contain no {token}. No `votes` /
+ * `origins`: since 2026-10-19 no template carries a country's own vote or origin count.
+ */
+const ALL_TOKENS = { place: 'X', minVotes: 30, minOrigins: 3, cap: '1.0' };
 
 function stringFields(copy: CommunityCopy): Array<[string, string]> {
   const out: Array<[string, string]> = [];
@@ -44,12 +46,13 @@ describe('communityCopy: completeness (7 locales)', () => {
       const tokens = (s: string) => [...s.matchAll(/\{(\w+)\}/g)].map((m) => m[1]).sort();
       assert.deepEqual(tokens(c.relativeQuestion), ['place']);
       assert.deepEqual(tokens(c.absoluteQuestion), ['place']);
-      assert.deepEqual(tokens(c.votesFromOrigins), ['origins', 'votes']);
-      assert.deepEqual(tokens(c.insufficient), ['minOrigins', 'minVotes', 'origins', 'votes']);
-      for (const variant of c.insufficientUnknownOrigin) {
-        assert.deepEqual(tokens(variant), ['minOrigins', 'minVotes', 'origins', 'votes']);
-      }
+      // "Not enough votes yet" is the same fixed line for every country: no token at all.
+      assert.deepEqual(tokens(c.insufficient), []);
       assert.deepEqual(tokens(c.rulesScored), ['cap', 'minOrigins', 'minVotes']);
+      // No template may take a country's own vote or origin count (owner's rule, 2026-10-19).
+      for (const [key, value] of stringFields(c)) {
+        assert.ok(!/\{(votes|origins|count)\}/.test(value), `${lang}.${key} takes a vote count`);
+      }
       for (const [key, value] of stringFields(c)) {
         assert.ok(!/\{\w+\}/.test(fillCommunityTemplate(value, ALL_TOKENS)), `${lang}.${key} keeps a token`);
       }
@@ -61,37 +64,22 @@ describe('communityCopy: the numbers in the rules match the activation constants
   it('insufficient and rules texts are templated, never hard-coded 30 / 3 / 50', () => {
     for (const lang of LANGS) {
       const c = communityCopy[lang];
-      for (const text of [c.insufficient, ...c.insufficientUnknownOrigin, c.rulesScored]) {
+      for (const text of [c.insufficient, c.rulesScored]) {
         assert.ok(!/\b30\b|\b50\b/.test(text), `${lang}: hard-coded floor in "${text}"`);
       }
     }
   });
 });
 
-describe('insufficientProgressText: the progress line before activation (audit I20)', () => {
-  it('known origins: the plain "N/30 votes, M/3 countries of origin" line', () => {
-    assert.equal(
-      insufficientProgressText('en', 12, 2, 30, 3),
-      'Not enough votes yet (12/30 votes, 2/3 countries of origin) — vote to make the community count.',
-    );
-    assert.equal(insufficientProgressText('en', 0, 0, 30, 3), communityCopy.en.insufficient.replace('{votes}', '0').replace('{minVotes}', '30').replace('{origins}', '0').replace('{minOrigins}', '3'));
-  });
-
-  it('votes but no known origin: says the country of origin is unknown, singular and plural', () => {
-    assert.equal(
-      insufficientProgressText('en', 1, 0, 30, 3),
-      'Not enough votes yet (1/30 votes, 0/3 countries of origin, as the country of origin of this vote is unknown) — vote to make the community count.',
-    );
-    assert.match(insufficientProgressText('en', 4, 0, 30, 3), /4\/30 votes, 0\/3 countries of origin, as the country of origin of these votes is unknown/);
+describe('"not enough votes yet": no number at all (owner\'s rule, 2026-10-19)', () => {
+  it('the line before activation carries no digit in any language', () => {
     for (const lang of LANGS) {
-      assert.notEqual(insufficientProgressText(lang, 1, 0, 30, 3), insufficientProgressText(lang, 2, 0, 30, 3), `${lang}: one vote and several read the same`);
-      assert.notEqual(insufficientProgressText(lang, 1, 0, 30, 3), insufficientProgressText(lang, 1, 1, 30, 3), `${lang}: unknown-origin variant missing`);
+      assert.ok(!/\d/.test(communityCopy[lang].insufficient), `${lang}: "${communityCopy[lang].insufficient}"`);
     }
   });
 
-  it('clamps each count at its floor', () => {
-    assert.match(insufficientProgressText('en', 45, 1, 30, 3), /30\/30 votes, 1\/3 countries/);
-    assert.match(insufficientProgressText('en', 12, 9, 30, 3), /12\/30 votes, 3\/3 countries/);
+  it('en reads exactly "Not enough votes yet", then the call to vote', () => {
+    assert.equal(communityCopy.en.insufficient, 'Not enough votes yet — vote to make the community count.');
   });
 });
 

@@ -19,7 +19,7 @@ import Base from '../layouts/Base.astro';
 import Breadcrumb from './Breadcrumb.astro';
 import CommunityGapCard from './CommunityGapCard.astro';
 import { loadLatestScores, getLocalizedCountryName } from '../lib/scores';
-import { formatNumber, formatSigned, formatTenths } from '../lib/display-number';
+import { formatSigned, formatTenths } from '../lib/display-number';
 import { loadAllSentiment, MIN_ORIGIN_FLOOR, MIN_VOTE_FLOOR, pickVoteNextSuggestions } from '../lib/sentiment';
 import { selectPillarExtremes } from '../lib/pillar-extremes';
 import { faqPillarLabels } from '../lib/country-faq-copy';
@@ -62,7 +62,6 @@ interface RankedEntry {
   official: number;
   community: number;
   gap: number; // community - official; positive = travelers feel it's safer than our score
-  votes: number;
   driverText: string;
 }
 
@@ -99,7 +98,6 @@ const ranked: RankedEntry[] = sentimentEntries
       official,
       community,
       gap,
-      votes: s.votes,
       driverText,
     };
   })
@@ -108,7 +106,9 @@ const ranked: RankedEntry[] = sentimentEntries
   .sort((a, b) => b.gap - a.gap);
 
 const hasEntries = ranked.length > 0;
-const totalVotes = ranked.reduce((sum, e) => sum + e.votes, 0);
+// No vote counts on this page, per country or in total (owner's rule, 2026-10-19: a page never
+// says how many votes a country has). A total would give one away whenever a single country is
+// ranked, which is the case today. Being listed already says "enough votes".
 const isShortList = ranked.length < 10; // brief's threshold for the "more countries are joining" CTA block
 // Thin-page guard: a 1-2 row ranking is not a page worth indexing. Rule lives
 // here (not just in copy) -- scripts/validate-seo.ts asserts it stays wired up.
@@ -210,16 +210,14 @@ const methodologyParts = c.methodologyText.split('{link}');
 
     {/* Compact stat strip (design polish pass, 2026-09-26) -- every number
         computed above, nothing invented; hidden entirely when there is
-        nothing to summarize (emptyState covers that case instead). */}
+        nothing to summarize (emptyState covers that case instead). Two
+        tiles since 2026-10-19: the "Total votes" tile went with the rule
+        that no page shows vote counts. */}
     {hasEntries && (
-      <div class="max-w-2xl mx-auto grid grid-cols-3 gap-3">
+      <div class="max-w-2xl mx-auto grid grid-cols-2 gap-3">
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
           <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{ranked.length}</p>
           <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statCountriesLabel}</p>
-        </div>
-        <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
-          <p class="text-2xl font-heading font-bold tabular-nums text-sand-800 dark:text-sand-100">{formatNumber(totalVotes, 0, lang)}</p>
-          <p class="text-xs text-sand-600 dark:text-sand-400 mt-1">{c.statVotesLabel}</p>
         </div>
         <div class="rounded-lg border border-sand-200 dark:border-sand-700 bg-white dark:bg-sand-800 px-3 py-3 text-center">
           {headlineEntry && (
@@ -248,7 +246,6 @@ const methodologyParts = c.methodologyText.split('{link}');
             const gapText = isNegligible
               ? c.gapChipNeutral
               : (isSafer ? c.gapChipSafer : c.gapChipLessSafe).replace('{gap}', signedGap(entry.gap));
-            const votesText = c.votesLabel.replace('{count}', formatNumber(entry.votes, 0, lang));
             return (
               <CommunityGapCard
                 rank={i + 1}
@@ -259,7 +256,6 @@ const methodologyParts = c.methodologyText.split('{link}');
                 community={entry.community}
                 gapText={gapText}
                 gapDirection={gapDirection}
-                votesText={votesText}
                 driverText={entry.driverText}
                 ourScoreLabel={c.ourScoreLabel}
                 communityScoreLabel={c.communityScoreLabel}
