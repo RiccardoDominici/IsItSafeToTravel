@@ -7,7 +7,7 @@
 import type { Lang } from '../../i18n/ui';
 import { useTranslations } from '../../i18n/utils';
 import { getIndicatorLabel } from '../../i18n/indicator-labels';
-import { methodologyV10Copy, FORMULA_V10_RELEASE_DATE, FORMULA_V101_RELEASE_DATE } from '../../i18n/methodology-v10-copy';
+import { methodologyV10Copy, FORMULA_V10_RELEASE_DATE, FORMULA_V101_RELEASE_DATE, CRIME_DATA_RULE_DATE } from '../../i18n/methodology-v10-copy';
 import { getSourceEditions } from '../../lib/source-editions';
 import weightsConfig from '../../pipeline/config/weights.json';
 
@@ -83,6 +83,7 @@ const localDate = (iso: string) =>
   new Date(`${iso}T00:00:00Z`).toLocaleDateString(DATE_LOCALE[lang], { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
 // Newest first. `id` is the anchor of the entry's heading.
 const entries = [
+  { id: 'crime-data', date: CRIME_DATA_RULE_DATE, title: copy.changelogCrimeRuleEntryTitle, items: copy.changelogCrimeRuleItems },
   { id: 'v10-1', date: FORMULA_V101_RELEASE_DATE, title: copy.changelogV101EntryTitle, items: copy.changelogV101Items },
   { id: 'v10', date: FORMULA_V10_RELEASE_DATE, title: copy.changelogEntryTitle, items: copy.changelogItems },
 ].map((entry) => {

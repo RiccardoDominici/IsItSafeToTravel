@@ -37,6 +37,7 @@ import { getInlineRiskLabel } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { getProvenanceCounts, buildProvenanceSentence } from './provenance-copy';
 import { isScored } from './score-status';
+import { coverageShortfall } from '../pipeline/scoring/coverage';
 import { formatTenths } from './display-number';
 import { getAdvisoryConsensus } from './advisory-consensus';
 import { selectPillarFocus } from './pillar-focus';
@@ -150,7 +151,9 @@ export function buildCountrySummary(country: ScoredCountry, ctx: SummaryContext)
   const sentence = (text: string): string => (lang === 'en' ? capitalizeFirst(text) : text);
 
   if (!isScored(country)) {
-    return [fill(copy.grey, names), advisory].map(sentence).join(joiner);
+    // A place greyed for its missing crime data has four sources: "fewer than four" would be false.
+    const grey = coverageShortfall(country) === 'crime' ? copy.greyNoCrime : copy.grey;
+    return [fill(grey, names), advisory].map(sentence).join(joiner);
   }
 
   const date = new Date(ctx.snapshotDate).toLocaleDateString(DATE_LOCALE[lang], {

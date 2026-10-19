@@ -408,6 +408,8 @@ export function calibratePillar(p: number, calibration: CalibrationConfig | unde
 export interface CountryScoreDiagnostics {
   /** Coverage sources (coverage.ts: disaster-alert feeds excluded), the grey rule's count. */
   sourceCount: number;
+  /** Required pillars (formulaV9.requiredPillars) with no measured value; non-empty = grey unless guarded. */
+  missingPillars: string[];
   /** True when only the danger guard kept this data-poor country scored. */
   guardApplied: boolean;
   guardReasons: string[];
@@ -600,11 +602,15 @@ export function computeCountryScoreDetailed(
   const coverageSources = coverageSourceCount(usedSources);
   const level4Governments = Object.values(advisoryLevels).filter((level) => level === 4).length;
   const ucdpRow = rawByName.get('ucdp_conflict_deaths');
+  // Required pillars (2026-10-19, crime): a pillar with no indicator found is the prior alone.
+  const missingPillars = (f9.requiredPillars ?? []).filter(
+    (name) => (presentIndicatorsByPillar[name] ?? []).length === 0,
+  );
   const statusDecision = decideScoreStatus(coverageSources, f9.minSources, {
     level4Governments,
     severeShare,
     ucdpDeaths: ucdpRow && Number.isFinite(ucdpRow.value) ? ucdpRow.value : null,
-  });
+  }, missingPillars);
   const scoreStatus = statusDecision.status;
   // No global calibration in v10: scale continuity is per pillar (applied above).
   const dataScore = scoreStatus === 'scored' ? rawScore : null;
@@ -653,6 +659,7 @@ export function computeCountryScoreDetailed(
     country,
     diagnostics: {
       sourceCount: coverageSources,
+      missingPillars,
       guardApplied: statusDecision.guardApplied,
       guardReasons: statusDecision.guardReasons,
       communityRejected: rejectedActive,
@@ -1078,8 +1085,19 @@ export function formatRunSummary(
   if (minSources === undefined) return [];
   const grey = results.filter((c) => c.scoreStatus === 'insufficient_data');
   const lines = [
-    `[STATUS] ${results.length - grey.length} scored, ${grey.length} insufficient_data (< ${minSources} coverage sources after the max-age filter; disaster alerts not counted)`,
+    `[STATUS] ${results.length - grey.length} scored, ${grey.length} insufficient_data (< ${minSources} coverage sources after the max-age filter, disaster alerts not counted; or no value in a required pillar)`,
   ];
+  // Grey for a required pillar alone (enough sources): named, so a run shows who the rule greys.
+  const pillarGrey = grey.filter((c) => {
+    const d = diagnostics.get(c.iso3);
+    return d !== undefined && d.sourceCount >= minSources && d.missingPillars.length > 0;
+  });
+  if (pillarGrey.length > 0) {
+    lines.push(
+      `[STATUS] Grey with enough sources but no value in a required pillar: ` +
+        pillarGrey.map((c) => `${c.iso3} (no ${diagnostics.get(c.iso3)!.missingPillars.join('/')})`).join(', '),
+    );
+  }
   const guarded = results.filter((c) => diagnostics.get(c.iso3)?.guardApplied);
   lines.push(
     guarded.length === 0

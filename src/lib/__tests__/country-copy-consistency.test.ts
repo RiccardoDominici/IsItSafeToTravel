@@ -635,3 +635,55 @@ describe('2026-10-17 re-check of the consistency audit', () => {
     assert.deepEqual(greySourceItems('de', 0, ['worldbank']), ['Mordrate der Weltbank']);
   });
 });
+
+// Owner decision 2026-10-19 (coverage-floor study): a place with four sources but no crime measure
+// (no GPI, no World Bank homicide rate) is grey. It has four sources, so every grey sentence that
+// says "fewer than four" would be false for it; the 3-source places keep that sentence.
+describe('grey for missing crime data (2026-10-19)', () => {
+  const noCrimeSources = ['advisories', 'inform', 'ucdp', 'vdem'];
+  const grey = (sources: string[], crimeIndicators: IndicatorScore[]): ScoredCountry => {
+    const c = country({
+      iso3: 'CPV',
+      score: 6.9,
+      pillars: { crime: { score: 0.5, indicators: crimeIndicators, dataCompleteness: 0 } },
+      advisories: advisoriesOf({ 1: 12, 2: 6 }),
+    });
+    return {
+      ...c,
+      score: null,
+      scoreDisplay: null,
+      dataScore: null,
+      scoreStatus: 'insufficient_data',
+      sources: sources.map((name) => ({ name, url: 'u', fetchedAt: '', description: '' })),
+    } as unknown as ScoredCountry;
+  };
+  const capeVerde = grey(noCrimeSources, []);
+  const nauru = grey(['advisories', 'inform', 'ucdp'], []);
+  // "fewer than four" in each language (the FAQ, summary, meta and hero wordings).
+  const FEWER = /fewer than four|meno di quattro|menos de cuatro|moins de quatre|moins nombreuses|menos de quatro|不足四个|少于四个|weniger als vier|hier sind es weniger|e qui sono meno|y aquí son menos|e aqui são menos/;
+  const CRIME = /crime|criminalità|delincuencia|criminalité|criminalidade|犯罪|Kriminalität/;
+  const pageText = (c: ScoredCountry, lang: Lang) =>
+    [summary(c, lang, 'Cabo Verde'), buildCountryMetaDescription(c, lang), ...faq(c, lang).map((qa) => qa.answer)].join(' ');
+
+  it('says that no source measures crime, never "fewer than four", in every language', () => {
+    for (const lang of LANGS) {
+      const text = pageText(capeVerde, lang);
+      assert.doesNotMatch(text, FEWER, `${lang}: ${text}`);
+      assert.match(text, CRIME, lang);
+    }
+  });
+
+  it('keeps "fewer than four" for a place that really has fewer (Nauru: three sources)', () => {
+    for (const lang of LANGS) assert.match(pageText(nauru, lang), FEWER, lang);
+  });
+
+  it('the hero sentence has its own variant in every language, with the same {name} slot as `why`', async () => {
+    const { greyCopy } = await import('../../i18n/grey-copy');
+    for (const lang of LANGS) {
+      const g = greyCopy[lang];
+      assert.match(g.whyNoCrime, CRIME, lang);
+      assert.doesNotMatch(g.whyNoCrime, FEWER, lang);
+      assert.equal(g.whyNoCrime.includes('{name}'), g.why.includes('{name}'), lang);
+    }
+  });
+});

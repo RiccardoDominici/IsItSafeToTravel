@@ -117,6 +117,12 @@ export interface FormulaV9Config {
    */
   minSources?: number;
   /**
+   * Pillars that need at least one measured value for an official score, on top of minSources
+   * (owner decision 2026-10-19: no crime value at all = insufficient_data unless the danger guard
+   * holds). Absent = no pillar requirement (the v10/v10.1 behaviour before 2026-10-19).
+   */
+  requiredPillars?: PillarName[];
+  /**
    * Formula v10 (SPEC §3): per-pillar scale continuity, frozen on the switch date. For each
    * listed pillar the final (shrunk) pillar value is mapped p' = clamp(alpha + beta * p,
    * 0.001, 1) before aggregation, so a pillar whose indicators changed keeps the mean and
@@ -214,7 +220,8 @@ export interface AdvisoryInfo {
 
 /**
  * Formula v10 (SPEC §4): `insufficient_data` = fewer than minSources distinct sources
- * after the max-age filter and no danger-guard signal. Such a country has no official
+ * after the max-age filter, or (since 2026-10-19) no measured value in a required pillar
+ * (formulaV9.requiredPillars: crime), and no danger-guard signal. Such a country has no official
  * score (score, scoreDisplay and dataScore are null); its pillars are kept for
  * transparency but must never be rendered as numbers.
  */

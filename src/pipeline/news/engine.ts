@@ -32,7 +32,7 @@ const hasOfficialScore = (c: ScoredCountry | undefined): c is WithOfficialScore 
   c !== undefined && typeof c.score === 'number' && c.scoreStatus !== 'insufficient_data';
 
 const hasSufficientData = (c: ScoredCountry): c is WithOfficialScore =>
-  hasOfficialScore(c) && meetsCoverageFloor(c.sources);
+  hasOfficialScore(c) && meetsCoverageFloor(c);
 
 const round2 = (n: number): number => Math.round(n * 100) / 100;
 

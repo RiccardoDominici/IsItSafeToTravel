@@ -105,6 +105,12 @@ export interface CountryFaqCopy {
    * count). Only en/zh carry {name}; the other locales say "this destination" (article-free).
    */
   a1Grey: string;
+  /**
+   * `a1Grey` for a place with enough sources but none that measures crime (coverage.ts
+   * coverageShortfall 'crime'). Such a place always has advisories: four sources without GPI and
+   * World Bank are advisories, INFORM, UCDP and V-Dem.
+   */
+  a1GreyNoCrime: string;
   /** a3None for a grey place: no "pillar scores above" to point to. */
   a3NoneGrey: string;
   /** a1Grey for a place with no government advisory either: no "advisories below" to point to. */
@@ -200,6 +206,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} of the {total} government travel advisories',
     a1Grey: 'We cannot give {name} a safety score yet: we publish one only when at least four independent sources cover a place, and fewer do here. Read the government advisories below and check your own government’s travel advice before you go.',
+    a1GreyNoCrime: 'We cannot give {name} a safety score yet: we publish one only when at least four independent sources cover a place and at least one of them measures crime, and none does here. Read the government advisories below and check your own government’s travel advice before you go.',
     a1GreyNoAdvisories: 'We cannot give {name} a safety score yet: we publish one only when at least four independent sources cover a place, and fewer do here. No government advisory is on record either, so check your own government’s travel advice before you go.',
     a3NoneGrey: 'As of {monthYear}, no government in our dataset publishes a travel advisory for {name}. Check your own government’s latest guidance before you travel.',
   },
@@ -259,6 +266,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} dei {total} avvisi di viaggio governativi',
     a1Grey: 'Per questa destinazione non possiamo ancora dare un punteggio di sicurezza: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo, e qui sono meno. Leggi gli avvisi governativi qui sotto e controlla le indicazioni del tuo governo prima di partire.',
+    a1GreyNoCrime: 'Per questa destinazione non possiamo ancora dare un punteggio di sicurezza: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo e almeno una di loro misura la criminalità, e qui nessuna la misura. Leggi gli avvisi governativi qui sotto e controlla le indicazioni del tuo governo prima di partire.',
     a1GreyNoAdvisories: 'Per questa destinazione non possiamo ancora dare un punteggio di sicurezza: lo pubblichiamo solo quando almeno quattro fonti indipendenti coprono un luogo, e qui sono meno. Non abbiamo nemmeno avvisi governativi: controlla le indicazioni del tuo governo prima di partire.',
     a3NoneGrey: 'A {monthYear}, nessun governo nei nostri dati pubblica avvisi per chi viaggia {nameIn}. Verifica le indicazioni più recenti del tuo governo prima di partire.',
   },
@@ -315,6 +323,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} de los {total} avisos de viaje gubernamentales',
     a1Grey: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Lee los avisos gubernamentales más abajo y consulta las recomendaciones de tu gobierno antes de viajar.',
+    a1GreyNoCrime: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar y al menos una de ellas mide la delincuencia, y aquí ninguna lo hace. Lee los avisos gubernamentales más abajo y consulta las recomendaciones de tu gobierno antes de viajar.',
     a1GreyNoAdvisories: 'Todavía no podemos dar una puntuación de seguridad para este destino: solo la publicamos cuando al menos cuatro fuentes independientes cubren un lugar, y aquí son menos. Tampoco hay avisos gubernamentales: consulta las recomendaciones de tu gobierno antes de viajar.',
     a3NoneGrey: 'A fecha de {monthYear}, ningún gobierno de nuestros datos publica avisos para quien viaja {nameEsA}. Consulta las indicaciones más recientes de tu propio gobierno antes de viajar.',
   },
@@ -373,6 +382,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} des {total} avis aux voyageurs officiels',
     a1Grey: `Nous ne pouvons pas encore attribuer de score de sécurité à cette destination${NB}: nous n’en publions un que si au moins quatre sources indépendantes couvrent un lieu, et elles sont moins nombreuses ici. Consultez les avis gouvernementaux ci-dessous et les conseils de votre propre gouvernement avant de partir.`,
+    a1GreyNoCrime: `Nous ne pouvons pas encore attribuer de score de sécurité à cette destination${NB}: nous n’en publions un que si au moins quatre sources indépendantes couvrent un lieu et qu’au moins l’une d’elles mesure la criminalité, et aucune ne le fait ici. Consultez les avis gouvernementaux ci-dessous et les conseils de votre propre gouvernement avant de partir.`,
     a1GreyNoAdvisories: `Nous ne pouvons pas encore attribuer de score de sécurité à cette destination${NB}: nous n’en publions un que si au moins quatre sources indépendantes couvrent un lieu, et elles sont moins nombreuses ici. Aucun avis gouvernemental n’est disponible non plus${NB}: consultez les conseils de votre propre gouvernement avant de partir.`,
     a3NoneGrey: 'En {monthYear}, aucun gouvernement de nos données ne publie de conseils aux voyageurs se rendant {namePrep}. Vérifiez les dernières recommandations de votre propre gouvernement avant de partir.',
   },
@@ -432,6 +442,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} dos {total} avisos de viagem governamentais',
     a1Grey: 'Ainda não podemos dar uma pontuação de segurança para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar, e aqui são menos. Leia os alertas governamentais abaixo e consulte as orientações do seu governo antes de viajar.',
+    a1GreyNoCrime: 'Ainda não podemos dar uma pontuação de segurança para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar e pelo menos uma delas mede a criminalidade, e aqui nenhuma o faz. Leia os alertas governamentais abaixo e consulte as orientações do seu governo antes de viajar.',
     a1GreyNoAdvisories: 'Ainda não podemos dar uma pontuação de segurança para este destino: só a publicamos quando pelo menos quatro fontes independentes cobrem um lugar, e aqui são menos. Também não há alertas governamentais: consulte as orientações do seu governo antes de viajar.',
     a3NoneGrey: 'Em {monthYear}, nenhum governo em nossos dados publica alertas para quem viaja {nameA}. Verifique as orientações mais recentes do seu próprio governo antes de viajar.',
   },
@@ -489,6 +500,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{total}条政府旅行警告中的{n}条',
     a1Grey: '我们目前还无法为{name}给出安全评分：只有当至少四个独立来源覆盖某地时，我们才会发布评分，而这里的来源不足四个。请阅读下方的政府旅行警告，并在出行前查看本国政府的旅行建议。',
+    a1GreyNoCrime: '我们目前还无法为{name}给出安全评分：只有当至少四个独立来源覆盖某地、且其中至少一个衡量犯罪情况时，我们才会发布评分，而这里没有任何来源衡量犯罪情况。请阅读下方的政府旅行警告，并在出行前查看本国政府的旅行建议。',
     a1GreyNoAdvisories: '我们目前还无法为{name}给出安全评分：只有当至少四个独立来源覆盖某地时，我们才会发布评分，而这里的来源不足四个。目前也没有任何政府旅行警告，请在出行前查看您本国政府的旅行建议。',
     a3NoneGrey: '截至{monthYear}，我们的数据中没有任何政府为{name}发布旅行警告。请在出行前查阅您所在国家政府的最新指引。',
   },
@@ -552,6 +564,7 @@ export const countryFaqCopy: Record<Lang, CountryFaqCopy> = {
     },
     advisoryCountNounPartial: '{n} der {total} staatlichen Reisehinweise',
     a1Grey: 'Für dieses Reiseziel können wir noch keine Sicherheitsbewertung angeben: Eine Bewertung veröffentlichen wir erst, wenn mindestens vier unabhängige Quellen einen Ort abdecken, und hier sind es weniger. Lesen Sie die staatlichen Reisehinweise weiter unten und prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.',
+    a1GreyNoCrime: 'Für dieses Reiseziel können wir noch keine Sicherheitsbewertung angeben: Eine Bewertung veröffentlichen wir erst, wenn mindestens vier unabhängige Quellen einen Ort abdecken und mindestens eine davon die Kriminalität misst, und hier misst keine sie. Lesen Sie die staatlichen Reisehinweise weiter unten und prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.',
     a1GreyNoAdvisories: 'Für dieses Reiseziel können wir noch keine Sicherheitsbewertung angeben: Eine Bewertung veröffentlichen wir erst, wenn mindestens vier unabhängige Quellen einen Ort abdecken, und hier sind es weniger. Auch staatliche Reisehinweise liegen nicht vor; prüfen Sie vor der Reise die Hinweise Ihrer eigenen Regierung.',
     a3NoneGrey: 'Stand {monthYear} veröffentlicht keine Regierung in unseren Daten Reisehinweise {nameFuer}. Prüfen Sie vor der Reise die aktuellen Hinweise Ihrer eigenen Regierung.',
   },

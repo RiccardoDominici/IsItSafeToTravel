@@ -1,6 +1,6 @@
 /**
  * Data-coverage floor (formula v10, SPEC §4): ONE definition of "how many independent sources
- * cover a place", shared by
+ * cover a place" (and, since 2026-10-19, "does it have any crime data", REQUIRED_PILLARS), shared by
  *   - the engine's grey rule (scoring/engine.ts -> status.ts decideScoreStatus),
  *   - the rankings (src/lib/hub-data.ts hasSufficientData),
  *   - llms.txt (scripts/generate-llms-full.ts),
@@ -73,7 +73,71 @@ export function sourcesSupplyingScoredValues<T extends { name?: string }>(
   return sources.filter((s) => suppliesScoredValue(s.name, scoredSources));
 }
 
-/** True when the place has at least MIN_COVERAGE_SOURCES coverage sources. */
-export function meetsCoverageFloor(sources: ReadonlyArray<{ name?: string }> | undefined): boolean {
-  return coverageSourceCount(sources) >= MIN_COVERAGE_SOURCES;
+/**
+ * Pillars that need at least one measured value for an official score, on top of the source
+ * count (owner decision 2026-10-19). Must equal weights.json formulaV9.requiredPillars (the engine
+ * reads that list; a unit test pins the two).
+ *
+ * WHY crime: with no GPI and no World Bank homicide rate the crime pillar is the conservative
+ * prior alone. scripts/calibration/coverage-floor-study.ts removed those two sources from the 98
+ * places that have all six and measured the scores 0.51 too low on average (half of them by 0.5
+ * or more), as unreliable as the 3-source places the floor already greys; the count could not see
+ * it, because the Caribbean 4-source places keep the homicide rate and are off by only 0.22.
+ * Greyed on 2026-10-19: Comoros, Cabo Verde, Maldives, Solomon Islands, Sao Tome and Principe,
+ * Vanuatu.
+ */
+export const REQUIRED_PILLARS: readonly string[] = ['crime'];
+
+/** A pillar as published (ScoredCountry.pillars): what the coverage rule needs of it. */
+export interface PillarCoverage {
+  name: string;
+  indicators?: ReadonlyArray<unknown>;
+}
+
+/**
+ * The required pillars without a measured value. pillars[].indicators lists only the indicators
+ * the engine found, so a required pillar present with an EMPTY list is the prior alone: missing.
+ * Without that detail (no `pillars`, the pillar not listed, no `indicators` array: hand-built
+ * records and test fixtures) nothing is known and nothing counts as missing. Every engine output
+ * and snapshot carries all five pillars with their lists, so on real data the two readings agree;
+ * the engine itself decides from its own indicator lists (engine.ts), not from this helper.
+ */
+export function missingRequiredPillars(
+  pillars: ReadonlyArray<PillarCoverage> | undefined,
+  required: readonly string[] = REQUIRED_PILLARS,
+): string[] {
+  if (!pillars) return [];
+  return required.filter((name) => {
+    const indicators = pillars.find((p) => p.name === name)?.indicators;
+    return Array.isArray(indicators) && indicators.length === 0;
+  });
+}
+
+/** Why a place falls short of the coverage rule, or null when it meets it. */
+export type CoverageShortfall = 'sources' | 'crime';
+
+/**
+ * The reason a place falls short of the coverage rule: 'sources' (fewer than MIN_COVERAGE_SOURCES
+ * coverage sources; checked first, so a 3-source place without crime data reads "fewer than four
+ * sources") or 'crime' (enough sources, no crime value). The pages pick their explanation by it.
+ */
+export function coverageShortfall(place: {
+  sources?: ReadonlyArray<{ name?: string }>;
+  pillars?: ReadonlyArray<PillarCoverage>;
+}): CoverageShortfall | null {
+  if (coverageSourceCount(place.sources) < MIN_COVERAGE_SOURCES) return 'sources';
+  if (missingRequiredPillars(place.pillars).length > 0) return 'crime';
+  return null;
+}
+
+/**
+ * True when the place meets the coverage rule: at least MIN_COVERAGE_SOURCES coverage sources and
+ * a measured value in every required pillar. The rankings, llms.txt and the news engine use it, so
+ * a place the danger guard keeps scored is still left out of the lists.
+ */
+export function meetsCoverageFloor(place: {
+  sources?: ReadonlyArray<{ name?: string }>;
+  pillars?: ReadonlyArray<PillarCoverage>;
+}): boolean {
+  return coverageShortfall(place) === null;
 }

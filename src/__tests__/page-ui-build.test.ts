@@ -6,6 +6,7 @@
  *  - I34: militarisation / V-Dem state rows sit under "Country context", not in the pillar tables;
  *  - I27: a grey place with no advisory and no source says "No data yet", with no empty list;
  *  - I55: the community block heading is not followed by a second "Community" label;
+ *  - 2026-10-19: a place grey for its missing crime data says so, never "fewer than four sources";
  *  - affiliate removal: no Travelpayouts / Aviasales trace anywhere in the built pages.
  */
 import { describe, it, before } from 'node:test';
@@ -14,7 +15,9 @@ import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import type { ScoredCountry } from '../pipeline/types';
 import { isEstimatedPillar } from '../lib/pillar-presentation';
-import { greyHasNoData } from '../i18n/grey-copy';
+import { greyCopy, greyHasNoData } from '../i18n/grey-copy';
+import { coverageShortfall } from '../pipeline/scoring/coverage';
+import { routes, type Lang } from '../i18n/ui';
 
 const ROOT = join(import.meta.dirname, '..', '..');
 const DIST_CLIENT = join(ROOT, 'dist', 'client');
@@ -128,6 +131,28 @@ describe('I27: grey places with nothing to list', () => {
       assert.ok(html.includes('What we do have'), c.iso3);
       assert.ok(html.includes('(counted together as one source)'), c.iso3);
     }
+  });
+});
+
+describe('2026-10-19: grey for missing crime data', () => {
+  // Grey with four sources but no crime measure (Cabo Verde, the Maldives...): the hero, the summary
+  // and the FAQ say that no source measures crime; "fewer than four" would be false. Empty on a
+  // snapshot from before the rule (the set is read from the data, as every check here).
+  const FEWER = /fewer than four|meno di quattro|menos de cuatro|moins de quatre|moins nombreuses|menos de quatro|不足四个|少于四个|weniger als vier|hier sind es weniger|e qui sono meno|y aquí son menos|e aqui são menos/;
+  const LANGS: Lang[] = ['en', 'it', 'es', 'fr', 'pt', 'zh', 'de'];
+  it('every such page, in every language, carries the no-crime hero sentence and no "fewer than four"', () => {
+    const noCrime = grey().filter((c) => coverageShortfall(c) === 'crime');
+    for (const c of noCrime) {
+      for (const lang of LANGS) {
+        const html = countryPage(c.iso3, lang, routes[lang].country);
+        const text = html.replace(/<[^>]+>/g, ' ').replace(/&#39;|&rsquo;/g, '’');
+        // The hero sentence up to its {name} slot (en/zh) or whole: no country-name grammar to rebuild.
+        const fixed = greyCopy[lang].whyNoCrime.split('{name}')[0];
+        assert.ok(text.includes(fixed.replace(/'/g, '’')) || html.includes(fixed), `${lang}/${c.iso3}: no no-crime hero sentence`);
+        assert.doesNotMatch(text, FEWER, `${lang}/${c.iso3}: says "fewer than four"`);
+      }
+    }
+    console.log(`  (${noCrime.length} places grey for missing crime data checked in 7 languages)`);
   });
 });
 

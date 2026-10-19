@@ -15,6 +15,7 @@ import { communityCopy } from '../../i18n/community-copy';
 import { greyCopy, greySourceItemsFor } from '../../i18n/grey-copy';
 import { getEnglishCountryPhrase } from '../../i18n/country-grammar';
 import { routes } from '../../i18n/ui';
+import { coverageShortfall } from '../../pipeline/scoring/coverage';
 
 interface Props {
   country: ScoredCountry;
@@ -36,6 +37,9 @@ const greyItems = scored ? [] : greySourceItemsFor(lang, country);
 // Nothing at all to list (no advisory, no source): "No data yet" and one sentence, never a
 // "Partial data" label over a "What we do have" heading with nothing under it (audit I27).
 const greyNoData = !scored && greyItems.length === 0;
+// A place with four sources but no crime value (Cabo Verde, Maldives...) is grey for that reason,
+// not for a short count: its sentence must not say "fewer than four" (owner decision 2026-10-19).
+const greyWhy = !scored && coverageShortfall(country) === 'crime' ? grey.whyNoCrime : grey.why;
 const methodologyHref = `/${lang}/${routes[lang].methodology}/#grey-rule`;
 
 // Scored-only values (never computed from a grey place's null score).
@@ -101,7 +105,7 @@ const completenessPercent = Math.round(countryEvidenceCoverage(country.pillars) 
       <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.whyNone.replace('{name}', greyName)}</p>
     ) : (
       <>
-        <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{grey.why.replace('{name}', greyName)}</p>
+        <p class="mt-3 text-sm leading-relaxed text-sand-700 dark:text-sand-300">{greyWhy.replace('{name}', greyName)}</p>
         <p class="mt-4 text-sm font-semibold text-sand-800 dark:text-sand-100">{grey.haveHeading}</p>
         <ul class="mt-1 list-disc pl-5 space-y-0.5 text-sm text-sand-700 dark:text-sand-300">
           {greyItems.map((item) => <li>{item}</li>)}

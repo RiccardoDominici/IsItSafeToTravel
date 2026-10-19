@@ -23,6 +23,12 @@ export interface GreyCopy {
   noScore: string;
   /** Why there is no score. {name} = the place (en with its article; zh bare). */
   why: string;
+  /**
+   * Replaces `why` for a place with enough sources but none that measures crime (no GPI, no World
+   * Bank homicide rate; coverage.ts coverageShortfall 'crime', owner decision 2026-10-19). Saying
+   * "fewer than four" there would be false: Cabo Verde has four. {name} as in `why`.
+   */
+  whyNoCrime: string;
   /** Heading of the list of what we do have. */
   haveHeading: string;
   /** Advisory item: [one government, n governments]; {n}. Says that all advisories count as one source. */
@@ -57,6 +63,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   en: {
     noScore: 'No official safety score',
     why: 'We publish a safety score only when at least four independent sources cover a place. Fewer than four cover {name}.',
+    whyNoCrime: 'We publish a safety score only when at least four independent sources cover a place and at least one of them measures crime. Enough sources cover {name}, but none of them measures crime: there is no Global Peace Index rating and no World Bank homicide rate.',
     haveHeading: 'What we do have',
     advisories: ['A travel advisory from {n} government (counted as one source)', 'Travel advisories from {n} governments (counted together as one source)'],
     whyNone: 'We publish a safety score only when at least four independent sources cover a place. Neither an independent source nor a government travel advisory covers {name} yet.',
@@ -70,6 +77,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   it: {
     noScore: 'Nessun punteggio di sicurezza ufficiale',
     why: 'Pubblichiamo un punteggio di sicurezza solo quando almeno quattro fonti indipendenti coprono una destinazione; per questa ne abbiamo meno di quattro.',
+    whyNoCrime: 'Pubblichiamo un punteggio di sicurezza solo quando almeno quattro fonti indipendenti coprono una destinazione e almeno una di loro misura la criminalità. Per questa le fonti bastano, ma nessuna misura la criminalità: mancano sia il Global Peace Index sia il tasso di omicidi della Banca Mondiale.',
     haveHeading: 'Cosa abbiamo',
     advisories: ["L'avviso di viaggio di {n} governo (conta come una fonte)", 'Gli avvisi di viaggio di {n} governi (contano insieme come una sola fonte)'],
     whyNone: 'Pubblichiamo un punteggio di sicurezza solo quando almeno quattro fonti indipendenti coprono una destinazione; per questa non abbiamo ancora né una fonte indipendente né un avviso di viaggio governativo.',
@@ -83,6 +91,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   es: {
     noScore: 'Sin puntuación de seguridad oficial',
     why: 'Solo publicamos una puntuación de seguridad cuando al menos cuatro fuentes independientes cubren un destino; para este tenemos menos de cuatro.',
+    whyNoCrime: 'Solo publicamos una puntuación de seguridad cuando al menos cuatro fuentes independientes cubren un destino y al menos una de ellas mide la delincuencia. Para este hay fuentes suficientes, pero ninguna mide la delincuencia: no hay Global Peace Index ni tasa de homicidios del Banco Mundial.',
     haveHeading: 'Lo que sí tenemos',
     advisories: ['El aviso de viaje de {n} gobierno (cuenta como una fuente)', 'Los avisos de viaje de {n} gobiernos (cuentan juntos como una sola fuente)'],
     whyNone: 'Solo publicamos una puntuación de seguridad cuando al menos cuatro fuentes independientes cubren un destino; para este todavía no tenemos ni una fuente independiente ni un aviso de viaje gubernamental.',
@@ -96,6 +105,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   fr: {
     noScore: 'Pas de score de sécurité officiel',
     why: 'Nous ne publions un score de sécurité que si au moins quatre sources indépendantes couvrent une destination ; pour celle-ci, nous en avons moins de quatre.',
+    whyNoCrime: 'Nous ne publions un score de sécurité que si au moins quatre sources indépendantes couvrent une destination et qu’au moins l’une d’elles mesure la criminalité ; pour celle-ci, les sources sont assez nombreuses, mais aucune ne mesure la criminalité (ni Global Peace Index, ni taux d’homicides de la Banque mondiale).',
     haveHeading: 'Ce dont nous disposons',
     advisories: ['Les conseils aux voyageurs de {n} gouvernement (comptés comme une source)', 'Les conseils aux voyageurs de {n} gouvernements (comptés ensemble comme une seule source)'],
     whyNone: "Nous ne publions un score de sécurité que si au moins quatre sources indépendantes couvrent une destination ; pour celle-ci, nous n'avons encore ni source indépendante ni conseils aux voyageurs d'un gouvernement.",
@@ -109,6 +119,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   pt: {
     noScore: 'Sem pontuação de segurança oficial',
     why: 'Só publicamos uma pontuação de segurança quando pelo menos quatro fontes independentes cobrem um destino; para este, temos menos de quatro.',
+    whyNoCrime: 'Só publicamos uma pontuação de segurança quando pelo menos quatro fontes independentes cobrem um destino e pelo menos uma delas mede a criminalidade. Para este há fontes suficientes, mas nenhuma mede a criminalidade: não há Global Peace Index nem taxa de homicídios do Banco Mundial.',
     haveHeading: 'O que temos',
     advisories: ['O alerta de viagem de {n} governo (conta como uma fonte)', 'Os alertas de viagem de {n} governos (contam juntos como uma única fonte)'],
     whyNone: 'Só publicamos uma pontuação de segurança quando pelo menos quatro fontes independentes cobrem um destino; para este, ainda não temos nem uma fonte independente nem um alerta de viagem de algum governo.',
@@ -122,6 +133,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   zh: {
     noScore: '暂无官方安全评分',
     why: '只有当至少四个独立来源覆盖某地时，我们才会发布安全评分；覆盖{name}的来源不足四个。',
+    whyNoCrime: '只有当至少四个独立来源覆盖某地、且其中至少一个衡量犯罪情况时，我们才会发布安全评分；覆盖{name}的来源数量足够，但没有一个衡量犯罪情况：既没有全球和平指数，也没有世界银行凶杀率。',
     haveHeading: '现有数据',
     advisories: ['{n}个国家政府的旅行警告（计为一个来源）', '{n}个国家政府的旅行警告（合计只算一个来源）'],
     whyNone: '只有当至少四个独立来源覆盖某地时，我们才会发布安全评分；目前既没有任何独立来源覆盖{name}，也没有任何国家政府针对该地发布的旅行警告。',
@@ -135,6 +147,7 @@ export const greyCopy: Record<Lang, GreyCopy> = {
   de: {
     noScore: 'Keine offizielle Sicherheitsbewertung',
     why: 'Wir veröffentlichen eine Sicherheitsbewertung nur, wenn mindestens vier unabhängige Quellen ein Reiseziel abdecken. Für dieses Reiseziel sind es weniger als vier.',
+    whyNoCrime: 'Wir veröffentlichen eine Sicherheitsbewertung nur, wenn mindestens vier unabhängige Quellen ein Reiseziel abdecken und mindestens eine davon die Kriminalität misst. Für dieses Reiseziel gibt es genug Quellen, aber keine misst die Kriminalität: Es fehlen der Global Peace Index und die Mordrate der Weltbank.',
     haveHeading: 'Was vorliegt',
     advisories: ['Reisehinweis von {n} Regierung (zählt als eine Quelle)', 'Reisehinweise von {n} Regierungen (zählen zusammen als eine Quelle)'],
     whyNone: 'Wir veröffentlichen eine Sicherheitsbewertung nur, wenn mindestens vier unabhängige Quellen ein Reiseziel abdecken. Für dieses Reiseziel liegt noch weder eine unabhängige Quelle noch ein Reisehinweis einer Regierung vor.',

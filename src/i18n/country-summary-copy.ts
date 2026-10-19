@@ -101,6 +101,8 @@ export interface CountrySummaryCopy {
   listLastSeparator: string;
   /** Grey place (formula v10 insufficient_data): no score, no rank, no pillar figures. */
   grey: string;
+  /** `grey` for a place with enough sources but none that measures crime (coverage.ts coverageShortfall 'crime'). */
+  greyNoCrime: string;
 }
 
 const NBSP = ' ';
@@ -156,6 +158,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' and ',
     grey: 'There is no safety score for {name} yet: fewer than four independent sources cover this place, so its data is partial.',
+    greyNoCrime: 'There is no safety score for {name} yet: several independent sources cover this place, but none of them measures crime, so its data is partial.',
   },
   it: {
     scored:
@@ -213,6 +216,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' e ',
     grey: 'Questa destinazione non ha ancora un punteggio di sicurezza: la coprono meno di quattro fonti indipendenti, quindi i dati sono parziali.',
+    greyNoCrime: 'Questa destinazione non ha ancora un punteggio di sicurezza: la coprono diverse fonti indipendenti, ma nessuna misura la criminalità, quindi i dati sono parziali.',
   },
   es: {
     scored:
@@ -264,6 +268,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' y ',
     grey: 'Este destino todavía no tiene una puntuación de seguridad: lo cubren menos de cuatro fuentes independientes, así que sus datos son parciales.',
+    greyNoCrime: 'Este destino todavía no tiene una puntuación de seguridad: lo cubren varias fuentes independientes, pero ninguna mide la delincuencia, así que sus datos son parciales.',
   },
   fr: {
     scored: `Pour un voyage {namePrep}, le score de sécurité est de {score}/10 au {date}, classé comme {riskLevel}${NBSP}: {rank} sur les {total} pays notés.`,
@@ -319,6 +324,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' et ',
     grey: `Cette destination n’a pas encore de score de sécurité${NBSP}: moins de quatre sources indépendantes la couvrent, ses données sont donc partielles.`,
+    greyNoCrime: `Cette destination n’a pas encore de score de sécurité${NBSP}: plusieurs sources indépendantes la couvrent, mais aucune ne mesure la criminalité, ses données sont donc partielles.`,
   },
   pt: {
     scored:
@@ -376,6 +382,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' e ',
     grey: 'Este destino ainda não tem uma pontuação de segurança: menos de quatro fontes independentes o cobrem, por isso seus dados são parciais.',
+    greyNoCrime: 'Este destino ainda não tem uma pontuação de segurança: várias fontes independentes o cobrem, mas nenhuma mede a criminalidade, por isso seus dados são parciais.',
   },
   zh: {
     // The band label goes in parentheses: "风险等级为{riskLevel}" doubled 风险 with labels such as
@@ -430,6 +437,7 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: '，',
     listLastSeparator: '，',
     grey: '{name}目前还没有安全评分：覆盖该地的独立数据来源少于四个，数据并不完整。',
+    greyNoCrime: '{name}目前还没有安全评分：有多个独立数据来源覆盖该地，但没有一个衡量犯罪情况，数据并不完整。',
   },
   de: {
     scored:
@@ -487,5 +495,6 @@ export const countrySummaryCopy: Record<Lang, CountrySummaryCopy> = {
     listSeparator: ', ',
     listLastSeparator: ' und ',
     grey: 'Für dieses Reiseziel gibt es noch keine Sicherheitsbewertung: Weniger als vier unabhängige Quellen decken es ab, die Datenlage ist daher unvollständig.',
+    greyNoCrime: 'Für dieses Reiseziel gibt es noch keine Sicherheitsbewertung: Mehrere unabhängige Quellen decken es ab, aber keine misst die Kriminalität, die Datenlage ist daher unvollständig.',
   },
 };

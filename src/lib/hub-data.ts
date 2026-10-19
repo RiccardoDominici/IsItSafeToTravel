@@ -15,13 +15,14 @@ import { meetsCoverageFloor } from '../pipeline/scoring/coverage';
 
 /**
  * Ranking eligibility: an official score (formula v10: not a grey `insufficient_data` place, see
- * score-status.ts) AND the 4-source floor. The two coincide except for the v10 danger guard (a
+ * score-status.ts) AND the coverage rule. The two coincide except for the v10 danger guard (a
  * data-poor place scored only because of acute danger signals keeps its score on its own page but
  * is not ranked). A type guard, so `.filter(hasSufficientData)` yields countries whose `.score` is
- * a number. With pre-v10 snapshots every country is scored and this is the plain 4-source floor.
+ * a number. With pre-v10 snapshots every country is scored and this is the plain coverage rule
+ * (four sources and, since 2026-10-19, a measured crime value: coverage.ts meetsCoverageFloor).
  */
 export function hasSufficientData(c: ScoredCountry): c is Scored<ScoredCountry> {
-  return isScored(c) && meetsCoverageFloor(c.sources);
+  return isScored(c) && meetsCoverageFloor(c);
 }
 
 /** Returns top N countries (with sufficient data) sorted by score descending */

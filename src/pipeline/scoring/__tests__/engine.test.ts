@@ -503,8 +503,8 @@ describe('Formula v10: weights.json structure', () => {
   const weightsPath = join(process.cwd(), 'src/pipeline/config/weights.json');
   const weightsJson = JSON.parse(readFileSync(weightsPath, 'utf-8')) as WeightsConfig;
 
-  it('version is "10.1.0" (formula v10.1: v10 indicator set, 2026-10-15 consistency-audit changes)', () => {
-    assert.equal(weightsJson.version, '10.1.0');
+  it('version is "10.1.1" (formula v10.1; the patch is the 2026-10-19 crime-data requirement, not a formula change)', () => {
+    assert.equal(weightsJson.version, '10.1.1');
   });
 
   it('pillar weights are still 30/25/20/15/10 and sum to 1.0', () => {

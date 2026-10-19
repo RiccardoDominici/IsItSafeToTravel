@@ -215,3 +215,10 @@ moved by 0.0000, so the test is clean.
 - Caveat: the test measures the error on data-rich places with sources removed. For small
   islands it is an estimate, not a measurement; their own votes (1 each for CPV and VUT) cannot
   confirm it.
+
+**Decision (owner, 2026-10-19): grey them.**
+- A place now also needs one measured crime value: `weights.json` `formulaV9.requiredPillars: ["crime"]`, read through `coverage.ts` `REQUIRED_PILLARS`. Weights are now 10.1.1, a patch release, so the charts mark no formula change.
+- The danger guard still overrides the rule.
+- The six places above went grey, and no other score moved.
+- Their pages say that no source measures crime, instead of "fewer than four sources".
+- Constraint C005 (Cabo Verde at least 7.0) is now "not applicable". It is not counted as passed: the study above explains the failure, but the place has no score left to check.

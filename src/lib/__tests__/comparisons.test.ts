@@ -57,7 +57,9 @@ function country(iso3: string, score: number, opts: { grey?: boolean; pillars?: 
     name,
     score: vec[i],
     weight: 0.2,
-    indicators: [],
+    // A measured crime value, as every scored place has since 2026-10-19 (coverage.ts
+    // REQUIRED_PILLARS): an empty crime list would keep the fixture out of every comparison.
+    indicators: name === 'crime' ? [{ name: 'wb_homicide', rawValue: 1, normalizedValue: vec[i], source: 'worldbank', year: 2024 }] : [],
     dataCompleteness: 1,
   }));
   const sources = Array.from({ length: opts.grey ? 2 : 4 }, (_, i) => ({
@@ -251,11 +253,14 @@ describe('comparisonPillarCells: estimated pillars show no number (I31 rule, as 
   const real: ScoredCountry[] = readJson<{ countries: ScoredCountry[] }>('public', 'scores.json').countries;
 
   it('a pillar with nothing measured (or missing) is null, a measured one is its score out of 10', () => {
-    const c = country('AAA', 6.0);
+    // The fixture now gives crime a measured value (comparisons need it since 2026-10-19), so the
+    // estimated pillar is built here: crime with nothing measured.
+    const base = country('AAA', 6.0);
+    const c = { ...base, pillars: base.pillars.map((p) => (p.name === 'crime' ? { ...p, indicators: [] } : p)) } as ScoredCountry;
     const conflict = c.pillars.find((p) => p.name === 'conflict')!;
     const crime = c.pillars.find((p) => p.name === 'crime')!;
     assert.equal(isEstimatedPillar(conflict), false, 'fixture: advisory slot counts as measured');
-    assert.equal(isEstimatedPillar(crime), true, 'fixture: no crime indicator');
+    assert.equal(isEstimatedPillar(crime), true, 'no crime indicator');
     const withoutHealth = { ...c, pillars: c.pillars.filter((p) => p.name !== 'health') } as ScoredCountry;
     const cells = comparisonPillarCells(withoutHealth, names);
     assert.deepEqual(cells.map((x) => x.name), [...names]);

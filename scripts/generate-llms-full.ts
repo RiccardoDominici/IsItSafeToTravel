@@ -16,7 +16,7 @@ import { SOURCE_COUNT_DISPLAY, ADVISORY_GOV_COUNT_DISPLAY } from "../src/lib/sit
 import { buildCountrySummary } from "../src/lib/country-summary.js";
 import { getBandVerdictCopy } from "../src/lib/band-copy.js";
 import type { ScoredCountry as EngineCountry } from "../src/pipeline/types.js";
-import { MIN_COVERAGE_SOURCES, isEventFeedSource, meetsCoverageFloor } from "../src/pipeline/scoring/coverage.js";
+import { MIN_COVERAGE_SOURCES, coverageShortfall, isEventFeedSource, meetsCoverageFloor } from "../src/pipeline/scoring/coverage.js";
 
 // The 6 non-English locales, in the order shown next to every country entry
 // and in llms.txt's "## Languages" section (GEO-02: both files used to be
@@ -152,7 +152,10 @@ function partialDataBlock(c: ScoredCountry, today: string): string[] {
   ].filter(Boolean);
   const lines = [
     `### ${c.name.en} (${c.iso3})`,
-    `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, and this place has fewer${parts.length ? ` (${parts.join("; ")})` : ""}. Travellers can still rate it on its page.`,
+    // A place greyed for its missing crime data has four sources: say so instead of "fewer".
+    coverageShortfall(c) === "crime"
+      ? `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, at least one of them measuring crime; this place has enough sources${parts.length ? ` (${parts.join("; ")})` : ""}, but none measures crime: there is no Global Peace Index rating and no World Bank homicide rate. Travellers can still rate it on its page.`
+      : `${c.name.en} has no official safety score as of ${today}: partial data. An official score needs at least four independent data sources, and this place has fewer${parts.length ? ` (${parts.join("; ")})` : ""}. Travellers can still rate it on its page.`,
     "- **Safety Score:** none (partial data)",
   ];
   const advisoryLine = advisoriesLine(c);
@@ -185,7 +188,7 @@ function main() {
   // disaster-alert feeds not counted).
   const MIN_RANKING_SOURCES = MIN_COVERAGE_SOURCES;
   const hasSufficientData = (c: ScoredCountry): c is Scored =>
-    hasOfficialScore(c) && meetsCoverageFloor(c.sources);
+    hasOfficialScore(c) && meetsCoverageFloor(c);
 
   // Global rank (countries with an official score, score desc) + percentile + average.
   // Formula v10 grey places (score null) have no rank and stay out of the average.

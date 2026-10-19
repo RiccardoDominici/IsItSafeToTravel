@@ -17,6 +17,7 @@ import { getBandVerdictCopy, getInlineRiskLabel } from './band-copy';
 import { LOW_CONFIDENCE_THRESHOLD } from './confidence';
 import { getProvenanceCounts } from './provenance-copy';
 import { isScored } from './score-status';
+import { coverageShortfall } from '../pipeline/scoring/coverage';
 import { advisoryLevels, buildAdvisorySentence, nameSlots } from './country-summary';
 import { formatTenths, roundForDisplay } from './display-number';
 import { advisoryEntries, getAdvisoryConsensus, type AdvisoryConsensus } from './advisory-consensus';
@@ -207,6 +208,21 @@ const greyMetaDescriptions: Record<Lang, (name: string) => string> = {
   de: (n) => `${n}: unvollständige Datenlage, noch keine Sicherheitsbewertung (weniger als vier unabhängige Quellen). Sehen Sie die Reisehinweise ein und bewerten Sie Ihre Reise.`,
 };
 
+/**
+ * The same for a place with enough sources but none that measures crime (coverage.ts
+ * coverageShortfall 'crime', owner decision 2026-10-19): "fewer than four" would be false there.
+ * Such a place always has advisories (its four sources are advisories, INFORM, UCDP and V-Dem).
+ */
+const greyMetaDescriptionsNoCrime: Record<Lang, (name: string) => string> = {
+  en: (n) => `${n}: partial data, no safety score yet (no independent source measures crime there). See the government advisories we have and rate how safe your trip felt.`,
+  it: (n) => `${n}: dati parziali, ancora nessun punteggio di sicurezza (nessuna fonte indipendente misura la criminalità). Vedi gli avvisi disponibili e valuta quanto ti sei sentito sicuro.`,
+  es: (n) => `${n}: datos parciales, aún sin puntuación de seguridad (ninguna fuente independiente mide la delincuencia). Consulta los avisos disponibles y valora lo seguro que te sentiste.`,
+  fr: (n) => `${n} : données partielles, pas encore de score de sécurité (aucune source indépendante ne mesure la criminalité). Consultez les avis disponibles et dites-nous comment s’est passé votre voyage.`,
+  pt: (n) => `${n}: dados parciais, ainda sem pontuação de segurança (nenhuma fonte independente mede a criminalidade). Veja os alertas disponíveis e conte como foi sua viagem.`,
+  zh: (n) => `${n}数据不完整，暂无安全评分（没有独立来源衡量当地犯罪情况）。查看现有的政府旅行警告，并分享您的旅行感受。`,
+  de: (n) => `${n}: unvollständige Datenlage, noch keine Sicherheitsbewertung (keine unabhängige Quelle misst die Kriminalität). Sehen Sie die Reisehinweise ein und bewerten Sie Ihre Reise.`,
+};
+
 /** The same for a grey place with no government advisory either: no "advisories we have" to point to. */
 const greyMetaDescriptionsNoAdvisories: Record<Lang, (name: string) => string> = {
   en: (n) => `${n}: partial data, no safety score yet (fewer than four independent sources) and no government advisory on record. Check your own government's travel advice.`,
@@ -330,7 +346,12 @@ export function buildCountryMetaDescription(country: ScoredCountry, lang: Lang):
   // Formula v10 grey place: no score, band or pillar figure in the SERP snippet either.
   if (!isScored(country)) {
     const noAdvisories = getAdvisoryConsensus(country).n === 0;
-    return (noAdvisories ? greyMetaDescriptionsNoAdvisories : greyMetaDescriptions)[lang](getLocalizedCountryName(country, lang));
+    const table = noAdvisories
+      ? greyMetaDescriptionsNoAdvisories
+      : coverageShortfall(country) === 'crime'
+        ? greyMetaDescriptionsNoCrime
+        : greyMetaDescriptions;
+    return table[lang](getLocalizedCountryName(country, lang));
   }
   const score = country.score;
 
@@ -971,7 +992,8 @@ export function getCountryFaqData(country: ScoredCountry, lang: Lang): { questio
   if (!scored) {
     return [
       // No "read the advisories below" when there is none (Cocos Islands).
-      { question: fill(copy.q1), answer: answer([fill(consensus.n > 0 ? copy.a1Grey : copy.a1GreyNoAdvisories)]) },
+      // "Fewer than four sources" would be false for a place greyed for its missing crime data.
+      { question: fill(copy.q1), answer: answer([fill(consensus.n === 0 ? copy.a1GreyNoAdvisories : coverageShortfall(country) === 'crime' ? copy.a1GreyNoCrime : copy.a1Grey)]) },
       { question: fill(copy.q3), answer: buildAdvisoryAnswer(country, lang, name, consensus, fill, answer, true) },
     ];
   }
