@@ -41,6 +41,20 @@
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/albania/"
     }
   },
+  "DZA": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/algerie/voyager-en-algerie-conseils-aux-voyageurs/securite-generale-en-algerie"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/algeria"
+    }
+  },
   "DEU": {
     "be": {
       "level": 1,
@@ -103,6 +117,26 @@
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/saudi-arabia/"
     }
   },
+  "ARG": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/argentine/voyager-en-argentine-conseils-aux-voyageurs/securite-generale-en-argentine"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/argentina"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/argentina/"
+    }
+  },
   "ARM": {
     "be": {
       "level": 2,
@@ -125,40 +159,6 @@
       "url": "https://diplomatie.belgium.be/fr/pays/australie/voyager-en-australie-conseils-aux-voyageurs/securite-generale-en-australie"
     }
   },
-  "DZA": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/algerie/voyager-en-algerie-conseils-aux-voyageurs/securite-generale-en-algerie"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/algeria"
-    }
-  },
-  "AUT": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/autriche/voyager-en-autriche-conseils-aux-voyageurs/securite-generale-en-autriche"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/austria"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/austria/"
-    }
-  },
   "BHS": {
     "be": {
       "level": 2,
@@ -171,6 +171,26 @@
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/bahamas"
+    }
+  },
+  "BHR": {
+    "be": {
+      "level": 3,
+      "text": "Voyage deconseille",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/bahrein/voyager-bahrein-conseils-aux-voyageurs/securite-generale-bahrein"
+    },
+    "sg": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Singapore Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/bahrain/"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/bahrain"
     }
   },
   "BGD": {
@@ -205,38 +225,24 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/bangladesh/"
     }
   },
-  "ARG": {
+  "AUT": {
     "be": {
       "level": 2,
       "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/argentine/voyager-en-argentine-conseils-aux-voyageurs/securite-generale-en-argentine"
+      "url": "https://diplomatie.belgium.be/fr/pays/autriche/voyager-en-autriche-conseils-aux-voyageurs/securite-generale-en-autriche"
     },
     "rs": {
       "level": 2,
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/argentina"
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/austria"
     },
     "ee": {
       "level": 1,
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/argentina/"
-    }
-  },
-  "BEN": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/benin/voyager-au-benin-conseils-aux-voyageurs/securite-generale-au-benin"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/benin/"
+      "url": "https://reisitargalt.vm.ee/sihtkoht/austria/"
     }
   },
   "BTN": {
@@ -251,6 +257,34 @@
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/bhutan/"
+    }
+  },
+  "BLZ": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/belize/voyager-au-belize-conseils-aux-voyageurs/securite-generale-au-belize"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/belize/"
+    }
+  },
+  "BEN": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/benin/voyager-au-benin-conseils-aux-voyageurs/securite-generale-au-benin"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/benin/"
     }
   },
   "BOL": {
@@ -279,46 +313,12 @@
       "url": "https://www.cancilleria.gob.ar/es/servicios/viajar-al-exterior/alertas"
     }
   },
-  "BHR": {
-    "be": {
-      "level": 3,
-      "text": "Voyage deconseille",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/bahrein/voyager-bahrein-conseils-aux-voyageurs/securite-generale-bahrein"
-    },
-    "sg": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Singapore Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/bahrain/"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/bahrain"
-    }
-  },
   "BIH": {
     "be": {
       "level": 1,
       "text": "Pas de restrictions",
       "source": "Belgian Federal Foreign Affairs",
       "url": "https://diplomatie.belgium.be/fr/pays/bosnie-herzegovine/voyager-en-bosnie-herzegovine-conseils-aux-voyageurs/securite-generale-en-bosnie-herzegovine"
-    }
-  },
-  "BLZ": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/belize/voyager-au-belize-conseils-aux-voyageurs/securite-generale-au-belize"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/belize/"
     }
   },
   "BWA": {
@@ -349,6 +349,20 @@
       "url": "https://diplomatie.belgium.be/fr/pays/bresil/voyager-au-bresil-conseils-aux-voyageurs/securite-generale-au-bresil"
     }
   },
+  "BGR": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/bulgarie/voyager-en-bulgarie-conseils-aux-voyageurs/securite-generale-en-bulgarie"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/bulgaria"
+    }
+  },
   "BFA": {
     "be": {
       "level": 4,
@@ -361,14 +375,6 @@
       "text": "Väldi reisimist",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/burkina-faso/"
-    }
-  },
-  "BRN": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/brunei/voyager-brunei-conseils-aux-voyageurs/securite-generale-brunei"
     }
   },
   "BDI": {
@@ -473,6 +479,14 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/china"
     }
   },
+  "CYP": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/chypre/voyager-chypre-conseils-aux-voyageurs/securite-generale-chypre"
+    }
+  },
   "COL": {
     "be": {
       "level": 2,
@@ -499,18 +513,12 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/colombia"
     }
   },
-  "BGR": {
+  "BRN": {
     "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
+      "level": 1,
+      "text": "Pas de restrictions",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/bulgarie/voyager-en-bulgarie-conseils-aux-voyageurs/securite-generale-en-bulgarie"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/bulgaria"
+      "url": "https://diplomatie.belgium.be/fr/pays/brunei/voyager-brunei-conseils-aux-voyageurs/securite-generale-brunei"
     }
   },
   "PRK": {
@@ -527,12 +535,12 @@
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/north-korea/"
     }
   },
-  "CYP": {
+  "CUB": {
     "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
+      "level": 3,
+      "text": "Voyage deconseille",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/chypre/voyager-chypre-conseils-aux-voyageurs/securite-generale-chypre"
+      "url": "https://diplomatie.belgium.be/fr/pays/cuba/voyager-cuba-conseils-aux-voyageurs/securite-generale-cuba"
     }
   },
   "CIV": {
@@ -551,12 +559,18 @@
       "url": "https://diplomatie.belgium.be/fr/pays/croatie/voyager-en-croatie-conseils-aux-voyageurs/securite-generale-en-croatie"
     }
   },
-  "CUB": {
+  "DJI": {
     "be": {
-      "level": 3,
-      "text": "Voyage deconseille",
+      "level": 2,
+      "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/cuba/voyager-cuba-conseils-aux-voyageurs/securite-generale-cuba"
+      "url": "https://diplomatie.belgium.be/fr/pays/djibouti/voyager-djibouti-conseils-aux-voyageurs/securite-generale-djibouti"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/djibouti/"
     }
   },
   "EGY": {
@@ -571,20 +585,6 @@
       "text": "Precaucion",
       "source": "Argentine Ministry of Foreign Affairs",
       "url": "https://www.cancilleria.gob.ar/es/servicios/viajar-al-exterior/alertas"
-    }
-  },
-  "DJI": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/djibouti/voyager-djibouti-conseils-aux-voyageurs/securite-generale-djibouti"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/djibouti/"
     }
   },
   "ARE": {
@@ -685,6 +685,34 @@
       "url": "https://diplomatie.belgium.be/fr/pays/estonie/voyager-en-estonie-conseils-aux-voyageurs/securite-generale-en-estonie"
     }
   },
+  "FIN": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/finlande/voyager-en-finlande-conseils-aux-voyageurs/securite-generale-en-finlande"
+    },
+    "dk": {
+      "level": 2,
+      "text": "Skaerpet opmaerksomhed",
+      "source": "Danish Ministry of Foreign Affairs",
+      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/finland/"
+    }
+  },
+  "GAB": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/gabon/voyager-au-gabon-conseils-aux-voyageurs/securite-generale-au-gabon"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/gabon/"
+    }
+  },
   "FRA": {
     "be": {
       "level": 2,
@@ -705,18 +733,18 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/france"
     }
   },
-  "GAB": {
+  "GMB": {
     "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
+      "level": 2,
+      "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/gabon/voyager-au-gabon-conseils-aux-voyageurs/securite-generale-au-gabon"
+      "url": "https://diplomatie.belgium.be/fr/pays/gambie/voyager-en-gambie-conseils-aux-voyageurs/securite-generale-en-gambie"
     },
     "ee": {
       "level": 1,
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/gabon/"
+      "url": "https://reisitargalt.vm.ee/sihtkoht/gambia/"
     }
   },
   "GEO": {
@@ -737,20 +765,6 @@
       "text": "Normal precautions",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/georgia"
-    }
-  },
-  "GMB": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/gambie/voyager-en-gambie-conseils-aux-voyageurs/securite-generale-en-gambie"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/gambia/"
     }
   },
   "GHA": {
@@ -777,6 +791,20 @@
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/ghana/"
+    }
+  },
+  "GRC": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/grece/voyager-en-grece-conseils-aux-voyageurs/securite-generale-en-grece"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/greece"
     }
   },
   "GTM": {
@@ -827,20 +855,6 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/equatorial-guinea"
     }
   },
-  "FIN": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/finlande/voyager-en-finlande-conseils-aux-voyageurs/securite-generale-en-finlande"
-    },
-    "dk": {
-      "level": 2,
-      "text": "Skaerpet opmaerksomhed",
-      "source": "Danish Ministry of Foreign Affairs",
-      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/finland/"
-    }
-  },
   "GNB": {
     "be": {
       "level": 2,
@@ -859,20 +873,6 @@
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/guinea-bissau/"
-    }
-  },
-  "GUY": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/guyana/voyager-au-guyana-conseils-aux-voyageurs/securite-generale-au-guyana"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/guyana/"
     }
   },
   "HTI": {
@@ -901,6 +901,26 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/haiti/"
     }
   },
+  "HND": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/honduras/voyager-au-honduras-conseils-aux-voyageurs/securite-generale-au-honduras"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/honduras"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/honduras/"
+    }
+  },
   "HUN": {
     "be": {
       "level": 1,
@@ -913,20 +933,6 @@
       "text": "Normal precautions",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/hungary"
-    }
-  },
-  "GRC": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/grece/voyager-en-grece-conseils-aux-voyageurs/securite-generale-en-grece"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/greece"
     }
   },
   "IND": {
@@ -1023,32 +1029,38 @@
       "url": "https://diplomatie.belgium.be/fr/pays/irlande/voyager-en-irlande-conseils-aux-voyageurs/securite-generale-en-irlande"
     }
   },
+  "ISR": {
+    "be": {
+      "level": 3,
+      "text": "Voyage deconseille",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/israel/voyager-en-israel-conseils-aux-voyageurs/securite-generale-en-israel"
+    },
+    "dk": {
+      "level": 2,
+      "text": "Skaerpet opmaerksomhed",
+      "source": "Danish Ministry of Foreign Affairs",
+      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/israel/"
+    },
+    "sg": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Singapore Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/israel/"
+    },
+    "rs": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/israel"
+    }
+  },
   "ISL": {
     "be": {
       "level": 1,
       "text": "Pas de restrictions",
       "source": "Belgian Federal Foreign Affairs",
       "url": "https://diplomatie.belgium.be/fr/pays/islande/voyager-en-islande-conseils-aux-voyageurs/securite-generale-en-islande"
-    }
-  },
-  "HND": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/honduras/voyager-au-honduras-conseils-aux-voyageurs/securite-generale-au-honduras"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/honduras"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/honduras/"
     }
   },
   "JAM": {
@@ -1095,6 +1107,32 @@
       "text": "Normal precautions",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/japan"
+    }
+  },
+  "JOR": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/jordanie/voyager-en-jordanie-conseils-aux-voyageurs/securite-generale-en-jordanie"
+    },
+    "dk": {
+      "level": 2,
+      "text": "Skaerpet opmaerksomhed",
+      "source": "Danish Ministry of Foreign Affairs",
+      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/jordan/"
+    },
+    "sg": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Singapore Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/jordan/"
+    },
+    "rs": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/jordan"
     }
   },
   "KAZ": {
@@ -1145,30 +1183,18 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/kosovo/"
     }
   },
-  "ISR": {
+  "GUY": {
     "be": {
-      "level": 3,
-      "text": "Voyage deconseille",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/israel/voyager-en-israel-conseils-aux-voyageurs/securite-generale-en-israel"
-    },
-    "dk": {
       "level": 2,
-      "text": "Skaerpet opmaerksomhed",
-      "source": "Danish Ministry of Foreign Affairs",
-      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/israel/"
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/guyana/voyager-au-guyana-conseils-aux-voyageurs/securite-generale-au-guyana"
     },
-    "sg": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Singapore Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/israel/"
-    },
-    "rs": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/israel"
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/guyana/"
     }
   },
   "KWT": {
@@ -1205,30 +1231,26 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/laos/"
     }
   },
-  "JOR": {
+  "LSO": {
     "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
+      "level": 1,
+      "text": "Pas de restrictions",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/jordanie/voyager-en-jordanie-conseils-aux-voyageurs/securite-generale-en-jordanie"
+      "url": "https://diplomatie.belgium.be/fr/pays/lesotho/voyager-au-lesotho-conseils-aux-voyageurs/securite-generale-au-lesotho"
     },
-    "dk": {
-      "level": 2,
-      "text": "Skaerpet opmaerksomhed",
-      "source": "Danish Ministry of Foreign Affairs",
-      "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/jordan/"
-    },
-    "sg": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Singapore Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/jordan/"
-    },
-    "rs": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/jordan"
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/lesotho/"
+    }
+  },
+  "LVA": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/lettonie/voyager-en-lettonie-conseils-aux-voyageurs/securite-generale-en-lettonie"
     }
   },
   "LBN": {
@@ -1257,36 +1279,6 @@
       "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
       "url": "https://diplomatie.belgium.be/fr/pays/liberia/voyager-au-liberia-conseils-aux-voyageurs/securite-generale-au-liberia"
-    }
-  },
-  "LVA": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/lettonie/voyager-en-lettonie-conseils-aux-voyageurs/securite-generale-en-lettonie"
-    }
-  },
-  "LSO": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/lesotho/voyager-au-lesotho-conseils-aux-voyageurs/securite-generale-au-lesotho"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/lesotho/"
-    }
-  },
-  "LTU": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/lituanie/voyager-en-lituanie-conseils-aux-voyageurs/securite-generale-en-lituanie"
     }
   },
   "LBY": {
@@ -1323,6 +1315,36 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/liechtenstein/"
     }
   },
+  "LUX": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/luxembourg/voyager-au-luxembourg-conseils-aux-voyageurs/securite-generale-au-luxembourg"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/luxembourg"
+    }
+  },
+  "LTU": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/lituanie/voyager-en-lituanie-conseils-aux-voyageurs/securite-generale-en-lituanie"
+    }
+  },
+  "MAC": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/macao/voyager-macao-conseils-aux-voyageurs/securite-generale-macao"
+    }
+  },
   "MKD": {
     "be": {
       "level": 2,
@@ -1345,14 +1367,6 @@
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/madagascar/"
     }
   },
-  "MAC": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/macao/voyager-macao-conseils-aux-voyageurs/securite-generale-macao"
-    }
-  },
   "MYS": {
     "be": {
       "level": 2,
@@ -1365,6 +1379,26 @@
       "text": "Skaerpet opmaerksomhed",
       "source": "Danish Ministry of Foreign Affairs",
       "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/malaysia/"
+    }
+  },
+  "MWI": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/malawi/voyager-au-malawi-conseils-aux-voyageurs/securite-generale-au-malawi"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/malawi"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/malawi/"
     }
   },
   "MDV": {
@@ -1423,20 +1457,6 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/morocco"
     }
   },
-  "LUX": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/luxembourg/voyager-au-luxembourg-conseils-aux-voyageurs/securite-generale-au-luxembourg"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/luxembourg"
-    }
-  },
   "MUS": {
     "be": {
       "level": 1,
@@ -1449,6 +1469,20 @@
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/mauritius"
+    }
+  },
+  "MRT": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/mauritanie/voyager-en-mauritanie-conseils-aux-voyageurs/securite-generale-en-mauritanie"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/mauritania"
     }
   },
   "MEX": {
@@ -1469,40 +1503,6 @@
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/mexico"
-    }
-  },
-  "MRT": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/mauritanie/voyager-en-mauritanie-conseils-aux-voyageurs/securite-generale-en-mauritanie"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/mauritania"
-    }
-  },
-  "MWI": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/malawi/voyager-au-malawi-conseils-aux-voyageurs/securite-generale-au-malawi"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/malawi"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/malawi/"
     }
   },
   "MDA": {
@@ -1581,40 +1581,6 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/namibia"
     }
   },
-  "NER": {
-    "be": {
-      "level": 4,
-      "text": "Ne pas voyager",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/niger/voyager-au-niger-conseils-aux-voyageurs/securite-generale-au-niger"
-    },
-    "ee": {
-      "level": 3,
-      "text": "Väldi reisimist",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/niger/"
-    }
-  },
-  "NIC": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/nicaragua/voyager-au-nicaragua-conseils-aux-voyageurs/securite-generale-au-nicaragua"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/nicaragua"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/nicaragua/"
-    }
-  },
   "NPL": {
     "be": {
       "level": 2,
@@ -1647,6 +1613,20 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/nepal/"
     }
   },
+  "NER": {
+    "be": {
+      "level": 4,
+      "text": "Ne pas voyager",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/niger/voyager-au-niger-conseils-aux-voyageurs/securite-generale-au-niger"
+    },
+    "ee": {
+      "level": 3,
+      "text": "Väldi reisimist",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/niger/"
+    }
+  },
   "NGA": {
     "be": {
       "level": 2,
@@ -1665,6 +1645,14 @@
       "text": "Travel advisory",
       "source": "Singapore Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/nigeria/"
+    }
+  },
+  "NOR": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/norvege/voyager-en-norvege-conseils-aux-voyageurs/securite-generale-en-norvege"
     }
   },
   "OMN": {
@@ -1687,14 +1675,6 @@
       "text": "Pas de restrictions",
       "source": "Belgian Federal Foreign Affairs",
       "url": "https://diplomatie.belgium.be/fr/pays/nouvelle-zelande/voyager-en-nouvelle-zelande-conseils-aux-voyageurs/securite-generale-en-nouvelle-zelande"
-    }
-  },
-  "NOR": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/norvege/voyager-en-norvege-conseils-aux-voyageurs/securite-generale-en-norvege"
     }
   },
   "UGA": {
@@ -1729,24 +1709,12 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/uganda/"
     }
   },
-  "PAN": {
+  "UZB": {
     "be": {
       "level": 2,
       "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/panama/voyager-au-panama-conseils-aux-voyageurs/securite-generale-au-panama"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/panama"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/panama/"
+      "url": "https://diplomatie.belgium.be/fr/pays/ouzbekistan/voyager-en-ouzbekistan-conseils-aux-voyageurs/securite-generale-en-ouzbekistan"
     }
   },
   "PAK": {
@@ -1775,12 +1743,24 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/pakistan/"
     }
   },
-  "UZB": {
+  "PAN": {
     "be": {
       "level": 2,
       "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/ouzbekistan/voyager-en-ouzbekistan-conseils-aux-voyageurs/securite-generale-en-ouzbekistan"
+      "url": "https://diplomatie.belgium.be/fr/pays/panama/voyager-au-panama-conseils-aux-voyageurs/securite-generale-au-panama"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/panama"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/panama/"
     }
   },
   "PNG": {
@@ -1795,6 +1775,26 @@
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/papua-new-guinea"
+    }
+  },
+  "PRY": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/paraguay/voyager-au-paraguay-conseils-aux-voyageurs/securite-generale-au-paraguay"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/paraguay"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/paraguay/"
     }
   },
   "NLD": {
@@ -1837,12 +1837,32 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/peru"
     }
   },
-  "PHL": {
+  "NIC": {
     "be": {
-      "level": 3,
-      "text": "Voyage deconseille",
+      "level": 2,
+      "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/philippines/voyager-aux-philippines-conseils-aux-voyageurs/securite-generale-aux-philippines"
+      "url": "https://diplomatie.belgium.be/fr/pays/nicaragua/voyager-au-nicaragua-conseils-aux-voyageurs/securite-generale-au-nicaragua"
+    },
+    "rs": {
+      "level": 2,
+      "text": "Increased caution",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/nicaragua"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/nicaragua/"
+    }
+  },
+  "POL": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/pologne/voyager-en-pologne-conseils-aux-voyageurs/securite-generale-en-pologne"
     }
   },
   "PRT": {
@@ -1869,34 +1889,6 @@
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/portugal/"
-    }
-  },
-  "POL": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/pologne/voyager-en-pologne-conseils-aux-voyageurs/securite-generale-en-pologne"
-    }
-  },
-  "PRY": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/paraguay/voyager-au-paraguay-conseils-aux-voyageurs/securite-generale-au-paraguay"
-    },
-    "rs": {
-      "level": 2,
-      "text": "Increased caution",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/paraguay"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/paraguay/"
     }
   },
   "QAT": {
@@ -1931,6 +1923,28 @@
       "text": "Travel advisory",
       "source": "Singapore Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/democratic-republic-of-congo/"
+    }
+  },
+  "CAF": {
+    "be": {
+      "level": 4,
+      "text": "Ne pas voyager",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/republique-centrafricaine/voyager-en-republique-centrafricaine-conseils-aux-voyageurs/securite-generale-en-republique-centrafricaine"
+    },
+    "rs": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/central-african-republic"
+    }
+  },
+  "PHL": {
+    "be": {
+      "level": 3,
+      "text": "Voyage deconseille",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/philippines/voyager-aux-philippines-conseils-aux-voyageurs/securite-generale-aux-philippines"
     }
   },
   "CZE": {
@@ -1969,32 +1983,12 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/russia"
     }
   },
-  "CAF": {
+  "ROU": {
     "be": {
-      "level": 4,
-      "text": "Ne pas voyager",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/republique-centrafricaine/voyager-en-republique-centrafricaine-conseils-aux-voyageurs/securite-generale-en-republique-centrafricaine"
-    },
-    "rs": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/central-african-republic"
-    }
-  },
-  "SMR": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/saint-marin/voyager-saint-marin-conseils-aux-voyageurs/securite-generale-saint-marin"
-    },
-    "ee": {
       "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/san-marino/"
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/roumanie/voyager-en-roumanie-conseils-aux-voyageurs/securite-generale-en-roumanie"
     }
   },
   "RWA": {
@@ -2023,26 +2017,6 @@
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/rwanda"
     }
   },
-  "SRB": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/serbie/voyager-en-serbie-conseils-aux-voyageurs/securite-generale-en-serbie"
-    },
-    "sg": {
-      "level": 2,
-      "text": "Travel notice",
-      "source": "Singapore Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/serbia/"
-    },
-    "ee": {
-      "level": 1,
-      "text": "Tavapärased ettevaatusabinõud",
-      "source": "Estonian Ministry of Foreign Affairs",
-      "url": "https://reisitargalt.vm.ee/sihtkoht/serbia/"
-    }
-  },
   "SEN": {
     "be": {
       "level": 2,
@@ -2069,12 +2043,38 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/senegal/"
     }
   },
-  "ROU": {
+  "SMR": {
     "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
+      "level": 2,
+      "text": "Prudence recommandee",
       "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/roumanie/voyager-en-roumanie-conseils-aux-voyageurs/securite-generale-en-roumanie"
+      "url": "https://diplomatie.belgium.be/fr/pays/saint-marin/voyager-saint-marin-conseils-aux-voyageurs/securite-generale-saint-marin"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/san-marino/"
+    }
+  },
+  "SRB": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/serbie/voyager-en-serbie-conseils-aux-voyageurs/securite-generale-en-serbie"
+    },
+    "sg": {
+      "level": 2,
+      "text": "Travel notice",
+      "source": "Singapore Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/serbia/"
+    },
+    "ee": {
+      "level": 1,
+      "text": "Tavapärased ettevaatusabinõud",
+      "source": "Estonian Ministry of Foreign Affairs",
+      "url": "https://reisitargalt.vm.ee/sihtkoht/serbia/"
     }
   },
   "SLE": {
@@ -2091,6 +2091,14 @@
       "url": "https://reisitargalt.vm.ee/sihtkoht/sierra-leone/"
     }
   },
+  "SYC": {
+    "be": {
+      "level": 1,
+      "text": "Pas de restrictions",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/seychelles/voyager-aux-seychelles-conseils-aux-voyageurs/securite-generale-aux-seychelles"
+    }
+  },
   "SGP": {
     "be": {
       "level": 1,
@@ -2103,36 +2111,6 @@
       "text": "Skaerpet opmaerksomhed",
       "source": "Danish Ministry of Foreign Affairs",
       "url": "https://um.dk/rejse-og-ophold/rejse-til-udlandet/rejsevejledninger/singapore/"
-    }
-  },
-  "SVN": {
-    "be": {
-      "level": 2,
-      "text": "Prudence recommandee",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/slovenie/voyager-en-slovenie-conseils-aux-voyageurs/securite-generale-en-slovenie"
-    }
-  },
-  "SYC": {
-    "be": {
-      "level": 1,
-      "text": "Pas de restrictions",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/seychelles/voyager-aux-seychelles-conseils-aux-voyageurs/securite-generale-aux-seychelles"
-    }
-  },
-  "SSD": {
-    "be": {
-      "level": 4,
-      "text": "Ne pas voyager",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/soudan-du-sud/voyager-au-soudan-du-sud-conseils-aux-voyageurs/securite-generale-au-soudan-du-sud"
-    },
-    "rs": {
-      "level": 4,
-      "text": "Do not travel",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/south-sudan"
     }
   },
   "SOM": {
@@ -2155,6 +2133,20 @@
       "text": "Ne pas voyager",
       "source": "Belgian Federal Foreign Affairs",
       "url": "https://diplomatie.belgium.be/fr/pays/soudan/voyager-au-soudan-conseils-aux-voyageurs/securite-generale-au-soudan"
+    }
+  },
+  "SSD": {
+    "be": {
+      "level": 4,
+      "text": "Ne pas voyager",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/soudan-du-sud/voyager-au-soudan-du-sud-conseils-aux-voyageurs/securite-generale-au-soudan-du-sud"
+    },
+    "rs": {
+      "level": 4,
+      "text": "Do not travel",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/south-sudan"
     }
   },
   "SWE": {
@@ -2241,6 +2233,20 @@
       "url": "https://www.mfa.gov.sg/travelling-overseas/travel-advisories-notices-and-visa-information/tanzania/"
     }
   },
+  "TCD": {
+    "be": {
+      "level": 4,
+      "text": "Ne pas voyager",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/tchad/voyager-au-tchad-conseils-aux-voyageurs/securite-generale-au-tchad"
+    },
+    "rs": {
+      "level": 3,
+      "text": "Avoid non-essential travel",
+      "source": "Serbian Ministry of Foreign Affairs",
+      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/chad"
+    }
+  },
   "THA": {
     "be": {
       "level": 2,
@@ -2265,20 +2271,6 @@
       "text": "Increased caution",
       "source": "Serbian Ministry of Foreign Affairs",
       "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/thailand"
-    }
-  },
-  "TCD": {
-    "be": {
-      "level": 4,
-      "text": "Ne pas voyager",
-      "source": "Belgian Federal Foreign Affairs",
-      "url": "https://diplomatie.belgium.be/fr/pays/tchad/voyager-au-tchad-conseils-aux-voyageurs/securite-generale-au-tchad"
-    },
-    "rs": {
-      "level": 3,
-      "text": "Avoid non-essential travel",
-      "source": "Serbian Ministry of Foreign Affairs",
-      "url": "https://www.mfa.gov.rs/en/citizens/travel-abroad/visas-and-states-travel-advisory/chad"
     }
   },
   "TGO": {
@@ -2349,6 +2341,14 @@
       "text": "Tavapärased ettevaatusabinõud",
       "source": "Estonian Ministry of Foreign Affairs",
       "url": "https://reisitargalt.vm.ee/sihtkoht/turkmenistan/"
+    }
+  },
+  "SVN": {
+    "be": {
+      "level": 2,
+      "text": "Prudence recommandee",
+      "source": "Belgian Federal Foreign Affairs",
+      "url": "https://diplomatie.belgium.be/fr/pays/slovenie/voyager-en-slovenie-conseils-aux-voyageurs/securite-generale-en-slovenie"
     }
   },
   "UKR": {

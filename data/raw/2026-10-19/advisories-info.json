@@ -5831,6 +5831,22 @@
       "url": "https://www.smartraveller.gov.au/destinations/africa/zimbabwe"
     }
   },
+  "SMR": {
+    "uk": {
+      "level": 1,
+      "text": "No advice against travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/san-marino",
+      "updatedAt": "2025-12-10T13:33:32Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/san-marino",
+      "updatedAt": "2026-09-24"
+    }
+  },
   "MCO": {
     "uk": {
       "level": 1,
@@ -5863,31 +5879,6 @@
       "updatedAt": "2026-10-09"
     }
   },
-  "SMR": {
-    "uk": {
-      "level": 1,
-      "text": "No advice against travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/san-marino",
-      "updatedAt": "2025-12-10T13:33:32Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/san-marino",
-      "updatedAt": "2026-09-24"
-    }
-  },
-  "WLF": {
-    "uk": {
-      "level": 1,
-      "text": "No advice against travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/wallis-and-futuna",
-      "updatedAt": "2025-12-10T13:02:12Z"
-    }
-  },
   "GIB": {
     "uk": {
       "level": 1,
@@ -5902,6 +5893,15 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/gibraltar",
       "updatedAt": "2026-10-13"
+    }
+  },
+  "WLF": {
+    "uk": {
+      "level": 1,
+      "text": "No advice against travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/wallis-and-futuna",
+      "updatedAt": "2025-12-10T13:02:12Z"
     }
   },
   "PCN": {
@@ -5970,22 +5970,6 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "USA": {
-    "uk": {
-      "level": 1,
-      "text": "No advice against travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/usa",
-      "updatedAt": "2026-08-18T09:29:04Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/united-states",
-      "updatedAt": "2026-10-15"
-    }
-  },
   "SGS": {
     "uk": {
       "level": 1,
@@ -6004,42 +5988,29 @@
       "updatedAt": "2026-09-10T13:21:17Z"
     }
   },
-  "COK": {
+  "USA": {
     "uk": {
       "level": 1,
       "text": "No advice against travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
-      "updatedAt": "2025-12-10T13:43:48Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/usa",
+      "updatedAt": "2026-08-18T09:29:04Z"
     },
     "ca": {
       "level": 1,
       "text": "Exercise normal security precautions",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/cook-islands",
-      "updatedAt": "2026-10-14"
-    },
-    "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/pacific/cook-islands"
+      "url": "https://travel.gc.ca/destinations/united-states",
+      "updatedAt": "2026-10-15"
     }
   },
-  "TKL": {
+  "IOT": {
     "uk": {
       "level": 1,
       "text": "No advice against travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
-      "updatedAt": "2025-12-10T13:43:48Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/tokelau",
-      "updatedAt": "2026-10-13"
+      "url": "https://www.gov.uk/foreign-travel-advice/british-indian-ocean-territory",
+      "updatedAt": "2024-04-08T11:56:22Z"
     }
   },
   "NIU": {
@@ -6064,6 +6035,44 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/niue"
     }
   },
+  "TKL": {
+    "uk": {
+      "level": 1,
+      "text": "No advice against travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
+      "updatedAt": "2025-12-10T13:43:48Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/tokelau",
+      "updatedAt": "2026-10-13"
+    }
+  },
+  "COK": {
+    "uk": {
+      "level": 1,
+      "text": "No advice against travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
+      "updatedAt": "2025-12-10T13:43:48Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/cook-islands",
+      "updatedAt": "2026-10-14"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/pacific/cook-islands"
+    }
+  },
   "REU": {
     "uk": {
       "level": 1,
@@ -6078,15 +6087,6 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/reunion",
       "updatedAt": "2026-09-24"
-    }
-  },
-  "IOT": {
-    "uk": {
-      "level": 1,
-      "text": "No advice against travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/british-indian-ocean-territory",
-      "updatedAt": "2024-04-08T11:56:22Z"
     }
   },
   "ASM": {
