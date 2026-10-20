@@ -1,0 +1,1397 @@
+{
+  "url": "https://data.international.gc.ca/travel-voyage/index-alpha-eng.json",
+  "fetchedAt": "2026-10-20T11:32:23.105Z",
+  "endpoint": "open-data-json",
+  "generated": "2026-10-20 06:40:33",
+  "accepted": true,
+  "problems": [],
+  "countries": 227,
+  "unmatched": [
+    "PT-20 (Azores)",
+    "BM (Bermuda)",
+    "IC (Canary Islands)"
+  ],
+  "mismatches": [],
+  "entries": [
+    {
+      "key": "AF",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 07:01:50"
+    },
+    {
+      "key": "AL",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 15:47:04"
+    },
+    {
+      "key": "DZ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 08:05:00"
+    },
+    {
+      "key": "AS",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:16:17"
+    },
+    {
+      "key": "AD",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:19:06"
+    },
+    {
+      "key": "AO",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 07:03:42"
+    },
+    {
+      "key": "AI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:20:46"
+    },
+    {
+      "key": "AQ",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 07:23:22"
+    },
+    {
+      "key": "AG",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:24:31"
+    },
+    {
+      "key": "AR",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-14 07:08:08"
+    },
+    {
+      "key": "AM",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-14 07:28:09"
+    },
+    {
+      "key": "AW",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:10:13"
+    },
+    {
+      "key": "AU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:40:23"
+    },
+    {
+      "key": "AT",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:44:56"
+    },
+    {
+      "key": "AZ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 07:50:03"
+    },
+    {
+      "key": "PT-20",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 07:53:41"
+    },
+    {
+      "key": "BS",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 16:11:34"
+    },
+    {
+      "key": "BH",
+      "state": 2,
+      "regional": 0,
+      "published": "2026-10-14 07:57:37"
+    },
+    {
+      "key": "BD",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:03:20"
+    },
+    {
+      "key": "BB",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 11:44:32"
+    },
+    {
+      "key": "BY",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "BE",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 09:37:02"
+    },
+    {
+      "key": "BZ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:09:06"
+    },
+    {
+      "key": "BJ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:21:09"
+    },
+    {
+      "key": "BM",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "BT",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 08:24:17"
+    },
+    {
+      "key": "BO",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:28:20"
+    },
+    {
+      "key": "BQ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 08:31:04"
+    },
+    {
+      "key": "BA",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "BW",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 08:32:51"
+    },
+    {
+      "key": "BR",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:35:00"
+    },
+    {
+      "key": "VG",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "BN",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 08:37:13"
+    },
+    {
+      "key": "BG",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "BF",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 08:49:23"
+    },
+    {
+      "key": "BI",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "CV",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "KH",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 08:53:09"
+    },
+    {
+      "key": "CM",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:05:54"
+    },
+    {
+      "key": "IC",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "KY",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "CF",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 09:10:00"
+    },
+    {
+      "key": "TD",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-14 09:13:23"
+    },
+    {
+      "key": "CL",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-19 11:28:32"
+    },
+    {
+      "key": "CN",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 10:01:47"
+    },
+    {
+      "key": "CO",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:25:42"
+    },
+    {
+      "key": "KM",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "CK",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:27:54"
+    },
+    {
+      "key": "CR",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 08:11:40"
+    },
+    {
+      "key": "CI",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:37:30"
+    },
+    {
+      "key": "HR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-05 08:06:14"
+    },
+    {
+      "key": "CU",
+      "state": 2,
+      "regional": 0,
+      "published": "2026-10-13 11:14:11"
+    },
+    {
+      "key": "CW",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:41:36"
+    },
+    {
+      "key": "CY",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-09-29 14:20:58"
+    },
+    {
+      "key": "CZ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "CD",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-09-28 13:56:52"
+    },
+    {
+      "key": "DK",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 05:06:55"
+    },
+    {
+      "key": "DJ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:54:15"
+    },
+    {
+      "key": "DM",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "DO",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 09:55:23"
+    },
+    {
+      "key": "EC",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:59:27"
+    },
+    {
+      "key": "EG",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:16:11"
+    },
+    {
+      "key": "SV",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-16 06:15:23"
+    },
+    {
+      "key": "GQ",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "ER",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-14 15:48:07"
+    },
+    {
+      "key": "EE",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "SZ",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 15:51:22"
+    },
+    {
+      "key": "ET",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-14 15:53:11"
+    },
+    {
+      "key": "FK",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "FJ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 15:57:06"
+    },
+    {
+      "key": "FI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "FR",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-19 18:38:25"
+    },
+    {
+      "key": "GF",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 04:18:16"
+    },
+    {
+      "key": "PF",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 04:21:36"
+    },
+    {
+      "key": "GA",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 04:29:53"
+    },
+    {
+      "key": "GM",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 16:13:03"
+    },
+    {
+      "key": "GE",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-09-24 11:19:55"
+    },
+    {
+      "key": "DE",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 09:29:12"
+    },
+    {
+      "key": "GH",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "GI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 11:40:40"
+    },
+    {
+      "key": "GR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 09:57:10"
+    },
+    {
+      "key": "GL",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 13:38:01"
+    },
+    {
+      "key": "GD",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 13:41:11"
+    },
+    {
+      "key": "GP",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "GU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-18 09:25:13"
+    },
+    {
+      "key": "GT",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-16 06:09:33"
+    },
+    {
+      "key": "GN",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 13:49:45"
+    },
+    {
+      "key": "GW",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-13 13:52:26"
+    },
+    {
+      "key": "GY",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 13:54:30"
+    },
+    {
+      "key": "HT",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "HN",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-13 13:56:59"
+    },
+    {
+      "key": "HK",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 14:57:07"
+    },
+    {
+      "key": "HU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "IS",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "IN",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 15:24:03"
+    },
+    {
+      "key": "ID",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-13 16:57:20"
+    },
+    {
+      "key": "IR",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-13 14:25:08"
+    },
+    {
+      "key": "IQ",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-06 09:31:28"
+    },
+    {
+      "key": "IE",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "IL",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "IT",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-29 04:08:45"
+    },
+    {
+      "key": "JM",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-07 08:16:36"
+    },
+    {
+      "key": "JP",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 14:27:12"
+    },
+    {
+      "key": "JO",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-16 16:41:42"
+    },
+    {
+      "key": "KZ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 04:33:35"
+    },
+    {
+      "key": "KE",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 11:56:44"
+    },
+    {
+      "key": "KI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 04:38:21"
+    },
+    {
+      "key": "XK",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "KW",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "KG",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 04:46:28"
+    },
+    {
+      "key": "LA",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 04:53:28"
+    },
+    {
+      "key": "LV",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "LB",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-15 08:15:35"
+    },
+    {
+      "key": "LS",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 04:59:33"
+    },
+    {
+      "key": "LR",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 05:02:10"
+    },
+    {
+      "key": "LY",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-06 09:33:28"
+    },
+    {
+      "key": "LI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "LT",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 10:50:59"
+    },
+    {
+      "key": "LU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 10:08:48"
+    },
+    {
+      "key": "MO",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 06:17:58"
+    },
+    {
+      "key": "MG",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 10:58:42"
+    },
+    {
+      "key": "MW",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 10:32:00"
+    },
+    {
+      "key": "MY",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-09 10:10:36"
+    },
+    {
+      "key": "MV",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 06:58:59"
+    },
+    {
+      "key": "ML",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-09 10:15:05"
+    },
+    {
+      "key": "MT",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 07:11:34"
+    },
+    {
+      "key": "MH",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 07:14:17"
+    },
+    {
+      "key": "MQ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 07:20:54"
+    },
+    {
+      "key": "MR",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-20 06:38:34"
+    },
+    {
+      "key": "MU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-19 17:02:42"
+    },
+    {
+      "key": "YT",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 07:38:32"
+    },
+    {
+      "key": "MX",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-19 10:54:39"
+    },
+    {
+      "key": "FM",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 15:54:57"
+    },
+    {
+      "key": "MD",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "MC",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 08:00:15"
+    },
+    {
+      "key": "MN",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 08:52:27"
+    },
+    {
+      "key": "ME",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 08:05:15"
+    },
+    {
+      "key": "MS",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 08:07:34"
+    },
+    {
+      "key": "MA",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-09 10:16:02"
+    },
+    {
+      "key": "MZ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 05:06:54"
+    },
+    {
+      "key": "MM",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-15 05:09:32"
+    },
+    {
+      "key": "NA",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 05:12:36"
+    },
+    {
+      "key": "NR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:34"
+    },
+    {
+      "key": "NP",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 05:16:35"
+    },
+    {
+      "key": "NL",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 10:18:33"
+    },
+    {
+      "key": "NC",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 05:40:57"
+    },
+    {
+      "key": "NZ",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 05:45:07"
+    },
+    {
+      "key": "NI",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 08:15:25"
+    },
+    {
+      "key": "NE",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-15 05:46:49"
+    },
+    {
+      "key": "NG",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-15 05:50:51"
+    },
+    {
+      "key": "NU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 05:53:10"
+    },
+    {
+      "key": "KP",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-15 05:56:57"
+    },
+    {
+      "key": "MK",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "MP",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 06:00:55"
+    },
+    {
+      "key": "NO",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-19 07:07:13"
+    },
+    {
+      "key": "OM",
+      "state": 2,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "PK",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-19 11:30:52"
+    },
+    {
+      "key": "PW",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 06:26:22"
+    },
+    {
+      "key": "PA",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-16 12:27:41"
+    },
+    {
+      "key": "PG",
+      "state": 2,
+      "regional": 0,
+      "published": "2026-10-15 06:32:37"
+    },
+    {
+      "key": "PY",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 06:35:15"
+    },
+    {
+      "key": "PE",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 07:45:13"
+    },
+    {
+      "key": "PH",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 08:02:47"
+    },
+    {
+      "key": "PL",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "PT",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-09 09:35:23"
+    },
+    {
+      "key": "PR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-02 14:02:37"
+    },
+    {
+      "key": "QA",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 15:17:17"
+    },
+    {
+      "key": "CG",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-09-24 08:53:33"
+    },
+    {
+      "key": "RE",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "RO",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "RU",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "RW",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-09 09:48:40"
+    },
+    {
+      "key": "BL",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "KN",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "LC",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 14:38:17"
+    },
+    {
+      "key": "MF",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "PM",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "VC",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "WS",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SM",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "ST",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SA",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-18 13:56:25"
+    },
+    {
+      "key": "SN",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 08:16:43"
+    },
+    {
+      "key": "RS",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-09 10:17:53"
+    },
+    {
+      "key": "SC",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SL",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SG",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 08:32:03"
+    },
+    {
+      "key": "SX",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SK",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "SI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "SB",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 08:34:41"
+    },
+    {
+      "key": "SO",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-15 08:42:29"
+    },
+    {
+      "key": "ZA",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-15 08:49:57"
+    },
+    {
+      "key": "KR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 08:53:15"
+    },
+    {
+      "key": "SS",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-02 14:02:37"
+    },
+    {
+      "key": "ES",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-09 08:59:48"
+    },
+    {
+      "key": "LK",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 14:26:58"
+    },
+    {
+      "key": "SD",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-13 14:30:27"
+    },
+    {
+      "key": "SR",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 14:39:54"
+    },
+    {
+      "key": "SE",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 15:26:52"
+    },
+    {
+      "key": "CH",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 08:22:35"
+    },
+    {
+      "key": "SY",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 15:35:49"
+    },
+    {
+      "key": "TW",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-14 11:23:00"
+    },
+    {
+      "key": "TJ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 13:38:09"
+    },
+    {
+      "key": "TZ",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 10:38:25"
+    },
+    {
+      "key": "TH",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-13 16:30:41"
+    },
+    {
+      "key": "TL",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 16:10:19"
+    },
+    {
+      "key": "TG",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-13 16:08:37"
+    },
+    {
+      "key": "TK",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 16:07:13"
+    },
+    {
+      "key": "TO",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 16:06:01"
+    },
+    {
+      "key": "TT",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-15 14:16:48"
+    },
+    {
+      "key": "TN",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 15:47:29"
+    },
+    {
+      "key": "TR",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 16:20:45"
+    },
+    {
+      "key": "TM",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 13:42:48"
+    },
+    {
+      "key": "TC",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-14 16:23:50"
+    },
+    {
+      "key": "TV",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 16:00:37"
+    },
+    {
+      "key": "UG",
+      "state": 2,
+      "regional": 1,
+      "published": "2026-10-13 15:34:18"
+    },
+    {
+      "key": "UA",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-14 09:05:55"
+    },
+    {
+      "key": "AE",
+      "state": 1,
+      "regional": 1,
+      "published": "2026-10-14 15:29:54"
+    },
+    {
+      "key": "GB",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-05 14:33:12"
+    },
+    {
+      "key": "US",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-15 08:53:58"
+    },
+    {
+      "key": "UY",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-13 15:28:59"
+    },
+    {
+      "key": "UZ",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-14 13:55:55"
+    },
+    {
+      "key": "VU",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-13 15:21:04"
+    },
+    {
+      "key": "VE",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-13 15:19:40"
+    },
+    {
+      "key": "VN",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-10-19 10:37:40"
+    },
+    {
+      "key": "VI",
+      "state": 0,
+      "regional": 0,
+      "published": "2026-09-24 08:53:35"
+    },
+    {
+      "key": "YE",
+      "state": 3,
+      "regional": 0,
+      "published": "2026-10-13 15:16:11"
+    },
+    {
+      "key": "ZM",
+      "state": 0,
+      "regional": 1,
+      "published": "2026-10-13 15:13:11"
+    },
+    {
+      "key": "ZW",
+      "state": 1,
+      "regional": 0,
+      "published": "2026-10-13 15:11:31"
+    }
+  ]
+}

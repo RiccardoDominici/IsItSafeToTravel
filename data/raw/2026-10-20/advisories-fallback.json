@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-20",
+  "maxAgeDays": 7,
+  "issuers": [
+    {
+      "issuer": "us",
+      "label": "US",
+      "state": "live",
+      "liveCountries": 212,
+      "restoredCountries": 0,
+      "droppedCountries": 0,
+      "lastLive": null,
+      "ageDays": null,
+      "maxAgeDays": 7
+    },
+    {
+      "issuer": "uk",
+      "label": "UK",
+      "state": "live",
+      "liveCountries": 228,
+      "restoredCountries": 0,
+      "droppedCountries": 0,
+      "lastLive": null,
+      "ageDays": null,
+      "maxAgeDays": 7
+    },
+    {
+      "issuer": "ca",
+      "label": "CA",
+      "state": "live",
+      "liveCountries": 227,
+      "restoredCountries": 0,
+      "droppedCountries": 0,
+      "lastLive": null,
+      "ageDays": null,
+      "maxAgeDays": 7
+    },
+    {
+      "issuer": "au",
+      "label": "AU",
+      "state": "live",
+      "liveCountries": 167,
+      "restoredCountries": 0,
+      "droppedCountries": 0,
+      "lastLive": null,
+      "ageDays": null,
+      "maxAgeDays": 7
+    }
+  ]
+}

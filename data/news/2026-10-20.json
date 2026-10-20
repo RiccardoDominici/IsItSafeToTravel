@@ -1,0 +1,31 @@
+{
+  "date": "2026-10-20",
+  "generatedAt": "2026-10-20T11:44:34.132Z",
+  "events": [
+    {
+      "id": "2026-10-20:severe_advisory:KEN:us",
+      "date": "2026-10-20",
+      "type": "severe_advisory",
+      "params": {
+        "country": "KEN",
+        "issuer": "us",
+        "level": 3
+      },
+      "priority": 100
+    },
+    {
+      "id": "2026-10-20:score_jump:USA",
+      "date": "2026-10-20",
+      "type": "score_jump",
+      "params": {
+        "country": "USA",
+        "delta": -0.21,
+        "score": 7.4,
+        "prevScore": 7.6,
+        "direction": "down",
+        "confidence": 0.76
+      },
+      "priority": 50
+    }
+  ]
+}
