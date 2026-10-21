@@ -1,18 +1,24 @@
 name: Daily Data Pipeline
 # Marks the two kinds of manual run that must not count as the day's run (the guard job below
-# and isDailyRun in workers/pipeline-trigger/src/decide.ts read these markers): a backfill for
-# another date, and a corrective run that does not email the newsletter.
+# reads these markers): a backfill for another date, and a corrective run that does not email
+# the newsletter.
 run-name: >-
   Daily Data Pipeline${{ inputs.date && format(' for {0}', inputs.date) || '' }}${{ inputs.skip_digest && ' (no digest)' || '' }}
 
 on:
   schedule:
-    # FALLBACK ONLY. The daily run is started at 06:05 UTC by the Cloudflare Worker in
-    # workers/pipeline-trigger (it calls workflow_dispatch), because this cron fired 4–8 hours
-    # late through Sept–Oct 2026 (October: 10:13–14:34 UTC for a 06:00 slot). When it does
-    # fire, the guard job skips it if today's run already succeeded. Off the top of the hour,
-    # as GitHub advises for scheduled workflows.
-    - cron: '17 6 * * *'
+    # Several slots, and the first one GitHub actually delivers does the day's run; the guard
+    # job turns the later ones into no-ops. Why: GitHub's scheduler is best-effort and a single
+    # 06:00 UTC cron fired 4–8 hours late through Sept–Oct 2026 (October: 10:13–14:34 UTC, i.e.
+    # the newsletter after lunch in Italy). The slots are early on purpose, so the usual delay
+    # lands the run in the morning. The 23:17 slot normally arrives after midnight UTC and
+    # serves the NEXT day; if it arrives on time, today's run has already succeeded and it
+    # skips. Off the top of the hour, as GitHub advises. Owner decision (2026-10-21): everything
+    # stays on GitHub, no external scheduler holding a GitHub token.
+    - cron: '17 23 * * *'
+    - cron: '17 1 * * *'
+    - cron: '17 3 * * *'
+    - cron: '17 5 * * *'
   workflow_dispatch:
     # Allow manual triggering from GitHub UI
     inputs:
@@ -41,9 +47,9 @@ concurrency:
 
 jobs:
   guard:
-    # GitHub's scheduled run is only a fallback (see on.schedule): skip it when today's daily
-    # run already succeeded. Same rule as the Worker (workers/pipeline-trigger/src/decide.ts):
-    # a successful run since 05:55 UTC that is not a backfill or a no-digest corrective run.
+    # Only the first scheduled slot GitHub delivers each day runs the pipeline (see
+    # on.schedule): a scheduled run is skipped when today (UTC) already has a successful daily
+    # run, i.e. one that is not a backfill or a no-digest corrective run (run-name markers).
     # Manual dispatches always run. Fails open: if the runs cannot be listed, run the pipeline;
     # a duplicate run is harmless (the digest is idempotent via digest_log), a missed day is not.
     runs-on: ubuntu-latest
@@ -58,11 +64,14 @@ jobs:
           EVENT: ${{ github.event_name }}
           REPO: ${{ github.repository }}
           RUN_ID: ${{ github.run_id }}
+          SLOT: ${{ github.event.schedule }}
         run: |
           if [ "$EVENT" != "schedule" ]; then
             echo "run=true" >> "$GITHUB_OUTPUT"; exit 0
           fi
-          SINCE="$(date -u +%Y-%m-%d)T05:55:00Z"
+          # Which slot this is and when GitHub delivered it, to keep measuring the delay.
+          echo "Scheduled slot '${SLOT}' delivered at $(date -u +%H:%M) UTC." | tee -a "$GITHUB_STEP_SUMMARY"
+          SINCE="$(date -u +%Y-%m-%d)T00:00:00Z"
           if ! RUNS=$(gh api "repos/${REPO}/actions/workflows/data-pipeline.yml/runs?status=success&per_page=100&created=%3E%3D${SINCE}"); then
             echo "::warning::could not list today's runs; running the pipeline anyway"
             echo "run=true" >> "$GITHUB_OUTPUT"; exit 0

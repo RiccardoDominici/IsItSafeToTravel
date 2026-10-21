@@ -2,9 +2,9 @@ name: Monthly Data Release
 
 on:
   schedule:
-    # 08:00 UTC on the 2nd of each month — a couple of hours after the daily
-    # data pipeline (06:00 UTC, data-pipeline.yml) has had time to land, so the
-    # release always bundles a same-day snapshot rather than racing it.
+    # 08:00 UTC on the 2nd of each month — after the daily data pipeline
+    # (night slots, data-pipeline.yml) has normally landed, so the release
+    # usually bundles a same-day snapshot rather than racing it.
     - cron: '0 8 2 * *'
   workflow_dispatch:
 

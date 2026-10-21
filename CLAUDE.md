@@ -33,12 +33,12 @@ AI answer engines.
 - `data-pipeline.yml` runs daily, commits `data: update safety scores …`, and triggers deploy.
   **Before pushing, `git pull --rebase --autostash`** — the bot commits often and will reject a
   stale push.
-- The daily run is **started at 06:05 UTC by a Cloudflare Worker** (`workers/pipeline-trigger`,
-  `workflow_dispatch`, one cron `5 6-8 * * *` = retries at 07:05 and 08:05), because GitHub's own cron fired 4–8 h late in
-  Sept–Oct 2026. GitHub's cron (06:17) stays as a fallback; its `guard` job skips it once today's
-  run succeeded. Manual corrective runs: `gh workflow run data-pipeline.yml -f skip_digest=true`
-  (titled "(no digest)", never counted as the day's run). The Worker deploys separately:
-  `npx wrangler deploy --config workers/pipeline-trigger/wrangler.toml` (see its README).
+- GitHub's cron is best-effort and fired 4–8 h late in Sept–Oct 2026, so the workflow has
+  **four night slots (23:17, 01:17, 03:17, 05:17 UTC)**: the first one GitHub delivers does the
+  day's run, and the `guard` job skips the rest once today (UTC) has a successful run. Owner
+  decision 2026-10-21: no external scheduler holding a GitHub token. Manual corrective runs:
+  `gh workflow run data-pipeline.yml -f skip_digest=true` (titled "(no digest)", never counted
+  as the day's run).
 
 ## i18n & hreflang (single source of truth)
 
