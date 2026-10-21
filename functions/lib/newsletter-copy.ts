@@ -266,6 +266,19 @@ const UNSUB_CONFIRM_TEXT = rec(
   'Möchten Sie keine täglichen Reisesicherheits-Updates mehr an diese Adresse erhalten?',
 );
 
+// GET /api/confirm prompt (2026-10-21). The email link opens this page, and only the button
+// confirms: corporate antispam scanners open every link in an email, and from 2026-10-08 they
+// were confirming addresses that bots had typed into the signup form.
+const CONFIRM_PROMPT_TEXT = rec(
+  'Please confirm that you want the daily travel-safety updates from IsItSafeToTravel at this address.',
+  'Conferma di voler ricevere a questo indirizzo gli aggiornamenti quotidiani sulla sicurezza di viaggio di IsItSafeToTravel.',
+  'Confirma que deseas recibir en esta dirección las actualizaciones diarias sobre seguridad de viaje de IsItSafeToTravel.',
+  "Confirmez que vous souhaitez recevoir à cette adresse les mises à jour quotidiennes sur la sécurité des voyages d'IsItSafeToTravel.",
+  'Confirme que deseja receber neste endereço as atualizações diárias sobre segurança de viagem do IsItSafeToTravel.',
+  '请确认您希望在此邮箱接收 IsItSafeToTravel 的每日旅行安全更新。',
+  'Bitte bestätigen Sie, dass Sie die täglichen Reisesicherheits-Updates von IsItSafeToTravel an diese Adresse erhalten möchten.',
+);
+
 const UNSUB_CONFIRM_BUTTON = rec(
   'Yes, unsubscribe me', 'Sì, annulla la mia iscrizione', 'Sí, darme de baja', 'Oui, me désabonner',
   'Sim, cancelar a inscrição', '是的，取消订阅', 'Ja, abmelden',
@@ -289,20 +302,37 @@ export const unsubResultHtml = (locale: Locale, success: boolean) =>
   page(locale, success ? UNSUB_SUCCESS_TEXT[locale] : UNSUB_ERROR_TEXT[locale]);
 
 /**
+ * A page with one question and one POST button. Used wherever a link in an email would change
+ * state: antispam link scanners fetch (GET) every URL in an email, but they do not submit forms,
+ * so the change happens only when a person presses the button.
+ */
+function buttonFormPage(locale: Locale, text: string, actionUrl: string, buttonLabel: string): string {
+  return pageShell(
+    locale,
+    `
+      <p>${escapeHtml(text)}</p>
+      <form method="POST" action="${escapeHtml(actionUrl)}" style="margin:0 0 20px;">
+        <button type="submit" style="background:${TERRACOTTA_500};color:#fff;border:0;border-radius:8px;padding:13px 28px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;">${escapeHtml(buttonLabel)}</button>
+      </form>
+      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>`,
+  );
+}
+
+/**
  * GET /api/unsubscribe confirmation page: shows a POST form instead of unsubscribing
  * directly — a GET that mutates state gets triggered by antispam link scanners
  * (learned the hard way on day one). Real one-click stays on POST per RFC 8058.
  */
 export function unsubConfirmHtml(locale: Locale, actionUrl: string): string {
-  return pageShell(
-    locale,
-    `
-      <p>${escapeHtml(UNSUB_CONFIRM_TEXT[locale])}</p>
-      <form method="POST" action="${escapeHtml(actionUrl)}" style="margin:0 0 20px;">
-        <button type="submit" style="background:${TERRACOTTA_500};color:#fff;border:0;border-radius:8px;padding:13px 28px;font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;">${escapeHtml(UNSUB_CONFIRM_BUTTON[locale])}</button>
-      </form>
-      <a class="back" href="https://isitsafetotravel.org/${locale}/">${escapeHtml(BACK_TO_SITE[locale])}</a>`,
-  );
+  return buttonFormPage(locale, UNSUB_CONFIRM_TEXT[locale], actionUrl, UNSUB_CONFIRM_BUTTON[locale]);
+}
+
+/**
+ * GET /api/confirm page: the same pattern for the double opt-in. Until 2026-10-21 the GET itself
+ * confirmed, and corporate link scanners confirmed 32 addresses that bots had signed up.
+ */
+export function confirmPromptHtml(locale: Locale, actionUrl: string): string {
+  return buttonFormPage(locale, CONFIRM_PROMPT_TEXT[locale], actionUrl, CONFIRM_BUTTON[locale]);
 }
 
 // ---------------------------------------------------------------------------
