@@ -61,13 +61,20 @@ export function getNewsDir(): string {
 /**
  * Find the most recent cached file matching a pattern in data/raw/YYYY-MM-DD/ directories.
  * Returns the full path to the file, or null if not found.
+ *
+ * `beforeDate` (YYYY-MM-DD, optional) skips that day and any later one, so a
+ * fetcher can compare today's answer against an EARLIER day's cache — without
+ * it, a same-day re-run would find (and trust) the file its own first attempt
+ * just wrote.
  */
-export function findLatestCached(filename: string): string | null {
+export function findLatestCached(filename: string, beforeDate?: string): string | null {
   const rawBase = join(process.cwd(), 'data', 'raw');
   if (!existsSync(rawBase)) return null;
 
   const dateDirs = readdirSync(rawBase)
     .filter((d) => /^\d{4}-\d{2}-\d{2}$/.test(d))
+    // Dates are YYYY-MM-DD strings, so lexicographic order == chronological order.
+    .filter((d) => beforeDate === undefined || d < beforeDate)
     .sort()
     .reverse();
 

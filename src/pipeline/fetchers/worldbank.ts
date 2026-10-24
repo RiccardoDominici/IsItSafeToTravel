@@ -38,6 +38,83 @@ const INDICATORS: Array<{ wbCode: string; name: string; description: string }> =
 /** Indicator names this fetcher writes. The staleness monitor checks each one (src/pipeline/staleness.ts). */
 export const WB_INDICATOR_NAMES: readonly string[] = INDICATORS.map((ind) => ind.name);
 
+/**
+ * Coverage floor: an indicator that comes back with fewer countries than this
+ * share of its last cached coverage is treated as FAILED, not as a success.
+ *
+ * Why: the WB API can answer "200 OK" with a nearly empty body while its origin
+ * is degraded. On 2026-10-24 both night runs got VC.IHR.PSRC.P5 (homicide) for
+ * 1 country (194 the day before) while the same URL intermittently returned
+ * 502 HTML error pages. The fetcher took the 1-country answer as a success, the
+ * homicide rate dropped out of every score, and the workflow's quality gate
+ * (worldbank >= 107 countries) refused to commit the day. A failed indicator
+ * goes through the partial-failure path below and is filled from the cache —
+ * WB data is annual, so the previous day's copy holds the same numbers.
+ *
+ * 0.6 matches RELATIVE_FLOOR_RATIO in source-floor.ts: WB coverage moves by a
+ * handful of countries per release, never by 40% overnight.
+ */
+const COVERAGE_FLOOR_RATIO = 0.6;
+
+/**
+ * Waits between attempts of a single indicator (3 attempts in total). The
+ * 2026-10-24 outage was intermittent — a retry a few seconds later often gets
+ * a healthy answer — so retry before falling back to the cache.
+ */
+const DEFAULT_RETRY_DELAYS_MS: readonly number[] = [5_000, 15_000];
+
+const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
+
+/**
+ * Minimum acceptable country count per indicator, from the last cached day.
+ * An indicator absent from the cache (or no cache at all, e.g. the first run)
+ * gets no floor — the fetcher then behaves exactly as before.
+ */
+export function coverageFloors(cached: RawSourceData | null): Map<string, number> {
+  const cachedCounts = new Map<string, number>();
+  for (const ind of cached?.indicators ?? []) {
+    cachedCounts.set(ind.indicatorName, (cachedCounts.get(ind.indicatorName) ?? 0) + 1);
+  }
+  const floors = new Map<string, number>();
+  for (const [name, count] of cachedCounts) {
+    floors.set(name, Math.ceil(COVERAGE_FLOOR_RATIO * count));
+  }
+  return floors;
+}
+
+/**
+ * fetchIndicator with retries. Throws (so the caller treats the indicator as
+ * failed) when every attempt errored OR came back below `minCount` countries.
+ */
+async function fetchIndicatorWithRetry(
+  wbCode: string,
+  indicatorName: string,
+  minCount: number,
+  retryDelaysMs: readonly number[],
+): Promise<RawIndicator[]> {
+  const attempts = retryDelaysMs.length + 1;
+  let lastError: Error = new Error(`${wbCode}: no attempt made`);
+
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const rows = await fetchIndicator(wbCode, indicatorName);
+      if (rows.length >= minCount) return rows;
+      lastError = new Error(`coverage collapse — ${rows.length} countries, floor ${minCount}`);
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+    }
+    if (attempt < attempts) {
+      const waitMs = retryDelaysMs[attempt - 1];
+      console.warn(
+        `[WORLDBANK] ${wbCode}: attempt ${attempt}/${attempts} failed (${lastError.message}); retrying in ${waitMs / 1000}s`,
+      );
+      await sleep(waitMs);
+    }
+  }
+
+  throw lastError;
+}
+
 async function fetchIndicator(
   wbCode: string,
   indicatorName: string,
@@ -111,9 +188,22 @@ async function fetchIndicator(
   return indicators;
 }
 
-export async function fetchWorldBank(date: string): Promise<FetchResult> {
+export interface FetchWorldBankOptions {
+  /** Waits between attempts; tests pass zeros so they don't sleep. */
+  retryDelaysMs?: readonly number[];
+}
+
+export async function fetchWorldBank(date: string, options: FetchWorldBankOptions = {}): Promise<FetchResult> {
   const fetchedAt = new Date().toISOString();
   const rawDir = getRawDir(date);
+  const retryDelaysMs = options.retryDelaysMs ?? DEFAULT_RETRY_DELAYS_MS;
+
+  // The last cache from a day BEFORE `date`: the baseline for the coverage
+  // floors and the source for filling failed indicators. Read once so both
+  // uses agree on the same file.
+  const cachedPath = findLatestCached('worldbank-parsed.json', date);
+  const cachedData = cachedPath ? readJson<RawSourceData>(cachedPath) : null;
+  const floors = coverageFloors(cachedData);
 
   try {
     console.log(`[WORLDBANK] Fetching World Bank indicators (mrnev=1, most-recent-non-empty)...`);
@@ -122,7 +212,9 @@ export async function fetchWorldBank(date: string): Promise<FetchResult> {
 
     // Fetch all indicators in parallel
     const results = await Promise.allSettled(
-      INDICATORS.map((ind) => fetchIndicator(ind.wbCode, ind.name)),
+      INDICATORS.map((ind) =>
+        fetchIndicatorWithRetry(ind.wbCode, ind.name, floors.get(ind.name) ?? 0, retryDelaysMs),
+      ),
     );
 
     for (let i = 0; i < results.length; i++) {
@@ -143,18 +235,15 @@ export async function fetchWorldBank(date: string): Promise<FetchResult> {
     const succeededNames = new Set(allIndicators.map((ind) => ind.indicatorName));
     const failedIndicators = INDICATORS.filter((ind) => !succeededNames.has(ind.name));
 
-    if (failedIndicators.length > 0 && allIndicators.length > 0) {
-      const cached = findLatestCached('worldbank-parsed.json');
-      if (cached) {
-        const cachedData = readJson<RawSourceData>(cached);
-        if (cachedData) {
-          const failedNames = new Set(failedIndicators.map((ind) => ind.name));
-          const cachedFill = cachedData.indicators.filter((ind) => failedNames.has(ind.indicatorName));
-          if (cachedFill.length > 0) {
-            allIndicators.push(...cachedFill);
-            console.log(`[WORLDBANK] Merged cached data for failed indicators: ${[...failedNames].join(', ')} (${cachedFill.length} data points)`);
-          }
-        }
+    if (failedIndicators.length > 0 && allIndicators.length > 0 && cachedData) {
+      const failedNames = new Set(failedIndicators.map((ind) => ind.name));
+      const cachedFill = cachedData.indicators.filter((ind) => failedNames.has(ind.indicatorName));
+      if (cachedFill.length > 0) {
+        allIndicators.push(...cachedFill);
+        console.log(`[WORLDBANK] Merged cached data for failed indicators: ${[...failedNames].join(', ')} (${cachedFill.length} data points from ${cachedPath})`);
+        // Surfaced in the run summary ("OK: worldbank … (Partial: …)") so a
+        // long-running WB outage stays visible instead of silently reusing the cache.
+        errors.push(`filled ${[...failedNames].join(', ')} from cache ${cachedPath}`);
       }
     }
 
@@ -187,21 +276,17 @@ export async function fetchWorldBank(date: string): Promise<FetchResult> {
     const errorMessage = error instanceof Error ? error.message : String(error);
     console.warn(`[WORLDBANK] Fetch failed: ${errorMessage}`);
 
-    const cached = findLatestCached('worldbank-parsed.json');
-    if (cached) {
-      const cachedData = readJson<RawSourceData>(cached);
-      if (cachedData) {
-        console.warn(`[WORLDBANK] Using cached data from ${cached}`);
-        writeJson(join(rawDir, 'worldbank-parsed.json'), cachedData);
-        const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
-        return {
-          source: 'worldbank',
-          success: true,
-          countriesFound: uniqueCountries.size,
-          error: `Used cached data. Original error: ${errorMessage}`,
-          fetchedAt: cachedData.fetchedAt,
-        };
-      }
+    if (cachedData) {
+      console.warn(`[WORLDBANK] Using cached data from ${cachedPath}`);
+      writeJson(join(rawDir, 'worldbank-parsed.json'), cachedData);
+      const uniqueCountries = new Set(cachedData.indicators.map((i) => i.countryIso3));
+      return {
+        source: 'worldbank',
+        success: true,
+        countriesFound: uniqueCountries.size,
+        error: `Used cached data. Original error: ${errorMessage}`,
+        fetchedAt: cachedData.fetchedAt,
+      };
     }
 
     return {
