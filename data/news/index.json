@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-10-29T02:42:49.188Z",
-  "lastProcessedDate": "2026-10-29",
+  "generatedAt": "2026-10-30T02:58:45.044Z",
+  "lastProcessedDate": "2026-10-30",
   "cooldowns": {
     "jump:KWT": "2026-10-01",
     "jump:BHR": "2026-10-01",
@@ -181,17 +181,6 @@
         "confidence": 0.8
       },
       "priority": 50
-    },
-    {
-      "id": "2026-09-30:severe_advisory:BGD:us",
-      "date": "2026-09-30",
-      "type": "severe_advisory",
-      "params": {
-        "country": "BGD",
-        "issuer": "us",
-        "level": 3
-      },
-      "priority": 100
     }
   ]
 }
