@@ -19,6 +19,7 @@ import {
 import { SOURCE_COUNT_DISPLAY, OTHER_SOURCE_COUNT_DISPLAY } from "../src/lib/site-stats.js";
 import { getAllIssuerCoverage, getIssuerIso3, MIN_ISSUER_COVERAGE } from "../src/lib/advisory-views.js";
 import type { ScoredCountry } from "../src/pipeline/types.js";
+import { analyzeRedirects, formatRedirectIssue } from "./lib/cloudflare-redirects.js";
 
 const DIST = path.resolve(import.meta.dirname ?? ".", "../dist/client");
 
@@ -175,6 +176,48 @@ function validateAllHreflangTargets() {
     `hreflang sweep: all targets exist (${scanned} pages, ${seen.size} unique URLs)`,
     broken.length === 0,
     broken.slice(0, 10).join("; ") + (broken.length > 10 ? ` … +${broken.length - 10} more` : "")
+  );
+}
+
+// =====================================================================
+// 1c. _REDIRECTS — every rule applied by Cloudflare, every target real
+// =====================================================================
+
+/**
+ * The deployed `_redirects` must (a) be applied in full by Cloudflare — a
+ * splat rule mid-file silently dropped 28 rules from 2026-09-25 to 2026-11-10,
+ * see scripts/lib/cloudflare-redirects.ts — and (b) only point at pages that
+ * exist in this build, or a legacy URL would 301 straight into a 404.
+ */
+function validateRedirectsFile() {
+  console.log("\n--- _redirects (Cloudflare parsing + targets) ---");
+  const file = path.join(DIST, "_redirects");
+  if (!fs.existsSync(file)) {
+    check("_redirects: present in dist/client", false, "file missing");
+    return;
+  }
+  const analysis = analyzeRedirects(fs.readFileSync(file, "utf8"));
+  check(
+    `_redirects: all ${analysis.rules.length} rules applied by Cloudflare (${analysis.staticCount} static, ${analysis.dynamicCount} dynamic)`,
+    analysis.issues.length === 0,
+    analysis.issues.slice(0, 5).map(formatRedirectIssue).join("; ") +
+      (analysis.issues.length > 5 ? ` … +${analysis.issues.length - 5} more` : "")
+  );
+
+  const missing: string[] = [];
+  for (const rule of analysis.rules) {
+    if (/^https?:\/\//.test(rule.to)) continue; // external target: not ours to check
+    // A splat target (`/it/paese/:splat`) is checked at its fixed prefix.
+    const target = path.join(DIST, rule.to.split(/[*:]/)[0]);
+    const exists = rule.hasPattern
+      ? fs.existsSync(target)
+      : fs.existsSync(path.join(target, "index.html")) || (fs.existsSync(target) && fs.statSync(target).isFile());
+    if (!exists) missing.push(`line ${rule.lineNumber}: ${rule.from} → ${rule.to}`);
+  }
+  check(
+    `_redirects: every target exists in the build (${analysis.rules.length} rules)`,
+    missing.length === 0,
+    missing.slice(0, 10).join("; ") + (missing.length > 10 ? ` … +${missing.length - 10} more` : "")
   );
 }
 
@@ -1740,6 +1783,7 @@ function main() {
 
   validateHreflang();
   validateAllHreflangTargets();
+  validateRedirectsFile();
   validateJsonLd();
   validateGreyPlaces();
   validateSchemaConnections();

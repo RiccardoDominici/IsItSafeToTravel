@@ -1,5 +1,19 @@
-# www → non-www redirect (fixes duplicate content in Google index)
-https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
+# ============================================================================
+# ORDER MATTERS — read before adding a rule.
+# Cloudflare's parser (workers-sdk parseRedirects) counts a rule as "static"
+# only while no splat (*) / placeholder (:x) rule has appeared above it. After
+# the first dynamic rule EVERY following line counts as dynamic, and past 100
+# dynamic rules the rest of the file is SILENTLY dropped (the deploy log says
+# nothing). On 2026-09-25 a `/country/*` rule placed mid-file did exactly that:
+# the last 28 rules (pt/de legacy slugs + the */country/* hardening) were dead
+# in production until 2026-11-10 and those URLs served 404 to Googlebot.
+# => All static rules first; every * / :placeholder rule in the final section.
+# Guarded by scripts/lib/cloudflare-redirects.ts (npm test + validate:seo).
+# ============================================================================
+
+# www → non-www lives in functions/_middleware.ts (ALIAS_HOSTS): Pages rejects
+# absolute-URL sources here ("Only relative URLs are allowed"), so the old
+# `https://www.isitsafetotravel.org/* …` line was never applied.
 
 # Root redirect handled by functions/index.ts (Accept-Language based)
 /sitemap.xml /sitemap-index.xml 301
@@ -51,11 +65,6 @@ https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
 /legal/ /en/legal/ 301
 /feedback /en/feedback/ 301
 /feedback/ /en/feedback/ 301
-
-# Bare /country/:iso3/ (no locale prefix) -> /en/country/:iso3/. The
-# locale-specific hardening rules further down only cover /it/country/* etc;
-# this is the same idea for requests missing a locale prefix entirely.
-/country/* /en/country/:splat 301
 
 # --- Legacy English sub-slugs under localized locale prefixes (GSC 404 fix) ---
 # In the 2026-04-03 deploy window the hub pages shipped before their localized
@@ -205,8 +214,15 @@ https://www.isitsafetotravel.org/* https://isitsafetotravel.org/:splat 301
 /de/embed-badge/ /de/einbettbares-abzeichen/ 301
 /de/cite-this-data/ /de/daten-zitieren/ 301
 
-# English 'country' parent under non-EN locales (hardening; nothing real exists
-# under these paths — keep LAST, _redirects is first-match-wins)
+# ============================ DYNAMIC RULES ================================
+# Splat / placeholder rules ONLY below this line (see the header). Nothing real
+# exists under these source paths, so first-match-wins ordering is irrelevant.
+
+# Bare /country/:iso3/ (no locale prefix) -> /en/country/:iso3/. Same idea as
+# the per-locale hardening below, for requests missing a locale prefix.
+/country/* /en/country/:splat 301
+
+# English 'country' parent under non-EN locales (hardening).
 /it/country/* /it/paese/:splat 301
 /es/country/* /es/pais/:splat 301
 /fr/country/* /fr/pays/:splat 301
