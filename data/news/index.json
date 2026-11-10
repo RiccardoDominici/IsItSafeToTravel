@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-09T02:57:56.643Z",
-  "lastProcessedDate": "2026-11-09",
+  "generatedAt": "2026-11-10T04:56:12.055Z",
+  "lastProcessedDate": "2026-11-10",
   "cooldowns": {
     "jump:KWT": "2026-10-01",
     "jump:BHR": "2026-10-01",
@@ -122,20 +122,6 @@
         "prevScore": 7.5,
         "direction": "up",
         "confidence": 0.62
-      },
-      "priority": 50
-    },
-    {
-      "id": "2026-10-11:score_jump:SAU",
-      "date": "2026-10-11",
-      "type": "score_jump",
-      "params": {
-        "country": "SAU",
-        "delta": -0.16,
-        "score": 6.4,
-        "prevScore": 6.5,
-        "direction": "down",
-        "confidence": 0.8
       },
       "priority": 50
     }
