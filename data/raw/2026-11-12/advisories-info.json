@@ -5922,15 +5922,6 @@
       "updatedAt": "2025-03-27T16:14:53Z"
     }
   },
-  "ESH": {
-    "uk": {
-      "level": 3,
-      "text": "Advise against all travel to parts of the country",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/western-sahara",
-      "updatedAt": "2026-06-29T13:34:01Z"
-    }
-  },
   "NRU": {
     "uk": {
       "level": 1,
@@ -5945,6 +5936,15 @@
       "source": "Government of Canada",
       "url": "https://travel.gc.ca/destinations/nauru",
       "updatedAt": "2026-09-24"
+    }
+  },
+  "ESH": {
+    "uk": {
+      "level": 3,
+      "text": "Advise against all travel to parts of the country",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/western-sahara",
+      "updatedAt": "2026-06-29T13:34:01Z"
     }
   },
   "MAF": {
@@ -5963,29 +5963,42 @@
       "updatedAt": "2026-09-24"
     }
   },
-  "FLK": {
+  "SPM": {
     "uk": {
       "level": 1,
       "text": "No advice against travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/falkland-islands",
-      "updatedAt": "2026-08-10T08:48:47Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/st-pierre-and-miquelon",
+      "updatedAt": "2025-12-10T12:39:48Z"
     },
     "ca": {
       "level": 1,
       "text": "Exercise normal security precautions",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/falkland-islands",
-      "updatedAt": "2026-09-24"
+      "url": "https://travel.gc.ca/destinations/saint-pierre-et-miquelon",
+      "updatedAt": "2026-11-02"
     }
   },
-  "SHN": {
+  "COK": {
     "uk": {
       "level": 1,
       "text": "No advice against travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/st-helena-ascension-and-tristan-da-cunha",
-      "updatedAt": "2026-09-10T13:21:17Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
+      "updatedAt": "2025-12-10T13:43:48Z"
+    },
+    "ca": {
+      "level": 1,
+      "text": "Exercise normal security precautions",
+      "source": "Government of Canada",
+      "url": "https://travel.gc.ca/destinations/cook-islands",
+      "updatedAt": "2026-10-14"
+    },
+    "au": {
+      "level": 1,
+      "text": "Exercise normal safety precautions",
+      "source": "Australian Government",
+      "url": "https://www.smartraveller.gov.au/destinations/pacific/cook-islands"
     }
   },
   "TKL": {
@@ -6026,42 +6039,20 @@
       "url": "https://www.smartraveller.gov.au/destinations/pacific/niue"
     }
   },
-  "COK": {
+  "FLK": {
     "uk": {
       "level": 1,
       "text": "No advice against travel",
       "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/cook-islands-tokelau-and-niue",
-      "updatedAt": "2025-12-10T13:43:48Z"
+      "url": "https://www.gov.uk/foreign-travel-advice/falkland-islands",
+      "updatedAt": "2026-08-10T08:48:47Z"
     },
     "ca": {
       "level": 1,
       "text": "Exercise normal security precautions",
       "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/cook-islands",
-      "updatedAt": "2026-10-14"
-    },
-    "au": {
-      "level": 1,
-      "text": "Exercise normal safety precautions",
-      "source": "Australian Government",
-      "url": "https://www.smartraveller.gov.au/destinations/pacific/cook-islands"
-    }
-  },
-  "SPM": {
-    "uk": {
-      "level": 1,
-      "text": "No advice against travel",
-      "source": "UK FCDO",
-      "url": "https://www.gov.uk/foreign-travel-advice/st-pierre-and-miquelon",
-      "updatedAt": "2025-12-10T12:39:48Z"
-    },
-    "ca": {
-      "level": 1,
-      "text": "Exercise normal security precautions",
-      "source": "Government of Canada",
-      "url": "https://travel.gc.ca/destinations/saint-pierre-et-miquelon",
-      "updatedAt": "2026-11-02"
+      "url": "https://travel.gc.ca/destinations/falkland-islands",
+      "updatedAt": "2026-09-24"
     }
   },
   "SGS": {
@@ -6071,6 +6062,15 @@
       "source": "UK FCDO",
       "url": "https://www.gov.uk/foreign-travel-advice/south-georgia-and-south-sandwich-islands",
       "updatedAt": "2025-09-24T10:48:52Z"
+    }
+  },
+  "SHN": {
+    "uk": {
+      "level": 1,
+      "text": "No advice against travel",
+      "source": "UK FCDO",
+      "url": "https://www.gov.uk/foreign-travel-advice/st-helena-ascension-and-tristan-da-cunha",
+      "updatedAt": "2026-09-10T13:21:17Z"
     }
   },
   "IOT": {
