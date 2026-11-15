@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-11-14T03:38:02.742Z",
-  "lastProcessedDate": "2026-11-14",
+  "generatedAt": "2026-11-15T03:00:51.742Z",
+  "lastProcessedDate": "2026-11-15",
   "cooldowns": {
     "jump:KWT": "2026-10-01",
     "jump:BHR": "2026-10-01",
@@ -97,17 +97,6 @@
         "country": "GUM",
         "issuer": "ca",
         "level": 3
-      },
-      "priority": 100
-    },
-    {
-      "id": "2026-10-16:severe_advisory:SAU:au",
-      "date": "2026-10-16",
-      "type": "severe_advisory",
-      "params": {
-        "country": "SAU",
-        "issuer": "au",
-        "level": 4
       },
       "priority": 100
     }
