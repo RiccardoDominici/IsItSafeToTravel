@@ -1,22 +1,85 @@
 {
-  "generatedAt": "2026-11-19T04:38:44.604Z",
+  "generatedAt": "2026-11-20T04:25:05.493Z",
   "countries": {
+    "HKG": {
+      "iso3": "HKG",
+      "votes": 3,
+      "origins": 2,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2.178945709839998,
+      "perceived": 7.910933969682617,
+      "status": "insufficient"
+    },
+    "SDN": {
+      "iso3": "SDN",
+      "votes": 4,
+      "origins": 2,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2.939131232531914,
+      "perceived": 2.3959531887333387,
+      "status": "insufficient"
+    },
+    "CHN": {
+      "iso3": "CHN",
+      "votes": 116,
+      "origins": 15,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 73.90760305156638,
+      "perceived": 7.94380646836775,
+      "status": "active"
+    },
+    "CAN": {
+      "iso3": "CAN",
+      "votes": 12,
+      "origins": 6,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 6.235060538271751,
+      "perceived": 8.802038112526851,
+      "status": "insufficient"
+    },
+    "PRK": {
+      "iso3": "PRK",
+      "votes": 6,
+      "origins": 5,
+      "topOriginShare": 0.3349997377579662,
+      "nEff": 4.098509178931716,
+      "perceived": 4.573871513215532,
+      "status": "insufficient"
+    },
+    "MMR": {
+      "iso3": "MMR",
+      "votes": 5,
+      "origins": 4,
+      "topOriginShare": 0.2822944111933298,
+      "nEff": 4.502174282119845,
+      "perceived": 4.004770812131957,
+      "status": "insufficient"
+    },
+    "SLV": {
+      "iso3": "SLV",
+      "votes": 10,
+      "origins": 4,
+      "topOriginShare": 0.4999999999999998,
+      "nEff": 7.029382680139505,
+      "perceived": 7.115610755421403,
+      "status": "insufficient"
+    },
     "BRA": {
       "iso3": "BRA",
       "votes": 3,
       "origins": 3,
       "topOriginShare": 0.5,
       "nEff": 2.3760073891786213,
-      "perceived": 7.488596846256862,
+      "perceived": 7.488596846256863,
       "status": "insufficient"
     },
     "SAU": {
       "iso3": "SAU",
       "votes": 4,
       "origins": 4,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 2.7866785273344234,
-      "perceived": 5.54966373143936,
+      "topOriginShare": 0.5,
+      "nEff": 2.786678527334424,
+      "perceived": 5.5496637314393595,
       "status": "insufficient"
     },
     "BIH": {
@@ -34,7 +97,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.000000000000001,
+      "perceived": 6,
       "status": "insufficient"
     },
     "ISL": {
@@ -42,44 +105,35 @@
       "votes": 7,
       "origins": 3,
       "topOriginShare": 0.5000000000000001,
-      "nEff": 4.531939444512448,
+      "nEff": 4.531939444512449,
       "perceived": 8.476485217756142,
       "status": "insufficient"
-    },
-    "CHN": {
-      "iso3": "CHN",
-      "votes": 113,
-      "origins": 15,
-      "topOriginShare": 0.4999999999999999,
-      "nEff": 72.75691221908555,
-      "perceived": 7.9191761279464625,
-      "status": "active"
     },
     "BHR": {
       "iso3": "BHR",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.49999999999999994,
+      "topOriginShare": 0.4999999999999999,
       "nEff": 2.55456967640596,
-      "perceived": 6.39433641129733,
+      "perceived": 6.394336411297331,
       "status": "insufficient"
     },
     "CUB": {
       "iso3": "CUB",
       "votes": 4,
       "origins": 3,
-      "topOriginShare": 0.5,
-      "nEff": 3.606866278449827,
-      "perceived": 6.0336269948901275,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 3.6068662784498264,
+      "perceived": 6.033626994890129,
       "status": "insufficient"
     },
     "MEX": {
       "iso3": "MEX",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.49999999999999983,
-      "nEff": 2.6232885441090663,
-      "perceived": 6.142113900231898,
+      "topOriginShare": 0.5,
+      "nEff": 2.623288544109066,
+      "perceived": 6.142113900231899,
       "status": "insufficient"
     },
     "IRQ": {
@@ -87,16 +141,16 @@
       "votes": 4,
       "origins": 3,
       "topOriginShare": 0.5,
-      "nEff": 2.983620398759158,
-      "perceived": 4.988170360524373,
+      "nEff": 2.9836203987591583,
+      "perceived": 4.988170360524374,
       "status": "insufficient"
     },
     "CYM": {
       "iso3": "CYM",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999998,
+      "topOriginShare": 0.5000000000000002,
+      "nEff": 2,
       "perceived": 8.585378143223178,
       "status": "insufficient"
     },
@@ -104,8 +158,8 @@
       "iso3": "AUS",
       "votes": 8,
       "origins": 3,
-      "topOriginShare": 0.49999999999999967,
-      "nEff": 4.695885890781784,
+      "topOriginShare": 0.5,
+      "nEff": 4.695885890781787,
       "perceived": 8.543420319063799,
       "status": "insufficient"
     },
@@ -113,26 +167,26 @@
       "iso3": "USA",
       "votes": 42,
       "origins": 13,
-      "topOriginShare": 0.47573558870466087,
-      "nEff": 26.42833821063255,
-      "perceived": 7.091179836906197,
+      "topOriginShare": 0.4757355887046609,
+      "nEff": 26.428338210632536,
+      "perceived": 7.091179836906198,
       "status": "active"
     },
     "JPN": {
       "iso3": "JPN",
       "votes": 11,
       "origins": 7,
-      "topOriginShare": 0.5,
-      "nEff": 7.854194212486302,
-      "perceived": 8.092436146144172,
+      "topOriginShare": 0.49999999999999994,
+      "nEff": 7.854194212486305,
+      "perceived": 8.092436146144173,
       "status": "insufficient"
     },
     "YEM": {
       "iso3": "YEM",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 1.9999999999999996,
       "perceived": 3.8507967806998735,
       "status": "insufficient"
     },
@@ -140,9 +194,9 @@
       "iso3": "THA",
       "votes": 8,
       "origins": 4,
-      "topOriginShare": 0.47414731562144424,
-      "nEff": 4.84271494101436,
-      "perceived": 6.09823522602261,
+      "topOriginShare": 0.47414731562144413,
+      "nEff": 4.842714941014361,
+      "perceived": 6.098235226022609,
       "status": "insufficient"
     },
     "UKR": {
@@ -160,15 +214,15 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.982219733605231,
+      "perceived": 6.982219733605232,
       "status": "insufficient"
     },
     "GTM": {
       "iso3": "GTM",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2,
       "perceived": 5.991676632440083,
       "status": "insufficient"
     },
@@ -176,7 +230,7 @@
       "iso3": "IND",
       "votes": 6,
       "origins": 3,
-      "topOriginShare": 0.49736398649142155,
+      "topOriginShare": 0.49736398649142166,
       "nEff": 4.819439207429987,
       "perceived": 6.21050360772252,
       "status": "insufficient"
@@ -186,7 +240,7 @@
       "votes": 4,
       "origins": 2,
       "topOriginShare": 0.5000000000000002,
-      "nEff": 2.7384187450601303,
+      "nEff": 2.738418745060129,
       "perceived": 6.600874583519873,
       "status": "insufficient"
     },
@@ -199,40 +253,22 @@
       "perceived": 10,
       "status": "insufficient"
     },
-    "MMR": {
-      "iso3": "MMR",
-      "votes": 4,
-      "origins": 3,
-      "topOriginShare": 0.3664577044504854,
-      "nEff": 3.616655453550878,
-      "perceived": 4.029741167267397,
-      "status": "insufficient"
-    },
-    "PRK": {
-      "iso3": "PRK",
-      "votes": 5,
-      "origins": 4,
-      "topOriginShare": 0.4043443962822736,
-      "nEff": 3.356133064359416,
-      "perceived": 4.263299106530117,
-      "status": "insufficient"
-    },
     "CHE": {
       "iso3": "CHE",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999993,
-      "perceived": 9.8351747724784,
+      "topOriginShare": 0.5,
+      "nEff": 2.0000000000000004,
+      "perceived": 9.835174772478396,
       "status": "insufficient"
     },
     "VEN": {
       "iso3": "VEN",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 2.348058510552939,
-      "perceived": 4.909565394380525,
+      "topOriginShare": 0.5,
+      "nEff": 2.3480585105529403,
+      "perceived": 4.909565394380524,
       "status": "insufficient"
     },
     "TZA": {
@@ -241,7 +277,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.700942736359911,
+      "perceived": 6.70094273635991,
       "status": "insufficient"
     },
     "AFG": {
@@ -249,16 +285,16 @@
       "votes": 5,
       "origins": 4,
       "topOriginShare": 0.35028833609263205,
-      "nEff": 3.87620623667189,
-      "perceived": 3.0008573637186235,
+      "nEff": 3.8762062366718926,
+      "perceived": 3.0008573637186227,
       "status": "insufficient"
     },
     "KOR": {
       "iso3": "KOR",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 1.9999999999999998,
       "perceived": 8.187445246685144,
       "status": "insufficient"
     },
@@ -266,9 +302,9 @@
       "iso3": "POL",
       "votes": 6,
       "origins": 5,
-      "topOriginShare": 0.365612948855845,
-      "nEff": 3.7169830462636,
-      "perceived": 9.315163804487325,
+      "topOriginShare": 0.3656129488558449,
+      "nEff": 3.716983046263602,
+      "perceived": 9.315163804487323,
       "status": "insufficient"
     },
     "SOM": {
@@ -276,7 +312,7 @@
       "votes": 2,
       "origins": 2,
       "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999998,
+      "nEff": 1.9999999999999993,
       "perceived": 3.6760957719166294,
       "status": "insufficient"
     },
@@ -285,7 +321,7 @@
       "votes": 5,
       "origins": 3,
       "topOriginShare": 0.5,
-      "nEff": 3.7602891296881356,
+      "nEff": 3.760289129688136,
       "perceived": 7.975230881923098,
       "status": "insufficient"
     },
@@ -298,21 +334,12 @@
       "perceived": 7.5513183601020115,
       "status": "insufficient"
     },
-    "CAN": {
-      "iso3": "CAN",
-      "votes": 11,
-      "origins": 6,
-      "topOriginShare": 0.34454001083400454,
-      "nEff": 5.910875602362916,
-      "perceived": 8.757225481373426,
-      "status": "insufficient"
-    },
     "ISR": {
       "iso3": "ISR",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.4999999999999999,
-      "nEff": 2.600447102621176,
+      "topOriginShare": 0.5,
+      "nEff": 2.6004471026211764,
       "perceived": 5.728173912019088,
       "status": "insufficient"
     },
@@ -320,27 +347,27 @@
       "iso3": "IDN",
       "votes": 3,
       "origins": 2,
-      "topOriginShare": 0.49999999999999994,
-      "nEff": 2.1709620798981475,
-      "perceived": 6.601991544104961,
+      "topOriginShare": 0.5,
+      "nEff": 2.170962079898148,
+      "perceived": 6.60199154410496,
       "status": "insufficient"
     },
     "FIN": {
       "iso3": "FIN",
       "votes": 4,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
+      "topOriginShare": 0.49999999999999994,
       "nEff": 3.9268365823621556,
-      "perceived": 9.205696812001344,
+      "perceived": 9.205696812001342,
       "status": "insufficient"
     },
     "QAT": {
       "iso3": "QAT",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.49998292159006696,
+      "topOriginShare": 0.4999829215900669,
       "nEff": 2.1558805876721654,
-      "perceived": 6.576165290311584,
+      "perceived": 6.576165290311585,
       "status": "insufficient"
     },
     "DEU": {
@@ -356,9 +383,9 @@
       "iso3": "MAR",
       "votes": 4,
       "origins": 4,
-      "topOriginShare": 0.5,
-      "nEff": 2.7484492921584134,
-      "perceived": 6.88061356064934,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2.748449292158414,
+      "perceived": 6.8806135606493415,
       "status": "insufficient"
     },
     "PHL": {
@@ -366,7 +393,7 @@
       "votes": 3,
       "origins": 3,
       "topOriginShare": 0.5,
-      "nEff": 2.603079152564521,
+      "nEff": 2.6030791525645207,
       "perceived": 5.144482664337462,
       "status": "insufficient"
     },
@@ -374,9 +401,9 @@
       "iso3": "MYS",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
-      "perceived": 7.687499468169003,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 1.9999999999999998,
+      "perceived": 7.687499468169005,
       "status": "insufficient"
     },
     "SUR": {
@@ -442,15 +469,6 @@
       "perceived": 7.818484737866894,
       "status": "insufficient"
     },
-    "SLV": {
-      "iso3": "SLV",
-      "votes": 9,
-      "origins": 4,
-      "topOriginShare": 0.5,
-      "nEff": 6.669156021381752,
-      "perceived": 7.080995455383908,
-      "status": "insufficient"
-    },
     "JOR": {
       "iso3": "JOR",
       "votes": 1,
@@ -465,7 +483,7 @@
       "votes": 3,
       "origins": 2,
       "topOriginShare": 0.5,
-      "nEff": 2.5878873207295996,
+      "nEff": 2.5878873207296,
       "perceived": 8.111218766506441,
       "status": "insufficient"
     },
@@ -487,20 +505,11 @@
       "perceived": 8,
       "status": "insufficient"
     },
-    "SDN": {
-      "iso3": "SDN",
-      "votes": 3,
-      "origins": 1,
-      "topOriginShare": 1,
-      "nEff": 2.7704946386031954,
-      "perceived": 2.248585606890786,
-      "status": "insufficient"
-    },
     "COD": {
       "iso3": "COD",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
+      "topOriginShare": 0.5000000000000001,
       "nEff": 2,
       "perceived": 3.4466662723517074,
       "status": "insufficient"
@@ -509,8 +518,8 @@
       "iso3": "NGA",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 1.9999999999999996,
       "perceived": 4.141443944057861,
       "status": "insufficient"
     },
@@ -527,9 +536,9 @@
       "iso3": "FRA",
       "votes": 6,
       "origins": 3,
-      "topOriginShare": 0.3953522414194542,
+      "topOriginShare": 0.39535224141945424,
       "nEff": 4.801945614464829,
-      "perceived": 7.025590818857684,
+      "perceived": 7.025590818857682,
       "status": "insufficient"
     },
     "LCA": {
@@ -545,27 +554,27 @@
       "iso3": "CHL",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
+      "topOriginShare": 0.5,
       "nEff": 2,
-      "perceived": 7.892704526795388,
+      "perceived": 7.892704526795387,
       "status": "insufficient"
     },
     "NZL": {
       "iso3": "NZL",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 2.0000000000000004,
-      "perceived": 8.756701223538386,
+      "topOriginShare": 0.5,
+      "nEff": 2,
+      "perceived": 8.756701223538384,
       "status": "insufficient"
     },
     "GGY": {
       "iso3": "GGY",
       "votes": 2,
       "origins": 1,
-      "topOriginShare": 0.5000000000000001,
+      "topOriginShare": 0.5,
       "nEff": 2,
-      "perceived": 8.313256109976152,
+      "perceived": 8.31325610997615,
       "status": "insufficient"
     },
     "ATA": {
@@ -581,9 +590,9 @@
       "iso3": "ABW",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 2.5763017317415526,
-      "perceived": 4.467875982112626,
+      "topOriginShare": 0.5,
+      "nEff": 2.576301731741552,
+      "perceived": 4.467875982112627,
       "status": "insufficient"
     },
     "SGP": {
@@ -599,17 +608,17 @@
       "iso3": "RWA",
       "votes": 3,
       "origins": 3,
-      "topOriginShare": 0.4999999999999998,
-      "nEff": 2.6540172482897364,
-      "perceived": 6.876764369547683,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2.6540172482897346,
+      "perceived": 6.876764369547684,
       "status": "insufficient"
     },
     "TUR": {
       "iso3": "TUR",
       "votes": 5,
       "origins": 4,
-      "topOriginShare": 0.3339234182304712,
-      "nEff": 3.868754128628909,
+      "topOriginShare": 0.3339234182304713,
+      "nEff": 3.8687541286289098,
       "perceived": 6.15116436536766,
       "status": "insufficient"
     },
@@ -619,7 +628,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.854675586173853,
+      "perceived": 6.854675586173854,
       "status": "insufficient"
     },
     "PAK": {
@@ -637,7 +646,7 @@
       "origins": 2,
       "topOriginShare": 0.5,
       "nEff": 2.0000000000000004,
-      "perceived": 6.530638735330677,
+      "perceived": 6.530638735330676,
       "status": "insufficient"
     },
     "KAZ": {
@@ -671,9 +680,9 @@
       "iso3": "TWN",
       "votes": 4,
       "origins": 4,
-      "topOriginShare": 0.4272766596988226,
-      "nEff": 3.2946845571880785,
-      "perceived": 7.639442411934471,
+      "topOriginShare": 0.42727665969882267,
+      "nEff": 3.294684557188078,
+      "perceived": 7.639442411934473,
       "status": "insufficient"
     },
     "MAC": {
@@ -682,7 +691,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 7.3779926801600855,
+      "perceived": 7.377992680160086,
       "status": "insufficient"
     },
     "FRO": {
@@ -699,8 +708,8 @@
       "votes": 2,
       "origins": 2,
       "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
-      "perceived": 7.194837722211443,
+      "nEff": 2,
+      "perceived": 7.194837722211444,
       "status": "insufficient"
     },
     "TTO": {
@@ -718,16 +727,16 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.897117505200595,
+      "perceived": 6.897117505200596,
       "status": "insufficient"
     },
     "RUS": {
       "iso3": "RUS",
       "votes": 10,
       "origins": 7,
-      "topOriginShare": 0.21569221045711068,
-      "nEff": 7.085237983389943,
-      "perceived": 4.388000335572118,
+      "topOriginShare": 0.2156922104571106,
+      "nEff": 7.085237983389947,
+      "perceived": 4.388000335572116,
       "status": "insufficient"
     },
     "ETH": {
@@ -743,17 +752,17 @@
       "iso3": "AGO",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
-      "perceived": 6.392796469196378,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2,
+      "perceived": 6.392796469196379,
       "status": "insufficient"
     },
     "KEN": {
       "iso3": "KEN",
       "votes": 2,
       "origins": 1,
-      "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2,
       "perceived": 5.6745307166882055,
       "status": "insufficient"
     },
@@ -761,9 +770,9 @@
       "iso3": "SSD",
       "votes": 4,
       "origins": 3,
-      "topOriginShare": 0.39630568600736055,
-      "nEff": 3.256710083871888,
-      "perceived": 2.7279611953424054,
+      "topOriginShare": 0.39630568600736066,
+      "nEff": 3.2567100838718877,
+      "perceived": 2.727961195342405,
       "status": "insufficient"
     },
     "BDI": {
@@ -779,9 +788,9 @@
       "iso3": "ITA",
       "votes": 3,
       "origins": 1,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 2.355946660745898,
-      "perceived": 8.246903999888154,
+      "topOriginShare": 0.5000000000000002,
+      "nEff": 2.355946660745897,
+      "perceived": 8.246903999888156,
       "status": "insufficient"
     },
     "LUX": {
@@ -798,7 +807,7 @@
       "votes": 2,
       "origins": 2,
       "topOriginShare": 0.5,
-      "nEff": 2,
+      "nEff": 2.0000000000000004,
       "perceived": 8.663042285667913,
       "status": "insufficient"
     },
@@ -807,8 +816,8 @@
       "votes": 2,
       "origins": 1,
       "topOriginShare": 1,
-      "nEff": 1.4691139677663725,
-      "perceived": 7.629304169909027,
+      "nEff": 1.469113967766373,
+      "perceived": 7.629304169909026,
       "status": "insufficient"
     },
     "BGD": {
@@ -826,7 +835,7 @@
       "origins": 2,
       "topOriginShare": 0.5,
       "nEff": 2,
-      "perceived": 9.21568355326974,
+      "perceived": 9.215683553269738,
       "status": "insufficient"
     },
     "SRB": {
@@ -835,7 +844,7 @@
       "origins": 3,
       "topOriginShare": 0.4784023291299994,
       "nEff": 2.6890722252792485,
-      "perceived": 8.284221493887344,
+      "perceived": 8.284221493887346,
       "status": "insufficient"
     },
     "CAF": {
@@ -853,7 +862,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 5.4582309620984395,
+      "perceived": 5.458230962098439,
       "status": "insufficient"
     },
     "PSE": {
@@ -887,9 +896,9 @@
       "iso3": "COG",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5,
-      "nEff": 2.0000000000000004,
-      "perceived": 5.084414322007231,
+      "topOriginShare": 0.5000000000000001,
+      "nEff": 2,
+      "perceived": 5.084414322007232,
       "status": "insufficient"
     },
     "DZA": {
@@ -914,9 +923,9 @@
       "iso3": "ZWE",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999998,
-      "perceived": 6.266998187311241,
+      "topOriginShare": 0.5,
+      "nEff": 2.0000000000000004,
+      "perceived": 6.26699818731124,
       "status": "insufficient"
     },
     "LAO": {
@@ -925,7 +934,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.698821826261776,
+      "perceived": 6.698821826261775,
       "status": "insufficient"
     },
     "CYP": {
@@ -944,15 +953,6 @@
       "topOriginShare": 1,
       "nEff": 1,
       "perceived": 7.899225377861276,
-      "status": "insufficient"
-    },
-    "HKG": {
-      "iso3": "HKG",
-      "votes": 2,
-      "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999996,
-      "perceived": 6.793616411514992,
       "status": "insufficient"
     },
     "ROU": {
@@ -979,7 +979,7 @@
       "origins": 2,
       "topOriginShare": 0.5000000000000001,
       "nEff": 2,
-      "perceived": 6.650875572205486,
+      "perceived": 6.650875572205487,
       "status": "insufficient"
     },
     "ARG": {
@@ -1006,16 +1006,16 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.9012600809339295,
+      "perceived": 6.90126008093393,
       "status": "insufficient"
     },
     "PNG": {
       "iso3": "PNG",
       "votes": 3,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
+      "topOriginShare": 0.5,
       "nEff": 2.6373872285117357,
-      "perceived": 6.905161131400799,
+      "perceived": 6.9051611314008,
       "status": "insufficient"
     },
     "BGR": {
@@ -1067,9 +1067,9 @@
       "iso3": "BLR",
       "votes": 2,
       "origins": 2,
-      "topOriginShare": 0.5000000000000001,
-      "nEff": 1.9999999999999998,
-      "perceived": 5.416911814525818,
+      "topOriginShare": 0.5,
+      "nEff": 2.0000000000000004,
+      "perceived": 5.416911814525817,
       "status": "insufficient"
     },
     "LTU": {
@@ -1077,7 +1077,7 @@
       "votes": 2,
       "origins": 2,
       "topOriginShare": 0.5,
-      "nEff": 2,
+      "nEff": 2.0000000000000004,
       "perceived": 8.605116917628106,
       "status": "insufficient"
     },
@@ -1087,7 +1087,7 @@
       "origins": 2,
       "topOriginShare": 0.5,
       "nEff": 2,
-      "perceived": 3.432720512581349,
+      "perceived": 3.4327205125813496,
       "status": "insufficient"
     },
     "HTI": {
@@ -1096,7 +1096,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1.9941377818341197,
-      "perceived": 3.829242775683285,
+      "perceived": 3.829242775683284,
       "status": "insufficient"
     },
     "SYC": {
@@ -1123,7 +1123,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 7.7298706717361645,
+      "perceived": 7.729870671736163,
       "status": "insufficient"
     },
     "GUY": {
@@ -1141,7 +1141,7 @@
       "origins": 1,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 7.219029128052972,
+      "perceived": 7.219029128052973,
       "status": "insufficient"
     },
     "MAF": {
@@ -1185,7 +1185,7 @@
       "votes": 2,
       "origins": 1,
       "topOriginShare": 0.5,
-      "nEff": 2,
+      "nEff": 2.0000000000000004,
       "perceived": 6.958554703374223,
       "status": "insufficient"
     },
@@ -1240,7 +1240,7 @@
       "origins": 0,
       "topOriginShare": 1,
       "nEff": 1,
-      "perceived": 6.8303741589325595,
+      "perceived": 6.830374158932559,
       "status": "insufficient"
     }
   }
